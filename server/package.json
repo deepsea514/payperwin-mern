@@ -1,0 +1,37 @@
+{
+  "name": "payperwin-server",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Calvin Jaramillo",
+  "dependencies": {
+    "@sendgrid/mail": "^7.1.1",
+    "apicache": "^1.2.1",
+    "axios": "^0.18.0",
+    "bcrypt": "^3.0.4",
+    "body-parser": "^1.18.3",
+    "cacheman": "^2.2.1",
+    "cachios": "^2.2.2",
+    "compression": "^1.7.2",
+    "cookie-parser": "^1.4.4",
+    "cookie-session": "^1.3.3",
+    "cors": "^2.8.5",
+    "deepmerge": "^4.2.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.2",
+    "express-brute": "^1.0.1",
+    "express-session": "^1.15.6",
+    "mongodb": "^2.2.31",
+    "mongoose": "^4.12.0",
+    "nodemailer": "^6.0.0",
+    "nodemailer-mailgun-transport": "^1.4.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "seedrandom": "^2.4.3"
+  },
+  "scripts": {
+    "start": "set NODE_ENV=development&&node index.js",
+    "server": "node index.js",
+    "resultsDaemon": "node matchResultDaemon.js",
+    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js"
+  }
+}

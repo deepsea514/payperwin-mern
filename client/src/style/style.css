@@ -1,0 +1,609 @@
+body {
+  margin: 0;
+  font-family: arial;
+  position: relative;
+  min-height: 100vh;
+  font-family: Roboto, sans-serif;
+}
+
+.background {
+  min-height: 100vh;
+  background: url(/images/footer_lodyas.png) 1200px 1200px repeat;
+}
+
+.header-1,
+.header-2 {
+  /* background-color: #63ff50; */
+  /* background-color: #50b6ff; */
+  /* background-color: #589957; */
+  /* background-color: #38a1ec; */
+  /* background-color: #deff00; */
+  background-color: white;
+  color: #cdfd02;
+  min-height: 54px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+}
+
+/* TODO: use a css processor */
+.MuiButton-containedPrimary {
+  /* background-color: #63ff50 !important; */
+  /* background-color: #50b6ff !important; */
+  background-color: #27e230 !important;
+}
+
+header {
+  z-index: 2;
+}
+
+.header-2 {
+  background-color: #222;
+  min-height: 37px;
+  font-size: 14px;
+}
+
+.header-2 nav {
+  width: 100%;
+}
+
+.header-2 .nav-item {
+  padding: 10px;
+}
+
+.header-body {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.logo {
+    float: left;
+    margin: 7px;
+    background-image: url(/images/logo-new.png);
+    background-position: 7px center;
+    height: 40px;
+    width: 205px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.profile-pic {
+  background-image: url(/images/icons/portrait.png);
+  height: 20px;
+  width: 20px;
+  background-size: cover;
+  border-radius: 50px;
+  margin-right: 7px;
+  float: left;
+}
+
+.username {
+  order: 0 !important;
+  font-weight: bold;
+}
+
+.logout {
+  order: 9 !important;
+}
+
+/* @media only screen and (max-width: 420px) {
+  .logo {
+    width: 40px;
+  }
+} */
+
+/* To disable form background and shadowing */
+.MuiPaper-elevation1,
+.MuiCardContent-root {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+/* dark theme */
+.background.dark-theme {
+  background-color: #222;
+}
+.dark-theme .MuiOutlinedInput-input,
+.dark-theme .MuiFormLabel-root,
+.dark-theme .MuiTypography-displayBlock {
+  color: white !important;
+}
+.dark-theme .MuiOutlinedInput-notchedOutline {
+  border-color: white !important;
+}
+.dark-theme .login-recovery {
+  color: #ddd !important;
+}
+.dark-theme .placeholder-cover {
+    background-color: rgba(33, 33, 33, 0.3) !important;
+}
+.dark-theme article {
+  color: white;
+}
+/* End dark theme */
+
+.login-recovery {
+  padding: 8px;
+  text-align: center;
+  color: #333;
+}
+
+a {
+  color: #50b6ff;
+  color: #cdfd02;
+}
+
+.sign-up-button {
+  display: inline-block;
+  background-color: #f3f3f3;
+  border: solid 1px #969696;
+  text-decoration: none;
+  color: #444 !important;
+  font-size: 12px;
+  padding: 9px;
+  margin: 8px;
+  border-radius: 5px;
+  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+  text-transform: uppercase;
+}
+
+.login-recovery a:hover {
+  color: #82ccff;
+}
+
+.login-recovery .sign-up-button:hover {
+  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+}
+
+nav {
+  box-sizing: border-box;
+  float: left;
+}
+
+article {
+  padding-bottom: 80px; /* at least footer height */
+}
+
+.section-container {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  overflow: hidden;
+  /* background-color: #222; */
+}
+
+.content {
+  padding: 20px;
+  max-width: 720px;
+  margin: 0 auto;
+  z-index: 1;
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.section-background {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  filter: blur(6px);
+  transform: scale(1.05);
+  position: absolute;
+  background-position: center center;
+  opacity: 0.7;
+}
+
+h1 {
+  color: #fff;
+  font-size: 30px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+  margin: 0;
+  padding: 0.83em 0;
+}
+
+.nav-item {
+  display: inline-block;
+  padding: 18px;
+  /* margin: 0 2px 0 2px; */
+  text-decoration: none;
+  color: inherit;
+}
+
+.hamburger {
+  fill: #444;
+  padding: 15px;
+  display: none;
+  cursor: pointer;
+}
+
+/* .logo:hover, */
+a.nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.float-right {
+    float: right;
+}
+
+.placeholder-block {
+  position: relative;
+  color: #fff;
+  font-size: 30px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+  margin-bottom: 25px;
+  text-align: center;
+  width: 100%;
+  height: 400px;
+  background-color: #ddd;
+  box-sizing: border-box;
+  line-height: 200%;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+  border-radius: 5px;
+}
+
+.placeholder-background {
+  background-size: cover;
+  background-position: center 31%;
+  width: 100%;
+  height: 100%;
+  filter: blur(5px);
+  position: absolute;
+  transform: scale(1.05);
+}
+
+.placeholder-cover {
+  background-color: rgba(180, 180, 180, 0.3);
+  padding: 60px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(180, 180, 180, 0.3);
+}
+
+.form-error {
+  color: #f44336;
+  font-size: 0.9rem;
+}
+
+@media only screen and (max-width: 720px) {
+  .placeholder-block {
+    font-size: 24px;
+  }
+}
+
+.center {
+  transform: translateY(-50%);
+  top: 50%;
+  position: relative;
+  text-align: center;
+}
+
+footer {
+  background-color: #222;
+  text-align: center;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+}
+
+.circle {
+  background: black;
+  border-radius: 50px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 5px;
+}
+
+.sport-icon {
+    height: 50px;
+    width: 50px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.75;
+    margin: 0 auto;
+    margin-bottom: 5px;
+}
+
+.sport-select.selected,
+.match-select.selected {
+  background:  #27e230;
+}
+
+.match-select.selected .match-date {
+  color: #222;
+}
+
+.howto-contain {
+  padding-bottom: 120px;
+  text-align: center;
+}
+
+.sport-select-contain {
+  width: 308px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.match-select, 
+.sport-select {
+  width: 100px;
+  height: 100px;
+  background: #fff;
+  color: black;
+  padding: 20px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 1px;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+}
+
+.sport-select {
+  max-width: 32%;
+}
+
+.match {
+  font-size: 15px;
+}
+
+.match .match-select {
+  padding: 13px;
+}
+
+.match-select {
+  width: 100%;
+  height: 60px;
+}
+
+.match-date {
+  color: #555;
+  font-size: 12px;
+}
+
+.mock-button,
+.mock-input {
+  display: inline-block;
+  background: white;
+  color: black;
+  height: 36px;
+  width: 140px;
+  border-radius: 5px;
+  padding: 9px;
+  box-sizing: border-box;
+  margin: 6px 0;
+}
+
+.mock-input {
+  margin-left: 10px;
+}
+
+.big-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.mock-button {
+  background:  #27e230;
+  color: white;
+  text-transform: uppercase;
+  max-width: 300px;
+  width: 100%;
+  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+}
+
+.league {
+  background-color: grey;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.league-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.event {
+  padding: 5px;
+  background: #555;
+  margin: 5px 0;
+}
+.event-date {
+  width: 170px;
+  display: inline-block;
+  color: #ccc;
+}
+
+.line {
+  background-color: #666;
+    margin: 5px 0;
+    padding: 5px;
+  position: relative;
+}
+
+.wager-link {
+  float: right;
+  position: absolute;
+  width: auto;
+  right: 10px;
+  top: 10px;
+}
+
+.pick.selected {
+  background: green;
+}
+
+.bet-history {
+  background: grey;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* mobile layout */
+@media only screen and (max-width: 720px) {
+
+  .profile-pic {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    float: none;
+  }
+
+  .username {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .logo {
+    margin: 4px auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: translateX(-10px);
+    max-width: 56vw;
+    max-height: 10.7vw;
+  }
+
+  header {
+    position: fixed;
+    width: 100%;
+  }
+
+  .popover-closer {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+  .header-2 {
+    display: none;
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    right: 0;
+    max-width: 100%;
+  }
+
+  .header-2 .header-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-2 .float-right {
+    float: none;
+  }
+
+  .header-2 .nav-item {
+    display: block;
+    order: 2;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-bottom: 1px solid #363636;
+  }
+
+  .wallet {
+    order: 1 !important;
+  }
+
+  .nav-2 {
+    order: 2;
+    float: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu-open.header-2 {
+    display: block;
+  }
+
+  .hamburger {
+    display: inline-block;
+  }
+
+  .hamburger-text {
+    color: black;
+    font-size: 14px;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 2px;
+    margin-right: 5px;
+  }
+
+  article {
+    padding-top: 54px; /* same size as top header */
+    padding-bottom: 100px; /* increase with footer height */
+  }
+
+  .howto-contain {
+    padding-bottom: 80px;
+  }
+
+  .section-container {
+    height: 360px;
+  }
+
+  .svg-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .svg-icon path,
+  .svg-icon polygon,
+  .svg-icon rect {
+    fill: #444;
+  }
+
+  .svg-icon circle {
+    stroke: #4691f6;
+    stroke-width: 1;
+  }
+
+  footer {
+    height: 100px;
+  }
+}
+
+@media only screen and (max-width: 360px) {
+
+  .logo {
+    margin: 8px auto;
+  }
+
+  .content {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .match-select {
+    font-size: 80%;
+  }
+}
+
+@media only screen and (max-width: 319px) {
+  .logo {
+    background-image: url(/images/logo-new-vert.png);
+    width: 72px;
+    max-height: initial;
+    margin: 4px auto;
+    height: 46px;
+  }
+}
