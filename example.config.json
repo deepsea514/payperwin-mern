@@ -14,5 +14,9 @@
     "dev.payperwin.ca:8080": "dev.payperwin.ca",
     "dev.payperwin.co:8080": "dev.payperwin.co"
   },
-  "recaptchaSiteKey": ""
+  "recaptchaSiteKey": "",
+  "mongo": {
+    "username": "",
+    "password": ""
+  }
 }

@@ -857,8 +857,12 @@ const databaseName = 'PayPerWinDev'
 // const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 console.info('Using database:', databaseName);
 mongoose.connect(`mongodb://localhost/${databaseName}`, {
+  authSource: "admin",
+  user: config.mongo.username,
+  pass: config.mongo.password,
   useMongoClient: true,
 });
+
 
 const reqConfig = {
   maxRedirects: 999,
