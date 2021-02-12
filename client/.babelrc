@@ -1,16 +1,25 @@
 {
-  "presets": [
-    [
-      "@babel/preset-env", {
-        "debug": true, 
-        "targets": {
-          "browsers": [
-            "> 0.15%",
-            "safari >= 7"
-          ]
-        }
-      }
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "debug": true,
+                "targets": {
+                    "browsers": [
+                        "> 0.15%",
+                        "safari >= 7"
+                    ]
+                }
+            }
+        ],
+        "@babel/preset-react"
     ],
-    "@babel/preset-react"
-  ]
+    "plugins": [
+        [
+            "@babel/plugin-proposal-class-properties",
+            {
+                "loose": true
+            }
+        ]
+    ]
 }

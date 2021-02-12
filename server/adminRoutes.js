@@ -1,0 +1,1188 @@
+const adminRouter = require('express').Router();
+const ExpressBrute = require('express-brute');
+const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
+const bruteforce = new ExpressBrute(store);
+const Admin = require('./models/admin');
+const User = require("./models/user");
+const DepositReason = require("./models/depositreason");
+const FinancialLog = require("./models/financiallog");
+const Bet = require("./models/bet");
+const Sport = require("./models/sport");
+const LoginLog = require('./models/loginlog');
+const jwt = require('jsonwebtoken');
+const accessTokenSecret = 'PPWAdminSecretKey';
+const config = require("../config.json");
+const FinancialStatus = config.FinancialStatus;
+const CountryInfo = config.CountryInfo;
+const dateformat = require("dateformat");
+const { ObjectId } = require('mongodb');
+
+const ID = function () {
+    return '' + Math.random().toString(10).substr(2, 9);
+};
+
+const authenticateJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, accessTokenSecret, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+};
+
+adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+        const admin = await Admin.findOne({ email });
+        if (admin) {
+            admin.comparePassword(password, function (error, isMatch) {
+                if (error) {
+                    res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                    return;
+                }
+                if (isMatch) {
+                    const data = admin._doc;
+                    const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
+                    res.json({ accessToken });
+                }
+                else {
+                    res.status(403).json({ error: 'Password doesn\'t match.' });
+                    return;
+                }
+            })
+        }
+        else {
+            res.status(404).json({ error: 'Admin doesn\'t exist.' });
+            return;
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(404).json({ error: 'Can\'t find admin.' });
+        return;
+    }
+
+});
+
+adminRouter.get('/logout', (req, res) => {
+
+});
+
+adminRouter.get(
+    '/user',
+    authenticateJWT,
+    (req, res) => {
+        delete req.user.password;
+        res.status(200).json(req.user);
+    },
+);
+
+adminRouter.get(
+    '/customers',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { page, perPage, name, email, balancemin, balancemax } = req.query;
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page--;
+            let searchObj = { deletedAt: null };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ username: { "$regex": name, "$options": "i" } }
+                }
+            }
+            if (email) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ email: { "$regex": email, "$options": "i" } }
+                }
+            }
+            if (balancemin || balancemax) {
+                let balanceObj = {
+                }
+                if (balancemin) {
+                    balanceObj = {
+                        ...balanceObj,
+                        ...{ $gte: parseInt(balancemin) }
+                    }
+                }
+                if (balancemax) {
+                    balanceObj = {
+                        ...balanceObj,
+                        ...{ $lte: parseInt(balancemax) }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ balance: balanceObj }
+                }
+            }
+            const total = await User.find(searchObj).count();
+            User.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    res.status(200).json({ total, perPage, page: page + 1, data });
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.query;
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const customer = await User.findById(id);
+            res.status(200).json(customer);
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customer.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-overview',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.query;
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const lastbets = await Bet.find({ userId: id, deletedAt: null })
+                .sort({ createdAt: -1 }).limit(8);
+            let totalwagers = await Bet.aggregate(
+                {
+                    $match: {
+                        userId: new ObjectId(id),
+                        deletedAt: null,
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$bet"
+                        }
+                    }
+                }
+            );
+            let totaldeposit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        financialtype: "deposit",
+                        user: new ObjectId(id),
+                        status: FinancialStatus.success,
+                        deletedAt: null,
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$amount"
+                        }
+                    }
+                }
+            )
+
+            if (totalwagers.length) totalwagers = totalwagers[0].total;
+            else totalwagers = 0;
+
+            if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
+            else totaldeposit = 0;
+
+            res.status(200).json({ lastbets, totalwagers, totaldeposit });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customer.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-loginhistory',
+    authenticateJWT,
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const total = await LoginLog.find({ user: id, deletedAt: null }).count();
+            const loginHistory = await LoginLog.find({ user: id, deletedAt: null }).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            res.json({ total, page, perPage, loginHistory });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find History.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-deposits',
+    authenticateJWT,
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const searchObj = { user: id, deletedAt: null, financialtype: "deposit" };
+            const total = await FinancialLog.find(searchObj).count();
+            const deposits = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage).populate('reason');
+            res.json({ total, page, perPage, deposits });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find Deposits.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-withdraws',
+    authenticateJWT,
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const searchObj = { user: id, deletedAt: null, financialtype: "withdraw" };
+            const total = await FinancialLog.find(searchObj).count();
+            const withdraws = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            res.json({ total, page, perPage, withdraws });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find Withdraws.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-bets',
+    authenticateJWT,
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            const searchObj = { userId: id, deletedAt: null };
+            const total = await Bet.find(searchObj).count();
+            const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            res.json({ total, page, perPage, bets });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find bets.', result: error });
+        }
+    }
+)
+
+adminRouter.patch(
+    '/customer',
+    authenticateJWT,
+    async (req, res) => {
+        const { id, data } = req.body;
+        try {
+            const customer = await User.findByIdAndUpdate(id, data);
+            if (data.password) {
+                customer.password = data.password;
+            }
+            customer.save();
+            res.status(200).json(customer);
+        } catch (erorr) {
+            res.status(500).json({ error: 'Can\'t Update customer.', result: error });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/customer',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.query;
+        if (id) {
+            try {
+                const customer = await User.findByIdAndUpdate(id, {
+                    deletedAt: new Date()
+                });
+                res.status(200).json(customer);
+            } catch (erorr) {
+                res.status(500).json({ error: 'Can\'t Update customer.', result: error });
+            }
+        }
+        else {
+            res.status(500).json({ error: 'Customer id is required.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/depositreasons',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const reasons = await DepositReason.find({ deletedAt: null });
+            res.status(200).json(reasons);
+        } catch (erorr) {
+            res.status(500).json({ error: 'Can\'t get deposit reasons.', result: error });
+        }
+    }
+)
+
+adminRouter.post(
+    '/depositreasons',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { title } = req.body;
+            if (title) {
+                const existing = await DepositReason.findOne({ title });
+                if (existing) {
+                    res.status(400).json({ error: 'Already exist.' });
+                }
+                else {
+                    const reason = new DepositReason({ title });
+                    reason.save();
+                    res.status(200).json(reason);
+                }
+            }
+            else {
+                res.status(400).json({ error: 'Title is required.' });
+            }
+        } catch (erorr) {
+            res.status(500).json({ error: 'Can\'t save deposit reasons.', result: error });
+        }
+    }
+)
+
+adminRouter.post(
+    '/deposit',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { user, reason, amount, method, status } = req.body;
+            if (!user) res.status(400).json({ error: 'User field is required.' });
+            if (!reason) res.status(400).json({ error: 'Reason field is required.' });
+            if (!amount) res.status(400).json({ error: 'Amount field is required.' });
+            if (!method) res.status(400).json({ error: 'Method field is required.' });
+            if (!status) status = "Pending";
+
+            const userdata = await User.findById(user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            const reasonData = await DepositReason.findById(reason);
+            if (!reasonData) {
+                res.status(400).json({ error: 'Can\'t find reason.' });
+                return;
+            }
+            const deposit = new FinancialLog({
+                financialtype: 'deposit',
+                uniqid: `D${ID()}`,
+                user: userdata._id,
+                reason: reasonData._id,
+                amount,
+                method,
+                status
+            });
+            await deposit.save();
+
+            userdata.depositlog = [...userdata.depositlog, ...[deposit._id]];
+            if (status == FinancialStatus.success) {
+                userdata.balance = parseInt(userdata.balance) + parseInt(amount);
+            }
+            await userdata.save();
+            res.json(deposit);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t save deposit.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/deposit',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { page, datefrom, dateto, method, status, minamount, maxamount, perPage } = req.query;
+            if (!page) page = 1;
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            page--;
+            let searchObj = { financialtype: 'deposit', deletedAt: null };
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: parseInt(minamount) }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: parseInt(maxamount) }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ amount: amountObj }
+                }
+            }
+            if (status) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ status }
+                }
+            }
+            if (method) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ method }
+                }
+            }
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const total = await FinancialLog.find(searchObj).count();
+            const deposits = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['username', 'currency']).populate('reason', ['title']);
+            res.json({ perPage, total, page: page + 1, data: deposits });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get deposits.', result: error });
+        }
+    }
+)
+
+adminRouter.patch(
+    '/deposit',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { id, data } = req.body;
+
+            const deposit = await FinancialLog.findById(id);
+            if (deposit.status == FinancialStatus.success) {
+                res.status(400).json({ error: 'Can\'t update finished deposit.' });
+                return;
+            }
+            await deposit.update(data, { new: true }).exec();
+            const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
+
+            const userdata = await User.findById(deposit.user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            if (data.status == FinancialStatus.success) {
+                userdata.balance = parseInt(userdata.balance) + parseInt(deposit.amount);
+            }
+            await userdata.save();
+
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t update deposit.', result: error });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/deposit',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { id } = req.query;
+            const deposit = await FinancialLog.findById(id);
+            if (deposit.status == FinancialStatus.success) {
+                res.status(400).json({ error: 'Can\'t delete finished log.' });
+                return;
+            }
+            deposit.update({ deletedAt: new Date() }).exec();
+            const userdata = await User.findById(deposit.user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            userdata.depositlog.remove(id);
+            await userdata.save();
+
+            res.json(deposit);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t update deposit.', result: error });
+        }
+    }
+)
+
+adminRouter.post(
+    '/withdraw',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { user, amount, method, status } = req.body;
+            if (!user) res.status(400).json({ error: 'User field is required.' });
+            if (!amount) res.status(400).json({ error: 'Amount field is required.' });
+            if (!method) res.status(400).json({ error: 'Method field is required.' });
+            if (!status) status = "Pending";
+
+            const userdata = await User.findById(user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            const withdraw = new FinancialLog({
+                financialtype: 'withdraw',
+                uniqid: `W${ID()}`,
+                user: userdata._id,
+                amount,
+                method,
+                status,
+                fee,
+            });
+
+            if (status == FinancialStatus.success) {
+                const prebalance = parseInt(userdata.balance);
+                const withdrawamount = parseInt(amount);
+                if (prebalance < withdrawamount + fee) {
+                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+                    return;
+                }
+                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            }
+            await withdraw.save();
+            userdata.withdrawlog = [...userdata.withdrawlog, ...[withdraw._id]];
+            await userdata.save();
+            res.json(withdraw);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t save withdraw.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/withdraw',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { page, perPage, datefrom, dateto, method, status, minamount, maxamount } = req.query;
+            if (!page) page = 1;
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            page--;
+            let searchObj = { financialtype: 'withdraw', deletedAt: null };
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: parseInt(minamount) }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: parseInt(maxamount) }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ amount: amountObj }
+                }
+            }
+            if (status) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ status }
+                }
+            }
+            if (method) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ method }
+                }
+            }
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const total = await FinancialLog.find(searchObj).count();
+            const withdraws = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['username', 'currency']).populate('reason', ['title']);
+            res.json({ perPage, total, page: page + 1, data: withdraws });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
+        }
+    }
+)
+
+adminRouter.patch(
+    '/withdraw',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { id, data } = req.body;
+
+            const withdraw = await FinancialLog.findById(id);
+            if (withdraw.status == FinancialStatus.success) {
+                res.status(400).json({ error: 'Can\'t update finished withdraw.' });
+                return;
+            }
+
+            const userdata = await User.findById(withdraw.user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            if (data.status == FinancialStatus.success) {
+                const amount = data.amount ? data.amount : withdraw.amount;
+                const prebalance = parseInt(userdata.balance);
+                const withdrawamount = parseInt(amount);
+                if (prebalance < withdrawamount + fee) {
+                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+                    return;
+                }
+                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            }
+            await withdraw.update(data, { new: true }).exec();
+            await userdata.save();
+            const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/withdraw',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { id } = req.query;
+            const withdraw = await FinancialLog.findById(id);
+            if (withdraw.status == FinancialStatus.success) {
+                res.status(400).json({ error: 'Can\'t delete finished log.' });
+                return;
+            }
+            withdraw.update({ deletedAt: new Date() }).exec();
+            const userdata = await User.findById(withdraw.user);
+            if (!userdata) {
+                res.status(400).json({ error: 'Can\'t find user.' });
+                return;
+            }
+            userdata.withdrawlog.remove(id);
+            await userdata.save();
+
+            res.json(withdraw);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/searchusers',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = { deletedAt: null };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ username: { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            User.find(searchObj)
+                .sort('createdAt')
+                .select(['username', 'balance', 'currency'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    const result = data.map(user => {
+                        return {
+                            value: user._id,
+                            label: user.username,
+                            balance: user.balance,
+                        }
+                    })
+                    res.status(200).json(result);
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/bets',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage } = req.query;
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page--;
+            let searchObj = { deletedAt: null };
+
+            if (status && status == 'open') {
+                searchObj = {
+                    ...searchObj,
+                    ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
+                };
+            } else if (status && status == 'settled') {
+                searchObj = {
+                    ...searchObj,
+                    ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
+                };
+            }
+
+            if (match && match == 'pending') {
+                searchObj = {
+                    ...searchObj,
+                    ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
+                };
+            }
+            else if (match && match == 'matched') {
+                searchObj = {
+                    ...searchObj,
+                    ...{ matchingStatus: 'Matched' }
+                };
+            }
+
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+
+            if (sport) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ "lineQuery.sportId": parseInt(sport) }
+                }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: parseInt(minamount) }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: parseInt(maxamount) }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ bet: amountObj }
+                }
+            }
+
+            const total = await Bet.find(searchObj).count();
+            const data = await Bet.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('userId', ['username', 'currency'])
+            page++;
+            res.json({ total, perPage, page, data, });
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t find bets.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/bet',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { id } = req.query;
+            const bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
+            res.json(bet);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t find bet.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/sports',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const sports = await Sport.find().select(['name', 'pinnacleSportId']);
+            res.json(sports);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t find sports.', message: error });
+        }
+    }
+)
+
+const getTotalDeposit = async function (datefrom, dateto) {
+    const total = await FinancialLog.aggregate(
+        {
+            $match: {
+                financialtype: "deposit",
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$amount"
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
+const getTotalWager = async function (datefrom, dateto) {
+    const total = await Bet.aggregate(
+        {
+            $match: {
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$bet"
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
+const getTotalPlayer = async function (datefrom, dateto) {
+    const total = await User.aggregate(
+        {
+            $match: {
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: 1
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
+const getTotalActivePlayer = async function (datefrom, dateto) {
+    const total = await Bet.aggregate(
+        {
+            $match: {
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: "$userId",
+                total: {
+                    $sum: 1
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
+const getTotalFees = async function (datefrom, dateto) {
+    const total = await FinancialLog.aggregate(
+        {
+            $match: {
+                financialtype: "withdraw",
+                status: FinancialStatus.success,
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$fee"
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
+
+adminRouter.get(
+    '/dashboard',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { range } = req.query;
+            if (!range) range = 'today';
+            let dateranges = [];
+            let categories = [];
+            const nowDate = new Date();
+            const year = nowDate.getFullYear();
+            const month = nowDate.getMonth();
+            const date = nowDate.getDate();
+            switch (range) {
+                case 'today':
+                    for (let i = 0; i <= 24; i += 2) {
+                        let ndate = new Date(year, month, date, i);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "HH:MM"));
+                    }
+                    break;
+                case 'yesterday':
+                    for (let i = 0; i <= 24; i += 2) {
+                        let ndate = new Date(year, month, date - 1, i);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "HH:MM"));
+                    }
+                    break;
+                case 'last7days':
+                    for (let i = 0; i <= 7; i++) {
+                        let ndate = new Date(year, month, date + i - 7)
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "mmm d"));
+                    }
+                    break;
+                case 'last30days':
+                    for (let i = 0; i <= 30; i++) {
+                        let ndate = new Date(year, month, date + i - 30);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "mmm d"));
+                    }
+                    break;
+                case 'thismonth':
+                    for (let i = 0; i <= date; i++) {
+                        let ndate = new Date(year, month, i);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "mmm d"));
+                    }
+                    break;
+                case 'lastmonth':
+                    let limit = new Date(year, month, 0);
+                    for (let i = 0; i <= 31; i++) {
+                        let ndate = new Date(year, month - 1, i);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "mmm d"));
+                        if (ndate.getTime() >= limit.getTime())
+                            break;
+                    }
+                    break;
+                case 'thisyear':
+                default:
+                    for (let i = 0; i <= 12; i++) {
+                        let ndate = new Date(year, i, 1);
+                        dateranges.push(ndate);
+                        categories.push(dateformat(ndate, "mmmm"));
+                    }
+                    break;
+            };
+
+            const totaldeposit = await getTotalDeposit(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalwager = await getTotalWager(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalplayer = await getTotalPlayer(new Date(0), new Date());
+            const totalactiveplayer = await getTotalActivePlayer(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalfees = await getTotalFees(dateranges[0], dateranges[dateranges.length - 1]);
+            let deposits = [];
+            let wagers = [];
+            let players = [];
+            let activeplayers = [];
+            let fees = [];
+            for (let i = 1; i < dateranges.length; i++) {
+                const deposit = await getTotalDeposit(dateranges[i - 1], dateranges[i]);
+                deposits.push(deposit);
+                const wager = await getTotalWager(dateranges[i - 1], dateranges[i]);
+                wagers.push(wager);
+                const player = await getTotalPlayer(dateranges[i - 1], dateranges[i]);
+                players.push(player);
+                const activeplayer = await getTotalActivePlayer(dateranges[i - 1], dateranges[i]);
+                activeplayers.push(activeplayer);
+                const fee = await getTotalFees(dateranges[i - 1], dateranges[i]);
+                fees.push(fee);
+            }
+
+            res.json({
+                totaldeposit, deposits,
+                totalwager, wagers,
+                totalplayer, players,
+                totalactiveplayer, activeplayers,
+                totalfees, fees,
+                categories,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t read data.', message: error });
+        }
+    }
+)
+
+
+module.exports = adminRouter;

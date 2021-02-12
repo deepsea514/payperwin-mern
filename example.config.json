@@ -1,22 +1,24 @@
 {
-  "serverHostUrl": "http://dev.payperwin.ca",
-  "serverPort": 8080,
-  "clientPort": 8081,
-  "pinnacleApiHost": "http://proxy.payperwin.ca",
-  "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
-  "corsHosts": [
-    "http://dev.payperwin.ca",
-    "https://dev.payperwin.ca",
-    "https://payperwin.co",
-    "https://payperwin.ca"
-  ],
-  "serverHostToClientHost": {
-    "dev.payperwin.ca:8080": "dev.payperwin.ca",
-    "dev.payperwin.co:8080": "dev.payperwin.co"
-  },
-  "recaptchaSiteKey": "",
-  "mongo": {
-    "username": "",
-    "password": ""
-  }
+    "serverHostUrl": "http://dev.payperwin.ca",
+    "serverPort": 8080,
+    "clientPort": 8081,
+    "pinnacleApiHost": "http://proxy.payperwin.ca",
+    "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
+    "corsHosts": [
+        "http://dev.payperwin.ca",
+        "https://dev.payperwin.ca",
+        "https://payperwin.co",
+        "https://payperwin.ca"
+    ],
+    "serverHostToClientHost": {
+        "dev.payperwin.ca:8080": "dev.payperwin.ca",
+        "dev.payperwin.co:8080": "dev.payperwin.co"
+    },
+    "recaptchaSiteKey": "",
+    "mongo": {
+        "username": "",
+        "password": ""
+    },
+    "appUrl": "http://localhost:8080",
+    "appAdminUrl": "http://localhost:8080/admin"
 }

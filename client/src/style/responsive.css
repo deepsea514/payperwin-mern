@@ -52,7 +52,7 @@
   }
   .mobile-menu {
     display: none;
-    /* background: #072443; */
+    /* background: #273043; */
     position: fixed;
     top: 0;
     z-index: 99;
@@ -90,7 +90,7 @@
   }
   .mobile-menu .nav-item.active {
     border: none;
-    border-left: 3px solid #d9e027;
+    border-left: 3px solid #ED254E;
   }
   .navbar-mobile .nav-item.active {
     border: none;
