@@ -11,12 +11,16 @@ mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
 // const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 console.info('Using database:', databaseName);
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
-  authSource: "admin",
-  user: config.mongo.username,
-  pass: config.mongo.password,
-  useMongoClient: true,
-});
+
+const mongooptions = {
+    useMongoClient: true,
+}
+if (config.mongo && config.mongo.username) {
+mongooptions.authSource = "admin";
+mongooptions.user = config.mongo.username;
+mongooptions.pass = config.mongo.password;
+}
+mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
 
 async function getSportLines(sportName) {
   const sportData = sports.find((sportObj) => sportObj.name.toLowerCase() === sportName.toLowerCase());

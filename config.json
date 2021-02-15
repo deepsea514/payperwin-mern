@@ -12,8 +12,8 @@
     },
     "recaptchaSiteKey": "",
     "mongo": {
-        "username": "",
-        "password": ""
+        "username": "admin",
+        "password": "PayPerWin777"
     },
     "appUrl": "http://payperwin.co:8080",
     "appAdminUrl": "http://payperwin.co/admin",
