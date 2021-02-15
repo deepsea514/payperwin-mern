@@ -1,23 +1,22 @@
 {
-    "serverHostUrl": "http://dev.payperwin.co",
+    "serverHostUrl": "http://payperwin.co",
     "serverPort": 8080,
     "clientPort": 80,
-    "pinnacleApiHost": "http://proxy.payperwin.ca:8888",
+    "pinnacleApiHost": "http://api.pinnacle.com",
     "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
     "corsHosts": [
-        "http://dev.payperwin.co"
+        "http://payperwin.co"
     ],
     "serverHostToClientHost": {
-        "dev.payperwin.ca:8080": "dev.payperwin.ca",
-        "dev.payperwin.co:8080": "dev.payperwin.co"
+        "payperwin.co:8080": "payperwin.co"
     },
     "recaptchaSiteKey": "",
     "mongo": {
         "username": "",
         "password": ""
     },
-    "appUrl": "http://dev.payperwin.co:8080",
-    "appAdminUrl": "http://dev.payperwin.co/admin",
+    "appUrl": "http://payperwin.co:8080",
+    "appAdminUrl": "http://payperwin.co/admin",
     "CountryInfo": [
         {
             "country": "Canada",
