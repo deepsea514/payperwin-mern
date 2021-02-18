@@ -1092,7 +1092,7 @@ expressApp.post('/v1/ping', (req, res) => {
             "Available": true
         },
         "ErrorCode": 0,
-        "Timestamp": Timestamp
+        "Timestamp": new Date(),
     });
 });
 
