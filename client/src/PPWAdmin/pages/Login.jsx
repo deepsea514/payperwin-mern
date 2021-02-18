@@ -9,8 +9,8 @@ const serverUrl = config.appAdminUrl;
 
 
 const initialValues = {
-    email: "snowwhite19930514@mail.ru",
-    password: "!a1234567%"
+    email: "",
+    password: ""
 }
 
 export default class Login extends Component {
