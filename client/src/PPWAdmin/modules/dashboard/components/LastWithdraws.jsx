@@ -5,7 +5,7 @@ import dateformat from "dateformat";
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
 
-export function LastWithdraws({ className, lastwithdraws, loadingwithdraws }) {
+export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, roothistory }) {
     const getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
@@ -35,14 +35,14 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws }) {
 
         return lastwithdraws.map((withdraw, index) => {
             return (
-                <tr key={index}>
+                <tr key={index} onClick={gotoWithdraw} style={{ cursor: "pointer" }} className="text-hover-primary">
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                        <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">
                             {getDate(withdraw.createdAt)}
                         </span>
                     </td>
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                        <span className="font-weight-bolder d-block font-size-lg">
                             {withdraw.user.username}
                         </span>
                     </td>
@@ -77,6 +77,10 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws }) {
                 </tr>
             );
         });
+    }
+
+    const gotoWithdraw = () => {
+        roothistory.push("/withdraw-log");
     }
 
     return (

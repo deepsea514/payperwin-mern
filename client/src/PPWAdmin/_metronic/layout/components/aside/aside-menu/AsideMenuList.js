@@ -88,6 +88,32 @@ export function AsideMenuList({ layoutProps }) {
                 {/*end::1 Level*/}
                 {/*begin::1 Level*/}
                 <li
+                    className={`menu-item ${getMenuItemActive("/wager-feeds", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/wager-feeds/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                        </span>
+                        <span className="menu-text">Wager Feeds</span>
+                    </Link>
+                </li>
+                {/*end::1 Level*/}
+                {/*begin::1 Level*/}
+                <li
+                    className={`menu-item ${getMenuItemActive("/autobet", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/autobet/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                        </span>
+                        <span className="menu-text">AutoBet</span>
+                    </Link>
+                </li>
+                {/*end::1 Level*/}
+                {/*begin::1 Level*/}
+                <li
                     className={`menu-item ${getMenuItemActive("/events", false)}`}
                     aria-haspopup="true"
                 >

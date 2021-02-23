@@ -41,7 +41,7 @@ export function Topbar({ history }) {
 
     return (
         <div className="topbar">
-            {layoutProps.viewSearchDisplay && <SearchDropdown />}
+            {/* {layoutProps.viewSearchDisplay && <SearchDropdown />} */}
 
             {/* {layoutProps.viewNotificationsDisplay && <UserNotificationsDropdown />} */}
 
@@ -76,7 +76,7 @@ export function Topbar({ history }) {
                 </OverlayTrigger>
             )} */}
 
-            {layoutProps.viewLanguagesDisplay && <LanguageSelectorDropdown />}
+            {/* {layoutProps.viewLanguagesDisplay && <LanguageSelectorDropdown />} */}
 
             {layoutProps.viewUserDisplay && <QuickUserToggler history={history} />}
         </div>

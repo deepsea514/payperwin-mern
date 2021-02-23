@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { setTitle } from './libs/documentTitleBuilder';
-// import AuthWrap from './containers/authWrap';
 import Main from "./containers/main";
 
 function handleVisibilityChange() {

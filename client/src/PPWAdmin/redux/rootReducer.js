@@ -6,6 +6,8 @@ import * as bet_activities from "../modules/bet_activities/redux/reducers";
 import * as depositlog from "../modules/depositlogs/redux/reducers";
 import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
+import * as wager_feeds from "../modules/wager-feed/redux/reducers";
+import * as autobet from "../modules/autobet/redux/reducers";
 
 export const rootReducer = combineReducers({
     customer: customer.reducer,
@@ -13,6 +15,8 @@ export const rootReducer = combineReducers({
     depositlog: depositlog.reducer,
     withdrawlog: withdrawlog.reducer,
     dashboard: dashboard.reducer,
+    wager_feeds: wager_feeds.reducer,
+    autobet: autobet.reducer,
 });
 
 export function* rootSaga() {
@@ -22,5 +26,7 @@ export function* rootSaga() {
         bet_activities.saga(),
         withdrawlog.saga(),
         dashboard.saga(),
+        wager_feeds.saga(),
+        autobet.saga(),
     ]);
 }

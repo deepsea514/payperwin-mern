@@ -5,7 +5,7 @@ import dateformat from "dateformat";
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
 
-export function LastDeposits({ className, lastdeposits, loadingdeposits }) {
+export function LastDeposits({ className, lastdeposits, loadingdeposits, roothistory }) {
     const getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
@@ -34,14 +34,14 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits }) {
 
         return lastdeposits.map((deposit, index) => {
             return (
-                <tr key={index}>
+                <tr key={index} onClick={gotoDeposit} style={{ cursor: "pointer" }} className="text-hover-primary">
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                        <span className=" font-weight-bolder text-hover-primary mb-1 font-size-lg">
                             {getDate(deposit.createdAt)}
                         </span>
                     </td>
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                        <span className=" font-weight-bolder d-block font-size-lg">
                             {deposit.user.username}
                         </span>
                     </td>
@@ -82,6 +82,11 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits }) {
             );
         });
     }
+
+    const gotoDeposit = () => {
+        roothistory.push("/deposit-log");
+    }
+
     return (
         <div className={`card card-custom ${className}`}>
             {/* Head */}

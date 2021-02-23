@@ -3,7 +3,7 @@ import React from "react";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
 
-export function LastBets({ className, loadingbets, lastbets }) {
+export function LastBets({ className, loadingbets, lastbets, roothistory }) {
     const getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
@@ -32,14 +32,14 @@ export function LastBets({ className, loadingbets, lastbets }) {
 
         return lastbets.map((bet, index) => {
             return (
-                <tr key={index}>
+                <tr key={index} onClick={gotoBet} style={{ cursor: "pointer" }} className="text-hover-primary">
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                        <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">
                             {getDate(bet.createdAt)}
                         </span>
                     </td>
                     <td className="pl-0">
-                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                        <span className="font-weight-bolder d-block font-size-lg">
                             {bet.userId.username}
                         </span>
                     </td>
@@ -80,6 +80,11 @@ export function LastBets({ className, loadingbets, lastbets }) {
             )
         })
     }
+
+    const gotoBet = () => {
+        roothistory.push("/bet-activities");
+    }
+
     return (
         <div className={`card card-custom ${className}`}>
             {/* Head */}

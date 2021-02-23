@@ -166,5 +166,9 @@ export function* saga() {
                 categories: [],
             }));
         }
-    })
+    });
+
+    yield takeLatest(actionTypes.changeDateRange, function* changeDateRangeSaga() {
+        yield put(actions.getDashboardDataDetails());
+    });
 }

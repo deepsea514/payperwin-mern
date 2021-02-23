@@ -254,7 +254,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
                                             <th scope="col">TransactionID</th>
-                                            <th scope="col">Details</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -283,7 +283,6 @@ const mapStateToProps = (state) => ({
     bet_activities: state.bet_activities.bet_activities,
     loading: state.bet_activities.loading,
     total: state.bet_activities.total,
-    currentPage: state.bet_activities.currentPage,
     currentPage: state.bet_activities.currentPage,
     filter: state.bet_activities.filter,
     sports: state.bet_activities.sports,

@@ -72,6 +72,51 @@ adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
 
 });
 
+adminRouter.post(
+    '/createnew',
+    authenticateJWT,
+    async (req, res) => {
+        const { email, password, username } = req.body;
+        try {
+            await Admin.create({ email, password, username });
+            res.status(200).json("Admin created");
+            return;
+        } catch (error) {
+            res.status(400).json({
+                error,
+                message: "Admin creation failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
+
+adminRouter.patch(
+    '/changePassword',
+    authenticateJWT,
+    async (req, res) => {
+        const { password, newpassword } = req.body;
+        const { email } = req.user;
+        const admin = await Admin.findOne({ email });
+
+        admin.comparePassword(password, async function (error, isMatch) {
+            if (error) {
+                res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                return;
+            }
+            if (isMatch) {
+                admin.password = newpassword;
+                await admin.save();
+                res.status(404).json("Password changed.");
+            }
+            else {
+                res.status(403).json({ error: 'Password doesn\'t match.' });
+                return;
+            }
+        })
+    }
+)
+
 adminRouter.get('/logout', (req, res) => {
 
 });

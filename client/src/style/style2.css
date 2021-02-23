@@ -130,7 +130,7 @@ header form {
 .header-top {
     padding: 10px 0;
     /* background-color:#0a1a2e; */
-    background: linear-gradient(90deg, #0b1422, #042d56);
+    background: linear-gradient(90deg, #0b1422, #273043);
 }
 
 .collapse:not(.show) {
@@ -688,6 +688,10 @@ footer p {
 .header-i4 {
     font-size: 13px;
     font-weight: bold;
+}
+
+.container {
+    max-width: 100% !important;
 }
 
 .container-checkbox {

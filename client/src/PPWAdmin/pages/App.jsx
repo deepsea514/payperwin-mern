@@ -11,6 +11,8 @@ import BetActivityModule from "../modules/bet_activities/pages";
 import DepositLogModule from "../modules/depositlogs/pages";
 import WithdrawLogModule from "../modules/withdrawlogs/pages";
 import EventModule from "../modules/events/pages";
+import WagerFeeds from "../modules/wager-feed/pages";
+import AutoBet from "../modules/autobet/pages/AutoBet";
 
 export default class App extends Component {
     constructor(props) {
@@ -42,7 +44,7 @@ export default class App extends Component {
         return (
             <Layout history={history}>
                 <Switch>
-                {/* <BrowserRouter basename="PPWAdmin"> */}
+                    {/* <BrowserRouter basename="PPWAdmin"> */}
                     <Redirect exact from="/" to="/dashboard" />
 
                     {/* dashboard */}
@@ -62,6 +64,12 @@ export default class App extends Component {
 
                     {/* events */}
                     <Route path="/events" component={EventModule} />
+
+                    {/* wager feeds */}
+                    <Route path="/wager-feeds" component={WagerFeeds} />
+
+                    {/* autobet */}
+                    <Route path="/autobet" component={AutoBet} />
 
                     <Redirect to="/dashboard" />
                 </Switch>

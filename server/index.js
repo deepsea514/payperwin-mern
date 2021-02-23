@@ -285,7 +285,7 @@ expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
             });
             log.save(function (error) {
                 if (error) console.log(error);
-                else console.log(`User register log - ${user.username}`);
+                else console.log(`User login log - ${user.username}`);
             });
 
             return res.send(user.username);
@@ -591,12 +591,12 @@ expressApp.post('/balanceUpdate', /* bruteforce.prevent, */ async (req, res) => 
                         }
                         res.json(user.balance);
                     });
-                    await Admin.findOneAndUpdate({}, {
-                        $inc: {
-                            totalWallet: amount,
-                            userWallet: amount,
-                        },
-                    }, { upsert: true });
+                    // await Admin.findOneAndUpdate({}, {
+                    //     $inc: {
+                    //         totalWallet: amount,
+                    //         userWallet: amount,
+                    //     },
+                    // }, { upsert: true });
                 } else {
                     res.status(403).json({ error: 'You cannot withdrawal more than your balance.' });
                 }
@@ -858,13 +858,13 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                 if (e2) console.error('newBetError', e2);
                                             }
 
-                                            await Admin.findOneAndUpdate({}, {
-                                                $inc: {
-                                                    feesWallet: fee,
-                                                    betsWallet: betAfterFee,
-                                                    userWallet: toBet * -1,
-                                                },
-                                            }, { upsert: true });
+                                            // await Admin.findOneAndUpdate({}, {
+                                            //     $inc: {
+                                            //         feesWallet: fee,
+                                            //         betsWallet: betAfterFee,
+                                            //         userWallet: toBet * -1,
+                                            //     },
+                                            // }, { upsert: true });
                                         } else {
                                             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $5 to place bets.`);
                                         }
@@ -1060,7 +1060,7 @@ expressApp.get(
         if (sportData) {
             res.json(sportData);
         } else {
-            res.status(404).end();
+            res.json([]);
         }
     },
 );
@@ -1092,7 +1092,7 @@ expressApp.post('/v1/ping', (req, res) => {
             "Available": true
         },
         "ErrorCode": 0,
-        "Timestamp": new Date(),
+        "Timestamp": new Date()
     });
 });
 

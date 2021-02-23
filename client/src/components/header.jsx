@@ -141,12 +141,12 @@ export default class Header extends PureComponent {
                                     <ul className="navbar-nav-mobile navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-dollar-sign"></i>Sports Betting
+                                                <i className="fas fa-dollar-sign"></i>Sports&nbsp;Betting
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                <i className="fas fa-info"></i>How It Works
+                                                <i className="fas fa-info"></i>How&nbsp;It&nbsp;Works
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>

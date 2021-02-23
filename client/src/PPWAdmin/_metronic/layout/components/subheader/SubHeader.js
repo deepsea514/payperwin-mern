@@ -40,6 +40,10 @@ export function SubHeader() {
     // Do not remove this useEffect, need from update title/breadcrumbs outside (from the page)
     useEffect(() => { }, [subheader]);
 
+    const checkIfDashboard = () => {
+        return location.pathname.search('dashboard') != -1;
+    }
+
     return (
         <div
             id="kt_subheader"
@@ -75,7 +79,7 @@ export function SubHeader() {
 
                 {/* Toolbar */}
                 <div className="d-flex align-items-center">
-                    <DatePicker />
+                    {checkIfDashboard() && <DatePicker />}
                 </div>
             </div>
         </div>

@@ -827,6 +827,9 @@ a.log-in-btn {
     .how-it-works h2 {
         font-size: 24px;
     }
+    .main-section {
+        padding-top: 150px;
+    }
 }
 
 @media (max-width: 767px) {

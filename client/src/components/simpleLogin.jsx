@@ -80,7 +80,6 @@ class Login extends Component {
         const { getUser } = userContextValue;
         const { errors } = this.state;
 
-        console.log('submit');
         registrationValidation.validateFields(this.state)
             .then((result) => {
                 if (result === true) {

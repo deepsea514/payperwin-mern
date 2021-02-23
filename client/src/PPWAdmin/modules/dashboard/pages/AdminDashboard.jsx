@@ -9,6 +9,8 @@ import { LastWithdraws } from "../components/LastWithdraws";
 import { LastBets } from "../components/LastBets";
 import { connect } from "react-redux";
 import * as dashboard from "../redux/reducers";
+import DashboardCard from "../components/DashboardCard";
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 class AdminDashboard extends React.Component {
     componentDidMount() {
@@ -16,7 +18,9 @@ class AdminDashboard extends React.Component {
         getDashboardData();
     }
     render() {
-        const { lastbets, loadingbets,
+        const {
+            history,
+            lastbets, loadingbets,
             lastwithdraws,
             loadingwithdraws,
             lastdeposits, loadingdeposits,
@@ -26,55 +30,73 @@ class AdminDashboard extends React.Component {
         return (
             <>
                 <div className="row">
-                    <div className="col-lg-6 col-xxl-4">
+                    <div className="col-lg-6 col-xl-6 col-xxl-2">
                         <TotalDeposit
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboarddeposit={dashboarddeposit}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xxl-4">
+                    <div className="col-lg-6 col-xl-6 col-xxl-2">
                         <TotalWager
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardwager={dashboardwager}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xxl-4">
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
                         <TotalPlayers
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardplayer={dashboardplayer}
-                            className="card-stretch card-stretch-half gutter-b"
                             symbolShape="circle"
                             baseColor="success"
+                            className="mb-8"
                         />
-                        <FeesCollected
-                            loadingdashboarddata={loadingdashboarddata}
-                            categories={categories}
-                            dashboardfees={dashboardfees}
-                            symbolShape="circle"
-                            baseColor="warning"
-                            className="card-stretch card-stretch-half gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xxl-4">
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
                         <ActivePlayers
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardactiveplayer={dashboardactiveplayer}
                             symbolShape="circle"
                             baseColor="info"
-                            className="card-stretch card-stretch-half gutter-b" />
+                            className="mb-8"
+                        />
                     </div>
-
-                    <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
-                        <LastDeposits lastdeposits={lastdeposits} loadingdeposits={loadingdeposits} className="card-stretch gutter-b" />
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                        <FeesCollected
+                            loadingdashboarddata={loadingdashboarddata}
+                            categories={categories}
+                            dashboardfees={dashboardfees}
+                            symbolShape="circle"
+                            baseColor="warning"
+                            className="mb-8"
+                        />
                     </div>
                     <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
-                        <LastWithdraws lastwithdraws={lastwithdraws} loadingwithdraws={loadingwithdraws} className="card-stretch gutter-b" />
-                    </div>
-                    <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
-                        <LastBets loadingbets={loadingbets} lastbets={lastbets} className="card-stretch gutter-b" />
+                        <div className="d-flex flex-row">
+                            <BrowserRouter basename={`/PPWAdmin/dashboard`}>
+                                <DashboardCard />
+                                <div className="flex-row-fluid ml-lg-8">
+                                    <Switch>
+                                        <Redirect from="/" exact={true} to="/lastdeposits" />
+                                    </Switch>
+                                    <Route
+                                        path="/lastdeposits"
+                                        component={(props) => <LastDeposits roothistory={history} {...props} lastdeposits={lastdeposits} loadingdeposits={loadingdeposits} className="card-stretch gutter-b" />}
+                                    />
+                                    <Route
+                                        path="/lastwithdraws"
+                                        component={(props) => <LastWithdraws roothistory={history} {...props} lastwithdraws={lastwithdraws} loadingwithdraws={loadingwithdraws} className="card-stretch gutter-b" />}
+                                    />
+                                    <Route
+                                        path="/lastbets"
+                                        component={(props) => <LastBets roothistory={history} {...props} loadingbets={loadingbets} lastbets={lastbets} className="card-stretch gutter-b" />}
+                                    />
+                                </div>
+                            </BrowserRouter>
+                        </div>
                     </div>
                 </div>
             </>
