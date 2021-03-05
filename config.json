@@ -4,6 +4,10 @@
     "clientPort": 80,
     "pinnacleApiHost": "http://api.pinnacle.com",
     "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
+    "sandboxUrl": "https://paapistg.oreo88.com/b2b",
+    "agentCode": "PXW02",
+    "agentKey": "0606d87a-4941-4a05-a6c1-b94cc12dc1b2",
+    "secretKey": "IFcHXjqnGe7o2ruh",
     "corsHosts": [
         "http://payperwin.co"
     ],

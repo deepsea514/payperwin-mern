@@ -130,6 +130,44 @@ const schema = {
         { validator: isSameAs, options: { target: 'password', message: 'Confirmation password must match password' } },
         { validator: required },
     ],
+    title: [
+        { validator: isString },
+        { validator: required },
+    ],
+    dateofbirth: [
+        { validator: isString },
+        { validator: required },
+    ],
+    address: [
+        { validator: isString },
+        { validator: required },
+    ],
+    address2: [
+        { validator: isString },
+    ],
+    city: [
+        { validator: isString },
+        { validator: required },
+    ],
+    postalcode: [
+        { validator: isString },
+        { validator: required },
+    ],
+    phone: [
+        { validator: isString },
+        { validator: required },
+    ],
+    securityquiz: [
+        { validator: isString },
+        { validator: required },
+    ],
+    securityans: [
+        { validator: isString },
+        { validator: required },
+    ],
+    vipcode: [
+        { validator: isString },
+    ],
 };
 
 async function validateField(fieldName, obj, options) {

@@ -8,10 +8,11 @@ const compression = require('compression');
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
 const Sport = require('./models/sport');
-const Admin = require('./models/admin');
+// const Admin = require('./models/admin');
 const Bet = require('./models/bet');
 const BetPool = require('./models/betpool');
 const SportsDir = require('./models/sportsDir');
+const Pinnacle = require('./models/pinnacle');
 const ExpressBrute = require('express-brute');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require('../config.json');
@@ -22,9 +23,13 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const sgMail = require('@sendgrid/mail');
+const { ObjectId } = require('mongodb');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.ca';
+const axios = require('axios');
+const { generateToken } = require('./generateToken');
+const v1Router = require('./v1Routes');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -50,11 +55,12 @@ const mongooptions = {
     useMongoClient: true,
 }
 if (config.mongo && config.mongo.username) {
-mongooptions.authSource = "admin";
-mongooptions.user = config.mongo.username;
-mongooptions.pass = config.mongo.password;
+    mongooptions.authSource = "admin";
+    mongooptions.user = config.mongo.username;
+    mongooptions.pass = config.mongo.password;
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
+
 
 // Server
 const expressApp = express();
@@ -96,7 +102,7 @@ function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.send('access denied.');
+    res.status(403).send('Authentication Required.');
 }
 
 passport.use(new LocalStrategy((username, password, done) => {
@@ -153,7 +159,10 @@ passport.use('local-signup', new LocalStrategy(
         passReqToCallback: true, // allows us to pass back the entire request to the callback
     },
     async (req, username, password, done) => {
-        const { email, country, currency, firstname, lastname } = req.body;
+        const { email, firstname, lastname,
+            country, currency, title, dateofbirth,
+            address, address2, city, postalcode, phone,
+            securityquiz, securityans, vipcode, } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(() => {
@@ -180,13 +189,10 @@ passport.use('local-signup', new LocalStrategy(
                 // if there is no user with that username
                 // create the user
                 const newUserObj = {
-                    username,
-                    password,
-                    firstname,
-                    lastname,
-                    email,
-                    country,
-                    currency,
+                    username, email, password, firstname, lastname,
+                    country, currency, title, dateofbirth,
+                    address, address2, city, postalcode, phone,
+                    securityquiz, securityans, vipcode,
                     roles: {
                         registered: true,
                     },
@@ -792,8 +798,8 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                         $push: pick === 'home' ? {
                                                             homeBets: betId,
                                                         } : {
-                                                                awayBets: betId,
-                                                            },
+                                                            awayBets: betId,
+                                                        },
                                                         $inc: {},
                                                     };
                                                     docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
@@ -1084,20 +1090,70 @@ expressApp.get('/logout', (req, res) => {
     res.send('logged out');
 });
 
-// Pinnacle
-expressApp.post('/v1/ping', (req, res) => {
-    const { Timestamp } = req.body;
-    res.json({
-        "Result": {
-            "Available": true
-        },
-        "ErrorCode": 0,
-        "Timestamp": new Date()
-    });
+expressApp.get('/getPinnacleLogin', bruteforce.prevent, isAuthenticated, async (req, res) => {
+    const { sandboxUrl, agentCode, agentKey, secretKey } = config;
+    let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
+    const token = generateToken(agentCode, agentKey, secretKey);
+    if (!pinnacle) {
+        try {
+            const { data } = await axios.post(`${sandboxUrl}/player/create`, {}, {
+                headers: {
+                    userCode: agentCode,
+                    token
+                },
+            })
+            pinnacle = await Pinnacle.create({ ...data, ...{ user: req.user._id } });
+        } catch (error) {
+            return res.status(400).json({
+                error: "Can't create pinnacle user."
+            });
+        }
+    }
+    let loginInfo = null;
+    try {
+        const { data } = await axios.post(`${sandboxUrl}/player/loginV2`, {
+            loginId: pinnacle.loginId
+        }, {
+            headers: {
+                userCode: agentCode,
+                token
+            }
+        });
+
+        loginInfo = data;
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            error: "Pinnacle login failed."
+        });
+    }
+
+    let userInfo = null;
+    try {
+        const { data } = await axios.get(`${sandboxUrl}/player/info?userCode=${pinnacle.userCode}`, {
+            headers: {
+                userCode: agentCode,
+                token
+            }
+        });
+
+        userInfo = data;
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            error: "Pinnacle login failed."
+        });
+    }
+
+    return res.json({
+        loginInfo,
+        userInfo,
+    })
 });
 
 // Admin
 expressApp.use('/admin', adminRouter);
+expressApp.use('/v1', v1Router)
 
 
 if (process.env.NODE_ENV === 'development') {

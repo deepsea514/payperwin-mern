@@ -39,6 +39,7 @@ import TransactionHistory from "../pages/transactionhistory";
 import Security from "../pages/security";
 import SelfExcusion from "../pages/selfexcusion";
 import Deactivation from "../pages/deactivation";
+import Iframe from 'react-iframe';
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -178,109 +179,112 @@ class App extends PureComponent {
                 {menuOpen ? <Menu location={location} toggleField={this.toggleField} /> : null}
                 <section className="main-section">
                     <div className="container">
-                        <div className="row">
-                            <SidebarAccount
-                                toggleField={this.toggleField}
-                                sidebarShowAccountLinks={sidebarShowAccountLinks}
-                                accountMenuMobileOpen={accountMenuMobileOpen} />
-                            <SidebarSports
-                                toggleField={this.toggleField}
-                                sportsMenuMobileOpen={sportsMenuMobileOpen}
-                                sidebarShowAccountLinks={sidebarShowAccountLinks}
-                            />
-
-                            <div className="col-md-7 pad0">
-                                <Switch>
-                                    <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
-
-                                    <Route path="/usernameRecovery" component={UsernameRecovery} />
-
-                                    <Route path="/usernameChange" render={(props) =>
-                                        <UsernameChange getUser={getUser} {...props} />} />
-
-                                    <Route path="/passwordRecovery" component={PasswordRecovery} />
-
-                                    <Route path="/login" component={Login} />
-
-                                    <Route path="/signup" render={(props) =>
-                                        <Registration getUser={getUser} {...props} />} />
-
-                                    <Route path="/deposit" render={(props) =>
-                                        <Deposit updateUser={updateUser} {...props} />} />
-
-                                    <Route path="/withdraw" render={(props) =>
-                                        <Withdrawal updateUser={updateUser} {...props} />} />
-
-                                    <Route path="/bets" render={(props) =>
-                                        <OpenBets openBets={true} {...props} />
-                                    } />
-                                    <Route path="/history" render={(props) =>
-                                        <OpenBets settledBets={true} {...props} />
-                                    } />
-
-                                    <Route path="/how-it-works" component={HowTo} />
-
-                                    <Route path="/sports" component={Sports} />
-
-                                    <Route path="/sport/:name" render={(props) => {
-                                        const { match } = props;
-                                        const name = resObjPath(match, 'params.name');
-                                        return (
-                                            <React.Fragment>
-                                                <h1>{name}</h1>
-                                                <Sport addBet={this.addBet} betSlip={betSlip}
-                                                    removeBet={this.removeBet} sportName={name} />
-                                            </React.Fragment>
-                                        );
-                                    }} />
-
-                                    <Route path="/lines/:sportName/:leagueId/:eventId"
-                                        render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
-                                            removeBet={this.removeBet} {...props} />}
-                                    />
-
-                                    <Route path="/betforward/:betId" component={BetForward} />
-
-                                    <Route path="/announcements" component={Announcements} />
-                                    <Route path="/preferences" component={Preferences} />
-                                    <Route path="/faq" component={Faq} />
-                                    <Route path="/inbox" component={Inbox} />
-                                    <Route path="/payment-options" component={PaymentOptions} />
-                                    <Route path="/transaction-history" component={TransactionHistory} />
-                                    <Route path="/security" component={Security} />
-                                    <Route path="/account" component={Profile} />
-                                    <Route path="/self-exclusion" component={SelfExcusion} />
-                                    <Route path="/deactivation" component={Deactivation} />
-                                    <Route path="/">
-                                        {
-                                            () => {
-                                                setTitle({ pageTitle: '' });
-                                                return (
-                                                    <React.Fragment>
-                                                        <Carousel autoPlay={8000} animationSpeed={1800} infinite
-                                                            stopAutoPlayOnHover={true}>
-                                                            <Link to={{ pathname: '/signup' }}>
-                                                                <img src="/images/Banner 1.png" />
-                                                            </Link>
-                                                            <Link to={{ pathname: '/how-it-works' }}>
-                                                                <img src="/images/Banner 2.png" />
-                                                            </Link>
-                                                        </Carousel>
-                                                        <Highlights addBet={this.addBet} betSlip={betSlip}
-                                                            removeBet={this.removeBet} />
-                                                    </React.Fragment>
-                                                );
-                                            }
-                                        }
-                                    </Route>
-                                </Switch>
-                            </div>
-                            <div className="col-sm-3 side-bar">
-                                <BetSlip betSlip={betSlip} openBetSlipMenu={openBetSlipMenu} toggleField={this.toggleField}
-                                    removeBet={this.removeBet} updateBet={this.updateBet} user={user} updateUser={updateUser}
-                                    history={history} />
-                            </div>
-                        </div>
+                        <Switch>
+                            <Route path="/sportsbook/:token">
+                                {(props) => {
+                                    const { match } = props;
+                                    const { token } = match.params;
+                                    console.log(token)
+                                    return <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=HK&token=${token}`}
+                                        width="100%"
+                                        height="700px"
+                                        display="initial"
+                                        position="relative" />
+                                }}
+                            </Route>
+                            <Route path="/">
+                                {() => {
+                                    return <div className="row">
+                                        <SidebarAccount
+                                            toggleField={this.toggleField}
+                                            sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                            accountMenuMobileOpen={accountMenuMobileOpen} />
+                                        <SidebarSports
+                                            toggleField={this.toggleField}
+                                            sportsMenuMobileOpen={sportsMenuMobileOpen}
+                                            sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                        />
+                                        <div className="col-md-7 pad0">
+                                            <Switch>
+                                                <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
+                                                <Route path="/usernameRecovery" component={UsernameRecovery} />
+                                                <Route path="/usernameChange" render={(props) =>
+                                                    <UsernameChange getUser={getUser} {...props} />} />
+                                                <Route path="/passwordRecovery" component={PasswordRecovery} />
+                                                <Route path="/login" component={Login} />
+                                                <Route path="/signup" render={(props) =>
+                                                    <Registration getUser={getUser} {...props} />} />
+                                                <Route path="/deposit" render={(props) =>
+                                                    <Deposit updateUser={updateUser} {...props} />} />
+                                                <Route path="/withdraw" render={(props) =>
+                                                    <Withdrawal updateUser={updateUser} {...props} />} />
+                                                <Route path="/bets" render={(props) =>
+                                                    <OpenBets openBets={true} {...props} />
+                                                } />
+                                                <Route path="/history" render={(props) =>
+                                                    <OpenBets settledBets={true} {...props} />
+                                                } />
+                                                <Route path="/how-it-works" component={HowTo} />
+                                                <Route path="/sports" component={Sports} />
+                                                <Route path="/sport/:name" render={(props) => {
+                                                    const { match } = props;
+                                                    const name = resObjPath(match, 'params.name');
+                                                    return (
+                                                        <React.Fragment>
+                                                            <h1>{name}</h1>
+                                                            <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                removeBet={this.removeBet} sportName={name} />
+                                                        </React.Fragment>
+                                                    );
+                                                }} />
+                                                <Route path="/lines/:sportName/:leagueId/:eventId"
+                                                    render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
+                                                        removeBet={this.removeBet} {...props} />}
+                                                />
+                                                <Route path="/betforward/:betId" component={BetForward} />
+                                                <Route path="/announcements" component={Announcements} />
+                                                <Route path="/preferences" component={Preferences} />
+                                                <Route path="/faq" component={Faq} />
+                                                <Route path="/inbox" component={Inbox} />
+                                                <Route path="/payment-options" component={PaymentOptions} />
+                                                <Route path="/transaction-history" component={TransactionHistory} />
+                                                <Route path="/security" component={Security} />
+                                                <Route path="/account" component={Profile} />
+                                                <Route path="/self-exclusion" component={SelfExcusion} />
+                                                <Route path="/deactivation" component={Deactivation} />
+                                                <Route path="/">
+                                                    {
+                                                        () => {
+                                                            setTitle({ pageTitle: '' });
+                                                            return (
+                                                                <React.Fragment>
+                                                                    <Carousel autoPlay={8000} animationSpeed={1800} infinite
+                                                                        stopAutoPlayOnHover={true}>
+                                                                        <Link to={{ pathname: '/signup' }}>
+                                                                            <img src="/images/Banner 1.png" />
+                                                                        </Link>
+                                                                        <Link to={{ pathname: '/how-it-works' }}>
+                                                                            <img src="/images/Banner 2.png" />
+                                                                        </Link>
+                                                                    </Carousel>
+                                                                    <Highlights addBet={this.addBet} betSlip={betSlip}
+                                                                        removeBet={this.removeBet} />
+                                                                </React.Fragment>
+                                                            );
+                                                        }
+                                                    }
+                                                </Route>
+                                            </Switch>
+                                        </div>
+                                        <div className="col-sm-3 side-bar">
+                                            <BetSlip betSlip={betSlip} openBetSlipMenu={openBetSlipMenu} toggleField={this.toggleField}
+                                                removeBet={this.removeBet} updateBet={this.updateBet} user={user} updateUser={updateUser}
+                                                history={history} />
+                                        </div>
+                                    </div>
+                                }}
+                            </Route>
+                        </Switch>
                     </div>
                 </section>
                 <Footer />
