@@ -838,6 +838,13 @@ a.log-in-btn {
     }
     .header-bottom {
         display: block;
+        background: #F0F3F7;
+    }
+    .navbar-mobile, .navbar-mobile * {
+        color: #70777F !important;
+    }
+    .responsive-cat .navbar-toggler-icon {
+        background: #70777F !important;
     }
     .mobile {
         display: block;

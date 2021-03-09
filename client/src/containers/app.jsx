@@ -185,11 +185,15 @@ class App extends PureComponent {
                                     const { match } = props;
                                     const { token } = match.params;
                                     console.log(token)
-                                    return <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=HK&token=${token}`}
-                                        width="100%"
-                                        height="700px"
-                                        display="initial"
-                                        position="relative" />
+                                    return (
+                                        <div className="row">
+                                            <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=HK&token=${token}`}
+                                                width="100%"
+                                                height="700px"
+                                                display="initial"
+                                                position="relative" />
+                                        </div>
+                                    );
                                 }}
                             </Route>
                             <Route path="/">

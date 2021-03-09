@@ -61,7 +61,6 @@ if (config.mongo && config.mongo.username) {
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
 
-
 // Server
 const expressApp = express();
 const cache = apicache.middleware;
@@ -225,7 +224,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
+    User.findById(new ObjectId(id), (err, user) => {
         done(err, user);
     });
 });
@@ -898,7 +897,7 @@ expressApp.get(
     async (req, res) => {
         if (req.user && req.user.username) {
             const { betId } = req.query;
-            const bet = await Bet.findById(betId);
+            const bet = await Bet.findById(new ObjectId(betId));
             if (bet) {
                 const { lineQuery, pick, pickName, payableToWin, bet: betAmount, toWin, pickOdds, oldOdds } = bet;
                 const { sportName, leagueId, eventId, lineId, type, altLineId, sportId, periodNumber } = lineQuery;
@@ -954,7 +953,7 @@ expressApp.get(
     async (req, res) => {
         if (req.user && req.user.username) {
             const { betId } = req.query;
-            const bet = await Bet.findById(betId);
+            const bet = await Bet.findById(new ObjectId(betId));
             if (bet) {
                 const { lineQuery: { sportName, leagueId, eventId, lineId, type, altLineId }, pick, pickName, payableToWin, bet: risk, toWin, pickOdds, oldOdds } = bet;
                 const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
@@ -1043,7 +1042,7 @@ expressApp.post(
                     // req.user.update(data);
                     // req.user.save();
                     const { _id } = req.user;
-                    await User.findByIdAndUpdate(_id, data);
+                    await User.findByIdAndUpdate(new ObjectId(_id), data);
 
                     res.json("Successfully updated.");
                 } catch (error) {

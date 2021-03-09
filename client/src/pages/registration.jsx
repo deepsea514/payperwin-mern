@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import {
-    Grid, Select, Button, Card, CardContent, OutlinedInput, Typography, FormLabel,
+    Grid, Select, Button, Card, CardContent, Input, OutlinedInput, Typography, FormLabel,
     CardHeader, TextField, MenuItem, InputLabel, FormControl, Stepper, Step, StepLabel,
     RadioGroup, FormControlLabel, Radio, Checkbox
 } from '@material-ui/core';
@@ -11,9 +11,6 @@ import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import SettingsIcon from '@material-ui/icons/Settings';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import StepConnector from '@material-ui/core/StepConnector';
 import clsx from 'clsx';
 
@@ -94,10 +91,10 @@ function ColorlibStepIcon(props) {
     const { active, completed } = props;
 
     const icons = {
-        1: <SettingsIcon />,
-        2: <GroupAddIcon />,
-        3: <VideoLabelIcon />,
-        4: <VideoLabelIcon />,
+        1: <span>1</span>,
+        2: <span>2</span>,
+        3: <span>3</span>,
+        4: <span>4</span>,
     };
 
     return (
@@ -293,7 +290,7 @@ class Registration extends Component {
         switch (activeStep) {
             case 0:
                 return <>
-                    <FormControl variant="outlined" fullWidth margin="normal" required
+                    <FormControl variant="standard" fullWidth margin="normal" required
                         error={errors.country !== undefined}>
                         <InputLabel htmlFor="country-select">Country</InputLabel>
                         <Select
@@ -302,7 +299,7 @@ class Registration extends Component {
                             onChange={this.handleChange}
                             onBlur={this.handleDirty}
                             input={
-                                <OutlinedInput
+                                <Input
                                     label="Country *"
                                     name="country"
                                     id="country-select"
@@ -323,7 +320,7 @@ class Registration extends Component {
                         margin="normal"
                         type="email"
                         fullWidth
-                        variant="outlined"
+                        // variant="outlined"
                         autoComplete="off"
                         required
                     />
