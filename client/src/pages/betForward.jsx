@@ -42,17 +42,8 @@ class BetForward extends PureComponent {
     }
 
     forwardSportsbook = () => {
-        axios.get(`${serverUrl}/getPinnacleLogin`, { withCredentials: true })
-            .then(({ data }) => {
-                const { loginInfo } = data;
-                const { token } = loginInfo;
-                const { history } = this.props;
-                // console.log(data);
-                history.push(`/sportsbook/${token}`);
-            })
-            .catch(() => {
-                console.log('error');
-            });
+        const { history } = this.props;
+        history.push(`/sportsbook`);
     }
 
     render() {

@@ -39,7 +39,7 @@ import TransactionHistory from "../pages/transactionhistory";
 import Security from "../pages/security";
 import SelfExcusion from "../pages/selfexcusion";
 import Deactivation from "../pages/deactivation";
-import Iframe from 'react-iframe';
+import SportsBook from "../pages/sportsbook";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -180,34 +180,7 @@ class App extends PureComponent {
                 <section className="main-section">
                     <div className="container">
                         <Switch>
-                            <Route path="/sportsbook/:token">
-                                {(props) => {
-                                    const { match } = props;
-                                    const { token } = match.params;
-                                    return (
-                                        <div className="row">
-                                            <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=AM&token=${token}`}
-                                                width="100%"
-                                                height="700px"
-                                                display="initial"
-                                                position="relative" />
-                                        </div>
-                                    );
-                                }}
-                            </Route>
-                            {user && <Route path="/sportsbook">
-                                {(props) => {
-                                    return (
-                                        <div className="row">
-                                            <Iframe url={`https://e38l1jq.oreo88.com?locale=en&oddsFormat=AM`}
-                                                width="100%"
-                                                height="700px"
-                                                display="initial"
-                                                position="relative" />
-                                        </div>
-                                    );
-                                }}
-                            </Route>}
+                            {user && <Route path="/sportsbook" component={SportsBook} />}
                             <Route path="/">
                                 {() => {
                                     return <div className="row">
