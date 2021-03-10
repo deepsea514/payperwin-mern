@@ -3,15 +3,12 @@ const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store);
 const User = require("./models/user");
-const DepositReason = require("./models/depositreason");
-const Bet = require("./models/bet");
-const Sport = require("./models/sport");
 const Pinnacle = require('./models/pinnacle');
+const BetSportsBook = require("./models/betsportsbook");
+const TransactionSportsBookSchema = require('./models/transactionsportsbook');
 const config = require("../config.json");
-const FinancialStatus = config.FinancialStatus;
-const CountryInfo = config.CountryInfo;
-const { ObjectId } = require('mongodb');
 const { generateToken } = require('./generateToken');
+const { ObjectId } = require('bson');
 
 const ErrorCode = {
     Success: 0,
@@ -146,8 +143,147 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
             });
         }
 
-        
+        const { Actions } = req.body;
+        let resactions = [];
+        for (let i = 0; i < Actions.length; i++) {
+            const action = Actions[i];
+            const { Name } = action;
+            let res = null;
+            switch (Name.toUpperCase()) {
+                case 'BETTED':
+                    res = await bettedAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                case "ACCEPTED":
+                    res = await updateAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                case "SETTLED":
+                    res = await updateAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                case "CANCELED":
+                    res = await updateAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                case "ROLLBACKED":
+                    res = await updateAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                case "UNSETTLED":
+                    res = await updateAction(action, pinnacle.user);
+                    resactions.push(res);
+                    break;
+                default:
+                    break;
+            }
+        }
+        console.log(resactions);
+        res.json({
+            Result: {
+                UserCode: pinnacle.userCode,
+                AvailableBalance: pinnacle.user.balance,
+                Actions: resactions
+            },
+            ErrorCode: ErrorCode.Success,
+            Timestamp: new Date()
+        })
     }
-)
+);
+
+async function bettedAction(action, user) {
+    const { Id, Name, Transaction, WagerInfo } = action;
+    try {
+        await BetSportsBook.create({
+            userId: user._id,
+            pinnacleId: WagerInfo.WagerId,
+            Name,
+            WagerInfo
+        });
+
+        await TransactionSportsBookSchema.create({
+            userId: user._id,
+            ...Transaction
+        })
+
+        await User.findByIdAndUpdate(new ObjectId(user._id),
+            { balance: user.balance - Transaction.Amount });
+
+        return {
+            Id,
+            TransactionId: Transaction.TransactionId,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.Success
+        }
+    } catch (error) {
+        return {
+            Id,
+            TransactionId: Transaction.TransactionId,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.UnknownError
+        }
+    }
+}
+
+async function updateAction(action, user) {
+    const { Id, Name, Transaction, WagerInfo } = action;
+    try {
+        const bet = await BetSportsBook.findOne({
+            userId: user._id,
+            pinnacleId: WagerInfo.WagerId,
+        });
+        await bet.update({
+            Name,
+            WagerInfo: {
+                ...bet.WagerInfo,
+                ...WagerInfo
+            }
+        })
+        await BetSportsBook.update({
+            userId: user._id,
+            pinnacleId: WagerInfo.WagerId,
+        }, {
+            WagerInfo,
+            Name
+        });
+
+        if (Transaction) {
+            if (Transaction.TransactionType == "DEBIT") {
+                await User.findByIdAndUpdate(new ObjectId(user._id),
+                    { balance: user.balance - Transaction.Amount });
+            } else {
+                await User.findByIdAndUpdate(new ObjectId(user._id),
+                    { balance: user.balance + Transaction.Amount });
+            }
+
+            return {
+                Id,
+                TransactionId: Transaction.TransactionId,
+                WagerId: WagerInfo.WagerId,
+                ErrorCode: ActionErrorCode.Success
+            }
+        }
+
+        return {
+            Id,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.Success
+        }
+    } catch (error) {
+        if (Transaction) {
+            return {
+                Id,
+                TransactionId: Transaction.TransactionId,
+                WagerId: WagerInfo.WagerId,
+                ErrorCode: ActionErrorCode.UnknownError
+            }
+        }
+        return {
+            Id,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.UnknownError
+        }
+    }
+}
 
 module.exports = v1Router;
