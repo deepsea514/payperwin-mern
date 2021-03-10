@@ -141,9 +141,14 @@ export default class Header extends PureComponent {
                                     <ul className="navbar-nav-mobile navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-dollar-sign"></i>Sports&nbsp;Betting
+                                                <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
                                             </Link>
                                         </li>
+                                        {user && <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                                <i className="fas fa-futbol"></i>SPORTSBOOK
+                                            </Link>
+                                        </li>}
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                 <i className="fas fa-info"></i>How&nbsp;It&nbsp;Works
@@ -160,9 +165,14 @@ export default class Header extends PureComponent {
                                     <ul className="navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-dollar-sign"></i>SPORTS BETTING
+                                                <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
                                             </Link>
                                         </li>
+                                        {user && <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                                <i className="fas fa-futbol"></i>SPORTSBOOK
+                                            </Link>
+                                        </li>}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                 <i className="fas fa-info"></i>HOW IT WORKS

@@ -176,7 +176,7 @@ class App extends PureComponent {
             <div className={`background dark-theme ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon-2.ico'} />
                 <Header toggleField={this.toggleField} user={user} getUser={getUser} history={history} location={location} />
-                {menuOpen ? <Menu location={location} toggleField={this.toggleField} /> : null}
+                {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 <section className="main-section">
                     <div className="container">
                         <Switch>
@@ -184,10 +184,9 @@ class App extends PureComponent {
                                 {(props) => {
                                     const { match } = props;
                                     const { token } = match.params;
-                                    console.log(token)
                                     return (
                                         <div className="row">
-                                            <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=HK&token=${token}`}
+                                            <Iframe url={`https://e38l1jq.oreo88.com/member-service/v1/login-token?locale=en&oddsFormat=AM&token=${token}`}
                                                 width="100%"
                                                 height="700px"
                                                 display="initial"
@@ -196,6 +195,19 @@ class App extends PureComponent {
                                     );
                                 }}
                             </Route>
+                            {user && <Route path="/sportsbook">
+                                {(props) => {
+                                    return (
+                                        <div className="row">
+                                            <Iframe url={`https://e38l1jq.oreo88.com?locale=en&oddsFormat=AM`}
+                                                width="100%"
+                                                height="700px"
+                                                display="initial"
+                                                position="relative" />
+                                        </div>
+                                    );
+                                }}
+                            </Route>}
                             <Route path="/">
                                 {() => {
                                     return <div className="row">

@@ -155,21 +155,9 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
                     resactions.push(res);
                     break;
                 case "ACCEPTED":
-                    res = await updateAction(action, pinnacle.user);
-                    resactions.push(res);
-                    break;
                 case "SETTLED":
-                    res = await updateAction(action, pinnacle.user);
-                    resactions.push(res);
-                    break;
                 case "CANCELED":
-                    res = await updateAction(action, pinnacle.user);
-                    resactions.push(res);
-                    break;
                 case "ROLLBACKED":
-                    res = await updateAction(action, pinnacle.user);
-                    resactions.push(res);
-                    break;
                 case "UNSETTLED":
                     res = await updateAction(action, pinnacle.user);
                     resactions.push(res);
@@ -178,7 +166,6 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
                     break;
             }
         }
-        console.log(resactions);
         res.json({
             Result: {
                 UserCode: pinnacle.userCode,

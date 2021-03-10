@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 class Menu extends Component {
     render() {
-        const { location, toggleField } = this.props;
+        const { location, toggleField, user } = this.props;
         const { pathname } = location;
         return (
             <>
@@ -17,10 +17,15 @@ class Menu extends Component {
                     </Link>
                     <ul className="navbar-nav">
                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                            <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                <i className="fas fa-dollar-sign"></i>SPORTS BETTING
+                            <Link to={{ pathname: '/' }} className="nav-link">
+                                <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
                             </Link>
                         </li>
+                        {user && <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                <i className="fas fa-futbol"></i>SPORTSBOOK
+                            </Link>
+                        </li>}
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>
                                 toggleField('menuOpen')}>
