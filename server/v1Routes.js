@@ -6,6 +6,7 @@ const User = require("./models/user");
 const Pinnacle = require('./models/pinnacle');
 const BetSportsBook = require("./models/betsportsbook");
 const TransactionSportsBookSchema = require('./models/transactionsportsbook');
+const V1Request = require('./models/v1requests');
 const config = require("../config.json");
 const { generateToken } = require('./generateToken');
 const { ObjectId } = require('bson');
@@ -83,6 +84,14 @@ v1Router.post('/:agentcode/wallet/usercode/:usercode/balance',
     async (req, res) => {
         const agentcode = req.params.agentcode;
         const usercode = req.params.usercode;
+        await V1Request.create({
+            request: req.body,
+            type: 'getBalance',
+            params: {
+                agentcode,
+                usercode
+            }
+        });
         if (agentcode != agentCode) {
             return res.json({
                 "ErrorCode": ErrorCode.UnknownError,
@@ -122,6 +131,17 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
         const agentcode = req.params.agentcode;
         const usercode = req.params.usercode;
         const requestid = req.params.requestid;
+
+        await V1Request.create({
+            request: req.body,
+            type: 'wagering',
+            params: {
+                agentcode,
+                usercode,
+                requestid
+            }
+        });
+
         if (agentcode != agentCode) {
             return res.json({
                 "ErrorCode": ErrorCode.UnknownError,
