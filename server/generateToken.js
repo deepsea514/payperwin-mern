@@ -284,11 +284,7 @@ function encryptAES(secretKey, tokenPayLoad) {
 }
 
 function generateToken(agentCode, agentKey, secretKey, timestamp = null) {
-    if (timestamp) {
-        timestamp += ".000-04:00";
-        timestamp = new Date(timestamp).getTime();
-    }
-    else {
+    if (timestamp == null) {
         timestamp = new Date().getTime();
     }
     console.log(timestamp)
