@@ -135,7 +135,6 @@ const schema = {
         { validator: required },
     ],
     dateofbirth: [
-        { validator: isString },
         { validator: required },
     ],
     address: [

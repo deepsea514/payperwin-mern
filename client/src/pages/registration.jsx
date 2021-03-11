@@ -6,13 +6,20 @@ import {
     CardHeader, TextField, MenuItem, InputLabel, FormControl, Stepper, Step, StepLabel,
     RadioGroup, FormControlLabel, Radio, Checkbox
 } from '@material-ui/core';
+import { Form } from "react-bootstrap";
 import axios from 'axios';
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import StepConnector from '@material-ui/core/StepConnector';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import dateformat from "dateformat";
 import clsx from 'clsx';
+import dateFormat from 'dateformat';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -152,14 +159,14 @@ const initState = {
         username: false,
         firstname: false,
         lastname: false,
-        dateofbirth: false,
+        dateofbirth: true,
 
-        currency: false,
+        currency: true,
         address: false,
         address2: false,
         city: false,
         postalcode: false,
-        phone: false,
+        phone: true,
 
         securityquiz: false,
         securityans: false,
@@ -194,11 +201,14 @@ class Registration extends Component {
                 });
                 break;
             case "country":
-                const currency = CountryInfo.find(country => e.target.value == country.country).currency;
-                this.setState({
-                    currency,
-                    touched: { ...touched, currency: true, }
-                });
+                const country = CountryInfo.find(country => e.target.value == country.country);
+                if (country) {
+                    const currency = country.currency;
+                    this.setState({
+                        currency,
+                        touched: { ...touched, currency: true, }
+                    });
+                }
             default:
                 this.setState({
                     [e.target.name]: e.target.value,
@@ -215,7 +225,6 @@ class Registration extends Component {
             this.setState({ errors: { ...errors, recaptcha: 'You must complete captcha' } });
             return;
         }
-
         registrationValidation.validateFields(this.state, { tags: ['registration'] })
             .then((result) => {
                 if (result === true) {
@@ -228,7 +237,7 @@ class Registration extends Component {
                         url,
                         data: {
                             username, email, password, firstname, lastname,
-                            country, currency, title, dateofbirth,
+                            country, currency, title, dateofbirth: dateFormat(dateofbirth, "yyyy-mm-dd"),
                             address, address2, city, postalcode, phone,
                             securityquiz, securityans, vipcode,
                         },
@@ -290,70 +299,60 @@ class Registration extends Component {
         switch (activeStep) {
             case 0:
                 return <>
-                    <FormControl variant="standard" fullWidth margin="normal" required
-                        error={errors.country !== undefined}>
-                        <InputLabel htmlFor="country-select">Country</InputLabel>
-                        <Select
+                    <Form.Group>
+                        <Form.Label>Country</Form.Label>
+                        <Form.Control
+                            as="select"
                             name="country"
                             value={country}
                             onChange={this.handleChange}
                             onBlur={this.handleDirty}
-                            input={
-                                <Input
-                                    label="Country *"
-                                    name="country"
-                                    id="country-select"
-                                />
-                            }
+                            required
+                            isInvalid={errors.country !== undefined}
                         >
-                            {CountryInfo.map((country) => <MenuItem key={country.country} value={country.country}>{country.country}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        label="Email"
-                        name="email"
-                        value={email}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.email !== undefined}
-                        helperText={errors.email}
-                        margin="normal"
-                        type="email"
-                        fullWidth
-                        // variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Password"
-                        name="password"
-                        value={password}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.password !== undefined}
-                        helperText={errors.password}
-                        margin="normal"
-                        type="password"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Password Confirmation"
-                        name="cPassword"
-                        value={cPassword}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.cPassword !== undefined}
-                        helperText={errors.cPassword}
-                        margin="normal"
-                        type="password"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
+                            <option value="">Please Choose Country...</option>
+                            {CountryInfo.map((country) => <option key={country.country} value={country.country}>{country.country}</option>)}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            isInvalid={errors.email !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            value={password}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Password"
+                            isInvalid={errors.password !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password Confirmation</Form.Label>
+                        <Form.Control
+                            type="password"
+                            name="cPassword"
+                            value={cPassword}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Confirm Password"
+                            isInvalid={errors.cPassword !== undefined}
+                            required
+                        />
+                    </Form.Group>
                 </>;
             case 1:
                 return <>
@@ -364,214 +363,190 @@ class Registration extends Component {
                             <FormControlLabel value="Ms" control={<Radio />} label="Ms" />
                         </RadioGroup>
                     </FormControl>
-                    <TextField
-                        label="Username"
-                        name="username"
-                        value={username}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.username !== undefined}
-                        helperText={errors.username}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="First Name"
-                        name="firstname"
-                        value={firstname}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.firstname !== undefined}
-                        helperText={errors.firstname}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Last Name"
-                        name="lastname"
-                        value={lastname}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.lastname !== undefined}
-                        helperText={errors.lastname}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        variant="outlined"
-                        label="Birthday"
-                        type="date"
-                        value={dateofbirth}
-                        name="dateofbirth"
-                        margin="normal"
-                        onBlur={this.handleDirty}
-                        onChange={this.handleChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        fullWidth
-                        required
-                    />
+                    <Form.Group>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="username"
+                            value={username}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Username"
+                            isInvalid={errors.username !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>First Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="firstname"
+                            value={firstname}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter First Name"
+                            isInvalid={errors.firstname !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="lastname"
+                            value={lastname}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Last Name"
+                            isInvalid={errors.lastname !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Birthday</Form.Label>
+                        <DatePicker
+                            name="dateofbirth"
+                            className="form-control"
+                            wrapperClassName="input-group"
+                            selected={dateofbirth}
+                            onChange={(dateofbirth) => this.setState({ dateofbirth })}
+                            placeholder="Enter Birthday"
+                            isInvalid={errors.dateofbirth !== undefined}
+                            required
+                        />
+                    </Form.Group>
                 </>;
             case 2:
                 return <>
-                    <TextField
-                        label="Country"
-                        name="country"
-                        value={country}
-                        margin="normal"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        required
-                    />
-                    <TextField
-                        label="Currency"
-                        name="currency"
-                        value={currency}
-                        error={errors.currency !== undefined}
-                        helperText={errors.currency}
-                        margin="normal"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        required
-                    />
-                    <TextField
-                        label="Home Address"
-                        name="address"
-                        value={address}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.address !== undefined}
-                        helperText={errors.address}
-                        margin="normal"
-                        type="address"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Home Address line 2 (Optional)"
-                        name="address2"
-                        value={address2}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.address2 !== undefined}
-                        helperText={errors.address2}
-                        margin="normal"
-                        type="address2"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                    />
-                    <TextField
-                        label="City"
-                        name="city"
-                        value={city}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.city !== undefined}
-                        helperText={errors.city}
-                        margin="normal"
-                        type="city"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Postal Code"
-                        name="postalcode"
-                        value={postalcode}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.postalcode !== undefined}
-                        helperText={errors.postalcode}
-                        margin="normal"
-                        type="postalcode"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Contact Number"
-                        name="phone"
-                        value={phone}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.phone !== undefined}
-                        helperText={errors.phone}
-                        margin="normal"
-                        type="phone"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
+                    <Form.Group>
+                        <Form.Label>Country</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="country"
+                            value={country}
+                            required
+                            readOnly
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Currency</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="currency"
+                            value={currency}
+                            required
+                            readOnly
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Home Address</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="address"
+                            value={address}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home Address"
+                            isInvalid={errors.address !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Home Address line 2 (Optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="address2"
+                            value={address2}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home Address 2"
+                            isInvalid={errors.address2 !== undefined}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Home City</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="city"
+                            value={city}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home City"
+                            isInvalid={errors.city !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Postal Code</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="postalcode"
+                            value={postalcode}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Postal Code"
+                            isInvalid={errors.postalcode !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Contact Number</Form.Label>
+                        <PhoneInput
+                            type="text"
+                            name="phone"
+                            containerClass="input-group"
+                            inputClass="form-control"
+                            dropdownClass="input-group-append"
+                            value={phone}
+                            onChange={(phone) => this.setState({ phone })}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Contact Number"
+                            isInvalid={errors.phone !== undefined}
+                            required
+                        />
+                    </Form.Group>
                 </>;
             case 3:
                 return <>
-                    <TextField
-                        label="Security Question"
-                        name="securityquiz"
-                        value={securityquiz}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.securityquiz !== undefined}
-                        helperText={errors.securityquiz}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Security Answer"
-                        name="securityans"
-                        value={securityans}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.securityans !== undefined}
-                        helperText={errors.securityans}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="How did you know about us? Do you have a VIP code?(optional)"
-                        name="vipcode"
-                        value={vipcode}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.vipcode !== undefined}
-                        helperText={errors.vipcode}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                    />
+                    <Form.Group>
+                        <Form.Label>Security Question</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="securityquiz"
+                            value={securityquiz}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Security Question"
+                            isInvalid={errors.securityquiz !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Security Answer</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="securityans"
+                            value={securityans}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Security Answer"
+                            isInvalid={errors.securityans !== undefined}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="vipcode"
+                            value={vipcode}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter VIP Code"
+                            isInvalid={errors.vipcode !== undefined}
+                            required
+                        />
+                    </Form.Group>
                     <FormControlLabel
                         control={
                             <Checkbox

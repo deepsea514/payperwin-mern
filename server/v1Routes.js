@@ -52,6 +52,7 @@ const tokenCheck = (req, res, next) => {
         // }
 
         const token = generateToken(agentCode, agentKey, secretKey, Timestamp);
+        console.log(token);
         if (token != SignatureFromReq) {
             return res.json({
                 "ErrorCode": ErrorCode.AuthenticationFailed,

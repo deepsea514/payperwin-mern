@@ -19,10 +19,10 @@ ul {
 }
 
 .form-control {
-    height: 30px;
+    /* height: 30px; */
     padding-left: 12px;
     padding-right: 12px;
-    font-size: 12px;
+    /* font-size: 12px; */
     color: #182f49;
     border-radius: 2px;
 }

@@ -285,11 +285,13 @@ function encryptAES(secretKey, tokenPayLoad) {
 
 function generateToken(agentCode, agentKey, secretKey, timestamp = null) {
     if (timestamp) {
-        timestamp = new Date(timestamp).getTime() * 1000;
+        timestamp += ".000-04:00";
+        timestamp = new Date(timestamp).getTime();
     }
     else {
-        timestamp = new Date().getTime() * 1000;
+        timestamp = new Date().getTime();
     }
+    console.log(timestamp)
     const hashToken = md5(agentCode + timestamp + agentKey);
     const tokenPayLoad = agentCode + '|' + timestamp + '|' + hashToken;
     const token = encryptAES(secretKey, tokenPayLoad);
