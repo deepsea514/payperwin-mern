@@ -41,18 +41,17 @@ const tokenCheck = (req, res, next) => {
                 "Timestamp": new Date()
             });
         }
-        const signatureTime = new Date(Timestamp).getTime();
+        const signatureTime = new Date(Timestamp + ".000-04:00").getTime();
         const currentTime = new Date().getTime();
-        ////////// check time is expired
-        // if (currentTime - signatureTime > 15 * 60 * 1000) {
-        //     return res.json({
-        //         "ErrorCode": ErrorCode.AuthenticationFailed,
-        //         "Timestamp": new Date()
-        //     });
-        // }
+        //////// check time is expired
+        if (currentTime - signatureTime > 15 * 60 * 1000) {
+            return res.json({
+                "ErrorCode": ErrorCode.AuthenticationFailed,
+                "Timestamp": new Date()
+            });
+        }
 
         const token = generateToken(agentCode, agentKey, secretKey, Timestamp);
-        console.log(token);
         if (token != SignatureFromReq) {
             return res.json({
                 "ErrorCode": ErrorCode.AuthenticationFailed,
