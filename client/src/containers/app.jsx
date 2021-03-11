@@ -181,6 +181,8 @@ class App extends PureComponent {
                     <div className="container">
                         <Switch>
                             {user && <Route path="/sportsbook" component={SportsBook} />}
+                            <Route path="/signup" render={(props) =>
+                                <Registration getUser={getUser} {...props} />} />
                             <Route path="/">
                                 {() => {
                                     return <div className="row">
@@ -201,8 +203,6 @@ class App extends PureComponent {
                                                     <UsernameChange getUser={getUser} {...props} />} />
                                                 <Route path="/passwordRecovery" component={PasswordRecovery} />
                                                 <Route path="/login" component={Login} />
-                                                <Route path="/signup" render={(props) =>
-                                                    <Registration getUser={getUser} {...props} />} />
                                                 <Route path="/deposit" render={(props) =>
                                                     <Deposit updateUser={updateUser} {...props} />} />
                                                 <Route path="/withdraw" render={(props) =>

@@ -664,11 +664,11 @@ class Registration extends Component {
         return (
             <div className="content">
                 <Grid container justify="center">
-                    <Grid item xs={12} sm={10} md={10} lg={10}>
+                    <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card style={{ backgroundColor: '#ffffff' }}>
                             <CardHeader
                                 style={{ textAlign: 'center' }}
-                                title="Registration"
+                                title="Create Account"
                             />
                             <CardContent>
                                 <div className={classes.root}>
