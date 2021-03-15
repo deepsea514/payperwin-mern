@@ -8,6 +8,7 @@ import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
 import * as wager_feeds from "../modules/wager-feed/redux/reducers";
 import * as autobet from "../modules/autobet/redux/reducers";
+import * as email_templates from "../modules/email-templates/redux/reducers";
 
 export const rootReducer = combineReducers({
     customer: customer.reducer,
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
     dashboard: dashboard.reducer,
     wager_feeds: wager_feeds.reducer,
     autobet: autobet.reducer,
+    email_templates: email_templates.reducer,
 });
 
 export function* rootSaga() {
@@ -28,5 +30,6 @@ export function* rootSaga() {
         dashboard.saga(),
         wager_feeds.saga(),
         autobet.saga(),
+        email_templates.saga(),
     ]);
 }

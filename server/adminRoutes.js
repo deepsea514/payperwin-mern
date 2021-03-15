@@ -9,6 +9,7 @@ const FinancialLog = require("./models/financiallog");
 const Bet = require("./models/bet");
 const Sport = require("./models/sport");
 const LoginLog = require('./models/loginlog');
+const Email = require("./models/email");
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
 const config = require("../config.json");
@@ -1229,5 +1230,52 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/email-templates',
+    authenticateJWT,
+    async function (req, res) {
+        const email_templates = await Email.find();
+        res.json({
+            email_templates
+        })
+    }
+);
+
+adminRouter.get(
+    '/email-template/:title',
+    authenticateJWT,
+    async function (req, res) {
+        const { title } = req.params;
+        try {
+            const email_template = await Email.findOne({ title });
+            return res.json({
+                email_template
+            });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find email template.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/email-template/:title',
+    authenticateJWT,
+    async function (req, res) {
+        const { title } = req.params;
+
+        try {
+            const email_template = await Email.findOne({ title });
+            try {
+                await email_template.update(req.body);
+                return res.json({ message: 'Successfully updated.' });
+            } catch (error) {
+                return res.status(500).json({ error: 'Can\'t update email template.' });
+            }
+
+        } catch (error) {
+            return res.status(404).json({ error: 'Can\'t find email template.' });
+        }
+    }
+);
 
 module.exports = adminRouter;

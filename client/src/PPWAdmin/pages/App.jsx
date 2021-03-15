@@ -13,6 +13,7 @@ import WithdrawLogModule from "../modules/withdrawlogs/pages";
 import EventModule from "../modules/events/pages";
 import WagerFeeds from "../modules/wager-feed/pages";
 import AutoBet from "../modules/autobet/pages/AutoBet";
+import EmailTemplates from "../modules/email-templates/pages"
 
 export default class App extends Component {
     constructor(props) {
@@ -70,6 +71,9 @@ export default class App extends Component {
 
                     {/* autobet */}
                     <Route path="/autobet" component={AutoBet} />
+
+                    {/* email templates */}
+                    <Route path="/email-templates" component={EmailTemplates} />
 
                     <Redirect to="/dashboard" />
                 </Switch>
