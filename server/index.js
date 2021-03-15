@@ -509,7 +509,8 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 };
                 try {
                     await sgMail.send(msg);
-                    res.send(`Sent password recovery to ${email}`);
+                    res.send(`Sent password recovery to ${email}\n
+                        If you can't see mail in inbox, please checm spam folder.`);
                 } catch (error) {
                     console.log("email Send error", error);
                     res.send(`Can't send passwordrecovery mail`);
