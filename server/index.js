@@ -483,7 +483,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
             username: new RegExp(`^${username}$`, 'i'),
             email: new RegExp(`^${email}$`, 'i'),
         },
-        (err, user) => {
+        async (err, user) => {
             if (err) {
                 res.send(err);
             }
@@ -491,7 +491,6 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
                 const passwordRecoveryPath = `${protocol}://${serverHostToClientHost[req.headers.host]}/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
-                res.send(`Sent password recovery to ${email}`);
                 // if (process.env.NODE_ENV === 'development') {
                 //   console.log(`Hey ${user.username}, you can create a new password here:\n${passwordRecoveryPath}`);
                 // } else {
@@ -501,14 +500,20 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                     subject: 'Password Recovery',
                     text: `You requested password recovery. You can create a new password here: ${passwordRecoveryPath}`,
                     html: simpleresponsive(`
-              <p>
-                You requested password recovery. You can create a new password here:
-              </p>
-            `,
+                            <p>
+                            You requested password recovery. You can create a new password here:
+                            </p>
+                            `,
                         { href: passwordRecoveryPath, name: 'Password Recovery' }
                     ),
                 };
-                sgMail.send(msg);
+                try {
+                    await sgMail.send(msg);
+                    res.send(`Sent password recovery to ${email}`);
+                } catch (error) {
+                    console.log("email Send error", error);
+                    res.send(`Can't send passwordrecovery mail`);
+                }
                 // }
             } else {
                 res.status(403).json({ error: 'User with that username and email not found.' });
