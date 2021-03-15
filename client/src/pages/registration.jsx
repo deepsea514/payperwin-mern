@@ -662,7 +662,7 @@ class Registration extends Component {
         const { activeStep, steps, errors } = this.state;
 
         return (
-            <div className="content">
+            <div className="content pb-5">
                 <Grid container justify="center">
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card style={{ backgroundColor: '#ffffff' }}>

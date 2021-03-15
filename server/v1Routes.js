@@ -22,7 +22,7 @@ const ErrorCode = {
 const ActionErrorCode = {
     Success: 0,
     UnknownError: -1,
-    InsufficientFunds: 2,
+    InsufficientFunds: -2,
 }
 
 const { agentCode, agentKey, secretKey } = config;
@@ -176,7 +176,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
                     break;
                 case "ACCEPTED":
                 case "SETTLED":
-                case "CANCELED":
+                case "CANCELLED":
                 case "ROLLBACKED":
                 case "UNSETTLED":
                     res = await updateAction(action, pinnacle.user);
@@ -201,6 +201,14 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
+        if (user.balance < Transaction.Amount) {
+            return {
+                Id,
+                TransactionId: Transaction.TransactionId,
+                WagerId: WagerInfo.WagerId,
+                ErrorCode: ActionErrorCode.InsufficientFunds
+            }
+        }
         await BetSportsBook.create({
             userId: user._id,
             pinnacleId: WagerInfo.WagerId,
@@ -235,6 +243,17 @@ async function bettedAction(action, user) {
 async function updateAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
+        if (Transaction && Transaction.TransactionType == "DEBIT") {
+            if (user.balance < Transaction.Amount) {
+                return {
+                    Id,
+                    TransactionId: Transaction.TransactionId,
+                    WagerId: WagerInfo.WagerId,
+                    ErrorCode: ActionErrorCode.InsufficientFunds
+                }
+            }
+        }
+
         const bet = await BetSportsBook.findOne({
             userId: user._id,
             pinnacleId: WagerInfo.WagerId,

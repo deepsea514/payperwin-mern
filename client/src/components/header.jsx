@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import SimpleLogin from './simpleLogin';
+import dateformat from "dateformat";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -23,9 +24,26 @@ export default class Header extends PureComponent {
         super(props);
         this.state = {
             userDropDownOpen: false,
+            timerInterval: null,
+            timeString: dateformat(new Date(), "HH:MM:ss ('GMT' p)"),
         };
         this.toggleField = this.toggleField.bind(this);
         this.logout = this.logout.bind(this);
+    }
+
+    componentDidMount() {
+        const timerInterval = setInterval(this.headerTimer, 1000);
+    }
+
+    headerTimer = () => {
+        const timeString = dateformat(new Date(), "HH:MM:ss ('GMT' p)")
+        this.setState({ timeString });
+    }
+
+    componentWillUnmount() {
+        const { timerInterval } = this.state;
+        clearInterval(timerInterval);
+        this.setState({ timerInterval: null });
     }
 
     handleChange(e) {
@@ -48,7 +66,7 @@ export default class Header extends PureComponent {
     }
 
     render() {
-        const { userDropDownOpen } = this.state;
+        const { userDropDownOpen, timeString } = this.state;
         const { toggleField, user, location } = this.props;
         const { pathname } = location;
         return (
@@ -210,7 +228,7 @@ export default class Header extends PureComponent {
                                     <a href="#">
                                     </a>
                                     <li><a href="#"></a><a href="#">En <i className="fa fa-caret-down" aria-hidden="true"></i></a></li>
-                                    <li>17:38:43 (GMT +05:30)</li>
+                                    <li>{timeString}</li>
                                     <li><a href="#"><i className="fa fa-question-circle" aria-hidden="true"></i> Help </a></li>
                                 </ul>
                             </div>

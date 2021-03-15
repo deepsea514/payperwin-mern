@@ -40,13 +40,13 @@ class SportsBook extends PureComponent {
             return <div>Error getting sportsbook.</div>;
 
         return (
-            <>
+            <div className="row">
                 <Iframe url={loginUrl}
                     width="100%"
                     height="700px"
                     display="initial"
                     position="relative" />
-            </>
+            </div>
         );
     }
 }
