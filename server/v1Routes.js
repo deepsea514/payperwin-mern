@@ -10,6 +10,7 @@ const V1Request = require('./models/v1requests');
 const config = require("../config.json");
 const { generateToken } = require('./generateToken');
 const { ObjectId } = require('bson');
+const InsufficientFunds = 8;
 
 const ErrorCode = {
     Success: 0,
@@ -201,7 +202,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
-        if (user.balance < Transaction.Amount) {
+        if (user.balance < Transaction.Amount + InsufficientFunds) {
             return {
                 Id,
                 TransactionId: Transaction.TransactionId,
@@ -244,7 +245,7 @@ async function updateAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
         if (Transaction && Transaction.TransactionType == "DEBIT") {
-            if (user.balance < Transaction.Amount) {
+            if (user.balance < Transaction.Amount + InsufficientFunds) {
                 return {
                     Id,
                     TransactionId: Transaction.TransactionId,

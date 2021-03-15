@@ -31,6 +31,7 @@ const fromEmailAddress = 'donotreply@payperwin.ca';
 const axios = require('axios');
 const { generateToken } = require('./generateToken');
 const v1Router = require('./v1Routes');
+const InsufficientFunds = 8;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -760,7 +761,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                         const fee = Number((toBet * 0.02).toFixed(2));
                                         const balanceChange = toBet * -1;
                                         const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
-                                        if (newBalance >= 5) {
+                                        if (newBalance >= InsufficientFunds) {
                                             // insert bet doc to bets table
                                             const newBetObj = {
                                                 userId: user._id,
@@ -878,7 +879,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                             //     },
                                             // }, { upsert: true });
                                         } else {
-                                            errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $5 to place bets.`);
+                                            errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $${InsufficientFunds} to place bets.`);
                                         }
                                     } else {
                                         errors.push(`${pickName} ${odds[pick]} wager could not be placed. Odds have changed.`);
