@@ -178,6 +178,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
                 case "ACCEPTED":
                 case "SETTLED":
                 case "CANCELLED":
+                case "REJECTED":
                 case "ROLLBACKED":
                 case "UNSETTLED":
                     res = await updateAction(action, pinnacle.user);
