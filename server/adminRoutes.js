@@ -17,6 +17,10 @@ const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const dateformat = require("dateformat");
 const { ObjectId } = require('mongodb');
+const simpleresponsive = require('./emailtemplates/simpleresponsive');
+const sgMail = require('@sendgrid/mail');
+const fromEmailName = 'PAYPER Win';
+const fromEmailAddress = 'donotreply@payperwin.ca';
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -488,8 +492,24 @@ adminRouter.post(
                 userdata.balance = parseInt(userdata.balance) + parseInt(amount);
             }
             await userdata.save();
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: userdata.email,
+                subject: 'You’ve got funds in your account',
+                text: `You’ve got funds in your account`,
+                html: simpleresponsive(
+                    `Hi <b>${userdata.firstname}</b>.
+                    <br><br>
+                    Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
+                    your Payper Win account by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
             res.json(deposit);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ error: 'Can\'t save deposit.', result: error });
         }
     }

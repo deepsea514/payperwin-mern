@@ -11,6 +11,10 @@ const config = require("../config.json");
 const { generateToken } = require('./generateToken');
 const { ObjectId } = require('bson');
 const InsufficientFunds = 8;
+const simpleresponsive = require('./emailtemplates/simpleresponsive');
+const sgMail = require('@sendgrid/mail');
+const fromEmailName = 'PAYPER Win';
+const fromEmailAddress = 'donotreply@payperwin.ca';
 
 const ErrorCode = {
     Success: 0,
@@ -274,6 +278,43 @@ async function updateAction(action, user) {
             WagerInfo,
             Name
         });
+
+        if (Name == "ACCEPTED") {
+            if (WagerInfo.Legs) {
+                let string = "";
+                WagerInfo.Legs.map(leg => {
+                    string += `${leg.Sport} ${WagerInfo.type} <br>`
+                })
+                const msg = {
+                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your bet was accepted',
+                    text: `Your bet was accepted`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.firstname}</b>.
+                        <br><br>
+                        This email is to advise that your bet for 
+                        ${string}
+                        for ${Transaction.Amount} was accepted on ${new Date()}
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            else {
+                const msg = {
+                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your bet was accepted',
+                    text: `Your bet was accepted`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.firstname}</b>.
+                        <br><br>
+                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.type} for ${Transaction.Amount} was accepted on ${new Date()}
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+        }
 
         if (Transaction) {
             if (Transaction.TransactionType == "DEBIT") {

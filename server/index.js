@@ -143,12 +143,12 @@ function sendVerificationEmail(email, req) {
             text: `Verify your email address by following this link: ${emailValidationPath}`,
             html: simpleresponsive(
                 `Hi <b>${email}</b>.
-                <br>
+                <br><br>
                 Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
                 your Payper Win account by logging in now.
-                <br>
+                <br><br>
                 Verify your email address by following this link:`,
-                { href: emailValidationPath, name: 'Verify' }),
+                { href: emailValidationPath, name: 'Verify Email' }),
         };
         sgMail.send(msg);
         // }
@@ -503,19 +503,22 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 const msg = {
                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
-                    subject: 'Password Recovery',
+                    subject: 'Password Reset Request for Payper Win',
                     text: `You requested password recovery. You can create a new password here: ${passwordRecoveryPath}`,
-                    html: simpleresponsive(`
-                            <p>
-                            You requested password recovery. You can create a new password here:
-                            </p>
-                            `,
-                        { href: passwordRecoveryPath, name: 'Password Recovery' }
+                    html: simpleresponsive(`Hi <b>${user.firstname}</b>.
+                            <br><br>
+                            Someone has requested a new password for the following account on Payper Win:
+                            <br><br>
+                            Username: ${user.username}
+                            <br>
+                            If you didn't make this request, just ignore this email. If you'd like to proceed:
+                            <br><br>`,
+                        { href: passwordRecoveryPath, name: 'Click Here to reset your password' }
                     ),
                 };
                 try {
                     await sgMail.send(msg);
-                    res.send(`Sent password recovery to ${email}\n
+                    res.send(`Sent password recovery to ${email}.
                         If you can't see mail in inbox, please checm spam folder.`);
                 } catch (error) {
                     console.log("email Send error", error);
@@ -801,6 +804,21 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
 
                                             try {
                                                 const savedBet = await newBet.save();
+
+                                                const msg = {
+                                                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                                    to: user.email,
+                                                    subject: 'Your bet was accepted',
+                                                    text: `Your bet was accepted`,
+                                                    html: simpleresponsive(
+                                                        `Hi <b>${user.firstname}</b>.
+                                                        <br><br>
+                                                        This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
+                                                        <br><br>`),
+                                                };
+                                                sgMail.send(msg);
+
+
                                                 const betId = savedBet.id;
                                                 // add betId to betPool
                                                 const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
