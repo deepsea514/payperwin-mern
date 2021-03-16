@@ -139,10 +139,15 @@ function sendVerificationEmail(email, req) {
         const msg = {
             from: `"${fromEmailName}" <${fromEmailAddress}>`,
             to: email,
-            subject: 'Verify Email',
+            subject: 'Welcome to Payper Win',
             text: `Verify your email address by following this link: ${emailValidationPath}`,
             html: simpleresponsive(
-                `Verify your email address by following this link:`,
+                `Hi <b>${email}</b>.
+                <br>
+                Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
+                your Payper Win account by logging in now.
+                <br>
+                Verify your email address by following this link:`,
                 { href: emailValidationPath, name: 'Verify' }),
         };
         sgMail.send(msg);
