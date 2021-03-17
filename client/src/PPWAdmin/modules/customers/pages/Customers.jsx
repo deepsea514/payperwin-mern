@@ -144,7 +144,7 @@ class Customers extends React.Component {
 
     render() {
         const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId,
-            initialvalues, creditSchema, addWithdrawId, withdrawmax } = this.state;
+            addWithdrawId, withdrawmax } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -271,8 +271,6 @@ class Customers extends React.Component {
                     show={addWithdrawId != null}
                     onHide={() => this.setState({ addWithdrawId: null })}
                     title="Add Withdraw"
-                    initialValues={initialvalues}
-                    validationSchema={creditSchema}
                     onSubmit={this.addWithdraw}
                     reasons={reasons}
                     withdrawmax={withdrawmax}
@@ -283,8 +281,6 @@ class Customers extends React.Component {
                     show={addDepositId != null}
                     onHide={() => this.setState({ addDepositId: null })}
                     title="Add Deposit"
-                    initialValues={initialvalues}
-                    validationSchema={creditSchema}
                     onSubmit={this.addDeposit}
                     reasons={reasons}
                     type="deposit"

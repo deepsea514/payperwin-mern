@@ -10,6 +10,7 @@ const Bet = require("./models/bet");
 const Sport = require("./models/sport");
 const LoginLog = require('./models/loginlog');
 const Email = require("./models/email");
+const AutoBet = require("./models/autobet");
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
 const config = require("../config.json");
@@ -1297,5 +1298,90 @@ adminRouter.post(
         }
     }
 );
+
+adminRouter.post(
+    '/autobet',
+    authenticateJWT,
+    async function (req, res) {
+        const data = req.body;
+        try {
+            const existing = await AutoBet.find({ userId: ObjectId(data.userId), deletedAt: null });
+            if (existing && existing.length) {
+                return res.status(400).json({ error: 'He/She is already autobetted user.' });
+            }
+            await AutoBet.create(data);
+            res.json("AutoBet created.");
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t create autobet.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/autobets',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        const total = await AutoBet.find({ deletedAt: null }).count();
+        AutoBet.find({ deletedAt: null })
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage)
+            .populate('userId', ['username', 'balance'])
+            .exec(function (error, data) {
+                if (error) {
+                    res.status(404).json({ error: 'Can\'t find customers.' });
+                    return;
+                }
+                res.status(200).json({ total, perPage, page: page + 1, data });
+            });
+    }
+)
+
+adminRouter.patch(
+    '/autobet/:id',
+    authenticateJWT,
+    async function (req, res) {
+        const data = req.body;
+        const { id } = req.params;
+        try {
+            const autobet = await AutoBet.findById(new ObjectId(id))
+            if (!autobet) {
+                return res.status(404).json({ error: 'Can\'t find autobet data.' });
+            }
+            await autobet.update(data);
+            const result = await AutoBet
+                .findById(new ObjectId(id))
+                .populate('userId', ['username', 'balance']);
+            res.json(result);
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t updated autobet.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/autobet/:id',
+    authenticateJWT,
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            const autobet = await AutoBet.findById(new ObjectId(id))
+            if (!autobet) {
+                return res.status(404).json({ error: 'Can\'t find autobet data.' });
+            }
+            await autobet.update({ deletedAt: new Date() });
+            res.json("Deleted");
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t delete autobet.' });
+        }
+    }
+)
 
 module.exports = adminRouter;

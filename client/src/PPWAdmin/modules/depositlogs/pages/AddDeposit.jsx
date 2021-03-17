@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from 'react-select/async';
 import { getReason, searchUsers } from "../../customers/redux/services";
 import { addDeposit } from "../redux/services";
 

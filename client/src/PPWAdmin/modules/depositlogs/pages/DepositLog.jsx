@@ -139,9 +139,9 @@ class DepositLog extends React.Component {
     }
 
     onPageChange = (page) => {
-        const { currentPage } = this.props;
+        const { currentPage, getCustomers } = this.props;
         if (page != currentPage)
-            this.props.getCustomers(page);
+            getCustomers(page);
     }
 
     render() {

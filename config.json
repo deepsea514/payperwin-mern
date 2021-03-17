@@ -44,5 +44,13 @@
         "eTransfer",
         "Credit Card",
         "Bitcoin"
-    ]
+    ],
+    "AutoBetStatus": {
+        "active": "Active",
+        "inActive": "Inactive"
+    },
+    "AutoBetPeorid": {
+        "daily": "Daily",
+        "weekly": "Weekly"
+    }
 }
