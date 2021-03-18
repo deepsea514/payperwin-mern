@@ -140,17 +140,19 @@ export default class AutoBetModal extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group col-md-6">
-                                            <label>Max.Risk<span className="text-danger">*</span></label>
-                                            <input name="maxRisk" placeholder="Enter Max.Risk"
+                                            <label>Peorid<span className="text-danger">*</span></label>
+                                            <select name="peorid" placeholder="Choose Peorid"
                                                 className={`form-control ${this.getInputClasses(
                                                     formik,
-                                                    "maxRisk"
+                                                    "peorid"
                                                 )}`}
-                                                {...formik.getFieldProps("maxRisk")}
-                                            />
-                                            {formik.touched.maxRisk && formik.errors.maxRisk ? (
+                                                {...formik.getFieldProps("peorid")}
+                                            >
+                                                {this.renderPeorid()}
+                                            </select>
+                                            {formik.touched.peorid && formik.errors.peorid ? (
                                                 <div className="invalid-feedback">
-                                                    {formik.errors.maxRisk}
+                                                    {formik.errors.peorid}
                                                 </div>
                                             ) : null}
                                         </div>
@@ -172,19 +174,17 @@ export default class AutoBetModal extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group col-md-6">
-                                            <label>Peorid<span className="text-danger">*</span></label>
-                                            <select name="peorid" placeholder="Choose Peorid"
+                                            <label>Max.Risk<span className="text-danger">*</span></label>
+                                            <input name="maxRisk" placeholder="Enter Max.Risk"
                                                 className={`form-control ${this.getInputClasses(
                                                     formik,
-                                                    "peorid"
+                                                    "maxRisk"
                                                 )}`}
-                                                {...formik.getFieldProps("peorid")}
-                                            >
-                                                {this.renderPeorid()}
-                                            </select>
-                                            {formik.touched.peorid && formik.errors.peorid ? (
+                                                {...formik.getFieldProps("maxRisk")}
+                                            />
+                                            {formik.touched.maxRisk && formik.errors.maxRisk ? (
                                                 <div className="invalid-feedback">
-                                                    {formik.errors.peorid}
+                                                    {formik.errors.maxRisk}
                                                 </div>
                                             ) : null}
                                         </div>

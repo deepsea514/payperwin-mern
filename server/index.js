@@ -15,6 +15,8 @@ const BetPool = require('./models/betpool');
 const SportsDir = require('./models/sportsDir');
 const Pinnacle = require('./models/pinnacle');
 const ExpressBrute = require('express-brute');
+const AutoBet = require("./models/autobet");
+const AutoBetLog = require("./models/autobetlog");
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require('../config.json');
 const adminRouter = require('./adminRoutes');
@@ -32,6 +34,7 @@ const axios = require('axios');
 const { generateToken } = require('./generateToken');
 const v1Router = require('./v1Routes');
 const InsufficientFunds = 8;
+const BetFee = 0.03;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -631,7 +634,6 @@ function calculateToWinFromBet(bet, americanOdds) {
     const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
     const calculateWin = (stake * 1) * decimalOdds;
     const roundToPennies = Number((calculateWin).toFixed(2));
-    const win = roundToPennies
     return roundToPennies;
 }
 
@@ -766,7 +768,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                     if (oddsMatch) {
                                         const betAfterFee = toBet /* * 0.98 */;
                                         const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-                                        const fee = Number((toBet * 0.02).toFixed(2));
+                                        const fee = Number((toBet * BetFee).toFixed(2));
                                         const balanceChange = toBet * -1;
                                         const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
                                         if (newBalance >= InsufficientFunds) {
@@ -873,7 +875,8 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
 
                                                     try {
                                                         await newBetPool.save();
-                                                        // res.json(user.balance);
+
+                                                        await checkAutoBet(bet, newBetPool, sportData, line);
                                                     } catch (err) {
                                                         console.log('err' + err);
                                                     }
@@ -885,7 +888,6 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                 user.balance = newBalance;
                                                 try {
                                                     await user.save();
-                                                    // res.json(user.balance);
                                                 } catch (err) {
                                                     console.log('err' + err);
                                                 }
@@ -922,6 +924,186 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
         },
     );
 });
+
+async function checkAutoBet(bet, betpool, sportData, line) {
+    const { AutoBetStatus, AutoBetPeorid } = config;
+    let { odds, pick, stake: toBet, lineQuery } = bet;
+    let autobets = await AutoBet
+        .find({ deletedAt: null })
+        .populate('userId');
+
+    const asyncFilter = async (arr, predicate) => {
+        const results = await Promise.all(arr.map(predicate));
+        return arr.filter((_v, index) => results[index]);
+    }
+
+    let autobetusers = await asyncFilter(autobets, async (autobet) => {
+        const today = new Date();
+        let fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        if (autobet.peorid == AutoBetPeorid.weekly) {
+            var day = fromTime.getDay(),
+                diff = fromTime.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+            fromTime = new Date(fromTime.setDate(diff));
+        }
+        const logs = await AutoBetLog
+            // .find({ user: autobet.userId._id, createdAt: fromTime })
+            .aggregate([
+                { $match: { user: autobet.userId._id, createdAt: { $gte: fromTime } } },
+                { $group: { _id: null, amount: { $sum: "$amount" } } }
+            ]);
+        let bettedamount = 0;
+        if (logs && logs.length)
+            bettedamount = logs[0].amount;
+        return (
+            autobet.status == AutoBetStatus.active &&                   //Check active status
+            autobet.userId.balance >= InsufficientFunds + toBet &&      //Check Balance
+            autobet.maxRisk >= toBet &&                                 //Check Max.Risk
+            (bettedamount < (autobet.budget - toBet))                       //Check Budget
+        );
+    });
+
+    if (autobetusers.length == 0) return;
+
+    autobetusers.sort((a, b) => {
+        return (a.priority > b.priority) ? -1 : 1;
+    });
+
+    const selectedauto = autobetusers[0];
+    pick = pick == 'home' ? "away" : "home";
+
+    // const americanOdds = odds[pick];
+    // const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
+    // const calculateWin = (toBet * 1) * decimalOdds;
+    // const roundToPennies = Number((calculateWin).toFixed(2));
+    // const toWin = roundToPennies;
+
+    const { type, altLineId, } = lineQuery;
+
+    const { pinnacleSportId } = sportData;
+    lineQuery.sportId = pinnacleSportId;
+
+    const { teamA, teamB, startDate, line: { home, away, periodNumber, hdp, points } } = line;
+    lineQuery.periodNumber = periodNumber;
+
+    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+    const lineOdds = line.line[pickWithOverUnder];
+    const oddsA = type === 'total' ? line.line.over : line.line.home;
+    const oddsB = type === 'total' ? line.line.under : line.line.away;
+    const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
+    const newLineOdds = lineOdds + oddsDifference;
+
+    let pickName = '';
+    switch (type) {
+        case 'total':
+            if (pick == 'home') {
+                pickName = `Over ${points}`;
+            } else {
+                pickName = `Under ${points}`;
+            }
+            break;
+
+        case 'spread':
+            if (pick == 'home') {
+                pickName = `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
+            } else {
+                pickName = `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+            }
+            break;
+
+        case 'moneyline':
+            if (pick == 'home') {
+                pickName = teamA;
+            } else {
+                pickName = teamB;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    const betAfterFee = toBet /* * 0.97 */;
+    const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+    const fee = Number((toBet * BetFee).toFixed(2));
+    const balanceChange = toBet * -1;
+    const newBalance = selectedauto.userId.balance ? selectedauto.userId.balance + balanceChange : 0 + balanceChange;
+
+    // insert bet doc to bets table
+    const newBetObj = {
+        userId: selectedauto.userId._id,
+        transactionID: `B${ID()}`,
+        teamA: {
+            name: teamA,
+            odds: home,
+        },
+        teamB: {
+            name: teamB,
+            odds: away,
+        },
+        pick,
+        pickOdds: newLineOdds,
+        oldOdds: lineOdds,
+        pickName,
+        bet: betAfterFee,
+        toWin,
+        fee,
+        matchStartDate: startDate,
+        status: 'Pending',
+        lineQuery,
+    };
+    if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
+    const newBet = new Bet(newBetObj);
+    console.info(`created new auto bet`);
+
+    try {
+        const savedBet = await newBet.save();
+
+        await AutoBetLog.create({
+            user: selectedauto.userId._id,
+            amount: betAfterFee
+        });
+
+        const msg = {
+            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+            to: selectedauto.userId.email,
+            subject: 'Your bet was accepted',
+            text: `Your bet was accepted`,
+            html: simpleresponsive(
+                `Hi <b>${selectedauto.userId.firstname}</b>.
+                    <br><br>
+                    This email is to advise that your auto bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
+                    <br><br>`),
+        };
+        sgMail.send(msg);
+
+        const betId = savedBet.id;
+        // add betId to betPool
+        const docChanges = {
+            $push: pick === 'home' ? {
+                homeBets: betId,
+            } : {
+                awayBets: betId,
+            },
+            $inc: {},
+        };
+        docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
+        docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+        await betpool.update(docChanges);
+
+        await calculateBetsStatus(JSON.stringify(lineQuery));
+
+        selectedauto.userId.betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
+        selectedauto.userId.balance = newBalance;
+        try {
+            await selectedauto.userId.save();
+        } catch (err) {
+            console.log('err' + err);
+        }
+    }
+    catch (e2) {
+        if (e2) console.error('newBetError', e2);
+    }
+}
 
 expressApp.get(
     '/betforward',
