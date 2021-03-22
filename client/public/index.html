@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&amp;display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -12,5 +13,23 @@
 </body>
 <script src="/bundle.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    var pinnacleOrigin = '.oreo88.com';
+    window.addEventListener("message", (event) => {
+        // check pinnacle origin
+        if (event.origin && event.origin.toLowerCase().endsWith(pinnacleOrigin)) {
+            console.log("event => ", event);
+        var postData = event.data;
+        switch (postData.action) {
+            case 'OPEN_WINDOW':
+                var url = postData.url;
+                window.open(url);
+                break;
+            default:
+                break;
+        }
+        }
+    });
+</script>
 
 </html>

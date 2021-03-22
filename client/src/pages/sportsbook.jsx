@@ -21,7 +21,7 @@ class SportsBook extends PureComponent {
             .then(({ data }) => {
                 const { loginInfo } = data;
                 const { loginUrl } = loginInfo;
-                console.log(data);
+                // console.log(data);
                 this.setState({ loading: false, loginUrl });
             })
             .catch(() => {
