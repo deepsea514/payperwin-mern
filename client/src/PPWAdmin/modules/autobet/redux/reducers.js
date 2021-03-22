@@ -49,8 +49,8 @@ export const actions = {
 export function* saga() {
     yield takeLatest(actionTypes.getAutoBetsAction, function* getAutoBetsSaga() {
         try {
-            const state = yield select((state) => state.customer);
-            const { data } = yield getAutoBets(state.currentPage, state.filter);
+            const state = yield select((state) => state.autobets);
+            const { data } = yield getAutoBets(state.currentPage);
             yield put(actions.getAutoBetsSuccess({ autobets: data.data, total: data.total }));
         } catch (error) {
             yield put(actions.getAutoBetsSuccess({ autobets: [], total: 0 }));

@@ -15,7 +15,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "email-templates", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "email-templates", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getEmailTemplatesAction:

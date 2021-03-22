@@ -139,6 +139,20 @@ export function AsideMenuList({ layoutProps }) {
                     </Link>
                 </li>
                 {/*end::1 Level*/}
+
+                {/*begin::1 Level*/}
+                <li
+                    className={`menu-item ${getMenuItemActive("/promotions", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/promotions/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                        </span>
+                        <span className="menu-text">Promotions</span>
+                    </Link>
+                </li>
+                {/*end::1 Level*/}
             </ul>
             {/* end::Menu Nav */}
         </>

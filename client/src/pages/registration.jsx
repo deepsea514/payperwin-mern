@@ -19,7 +19,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dateformat from "dateformat";
 import clsx from 'clsx';
-import dateFormat from 'dateformat';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;

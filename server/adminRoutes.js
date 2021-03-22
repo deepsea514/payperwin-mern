@@ -11,6 +11,8 @@ const Sport = require("./models/sport");
 const LoginLog = require('./models/loginlog');
 const Email = require("./models/email");
 const AutoBet = require("./models/autobet");
+const Promotion = require("./models/promotion");
+const PromotionLog = require("./models/promotionlog");
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
 const config = require("../config.json");
@@ -1372,7 +1374,7 @@ adminRouter.delete(
     async function (req, res) {
         const { id } = req.params;
         try {
-            const autobet = await AutoBet.findById(new ObjectId(id))
+            const autobet = await AutoBet.findById(new ObjectId(id));
             if (!autobet) {
                 return res.status(404).json({ error: 'Can\'t find autobet data.' });
             }
@@ -1380,6 +1382,68 @@ adminRouter.delete(
             res.json("Deleted");
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t delete autobet.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/promotion',
+    authenticateJWT,
+    async function (req, res) {
+        const data = req.body;
+        try {
+            await Promotion.create(data);
+            res.json("Promotion created.");
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t create promotion.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/promotions',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        const total = await Promotion.find({ deletedAt: null }).count();
+        Promotion.find({ deletedAt: null })
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage)
+            .exec(function (error, data) {
+                if (error) {
+                    res.status(404).json({ error: 'Can\'t find promotions.' });
+                    return;
+                }
+                res.status(200).json({ total, perPage, page: page + 1, data });
+            });
+    }
+)
+
+adminRouter.get(
+    '/promotion/:id',
+    authenticateJWT,
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            const promotion = await Promotion.findById(id);
+            if (!promotion) {
+                return res.status(404).json({ error: 'Can\'t find promotion.' });
+            }
+            const promotionlogs = await PromotionLog
+                .find({ promotion: ObjectId(id) })
+                .populate('user');
+            const result = JSON.parse(JSON.stringify(promotion));
+            result.promotionlogs = JSON.parse(JSON.stringify(promotionlogs));
+            res.json(result);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find promotion.' });
         }
     }
 )

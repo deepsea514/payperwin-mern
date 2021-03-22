@@ -99,7 +99,6 @@ class AutoBet extends React.Component {
 
     addAutoBetUser = (values, formik) => {
         const { getAutoBetsAction } = this.props;
-        this.setState({ isSuccess: false, isError: false });
         if (!values.user) {
             formik.setFieldTouched('user', true);
             formik.setFieldError('user', "You should select user");
@@ -113,12 +112,12 @@ class AutoBet extends React.Component {
         delete autobet.user;
         createAutoBet(autobet)
             .then(() => {
-                formik.setSubmitting(true);
+                formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Successfully added!", modalvariant: "success" });
                 getAutoBetsAction();
             })
             .catch(() => {
-                formik.setSubmitting(true);
+                formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
             })
     }

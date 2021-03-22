@@ -11,9 +11,10 @@ import BetActivityModule from "../modules/bet_activities/pages";
 import DepositLogModule from "../modules/depositlogs/pages";
 import WithdrawLogModule from "../modules/withdrawlogs/pages";
 import EventModule from "../modules/events/pages";
-import WagerFeeds from "../modules/wager-feed/pages";
+import WagerFeedsModule from "../modules/wager-feed/pages";
 import AutoBet from "../modules/autobet/pages/AutoBet";
-import EmailTemplates from "../modules/email-templates/pages"
+import EmailTemplatesModule from "../modules/email-templates/pages";
+import PromotionModule from "../modules/promotions/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -46,7 +47,6 @@ export default class App extends Component {
             <Layout history={history}>
                 <Switch>
                     {/* <BrowserRouter basename="PPWAdmin"> */}
-                    <Redirect exact from="/" to="/dashboard" />
 
                     {/* dashboard */}
                     <Route path="/dashboard" component={AdminDashboard} />
@@ -67,13 +67,18 @@ export default class App extends Component {
                     <Route path="/events" component={EventModule} />
 
                     {/* wager feeds */}
-                    <Route path="/wager-feeds" component={WagerFeeds} />
+                    <Route path="/wager-feeds" component={WagerFeedsModule} />
 
                     {/* autobet */}
                     <Route path="/autobet" component={AutoBet} />
 
                     {/* email templates */}
-                    <Route path="/email-templates" component={EmailTemplates} />
+                    <Route path="/email-templates" component={EmailTemplatesModule} />
+
+                    {/* promotions */}
+                    <Route path="/promotions" component={PromotionModule} />
+
+                    <Redirect exact from="/" to="/dashboard" />
 
                     <Redirect to="/dashboard" />
                 </Switch>
