@@ -1734,8 +1734,8 @@ sup {
         background-color: #F7F8FA
     }
     .content-container .title-bar {
-        position: absolute;
-        top: 50px;
+        /* position: absolute; */
+        /* top: 50px; */
         width: 100%;
         background-color: #fff;
         text-transform: uppercase;
