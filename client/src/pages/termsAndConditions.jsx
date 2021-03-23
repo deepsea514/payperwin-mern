@@ -25,7 +25,7 @@ class TermsAndConditions extends Component {
                         <h1 className="title-bar background darkblue">Terms and Conditions</h1>
                         <div className="block box">
                             <div className="containerless">
-                                <article className="content">
+                                <article>
                                     <div className="gray selection-list row">
                                         <ul className="col-6 list">
                                             <li>

@@ -42,6 +42,7 @@ import Deactivation from "../pages/deactivation";
 import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
+import BettingRules from "../pages/bettingRules";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -245,6 +246,7 @@ class App extends PureComponent {
                                                 <Route path="/deactivation" component={Deactivation} />
                                                 <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
+                                                <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/">
                                                     {
                                                         () => {
