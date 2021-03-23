@@ -226,35 +226,39 @@ class Registration extends Component {
         }
         registrationValidation.validateFields(this.state, { tags: ['registration'] })
             .then((result) => {
+
                 if (result === true) {
                     const { username, email, password, firstname, lastname, country, currency,
                         title, dateofbirth, address, address2, city, postalcode, phone,
                         securityquiz, securityans, vipcode } = this.state;
-                    const url = `${serverUrl}/register`;
-                    axios({
-                        method: 'post',
-                        url,
-                        data: {
+                    axios.post(`${serverUrl}/register`,
+                        {
                             username, email, password, firstname, lastname,
-                            country, currency, title, dateofbirth: dateFormat(dateofbirth, "yyyy-mm-dd"),
+                            country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
                             address, address2, city, postalcode, phone,
                             securityquiz, securityans, vipcode,
                         },
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    }).then((/* { data } */) => {
-                        getUser();
-                        history.replace({ pathname: '/' });
-                    }).catch((err) => {
-                        if (err.response) {
-                            const { data } = err.response;
-                            if (data.error) {
-                                this.setState({ errors: { ...errors, server: data.error } });
-                            }
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            withCredentials: true,
                         }
-                    });
+                    )
+                        .then((/* { data } */) => {
+                            console.log("success");
+                            getUser();
+                            history.replace({ pathname: '/' });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            if (err.response) {
+                                const { data } = err.response;
+                                if (data.error) {
+                                    this.setState({ errors: { ...errors, server: data.error } });
+                                }
+                            }
+                        });
                 } else {
                     this.setState({
                         errors: result,
