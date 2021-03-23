@@ -1234,3 +1234,710 @@ p {
     -webkit-transition: color .3s ease;
     transition: color .3s ease;
 }
+
+/* Privacy Policy */
+
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline
+}
+
+sup {
+    top: -0.5em
+}
+
+.content-container {
+    padding: 15px;
+    color: #0B1422;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    background-color: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2)
+}
+
+.content-container .clear-both {
+    clear: both
+}
+
+.content-container h1.title-bar {
+    padding: 15px;
+    padding-top: 0;
+    font-size: 22px
+}
+
+.content-container .gray {
+    background-color: #F7F8FA
+}
+
+.content-container .selection-list {
+    padding: 15px 15px 5px
+}
+
+.content-container .selection-list li {
+    margin-bottom: 10px
+}
+
+.content-container .selection-list .col-3 {
+    width: 32.25%;
+    float: left;
+    padding-right: 1%
+}
+
+.content-container .selection-list .col-2 {
+    width: 49%;
+    float: left;
+    padding-right: 1%
+}
+
+.content-container a {
+    color: #0A74EF;
+    font-weight: 700;
+    font-size: 13px
+}
+
+.content-container a.back-to-top {
+    text-transform: uppercase
+}
+
+.content-container .rules {
+    margin-top: 15px;
+    padding: 15px;
+    font-size: 13px;
+    line-height: 19px;
+    scroll-margin-top: 109px
+}
+
+.content-container .rules ol li {
+    margin-bottom: 7px;
+    list-style: unset
+}
+
+.content-container .rules h3 a, .content-container .rules ol a {
+    color: #F50;
+    text-decoration: underline;
+    font-weight: 400;
+    line-height: 13px
+}
+
+.content-container .rules h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.content-container .rules h3 {
+    font-weight: 700;
+    font-size: 13px
+}
+
+.content-container .rules table {
+    background-color: #eee;
+    border-collapse: separate;
+    border-spacing: 5px 15px;
+    font-size: 1em;
+    width: 100%;
+    margin: 4px 0;
+    padding: 4px
+}
+
+.content-container .rules table.teasers {
+    width: 95%;
+    border-spacing: 10px;
+    margin: 10px auto;
+    padding: 4px 10px;
+    box-sizing: border-box
+}
+
+.content-container .rules tr {
+    border-bottom: 1px #FFF solid
+}
+
+.content-container .rules table.teasers tr:first-child td {
+    text-align: center;
+    font-weight: 500
+}
+
+.content-container .rules table.teasers td {
+    text-align: left
+}
+
+.content-container .rules table th {
+    border: 0;
+    text-align: center
+}
+
+.content-container .rules ol {
+    padding-left: 15px
+}
+
+.content-container .rules ol ol {
+    margin: 7px 0 0 30px;
+    list-style: upper-roman
+}
+
+.content-container .rules tr.Column_Headers_Odds td div, .content-container .rules tr.AlternatingData1 td div, .content-container .rules tr.AlternatingData2 td div {
+    text-align: left
+}
+
+.content-container .rules tr.Column_Headers_Odds td[colspan="4"] div {
+    text-align: center
+}
+
+.content-container .bets-types, .content-container .bets-types ul li {
+    display: none
+}
+
+.content-container .bets-types h4 {
+    font-size: 13px;
+    font-weight: 700
+}
+
+.content-container .bets-types {
+    font-size: 13px;
+    line-height: 19px;
+    margin-top: 15px
+}
+
+.content-container .bets-types ul {
+    padding: 17px 15px 20px
+}
+
+.content-container .bets-types h2 {
+    display: none
+}
+
+.content-container .terms-and-conditions {
+    font-size: 13px;
+    line-height: 19px;
+    margin-top: 15px;
+    padding: 15px
+}
+
+.content-container .terms-and-conditions h1 {
+    display: none
+}
+
+.content-container .terms-and-conditions h2 {
+    font-size: 13px;
+    font-weight: 700
+}
+
+.content-container .terms-and-conditions h2.desktop {
+    text-transform: uppercase
+}
+
+.content-container .terms-and-conditions table {
+    background-color: #eee;
+    border-collapse: separate;
+    border-spacing: 5px 15px;
+    font-size: 1em;
+    width: 100%;
+    margin: 4px 0;
+    padding: 4px
+}
+
+.content-container .terms-and-conditions tr {
+    border-bottom: 1px #FFF solid
+}
+
+.content-container .terms-and-conditions table td, .content-container .terms-and-conditions table th {
+    border: 0;
+    text-align: center
+}
+
+.content-container .terms-and-conditions td {
+    vertical-align: top
+}
+
+.content-container .terms-and-conditions th:nth-child(4), .content-container .terms-and-conditions td:nth-child(4) {
+    text-align: left;
+    width: 55%
+}
+
+.content-container .terms-and-conditions td:nth-child(1), .content-container .terms-and-conditions td:nth-child(2), .content-container .terms-and-conditions td:nth-child(3) {
+    text-align: center;
+    width: 15%
+}
+
+.content-container .terms-and-conditions .mobile-container a {
+    color: #F50;
+    text-decoration: underline;
+    font-weight: 400;
+    line-height: 13px
+}
+
+.content-container .terms-and-conditions ol.sub {
+    list-style-type: none;
+    counter-reset: item;
+    margin: 0;
+    padding: 0
+}
+
+.content-container .terms-and-conditions ol.sub>li {
+    display: table;
+    margin-bottom: .6em;
+    margin-left: 0
+}
+
+.content-container .terms-and-conditions .hide-number li:first-child:before {
+    content: ' '
+}
+
+.content-container .terms-and-conditions ol.sub>li::before, .content-container .terms-and-conditions .show-number li:first-child:before {
+    content: counters(item, ".") " ";
+    counter-increment: item;
+    display: table-cell;
+    padding-right: 20px
+}
+
+.content-container .terms-and-conditions .list-alike p {
+    margin: 5px 0;
+    padding: 0
+}
+
+.content-container .terms-and-conditions .list-alike p span {
+    display: inline-block;
+    width: 35px;
+    line-height: 22px;
+    text-align: end;
+    margin-right: 15px;
+    color: #000;
+    font-style: unset;
+    font-weight: 400
+}
+
+.content-container .privacy-policy-container .subtitle {
+    display: list-item;
+    list-style-type: disc;
+    font-weight: 400;
+    font-size: 13px;
+    text-transform: none;
+    margin-left: 30px
+}
+
+.content-container .privacy-policy-container {
+    font-size: 13px
+}
+
+.content-container .privacy-policy-page-title {
+    font-size: 22px;
+    font-family: Roboto;
+    padding: 15px;
+    font-weight: 700
+}
+
+.content-container .privacy-policy-header-text {
+    padding: 15px;
+    background-color: #F7F8FA;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    line-height: 19px
+}
+
+.content-container .privacy-policy-section-title {
+    font-weight: 700;
+    line-height: 19px;
+    background-color: #F7F8FA;
+    padding: 15px;
+    padding-bottom: 0;
+    margin-top: 15px;
+    text-transform: uppercase
+}
+
+.content-container .privacy-policy-paragraph {
+    line-height: 19px;
+    background-color: #F7F8FA;
+    padding: 15px
+}
+
+.content-container .privacy-policy-paragraph a {
+    color: #F50;
+    text-decoration: underline;
+    font-weight: 400;
+    line-height: 13px
+}
+
+.content-container .privacy-policy-paragraph ul li {
+    margin-top: 10px;
+    margin-left: 30px;
+    display: list-item;
+    list-style: disc
+}
+
+.content-container .privacy-policy-paragraph-title {
+    font-weight: 700;
+    padding: 15px;
+    background-color: #F7F8FA
+}
+
+.content-container .privacy-policy-container table {
+    width: 100%;
+    border-spacing: 0;
+    margin-top: 15px;
+    line-height: 22px
+}
+
+.content-container .privacy-policy-container table, .content-container .privacy-policy-container tr, .content-container .privacy-policy-container th, .content-container .privacy-policy-container td {
+    border-collapse: collapse;
+    color: #293243
+}
+
+.content-container .privacy-policy-container table tr th, .content-container .privacy-policy-container table tr td {
+    border: 1px solid #C4C4C4;
+    padding: 5px;
+    vertical-align: top;
+    box-sizing: border-box;
+    padding-left: 15px;
+    padding-right: 15px
+}
+
+.content-container .privacy-policy-container table tr th {
+    text-align: left
+}
+
+.content-container .privacy-policy-container table tr td:nth-child(2) {
+    white-space: nowrap
+}
+
+.content-container .privacy-policy-container table tr td:last-child {
+    white-space: normal
+}
+
+.content-container .responsible_gaming_container {
+    margin-top: 15px;
+    padding: 15px;
+    font-size: 13px;
+    line-height: 19px
+}
+
+.content-container .responsible_gaming_title {
+    font-size: 20px;
+    padding-left: 15px !important;
+    padding-right: 15px !important
+}
+
+.content-container .responsible_gaming_title.page-title {
+    font-size: 22px
+}
+
+.content-container .responsible_gaming_container.header {
+    background-color: #F7F8FA
+}
+
+.content-container .responsible_gaming_container.header h2 {
+    display: none
+}
+
+.content-container .responsible_gaming_container a {
+    color: #F50;
+    text-decoration: underline;
+    font-weight: 400;
+    line-height: 13px
+}
+
+.content-container .responsible_gaming_container .header h1 {
+    font-size: 22px;
+    font-weight: 700
+}
+
+.content-container .responsible_gaming_container h3 {
+    font-weight: 700;
+    font-size: 13px
+}
+
+.content-container .responsible_gaming_container .header h2, .content-container .responsible_gaming_container .header h3.members {
+    font-size: 22px;
+    font-weight: 700
+}
+
+.content-container .responsible_gaming_container:not(.header) h2, .content-container .responsible_gaming_container:not(.header) h3.members {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    cursor: pointer
+}
+
+.content-container .responsible_gaming_container .arrow-up {
+    float: right;
+    width: 14px;
+    height: 10px;
+    background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+    display: none
+}
+
+.content-container .responsible_gaming_container .arrow-down {
+    float: right;
+    width: 14px;
+    height: 10px;
+    background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+}
+
+@media only screen and (min-width:1025px) {
+    .content-container .rules>* {
+        display: block !important
+    }
+    .content-container .rules>table {
+        display: table !important
+    }
+    .content-container .rules h2.accordion-toggle {
+        display: none !important
+    }
+    .content-container .terms-and-conditions>* {
+        display: block !important
+    }
+    .content-container .terms-and-conditions>table {
+        display: table !important
+    }
+    .content-container .terms-and-conditions h2.accordion-toggle {
+        display: none !important
+    }
+    .content-container .terms-and-conditions .mobile-container {
+        display: block !important
+    }
+    .content-container .mobile-selection-list {
+        display: none
+    }
+    .content-container .privacy-policy-container>* {
+        display: block !important
+    }
+    .content-container .privacy-policy-container>table {
+        display: table !important
+    }
+    .content-container .privacy-policy-container .accordion-toggle {
+        display: none !important
+    }
+    .content-container .privacy-policy-container .mobile-container {
+        display: block !important
+    }
+}
+
+@media only screen and (max-width:1024px) {
+    .content-container {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+        padding-top: 10px;
+        margin-bottom: 0
+    }
+    .content-container h1.title-bar {
+        padding-top: 15px
+    }
+    .content-container .selection-list {
+        display: none
+    }
+    .content-container .content {
+        background-color: #F7F8FA
+    }
+    .content-container .title-bar {
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        background-color: #fff;
+        text-transform: uppercase;
+        font-size: 14px;
+        line-height: 16px;
+        height: 16px;
+        left: 0;
+        text-align: center;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2)
+    }
+    .content-container .rules {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 0;
+        border-bottom: 1px solid #DADBDC
+    }
+    .content-container .rules h2 {
+        display: none
+    }
+    .content-container .rules.gray {
+        background-color: transparent
+    }
+    .content-container .rules h2.accordion-toggle {
+        display: block;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        cursor: pointer
+    }
+    .content-container .rules .arrow-up {
+        float: right;
+        width: 14px;
+        height: 10px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        display: none
+    }
+    .content-container .rules .arrow-down {
+        float: right;
+        width: 14px;
+        height: 10px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+    }
+    .content-container .rules ol {
+        padding-left: 15px
+    }
+    .content-container .responsible_gaming_container {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 0;
+        border-bottom: 1px solid #DADBDC
+    }
+    .content-container .responsible_gaming_container.header h2 {
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        background-color: #fff;
+        text-transform: uppercase;
+        font-size: 14px;
+        line-height: 16px;
+        height: 16px;
+        left: 0;
+        text-align: center;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        padding: 15px 0
+    }
+    .content-container .responsible_gaming_container:not(.header) h2 {
+        display: block;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        cursor: hand;
+        cursor: pointer
+    }
+    .content-container .responsible_gaming_container.header h1:first-of-type {
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        background-color: #fff;
+        text-transform: uppercase;
+        font-size: 14px;
+        line-height: 16px;
+        height: 16px;
+        left: 0;
+        text-align: center;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        padding: 15px 0 !important
+    }
+    .content-container .mobile-selection-list {
+        display: block;
+        padding: 15px
+    }
+    .content-container .mobile-selection-list select {
+        font-size: 15px;
+        height: 44px;
+        width: 100%;
+        border: 1px solid #CCD3DA;
+        border-radius: 2px;
+        background-color: #FFF;
+        box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2);
+        line-height: 18px;
+        color: #0B1422;
+        padding-left: 15px;
+        padding-right: 15px
+    }
+    .content-container .bets-types {
+        margin-top: 0
+    }
+    .content-container .bets-types, .content-container .bets-types ul li {
+        display: block
+    }
+    .content-container .terms-and-conditions {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 0;
+        border-bottom: 1px solid #DADBDC
+    }
+    .content-container .terms-and-conditions h2 {
+        display: none
+    }
+    .content-container .terms-and-conditions.gray {
+        background-color: transparent
+    }
+    .content-container .terms-and-conditions h2.accordion-toggle {
+        display: block;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        cursor: pointer
+    }
+    .content-container .terms-and-conditions .arrow-up {
+        float: right;
+        width: 14px;
+        height: 10px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        display: none
+    }
+    .content-container .terms-and-conditions .arrow-down {
+        float: right;
+        width: 14px;
+        height: 10px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+    }
+    .content-container .terms-and-conditions ol {
+        padding-left: 15px
+    }
+    .content-container .terms-and-conditions .mobile-container {
+        display: none
+    }
+    .content-container .privacy-policy-container .privacy-policy-header-text {
+        margin: 0;
+        border-bottom: 1px solid #DADBDC
+    }
+    .content-container .privacy-policy-container .privacy-policy-section-title {
+        margin: 0;
+        padding-bottom: 15px;
+        border-top: 1px solid #DADBDC
+    }
+    .content-container .privacy-policy-container .accordion-toggle {
+        cursor: pointer
+    }
+    .content-container .privacy-policy-container .privacy-policy-page-title {
+        /* position: absolute; */
+        /* top: 62px; */
+        width: 100%;
+        background-color: #fff;
+        text-transform: uppercase;
+        font-size: 14px;
+        line-height: 16px;
+        height: 16px;
+        left: 0;
+        text-align: center;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        /* padding: 15px 0; */
+        margin-bottom: 10px;
+        font-weight: 700
+    }
+    .content-container .privacy-policy-container br {
+        display: none
+    }
+    .content-container .privacy-policy-container .arrow-up {
+        float: right;
+        width: 14px;
+        height: 10px;
+        margin-top: 5px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        display: none
+    }
+    .content-container .privacy-policy-container .arrow-down {
+        float: right;
+        width: 14px;
+        height: 10px;
+        margin-top: 5px;
+        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+    }
+    .content-container .privacy-policy-container .desktop {
+        display: none
+    }
+    .content-container .privacy-policy-container .mobile-container {
+        display: none
+    }
+    .content-container .privacy-policy-container ul {
+        padding: 0 10px
+    }
+    
+}

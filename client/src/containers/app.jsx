@@ -40,6 +40,7 @@ import Security from "../pages/security";
 import SelfExcusion from "../pages/selfexcusion";
 import Deactivation from "../pages/deactivation";
 import SportsBook from "../pages/sportsbook";
+import PrivacyPolicy from "../pages/privacyPolicy";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -241,6 +242,7 @@ class App extends PureComponent {
                                                 <Route path="/account" component={Profile} />
                                                 <Route path="/self-exclusion" component={SelfExcusion} />
                                                 <Route path="/deactivation" component={Deactivation} />
+                                                <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/">
                                                     {
                                                         () => {
