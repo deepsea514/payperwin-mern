@@ -1093,7 +1093,7 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         await calculateBetsStatus(JSON.stringify(lineQuery));
 
         selectedauto.userId.betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
-        selectedauto.userId.balance = newBalance;
+        selectedauto.userId.balance = Number(newBalance.toFixed(2));;
         try {
             await selectedauto.userId.save();
         } catch (err) {
