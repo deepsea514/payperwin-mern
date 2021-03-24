@@ -581,6 +581,7 @@ class Registration extends Component {
                             placeholder="Enter VIP Code"
                             isInvalid={errors.vipcode !== undefined}
                         />
+                        {errors.vipcode ? <div className="registration-feedback">{errors.vipcode}</div> : null}
                     </Form.Group>
                     <FormControlLabel
                         control={

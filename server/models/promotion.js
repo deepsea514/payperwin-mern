@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const PromotionSchema = new Schema(
     {
-        name: String,
+        name: { type: String, unique: true },
         description: String,
         expiration_date: Date,
         type: String,

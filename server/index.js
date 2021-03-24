@@ -33,6 +33,8 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const axios = require('axios');
 const { generateToken } = require('./generateToken');
 const v1Router = require('./v1Routes');
+const Promotion = require('./models/promotion');
+const PromotionLog = require('./models/promotionlog');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
 
@@ -210,10 +212,36 @@ passport.use('local-signup', new LocalStrategy(
                 console.info(`created new user ${username}`);
 
                 // save the user
-                newUser.save((err2) => {
+                newUser.save(async (err2) => {
                     if (err2) console.error(err2);
                     else {
                         sendVerificationEmail(email, req);
+                        if (vipcode && vipcode != "") {
+                            const promotion = await Promotion.findOne({ name: vipcode });
+                            console.log(promotion);
+                            if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                                if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
+                                    let enable = false;
+                                    if (promotion.number_of_usage != -1) {
+                                        enable = true;
+                                    }
+                                    else {
+                                        const logs = await PromotionLog.find({ promotion: promotion._id });
+                                        if (logs.length < promotion.number_of_usage)
+                                            enable = true;
+                                    }
+                                    if (enable) {
+                                        newUser.balance = 50;
+                                        await newUser.save();
+                                        await PromotionLog.create({
+                                            user: newUser._id,
+                                            promotion: promotion._id,
+                                            ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                        });
+                                    }
+                                }
+                            }
+                        }
                     }
                     return done(null, newUser);
                 });
@@ -1093,7 +1121,7 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         await calculateBetsStatus(JSON.stringify(lineQuery));
 
         selectedauto.userId.betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
-        selectedauto.userId.balance = Number(newBalance.toFixed(2));;
+        selectedauto.userId.balance = Number(newBalance.toFixed(2));
         try {
             await selectedauto.userId.save();
         } catch (err) {
@@ -1362,6 +1390,27 @@ expressApp.get('/getPinnacleLogin', bruteforce.prevent, isAuthenticated, async (
         userInfo,
     })
 });
+
+expressApp.get('/vipCodeExist', async (req, res) => {
+    const { vipcode } = req.query;
+    if (!vipcode)
+        return res.json({ success: 1 });
+    try {
+        const promotion = await Promotion.findOne({ name: vipcode });
+        if (promotion) {
+            if (promotion.number_of_usage == -1) {
+                return res.json({ success: 1 });
+            }
+            const logs = await PromotionLog.find({ promotion: promotion._id });
+            if (logs.length < promotion.number_of_usage)
+                return res.json({ success: 1 });
+            return res.json({ success: 0, message: "Promotion usage reached to limit." });
+        }
+        return res.json({ success: 0, message: "Can't find Promotion." });
+    } catch (error) {
+        return res.json({ success: 0, message: "Can't find Promotion." });
+    }
+})
 
 // Admin
 expressApp.use('/admin', adminRouter);

@@ -94,16 +94,40 @@ async function ageCanBet(options) {
     const birthday = value.getTime();
     switch (obj.country) {
         case 'Canada':
-            if ((birthday - now) < 19 * 365 * 24 * 3600 * 1000)
+            console.log(now - birthday)
+            if ((now - birthday) < 19 * 365 * 24 * 3600 * 1000)
                 return 'You should be 19 years old to bet.';
             return true;
         case 'United States':
-            if ((birthday - now) < 21 * 365 * 24 * 3600 * 1000)
+            if ((now - birthday) < 21 * 365 * 24 * 3600 * 1000)
                 return 'You should be 21 years old to bet.';
             return true;
         default: break;
     }
     return 'Date is invalid';
+}
+
+async function vipCodeExist(options) {
+    const vipcode = options.value;
+    if (!vipcode || vipcode == '')
+        return true;
+    const url = `${serverUrl}/vipCodeExist?vipcode=${vipcode}`;
+    const { data } = await axios({
+        method: 'get',
+        url,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!data) {
+        throw Error('Username validation server error.');
+    } else if (data && data.success === 1) {
+        return true;
+    } else if (data && data.success === 0) {
+        return options.message || data.message;
+    } else {
+        throw Error('Username validation client error.');
+    }
 }
 
 const schema = {
@@ -185,6 +209,7 @@ const schema = {
     ],
     vipcode: [
         { validator: isString },
+        { validator: vipCodeExist, hasTag: 'registration' }
     ],
 };
 
