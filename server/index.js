@@ -1376,7 +1376,7 @@ if (process.env.NODE_ENV === 'development') {
             // if (email) {
             const msg = {
                 to: email || 'toonamiafter@gmail.com', // default test email address
-                from: '"PAYPER Win" <donotreply@payperwin.ca>',
+                from: '"PAYPER Win" <donotreply@payperwin.co>',
                 subject: 'Test Email',
                 text: 'This is a test email for PAYPER Win http://dev.payperwin.ca',
                 html: simpleresponsive('This is a test email for', { href: 'http://dev.payperwin.ca', name: 'PAYPER Win' }),
