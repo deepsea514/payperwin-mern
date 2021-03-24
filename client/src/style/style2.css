@@ -1939,11 +1939,14 @@ sup {
     .content-container .privacy-policy-container ul {
         padding: 0 10px
     }
-    
 }
 
 .registration-feedback {
     width: 100%;
     font-size: .9rem;
     color: #f64e60
+}
+
+body:not(.aside-enabled) .header-menu-wrapper .header-logo {
+    flex-direction: column;
 }
