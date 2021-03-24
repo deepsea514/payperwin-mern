@@ -23,7 +23,7 @@ const { ObjectId } = require('mongodb');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.ca';
+const fromEmailAddress = 'donotreply@payperwin.co';
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);

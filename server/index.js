@@ -29,7 +29,7 @@ const sgMail = require('@sendgrid/mail');
 const { ObjectId } = require('mongodb');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.ca';
+const fromEmailAddress = 'donotreply@payperwin.co';
 const axios = require('axios');
 const { generateToken } = require('./generateToken');
 const v1Router = require('./v1Routes');

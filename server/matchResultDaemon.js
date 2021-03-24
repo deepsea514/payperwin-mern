@@ -40,7 +40,7 @@ Date.prototype.addHours = function (h) {
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.ca';
+const fromEmailAddress = 'donotreply@payperwin.co';
 
 async function doStuff() {
     // Check  betpools

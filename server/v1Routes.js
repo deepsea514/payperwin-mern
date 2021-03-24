@@ -14,7 +14,7 @@ const InsufficientFunds = 8;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.ca';
+const fromEmailAddress = 'donotreply@payperwin.co';
 
 const ErrorCode = {
     Success: 0,
