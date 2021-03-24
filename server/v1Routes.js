@@ -207,7 +207,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
-        if (user.balance < Transaction.Amount + InsufficientFunds) {
+        if (Transaction && user.balance < (Transaction.Amount + InsufficientFunds)) {
             return {
                 Id,
                 TransactionId: Transaction.TransactionId,
@@ -250,7 +250,7 @@ async function updateAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
         if (Transaction && Transaction.TransactionType == "DEBIT") {
-            if (user.balance < Transaction.Amount + InsufficientFunds) {
+            if (user.balance < (Transaction.Amount + InsufficientFunds)) {
                 return {
                     Id,
                     TransactionId: Transaction.TransactionId,
