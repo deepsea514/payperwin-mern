@@ -88,6 +88,24 @@ async function emailNotTaken(options) {
     }
 }
 
+async function ageCanBet(options) {
+    const { obj, value } = options;
+    const now = (new Date()).getTime();
+    const birthday = value.getTime();
+    switch (obj.country) {
+        case 'Canada':
+            if ((birthday - now) < 19 * 365 * 24 * 3600 * 1000)
+                return 'You should be 19 years old to bet.';
+            return true;
+        case 'United States':
+            if ((birthday - now) < 21 * 365 * 24 * 3600 * 1000)
+                return 'You should be 21 years old to bet.';
+            return true;
+        default: break;
+    }
+    return 'Date is invalid';
+}
+
 const schema = {
     username: [
         { validator: isString },
@@ -136,6 +154,7 @@ const schema = {
     ],
     dateofbirth: [
         { validator: required },
+        { validator: ageCanBet },
     ],
     address: [
         { validator: isString },
