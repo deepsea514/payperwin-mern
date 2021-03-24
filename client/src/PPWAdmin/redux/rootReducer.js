@@ -7,7 +7,7 @@ import * as depositlog from "../modules/depositlogs/redux/reducers";
 import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
 import * as wager_feeds from "../modules/wager-feed/redux/reducers";
-import * as autobet from "../modules/autobet/redux/reducers";
+import * as autobets from "../modules/autobet/redux/reducers";
 import * as email_templates from "../modules/email-templates/redux/reducers";
 import * as promotions from "../modules/promotions/redux/reducers";
 
@@ -18,7 +18,7 @@ export const rootReducer = combineReducers({
     withdrawlog: withdrawlog.reducer,
     dashboard: dashboard.reducer,
     wager_feeds: wager_feeds.reducer,
-    autobet: autobet.reducer,
+    autobets: autobets.reducer,
     email_templates: email_templates.reducer,
     promotions: promotions.reducer,
 });
@@ -31,7 +31,7 @@ export function* rootSaga() {
         withdrawlog.saga(),
         dashboard.saga(),
         wager_feeds.saga(),
-        autobet.saga(),
+        autobets.saga(),
         email_templates.saga(),
         promotions.saga(),
     ]);

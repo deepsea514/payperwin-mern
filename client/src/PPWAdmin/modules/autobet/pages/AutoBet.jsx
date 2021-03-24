@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import * as autobet from "../redux/reducers";
+import * as autobets from "../redux/reducers";
 import dateformat from "dateformat";
 import "react-datepicker/dist/react-datepicker.css";
 import CustomPagination from "../../../components/CustomPagination.jsx";
@@ -299,10 +299,10 @@ class AutoBet extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-    autobets: state.autobet.autobets,
-    loading: state.autobet.loading,
-    total: state.autobet.total,
-    currentPage: state.autobet.currentPage,
+    autobets: state.autobets.autobets,
+    loading: state.autobets.loading,
+    total: state.autobets.total,
+    currentPage: state.autobets.currentPage,
 })
 
-export default connect(mapStateToProps, autobet.actions)(AutoBet)
+export default connect(mapStateToProps, autobets.actions)(AutoBet)
