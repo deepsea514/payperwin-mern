@@ -179,7 +179,7 @@ class Registration extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        this.handleChange = this.handleChange.bind(this);
+        // this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDirty = this.handleDirty.bind(this);
         this.recaptchaCallback = this.recaptchaCallback.bind(this);
@@ -189,7 +189,7 @@ class Registration extends Component {
         setTitle({ pageTitle: 'Sign Up' });
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const { touched } = this.state;
         switch (e.target.name) {
             case "agreeTerms":
@@ -215,6 +215,25 @@ class Registration extends Component {
                 });
         }
         this.handleDirty(e);
+    }
+
+    setDate = async (dateofbirth) => {
+        const { touched } = this.state;
+        await this.setState({
+            dateofbirth,
+            touched: { ...touched, dateofbirth: true, }
+        });
+
+        const { errors } = this.state;
+        registrationValidation.validateField('dateofbirth', this.state, { tags: ['registration'] }).then((result) => {
+            const errorsStateChange = { ...errors, server: undefined };
+            if (result === true) {
+                errorsStateChange['dateofbirth'] = undefined;
+            } else {
+                errorsStateChange['dateofbirth'] = result;
+            }
+            this.setState({ errors: errorsStateChange });
+        });
     }
 
     handleSubmit() {
@@ -316,6 +335,7 @@ class Registration extends Component {
                             <option value="">Please Choose Country...</option>
                             {CountryInfo.map((country) => <option key={country.country} value={country.country}>{country.country}</option>)}
                         </Form.Control>
+                        {errors.country ? <div className="registration-feedback">{errors.country}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Email address</Form.Label>
@@ -329,6 +349,7 @@ class Registration extends Component {
                             isInvalid={errors.email !== undefined}
                             required
                         />
+                        {errors.email ? <div className="registration-feedback">{errors.email}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
@@ -342,6 +363,7 @@ class Registration extends Component {
                             isInvalid={errors.password !== undefined}
                             required
                         />
+                        {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password Confirmation</Form.Label>
@@ -355,6 +377,7 @@ class Registration extends Component {
                             isInvalid={errors.cPassword !== undefined}
                             required
                         />
+                        {errors.cPassword ? <div className="registration-feedback">{errors.cPassword}</div> : null}
                     </Form.Group>
                 </>;
             case 1:
@@ -378,6 +401,7 @@ class Registration extends Component {
                             isInvalid={errors.username !== undefined}
                             required
                         />
+                        {errors.username ? <div className="registration-feedback">{errors.username}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>First Name</Form.Label>
@@ -391,6 +415,7 @@ class Registration extends Component {
                             isInvalid={errors.firstname !== undefined}
                             required
                         />
+                        {errors.firstname ? <div className="registration-feedback">{errors.firstname}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Last Name</Form.Label>
@@ -404,6 +429,7 @@ class Registration extends Component {
                             isInvalid={errors.lastname !== undefined}
                             required
                         />
+                        {errors.lastname ? <div className="registration-feedback">{errors.lastname}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Birthday</Form.Label>
@@ -412,11 +438,12 @@ class Registration extends Component {
                             className="form-control"
                             wrapperClassName="input-group"
                             selected={dateofbirth}
-                            onChange={(dateofbirth) => this.setState({ dateofbirth })}
+                            onChange={this.setDate}
                             placeholder="Enter Birthday"
                             isInvalid={errors.dateofbirth !== undefined}
                             required
                         />
+                        {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
                     </Form.Group>
                 </>;
             case 2:
@@ -453,6 +480,7 @@ class Registration extends Component {
                             isInvalid={errors.address !== undefined}
                             required
                         />
+                        {errors.address ? <div className="registration-feedback">{errors.address}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Home Address line 2 (Optional)</Form.Label>
@@ -478,6 +506,7 @@ class Registration extends Component {
                             isInvalid={errors.city !== undefined}
                             required
                         />
+                        {errors.city ? <div className="registration-feedback">{errors.city}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Postal Code</Form.Label>
@@ -491,6 +520,7 @@ class Registration extends Component {
                             isInvalid={errors.postalcode !== undefined}
                             required
                         />
+                        {errors.postalcode ? <div className="registration-feedback">{errors.postalcode}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Contact Number</Form.Label>
@@ -507,6 +537,7 @@ class Registration extends Component {
                             isInvalid={errors.phone !== undefined}
                             required
                         />
+                        {errors.phone ? <div className="registration-feedback">{errors.phone}</div> : null}
                     </Form.Group>
                 </>;
             case 3:
@@ -523,6 +554,7 @@ class Registration extends Component {
                             isInvalid={errors.securityquiz !== undefined}
                             required
                         />
+                        {errors.securityquiz ? <div className="registration-feedback">{errors.securityquiz}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Security Answer</Form.Label>
@@ -536,6 +568,7 @@ class Registration extends Component {
                             isInvalid={errors.securityans !== undefined}
                             required
                         />
+                        {errors.securityans ? <div className="registration-feedback">{errors.securityans}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
@@ -547,7 +580,6 @@ class Registration extends Component {
                             onBlur={this.handleDirty}
                             placeholder="Enter VIP Code"
                             isInvalid={errors.vipcode !== undefined}
-                            required
                         />
                     </Form.Group>
                     <FormControlLabel
