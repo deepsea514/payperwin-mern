@@ -113,10 +113,10 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 1 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                Pinnacle (otherwise referred to herein as "we" or "us") adheres to the Personal Data Protection Act of Curacao (2013). This Privacy Policy is issued on behalf of the Pinnacle Group of companies which includes the URL www.pinnacle.com.
+                                PayPerWin (otherwise referred to herein as "we" or "us") adheres to the Personal Data Protection Act of Curacao (2013). This Privacy Policy is issued on behalf of the PayPerWin Group of companies which includes the URL PayPerWin.co.
                             </div>
                             <div className="privacy-policy-paragraph">
-                                The data controller for the URL Pinnacle.com is Ragnarok Corporation N.V., Pletterijweg 43, Willemstad, Curaçao. Our Data Protection Officer (<strong>“DPO”</strong>) can be contacted at dpo@pinnacle.bet.
+                                The data controller for the URL payperwin.co is Ragnarok Corporation N.V., Pletterijweg 43, Willemstad, Curaçao. Our Data Protection Officer (<strong>“DPO”</strong>) can be contacted at dpo@payperwin.bet.
                             </div>
                             <div className="privacy-policy-paragraph">
                                 If you have any questions about this Privacy Policy please contact the DPO. We understand that privacy and the security of your personal information is extremely important. This policy sets out what we do with your information and what we will do to keep it secure. It also explains where and how we collect your personal information, as well as your rights over any personal information we hold about you.
@@ -160,7 +160,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:customerservice@pinnacle.com">customerservice@pinnacle.com</a>.</div><div className="privacy-policy-paragraph">By providing your personal information and registering with us or logging on with us when you enter our Website, you explicitly consent to us processing and disclosing your personal information in the manner set out in this Privacy Policy, or as otherwise provided in accordance with the Terms &amp; Conditions.
+                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a>.</div><div className="privacy-policy-paragraph">By providing your personal information and registering with us or logging on with us when you enter our Website, you explicitly consent to us processing and disclosing your personal information in the manner set out in this Privacy Policy, or as otherwise provided in accordance with the Terms &amp; Conditions.
                         </div>
                         </div>
 
@@ -237,10 +237,10 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 7 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                We have set out below, in a table format, a description of the ways we plan to use your personal data and which of the legal bases we rely on to do so. We have also identified what our legitimate interests are where appropriate. Information on the balancing test at the basis of the legitimate interest can be obtained upon request by contacting the DPO at <a href="mailto:dpo@pinnacle.com">dpo@pinnacle.com</a>.
+                                We have set out below, in a table format, a description of the ways we plan to use your personal data and which of the legal bases we rely on to do so. We have also identified what our legitimate interests are where appropriate. Information on the balancing test at the basis of the legitimate interest can be obtained upon request by contacting the DPO at <a href="mailto:dpo@payperwin.com">dpo@payperwin.com</a>.
                         </div>
                             <div className="privacy-policy-paragraph">
-                                Note that we may process your personal data for more than one lawful ground depending on the specific purpose for which we are using your data. Please <a href="mailto:customerservice@pinnacle.com">contact us</a> if you need details about the specific legal ground we are relying on to process your personal data where more than one ground has been set out in the table below.
+                                Note that we may process your personal data for more than one lawful ground depending on the specific purpose for which we are using your data. Please <a href="mailto:customerservice@payperwin.com">contact us</a> if you need details about the specific legal ground we are relying on to process your personal data where more than one ground has been set out in the table below.
                         </div>
                             <table>
                                 <tbody>
@@ -404,10 +404,10 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 8 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                a. For anti-money laundering, fraud detection and/or control purposes, Pinnacle has the right to transfer your personal data to third parties, including but not limited to third-party suppliers such as the police, financial integrity units, banks, ID and address verification system providers, payment service providers and financial institutions, however, only where we have assurance that they are meeting the same standards on the processing of data and security. We encourage you to read the privacy policies of our third-party suppliers.
+                                a. For anti-money laundering, fraud detection and/or control purposes, PayPerWin has the right to transfer your personal data to third parties, including but not limited to third-party suppliers such as the police, financial integrity units, banks, ID and address verification system providers, payment service providers and financial institutions, however, only where we have assurance that they are meeting the same standards on the processing of data and security. We encourage you to read the privacy policies of our third-party suppliers.
                         </div>
                             <div className="privacy-policy-paragraph">
-                                b. Furthermore, we reserve the right to disclose your personal data to relevant third parties, such as other Pinnacle group companies, our regulators, financial integrity units, notably when Pinnacle has reasonable grounds to suspect irregularities involving your account.
+                                b. Furthermore, we reserve the right to disclose your personal data to relevant third parties, such as other PayPerWin group companies, our regulators, financial integrity units, notably when PayPerWin has reasonable grounds to suspect irregularities involving your account.
                         </div>
                             <div className="privacy-policy-paragraph">
                                 c. Your data will also be shared for regular operational purposes with entities such as cloud services, data centres, payment services, banks, ID verification tools, customer communication tools, game suppliers etc.
@@ -458,10 +458,10 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 10 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                We’d love to send you offers, competitions &amp; exclusive content through our various marketing channels. Your data will not be sold or given to any third parties not affiliated with Pinnacle for marketing purposes without your prior approval.
+                                We’d love to send you offers, competitions &amp; exclusive content through our various marketing channels. Your data will not be sold or given to any third parties not affiliated with PayPerWin for marketing purposes without your prior approval.
                         </div>
                             <div className="privacy-policy-paragraph">
-                                You can change your marketing preference setting by logging into your Pinnacle account and going to the “Preferences” page where you can change your marketing preference.
+                                You can change your marketing preference setting by logging into your PayPerWin account and going to the “Preferences” page where you can change your marketing preference.
                         </div>
                         </div>
 
@@ -476,7 +476,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 11 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                a. Pinnacle assures you that your personal data is:
+                                a. PayPerWin assures you that your personal data is:
                             <ul>
                                     <li>processed in accordance with your rights;</li>
                                     <li>processed fairly and lawfully;</li>
@@ -487,14 +487,14 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                b. Pinnacle shall take all reasonable steps to ensure that your information is kept secure and protected. In this regard, we maintain appropriate technical and organisational measures to protect your data against unauthorised or unlawful processing.
-                        </div>
-                            <div className="privacy-policy-paragraph">
+                                b. PayPerWin shall take all reasonable steps to ensure that your information is kept secure and protected. In this regard, we maintain appropriate technical and organisational measures to protect your data against unauthorised or unlawful processing.
+                            </div>
+                            {/* <div className="privacy-policy-paragraph">
                                 c. We recommend that you send all personal documents using our secured upload tool. Please copy and paste the following link into your browser (Followed by your client ID):
-                            <ul>
+                                <ul>
                                     <li>https://cashier.pinnacle.com/VerifyUpload.asp?customerId=</li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-11">
@@ -508,7 +508,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 12 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                Subject to certain limitations on certain rights you have the following rights in relation to your information. You can exercise any of these rights by contacting <a href="mailto:customerservice@pinnacle.com">customerservice@pinnacle.com</a> naming the right you are exercising along with the reason for your request, if applicable.
+                                Subject to certain limitations on certain rights you have the following rights in relation to your information. You can exercise any of these rights by contacting <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a> naming the right you are exercising along with the reason for your request, if applicable.
                         </div>
                             <div className="right-moved">
                                 <div className="privacy-policy-paragraph">
@@ -524,10 +524,10 @@ class PrivacyPolicy extends Component {
                                     <strong>Right to Restrict Processing:</strong> this enables you to ask us to suspend the processing of your personal data in the following scenarios: (a) if you want us to establish the data's accuracy; (b) where our use of the data is unlawful (i.e. where it does not fall under a legal reason for processing as outlined under section 3. or your information has otherwise been obtained illegally by a third party) but you do not want us to erase it; (c) where you need us to hold the data even if we no longer require it as you need it to establish, exercise or defend legal claims; or (d) you have objected to our use of your data but we need to verify whether we have overriding legitimate grounds to use it. Please note that this right is not absolute.
                                 </div>
                                 <div className="privacy-policy-paragraph">
-                                    <strong>Right to Data Portability:</strong> you have the right to request the personal data you have provided to us. You may make a data portability request by contacting <a href="mailto:customerservice@pinnacle.com">customerservice@pinnacle.com.</a>
+                                    <strong>Right to Data Portability:</strong> you have the right to request the personal data you have provided to us. You may make a data portability request by contacting <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com.</a>
                                 </div>
                                 <div className="privacy-policy-paragraph">
-                                    <strong>Right to Object:</strong> you have the right to object to our processing of your data. It should be noted that this right is not absolute and may be subject to any reasons we have to maintain that information such as our adherence to legal and regulatory obligations. If you wish to object to direct marketing please contact <a href="mailto:customerservice@pinnacle.com">customerservice@pinnacle.com</a> requesting that you no longer wish to receive marketing materials.
+                                    <strong>Right to Object:</strong> you have the right to object to our processing of your data. It should be noted that this right is not absolute and may be subject to any reasons we have to maintain that information such as our adherence to legal and regulatory obligations. If you wish to object to direct marketing please contact <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a> requesting that you no longer wish to receive marketing materials.
                                 </div>
                             </div>
                             <div className="privacy-policy-paragraph">
@@ -595,7 +595,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 16 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                Pinnacle’s websites (including those optimised for mobile devices) and mobile applications use cookies and similar technologies to manage login sessions, provide personalised web pages and to tailor content to reflect your specific needs and interests. Once you “Accept” our banner on cookies you agree to the use of cookies and similar technologies for the purposes we describe in this policy.
+                                PayPerWin’s websites (including those optimised for mobile devices) and mobile applications use cookies and similar technologies to manage login sessions, provide personalised web pages and to tailor content to reflect your specific needs and interests. Once you “Accept” our banner on cookies you agree to the use of cookies and similar technologies for the purposes we describe in this policy.
                             </div>
                         </div>
                         <div className="privacy-policy-section-title desktop" id="title-16">
@@ -615,12 +615,12 @@ class PrivacyPolicy extends Component {
                                 Cookies perform various different functions. For example, some cookies are downloaded to your device temporarily for the period that you browse a particular website; these cookies might allow you to navigate between pages more efficiently or enable websites to remember the preferences you select. Other cookies can be used to help websites remember you as a returning visitor or ensure the online adverts you receive are more relevant to your specific needs and interests.
                             </div>
                             <div className="privacy-policy-paragraph">
-                                You can amend your browser settings to block some or all cookies. To do this, follow the instructions provided by your browser provider. Please be aware, if you block cookies from Pinnacle’s website some or all the website's functions may not perform as intended.
+                                You can amend your browser settings to block some or all cookies. To do this, follow the instructions provided by your browser provider. Please be aware, if you block cookies from PayPerWin’s website some or all the website's functions may not perform as intended.
                             </div>
                             <div className="privacy-policy-paragraph">
                                 For example, you may not actually be able to place any bets. If you would like to amend your browser settings see “manage your cookies”. If you would like more information about cookies see “further information”.
                             </div>
-                            <div className="privacy-policy-paragraph">The types of cookies Pinnacle uses are:</div>
+                            <div className="privacy-policy-paragraph">The types of cookies PayPerWin uses are:</div>
                             <div className="privacy-policy-paragraph">Essential Cookies</div>
                             <div className="privacy-policy-paragraph">Performance Cookies</div>
                             <div className="privacy-policy-paragraph">Functionality Cookies</div>
@@ -644,7 +644,7 @@ class PrivacyPolicy extends Component {
                                 <strong>We use Essential Cookies to:</strong>
                                 <ul>
                                     <li>Maintain your Bet Slip selections as you navigate around the site;</li>
-                                    <li>Identify you as being logged on to Pinnacle.com.</li>
+                                    <li>Identify you as being logged on to payperwin.co.</li>
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
@@ -655,7 +655,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                <strong>Some examples of essential cookies that Pinnacle sets:</strong>
+                                <strong>Some examples of essential cookies that PayPerWin sets:</strong>
                             </div>
                             <table>
                                 <tbody>
@@ -734,7 +734,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                <strong>Example of performance cookies that Pinnacle sets:</strong>
+                                <strong>Example of performance cookies that PayPerWin sets:</strong>
                             </div>
                             <table>
                                 <tbody>
@@ -760,7 +760,7 @@ class PrivacyPolicy extends Component {
                                 We use third-party cookies (such as Google Analytics and Silverpop Web Analytics) to gather information on customer interactions with the site so we can develop and improve the customer’s journey and provide them with an optimised service (To opt out of performance cookies, please see below).
                             </div>
                             <div className="privacy-policy-paragraph">
-                                Please be aware that opting out of our performance cookies won’t keep you from using our website, however, it will limit us from learning from your experience and may limit our ability to make accurate decisions for improving our website. However, if you wish to opt out of the web analytics that Pinnacle uses, please use the link below:
+                                Please be aware that opting out of our performance cookies won’t keep you from using our website, however, it will limit us from learning from your experience and may limit our ability to make accurate decisions for improving our website. However, if you wish to opt out of the web analytics that PayPerWin uses, please use the link below:
                             </div>
                             <div className="privacy-policy-paragraph">GoogleAnalytics</div>
                             <div className="privacy-policy-paragraph">
@@ -795,7 +795,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                <strong>Examples of functionality cookies that Pinnacle sets:</strong>
+                                <strong>Examples of functionality cookies that PayPerWin sets:</strong>
                             </div>
                             <table>
                                 <tbody>
@@ -836,7 +836,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 21 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                These cookies are used to deliver content, such as adverts, that are more relevant to you and your interests. They may also be used to limit the number of times you see an advert or measure the effectiveness of the advertising campaign. These tend to be set by third party advertising agencies with Pinnacle's permission, and may share information about websites that you have visited with other organisations, such as advertisers.
+                                These cookies are used to deliver content, such as adverts, that are more relevant to you and your interests. They may also be used to limit the number of times you see an advert or measure the effectiveness of the advertising campaign. These tend to be set by third party advertising agencies with PayPerWin's permission, and may share information about websites that you have visited with other organisations, such as advertisers.
                             </div>
                             <div className="privacy-policy-paragraph">
                                 <strong>We use 'Targeting' cookies to:</strong>
@@ -848,7 +848,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                <strong>Some of targeting cookies that Pinnacle uses:</strong>
+                                <strong>Some of targeting cookies that PayPerWin uses:</strong>
                             </div>
                             <table>
                                 <tbody>

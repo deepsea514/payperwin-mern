@@ -565,7 +565,7 @@ class Registration extends Component {
                             <div>
                                 <span>I am at least 18 years of age (or the legal age applicable for my jurisdiction)
                                 and have read and agreed to PayperWin's
-                                    &nbsp;<Link to={'/terms-and-condition'}>Terms And Conditions</Link>&nbsp;
+                                    &nbsp;<Link to={'/terms-and-conditions'}>Terms And Conditions</Link>&nbsp;
                                     and
                                     &nbsp;<Link to={'/betting-rules'}>Betting Rules.</Link>&nbsp;</span>
                             </div>
@@ -584,7 +584,7 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>I have read and agree to Pinnacle's
+                                <span>I have read and agree to PayPerWin's
                                     &nbsp;<Link to={'/privacy-policy'}>Privacy Policy</Link>
                                     .</span>
                             </div>
