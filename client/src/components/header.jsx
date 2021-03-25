@@ -164,7 +164,7 @@ export default class Header extends PureComponent {
                                         </li>
                                         {user && <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                <i className="fas fa-futbol"></i>Instant/Live Betting
+                                                <i className="fas fa-futbol"></i>INSTANT/LIVE BETTING
                                             </Link>
                                         </li>}
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
@@ -188,7 +188,7 @@ export default class Header extends PureComponent {
                                         </li>
                                         {user && <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                <i className="fas fa-futbol"></i>Instant/Live Betting
+                                                <i className="fas fa-futbol"></i>INSTANT/LIVE BETTING
                                             </Link>
                                         </li>}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
