@@ -12,7 +12,6 @@ import "./assets/css/themes/layout/header/menu/light.css";
 import "./assets/css/themes/layout/brand/dark.css";
 import "./assets/css/themes/layout/aside/dark.css";
 
-import { I18nProvider } from "./_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "./_metronic/layout";
 
 import {
@@ -20,7 +19,6 @@ import {
     MetronicSplashScreenProvider,
     MetronicSubheaderProvider
 } from "./_metronic/layout";
-import { MetronicI18nProvider } from "./_metronic/i18n";
 import { Provider } from "react-redux";
 import store, { persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
@@ -37,31 +35,28 @@ export default class AdminWrap extends Component {
     render() {
         // const { user, getUser } = this.state;
         return (
-            <MetronicI18nProvider>
-                <MetronicLayoutProvider>
-                    <MetronicSubheaderProvider>
-                        <MetronicSplashScreenProvider>
-                            <Provider store={store}>
-                                <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}>
-                                    <React.Suspense fallback={<LayoutSplashScreen />}>
-                                        <MTheme />
-                                        <MaterialThemeProvider>
-                                            <I18nProvider>
-                                                <BrowserRouter basename={"PPWAdmin"}>
-                                                    <Switch>
-                                                        <Route path={`/login`} component={Login} />
-                                                        <Route path="/" component={App} />
-                                                    </Switch>
-                                                </BrowserRouter>
-                                            </I18nProvider>
-                                        </MaterialThemeProvider>
-                                    </React.Suspense>
-                                </PersistGate>
-                            </Provider>
-                        </MetronicSplashScreenProvider>
-                    </MetronicSubheaderProvider>
-                </MetronicLayoutProvider>
-            </MetronicI18nProvider>
+
+            <MetronicLayoutProvider>
+                <MetronicSubheaderProvider>
+                    <MetronicSplashScreenProvider>
+                        <Provider store={store}>
+                            <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}>
+                                <React.Suspense fallback={<LayoutSplashScreen />}>
+                                    <MTheme />
+                                    <MaterialThemeProvider>
+                                            <BrowserRouter basename={"PPWAdmin"}>
+                                                <Switch>
+                                                    <Route path={`/login`} component={Login} />
+                                                    <Route path="/" component={App} />
+                                                </Switch>
+                                            </BrowserRouter>
+                                    </MaterialThemeProvider>
+                                </React.Suspense>
+                            </PersistGate>
+                        </Provider>
+                    </MetronicSplashScreenProvider>
+                </MetronicSubheaderProvider>
+            </MetronicLayoutProvider>
         );
     }
 }

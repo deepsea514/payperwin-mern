@@ -43,6 +43,7 @@ import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
