@@ -35,8 +35,13 @@ const { generateToken } = require('./generateToken');
 const v1Router = require('./v1Routes');
 const Promotion = require('./models/promotion');
 const PromotionLog = require('./models/promotionlog');
+const FinancialLog = require('./models/financiallog');
+const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./generateSignature');
+const PremierResponse = require('./models/premier-response');
+const premierRouter = require('./premierRoutes');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
+const PremiumPay = config.PremiumPay;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -623,6 +628,8 @@ expressApp.post('/usernameChange', bruteforce.prevent, async (req, res) => {
     );
 });
 
+
+//should Remove
 expressApp.post('/balanceUpdate', /* bruteforce.prevent, */ async (req, res) => {
     const { amount } = req.body;
     User.findOne(
@@ -1250,8 +1257,8 @@ expressApp.get(
     async (req, res) => {
         let userObj = false;
         if (req.isAuthenticated()) {
-            const { username, _id: userId, settings, roles, email, balance } = req.user;
-            userObj = { username, userId: userId.toString(), roles, email, balance };
+            const { username, _id: userId, settings, roles, email, balance, phone } = req.user;
+            userObj = { username, userId: userId.toString(), roles, email, balance, phone };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
@@ -1410,12 +1417,84 @@ expressApp.get('/vipCodeExist', async (req, res) => {
     } catch (error) {
         return res.json({ success: 0, message: "Can't find Promotion." });
     }
-})
+});
+
+expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res) => {
+    const data = req.body;
+    const { amount, email, phone, method } = data;
+    if (method == "eTransfer") {
+        if (!amount || !email || !phone) {
+            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone is required." });
+        }
+        try {
+            const { user } = req;
+            try {
+                const uniqid = `D${ID()}`;
+                const signature = generatePremierRequestSignature(email, amount, user._id, uniqid);
+                const { data } = await axios.post(`${PremiumPay.url}/${PremiumPay.sid}`,
+                    {
+                        "payby": "etransfer",
+                        "first_name": user.firstname,
+                        "last_name": user.lastname,
+                        "email": email,
+                        "phone": phone,
+                        "address": "Artery roads",
+                        "city": "Edmonton",
+                        "state": "AB",
+                        "country": "CA",
+                        "zip_code": "T5A",
+                        "ip_address": "159.203.4.60",
+                        "items": [
+                            {
+                                "name": "ETransfer Deposit to PayperWin",
+                                "quantity": 1,
+                                "unit_price": amount,
+                                "sku": uniqid
+                            }
+                        ],
+                        "notification_url": "http://payperwin.co:8080/premier/result",
+                        "amount_shipping": 0.00,
+                        "udf1": user._id,
+                        "udf2": uniqid,
+                        "signature": signature
+                    }
+                );
+                await PremierResponse.create(data);
+
+                const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                if (responsesignature != data.signature) {
+                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                }
+                if (data.status == "APPROVED") {
+                    const deposit = new FinancialLog({
+                        financialtype: 'deposit',
+                        uniqid: `D${ID()}`,
+                        user: user._id,
+                        amount,
+                        method,
+                        status: "Pending"
+                    });
+                    await deposit.save();
+                    return res.json({ success: 1, message: "Please wait until deposit is finished." });
+                }
+                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+            } catch (error) {
+                console.log(error);
+                return res.status(400).json({ success: 0, message: "Failed to create deposit." });
+            }
+        } catch (error) {
+            return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
+        }
+    }
+    else {
+        return res.status(400).json({ success: 0, message: "Method is not suitable." });
+    }
+});
 
 // Admin
 expressApp.use('/admin', adminRouter);
 expressApp.use('/v1', v1Router)
-
+expressApp.use('/premier', premierRouter);
 
 if (process.env.NODE_ENV === 'development') {
     expressApp.get(

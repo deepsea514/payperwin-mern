@@ -66,5 +66,10 @@
     "PromotionFor": {
         "new": "New Clients",
         "existing": "Existing Clients"
+    },
+    "PremiumPay": {
+        "url": "https://secure.premierpay.ca/api/v2/payment",
+        "sid": 201,
+        "rcode": "69d82724EAfB6653A4e60072bf8136Da"
     }
 }

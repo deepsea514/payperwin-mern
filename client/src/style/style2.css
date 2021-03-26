@@ -1950,3 +1950,10 @@ sup {
 body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     flex-direction: column;
 }
+
+.depositFieldset {
+    width: fit-content;
+    border: gray 1px solid;
+    padding: 10px;
+    margin: 10px 0 0 60px;
+}

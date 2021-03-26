@@ -43,6 +43,7 @@ import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
+import ETransfer from "../pages/etransfer";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
@@ -248,6 +249,7 @@ class App extends PureComponent {
                                                 <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
+                                                <Route path="/etransfer" render={(props) => <ETransfer {...props} user={user} />}/>
                                                 <Route path="/">
                                                     {
                                                         () => {

@@ -1,43 +1,40 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder'
+import { Link, withRouter } from 'react-router-dom';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
-export default class Deposit extends PureComponent {
+class Deposit extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    updateBalance(amount) {
-        const { updateUser } = this.props;
-        const url = `${serverUrl}/balanceUpdate`;
-        axios({
-            method: 'post',
-            url,
-            data: {
-                amount,
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        }).then(({ data: balance }) => {
-            updateUser('balance', balance);
-        }).catch((err) => {
-            if (err.response) {
-                console.log(err.response);
-            }
-        });
-    }
+    // updateBalance(amount) {
+    //     const { updateUser } = this.props;
+    //     const url = `${serverUrl}/balanceUpdate`;
+    //     axios({
+    //         method: 'post',
+    //         url,
+    //         data: {
+    //             amount,
+    //         },
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         withCredentials: true,
+    //     }).then(({ data: balance }) => {
+    //         updateUser('balance', balance);
+    //     }).catch((err) => {
+    //         if (err.response) {
+    //             console.log(err.response);
+    //         }
+    //     });
+    // }
 
     componentDidMount() {
         setTitle({ pageTitle: 'Deposit' });
-    }
-
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -49,7 +46,14 @@ export default class Deposit extends PureComponent {
                     <div className="deposit-in bg-color-box pad10">
                         <h4 className="header-i4">SELECT DEPOSIT METHOD</h4>
                         <ul className="diposit-list d-flex flex-wrap justify-content-space">
-                            <li><a href="#"><img src="images/eTransfer.png" /></a> <a href="#">Interac eTransfer </a></li>
+                            <li>
+                                <Link to={{ pathname: '/etransfer' }}>
+                                    <img src="images/eTransfer.png" />
+                                </Link>
+                                <Link to={{ pathname: '/etransfer' }}>
+                                    Interac eTransfer
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">
@@ -59,8 +63,10 @@ export default class Deposit extends PureComponent {
                         Please see the <a href="#">payment methods</a> pages of the site for more information on fees.
                     </p>
                 </div>
-                <button className="form-button" onClick={() => this.updateBalance(100)}>Deposit $100 (Testing Purposes)</button>
+                {/* <button className="form-button" onClick={() => this.updateBalance(100)}>Deposit $100 (Testing Purposes)</button> */}
             </div>
         );
     }
 }
+
+export default withRouter(Deposit);
