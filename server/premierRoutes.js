@@ -3,7 +3,6 @@ const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store);
 const User = require("./models/user");
-const config = require("../config.json");
 const { ObjectId } = require('bson');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const sgMail = require('@sendgrid/mail');
@@ -17,7 +16,7 @@ const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const data = req.body;
         const notify = await PremierNotification.create(data);
-        const signature = generatePremierNotificationSignature(data.txid, data.status, data.amount_row, data.descriptor)
+        const signature = generatePremierNotificationSignature(data.txid, data.status, data.amount_raw, data.descriptor)
         if (signature == data.signature_v2) {
             notify.succeed = true;
             await notify.save();
