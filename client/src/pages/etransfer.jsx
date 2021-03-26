@@ -34,7 +34,7 @@ class ETransfer extends PureComponent {
         this.state = {
             depositSchema: Yup.object().shape({
                 amount: Yup.number()
-                    .min(25, "Minimum Deposit Amount is 25 CAD.")
+                    .min(0, "Minimum Deposit Amount is 25 CAD.")
                     .max(3000, "Maximum Deposit Amount is 3000 CAD."),
                 email: Yup.string()
                     .email("Wrong email format")
