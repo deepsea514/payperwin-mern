@@ -18,7 +18,8 @@ const PremierNotificationSchema = new Schema({
     udf5: String,
     udf6: String,
     signature_v2: String,
-    signature: String
+    signature: String,
+    succeed: { type: Boolean, default: false }
 });
 
 const PremierNotification = mongoose.model('PremierNotification', PremierNotificationSchema);

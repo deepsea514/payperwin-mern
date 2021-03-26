@@ -16,9 +16,11 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const data = req.body;
-        await PremierNotification.create(data);
+        const notify = await PremierNotification.create(data);
         const signature = generatePremierNotificationSignature(data.txid, data.status, data.amount_row, data.descriptor)
         if (signature == data.signature_v2) {
+            notify.succeed = true;
+            await notify.save();
             return next();
         }
         else {
