@@ -161,6 +161,10 @@ const schema = {
         { validator: isString },
         { validator: required },
     ],
+    region: [
+        { validator: isString },
+        { validator: required },
+    ],
     password: [
         { validator: isString },
         { validator: min, options: { number: 6 } },

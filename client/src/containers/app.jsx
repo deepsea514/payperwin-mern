@@ -25,7 +25,7 @@ import HowTo from '../pages/howto';
 import BetSlip from '../components/betSlip';
 import resObjPath from '../libs/resObjPath';
 import { setTitle } from '../libs/documentTitleBuilder';
-import Profile from "../components/profile";
+import Profile from "../pages/profile";
 import Menu from "../components/menu";
 import SidebarAccount from "../components/sidebaraccount";
 import SidebarSports from "../components/sidebarsports";

@@ -19,6 +19,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dateformat from "dateformat";
 import clsx from 'clsx';
+import { RegionDropdown } from 'react-country-region-selector';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -123,6 +124,7 @@ ColorlibStepIcon.propTypes = {
 
 const initState = {
     country: '',
+    region: '',
     email: '',
     password: '',
     cPassword: '',
@@ -150,6 +152,7 @@ const initState = {
     errors: {},
     touched: {
         country: false,
+        region: false,
         email: false,
         password: false,
         cPassword: false,
@@ -205,7 +208,8 @@ class Registration extends Component {
                     const currency = country.currency;
                     this.setState({
                         currency,
-                        touched: { ...touched, currency: true, }
+                        region: '',
+                        touched: { ...touched, currency: true, region: false }
                     });
                 }
             default:
@@ -217,20 +221,20 @@ class Registration extends Component {
         this.handleDirty(e);
     }
 
-    setDate = async (dateofbirth) => {
+    handleChangeSpec = async (field, value) => {
         const { touched } = this.state;
         await this.setState({
-            dateofbirth,
-            touched: { ...touched, dateofbirth: true, }
+            [field]: value,
+            touched: { ...touched, [field]: true, }
         });
 
         const { errors } = this.state;
-        registrationValidation.validateField('dateofbirth', this.state, { tags: ['registration'] }).then((result) => {
+        registrationValidation.validateField(field, this.state, { tags: ['registration'] }).then((result) => {
             const errorsStateChange = { ...errors, server: undefined };
             if (result === true) {
-                errorsStateChange['dateofbirth'] = undefined;
+                errorsStateChange[field] = undefined;
             } else {
-                errorsStateChange['dateofbirth'] = result;
+                errorsStateChange[field] = result;
             }
             this.setState({ errors: errorsStateChange });
         });
@@ -311,7 +315,7 @@ class Registration extends Component {
 
     getStepContent = (activeStep) => {
         const {
-            country, email, password, cPassword,
+            country, email, password, cPassword, region,
             title, username, firstname, lastname, dateofbirth,
             currency, address, address2, city, postalcode, phone,
             securityquiz, securityans, vipcode, agreeTerms, agreePrivacy,
@@ -336,6 +340,17 @@ class Registration extends Component {
                             {CountryInfo.map((country) => <option key={country.country} value={country.country}>{country.country}</option>)}
                         </Form.Control>
                         {errors.country ? <div className="registration-feedback">{errors.country}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Region</Form.Label>
+                        <RegionDropdown className="form-control"
+                            country={country}
+                            value={region}
+                            name="region"
+                            onChange={(val) => this.handleChangeSpec('region', val)}
+                            valueType="short"
+                        />
+                        {errors.region ? <div className="registration-feedback">{errors.region}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Email address</Form.Label>
@@ -438,7 +453,7 @@ class Registration extends Component {
                             className="form-control"
                             wrapperClassName="input-group"
                             selected={dateofbirth}
-                            onChange={this.setDate}
+                            onChange={(val) => this.handleChangeSpec('dateofbirth', val)}
                             placeholder="Enter Birthday"
                             isInvalid={errors.dateofbirth !== undefined}
                             required
@@ -643,6 +658,7 @@ class Registration extends Component {
         switch (activeStep) {
             case 0:
                 if ((errors.country || !touched.country) ||
+                    (errors.region || !touched.region) ||
                     (errors.email || !touched.email) ||
                     (errors.password || !touched.password) ||
                     (errors.cPassword || !touched.cPassword))

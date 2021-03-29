@@ -176,7 +176,7 @@ passport.use('local-signup', new LocalStrategy(
     },
     async (req, username, password, done) => {
         const { email, firstname, lastname,
-            country, currency, title, dateofbirth,
+            country, currency, title, dateofbirth, region,
             address, address2, city, postalcode, phone,
             securityquiz, securityans, vipcode, } = req.body;
         // asynchronous
@@ -206,7 +206,7 @@ passport.use('local-signup', new LocalStrategy(
                 // create the user
                 const newUserObj = {
                     username, email, password, firstname, lastname,
-                    country, currency, title, dateofbirth,
+                    country, currency, title, dateofbirth, region,
                     address, address2, city, postalcode, phone,
                     securityquiz, securityans, vipcode,
                     roles: {
@@ -1272,8 +1272,22 @@ expressApp.get(
     async (req, res) => {
         let userObj = false;
         if (req.isAuthenticated()) {
-            const { firstname, lastname, email, country, address, region, phone, currency } = req.user;
-            userObj = { firstname, lastname, email, country, address, region, phone, currency };
+            const { title, username,
+                firstname, lastname,
+                email, dateofbirth,
+                country, currency,
+                region, city,
+                address, address2,
+                postalcode, phone } = req.user;
+            userObj = {
+                title, username,
+                firstname, lastname,
+                email, dateofbirth,
+                country, currency,
+                region, city,
+                address, address2,
+                postalcode, phone
+            };
         }
         res.json(userObj);
     },
