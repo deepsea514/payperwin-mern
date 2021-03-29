@@ -7,6 +7,8 @@ import { Form } from "react-bootstrap";
 import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -138,16 +140,28 @@ class ETransfer extends PureComponent {
                                             </Form.Group>
                                             <Form.Group>
                                                 <Form.Label>Phone Number</Form.Label>
-                                                <Form.Control
+                                                <PhoneInput
                                                     type="text"
                                                     name="phone"
                                                     placeholder="Enter Phone Number"
-                                                    required
-                                                    className={`form-control ${this.getInputClasses(
+                                                    containerClass="input-group"
+                                                    dropdownClass="input-group-append"
+                                                    inputClass={`form-control ${this.getInputClasses(
                                                         formik,
                                                         "phone"
                                                     )}`}
+                                                    required
+                                                    value={formik.values.phone}
                                                     {...formik.getFieldProps("phone")}
+                                                    {...{
+                                                        onChange: (phone) => {
+                                                            formik.setFieldTouched('phone', true);
+                                                            formik.setFieldValue('phone', phone);
+                                                        },
+                                                        onBlur: () => {
+                                                            formik.setFieldTouched('phone', true);
+                                                        }
+                                                    }}
                                                 />
                                                 {formik.touched.phone && formik.errors.phone ? (
                                                     <div className="invalid-feedback">
