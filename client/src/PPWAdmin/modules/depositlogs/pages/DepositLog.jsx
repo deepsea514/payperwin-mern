@@ -75,7 +75,7 @@ class DepositLog extends React.Component {
                     {log.status === FinancialStatus.success && <td><span className="label label-success label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     {log.status === FinancialStatus.pending && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     {log.status === FinancialStatus.onhold && <td><span className="label label-warning label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    <td>{log.reason.title}</td>
+                    <td>{log.reason ? log.reason.title : null}</td>
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>
