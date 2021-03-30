@@ -903,7 +903,7 @@ adminRouter.get(
             if (!page) page = 1;
             page--;
             let searchObj = { deletedAt: null };
-            if (house == 'ppw') {
+            if (!house || house == 'ppw') {
                 if (status && status == 'open') {
                     searchObj = {
                         ...searchObj,
