@@ -13,6 +13,7 @@ const Email = require("./models/email");
 const AutoBet = require("./models/autobet");
 const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
+const BetSportsBook = require("./models/betsportsbook");
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
 const config = require("../config.json");
@@ -902,95 +903,108 @@ adminRouter.get(
             if (!page) page = 1;
             page--;
             let searchObj = { deletedAt: null };
+            if (house == 'ppw') {
+                if (status && status == 'open') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
+                    };
+                } else if (status && status == 'settled') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
+                    };
+                }
 
-            if (status && status == 'open') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
-                };
-            } else if (status && status == 'settled') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
-                };
-            }
+                if (match && match == 'pending') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
+                    };
+                }
+                else if (match && match == 'matched') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ matchingStatus: 'Matched' }
+                    };
+                }
 
-            if (match && match == 'pending') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
-                };
-            }
-            else if (match && match == 'matched') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ matchingStatus: 'Matched' }
-                };
-            }
-
-            if (datefrom || dateto) {
-                let dateObj = {};
-                if (datefrom) {
-                    datefrom = new Date(datefrom);
-                    if (!isNaN(datefrom.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $gte: datefrom }
+                if (datefrom || dateto) {
+                    let dateObj = {};
+                    if (datefrom) {
+                        datefrom = new Date(datefrom);
+                        if (!isNaN(datefrom.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $gte: datefrom }
+                            }
                         }
                     }
-                }
-                if (dateto) {
-                    dateto = new Date(dateto);
-                    if (!isNaN(dateto.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $lte: dateto }
+                    if (dateto) {
+                        dateto = new Date(dateto);
+                        if (!isNaN(dateto.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $lte: dateto }
+                            }
                         }
                     }
-                }
-                searchObj = {
-                    ...searchObj,
-                    ...{ createdAt: dateObj }
-                }
-            }
-
-            if (sport) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ "lineQuery.sportId": parseInt(sport) }
-                }
-            }
-
-            if (minamount || maxamount) {
-                let amountObj = {}
-                if (minamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $gte: parseInt(minamount) }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ createdAt: dateObj }
                     }
                 }
-                if (maxamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $lte: parseInt(maxamount) }
+
+                if (sport) {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ "lineQuery.sportId": parseInt(sport) }
                     }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ bet: amountObj }
+
+                if (minamount || maxamount) {
+                    let amountObj = {}
+                    if (minamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $gte: parseInt(minamount) }
+                        }
+                    }
+                    if (maxamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $lte: parseInt(maxamount) }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ bet: amountObj }
+                    }
                 }
+
+                const total = await Bet.find(searchObj).count();
+                const data = await Bet.find(searchObj)
+                    .sort({ createdAt: -1 })
+                    .skip(page * perPage)
+                    .limit(perPage)
+                    .populate('userId', ['username', 'currency'])
+                page++;
+                return res.json({ total, perPage, page, data, });
+            } else if (house == 'pinnacle') {
+                const total = await BetSportsBook.find(searchObj).count();
+                const data = await BetSportsBook.find(searchObj)
+                    .sort({ createdAt: -1 })
+                    .skip(page * perPage)
+                    .limit(perPage)
+                    .populate('userId', ['username', 'currency']);
+                return res.json({ total, perPage, page, data, });
+            } else {
+                return res.status(404).json({ error: 'Can\'t find bets on house.' });
             }
 
-            const total = await Bet.find(searchObj).count();
-            const data = await Bet.find(searchObj)
-                .sort({ createdAt: -1 })
-                .skip(page * perPage)
-                .limit(perPage)
-                .populate('userId', ['username', 'currency'])
-            page++;
-            res.json({ total, perPage, page, data, });
+
         } catch (error) {
-            res.status(500).json({ error: 'Can\'t find bets.', message: error });
+            return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
     }
 )
@@ -1001,8 +1015,18 @@ adminRouter.get(
     async (req, res) => {
         try {
             let { id } = req.query;
-            const bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
-            res.json(bet);
+            let bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
+            if (bet) {
+                bet = JSON.parse(JSON.stringify(bet));
+                bet.house = 'ppw';
+                return res.json(bet);
+            }
+            bet = await BetSportsBook.findById(id).populate('userId', ['username', 'currency']);
+            if (bet) {
+                bet = JSON.parse(JSON.stringify(bet));
+                bet.house = 'pinnacle';
+            }
+            return res.json(bet);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find bet.', message: error });
         }

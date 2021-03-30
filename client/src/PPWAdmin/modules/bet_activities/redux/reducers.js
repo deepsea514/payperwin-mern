@@ -23,7 +23,7 @@ const initialState = {
         status: '',
         minamount: '',
         maxamount: '',
-        house: '',
+        house: 'ppw',
         match: '',
     },
     sports: [],

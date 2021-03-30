@@ -22,7 +22,6 @@ class BetDetail extends React.Component {
         this.setState({ loading: true });
         getBetDetail(id).then(({ data }) => {
             this.setState({ bet: data, loading: false });
-            console.log(data);
         }).catch(() => {
             this.setState({ loading: false });
         })
@@ -52,7 +51,7 @@ class BetDetail extends React.Component {
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
-                                <table className="table">
+                                {bet.house == 'ppw' && <table className="table">
                                     <tbody>
                                         <tr>
                                             <th>Amount</th>
@@ -111,7 +110,66 @@ class BetDetail extends React.Component {
                                             <td scope="col">{this.getDate(bet.createdAt)}</td>
                                         </tr>
                                     </tbody>
-                                </table>
+                                </table>}
+
+                                {bet.house == 'pinnacle' && <table className="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Amount</th>
+                                            <td>{bet.WagerInfo.ToRisk} {bet.userId.currency}</td>
+                                            <th>User</th>
+                                            <td>{bet.userId.username}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Pick Name</th>
+                                            <td>{bet.WagerInfo.SelectionType}</td>
+                                            <th>Sport</th>
+                                            <td>{bet.WagerInfo.Sport}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Match Start Date</th>
+                                            <td>{this.getDate(bet.WagerInfo.EventDateFm)}</td>
+                                            <th>Event</th>
+                                            <td>{
+                                                bet.WagerInfo.Legs ?
+                                                    bet.WagerInfo.Legs.map(leg => {
+                                                        return <p key={leg.EventName}>{leg.EventName}</p>
+                                                    }) :
+                                                    bet.WagerInfo.EventName}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Status</th>
+                                            {bet.Name == "BETTED" && <td scope="col"><span className="label label-light-info label-inline font-weight-lighter mr-2">BETTED</span></td>}
+                                            {bet.Name == "ACCEPTED" && <td scope="col"><span className="label label-light-primary label-inline font-weight-lighter mr-2">ACCEPTED</span></td>}
+                                            {bet.Name == "SETTLED" && <td scope="col"><span className="label label-light-success label-inline font-weight-lighter mr-2">SETTLED</span></td>}
+                                            {bet.Name == "CANCELLED" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">SETTLED</span></td>}
+                                            {bet.Name == "REJECTED" && <td scope="col"><span className="label label-light-danger label-inline font-weight-lighter mr-2">REJECTED</span></td>}
+                                            {bet.Name == "ROLLBACKED" && <td scope="col"><span className="label label-light-warning label-inline font-weight-lighter mr-2">ROLLBACKED</span></td>}
+                                            {bet.Name == "UNSETTLED" && <td scope="col"><span className="label label-warning label-inline font-weight-lighter mr-2">UNSETTLED</span></td>}
+
+                                            <th>House</th>
+                                            <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Pinnacle</span></td>
+                                        </tr>
+                                        {/* <tr>
+                                            <th>Status</th>
+                                            {bet.status == "Pending" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Pending</span></td>}
+                                            {bet.status == "Partial Match" && <td scope="col"><span className="label label-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span></td>}
+                                            {bet.status == "Matched" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Matched</span></td>}
+                                            {bet.status == "Cancelled" && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Cancelled</span></td>}
+                                            {bet.status == "Settled - Lose" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Lose</span></td>}
+                                            {bet.status == "Settled - Win" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Win</span></td>}
+                                            <th>Match</th>
+                                            {(bet.status == "Matched" || bet.status == "Partial Match" || bet.status == "Pending") && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Open</span></td>}
+                                            {(bet.status == "Settled - Win" || bet.status == "Settled - Lose" || bet.status == "Cancelled") && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Settled</span></td>}
+                                        </tr> */}
+                                        <tr>
+                                            <th>Wager ID</th>
+                                            <td scope="col">{bet.WagerInfo.WagerId}</td>
+                                            <th>Created</th>
+                                            <td scope="col">{this.getDate(bet.createdAt)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>}
                             </div>
                         </div>
                         <div className="card-footer">

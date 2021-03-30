@@ -962,7 +962,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
 
 async function checkAutoBet(bet, betpool, sportData, line) {
     const { AutoBetStatus, AutoBetPeorid } = config;
-    let { odds, pick, stake: toBet, lineQuery } = bet;
+    let { pick, win: toBet, lineQuery } = bet;
     let autobets = await AutoBet
         .find({ deletedAt: null })
         .populate('userId');
