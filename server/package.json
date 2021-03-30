@@ -33,7 +33,8 @@
     "passport-email": "0.0.3",
     "passport-local": "^1.0.0",
     "pkcs7": "^1.0.4",
-    "seedrandom": "^2.4.3"
+    "seedrandom": "^2.4.3",
+    "socket.io": "^4.0.0"
   },
   "scripts": {
     "start": "set NODE_ENV=development&&node index.js",
