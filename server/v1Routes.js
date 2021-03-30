@@ -270,13 +270,6 @@ async function updateAction(action, user) {
                 ...bet.WagerInfo,
                 ...WagerInfo
             }
-        })
-        await BetSportsBook.update({
-            userId: user._id,
-            pinnacleId: WagerInfo.WagerId,
-        }, {
-            WagerInfo,
-            Name
         });
 
         if (Name == "ACCEPTED") {
