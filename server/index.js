@@ -43,6 +43,7 @@ const InsufficientFunds = 8;
 const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
 const io = require("./libs/socket");
+const BetSportsBook = require('./models/betsportsbook');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -224,7 +225,6 @@ passport.use('local-signup', new LocalStrategy(
                         sendVerificationEmail(email, req);
                         if (vipcode && vipcode != "") {
                             const promotion = await Promotion.findOne({ name: vipcode });
-                            console.log(promotion);
                             if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
                                 if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
                                     let enable = false;
@@ -1247,6 +1247,23 @@ expressApp.get(
             } else {
                 res.json([]);
             }
+        } else {
+            res.status(404).end();
+        }
+    },
+);
+
+expressApp.get(
+    '/bets-sportsbook',
+    async (req, res) => {
+        const { openBets, settledBets } = req.query;
+        if (req.user && req.user.username) {
+            let bets = [];
+            if (settledBets)
+                bets = await BetSportsBook.find({ userId: req.user._id, Name: 'SETTLED' }).sort({ createdAt: -1 });
+            else
+                bets = await BetSportsBook.find({ userId: req.user._id, Name: { $in: ['ACCEPTED', 'BETTED'] } }).sort({ createdAt: -1 });
+            res.json(bets);
         } else {
             res.status(404).end();
         }

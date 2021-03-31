@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
-export default class OpenBets extends PureComponent {
+export default class OpenBetsSportsBook extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +18,7 @@ export default class OpenBets extends PureComponent {
 
     componentDidMount() {
         const { settledBets } = this.props;
-        setTitle({ pageTitle: settledBets ? 'Bet History' : 'Open Bets' });
+        setTitle({ pageTitle: settledBets ? 'Bet History(SportsBook)' : 'Open Bets(SportsBook)' });
         this.getBetHistory();
     }
 
@@ -34,7 +34,7 @@ export default class OpenBets extends PureComponent {
     }
 
     getBetHistory() {
-        let url = `${serverUrl}/bets`;
+        let url = `${serverUrl}/bets-sportsbook`;
         const { openBets, settledBets } = this.props;
         if (openBets) {
             url += '?openBets=true'
@@ -66,33 +66,16 @@ export default class OpenBets extends PureComponent {
         const { openBets, settledBets } = this.props;
         return (
             <div className="col-in">
-                <h3>{settledBets ? 'Bet History' : 'Open Bets'}</h3>
+                <h3>{settledBets ? 'Bet History(SportsBook)' : 'Open Bets(SportsBook)'}</h3>
                 {bets.map(betObj => {
                     const {
                         _id,
-                        teamA,
-                        teamB,
-                        bet,
-                        toWin,
-                        matchStartDate,
-                        pick,
-                        pickName,
-                        pickOdds,
+                        WagerInfo,
                         createdAt,
-                        status,
-                        credited,
-                        // lineType,
-                        // sportName,
-                        homeScore,
-                        awayScore,
-                        payableToWin,
-                        matchingStatus,
-                        lineQuery,
+                        updatedAt,
+                        Name
                     } = betObj;
-                    const { type, sportName } = lineQuery;
-                    // console.log(betObj);
-                    const pickObj = pick === 'home' ? teamA : teamB;
-                    const { name, odds } = pickObj;
+
                     return (
                         <div className="open-bets" key={_id}>
                             <div className="open-bets-flex">
@@ -105,58 +88,60 @@ export default class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Bet Type</strong>
                                     <div>
-                                        {type}
+                                        {WagerInfo.Type}
                                     </div>
                                     <div>
-                                        {pickName}
+                                        {WagerInfo.SelectionType}
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
                                     <strong>Risk</strong>
                                     <div>
-                                        {bet.toFixed(2)}
+                                        {Number(WagerInfo.ToRisk).toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
                                     <strong>Odds</strong>
                                     <div>
-                                        {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                        {WagerInfo.Odds}
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
                                     <strong>To win</strong>
                                     <div>
-                                        {toWin.toFixed(2)}
-                                        {matchingStatus === 'Partial Match' ? ` (${(payableToWin).toFixed(2)} Matched)` : ` (${matchingStatus})`}
+                                        {Number(WagerInfo.ToWin).toFixed(2)}
                                     </div>
                                 </div>
+                                {settledBets && <div className="open-bets-col">
+                                    <strong>Profit And Loss</strong>
+                                    <div>
+                                        {Number(WagerInfo.ProfitAndLoss).toFixed(2)}
+                                    </div>
+                                </div>}
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
                                     <div>
-                                        {status ? status : 'Accepted'}
+                                        {Name}
                                     </div>
                                 </div>
                             </div>
-                            <div className="open-bets-event">
-                                <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} />
-                                {`${teamA.name} vs ${teamB.name}`}
-                                {homeScore && awayScore ? <div>{pickName}</div> : null}
-                                <div>Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:MM')}</div>
-                                {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
-                                {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
-                                <Link to={{ pathname: `/betforward/${_id}` }} className="form-button">Forward To Sportsbook</Link>
-                            </div>
 
-                            {
-                                // credited ? (
-                                //   <div className="open-bets-col">
-                                //     <strong>Credited</strong>
-                                //     <div>
-                                //       ${credited}
-                                //     </div>
-                                //   </div>
-                                // ) : null
-                            }
+                            {!WagerInfo.Legs && <div className="open-bets-event">
+                                <i className={`${sportNameIcon(WagerInfo.Sport) || 'fas fa-trophy'}`} />
+                                {WagerInfo.LeagueName}
+                                <div>{WagerInfo.EventName}</div>
+                                <div>Event Date: {dayjs(WagerInfo.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}</div>
+                            </div>}
+
+                            {WagerInfo.Legs && WagerInfo.Legs.map((leg, index) => (
+                                <div className="open-bets-event">
+                                    <i className={`${sportNameIcon(leg.Sport) || 'fas fa-trophy'}`} />
+                                    {leg.LeagueName}
+                                    <div>{leg.EventName}</div>
+                                    <div>Event Date: {dayjs(leg.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}</div>
+                                </div>
+                            ))}
+
                         </div>
                     );
                 })}

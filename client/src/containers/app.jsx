@@ -44,6 +44,7 @@ import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
 import ETransfer from "../pages/etransfer";
+import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
@@ -161,11 +162,13 @@ class App extends PureComponent {
         const { pathname } = location;
         const sidebarShowAccountLinks = [
             '/bets',
+            '/bets-sportsbook',
             '/deposit',
             '/announcements',
             '/deactivation',
             '/details',
             '/history',
+            '/history-sportsbook',
             '/inbox',
             '/payment-options',
             '/personal-details',
@@ -218,6 +221,12 @@ class App extends PureComponent {
                                                 <Route path="/history" render={(props) =>
                                                     <OpenBets settledBets={true} {...props} />
                                                 } />
+                                                <Route path="/bets-sportsbook" render={(props) =>
+                                                    <OpenBetsSportsBook openBets={true} {...props} />
+                                                } />
+                                                <Route path="/history-sportsbook" render={(props) =>
+                                                    <OpenBetsSportsBook settledBets={true} {...props} />
+                                                } />
                                                 <Route path="/how-it-works" component={HowTo} />
                                                 <Route path="/sports" component={Sports} />
                                                 <Route path="/sport/:name" render={(props) => {
@@ -249,7 +258,7 @@ class App extends PureComponent {
                                                 <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
-                                                <Route path="/etransfer" render={(props) => <ETransfer {...props} user={user} />}/>
+                                                <Route path="/etransfer" render={(props) => <ETransfer {...props} user={user} />} />
                                                 <Route path="/">
                                                     {
                                                         () => {

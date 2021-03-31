@@ -26,9 +26,8 @@ export default class AuthWrap extends Component {
         this.getUser();
         socket.on("sportsbook-accepted", (id) => {
             const { user } = this.state;
-            console.log(user, id);
             if (user && user.userId == id) {
-                window.location = '/bets';
+                window.location = '/bets-sportsbook';
             }
         });
     }
