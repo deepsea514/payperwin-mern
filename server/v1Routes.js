@@ -277,7 +277,7 @@ async function updateAction(action, user) {
             if (WagerInfo.Legs) {
                 let string = "";
                 WagerInfo.Legs.map(leg => {
-                    string += `${leg.Sport} ${WagerInfo.type} <br>`
+                    string += `${leg.Sport} ${WagerInfo.Type} <br>`
                 })
                 const msg = {
                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
@@ -303,7 +303,7 @@ async function updateAction(action, user) {
                     html: simpleresponsive(
                         `Hi <b>${user.firstname}</b>.
                         <br><br>
-                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.type} for ${WagerInfo.ToRisk} was accepted on ${new Date()}
+                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${new Date()}
                         <br><br>`),
                 };
                 sgMail.send(msg);
