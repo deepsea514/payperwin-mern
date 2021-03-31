@@ -144,7 +144,7 @@ export default class OpenBets extends PureComponent {
                                 <div>Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:MM')}</div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
-                                <Link to={{ pathname: `/betforward/${_id}` }} className="form-button">Forward To Sportsbook</Link>
+                                {openBets && status != "Matched" && status != 'Partial Match' && <Link to={{ pathname: `/betforward/${_id}` }} className="form-button">Forward To Sportsbook</Link>}
                             </div>
 
                             {
