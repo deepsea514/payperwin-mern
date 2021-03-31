@@ -37,7 +37,7 @@ class BetActivities extends React.Component {
     tableBody = () => {
         const { bet_activities, loading, filter } = this.props;
 
-        if (filter.house == 'ppw') {
+        if (filter.house == '' || filter.house == 'ppw') {
             if (loading) {
                 return (
                     <tr>
