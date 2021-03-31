@@ -25,7 +25,8 @@ export default class AuthWrap extends Component {
     componentDidMount() {
         this.getUser();
         socket.on("sportsbook-accepted", (id) => {
-            const { user } = this.user;
+            const { user } = this.state;
+            console.log(user, id);
             if (user && user.userId == id) {
                 window.location = '/bets';
             }
