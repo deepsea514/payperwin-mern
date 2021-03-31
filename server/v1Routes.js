@@ -15,6 +15,7 @@ const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const io = require('./libs/socket');
 
 const ErrorCode = {
     Success: 0,
@@ -308,7 +309,11 @@ async function updateAction(action, user) {
                 sgMail.send(msg);
             }
         }
-
+        let returnObj = {
+            Id,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.Success
+        };
         if (Transaction) {
             if (Transaction.TransactionType == "DEBIT") {
                 await User.findByIdAndUpdate(new ObjectId(user._id),
@@ -318,19 +323,18 @@ async function updateAction(action, user) {
                     { balance: user.balance + Transaction.Amount });
             }
 
-            return {
+            returnObj = {
                 Id,
                 TransactionId: Transaction.TransactionId,
                 WagerId: WagerInfo.WagerId,
                 ErrorCode: ActionErrorCode.Success
-            }
+            };
+        }
+        if (Name == "ACCEPTED") {
+            io.emit("sportsbook-accepted", user._id);
         }
 
-        return {
-            Id,
-            WagerId: WagerInfo.WagerId,
-            ErrorCode: ActionErrorCode.Success
-        }
+        return returnObj;
     } catch (error) {
         if (Transaction) {
             return {

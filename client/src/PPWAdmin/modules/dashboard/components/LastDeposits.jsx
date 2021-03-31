@@ -31,6 +31,7 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                 </tr>
             );
         }
+        console.log(lastdeposits);
 
         return lastdeposits.map((deposit, index) => {
             return (
@@ -42,12 +43,12 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-bolder d-block font-size-lg">
-                            {deposit.user.username}
+                            {deposit.user ? deposit.user.username : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.amount} {deposit.user.currency}
+                            {deposit.amount} {deposit.user ? deposit.user.currency : null}
                         </span>
                     </td>
                     <td className="pl-0">

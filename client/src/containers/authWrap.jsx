@@ -5,6 +5,7 @@ import update from 'immutability-helper';
 import App from '../containers/app';
 import UserContext from '../contexts/userContext';
 import axios from 'axios';
+import socket from "../helpers/socket";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -23,6 +24,12 @@ export default class AuthWrap extends Component {
 
     componentDidMount() {
         this.getUser();
+        socket.on("sportsbook-accepted", (id) => {
+            const { user } = this.user;
+            if (user && user.userId == id) {
+                window.location = '/bets';
+            }
+        });
     }
 
     getUser(callback) {

@@ -43,12 +43,12 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, root
                     </td>
                     <td className="pl-0">
                         <span className="font-weight-bolder d-block font-size-lg">
-                            {withdraw.user.username}
+                            {withdraw.user ? withdraw.user.username : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {withdraw.amount} {withdraw.user.currency}
+                            {withdraw.amount} {withdraw.user ? withdraw.user.currency : null}
                         </span>
                     </td>
                     <td className="pl-0">

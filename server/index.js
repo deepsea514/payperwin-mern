@@ -42,6 +42,7 @@ const premierRouter = require('./premierRoutes');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
+const io = require("./libs/socket");
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -1542,5 +1543,13 @@ if (process.env.NODE_ENV === 'development') {
 //   expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
 // } else {
 // Http
-expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
+const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
 // }
+const options = {
+    cors: {
+        origin: config.corsHosts,
+        allowedHeaders: ["*"],
+        credentials: true
+    }
+};
+io.attach(server, options)
