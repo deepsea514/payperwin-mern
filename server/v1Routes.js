@@ -76,7 +76,6 @@ const tokenCheck = (req, res, next) => {
 
 // Pinnacle
 v1Router.post('/ping', (req, res) => {
-    io.emit("sportsbook-accepted", "asdfasfasdf");
     res.json({
         "Result": {
             "Available": true
@@ -332,6 +331,7 @@ async function updateAction(action, user) {
             };
         }
         if (Name == "ACCEPTED") {
+            console.log("ACCEPTED", user._id);
             io.emit("sportsbook-accepted", user._id);
         }
 
