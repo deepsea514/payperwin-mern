@@ -273,7 +273,7 @@ async function updateAction(action, user) {
             }
         });
 
-        if (Name == "ACCEPTED") {
+        if (Name.toUpperCase() == "ACCEPTED") {
             if (WagerInfo.Legs) {
                 let string = "";
                 WagerInfo.Legs.map(leg => {
@@ -330,7 +330,7 @@ async function updateAction(action, user) {
                 ErrorCode: ActionErrorCode.Success
             };
         }
-        if (Name == "ACCEPTED") {
+        if (Name.toUpperCase() == "ACCEPTED") {
             console.log("ACCEPTED", user._id);
             io.emit("sportsbook-accepted", user._id);
         }
