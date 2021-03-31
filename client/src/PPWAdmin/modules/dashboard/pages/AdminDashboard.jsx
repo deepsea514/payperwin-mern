@@ -21,6 +21,7 @@ class AdminDashboard extends React.Component {
         const {
             history,
             lastbets, loadingbets,
+            lastsportsbookbets, loadingportsbookbets,
             lastwithdraws,
             loadingwithdraws,
             lastdeposits, loadingdeposits,
@@ -84,15 +85,32 @@ class AdminDashboard extends React.Component {
                                     </Switch>
                                     <Route
                                         path="/lastdeposits"
-                                        component={(props) => <LastDeposits roothistory={history} {...props} lastdeposits={lastdeposits} loadingdeposits={loadingdeposits} className="card-stretch gutter-b" />}
+                                        component={(props) => <LastDeposits
+                                            {...props}
+                                            roothistory={history}
+                                            lastdeposits={lastdeposits}
+                                            loadingdeposits={loadingdeposits}
+                                            className="card-stretch gutter-b" />}
                                     />
                                     <Route
                                         path="/lastwithdraws"
-                                        component={(props) => <LastWithdraws roothistory={history} {...props} lastwithdraws={lastwithdraws} loadingwithdraws={loadingwithdraws} className="card-stretch gutter-b" />}
+                                        component={(props) => <LastWithdraws
+                                            {...props}
+                                            roothistory={history}
+                                            lastwithdraws={lastwithdraws}
+                                            loadingwithdraws={loadingwithdraws}
+                                            className="card-stretch gutter-b" />}
                                     />
                                     <Route
                                         path="/lastbets"
-                                        component={(props) => <LastBets roothistory={history} {...props} loadingbets={loadingbets} lastbets={lastbets} className="card-stretch gutter-b" />}
+                                        component={(props) => <LastBets
+                                            {...props}
+                                            roothistory={history}
+                                            loadingbets={loadingbets}
+                                            lastbets={lastbets}
+                                            lastsportsbookbets={lastsportsbookbets}
+                                            loadingportsbookbets={loadingportsbookbets}
+                                            className="card-stretch gutter-b" />}
                                     />
                                 </div>
                             </BrowserRouter>
@@ -107,6 +125,8 @@ class AdminDashboard extends React.Component {
 const mapStateToProps = (state) => ({
     lastbets: state.dashboard.lastbets,
     loadingbets: state.dashboard.loadingbets,
+    lastsportsbookbets: state.dashboard.lastsportsbookbets,
+    loadingportsbookbets: state.dashboard.loadingportsbookbets,
     lastwithdraws: state.dashboard.lastwithdraws,
     loadingwithdraws: state.dashboard.loadingwithdraws,
     lastdeposits: state.dashboard.lastdeposits,
