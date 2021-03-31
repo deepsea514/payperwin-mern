@@ -41,6 +41,10 @@ const initialState = {
         totalwager: 0,
         wagers: []
     },
+    dashboardwagersportsbook: {
+        totalwager: 0,
+        wagers: []
+    },
     dashboardplayer: {
         totalplayer: 0,
         players: [],
@@ -165,6 +169,7 @@ export function* saga() {
             const {
                 totaldeposit, deposits,
                 totalwager, wagers,
+                totalwagersportsbook, wagerssportsbook,
                 totalplayer, players,
                 totalactiveplayer, activeplayers,
                 totalfees, fees,
@@ -173,6 +178,7 @@ export function* saga() {
             yield put(actions.getDashboardDataDetailsSuccess({
                 dashboarddeposit: { totaldeposit, deposits },
                 dashboardwager: { totalwager, wagers },
+                dashboardwagersportsbook: { totalwager: totalwagersportsbook, wagers: wagerssportsbook },
                 dashboardplayer: { totalplayer, players, },
                 dashboardactiveplayer: { totalactiveplayer, activeplayers, },
                 dashboardfees: { totalfees, fees },
@@ -182,6 +188,7 @@ export function* saga() {
             yield put(actions.getDashboardDataDetailsSuccess({
                 dashboarddeposit: { totaldeposit: 0, deposits: [] },
                 dashboardwager: { totalwager: 0, wagers: [] },
+                dashboardwagersportsbook: { totalwager: 0, wagers: [] },
                 dashboardplayer: { totalplayer: 0, players: [], },
                 dashboardactiveplayer: { totalactiveplayer: 0, activeplayers: [], },
                 dashboardfees: { totalfees: 0, fees: [], },

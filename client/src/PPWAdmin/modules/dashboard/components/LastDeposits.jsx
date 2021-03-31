@@ -31,7 +31,6 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                 </tr>
             );
         }
-        console.log(lastdeposits);
 
         return lastdeposits.map((deposit, index) => {
             return (

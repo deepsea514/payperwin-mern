@@ -1095,6 +1095,30 @@ const getTotalWager = async function (datefrom, dateto) {
     return 0;
 }
 
+const getTotalWagerSportsBook = async function (datefrom, dateto) {
+    const total = await BetSportsBook.aggregate(
+        {
+            $match: {
+                deletedAt: null,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$WagerInfo.ToRisk"
+                }
+            }
+        }
+    );
+    if (total.length) return total[0].total;
+    return 0;
+}
+
 const getTotalPlayer = async function (datefrom, dateto) {
     const total = await User.aggregate(
         {
@@ -1241,11 +1265,13 @@ adminRouter.get(
 
             const totaldeposit = await getTotalDeposit(dateranges[0], dateranges[dateranges.length - 1]);
             const totalwager = await getTotalWager(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalwagersportsbook = await getTotalWagerSportsBook(dateranges[0], dateranges[dateranges.length - 1]);
             const totalplayer = await getTotalPlayer(new Date(0), new Date());
             const totalactiveplayer = await getTotalActivePlayer(dateranges[0], dateranges[dateranges.length - 1]);
             const totalfees = await getTotalFees(dateranges[0], dateranges[dateranges.length - 1]);
             let deposits = [];
             let wagers = [];
+            let wagerssportsbook = [];
             let players = [];
             let activeplayers = [];
             let fees = [];
@@ -1254,6 +1280,8 @@ adminRouter.get(
                 deposits.push(deposit);
                 const wager = await getTotalWager(dateranges[i - 1], dateranges[i]);
                 wagers.push(wager);
+                const wagersportsbook = await getTotalWagerSportsBook(dateranges[i - 1], dateranges[i]);
+                wagerssportsbook.push(wagersportsbook);
                 const player = await getTotalPlayer(dateranges[i - 1], dateranges[i]);
                 players.push(player);
                 const activeplayer = await getTotalActivePlayer(dateranges[i - 1], dateranges[i]);
@@ -1265,6 +1293,7 @@ adminRouter.get(
             res.json({
                 totaldeposit, deposits,
                 totalwager, wagers,
+                totalwagersportsbook, wagerssportsbook,
                 totalplayer, players,
                 totalactiveplayer, activeplayers,
                 totalfees, fees,

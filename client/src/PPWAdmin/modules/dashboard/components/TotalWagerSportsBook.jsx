@@ -6,7 +6,7 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
 
-export function TotalWager({ className, categories, dashboardwager }) {
+export function TotalWagerSportsBook({ className, categories, dashboardwagersportsbook }) {
     const uiService = useHtmlClassService();
 
     const layoutProps = useMemo(() => {
@@ -32,13 +32,13 @@ export function TotalWager({ className, categories, dashboardwager }) {
     }, [uiService]);
 
     const getChartOptions = (layoutProps) => {
-        const strokeColor = "#3080ff";
+        const strokeColor = "#7441da";
 
         const options = {
             series: [
                 {
                     name: "Net Wager",
-                    data: dashboardwager.wagers
+                    data: dashboardwagersportsbook.wagers
                 }
             ],
             chart: {
@@ -108,7 +108,7 @@ export function TotalWager({ className, categories, dashboardwager }) {
             },
             yaxis: {
                 min: 0,
-                max: dashboardwager.totalwager,
+                max: dashboardwagersportsbook.totalwager,
                 labels: {
                     show: false,
                     style: {
@@ -164,7 +164,7 @@ export function TotalWager({ className, categories, dashboardwager }) {
     }
 
     useEffect(() => {
-        const element = document.getElementById("total_wager_chart");
+        const element = document.getElementById("total_wager_sportsbook_chart");
         if (!element) {
             return;
         }
@@ -176,21 +176,21 @@ export function TotalWager({ className, categories, dashboardwager }) {
         return function cleanUp() {
             chart.destroy();
         };
-    }, [layoutProps, categories, dashboardwager]);
+    }, [layoutProps, categories, dashboardwagersportsbook]);
 
     return (
         <div className={`card card-custom bg-gray-100 ${className}`}>
             {/* Header */}
-            <div className="card-header border-0 bg-primary py-5">
-                <h3 className="card-title font-weight-bolder text-white">Total Wager(PPW)</h3>
+            <div className="card-header border-0 bg-info py-5">
+                <h3 className="card-title font-weight-bolder text-white">Total Wager(SportsBook)</h3>
             </div>
             {/* Body */}
-            <div className="card-body p-0 position-relative bg-primary overflow-hidden pb-4">
-                <h1 className="font-weight-bolder text-white bg-primary p-0 m-0 pl-10"> ${dashboardwager.totalwager}</h1>
+            <div className="card-body p-0 position-relative bg-info overflow-hidden pb-4">
+                <h1 className="font-weight-bolder text-white bg-info p-0 m-0 pl-10"> ${dashboardwagersportsbook.totalwager}</h1>
                 {/* Chart */}
                 <div
-                    id="total_wager_chart"
-                    className="card-rounded-bottom bg-primary"
+                    id="total_wager_sportsbook_chart"
+                    className="card-rounded-bottom bg-info"
                     style={{ height: "150px" }}
                 ></div>
             </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { TotalDeposit } from "../components/TotalDeposit";
 import { TotalWager } from "../components/TotalWager";
+import { TotalWagerSportsBook } from "../components/TotalWagerSportsBook";
 import { TotalPlayers } from "../components/TotalPlayers";
 import { ActivePlayers } from "../components/ActivePlayers";
 import { FeesCollected } from "../components/FeesCollected";
@@ -26,23 +27,31 @@ class AdminDashboard extends React.Component {
             loadingwithdraws,
             lastdeposits, loadingdeposits,
             loadingdashboarddata, categories,
-            dashboarddeposit, dashboardwager, dashboardplayer, dashboardactiveplayer, dashboardfees
+            dashboarddeposit, dashboardwager, dashboardwagersportsbook,
+            dashboardplayer, dashboardactiveplayer, dashboardfees
         } = this.props;
         return (
             <>
                 <div className="row">
-                    <div className="col-lg-6 col-xl-6 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
                         <TotalDeposit
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboarddeposit={dashboarddeposit}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xl-6 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
                         <TotalWager
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardwager={dashboardwager}
+                            className="card-stretch gutter-b" />
+                    </div>
+                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                        <TotalWagerSportsBook
+                            loadingdashboarddata={loadingdashboarddata}
+                            categories={categories}
+                            dashboardwagersportsbook={dashboardwagersportsbook}
                             className="card-stretch gutter-b" />
                     </div>
                     <div className="col-lg-6 col-xl-4 col-xxl-2">
@@ -135,6 +144,7 @@ const mapStateToProps = (state) => ({
     categories: state.dashboard.categories,
     dashboarddeposit: state.dashboard.dashboarddeposit,
     dashboardwager: state.dashboard.dashboardwager,
+    dashboardwagersportsbook: state.dashboard.dashboardwagersportsbook,
     dashboardplayer: state.dashboard.dashboardplayer,
     dashboardactiveplayer: state.dashboard.dashboardactiveplayer,
     dashboardfees: state.dashboard.dashboardfees,
