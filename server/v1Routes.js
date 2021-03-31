@@ -289,7 +289,7 @@ async function updateAction(action, user) {
                         <br><br>
                         This email is to advise that your bet for 
                         ${string}
-                        for ${Transaction.Amount} was accepted on ${new Date()}
+                        for ${WagerInfo.ToRisk} was accepted on ${new Date()}
                         <br><br>`),
                 };
                 sgMail.send(msg);
@@ -303,7 +303,7 @@ async function updateAction(action, user) {
                     html: simpleresponsive(
                         `Hi <b>${user.firstname}</b>.
                         <br><br>
-                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.type} for ${Transaction.Amount} was accepted on ${new Date()}
+                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.type} for ${WagerInfo.ToRisk} was accepted on ${new Date()}
                         <br><br>`),
                 };
                 sgMail.send(msg);
