@@ -338,6 +338,7 @@ async function updateAction(action, user) {
 
         return returnObj;
     } catch (error) {
+        console.log(error);
         if (Transaction) {
             return {
                 Id,
