@@ -71,7 +71,7 @@ class WithdrawLog extends React.Component {
                 <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{log.amount}</td>
-                    <td>{log.user.username}</td>
+                    <td>{log.user ? log.user.username : null}</td>
                     <td>{log.method}</td>
                     {log.status === FinancialStatus.success && <td><span className="label label-success label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     {log.status === FinancialStatus.pending && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{log.status}</span></td>}

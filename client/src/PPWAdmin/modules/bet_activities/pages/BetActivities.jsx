@@ -65,8 +65,8 @@ class BetActivities extends React.Component {
                 <tr key={index}>
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
-                    <td scope="col">{bet.bet} {bet.userId.currency}</td>
-                    <td scope="col">{bet.userId.username}</td>
+                    <td scope="col">{bet.bet} {bet.userId ? bet.userId.currency : null}</td>
+                    <td scope="col">{bet.userId ? bet.userId.username : null}</td>
                     <td scope="col">{bet.lineQuery.sportName}</td>
                     <td scope="col">{`${bet.teamA.name} vs ${bet.teamB.name}`}</td>
 
