@@ -330,6 +330,7 @@ async function updateAction(action, user) {
                 ErrorCode: ActionErrorCode.Success
             };
         }
+        console.log(Name);
         if (Name.toUpperCase() == "ACCEPTED") {
             console.log("ACCEPTED", user._id);
             io.emit("sportsbook-accepted", user._id);
