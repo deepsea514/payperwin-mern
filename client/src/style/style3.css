@@ -66,6 +66,11 @@ header {
     margin-left: 4px;
 }
 
+.box-mony-line.line-full {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
 .box-mony-line i {
     font-size: 20px;
     color: #c7c7c7;
@@ -124,7 +129,7 @@ a.log-in-btn {
 }
 
 .content {
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .table-list, .table-list-top {
