@@ -250,7 +250,7 @@ class App extends PureComponent {
                                                 <Route path="/faq" component={Faq} />
                                                 <Route path="/inbox" component={Inbox} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
-                                                <Route path="/transaction-history" component={TransactionHistory} />
+                                                <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
                                                 <Route path="/security" component={Security} />
                                                 <Route path="/account" component={Profile} />
                                                 <Route path="/self-exclusion" component={SelfExcusion} />

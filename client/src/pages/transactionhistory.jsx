@@ -1,20 +1,95 @@
 
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
+import axios from "axios";
+import config from "../../../config.json";
+import dateformat from "dateformat";
+const serverUrl = config.appUrl;
 
 class TransactionHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            transactions: []
         };
     }
 
     componentDidMount() {
+        axios.post(`${serverUrl}/transactions`, {}, { withCredentials: true })
+            .then(({ data }) => {
+                this.setState({ transactions: data });
+            })
+    }
 
+    getDate = (date) => {
+        return dateformat(new Date(date), "ddd, mmmm dS, yyyy, hh:MM:ss TT");
+    }
+
+    getInOut = (type, method) => {
+        switch (type) {
+            case "deposit":
+                return '';
+            case 'withdraw':
+                return '-';
+            case 'bet':
+                switch (method) {
+                    case 'bet':
+                        return '-';
+                    case 'bet - BETTED':
+                    case 'bet - UNSETTLED':
+                        return '-';
+                    case 'bet - SETTLED':
+                    case 'bet - REJECTED':
+                    case 'bet - CANCELLED':
+                    case 'bet - ROLLBACKED':
+                        return '';
+                    default:
+                        return '';
+
+                }
+            default:
+                return '';
+        }
+    }
+
+    getFormattedString = (type, method) => {
+        switch (type) {
+            case "deposit":
+                return `Deposit made through ${method}`;
+            case 'withdraw':
+                return `Withdraw made through ${method}`;
+            case 'bet':
+                switch (method) {
+                    case 'bet':
+                        return '1 Bet(s) placed.';
+                    case 'bet - BETTED':
+                        return '1 Bet(s) placed in sportsbook.';
+                    case 'bet - UNSETTLED':
+                        return '1 Bet(s) unsettled in sportsbook.';
+                    case 'bet - SETTLED':
+                        return '1 Bet(s) settled in sportsbook.';
+                    case 'bet - REJECTED':
+                        return '1 Bet(s) rejected in sportsbook.';
+                    case 'bet - CANCELLED':
+                        return '1 Bet(s) canceled in sportsbook.';
+                    case 'bet - ROLLBACKED':
+                        return '1 Bet(s) rollbacked in sportsbook.';
+                    default:
+                        return '';
+                }
+            default:
+                return '';
+        }
+    }
+
+    getFormattedAmount = (amount) => {
+        return Number(amount).toFixed(2);
     }
 
     render() {
         setTitle({ pageTitle: 'Transaction History' });
+        const { transactions } = this.state;
+        const { user } = this.props;
         return (
             <div className="col-in">
                 <h1 className="main-heading-in">Transaction history</h1>
@@ -40,45 +115,20 @@ class TransactionHistory extends Component {
                                 <strong> BALANCE </strong>
                             </div>
                         </div>
-                        <div className="row amount-col bg-color-box">
-                            <div className="col-sm-8">
-                                <span>Thu, Apr 30, 2020</span>
-                                <small>1 Wager(s) Placed</small>
+                        {transactions.map((transaction, index) => (
+                            <div className="row amount-col bg-color-box" key={index}>
+                                <div className="col-sm-8">
+                                    <span>{this.getDate(transaction.updatedAt)}</span>
+                                    <small>{this.getFormattedString(transaction.financialtype, transaction.method)}</small>
+                                </div>
+                                <div className="col-sm-2 text-right">
+                                    <small>{this.getInOut(transaction.financialtype, transaction.method) + this.getFormattedAmount(transaction.amount)}</small>
+                                </div>
+                                <div className="col-sm-2 text-right">
+                                    <small>{user ? this.getFormattedAmount(user.balance) : null}</small>
+                                </div>
                             </div>
-                            <div className="col-sm-2 text-right">
-                                <small>-5.00</small>
-                            </div>
-                            <div className="col-sm-2 text-right">
-                                <small>93.5</small>
-                            </div>
-                        </div>
-                        <div className="row amount-col bg-color-box">
-                            <div className="col-sm-8">
-                                <span>Thu, Apr 30, 2020</span>
-                                <small>1 Wager(s) Placed</small>
-                            </div>
-
-                            <div className="col-sm-2 text-right">
-                                <small>-5.00</small>
-                            </div>
-                            <div className="col-sm-2 text-right">
-                                <small>93.5</small>
-                            </div>
-                        </div>
-                        <div className="row amount-col bg-color-box">
-                            <div className="col-sm-8">
-                                <span>Thu, Apr 30, 2020</span>
-                                <small>1 Wager(s) Placed</small>
-                            </div>
-
-                            <div className="col-sm-2 text-right">
-                                <small>-5.00</small>
-
-                            </div>
-                            <div className="col-sm-2 text-right">
-                                <small>93.5</small>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                     <div className="load-m text-center">
                         <a className="load-more" href="#">Load More</a>

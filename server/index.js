@@ -1505,7 +1505,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
 
 expressApp.post(
     '/transactions',
-    bruteforce.prevent,
+    // bruteforce.prevent,
     isAuthenticated,
     async (req, res) => {
         try {
