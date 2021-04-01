@@ -16,6 +16,7 @@ const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const io = require('./libs/socket');
+const FinancialStatus = config.FinancialStatus;
 
 const ErrorCode = {
     Success: 0,
@@ -231,6 +232,15 @@ async function bettedAction(action, user) {
         await User.findByIdAndUpdate(new ObjectId(user._id),
             { balance: user.balance - Transaction.Amount });
 
+        await FinancialLog.create({
+            financialtype: 'bet',
+            uniqid: `BP${ID()}`,
+            user: user._id,
+            amount: Transaction.Amount,
+            method: `bet - ${Name}`,
+            status: FinancialStatus.success,
+        });
+
         return {
             Id,
             TransactionId: Transaction.TransactionId,
@@ -316,9 +326,25 @@ async function updateAction(action, user) {
         };
         if (Transaction) {
             if (Transaction.TransactionType == "DEBIT") {
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${ID()}`,
+                    user: user._id,
+                    amount: Transaction.Amount,
+                    method: `bet - ${Name}`,
+                    status: FinancialStatus.success,
+                });
                 await User.findByIdAndUpdate(new ObjectId(user._id),
                     { balance: user.balance - Transaction.Amount });
             } else {
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${ID()}`,
+                    user: user._id,
+                    amount: Transaction.Amount,
+                    method: `bet - ${Name}`,
+                    status: FinancialStatus.success,
+                });
                 await User.findByIdAndUpdate(new ObjectId(user._id),
                     { balance: user.balance + Transaction.Amount });
             }

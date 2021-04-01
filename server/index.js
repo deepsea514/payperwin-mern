@@ -42,6 +42,7 @@ const premierRouter = require('./premierRoutes');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
+const FinancialStatus = config.FinancialStatus;
 const io = require("./libs/socket");
 const BetSportsBook = require('./models/betsportsbook');
 
@@ -629,42 +630,6 @@ expressApp.post('/usernameChange', bruteforce.prevent, async (req, res) => {
     );
 });
 
-
-//should Remove
-expressApp.post('/balanceUpdate', /* bruteforce.prevent, */ async (req, res) => {
-    const { amount } = req.body;
-    User.findOne(
-        { username: req.user.username },
-        async (err, user) => {
-            if (err) {
-                console.log('err', err);
-                res.send(err);
-            }
-
-            if (user) {
-                const newBalance = user.balance ? user.balance + amount : 0 + amount;
-                if (newBalance > 0) {
-                    user.balance = newBalance;
-                    user.save((err2) => {
-                        if (err2) {
-                            console.error('err2', err2);
-                        }
-                        res.json(user.balance);
-                    });
-                    // await Admin.findOneAndUpdate({}, {
-                    //     $inc: {
-                    //         totalWallet: amount,
-                    //         userWallet: amount,
-                    //     },
-                    // }, { upsert: true });
-                } else {
-                    res.status(403).json({ error: 'You cannot withdrawal more than your balance.' });
-                }
-            }
-        },
-    );
-});
-
 function calculateToWinFromBet(bet, americanOdds) {
     const stake = Math.abs(Number(Number(bet).toFixed(2)));
     const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
@@ -740,7 +705,6 @@ async function calculateBetsStatus(betpoolUid) {
 }
 
 expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
-    // TODO: loop through each bet, collect any errors for each bet, show new balance
     const {
         betSlip,
     } = req.body;
@@ -923,6 +887,14 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                 user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
                                                 user.balance = newBalance;
                                                 try {
+                                                    await FinancialLog.create({
+                                                        financialtype: 'placebet',
+                                                        uniqid: `BP${ID()}`,
+                                                        user: user._id,
+                                                        amount: toBet,
+                                                        method: 'bet',
+                                                        status: FinancialStatus.success,
+                                                    });
                                                     await user.save();
                                                 } catch (err) {
                                                     console.log('err' + err);
@@ -1131,6 +1103,14 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         selectedauto.userId.betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
         selectedauto.userId.balance = Number(newBalance.toFixed(2));
         try {
+            await FinancialLog.create({
+                financialtype: 'placebet',
+                uniqid: `BP${ID()}`,
+                user: selectedauto.userId._id,
+                amount: toBet,
+                method: 'bet',
+                status: FinancialStatus.success,
+            });
             await selectedauto.userId.save();
         } catch (err) {
             console.log('err' + err);
@@ -1522,6 +1502,17 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
         return res.status(400).json({ success: 0, message: "Method is not suitable." });
     }
 });
+
+expressApp.post(
+    '/transactions',
+    bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        const financials = await FinancialLog.find({ user: req.user._id });
+        const bets = await Bet.find({ userId: req.user._id });
+        const betsportsbook = await BetSportsBook.find({ userId: req.user._id });
+    }
+);
 
 // Admin
 expressApp.use('/admin', adminRouter);
