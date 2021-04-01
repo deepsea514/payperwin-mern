@@ -830,6 +830,9 @@ a.log-in-btn {
     .main-section {
         padding-top: 150px;
     }
+    .BrainhubCarousel {
+        margin-bottom: 5px;
+    }
 }
 
 @media (max-width: 767px) {

@@ -180,7 +180,7 @@ export default class BetSlip extends PureComponent {
                                 <div>
                                     <center>
                                         Your bet has been submitted.
-                    <br />
+                                        <br />
                                         <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
                                     </center>
                                 </div>
@@ -193,7 +193,7 @@ export default class BetSlip extends PureComponent {
                     onClick={() => toggleField('openBetSlipMenu')}
                 >
                     BET SLIP
-          {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
+                    {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
                     <i className="fas fa-minus" />
                 </div>
                 <div className="bet-slip-content">
@@ -220,7 +220,7 @@ export default class BetSlip extends PureComponent {
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         Total Risk
-                  </div>
+                                    </div>
                                     <div className="total-st-left text-right">
                                         USD {totalStake.toFixed(2)}
                                     </div>
@@ -228,7 +228,7 @@ export default class BetSlip extends PureComponent {
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         Total Win
-                  </div>
+                                    </div>
                                     <div className="total-st-left text-right">
                                         USD {totalWin.toFixed(2)}
                                     </div>
