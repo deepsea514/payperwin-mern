@@ -888,7 +888,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                 user.balance = newBalance;
                                                 try {
                                                     await FinancialLog.create({
-                                                        financialtype: 'placebet',
+                                                        financialtype: 'bet',
                                                         uniqid: `BP${ID()}`,
                                                         user: user._id,
                                                         amount: toBet,
@@ -1104,7 +1104,7 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         selectedauto.userId.balance = Number(newBalance.toFixed(2));
         try {
             await FinancialLog.create({
-                financialtype: 'placebet',
+                financialtype: 'bet',
                 uniqid: `BP${ID()}`,
                 user: selectedauto.userId._id,
                 amount: toBet,
