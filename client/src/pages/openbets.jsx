@@ -146,17 +146,6 @@ export default class OpenBets extends PureComponent {
                                 {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
                                 {openBets && status != "Matched" && status != 'Partial Match' && <Link to={{ pathname: `/betforward/${_id}` }} className="form-button">Forward To Sportsbook</Link>}
                             </div>
-
-                            {
-                                // credited ? (
-                                //   <div className="open-bets-col">
-                                //     <strong>Credited</strong>
-                                //     <div>
-                                //       ${credited}
-                                //     </div>
-                                //   </div>
-                                // ) : null
-                            }
                         </div>
                     );
                 })}

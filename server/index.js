@@ -313,7 +313,7 @@ expressApp.post(
                         ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
                     });
                     log.save(function (error) {
-                        if (error) console.log(error);
+                        if (error) console.log("register => ", error);
                         else console.log(`User register log - ${user.username}`);
                     });
                     return res.send(`registered ${user.username}`);
@@ -334,7 +334,7 @@ expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
                 ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
             });
             log.save(function (error) {
-                if (error) console.log(error);
+                if (error) console.log("login", error);
                 else console.log(`User login log - ${user.username}`);
             });
 
@@ -577,7 +577,7 @@ expressApp.post('/newPasswordFromToken', bruteforce.prevent, async (req, res) =>
         { username },
         (err, user) => {
             if (err) {
-                console.log('err', err);
+                console.log('newPasswordFromToken => ', err);
                 res.send(err);
             }
             if (user) {
@@ -609,7 +609,7 @@ expressApp.post('/usernameChange', bruteforce.prevent, async (req, res) => {
         { username: req.user.username },
         (err, user) => {
             if (err) {
-                console.log('err', err);
+                console.log('usernameChange => ', err);
                 res.send(err);
             }
 
@@ -718,7 +718,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
         { username: req.user.username },
         async (err, user) => {
             if (err) {
-                console.log('err', err);
+                console.log('placeBets => ', err);
                 res.send(err);
                 return;
             }
@@ -876,9 +876,9 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                     try {
                                                         await newBetPool.save();
 
-                                                        await checkAutoBet(bet, newBetPool, sportData, line);
+                                                        await checkAutoBet(bet, newBetPool, user, sportData, line);
                                                     } catch (err) {
-                                                        console.log('err' + err);
+                                                        console.log('can\'t save newBetPool => ' + err);
                                                     }
                                                 }
 
@@ -897,7 +897,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                     });
                                                     await user.save();
                                                 } catch (err) {
-                                                    console.log('err' + err);
+                                                    console.log('can\'t save user balance => ' + err);
                                                 }
                                             }
                                             catch (e2) {
@@ -933,7 +933,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
     );
 });
 
-async function checkAutoBet(bet, betpool, sportData, line) {
+async function checkAutoBet(bet, betpool, user, sportData, line) {
     const { AutoBetStatus, AutoBetPeorid } = config;
     let { pick, win: toBet, lineQuery } = bet;
     let autobets = await AutoBet
@@ -944,7 +944,6 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         const results = await Promise.all(arr.map(predicate));
         return arr.filter((_v, index) => results[index]);
     }
-
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
         const today = new Date();
         let fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -963,10 +962,11 @@ async function checkAutoBet(bet, betpool, sportData, line) {
         if (logs && logs.length)
             bettedamount = logs[0].amount;
         return (
+            autobet.userId._id.toString() != user._id.toString() &&     //Not same user
             autobet.status == AutoBetStatus.active &&                   //Check active status
             autobet.userId.balance >= InsufficientFunds + toBet &&      //Check Balance
             autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            (bettedamount < (autobet.budget - toBet))                       //Check Budget
+            (bettedamount < (autobet.budget - toBet))                   //Check Budget
         );
     });
 
@@ -1100,8 +1100,8 @@ async function checkAutoBet(bet, betpool, sportData, line) {
 
         await calculateBetsStatus(JSON.stringify(lineQuery));
 
-        selectedauto.userId.betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
-        selectedauto.userId.balance = Number(newBalance.toFixed(2));
+        const betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
+        const balance = Number(newBalance.toFixed(2));
         try {
             await FinancialLog.create({
                 financialtype: 'bet',
@@ -1111,9 +1111,9 @@ async function checkAutoBet(bet, betpool, sportData, line) {
                 method: 'bet',
                 status: FinancialStatus.success,
             });
-            await selectedauto.userId.save();
+            await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, balance });
         } catch (err) {
-            console.log('err' + err);
+            console.log('selectedauto.userId =>' + err);
         }
     }
     catch (e2) {
@@ -1165,7 +1165,7 @@ expressApp.get(
                     // TODO: remove original bet if unmatched or modify the bet and toWin amount
                     await calculateBetsStatus(JSON.stringify(lineQuery));
                 } catch (e) {
-                    console.log(e);
+                    console.log("betforward => ", e);
                     res.status(404).json({ error: 'There was a problem submitting this bet.' });
                 }
             } else {
@@ -1381,7 +1381,7 @@ expressApp.get('/getPinnacleLogin', bruteforce.prevent, isAuthenticated, async (
 
         loginInfo = data;
     } catch (error) {
-        console.log(error);
+        console.log("getPinnacleLogin1 => ", error);
         return res.status(400).json({
             error: "Pinnacle login failed."
         });
@@ -1398,7 +1398,7 @@ expressApp.get('/getPinnacleLogin', bruteforce.prevent, isAuthenticated, async (
 
         userInfo = data;
     } catch (error) {
-        console.log(error);
+        console.log("getPinnacleLogin2 => ", error);
         return res.status(400).json({
             error: "Pinnacle login failed."
         });
@@ -1491,7 +1491,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
                 }
                 return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
-                console.log(error);
+                console.log("deposit => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create deposit." });
             }
         } catch (error) {
@@ -1508,9 +1508,17 @@ expressApp.post(
     bruteforce.prevent,
     isAuthenticated,
     async (req, res) => {
-        const financials = await FinancialLog.find({ user: req.user._id });
-        const bets = await Bet.find({ userId: req.user._id });
-        const betsportsbook = await BetSportsBook.find({ userId: req.user._id });
+        try {
+            const financials = await FinancialLog.find({
+                user: req.user._id,
+                status: FinancialStatus.success,
+                deletedAt: null
+            });
+            res.json(financials);
+        } catch (error) {
+            console.log("transactions => ", error);
+            res.status(400).json({ success: 0, message: "can't load data" });
+        }
     }
 );
 

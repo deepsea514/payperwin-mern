@@ -1957,7 +1957,3 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     padding: 10px;
     margin: 10px 0 0 60px;
 }
-
-.tab-pane.active {
-    border: none;
-}

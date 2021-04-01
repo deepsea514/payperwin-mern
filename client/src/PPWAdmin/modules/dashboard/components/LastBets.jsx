@@ -160,7 +160,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
             {/* Body */}
             <div className="card-body pt-3 pb-0">
                 <Tabs>
-                    <Tab eventKey="ppwbets" title="PPW Bets">
+                    <Tab eventKey="ppwbets" title="PPW Bets" className="border-0">
                         <div className="table-responsive p-3">
                             <table className="table table-vertical-center">
                                 <thead>
@@ -179,7 +179,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                             </table>
                         </div>
                     </Tab>
-                    <Tab eventKey="sportsbook" title="SportsBook">
+                    <Tab eventKey="sportsbook" title="SportsBook" className="border-0">
                         <div className="table-responsive p-3">
                             <table className="table table-vertical-center">
                                 <thead>

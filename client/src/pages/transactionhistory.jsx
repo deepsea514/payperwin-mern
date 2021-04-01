@@ -3,6 +3,16 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 
 class TransactionHistory extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+    }
+
+    componentDidMount() {
+
+    }
+
     render() {
         setTitle({ pageTitle: 'Transaction History' });
         return (
@@ -13,7 +23,7 @@ class TransactionHistory extends Component {
                         className="histyr-list d-flex justify-content-space">
                         <li>FILTER OPTIONS</li>
                         <li>
-                            <a href="#"><i className="fas fa-calendar-week"></i>Date Range </a>
+                            <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
                         </li>
                         <li>
                             <a href="#"> <i className="fas fa-business-time"></i> Filter </a>
