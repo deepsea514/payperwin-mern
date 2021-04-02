@@ -203,7 +203,7 @@ class App extends PureComponent {
                                             sportsMenuMobileOpen={sportsMenuMobileOpen}
                                             sidebarShowAccountLinks={sidebarShowAccountLinks}
                                         />
-                                        <div className="col-md-7 pad0">
+                                        <div className="col-md-7 p-0">
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
                                                 <Route path="/usernameRecovery" component={UsernameRecovery} />

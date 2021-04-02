@@ -4,21 +4,35 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import axios from "axios";
 import config from "../../../config.json";
 import dateformat from "dateformat";
+import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 const serverUrl = config.appUrl;
 
 class TransactionHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            transactions: []
+            transactions: [],
+            showFilter: false,
+            filter: {
+                all: true,
+                betwon: false,
+                placebet: false,
+                deposit: false,
+                withdraw: false
+            }
         };
     }
 
     componentDidMount() {
-        axios.post(`${serverUrl}/transactions`, {}, { withCredentials: true })
+        this.getHistory();
+    }
+
+    getHistory = () => {
+        const { filter } = this.state;
+        axios.post(`${serverUrl}/transactions`, { filter }, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({ transactions: data });
-            })
+            });
     }
 
     getDate = (date) => {
@@ -86,9 +100,45 @@ class TransactionHistory extends Component {
         return Number(amount).toFixed(2);
     }
 
+    changeFilter = (event) => {
+        const { name: field, checked: value } = event.target;
+        if (field == 'all') {
+            return this.setState({
+                filter: {
+                    all: true,
+                    betwon: false,
+                    placebet: false,
+                    deposit: false,
+                    withdraw: false
+                }
+            });
+        }
+        const { filter } = this.state;
+        if (value) {
+            return this.setState({
+                filter: {
+                    ...filter,
+                    ...{
+                        all: false,
+                        [field]: true
+                    }
+                }
+            });
+        }
+        let nextFilter = { ...filter };
+        nextFilter[field] = false;
+        let { betwon, placebet, deposit, withdraw } = nextFilter;
+        let all = !betwon && !placebet && !deposit && !withdraw;
+        this.setState({
+            filter: {
+                betwon, placebet, deposit, withdraw, all
+            }
+        });
+    }
+
     render() {
         setTitle({ pageTitle: 'Transaction History' });
-        const { transactions } = this.state;
+        const { transactions, showFilter, filter } = this.state;
         const { user } = this.props;
         return (
             <div className="col-in">
@@ -101,7 +151,60 @@ class TransactionHistory extends Component {
                             <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
                         </li>
                         <li>
-                            <a href="#"> <i className="fas fa-business-time"></i> Filter </a>
+                            <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> Filter </a>
+                            {showFilter &&
+                                <>
+                                    <div className="background-closer" onClick={() => this.setState({ showFilter: false })} />
+                                    <div className="filter-dropdown">
+                                        <FormGroup>
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.all}
+                                                    onChange={this.changeFilter}
+                                                    name="all" />}
+                                                label="All"
+                                                className="p-0 mb-0"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.betwon}
+                                                    onChange={this.changeFilter}
+                                                    name="betwon" />}
+                                                label="Bet Won"
+                                                className="p-0 mb-0"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.placebet}
+                                                    onChange={this.changeFilter}
+                                                    name="placebet" />}
+                                                label="Bet Placed"
+                                                className="p-0 mb-0"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.deposit}
+                                                    onChange={this.changeFilter}
+                                                    name="deposit" />}
+                                                label="Deposit"
+                                                className="p-0 mb-0"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.withdraw}
+                                                    onChange={this.changeFilter}
+                                                    name="withdraw" />}
+                                                label="Withdraw"
+                                                className="p-0 mb-0"
+                                            />
+                                        </FormGroup>
+                                        <Button variant="outlined" color="primary" onClick={() => {
+                                            this.getHistory();
+                                            this.setState({ showFilter: false })
+                                        }}>Apply</Button>
+                                        <Button variant="outlined" color="secondary" className="ml-2" onClick={() => this.setState({ showFilter: false })}>Cancel</Button>
+                                    </div>
+                                </>}
                         </li>
                     </ul>
                     <div className="amount-dtails">

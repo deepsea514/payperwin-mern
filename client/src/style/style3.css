@@ -870,4 +870,56 @@ a.log-in-btn {
     .main-section {
         padding-top: 128px;
     }
+    .filter-dropdown {
+        width: 100% !important;
+        left: 0;
+    }
+    .filter-dropdown::before {
+        display: none;
+    }
+}
+
+.filter-dropdown {
+    color: #333;
+    background: white;
+    position: absolute;
+    border-radius: 3px;
+    width: 200px;
+    z-index: 1;
+    box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
+    -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    margin-top: 20px;
+    padding: 10px 10px 10px 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.filter-dropdown::before {
+    content: "-";
+    background: white;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -5px;
+    left: 13px;
+    font-size: 0;
+    transform: rotateZ(45deg);
+}
+
+.filter-dropdown ul {
+    z-index: 1;
+}
+
+.filter-dropdown li {
+    padding: 5px 10px;
+}
+
+.filter-dropdown a {
+    color: #333;
+    text-decoration: none;
+}
+
+.filter-dropdown a:hover {
+    color: black;
 }
