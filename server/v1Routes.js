@@ -7,6 +7,7 @@ const Pinnacle = require('./models/pinnacle');
 const BetSportsBook = require("./models/betsportsbook");
 const TransactionSportsBookSchema = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
+const FinancialLog = require('./models/financiallog');
 const config = require("../config.json");
 const { generateToken } = require('./generateToken');
 const { ObjectId } = require('bson');
