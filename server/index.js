@@ -1349,66 +1349,70 @@ expressApp.get('/logout', (req, res) => {
     res.send('logged out');
 });
 
-expressApp.get('/getPinnacleLogin', bruteforce.prevent, isAuthenticated, async (req, res) => {
-    const { sandboxUrl, agentCode, agentKey, secretKey } = config;
-    let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-    const token = generateToken(agentCode, agentKey, secretKey);
-    if (!pinnacle) {
+expressApp.get(
+    '/getPinnacleLogin',
+    // bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        const { sandboxUrl, agentCode, agentKey, secretKey } = config;
+        let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
+        const token = generateToken(agentCode, agentKey, secretKey);
+        if (!pinnacle) {
+            try {
+                const { data } = await axios.post(`${sandboxUrl}/player/create`, {}, {
+                    headers: {
+                        userCode: agentCode,
+                        token
+                    },
+                })
+                pinnacle = await Pinnacle.create({ ...data, ...{ user: req.user._id } });
+            } catch (error) {
+                return res.status(400).json({
+                    error: "Can't create pinnacle user."
+                });
+            }
+        }
+        let loginInfo = null;
         try {
-            const { data } = await axios.post(`${sandboxUrl}/player/create`, {}, {
+            const { data } = await axios.post(`${sandboxUrl}/player/loginV2`, {
+                loginId: pinnacle.loginId
+            }, {
                 headers: {
                     userCode: agentCode,
                     token
-                },
-            })
-            pinnacle = await Pinnacle.create({ ...data, ...{ user: req.user._id } });
+                }
+            });
+
+            loginInfo = data;
         } catch (error) {
+            console.log("getPinnacleLogin1 => ", error);
             return res.status(400).json({
-                error: "Can't create pinnacle user."
+                error: "Pinnacle login failed."
             });
         }
-    }
-    let loginInfo = null;
-    try {
-        const { data } = await axios.post(`${sandboxUrl}/player/loginV2`, {
-            loginId: pinnacle.loginId
-        }, {
-            headers: {
-                userCode: agentCode,
-                token
-            }
-        });
 
-        loginInfo = data;
-    } catch (error) {
-        console.log("getPinnacleLogin1 => ", error);
-        return res.status(400).json({
-            error: "Pinnacle login failed."
-        });
-    }
+        let userInfo = null;
+        try {
+            const { data } = await axios.get(`${sandboxUrl}/player/info?userCode=${pinnacle.userCode}`, {
+                headers: {
+                    userCode: agentCode,
+                    token
+                }
+            });
 
-    let userInfo = null;
-    try {
-        const { data } = await axios.get(`${sandboxUrl}/player/info?userCode=${pinnacle.userCode}`, {
-            headers: {
-                userCode: agentCode,
-                token
-            }
-        });
+            userInfo = data;
+        } catch (error) {
+            console.log("getPinnacleLogin2 => ", error);
+            return res.status(400).json({
+                error: "Pinnacle login failed."
+            });
+        }
 
-        userInfo = data;
-    } catch (error) {
-        console.log("getPinnacleLogin2 => ", error);
-        return res.status(400).json({
-            error: "Pinnacle login failed."
-        });
-    }
-
-    return res.json({
-        loginInfo,
-        userInfo,
-    })
-});
+        return res.json({
+            loginInfo,
+            userInfo,
+        })
+    });
 
 expressApp.get('/vipCodeExist', async (req, res) => {
     const { vipcode } = req.query;
