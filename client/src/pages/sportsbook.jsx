@@ -11,7 +11,7 @@ class SportsBook extends PureComponent {
         this.state = {
             loginUrl: null,
             loading: false,
-            showModal: true,
+            showModal: false,
         };
     }
 
@@ -29,6 +29,9 @@ class SportsBook extends PureComponent {
                 console.log('error');
                 this.setState({ loading: false, loginUrl: null });
             });
+        setTimeout(() => {
+            this.setState({ showModal: true });
+        }, 1500);
     }
 
 
