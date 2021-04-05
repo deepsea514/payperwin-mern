@@ -503,11 +503,12 @@ expressApp.get('/recoverUsername', bruteforce.prevent, async (req, res) => {
                     subject: 'Username Recovery',
                     text: `You requested username recovery. Your username: ${user.username}`,
                     html: simpleresponsive(`
-              You requested username recovery. Your username: <b>${user.username}</b>
-            `),
+                        You requested username recovery. Your username: <b>${user.username}</b>
+                    `),
                 };
                 sgMail.send(msg);
                 // }
+                res.json("Please check your email for your Payper Win username");
             } else {
                 res.status(403).json({ error: 'User with that email not found.' });
             }
@@ -1349,8 +1350,7 @@ expressApp.get('/logout', (req, res) => {
     res.send('logged out');
 });
 
-expressApp.get(
-    '/getPinnacleLogin',
+expressApp.get('/getPinnacleLogin',
     // bruteforce.prevent,
     isAuthenticated,
     async (req, res) => {
@@ -1513,11 +1513,25 @@ expressApp.post(
     isAuthenticated,
     async (req, res) => {
         try {
-            const financials = await FinancialLog.find({
+            const { filter, daterange } = req.body;
+            let searchObj = {
                 user: req.user._id,
                 status: FinancialStatus.success,
                 deletedAt: null
-            });
+            };
+            if (daterange) {
+                const { startDate, endDate } = daterange;
+                searchObj = {
+                    ...searchObj,
+                    ...{
+                        updatedAt: {
+                            "$gte": new Date(startDate),
+                            "$lte": new Date(endDate),
+                        }
+                    }
+                }
+            }
+            const financials = await FinancialLog.find(searchObj);
             res.json(financials);
         } catch (error) {
             console.log("transactions => ", error);

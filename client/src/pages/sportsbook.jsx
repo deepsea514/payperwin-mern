@@ -34,9 +34,9 @@ class SportsBook extends PureComponent {
         }, 1500);
     }
 
-
     render() {
         const { loginUrl, loading, showModal } = this.state;
+        const { user } = this.props;
 
         return (
             <div className="row">
@@ -68,11 +68,18 @@ class SportsBook extends PureComponent {
                     </div>
                 </div>}
                 {(() => {
-                    if (loading)
-                        return <div>Loading...</div>;
-                    if (loginUrl == null)
-                        return <div>Error getting sportsbook.</div>;
-                    return <Iframe url={loginUrl}
+                    if (user) {
+                        if (loading)
+                            return <div>Loading...</div>;
+                        if (loginUrl == null)
+                            return <div>Error getting sportsbook.</div>;
+                        return <Iframe url={loginUrl}
+                            width="100%"
+                            height="700px"
+                            display="initial"
+                            position="relative" />
+                    }
+                    return <Iframe url="https://e38l1jq.oreo88.com"
                         width="100%"
                         height="700px"
                         display="initial"

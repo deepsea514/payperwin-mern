@@ -5,6 +5,8 @@ import axios from "axios";
 import config from "../../../config.json";
 import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import 'bootstrap-daterangepicker/daterangepicker.css';
 const serverUrl = config.appUrl;
 
 class TransactionHistory extends Component {
@@ -19,7 +21,8 @@ class TransactionHistory extends Component {
                 placebet: false,
                 deposit: false,
                 withdraw: false
-            }
+            },
+            daterange: null
         };
     }
 
@@ -28,8 +31,8 @@ class TransactionHistory extends Component {
     }
 
     getHistory = () => {
-        const { filter } = this.state;
-        axios.post(`${serverUrl}/transactions`, { filter }, { withCredentials: true })
+        const { filter, daterange } = this.state;
+        axios.post(`${serverUrl}/transactions`, { filter, daterange }, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({ transactions: data });
             });
@@ -100,10 +103,10 @@ class TransactionHistory extends Component {
         return Number(amount).toFixed(2);
     }
 
-    changeFilter = (event) => {
+    changeFilter = async (event) => {
         const { name: field, checked: value } = event.target;
         if (field == 'all') {
-            return this.setState({
+            await this.setState({
                 filter: {
                     all: true,
                     betwon: false,
@@ -113,32 +116,47 @@ class TransactionHistory extends Component {
                 }
             });
         }
-        const { filter } = this.state;
-        if (value) {
-            return this.setState({
-                filter: {
-                    ...filter,
-                    ...{
-                        all: false,
-                        [field]: true
+        else {
+            const { filter, daterange } = this.state;
+            if (value) {
+                await this.setState({
+                    filter: {
+                        ...filter,
+                        ...{
+                            all: false,
+                            [field]: true
+                        }
                     }
-                }
-            });
+                });
+            }
+            else {
+                let nextFilter = { ...filter };
+                nextFilter[field] = false;
+                let { betwon, placebet, deposit, withdraw } = nextFilter;
+                let all = !betwon && !placebet && !deposit && !withdraw;
+                await this.setState({
+                    filter: {
+                        betwon, placebet, deposit, withdraw, all
+                    }
+                });
+            }
         }
-        let nextFilter = { ...filter };
-        nextFilter[field] = false;
-        let { betwon, placebet, deposit, withdraw } = nextFilter;
-        let all = !betwon && !placebet && !deposit && !withdraw;
-        this.setState({
-            filter: {
-                betwon, placebet, deposit, withdraw, all
+        this.getHistory();
+    }
+
+    handleChangeDate = async (event, picker) => {
+        await this.setState({
+            daterange: {
+                startDate: picker.startDate._d,
+                endDate: picker.endDate._d
             }
         });
+        this.getHistory();
     }
 
     render() {
         setTitle({ pageTitle: 'Transaction History' });
-        const { transactions, showFilter, filter } = this.state;
+        const { transactions, showFilter, filter, daterange } = this.state;
         const { user } = this.props;
         return (
             <div className="col-in">
@@ -148,7 +166,12 @@ class TransactionHistory extends Component {
                         className="histyr-list d-flex justify-content-space">
                         <li>FILTER OPTIONS</li>
                         <li>
-                            <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
+                            <DateRangePicker
+                                initialSettings={daterange}
+                                onApply={this.handleChangeDate}
+                            >
+                                <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
+                            </DateRangePicker>
                         </li>
                         <li>
                             <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> Filter </a>

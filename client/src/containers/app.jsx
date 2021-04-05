@@ -188,7 +188,8 @@ class App extends PureComponent {
                 <section className="main-section">
                     <div className="container">
                         <Switch>
-                            {user && <Route path="/sportsbook" component={SportsBook} />}
+                            <Route path="/sportsbook" render={(props) => 
+                            <SportsBook {...props} user={user} />} />
                             <Route path="/signup" render={(props) =>
                                 <Registration getUser={getUser} {...props} />} />
                             <Route path="/">
