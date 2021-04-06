@@ -1468,7 +1468,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
                                 "sku": uniqid
                             }
                         ],
-                        "notification_url": "http://payperwin.co:8080/premier/result",
+                        "notification_url": "https://api.payperwin.co/premier/result",
                         "amount_shipping": 0.00,
                         "udf1": user._id,
                         "udf2": uniqid,
