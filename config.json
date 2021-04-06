@@ -9,7 +9,7 @@
     "agentKey": "0606d87a-4941-4a05-a6c1-b94cc12dc1b2",
     "secretKey": "IFcHXjqnGe7o2ruh",
     "corsHosts": [
-        "https://payperwin.co"
+        "https://payperwin.co",
         "https://www.payperwin.co"
     ],
     "serverHostToClientHost": {
