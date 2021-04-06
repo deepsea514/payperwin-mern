@@ -10,6 +10,7 @@
     "secretKey": "IFcHXjqnGe7o2ruh",
     "corsHosts": [
         "https://payperwin.co"
+        "https://www.payperwin.co"
     ],
     "serverHostToClientHost": {
         "payperwin.co:8080": "payperwin.co"
