@@ -1,7 +1,7 @@
 {
-    "serverHostUrl": "http://payperwin.co",
+    "serverHostUrl": "https://payperwin.co",
     "serverPort": 8080,
-    "clientPort": 80,
+    "clientPort": 8000,
     "pinnacleApiHost": "http://api.pinnacle.com",
     "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
     "sandboxUrl": "https://paapistg.oreo88.com/b2b",
@@ -9,7 +9,7 @@
     "agentKey": "0606d87a-4941-4a05-a6c1-b94cc12dc1b2",
     "secretKey": "IFcHXjqnGe7o2ruh",
     "corsHosts": [
-        "http://payperwin.co"
+        "https://payperwin.co"
     ],
     "serverHostToClientHost": {
         "payperwin.co:8080": "payperwin.co"
@@ -19,8 +19,8 @@
         "username": "admin",
         "password": "PayPerWin777"
     },
-    "appUrl": "http://payperwin.co:8080",
-    "appAdminUrl": "http://payperwin.co:8080/admin",
+    "appUrl": "https://payperwin.co:8080",
+    "appAdminUrl": "https://payperwin.co:8080/admin",
     "CountryInfo": [
         {
             "country": "Canada",
