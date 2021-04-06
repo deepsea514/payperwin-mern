@@ -19,8 +19,8 @@
         "username": "admin",
         "password": "PayPerWin777"
     },
-    "appUrl": "https://payperwin.co:8080",
-    "appAdminUrl": "https://payperwin.co:8080/admin",
+    "appUrl": "https://api.payperwin.co",
+    "appAdminUrl": "https://api.payperwin.co/admin",
     "CountryInfo": [
         {
             "country": "Canada",
