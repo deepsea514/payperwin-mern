@@ -64,23 +64,13 @@ export default class HowTo extends PureComponent {
                                 <strong>Choose Your Line</strong>
                             </center>
                             <div className="how-it-works-info">
+                                <strong>PEER 2 PEER BETTING</strong>
                                 <p>
-                                    Place your bet! Once you determine which category you may then choose from the over, under, money line or point spread odds.
+                                    Here is where you beat the bookie. The odds are even and better than you will find anywhere else online. The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. Payper win will take 3% from only the winner for facilitating the transaction and making sure you get paid. Payper win gurantees all winning bets will be paid. If patience isn't your virtue, say no more; we suggest doing a Instant bet.
                                 </p>
-                                <strong>Peer-to-Peer</strong>
+                                <strong>Instant Bet/ Live bet</strong>
                                 <p>
-                                    All peer-to-peer bets are against another bettor with even odds. Payper win charges 3% transaction fee to the winner. These Bets you are able to WIN MORE and RISK LESS than betting against a bookie or sportsbook.
-                                </p>
-                                <strong>Live Betting</strong>
-                                <p>
-                                    All Live Betting is forwarded to a sportsbook; these odds are provided by the sportsbook. Payper Win will forward for bet for instant acceptance and will not charge any fees for this transaction.
-                                </p>
-                                <strong>Sportsbook Forwarding</strong>
-                                <p>
-                                    Your bet is forwarded to a sportsbook; these odds are provided by the sportsbook. Payper Win will forward for bet for instant acceptance and will not charge any fees for this transaction games.
-                                </p>
-                                <p>
-                                    REMINDER: You may at anytime prior to your bet being matched, change your bet to an INSTANT BET. Once your bet is matched or changes to an instant bet, no future edits may be done to your bet.
+                                    Welcome, here is where you can bet instantly. Your bets do not need to wait for a peer to accept. These bets are instantly accepted. The only catch is that the odds are different than PEER 2 PEER. The bets here are forwarded on to a sportsbook. We are in no way affiliated with the sportsbooks.Payper win guarantees you will be paid on all winning bets. We have found the best sportsbook odds for you. Payper win does not profit off of or charge any fees whatsoever on live or instant bets. All live betting or non matching bets are done here such soccer draw bets and parlays.
                                 </p>
                             </div>
                         </div>
