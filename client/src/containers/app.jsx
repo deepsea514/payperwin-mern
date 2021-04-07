@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import update from 'immutability-helper';
 import Favicon from 'react-favicon';
-import Carousel from '@brainhubeu/react-carousel';
-import '@brainhubeu/react-carousel/lib/style.css';
 import Registration from '../pages/registration';
 import Login from '../pages/login';
 import UsernameRecovery from '../pages/usernameRecovery';
@@ -15,7 +13,6 @@ import Sports from '../pages/sports';
 import Sport from '../components/sport';
 import Lines from '../pages/lines';
 import BetForward from '../pages/betForward';
-import Highlights from '../components/highlights';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import OpenBets from '../pages/openbets';
@@ -45,6 +42,7 @@ import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
 import ETransfer from "../pages/etransfer";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
+import Dashboard from "../pages/dashboard";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
@@ -188,8 +186,8 @@ class App extends PureComponent {
                 <section className="main-section">
                     <div className="container">
                         <Switch>
-                            <Route path="/sportsbook" render={(props) => 
-                            <SportsBook {...props} user={user} />} />
+                            <Route path="/sportsbook" render={(props) =>
+                                <SportsBook {...props} user={user} />} />
                             <Route path="/signup" render={(props) =>
                                 <Registration getUser={getUser} {...props} />} />
                             <Route path="/">
@@ -260,8 +258,9 @@ class App extends PureComponent {
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/etransfer" render={(props) => <ETransfer {...props} user={user} />} />
-                                                <Route path="/">
-                                                    {
+                                                <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
+                                                    removeBet={this.removeBet} />} />
+                                                {/* {
                                                         () => {
                                                             setTitle({ pageTitle: '' });
                                                             return (
@@ -281,7 +280,7 @@ class App extends PureComponent {
                                                             );
                                                         }
                                                     }
-                                                </Route>
+                                                </Route> */}
                                             </Switch>
                                         </div>
                                         <div className="col-sm-3 side-bar">

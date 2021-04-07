@@ -29,9 +29,22 @@ class SportsBook extends PureComponent {
                 console.log('error');
                 this.setState({ loading: false, loginUrl: null });
             });
-        setTimeout(() => {
-            this.setState({ showModal: true });
-        }, 1500);
+        const preference = JSON.parse(localStorage.getItem('frontend-preference'));
+        if (!preference || !preference.sportsbookModal) {
+            setTimeout(() => {
+                this.setState({ showModal: true });
+            }, 1500);
+        }
+    }
+
+    dontShowModal = () => {
+        this.setState({ showModal: false });
+        let preference = JSON.parse(localStorage.getItem('frontend-preference'));
+        if (!preference) {
+            preference = {};
+        }
+        preference.sportsbookModal = true;
+        localStorage.setItem('frontend-preference', JSON.stringify(preference));
     }
 
     render() {
@@ -61,7 +74,7 @@ class SportsBook extends PureComponent {
                                 All live betting or non matching bets are done here such soccer draw bets and parlays.
                             </p>
                             <div className="text-right">
-                                <button className="form-button" onClick={() => this.setState({ showModal: false })}> Don't show again </button>
+                                <button className="form-button" onClick={this.dontShowModal}> Don't show again </button>
                                 <button className="form-button ml-2" onClick={() => this.setState({ showModal: false })}> OK </button>
                             </div>
                         </div>
