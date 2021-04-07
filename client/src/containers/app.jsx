@@ -268,8 +268,8 @@ class App extends PureComponent {
                                                                 <React.Fragment>
                                                                     <Carousel autoPlay={8000} animationSpeed={1800} infinite
                                                                         stopAutoPlayOnHover={true}>
-                                                                        <Link to={{ pathname: '/signup' }}>
-                                                                            <img src="/images/Banner 1.png" />
+                                                                        <Link to={{ pathname: '/how-it-works' }}>
+                                                                            <img src="/images/Banner 1.jpg" />
                                                                         </Link>
                                                                         <Link to={{ pathname: '/how-it-works' }}>
                                                                             <img src="/images/Banner 2.png" />
