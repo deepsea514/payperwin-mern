@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import dateformat from "dateformat";
+import { FormattedMessage, injectIntl } from "react-intl";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -159,7 +160,7 @@ export default class Header extends PureComponent {
                                     <ul className="navbar-nav-mobile navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
+                                                <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
@@ -183,7 +184,7 @@ export default class Header extends PureComponent {
                                     <ul className="navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
+                                                <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
