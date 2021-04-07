@@ -159,24 +159,32 @@ export default class Header extends PureComponent {
                                     </button>
                                     <ul className="navbar-nav-mobile navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
-                                            </Link>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/' }} className="nav-link">
+                                                    <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
+                                                </Link>
+                                            </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                <i className="fas fa-futbol"></i>INSTANT/LIVE&nbsp;BETTING
-                                            </Link>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                                    <i className="fas fa-futbol"></i>INSTANT/LIVE BETTING
+                                                </Link>
+                                            </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                <i className="fas fa-info"></i>How&nbsp;It&nbsp;Works
-                                            </Link>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/how-it-works' }} className="nav-link">
+                                                    <i className="fas fa-info"></i>How It Works
+                                                </Link>
+                                            </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/faq' }} className="nav-link">
-                                                <i className="fas fa-question"></i>FAQ
-                                            </Link>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/faq' }} className="nav-link">
+                                                    <i className="fas fa-question"></i>FAQ
+                                                </Link>
+                                            </center>
                                         </li>
                                     </ul>
                                 </div>

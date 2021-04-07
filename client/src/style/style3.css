@@ -605,7 +605,7 @@ a.log-in-btn {
 }
 
 .mobile-menu {
-    background: linear-gradient(90deg, #0b1422, #042d56);
+    background: linear-gradient(90deg, #0b1422, #273043);
     height: 100%;
     display: flex !important;
     flex-direction: column;
