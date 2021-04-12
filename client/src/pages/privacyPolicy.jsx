@@ -23,7 +23,7 @@ class PrivacyPolicy extends Component {
                 <div className="content-container">
                     <div className="privacy-policy-container">
                         <div className="privacy-policy-page-title">Privacy Policy v.4</div>
-                        <div className="privacy-policy-header-text">Last updated on: 1<sup>st</sup> January 2019</div>
+                        <div className="privacy-policy-header-text">Last updated on: 1st January 2019</div>
 
                         <div className="selection-list gray">
                             <ul className="list">
@@ -160,8 +160,11 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a>.</div><div className="privacy-policy-paragraph">By providing your personal information and registering with us or logging on with us when you enter our Website, you explicitly consent to us processing and disclosing your personal information in the manner set out in this Privacy Policy, or as otherwise provided in accordance with the Terms &amp; Conditions.
-                        </div>
+                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a>.
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                By providing your personal information and registering with us or logging on with us when you enter our Website, you explicitly consent to us processing and disclosing your personal information in the manner set out in this Privacy Policy, or as otherwise provided in accordance with the Terms & Conditions.
+                            </div>
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-3">Third-party links</div>
@@ -174,7 +177,7 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 4 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 This website may include links to third-party websites, plug-ins and applications. Clicking on those links or enabling those connections may allow third parties to collect or share data about you. We do not control these third-party websites and are not responsible for their privacy statements. When you leave our website, we encourage you to read the privacy notice of every website you visit.
-                        </div>
+                            </div>
                         </div>
                         <div className="privacy-policy-section-title desktop" id="title-4">
                             2. The data we collect about you
@@ -187,8 +190,11 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 5 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                Personal data (or personal information) means any information about an individual from which that person can be identified. It does not include data where the identity has been removed (anonymous data).</div><div className="privacy-policy-paragraph">We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:
-                        </div>
+                                Personal data (or personal information) means any information about an individual from which that person can be identified. It does not include data where the identity has been removed (anonymous data).
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:
+                            </div>
                             <ul>
                                 <li><strong>Identity Data</strong> includes first name, maiden name, last name, username or similar identifier, date of birth and gender.</li>
                                 <li><strong>Contact Data</strong> includes billing address, delivery address, email address and telephone numbers.</li>
@@ -238,10 +244,10 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 7 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 We have set out below, in a table format, a description of the ways we plan to use your personal data and which of the legal bases we rely on to do so. We have also identified what our legitimate interests are where appropriate. Information on the balancing test at the basis of the legitimate interest can be obtained upon request by contacting the DPO at <a href="mailto:dpo@payperwin.com">dpo@payperwin.com</a>.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 Note that we may process your personal data for more than one lawful ground depending on the specific purpose for which we are using your data. Please <a href="mailto:customerservice@payperwin.com">contact us</a> if you need details about the specific legal ground we are relying on to process your personal data where more than one ground has been set out in the table below.
-                        </div>
+                            </div>
                             <table>
                                 <tbody>
                                     <tr>
@@ -252,7 +258,7 @@ class PrivacyPolicy extends Component {
                                             <p><strong>Type of data</strong></p>
                                         </td>
                                         <td>
-                                            <p><strong><span>Lawful</span> basis for processing including the <span>basis</span> of legitimate interest</strong></p>
+                                            <p><strong>Lawful basis for processing including the basis of legitimate interest</strong></p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -380,7 +386,7 @@ class PrivacyPolicy extends Component {
                                     </tr>
                                     <tr>
                                         <td>
-                                            <p>To prevent you from accessing our services when you have disclosed to have gambling addiction sustained by medical evidence such as <span>medical</span> reports.</p>
+                                            <p>To prevent you from accessing our services when you have disclosed to have gambling addiction sustained by medical evidence such as medical reports.</p>
                                         </td>
                                         <td>
                                             <p>(a) Health</p>
@@ -405,19 +411,19 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 8 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 a. For anti-money laundering, fraud detection and/or control purposes, PayPerWin has the right to transfer your personal data to third parties, including but not limited to third-party suppliers such as the police, financial integrity units, banks, ID and address verification system providers, payment service providers and financial institutions, however, only where we have assurance that they are meeting the same standards on the processing of data and security. We encourage you to read the privacy policies of our third-party suppliers.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 b. Furthermore, we reserve the right to disclose your personal data to relevant third parties, such as other PayPerWin group companies, our regulators, financial integrity units, notably when PayPerWin has reasonable grounds to suspect irregularities involving your account.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 c. Your data will also be shared for regular operational purposes with entities such as cloud services, data centres, payment services, banks, ID verification tools, customer communication tools, game suppliers etc.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 d. We are entitled to share the information we hold on you which includes personal data and/or betting history with sporting bodies in order to investigate fraud, money laundering or sports integrity issues and to comply with our regulatory duties.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 e. We will take all reasonable steps to ensure that your personal data is treated securely and is processed with appropriate care and protection and in line with applicable legal requirements.
-                        </div>
+                            </div>
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-8">
@@ -432,24 +438,24 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 9 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 In order to comply with our legal, financial and regulatory requirements we will maintain your information for the minimum length of time required to meet those requirements. After the minimum amount of time for maintaining your data has elapsed and provided we do not have any other legitimate reason for maintaining your data, your data will be pseudonymised.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 The retention period will be implemented in accordance with the applicable requirements of Curacao (10 years minimum).
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 In the event you make a request for your data to be erased and such request qualifies under our guidelines for erasure, your personal data will be anonymised. Once anonymised it is no longer recognised as personal data.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 If there has been no Account Activity (as defined in our <a href="/en/future/termsandconditions" target="_blank">Terms and Conditions</a>) and we have maintained your data for the minimum time required to meet our legal and regulatory requirements, your account will be closed and pseudonymised.
-                        </div>
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 Accounts where there has been an instance of fraud, notification of gambling addiction and/or permanent self-exclusion, will not be anonymised so that we may continue to monitor these customers in adherence to our legal and regulatory requirements.
-                        </div>
+                            </div>
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-9">
                             6. Keeping you informed about our products and services
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(10)}>
                             6. Keeping you informed about our products and services
                             <div className="arrow-up" style={{ display: showMobile == 10 ? 'block' : 'none' }}></div>
@@ -458,16 +464,16 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 10 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                We’d love to send you offers, competitions &amp; exclusive content through our various marketing channels. Your data will not be sold or given to any third parties not affiliated with PayPerWin for marketing purposes without your prior approval.
-                        </div>
+                                We’d love to send you offers, competitions & exclusive content through our various marketing channels. Your data will not be sold or given to any third parties not affiliated with PayPerWin for marketing purposes without your prior approval.
+                            </div>
                             <div className="privacy-policy-paragraph">
                                 You can change your marketing preference setting by logging into your PayPerWin account and going to the “Preferences” page where you can change your marketing preference.
-                        </div>
+                            </div>
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-10">
                             7. How we secure your information
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(11)}>
                             7. How we secure your information
                             <div className="arrow-up" style={{ display: showMobile == 11 ? 'block' : 'none' }}></div>
@@ -477,7 +483,7 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 11 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 a. PayPerWin assures you that your personal data is:
-                            <ul>
+                                <ul>
                                     <li>processed in accordance with your rights;</li>
                                     <li>processed fairly and lawfully;</li>
                                     <li>obtained only for the above purposes;</li>
@@ -489,17 +495,10 @@ class PrivacyPolicy extends Component {
                             <div className="privacy-policy-paragraph">
                                 b. PayPerWin shall take all reasonable steps to ensure that your information is kept secure and protected. In this regard, we maintain appropriate technical and organisational measures to protect your data against unauthorised or unlawful processing.
                             </div>
-                            {/* <div className="privacy-policy-paragraph">
-                                c. We recommend that you send all personal documents using our secured upload tool. Please copy and paste the following link into your browser (Followed by your client ID):
-                                <ul>
-                                    <li>https://cashier.pinnacle.com/VerifyUpload.asp?customerId=</li>
-                                </ul>
-                            </div> */}
                         </div>
-
                         <div className="privacy-policy-section-title desktop" id="title-11">
                             8. Your rights
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(12)}>
                             8. Your rights
                             <div className="arrow-up" style={{ display: showMobile == 12 ? 'block' : 'none' }}></div>
@@ -509,7 +508,7 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 12 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 Subject to certain limitations on certain rights you have the following rights in relation to your information. You can exercise any of these rights by contacting <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a> naming the right you are exercising along with the reason for your request, if applicable.
-                        </div>
+                            </div>
                             <div className="right-moved">
                                 <div className="privacy-policy-paragraph">
                                     <strong>Right of Access:</strong> you have the right to request access to your personal data and supplementary information.
@@ -537,7 +536,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="privacy-policy-section-title desktop" id="title-12">
                             No fee usually required
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(13)}>
                             No fee usually required
                             <div className="arrow-up" style={{ display: showMobile == 13 ? 'block' : 'none' }}></div>
@@ -561,7 +560,7 @@ class PrivacyPolicy extends Component {
                         <div className="mobile-container" style={{ display: showMobile == 14 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
                                 We may request specific information from you to help us confirm your identity and ensure your right to access your personal data (or to exercise any of your other rights). This is a security measure to ensure that personal data is not disclosed to any person who has no right to receive it. In the event you did not provide all your verification information upon registering with us, this information may be requested to complete your profile. We may also contact you to ask you for further information in relation to your request to speed up our response. Please remember to keep your password confidential.
-                        </div>
+                            </div>
                         </div>
                         <div className="privacy-policy-section-title desktop" id="title-14">
                             Time limit to respond
@@ -600,7 +599,7 @@ class PrivacyPolicy extends Component {
                         </div>
                         <div className="privacy-policy-section-title desktop" id="title-16">
                             What is a web cookie?
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(17)}>
                             What is a web cookie?
                             <div className="arrow-up" style={{ display: showMobile == 17 ? 'block' : 'none' }}></div>
@@ -620,16 +619,26 @@ class PrivacyPolicy extends Component {
                             <div className="privacy-policy-paragraph">
                                 For example, you may not actually be able to place any bets. If you would like to amend your browser settings see “manage your cookies”. If you would like more information about cookies see “further information”.
                             </div>
-                            <div className="privacy-policy-paragraph">The types of cookies PayPerWin uses are:</div>
-                            <div className="privacy-policy-paragraph">Essential Cookies</div>
-                            <div className="privacy-policy-paragraph">Performance Cookies</div>
-                            <div className="privacy-policy-paragraph">Functionality Cookies</div>
-                            <div className="privacy-policy-paragraph">Targeting Cookies</div>
+                            <div className="privacy-policy-paragraph">
+                                The types of cookies PayPerWin uses are:
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                Essential Cookies
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                Performance Cookies
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                Functionality Cookies
+                            </div>
+                            <div className="privacy-policy-paragraph">
+                                Targeting Cookies
+                            </div>
                         </div>
 
                         <div className="privacy-policy-section-title desktop" id="title-17">
                             Essential Cookies
-                    </div>
+                        </div>
                         <div className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(18)}>
                             Essential Cookies
                             <div className="arrow-up" style={{ display: showMobile == 18 ? 'block' : 'none' }}></div>

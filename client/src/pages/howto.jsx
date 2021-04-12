@@ -3,8 +3,9 @@ import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder'
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-export default class HowTo extends PureComponent {
+class HowTo extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {};
@@ -19,6 +20,7 @@ export default class HowTo extends PureComponent {
     }
 
     render() {
+        const { intl } = this.props;
         return (
             <div className="col-in">
                 <div className="how-it-works">
@@ -34,7 +36,8 @@ export default class HowTo extends PureComponent {
                         />Works
                     </h2>
                     <div className="summary">
-                        PAYPER WIN is a Peer-to-Peer betting platform offering better odds by cutting out the bookie. No Juice, No Vig or House – just you vs. other bettors. Place bets on your favorite sports.<br /><strong>RISK less and WIN More<i>!</i></strong>
+                        <p>PAYPER WIN is a Peer-to-Peer betting platform offering better odds by cutting out the bookie. No Juice, No Vig or House – just you vs. other bettors. Place bets on your favorite sports.</p>
+                        <strong>RISK less and WIN More<i>!</i></strong>
                     </div>
                     <div className="how-it-works-steps">
                         <Carousel
@@ -56,7 +59,7 @@ export default class HowTo extends PureComponent {
                             <div className="how-it-works-info">
                                 <p>
                                     Choose from MMA, Soccer, Basketball, Football, Baseball etc.
-                            </p>
+                                </p>
                             </div>
                         </div>
                         <div>
@@ -142,3 +145,5 @@ export default class HowTo extends PureComponent {
         );
     }
 }
+
+export default injectIntl(HowTo);

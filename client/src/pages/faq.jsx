@@ -1,9 +1,11 @@
 
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class Faq extends Component {
     render() {
+        const { intl } = this.props;
         setTitle({ pageTitle: 'Frequently Asked Questions' });
         return (
             <div className="col-in faq">
@@ -81,7 +83,10 @@ class Faq extends Component {
                     enjoy higher deposit limits and quicker payouts
                 </p>
                 <p>
-                    For information about account information please email: <b>registrations@payperwin.co</b>
+                    {intl.formatMessage(
+                        { id: "PAGE.FAQ.REGISTRATION.2.2" },
+                        { email: <b>registrations@payperwin.co</b> }
+                    )}
                 </p>
 
                 <h5>Registration process</h5>
@@ -95,8 +100,8 @@ class Faq extends Component {
                 <p>
                     You can upload your documents directly to our website.
                     Click here to upload your images now, or alternatively
-                    paste the following link:&nbsp;
-                    <a href="http://www.payperwin.co/uploadmydocuments">http://www.payperwin.co/uploadmydocuments</a>
+                    paste the following link:
+                    <a href="httpS://www.payperwin.co/uploadmydocuments">http://www.payperwin.co/uploadmydocuments</a>
                     You can also
                     email digital photo of your documents and email them to
                     us: <b>registrations@payperwin.co</b> Acceptable forms of
@@ -219,4 +224,4 @@ class Faq extends Component {
     }
 }
 
-export default Faq;
+export default injectIntl(Faq);

@@ -57,9 +57,9 @@ export default class Profile extends Component {
                     .required("Currency is required."),
                 address2: Yup.string(),
                 city: Yup.string()
-                    .required('City is required'),
+                    .required('City is required.'),
                 postalcode: Yup.string()
-                    .required("Postal Code is required"),
+                    .required("Postal Code is required."),
             }),
             initialValues: null,
         }

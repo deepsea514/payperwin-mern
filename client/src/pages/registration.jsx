@@ -611,11 +611,8 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>I am at least 18 years of age (or the legal age applicable for my jurisdiction)
-                                and have read and agreed to PayperWin's
-                                    &nbsp;<Link to={'/terms-and-conditions'}>Terms And Conditions</Link>&nbsp;
-                                    and
-                                    &nbsp;<Link to={'/betting-rules'}>Betting Rules.</Link>&nbsp;</span>
+                                <span>
+                                    I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's <Link to={'/terms-and-conditions'}>Terms And Conditions</Link> and <Link to={'/betting-rules'}>Betting Rules.</Link></span>
                             </div>
                         }
                     />
@@ -632,9 +629,9 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>I have read and agree to PayPerWin's
-                                    &nbsp;<Link to={'/privacy-policy'}>Privacy Policy</Link>
-                                    .</span>
+                                <span>
+                                    I have read and agree to PayPerWin's <Link to={'/privacy-policy'}>Privacy Policy</Link>.
+                                </span>
                             </div>
                         }
                     />

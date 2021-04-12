@@ -16,7 +16,7 @@ class Preferences extends Component {
                             <div className="form-group">
                                 <label>Odds display format</label>
                                 <select className="form-control">
-                                    <option> American Ods</option>
+                                    <option> American ODds</option>
                                     <option> Decimal Odds</option>
                                 </select>
                                 <i className="fa fa-info-circle fl-rit"

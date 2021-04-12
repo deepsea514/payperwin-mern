@@ -81,7 +81,7 @@ class Security extends Component {
                                             </div>
 
                                             <div className="form-group">
-                                                <label>Security question</label>
+                                                <label>Security Answer</label>
                                                 <input type="text"
                                                     name="tkd"
                                                     placeholder="Tickets"

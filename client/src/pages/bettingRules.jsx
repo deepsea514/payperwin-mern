@@ -17,7 +17,7 @@ class BettingRules extends Component {
     }
     render() {
         const { showMobile } = this.state;
-        setTitle({ pageTitle: 'Privacy Policy' });
+        setTitle({ pageTitle: 'Betting Rules' });
         return (
             <React.Fragment>
                 <div className="content-container">
@@ -145,7 +145,7 @@ class BettingRules extends Component {
                                     </h2>
                                     <div className="mobile-container" style={{ display: showMobile == 1 ? 'block' : 'none' }}>
                                         <ol >
-                                            <li>The posted dates and times of fixtures are purely informational. Pinnacle cannot guarantee accuracy. An incorrectly posted date and/or time is not grounds for voiding bets.</li>
+                                            <li>The posted dates and times of fixtures are purely informational. Payper win cannot guarantee accuracy. An incorrectly posted date and/or time is not grounds for voiding bets.</li>
                                             <li>If a fixture isn’t completed within 30 hours of its officially planned starting time, then all bets on that fixture will be void. The exceptions to this rule are:
                                             <ol>
                                                     <li>Fixtures which in their normal course can take longer than 30 hours, such as golf tournaments.</li>
@@ -153,7 +153,7 @@ class BettingRules extends Component {
                                                     <li>Bets on the “First Team to Score” have action as soon as there is a score, regardless of whether the fixture is completed.</li>
                                                 </ol>
                                             </li>
-                                            <li>The result of a fixture will be the final determination by the fixture’s governing body on the date of the fixture’s completion. Pinnacle does not recognise protested or overturned decisions. The result of bets on a fixture suspended after the start of competition will be decided according to the betting rules specified for that sport. If nothing is specified in the sport’s rules, then General Rule #2 applies.</li>
+                                            <li>The result of a fixture will be the final determination by the fixture’s governing body on the date of the fixture’s completion. Payper win does not recognise protested or overturned decisions. The result of bets on a fixture suspended after the start of competition will be decided according to the betting rules specified for that sport. If nothing is specified in the sport’s rules, then General Rule #2 applies.</li>
                                             <li>Unless otherwise specified in a particular sport’s rules, all bets on a fixture will be void if the venue is changed.</li>
                                             <li>Bets on a specific period count only the scoring in that period, and are unaffected by what happens in prior or subsequent periods. If for any reason a fixture is not completed within the time specified in our rules, bets on the full fixture will be void. Any periods that have been completed will have action.</li>
                                             <li>If a “Draw” price is offered in a Money Line market, and the draw happens, then bets on each team lose. If a draw is not offered and a draw happens, then bets on both teams are void.</li>
@@ -165,9 +165,9 @@ class BettingRules extends Component {
                                             <li>Multi-way betting is "ALL-IN": bets always have action unless a stipulation is added to the market that a certain competitor must start for action. If such a stipulation is included, then all bets on all competitors will be void if the stipulated competitor does not start in that specific event.</li>
                                             <li>All winning bets on Multi-Way markets are paid out at full odds, regardless of the number of winners.</li>
                                             <li>If a market is offered with “The Field” as a betting option, named teams or competitors must beat every other competitor for a bet on that competitor to win. If a listed competitor ties for a win, bets on the tied competitors will be void, and all other bets will be lost.</li>
-                                            <li>All settled markets are final after 72 hours and no queries will be entertained after that period of time. Within 72 hours after markets are settled, Pinnacle will only reset or correct the results due to human error, system error or mistakes made by the referring results source.</li>
-                                            <li>Pinnacle reserves the right to void any bet at any time if it deems the bet to have been made in a fraudulent manner.</li>
-                                            <li>All bets will be accepted or rejected purely at Pinnacle's discretion. In-Play bets may be subject to a short delay before they are accepted and/or they will be kept pending during dangerous situations at Pinnacle’s discretion.</li>
+                                            <li>All settled markets are final after 72 hours and no queries will be entertained after that period of time. Within 72 hours after markets are settled, Payper win will only reset or correct the results due to human error, system error or mistakes made by the referring results source.</li>
+                                            <li>Payper win reserves the right to void any bet at any time if it deems the bet to have been made in a fraudulent manner.</li>
+                                            <li>All bets will be accepted or rejected purely at Payper win's discretion. In-Play bets may be subject to a short delay before they are accepted and/or they will be kept pending during dangerous situations at Payper win’s discretion.</li>
                                             <li>If there is an obvious error in the odds or limit of a market, bets on that market may be void.</li>
                                             <li>In case of any contradictions: Market Rules take precedence over Sport Rules; which take precedence over General Rules.</li>
                                         </ol>
@@ -189,12 +189,12 @@ class BettingRules extends Component {
                                         <p ><strong>American Football Market Rules</strong></p>
                                         <ol >
                                             <li><strong>Team to Score Next</strong>: Extra Points and 2-Point Conversions are not considered a score. The “point after try” is considered part of scoring the Touchdown.</li>
-                                            <li><strong>Passing Statistics: </strong>Bets are void if a named Quarterback doesn’t attempt at least one pass.</li>
+                                            <li><strong>Passing Statistics</strong>: Bets are void if a named Quarterback doesn’t attempt at least one pass.</li>
                                             <li><strong>Rushing Statistics Over/Under</strong>: If the named competitor plays but has no rushing attempts, their total and first attempted rushing yardage is considered to be zero.</li>
                                             <li><strong>Receiving Statistics Over/Under</strong>: If a named Receiver plays, but does not have a catch, their total and first attempted receiving yardage is considered to be zero.</li>
                                             <li><strong>Time of Score</strong>: Seconds listed in the market are inclusive, so events that happen on that second of game time are counted.</li>
-                                            <li><strong>First 1<sup>st</sup> Down</strong>: 1<sup>st</sup> downs gained on penalties and changes of possession are not counted.</li>
-                                            <li><strong>Unanswered Scores: </strong>Extra Points and 2-Point Conversions are counted as part of the Touchdown and not considered consecutive scoring events. Any return by the opposition on an Extra Point or 2-Point Conversion attempt also does not count towards these markets.</li>
+                                            <li><strong>First 1st Down</strong>: 1st downs gained on penalties and changes of possession are not counted.</li>
+                                            <li><strong>Unanswered Scores</strong>: Extra Points and 2-Point Conversions are counted as part of the Touchdown and not considered consecutive scoring events. Any return by the opposition on an Extra Point or 2-Point Conversion attempt also does not count towards these markets.</li>
                                             <li><strong>Longest Touchdown</strong>: If there are no Touchdowns, these markets will be void.</li>
                                             <li><strong>Team Quarterback Statistics</strong>: Only statistics achieved by competitors listed as Quarterbacks on the team’s roster will be counted. For example, if a Running Back throws a Touchdown pass, that would not be counted as an attempt, completion or Touchdown pass for that team’s Quarterbacks.</li>
                                             <li><strong>Special Teams and Defensive Touchdowns</strong>: The only Touchdowns considered to be Special Teams Touchdowns are on plays where the ball is actually kicked or punted (these include: Kickoff Returns, Punt Returns, returns of a fumbled Kickoff Return, returns of a fumbled Punt Return, blocked Field Goal Returns, or blocked Punt Returns). A fake Field Goal or fake Punt which results in a Touchdown by the team that snapped the ball is considered an offensive Touchdown.</li>
@@ -207,11 +207,11 @@ class BettingRules extends Component {
                                             <li><strong>First Touchdown Pass Distance Over/Under</strong>: Bets are void if the named Quarterback doesn’t complete at least one Touchdown Pass.</li>
                                             <li><strong>AFC/NFC Champion Futures</strong>: The champion of each conference is the team that reaches the Super Bowl.</li>
                                             <li><strong>Regular Season Wins</strong>: Will be settled when a team exceeds their win total and is expected to play all of their scheduled games or cannot possibly exceed their win total given their number of games remaining and are expected to play all of their scheduled games. If there is any reasonable doubt as to whether or not a team will play a complete season, their Season Wins markets won’t be settled until they do. Once Season Wins markets have been settled, they will not be changed, even if a team plays fewer games than expected for any reason.</li>
-                                            <li><strong>NCAA Football Season Wins: </strong>Bowl games and Conference Championship games are not counted towards Regular Season Wins totals. Teams must play every scheduled regular season game for action.</li>
+                                            <li><strong>NCAA Football Season Wins</strong>: Bowl games and Conference Championship games are not counted towards Regular Season Wins totals. Teams must play every scheduled regular season game for action.</li>
                                             <li><strong>NCAA Football Conference Championship Futures</strong>: If the conference has an official championship game, the winner of that game is considered to have won that conference. For Divisional Odds within the conferences, the team participating in the Conference Championship game is considered to have won that division.</li>
                                             <li><strong>NFL Weekly Markets</strong>: If any game in the listed week is cancelled or postponed, and not completed within 96 hours of its scheduled start time, all weekly markets will be void, regardless of the outcome of any specific game.</li>
                                             <li><strong>Heisman Trophy Winner Yes/No</strong>: Bets made before the competitor’s team’s first scheduled game will be void if the competitor does not play in that game.</li>
-                                            <li><strong>Tied After First Score: “</strong>Yes” will be considered the winner if the game is tied any time after the first score, including if it is tied following a Touchdown, before the Extra Point or 2-Point Conversion attempt.</li>
+                                            <li><strong>Tied After First Score</strong>: “Yes” will be considered the winner if the game is tied any time after the first score, including if it is tied following a Touchdown, before the Extra Point or 2-Point Conversion attempt.</li>
                                             <li><strong>Kickoff/Punt Return Match-ups</strong>: Both listed competitors must have at least one Kick/Punt Return for action.</li>
                                             <li><strong>Last Score Markets</strong>: Only Touchdowns, Field Goals and Safeties will be counted. Extra Points and 2-Point Conversions following Touchdowns will not.</li>
                                             <li><strong>Punt Markets</strong>: A blocked Punt will count as a Punt for Team Punt markets, but not count towards markets for a competitor’s number of Punts.</li>
@@ -305,11 +305,11 @@ class BettingRules extends Component {
                                             <li>Bets made before the start of the game on the Game-period Money Line market have action as long as at least 5 innings (or 4.5 innings if the Home team is winning) are completed. If a game is called before 9 innings (or 8.5 innings of the Home team wins) are complete, the score at the end of the last completed inning will be considered final. All Game-period markets, other than the Money Line, have action only once 9 innings or (8.5 if Home team wins) are completed. Periods that have been played to completion will have action even if the game is not completed.</li>
                                             <li>All Game-period In-Play markets require that the game be played to completion with 9 innings (or 8.5 if Home team wins) to have action. Periods that have been played to completion will have action even if the game is not played to completion.</li>
                                             <li>A baseball game is considered to have been played to completion when at least 9 innings (or 8.5 innings if Home wins) have been completed and a final result has been determined. In games where a “Mercy Rule” is expressly part of the rules, a game is considered to have been played to completion when a Mercy Rule is invoked. If a game is declared official by its governing body, it has no bearing on how bets are settled if sufficient innings have not been played.</li>
-                                            <li>Bets on the 1<sup>st</sup> Half-period of baseball games are based on the results at the conclusion of five innings of play. Bets made before the game on the 1<sup>st</sup> Half-period Handicap and Money Line markets have action once five innings are played or 4.5 innings if the game is called at 4.5 innings and the Home team is declared the winner. All other 1<sup>st</sup> Half markets (including the In-Play 1<sup>st</sup> Half Handicap and Money Line markets) require at least five innings to be played for action.</li>
+                                            <li>Bets on the 1st Half-period of baseball games are based on the results at the conclusion of five innings of play. Bets made before the game on the 1st Half-period Handicap and Money Line markets have action once five innings are played or 4.5 innings if the game is called at 4.5 innings and the Home team is declared the winner. All other 1st Half markets (including the In-Play 1st Half Handicap and Money Line markets) require at least five innings to be played for action.</li>
                                             <li>If a game is suspended in order to be resumed at a later date, all bets on the Game-period markets are void, and bets on completed periods have action. With the exception of MLB Playoff games, which will have action whenever the game is completed.</li>
                                             <li>In circumstances when the “Home” team is not playing at their home stadium, the team whose starting pitcher throws the very first pitch of the game is considered the Home team.</li>
                                             <li>Seven Inning Doubleheader Rules:
-                                <ol>
+                                                <ol>
                                                     <li>Bets made before the start of the game on the Game-period Money Line market have action as long as at least 5 innings (or 4.5 innings if the Home team is winning) are completed. All Game-period markets, other than the Money Line, have action only once 7 innings or (6.5 if Home team wins) are completed. Periods that have been played to completion will have action even if the game is not completed.</li>
                                                     <li>All Game-period In-Play markets require that the game be played to completion with 7 innings (or 6.5 if Home team wins) to have action. Periods that have been played to completion will have action even if the game is not played to completion.</li>
                                                     <li>All bets on Seven Inning Doubleheader games will be void if it is not indicated that it is a seven inning game.</li>
@@ -345,7 +345,7 @@ class BettingRules extends Component {
                                         <ol >
                                             <li>In the NBA all bets on the Game-period are void if fewer than 43 minutes are completed. In all other competitions, bets on the Game-period are void if fewer than 35 minutes are completed. Bets on any periods that have been played to completion will have action.</li>
                                             <li>If an "Elam Ending" is used, the target score has to be reached for bets to have action for any period that includes such an ending. All bets will be settled based on the final score once the target score is reached, regardless of the actual duration of the game.</li>
-                                            <li>Bets on the Game and 2<sup>nd</sup>-Half periods include all overtimes played in their result.</li>
+                                            <li>Bets on the Game and 2nd-Half periods include all overtimes played in their result.</li>
                                         </ol>
                                         <p ><strong>Basketball Market Rules</strong></p>
                                         <ol >
@@ -463,7 +463,7 @@ class BettingRules extends Component {
                                         <ol >
                                             <li>If the format of a match is changed (number of Maps, rounds etc.) all bets will be void unless that information was conveyed in the market or the change had no effect on a particular market (such as bets on specific Maps or First Blood etc.).</li>
                                             <li>If a Map is remade or rewound by Chronobreak or similar method, any markets that have already been determined (such as First Blood, First Tower, First to 10 Kills etc.) will be not be changed. Any markets that have not previously been determined will be settled based on the results of the remade or rewound Map.</li>
-                                            <li>In a match where one team or competitor has an advantage of one or more Maps awarded as part of the tournament format (for example due to one team coming from the upper bracket in a double elimination format), Pinnacle’s match line will include the given advantage. If there is a 1-0 advantage, Pinnacle’s Map offering will start with Map 2, if there is a 2-0 advantage, Pinnacle’s Map offering will start with Map 3 etc. If the advantage comes from a walkover/default win that was awarded by admin decision - for example due to one team showing up late to their match - this does not apply.</li>
+                                            <li>In a match where one team or competitor has an advantage of one or more Maps awarded as part of the tournament format (for example due to one team coming from the upper bracket in a double elimination format), Payper win’s match line will include the given advantage. If there is a 1-0 advantage, Payper win’s Map offering will start with Map 2, if there is a 2-0 advantage, Payper win’s Map offering will start with Map 3 etc. If the advantage comes from a walkover/default win that was awarded by admin decision - for example due to one team showing up late to their match - this does not apply.</li>
                                             <li>“Kill” markets will be resulted using the in-game scoreboard.</li>
                                             <li>Match-period Handicap, Money Line and Over/Under markets use Maps won as scoring units.</li>
                                             <li>Any overtime or other tiebreaker method used is considered valid in determining results.</li>
@@ -483,32 +483,32 @@ class BettingRules extends Component {
                                         <p ><strong>Dota 2</strong></p>
                                         <ol >
                                             <li>If a Map starts with fewer than 10 competitors all bets on the Map will be void.</li>
-                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
-                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
                                         </ol>
                                         <p ><strong>King of Glory</strong></p>
                                         <ol >
                                             <li>If a Map starts with fewer than 10 competitors all bets on the Map will be void.</li>
-                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
-                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
                                         </ol>
                                         <p ><strong>Arena of Valor</strong></p>
                                         <ol >
                                             <li>If a Map starts with fewer than 10 competitors all bets on the Map will be void.</li>
-                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
-                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
                                         </ol>
                                         <p ><strong>Heroes of the Storm</strong></p>
                                         <ol >
                                             <li>If a Map starts with fewer than 10 competitors all bets on the Map will be void.</li>
-                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
-                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
                                         </ol>
                                         <p ><strong>League of Legends</strong></p>
                                         <ol >
                                             <li>If a Map starts with fewer than 10 competitors all bets on the Map will be void.</li>
-                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
-                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10<sup>th</sup> minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a competitor disconnects in the first 10 minutes and is unable to reconnect or be replaced for the rest of the Map, all bets on the Map will be void. If a competitor disconnects or quits after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
+                                            <li>If a walkover or win by admin decision is given in the first 10 minutes of a Map, all bets on the Map will be void. If a win by admin decision is awarded after the 10th minute of play of a Map has started, bets have action according to the official result.</li>
                                             <li>"Elemental Dragons" includes only Cloud, Mountain, Infernal, and Ocean dragons.</li>
                                         </ol>
                                         <p ><strong>Overwatch</strong></p>
@@ -558,7 +558,7 @@ class BettingRules extends Component {
                                             <li>If the number of holes played in a tournament is reduced to 36 or more holes from the scheduled number for any reason (e.g. weather), bets placed prior to the completion of the final completed round have action. Bets placed after the final completed round will be void. If holes are reduced and fewer than 36 holes are completed, all bets will be void, except on rounds and markets that have already been settled.</li>
                                             <li>Bets on a golfer’s results in a tournament are void if that golfer does not start the tournament. Starting the tournament includes playing in qualifying rounds.</li>
                                             <li>A golfer is deemed to have played once they have teed off. Once they have teed off all markets on or including them have action, even if they withdraw.</li>
-                                            <li>In the event that two or more golfers are tied for the lead at the end of regulation play, Pinnacle will respect whatever method is used to break the tie. All tied golfers who do not win the tiebreaker will be considered second-place finishers.</li>
+                                            <li>In the event that two or more golfers are tied for the lead at the end of regulation play, Payper win will respect whatever method is used to break the tie. All tied golfers who do not win the tiebreaker will be considered second-place finishers.</li>
                                             <li>Skins tournaments will be determined by the total money won by the competitors. Any format the tournament uses to break ties will be respected. The officially declared winner of the tournament takes precedence over the money won in case there is a difference.</li>
                                         </ol>
                                         <p ><strong>Golf Market Rules</strong></p>
@@ -592,7 +592,7 @@ class BettingRules extends Component {
                                     <div className="mobile-container" style={{ display: showMobile == 18 ? 'block' : 'none' }}>
                                         <ol >
                                             <li>Unless otherwise specified, Game-period bets include overtime and penalty shootouts.</li>
-                                            <li>For markets that include overtime, penalty shootouts are considered part of overtime. If a penalty shootout occurs, the winning team is credited with <strong>one</strong> goal.</li>
+                                            <li>For markets that include overtime, penalty shootouts are considered part of overtime. If a penalty shootout occurs, the winning team is credited with one goal.</li>
                                             <li>Bets on Match markets require a minimum of 55 minutes to be played for action. If a game is suspended before 55 minutes are played, bets on periods that have been played to completion will have action and all others will be void.</li>
                                         </ol>
                                         <p ><strong>Hockey Market Rules</strong></p>
@@ -617,7 +617,7 @@ class BettingRules extends Component {
                                         <ol >
                                             <li><strong>Individual’s Medal Totals Markets: </strong>The individual must start the first event they are scheduled to participate in for action.</li>
                                             <li><strong>Weightlifting: </strong>Bets on all competitors will be void if no competitor completes the entire event.</li>
-                                            <li><strong>Country Medal Totals Markets:&nbsp; </strong>These markets will be settled at the conclusion of the Olympic Games with the results of the official medal table.</li>
+                                            <li><strong>Country Medal Totals Markets: </strong>These markets will be settled at the conclusion of the Olympic Games with the results of the official medal table.</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -695,8 +695,8 @@ class BettingRules extends Component {
                                     <div className="mobile-container" style={{ display: showMobile == 24 ? 'block' : 'none' }}>
                                         <ol >
                                             <li>If a match is delayed and is not started within 12 hours of the originally scheduled time, all bets on the match will be void. Bets on periods that have been completed will be settled.</li>
-                                            <li>All Match-period markets are based on two halves of 45 minutes of regulation time as well as any injury time, unless indicated otherwise. If a match is finished or abandoned before the completion of 90 minutes of play all bets on the Match-period are void. The exception to this rule is if a referee ends a match with an official result after at least 85 minutes of play. If a match is void because it finished early or was abandoned, periods that were played to completion (such as the 1<sup>st</sup> Half) will have action.&nbsp;</li>
-                                            <li>Own goals do not count towards markets with named competitors.&nbsp;</li>
+                                            <li>All Match-period markets are based on two halves of 45 minutes of regulation time as well as any injury time, unless indicated otherwise. If a match is finished or abandoned before the completion of 90 minutes of play all bets on the Match-period are void. The exception to this rule is if a referee ends a match with an official result after at least 85 minutes of play. If a match is void because it finished early or was abandoned, periods that were played to completion (such as the 1st Half) will have action.</li>
+                                            <li>Own goals do not count towards markets with named competitors.</li>
                                             <li>If a soccer match is played at a neutral pitch, whether it is indicated in the market or not, it will have action. If it is played at the pitch of the team listed second it is void.</li>
                                             <li>In-Play bets will be void if a Video Assistant Referee (VAR) decision materially affects the odds of the bets.</li>
                                             <li>Score and booking information are considered to be part of the market for In-Play bets. If that information is incorrect, then bets while incorrect information is displayed will be void.</li>
@@ -705,10 +705,10 @@ class BettingRules extends Component {
                                         </ol>
                                         <p ><strong>Soccer Market Rules</strong></p>
                                         <ol >
-                                            <li><strong>Bookings</strong>: A Yellow Card is worth one and Red Card two. Two Yellow Cards on a competitor leading to a Red Card is worth three. Any cards shown to non-competitors (such as teammates on the bench, competitors leaving the pitch, the manager, coach or other staff) are not counted. Cards shown during the half-time break are counted towards the 2<sup>nd</sup>-half period bookings markets. Any cards shown after the whistle that ends regulation time will not be counted towards the markets for that game.</li>
+                                            <li><strong>Bookings</strong>: A Yellow Card is worth one and Red Card two. Two Yellow Cards on a competitor leading to a Red Card is worth three. Any cards shown to non-competitors (such as teammates on the bench, competitors leaving the pitch, the manager, coach or other staff) are not counted. Cards shown during the half-time break are counted towards the 2nd-half period bookings markets. Any cards shown after the whistle that ends regulation time will not be counted towards the markets for that game.</li>
                                             <li><strong>To Advance:</strong> Markets on teams “To Advance” or “To Win Final” are bets on which team advances to the next round of or wins a cup or tournament. They have action when and wherever a match or stage is completed, regardless of if it is moved, delayed or postponed.</li>
                                             <li><strong>Season Points: </strong>Will be settled when a team exceeds their points total and is expected to play all of their scheduled games or cannot possibly exceed their points total given their number of games remaining and are expected to play all of their scheduled games. If there is any reasonable doubt about whether or not a team will play a complete season, their Season Points markets won’t be settled until they do. Once Season Points markets have been settled, they will not be changed, even if a team plays fewer games than expected for any reason.</li>
-                                            <li><strong>League Winner &amp; Relegation Markets: </strong>Will have action based on the official results of the league regardless of how many games each team plays.</li>
+                                            <li><strong>League Winner & Relegation Markets: </strong>Will have action based on the official results of the league regardless of how many games each team plays.</li>
                                             <li><strong>Home vs. Away Markets: </strong>If a match isn’t played at a team’s regular pitch, the team listed first will be considered the home team for Home vs. Away markets.</li>
                                             <li><strong>In-Play 2-Way (“Asian”) Handicaps</strong>: Bets are settled according to the score for the remainder of the period after the bet has been placed. Any scores prior to the bet being placed are ignored for resulting purposes.</li>
                                             <li><strong>Corners</strong>: In the event of a corner kick having to be retaken, only one corner kick will be counted. Corner kicks that are awarded and not taken are not counted.</li>
@@ -729,7 +729,7 @@ class BettingRules extends Component {
                                             <li>All results are determined by a completely random computer simulation.</li>
                                             <li>Fixtures must be fully completed for bets to have action.</li>
                                             <li>If for any reason the game goes offline due to internet interruption, it will restart where it left off once the internet connection is back. However, if the game failed to auto save, then all progress up to that point will be lost and all bets on that fixture will be void.</li>
-                                            <li>Bets on the full-fixture and 2<sup>nd</sup>-Half periods include any points scored in overtime.</li>
+                                            <li>Bets on the full-fixture and 2nd-Half periods include any points scored in overtime.</li>
                                             <li>Games are played in “simulation mode” (CPU vs CPU).</li>
                                         </ol>
                                         <p ><strong>Sub-Sport Rules</strong></p>
@@ -737,7 +737,7 @@ class BettingRules extends Component {
                                         <ol >
                                             <li>10 minute quarters</li>
                                             <li>The accelerated clock will be OFF</li>
-                                            <li>There will be a five-minute pause during half-time for 2<sup>nd</sup>-Half betting</li>
+                                            <li>There will be a five-minute pause during half-time for 2nd-Half betting</li>
                                         </ol>
                                         <p ><strong>MLB The Show 20</strong></p>
                                         <ol >
@@ -798,7 +798,7 @@ class BettingRules extends Component {
                                             <li>All bets on a match have action as long as the match is completed within seven days of when it was originally scheduled to play.</li>
                                             <li>All bets have action regardless of any change of venue, court surface, or changing from indoors to outdoors and vice versa.</li>
                                             <li>If a match involves a “Super Tie-Break”: all bets have action except the Match Handicap and Total which are void.</li>
-                                            <li>If a match involves a “Pro Set”: bets on the 1<sup>st </sup>Set Money Line and Match Money Line have action, all other bets on the Match-period are void.</li>
+                                            <li>If a match involves a “Pro Set”: bets on the 1st Set Money Line and Match Money Line have action, all other bets on the Match-period are void.</li>
                                             <li>All Futures bets have action unless the market requires certain competitor(s) to start.</li>
                                             <li>The next point must be played for all In-Play bets to have action. If either competitor retires, is disqualified or does not continue to play for any reason all bets placed since the last point finished are void.</li>
                                             <li>Unless indicated otherwise, all Tennis Handicap and Total bets use Games won as the scoring unit.</li>
@@ -815,7 +815,7 @@ class BettingRules extends Component {
                                     <div className="mobile-container" style={{ display: showMobile == 29 ? 'block' : 'none' }}>
                                         <ol >
                                             <li>All Match-period markets use Sets as the scoring unit. All other periods use Points as the scoring unit.</li>
-                                            <li>&nbsp;Golden Sets are not considered part of the result of a match.</li>
+                                            <li>Golden Sets are not considered part of the result of a match.</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -861,10 +861,10 @@ class BettingRules extends Component {
                                         <ol >
                                             <li>Teasers are Multiple bets in which the bettor is given a more favourable Handicap or Total on each selection, but each selection must win in order for the bet to win.</li>
                                             <li>The payout for Teasers depend upon the Sport, League, number of Selections, and the size of the point adjustment. To find the payouts for various Teasers use the tables below.</li>
-                                            <li>In a <strong>Standard Teaser</strong>, if one selection ties or is void for any reason and the rest win, then the tied or void selection will be removed and the payout will be determined using the adjusted number of selections. If there is only one remaining selection once all tied or void selections have been removed, then the entire Teaser is void.</li>
+                                            <li>In a Standard Teaser, if one selection ties or is void for any reason and the rest win, then the tied or void selection will be removed and the payout will be determined using the adjusted number of selections. If there is only one remaining selection once all tied or void selections have been removed, then the entire Teaser is void.</li>
                                             <li>If one selection of any two-selection Teaser ties or is void for any reason, then the entire Teaser is void.</li>
-                                            <li>If one or more selections in a <strong>Super Teaser </strong>tie or are void for any reason, then the entire Super Teaser is void.</li>
-                                            <li>Pinnacle reserves the right to determine the base Handicap value to be used for any Teaser.</li>
+                                            <li>If one or more selections in a Super Teaser tie or are void for any reason, then the entire Super Teaser is void.</li>
+                                            <li>Payper win reserves the right to determine the base Handicap value to be used for any Teaser.</li>
                                             <li>All NCAA Football same game Teasers on games where the difference between the Handicap and the Total is less than 28 will be cancelled due to correlation.</li>
                                         </ol>
                                         <table width="0" className="teasers" >
@@ -1142,7 +1142,7 @@ class BettingRules extends Component {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan="4">
-                                                        <p>Standard Football - NFL or NFL &amp; College</p>
+                                                        <p>Standard Football - NFL or NFL & College</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -1397,7 +1397,7 @@ class BettingRules extends Component {
                                         <p ><strong>Fixture: </strong>An event on which bets can be placed.</p>
                                         <p ><strong>Period:</strong> A defined portion of a fixture.</p>
                                         <p ><strong>Competitor:</strong> An individual taking part in a fixture.</p>
-                                        <p ><strong>Settle:</strong>&nbsp;&nbsp; The conclusion of a bet, at which point the payout is made based on the result of the market.</p>
+                                        <p ><strong>Settle:</strong> The conclusion of a bet, at which point the payout is made based on the result of the market.</p>
                                         <p ><strong>Result: </strong>The outcome of a market.</p>
                                         <p ><strong>Action: </strong>A bet "has action" as long as its conditions are met. Action means that a bet will be settled with a final result.</p>
                                         <p ><strong>Void:</strong> Refund a bet for any reason. Most commonly when it can't be resolved because of something illegitimate about the market. When a market is void, all bets on that market are void.</p>
