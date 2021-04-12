@@ -2,7 +2,7 @@
     "serverHostUrl": "https://payperwin.co",
     "serverPort": 8080,
     "clientPort": 8000,
-    "pinnacleApiHost": "http://api.pinnacle.com",
+    "pinnacleApiHost": "https://api.pinnacle.com",
     "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
     "sandboxUrl": "https://paapistg.oreo88.com/b2b",
     "agentCode": "PXW02",
