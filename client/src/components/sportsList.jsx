@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder'
 import sportNameIcon from '../helpers/sportNameIcon';
-// import sportsData from '../../public/data/sports.json';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 import '../style/all.min.css';
