@@ -169,10 +169,10 @@ async function doStuff() {
                                     subject: 'You won a wager!',
                                     text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: http://dev.payperwin.ca/history`,
                                     html: simpleresponsive(`
-                      <p>
-                        Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                      </p>
-                    `,
+                                        <p>
+                                            Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                        </p>
+                                        `,
                                         { href: 'http://dev.payperwin.ca/history', name: 'Settled Bets' }
                                     ),
                                 };
@@ -247,7 +247,6 @@ async function doStuff() {
     }
     console.log('finished checking betpools', new Date().toLocaleString());
 }
-
 
 const intervalTime = 1000 * 60 * 60;
 doStuff();

@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const BetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
-        pinnacleId: String,
         lineQuery: Object,
         teamA: {
             name: String,

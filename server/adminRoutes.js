@@ -1038,7 +1038,7 @@ adminRouter.get(
     authenticateJWT,
     async (req, res) => {
         try {
-            const sports = await Sport.find().select(['name', 'pinnacleSportId']);
+            const sports = await Sport.find().select(['name', 'originSportId']);
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports.', message: error });

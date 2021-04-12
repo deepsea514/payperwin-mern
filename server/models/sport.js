@@ -4,10 +4,11 @@ const { Schema } = mongoose;
 
 const SportSchema = new Schema(
   {
-    pinnacleSportId: { type: Number, index: { unique: true } },
+    origin: { type: String, default: 'pinnacle' },
+    originSportId: { type: Number, index: { unique: true } },
     name: String,
-    pinnacleFixturesLast: Number,
-    pinnacleOddsLast: Number,
+    originFixturesLast: Number,
+    originOddsLast: Number,
     leagues: Array,
   },
   {

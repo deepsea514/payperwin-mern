@@ -749,8 +749,8 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                         // TODO: prevent certain types of bets
                         const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
                         if (sportData) {
-                            const { pinnacleSportId } = sportData;
-                            lineQuery.sportId = pinnacleSportId;
+                            const { originSportId } = sportData;
+                            lineQuery.sportId = originSportId;
                             const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                             if (line) {
                                 const { teamA, teamB, startDate, line: { home, away, draw, hdp, points, periodNumber } } = line;
@@ -849,7 +849,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                     const newBetPool = new BetPool(
                                                         {
                                                             uid: JSON.stringify(lineQuery),
-                                                            sportId: pinnacleSportId,
+                                                            sportId: originSportId,
                                                             leagueId,
                                                             eventId,
                                                             lineId,
@@ -988,8 +988,8 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
 
     const { type, altLineId, } = lineQuery;
 
-    const { pinnacleSportId } = sportData;
-    lineQuery.sportId = pinnacleSportId;
+    const { originSportId } = sportData;
+    lineQuery.sportId = originSportId;
 
     const { teamA, teamB, startDate, line: { home, away, periodNumber, hdp, points } } = line;
     lineQuery.periodNumber = periodNumber;
@@ -1188,7 +1188,7 @@ expressApp.get(
                 const { lineQuery: { sportName, leagueId, eventId, lineId, type, altLineId }, pick, pickName, payableToWin, bet: risk, toWin, pickOdds, oldOdds } = bet;
                 const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
                 if (sportData) {
-                    const { pinnacleSportId } = sportData;
+                    const { originSportId } = sportData;
                     const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                     line.type = type;
                     line.pickName = pickName;

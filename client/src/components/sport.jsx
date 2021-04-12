@@ -109,33 +109,29 @@ class Sport extends PureComponent {
             <div className="content">
                 {
                     leagues.map(league => {
-                        const { name: leagueName, pinnacleId: leagueId } = league;
+                        const { name: leagueName, originId: leagueId } = league;
                         const events = league.events.map((event, i) => {
-                            const { teamA, teamB, startDate, lines, pinnacleId: eventId } = event;
+                            const { teamA, teamB, startDate, lines, originId: eventId } = event;
                             if (
                                 !lines
-                                // || new Date() - new Date(startDate) > 1000 * 60 * 60 * 23
                                 || new Date() > new Date(startDate)
                             ) {
                                 return null;
                             }
-                            // <Link to={{ pathname: `/wager/${sportName}/${league.pinnacleId}/${event.pinnacleId}/${line.pinnacleId}/spread` }} className="wager-link big-link mock-button">Wager</Link>
-                            // <Link to={{ pathname: `/wager/${sportName}/${league.pinnacleId}/${event.pinnacleId}/${line.pinnacleId}/moneyline` }} className="wager-link big-link mock-button">Wager</Link>
-                            // console.log(teamA, teamB, lines);
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
-                                        <Link to={{ pathname: `/lines/${sportName}/${league.pinnacleId}/${event.pinnacleId}` }} className="widh-adf">
+                                        <Link to={{ pathname: `/lines/${sportName}/${league.originId}/${event.originId}` }} className="widh-adf">
                                             <strong>{teamA}</strong> <strong>{teamB}</strong>{dayjs(startDate).format('MM/DD/YYYY h:mma')}
                                         </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
-                                        <Link to={{ pathname: `/lines/${sportName}/${league.pinnacleId}/${event.pinnacleId}` }}>
+                                        <Link to={{ pathname: `/lines/${sportName}/${league.originId}/${event.originId}` }}>
                                             +{event.lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>
                                     {lines ? lines.map((line, i) => {
-                                        const { spreads, pinnacleId: lineId, moneyline, totals } = line;
+                                        const { spreads, originId: lineId, moneyline, totals } = line;
                                         if (!spreads && !moneyline) {
                                             return null;
                                         }
@@ -398,7 +394,7 @@ class Sport extends PureComponent {
                                         );
                                     }) : null}
                                     <li className="detailed-lines-link not-mobile">
-                                        <Link to={{ pathname: `/lines/${sportName}/${league.pinnacleId}/${event.pinnacleId}` }}>
+                                        <Link to={{ pathname: `/lines/${sportName}/${league.originId}/${event.originId}` }}>
                                             +{event.lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>

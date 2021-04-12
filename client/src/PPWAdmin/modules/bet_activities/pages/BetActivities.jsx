@@ -173,7 +173,7 @@ class BetActivities extends React.Component {
 
     renderSports = () => {
         const { sports } = this.props;
-        return sports.map((sport) => <option key={sport._id} value={sport.pinnacleSportId}>{sport.name}</option>)
+        return sports.map((sport) => <option key={sport._id} value={sport.originSportId}>{sport.name}</option>)
     }
 
     render() {

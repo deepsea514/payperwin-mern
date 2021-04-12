@@ -220,7 +220,7 @@ async function bettedAction(action, user) {
         }
         await BetSportsBook.create({
             userId: user._id,
-            pinnacleId: WagerInfo.WagerId,
+            originId: WagerInfo.WagerId,
             Name,
             WagerInfo
         });
@@ -274,7 +274,7 @@ async function updateAction(action, user) {
 
         const bet = await BetSportsBook.findOne({
             userId: user._id,
-            pinnacleId: WagerInfo.WagerId,
+            originId: WagerInfo.WagerId,
         });
         await bet.update({
             Name,

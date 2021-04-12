@@ -98,7 +98,7 @@ class Lines extends PureComponent {
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {
-                        const { spreads, pinnacleId: lineId, moneyline, totals } = line;
+                        const { spreads, originId: lineId, moneyline, totals } = line;
                         if (!spreads && !moneyline) {
                             return null;
                         }

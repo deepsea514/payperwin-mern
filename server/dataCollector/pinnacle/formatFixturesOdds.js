@@ -29,15 +29,15 @@ function formatFixturesOdds(fixtures, odds) {
     const mergedData = mergeFixturesAndOdds(fixtures, odds);
     if (mergedData) {
         const sportData = {
-            pinnacleSportId: mergedData.sportId,
-            pinnacleFixturesLast: mergedData.last,
-            pinnacleOddsLast: mergedData.oddsLast,
-            pinnacleSportId: mergedData.sportId,
+            originSportId: mergedData.sportId,
+            originFixturesLast: mergedData.last,
+            originOddsLast: mergedData.oddsLast,
+            originSportId: mergedData.sportId,
             leagues: [],
         };
         mergedData.league.forEach(league => {
             const leagueData = {
-                pinnacleId: league.id,
+                originId: league.id,
                 name: league.name,
                 events: [],
             };
@@ -59,11 +59,11 @@ function formatFixturesOdds(fixtures, odds) {
                     // sportName: ,
                     // leagueName: league.name,
                     // pinnacleLeagueId: league.id,
-                    // pinnacleFixturesLast: mergedData.last,
-                    // pinnacleOddsLast: mergedData.oddsLast,
-                    // pinnacleSportId: mergedData.sportId,
+                    // originFixturesLast: mergedData.last,
+                    // originOddsLast: mergedData.oddsLast,
+                    // originSportId: mergedData.sportId,
                 };
-                if (id) parsedEvent.pinnacleId = id;
+                if (id) parsedEvent.originId = id;
                 if (starts) parsedEvent.startDate = starts;
                 if (home) parsedEvent.teamA = home;
                 if (away) parsedEvent.teamB = away;
@@ -86,7 +86,7 @@ function formatFixturesOdds(fixtures, odds) {
                         } = period;
 
                         const line = {};
-                        if (lineId) line.pinnacleId = lineId;
+                        if (lineId) line.originId = lineId;
                         if (number) line.periodNumber = number;
                         if (cutoff) line.endDate = cutoff;
                         if (maxSpread) line.maxSpread = maxSpread;
