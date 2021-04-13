@@ -1,10 +1,6 @@
 [
     {
         "id": 29,
-        "name": "Soccer",
-        "hasOfferings": true,
-        "leagueSpecialsCount": 3,
-        "eventSpecialsCount": 88,
-        "eventCount": 52
+        "name": "Soccer"
     }
 ]

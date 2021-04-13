@@ -43,15 +43,21 @@ async function getSportLines(sportName) {
             const formattedSportData = formatFixturesOdds(fixturesData, oddsData);
             if (formattedSportData) {
                 formattedSportData.name = name;
+                formattedSportData.origin = "pinnacle";
                 // console.log(formattedSportData);
                 // get sportid from sport
                 // save to pinnacle db
                 // update our db
-                await Sport.findOneAndUpdate(
-                    { originSportId: id },
-                    formattedSportData,
-                    { upsert: true },
-                );
+                const sport = await Sport.findOne({ originSportId: sport_id });
+                if (sport) {
+                    await sport.update(
+                        formattedSportData,
+                        { upsert: true },
+                    );
+                }
+                else {
+                    await Sport.create(formattedSportData);
+                }
                 console.log('got odds');
                 // get fixtures
                 // reformat fitures
