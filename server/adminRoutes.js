@@ -201,7 +201,7 @@ adminRouter.get(
                             totalWager += bet.bet;
                         }
                         for (const bet of betSportsbookHistory) {
-                            totalWager += bet.WagerInfo.ToRisk;
+                            totalWager += Number(bet.WagerInfo.ToRisk);
                         }
                         data[i].totalWager = totalWager;
                         data[i].betHistory = betHistory;
