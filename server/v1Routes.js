@@ -5,7 +5,7 @@ const bruteforce = new ExpressBrute(store);
 const User = require("./models/user");
 const Pinnacle = require('./models/pinnacle');
 const BetSportsBook = require("./models/betsportsbook");
-const TransactionSportsBookSchema = require('./models/transactionsportsbook');
+const TransactionSportsBook = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
 const config = require("../config.json");
@@ -218,20 +218,27 @@ async function bettedAction(action, user) {
                 ErrorCode: ActionErrorCode.InsufficientFunds
             }
         }
-        await BetSportsBook.create({
+        const bet = await BetSportsBook.create({
             userId: user._id,
             originId: WagerInfo.WagerId,
             Name,
             WagerInfo
         });
 
-        await TransactionSportsBookSchema.create({
+        await TransactionSportsBook.create({
             userId: user._id,
             ...Transaction
         })
 
-        await User.findByIdAndUpdate(new ObjectId(user._id),
-            { balance: user.balance - Transaction.Amount });
+        const betSportsbookHistory = [...user.betSportsbookHistory, bet._id];
+
+        await User.findByIdAndUpdate(
+            new ObjectId(user._id),
+            {
+                balance: user.balance - Transaction.Amount,
+                betSportsbookHistory
+            }
+        );
 
         await FinancialLog.create({
             financialtype: 'bet',

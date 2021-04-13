@@ -64,18 +64,18 @@ class Customers extends React.Component {
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{customer.username}</td>
+                    <td><Link to={`/${customer._id}/profile`}>{customer.username}</Link></td>
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td>{customer.email}</td>
                     <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
-                    <td className="text-right">{customer.balance} {customer.currency}</td>
-                    <td className="text-right">{customer.betHistory.length}</td>
-                    <td className="text-right">2</td>
+                    <td className="text-right">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
+                    <td className="">{customer.betHistory.length + customer.betSportsbookHistory.length}</td>
+                    <td className="">{customer.totalWager} {customer.currency}</td>
                     <td className="text-right">
                         <DropdownButton title="Actions">
-                            <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
+                            {/* <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
                                 <i className="fas fa-edit"></i>&nbsp; Edit
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
                             <Dropdown.Item as={Link} to={`/${customer._id}/detail`}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
@@ -230,7 +230,7 @@ class Customers extends React.Component {
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
                                                 <th scope="col">Date Joined</th>
-                                                <th scope="col">Balance</th>
+                                                <th scope="col" className="text-right">Balance</th>
                                                 <th scope="col"># of Bets</th>
                                                 <th scope="col">Total Wager</th>
                                                 <th scope="col" width="20%"></th>

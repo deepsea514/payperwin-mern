@@ -187,10 +187,25 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .exec(function (error, data) {
+                .exec(async function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
+                    }
+                    data = JSON.parse(JSON.stringify(data));
+                    for (let i = 0; i < data.length; i++) {
+                        let totalWager = 0;
+                        const betHistory = await Bet.find({ userId: data[i]._id });
+                        const betSportsbookHistory = await BetSportsBook.find({ userId: data[i]._id });
+                        for (const bet of betHistory) {
+                            totalWager += bet.bet;
+                        }
+                        for (const bet of betSportsbookHistory) {
+                            totalWager += bet.WagerInfo.ToRisk;
+                        }
+                        data[i].totalWager = totalWager;
+                        data[i].betHistory = betHistory;
+                        data[i].betSportsbookHistory = betSportsbookHistory;
                     }
                     res.status(200).json({ total, perPage, page: page + 1, data });
                 })

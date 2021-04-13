@@ -308,9 +308,13 @@ expressApp.post(
             } else if (user) {
                 req.logIn(user, (err2) => {
                     if (err) { return next(err2); }
+                    var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                    if (ip_address.substr(0, 7) == "::ffff:") {
+                        ip_address = ip_address.substr(7)
+                    }
                     let log = new LoginLog({
                         user: user._id,
-                        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                        ip_address
                     });
                     log.save(function (error) {
                         if (error) console.log("register => ", error);
@@ -329,9 +333,13 @@ expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
         if (!user) { return res.status(403).json({ error: 'Incorrect username or password' }); }
         req.logIn(user, (err2) => {
             if (err) { return next(err2); }
+            var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            if (ip_address.substr(0, 7) == "::ffff:") {
+                ip_address = ip_address.substr(7)
+            }
             let log = new LoginLog({
                 user: user._id,
-                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                ip_address
             });
             log.save(function (error) {
                 if (error) console.log("login", error);

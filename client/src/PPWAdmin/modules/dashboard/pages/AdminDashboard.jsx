@@ -33,28 +33,28 @@ class AdminDashboard extends React.Component {
         return (
             <>
                 <div className="row">
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <TotalDeposit
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboarddeposit={dashboarddeposit}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <TotalWager
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardwager={dashboardwager}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <TotalWagerSportsBook
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
                             dashboardwagersportsbook={dashboardwagersportsbook}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <TotalPlayers
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
@@ -64,7 +64,7 @@ class AdminDashboard extends React.Component {
                             className="mb-8"
                         />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <ActivePlayers
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}
@@ -74,7 +74,7 @@ class AdminDashboard extends React.Component {
                             className="mb-8"
                         />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-2">
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
                         <FeesCollected
                             loadingdashboarddata={loadingdashboarddata}
                             categories={categories}

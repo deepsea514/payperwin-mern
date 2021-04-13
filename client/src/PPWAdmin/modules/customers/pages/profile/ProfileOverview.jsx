@@ -40,7 +40,7 @@ class ProfileOverview extends React.Component {
                 </div>
                 <div className="col-lg-7">
                     <OverviewBalance
-                        balance={balance}
+                        balance={Number(balance).toFixed(2)}
                         currency={currency}
                         className="" />
                     <LifeTimeValue className="mt-3" />

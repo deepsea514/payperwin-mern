@@ -169,7 +169,7 @@ class PersonaInformation extends React.Component {
                                         </div>
                                     </div>
                                 )}
-                                <div className="form-group row">
+                                {/* <div className="form-group row">
                                     <label className="text-left col-xl-3 col-lg-3 col-form-label">Avatar</label>
                                     <div className="col-lg-9 col-xl-6">
                                         <div
@@ -184,7 +184,7 @@ class PersonaInformation extends React.Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="form-group row">
                                     <label className="text-left col-xl-3 col-lg-3 col-form-label">

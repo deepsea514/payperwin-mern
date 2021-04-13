@@ -11,7 +11,7 @@ export default class CustomerModule extends Component {
             <BrowserRouter basename="/PPWAdmin/customers">
                 <Switch>
                     <Route exact path="/" component={Customers} />
-                    <Route path="/:id/edit" component={CustomerEdit} />
+                    {/* <Route path="/:id/edit" component={CustomerEdit} /> */}
                     <Route path="/:id/detail" component={CustomerDetail} />
                     <Route path="/:id/profile" component={CUstomerProfile} />
                 </Switch>
