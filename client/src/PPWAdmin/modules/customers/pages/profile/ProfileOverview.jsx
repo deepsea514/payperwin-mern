@@ -12,6 +12,7 @@ class ProfileOverview extends React.Component {
         const { customer } = props;
         this.state = {
             lastbets: [],
+            lastsportsbookbets: [],
             totalwagers: 0,
             totaldeposit: 0,
             balance: customer.balance,
@@ -23,18 +24,19 @@ class ProfileOverview extends React.Component {
         const { customer } = this.props;
         getCustomerOverview(customer._id)
             .then(({ data }) => {
-                const { lastbets, totalwagers, totaldeposit } = data;
-                this.setState({ lastbets, totalwagers, totaldeposit });
+                const { lastbets, lastsportsbookbets, totalwagers, totaldeposit } = data;
+                this.setState({ lastbets, totalwagers, totaldeposit, lastsportsbookbets });
             })
     }
 
     render() {
-        const { lastbets, totalwagers, totaldeposit, balance, currency } = this.state;
+        const { lastbets, lastsportsbookbets, totalwagers, totaldeposit, balance, currency } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-5">
                     <OverviewBet
                         lastbets={lastbets}
+                        lastsportsbookbets={lastsportsbookbets}
                         currency={currency}
                         className="card-stretch gutter-b" />
                 </div>

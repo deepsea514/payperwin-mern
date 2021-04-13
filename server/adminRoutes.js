@@ -263,6 +263,24 @@ adminRouter.get(
                     }
                 }
             );
+            const lastsportsbookbets = await BetSportsBook.find({ userId: id, deletedAt: null })
+                .sort({ createdAt: -1 }).limit(8);
+            let totalsportsbookwagers = await BetSportsBook.aggregate(
+                {
+                    $match: {
+                        userId: new ObjectId(id),
+                        deletedAt: null,
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$WagerInfo.ToRisk"
+                        }
+                    }
+                }
+            );
             let totaldeposit = await FinancialLog.aggregate(
                 {
                     $match: {
@@ -284,11 +302,14 @@ adminRouter.get(
 
             if (totalwagers.length) totalwagers = totalwagers[0].total;
             else totalwagers = 0;
+            if (totalsportsbookwagers.length) totalsportsbookwagers = totalsportsbookwagers[0].total;
+            else totalsportsbookwagers = 0;
+            totalwagers += totalsportsbookwagers;
 
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            res.status(200).json({ lastbets, totalwagers, totaldeposit });
+            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit });
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
@@ -374,7 +395,7 @@ adminRouter.get(
     '/customer-bets',
     authenticateJWT,
     async (req, res) => {
-        let { id, perPage, page } = req.query;
+        let { id, perPage, page, src } = req.query;
         if (!perPage) perPage = 15;
         else perPage = parseInt(perPage);
         if (!page) page = 1;
@@ -384,10 +405,18 @@ adminRouter.get(
             return;
         }
         try {
-            const searchObj = { userId: id, deletedAt: null };
-            const total = await Bet.find(searchObj).count();
-            const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
-            res.json({ total, page, perPage, bets });
+            if (src == 'sportsbook') {
+                const searchObj = { userId: id, deletedAt: null };
+                const total = await BetSportsBook.find(searchObj).count();
+                const bets = await BetSportsBook.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+                res.json({ total, page, perPage, bets });
+            }
+            else {
+                const searchObj = { userId: id, deletedAt: null };
+                const total = await Bet.find(searchObj).count();
+                const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+                res.json({ total, page, perPage, bets });
+            }
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find bets.', result: error });

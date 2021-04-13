@@ -4,54 +4,118 @@ import dateformat from "dateformat";
 import { getCustomerBets } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
+import { Tabs, Tab } from "react-bootstrap";
 
 class Bet extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false,
-            bets: [],
-            total: 0,
-            page: 1,
             perPage: 10,
+            ppwBet: {
+                bets: [],
+                total: 0,
+                page: 1,
+                loading: false,
+            },
+            sportsbookBet: {
+                bets: [],
+                total: 0,
+                page: 1,
+                loading: false,
+            }
         }
     }
 
     componentDidMount() {
-        console.log('asdf')
-        this.getData();
+        this.getPPWData();
+        this.getSportsBookData();
     }
 
-    getData = (loadpage = 1) => {
+    getPPWData = (loadpage = 1) => {
         const { customer } = this.props;
-        const { perPage } = this.state;
-        this.setState({ loading: true, });
+        const { perPage, ppwBet } = this.state;
+        const { bets, total, page } = ppwBet;
+        this.setState({
+            ppwBet: {
+                bets,
+                total,
+                page,
+                loading: true
+            }
+        });
 
         getCustomerBets(customer._id, loadpage, perPage)
             .then(({ data }) => {
                 const { total, page, bets } = data;
-                this.setState({ total, page, bets, loading: false });
+                this.setState({
+                    ppwBet: {
+                        total,
+                        page,
+                        bets,
+                        loading: false,
+                    }
+                });
             })
             .catch(() => {
                 this.setState({
-                    bets: [],
-                    total: 0,
-                    page: 1,
-                    perPage: 15,
-                    loading: false
+                    ppwBet: {
+                        bets: [],
+                        total: 0,
+                        page: 1,
+                        loading: false
+                    }
                 });
             })
     }
 
-    onPageChange = (newpage) => {
-        const { page } = this.state;
+    getSportsBookData = (loadpage = 1) => {
+        const { customer } = this.props;
+        const { perPage, sportsbookBet } = this.state;
+        const { bets, total, page } = sportsbookBet;
+        this.setState({
+            sportsbookBet: {
+                bets,
+                total,
+                page,
+                loading: true
+            }
+        });
+
+        getCustomerBets(customer._id, loadpage, perPage, 'sportsbook')
+            .then(({ data }) => {
+                const { total, page, bets } = data;
+                this.setState({
+                    sportsbookBet: {
+                        total,
+                        page,
+                        bets,
+                        loading: false,
+                    }
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    sportsbookBet: {
+                        bets: [],
+                        total: 0,
+                        page: 1,
+                        loading: false
+                    }
+                });
+            })
+    }
+
+    onPPWPageChange = (newpage) => {
+        const { ppwBet } = this.state;
+        const { page } = ppwBet;
         if (page != newpage) {
-            this.getData(newpage);
+            this.getPPWData(newpage);
         }
     }
 
-    tableBody = () => {
-        const { bets, loading } = this.state;
+    tablePPWBody = () => {
+        const { ppwBet } = this.state;
+        const { bets, loading } = ppwBet;
         const { customer } = this.props;
 
         if (loading) {
@@ -118,14 +182,75 @@ class Bet extends React.Component {
         ));
     }
 
+    tableSportsBookBody = () => {
+        const { sportsbookBet } = this.state;
+        const { bets, loading } = sportsbookBet;
+        const { customer } = this.props;
+
+        if (loading) {
+            return (
+                <tr>
+                    <td colSpan="6" align="center">
+                        <Preloader use={ThreeDots}
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />
+                    </td>
+                </tr>
+            );
+        }
+        if (bets.length == 0) {
+            return (
+                <tr>
+                    <td colSpan="6" align="center">
+                        <h3>No Bets</h3>
+                    </td>
+                </tr>
+            );
+        }
+        return bets.map((bet, index) => (
+            <tr key={index}>
+                <td className="pl-0">
+                    <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                        {index + 1}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                        {this.getDate(bet.createdAt)}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className=" font-weight-500">
+                        ${bet.WagerInfo.ToRisk} {customer.currency}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className=" font-weight-500">
+                        {bet.WagerInfo.Sport}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className=" font-weight-500">
+                        {bet.WagerInfo.EventName}
+                    </span>
+                </td>
+            </tr>
+        ));
+    }
+
     getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
 
     render() {
         const { className } = this.props;
-        const { perPage, page, total } = this.state;
-        const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
+        const { perPage, ppwBet, sportsbookBet } = this.state;
+        const { page: pagePPW, total: totalPPW } = ppwBet;
+        const { page: pageSportsBook, total: totalSportsBook } = sportsbookBet;
+        const totalPPWPages = totalPPW ? (Math.floor((totalPPW - 1) / perPage) + 1) : 1;
+        const totalSportsBookPages = totalSportsBook ? (Math.floor((totalSportsBook - 1) / perPage) + 1) : 1;
         return (
             <div className={`card card-custom ${className}`}>
                 {/* Head */}
@@ -143,30 +268,59 @@ class Bet extends React.Component {
                 </div>
                 {/* Body */}
                 <div className="card-body pt-3 pb-0">
-                    <div className="table-responsive text-left">
-                        <table className="table table-vertical-center">
-                            <thead>
-                                <tr>
-                                    <th className="p-0" >#</th>
-                                    <th className="p-0" >Time</th>
-                                    <th className="p-0" >Amount</th>
-                                    <th className="p-0" >Sport</th>
-                                    <th className="p-0" >Event</th>
-                                    <th className="p-0" >Line</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.tableBody()}
-                            </tbody>
-                        </table>
-                        <CustomPagination
-                            className="pagination pull-right"
-                            currentPage={page - 1}
-                            totalPages={totalPages}
-                            showPages={7}
-                            onChangePage={(page) => this.onPageChange(page + 1)}
-                        />
-                    </div>
+                    <Tabs>
+                        <Tab eventKey="ppwbets" title="PPW Bets" className="border-0">
+                            <div className="table-responsive text-left pt-3">
+                                <table className="table table-vertical-center">
+                                    <thead>
+                                        <tr>
+                                            <th className="p-0" >#</th>
+                                            <th className="p-0" >Time</th>
+                                            <th className="p-0" >Amount</th>
+                                            <th className="p-0" >Sport</th>
+                                            <th className="p-0" >Event</th>
+                                            <th className="p-0" >Line</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.tablePPWBody()}
+                                    </tbody>
+                                </table>
+                                <CustomPagination
+                                    className="pagination pull-right"
+                                    currentPage={pagePPW - 1}
+                                    totalPages={totalPPWPages}
+                                    showPages={7}
+                                    onChangePage={(page) => this.onPPWPageChange(page + 1)}
+                                />
+                            </div>
+                        </Tab>
+                        <Tab eventKey="sportsbook" title="SportsBook" className="border-0">
+                            <div className="table-responsive text-left pt-3">
+                                <table className="table table-vertical-center">
+                                    <thead>
+                                        <tr>
+                                            <th className="p-0" >#</th>
+                                            <th className="p-0" >Time</th>
+                                            <th className="p-0" >Amount</th>
+                                            <th className="p-0" >Sport</th>
+                                            <th className="p-0" >Event</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.tableSportsBookBody()}
+                                    </tbody>
+                                </table>
+                                <CustomPagination
+                                    className="pagination pull-right"
+                                    currentPage={pagePPW - 1}
+                                    totalPages={totalPPWPages}
+                                    showPages={7}
+                                    onChangePage={(page) => this.onPPWPageChange(page + 1)}
+                                />
+                            </div>
+                        </Tab>
+                    </Tabs>
                 </div>
             </div>
         );

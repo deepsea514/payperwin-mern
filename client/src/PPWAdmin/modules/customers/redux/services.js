@@ -60,6 +60,6 @@ export function getCustomerWithdraws(id, page, perPage) {
     return axios.get(`${serverUrl}/customer-withdraws?id=${id}&page=${page}&perPage=${perPage}`);   
 }
 
-export function getCustomerBets(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}`);   
+export function getCustomerBets(id, page, perPage, src = 'ppw') {
+    return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}&src=${src}`);   
 }
