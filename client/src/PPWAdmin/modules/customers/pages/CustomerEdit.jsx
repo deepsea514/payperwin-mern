@@ -261,6 +261,7 @@ class CustomerEdit extends React.Component {
                                                     "region"
                                                 )}`}
                                                     {...formik.getFieldProps("region")}
+                                                    valueType="short"
                                                     country={formik.values.country}
                                                     {...{
                                                         onChange: (region) => {

@@ -40,6 +40,7 @@
     "start": "set NODE_ENV=development&&node index.js",
     "server": "node index.js",
     "resultsDaemon": "node matchResultDaemon.js",
-    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js"
+    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
+    "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js"
   }
 }

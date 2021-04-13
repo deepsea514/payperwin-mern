@@ -328,6 +328,7 @@ class PersonaInformation extends React.Component {
                                             formik
                                         )}`}
                                             name="region"
+                                            valueType="short"
                                             {...formik.getFieldProps("region")}
                                             country={formik.values.country}
                                             {...{
