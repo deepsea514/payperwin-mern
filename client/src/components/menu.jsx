@@ -54,7 +54,7 @@ class Menu extends Component {
                             Odds Format
                             <select>
                                 <option>American Odds</option>
-                                <option>Decimal Odds</option>
+                                {/* <option>Decimal Odds</option> */}
                             </select>
                         </li>
                         <li>

@@ -25,7 +25,7 @@ export default class Highlights extends PureComponent {
         return (
             <div className="highlights">
                 <div className="bet-slip-header">SPORTS BETTING</div>
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                <ul className="nav nav-tabs pt-2" id="myTab" role="tablist">
                     {
                         sports.map((s, i) => {
                             return (

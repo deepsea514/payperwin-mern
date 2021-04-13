@@ -162,8 +162,8 @@ export default class Profile extends Component {
                                                     name="title"
                                                     value={formik.values.title}
                                                     {...formik.getFieldProps("title")}>
-                                                    <FormControlLabel value="Mr" control={<Radio />} label="Mr" />
-                                                    <FormControlLabel value="Ms" control={<Radio />} label="Ms" />
+                                                    <FormControlLabel value="Mr" control={<Radio readOnly />} label="Mr" />
+                                                    <FormControlLabel value="Ms" control={<Radio readOnly />} label="Ms" />
                                                 </RadioGroup>
                                             </FormControl>
                                         </div>
@@ -176,6 +176,7 @@ export default class Profile extends Component {
                                                     "username"
                                                 )}`}
                                                 {...formik.getFieldProps("username")}
+                                                readOnly
                                             />
                                             {formik.touched.username && formik.errors.username ? (
                                                 <div className="invalid-feedback">
@@ -194,6 +195,7 @@ export default class Profile extends Component {
                                                     "firstname"
                                                 )}`}
                                                 {...formik.getFieldProps("firstname")}
+                                                readOnly
                                             />
                                             {formik.touched.firstname && formik.errors.firstname ? (
                                                 <div className="invalid-feedback">
@@ -210,6 +212,7 @@ export default class Profile extends Component {
                                                     "lastname"
                                                 )}`}
                                                 {...formik.getFieldProps("lastname")}
+                                                readOnly
                                             />
                                             {formik.touched.lastname && formik.errors.lastname ? (
                                                 <div className="invalid-feedback">
@@ -253,6 +256,7 @@ export default class Profile extends Component {
                                                 placeholder="Enter Birthday"
                                                 isInvalid={formik.errors.dateofbirth !== undefined}
                                                 required
+                                                readOnly
                                             />
                                             {formik.touched.dateofbirth && formik.errors.dateofbirth ? (
                                                 <div className="invalid-feedback">

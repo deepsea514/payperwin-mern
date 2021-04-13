@@ -16,8 +16,8 @@ class Preferences extends Component {
                             <div className="form-group">
                                 <label>Odds display format</label>
                                 <select className="form-control">
-                                    <option> American ODds</option>
-                                    <option> Decimal Odds</option>
+                                    <option> American Odds</option>
+                                    {/* <option> Decimal Odds</option> */}
                                 </select>
                                 <i className="fa fa-info-circle fl-rit"
                                     aria-hidden="true"></i>
@@ -35,8 +35,8 @@ class Preferences extends Component {
                             <div className="form-group">
                                 <label>Default time zone</label>
                                 <select className="form-control">
-                                    <option value="-12:00">(GMT -12:00) Eniwetok, Kwajalein</option>
-                                    <option value="-11:00">(GMT -11:00) Midway Island, Samoa</option>
+                                    {/* <option value="-12:00">(GMT -12:00) Eniwetok, Kwajalein</option> */}
+                                    {/* <option value="-11:00">(GMT -11:00) Midway Island, Samoa</option> */}
                                     <option value="-10:00">(GMT -10:00) Hawaii</option>
                                     <option value="-09:50">(GMT -9:30) Taiohae</option>
                                     <option value="-09:00">(GMT -9:00) Alaska</option>
@@ -47,7 +47,7 @@ class Preferences extends Component {
                                     <option value="-04:50">(GMT -4:30) Caracas</option>
                                     <option value="-04:00">(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz</option>
                                     <option value="-03:50">(GMT -3:30) Newfoundland</option>
-                                    <option value="-03:00">(GMT -3:00) Brazil, Buenos Aires, Georgetown</option>
+                                    {/* <option value="-03:00">(GMT -3:00) Brazil, Buenos Aires, Georgetown</option>
                                     <option value="-02:00">(GMT -2:00) Mid-Atlantic</option>
                                     <option value="-01:00">(GMT -1:00) Azores, Cape Verde Islands</option>
                                     <option value="+00:00">(GMT) Western Europe Time, London, Lisbon, Casablanca</option>
@@ -74,7 +74,7 @@ class Preferences extends Component {
                                     <option value="+12:00">(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka</option>
                                     <option value="+12:75">(GMT +12:45) Chatham Islands</option>
                                     <option value="+13:00">(GMT +13:00) Apia, Nukualofa</option>
-                                    <option value="+14:00">(GMT +14:00) Line Islands, Tokelau</option>
+                                    <option value="+14:00">(GMT +14:00) Line Islands, Tokelau</option> */}
                                 </select>
                             </div>
 

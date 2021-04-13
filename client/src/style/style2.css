@@ -1126,7 +1126,6 @@ p label {
 }
 
 .tab-navigation {
-    margin-bottom: 45px;
     display: flex;
     justify-content: space-around;
     font-weight: bold;
@@ -1134,7 +1133,6 @@ p label {
     padding-bottom: 30px;
     border-top: 1px solid rgba(204, 204, 204, 0.72);
     padding-top: 32px;
-    margin-top: 23px;
 }
 
 .fas.fa-check {

@@ -67,7 +67,7 @@ class Security extends Component {
                                                 className="btn-smt">save</button>
                                             <br />
                                             <br />
-                                            <h4 className="h4">SECURITY QUESTION AND ANSWER</h4>
+                                            {/* <h4 className="h4">SECURITY QUESTION AND ANSWER</h4>
                                             <div className="form-group">
                                                 <label>Security question</label>
                                                 <input type="text"
@@ -93,7 +93,7 @@ class Security extends Component {
                                             </div>
 
                                             <button type="submit"
-                                                className="btn-smt">save</button>
+                                                className="btn-smt">save</button> */}
                                         </div>
                                         <div className="login-d tab-pane fade p-3"
                                             id="two" role="tabpanel"

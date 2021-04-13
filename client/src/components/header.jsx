@@ -231,7 +231,7 @@ export default class Header extends PureComponent {
                                     {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
                                         <a href="#">
-                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Decimal Odds<i className="fa fa-caret-down" aria-hidden="true"></i>
+                                            <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds<i className="fa fa-caret-down" aria-hidden="true"></i>
                                         </a>
                                     </li>
                                     <a href="#">
