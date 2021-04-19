@@ -1,43 +1,15 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
+import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder'
-const config = require('../../../config.json');
-const serverUrl = config.appUrl;
 
-export default class Deposit extends PureComponent {
+class Withdraw extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    updateBalance(amount) {
-        const { updateUser } = this.props;
-        const url = `${serverUrl}/balanceUpdate`;
-        axios({
-            method: 'post',
-            url,
-            data: {
-                amount,
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        }).then(({ data: balance }) => {
-            updateUser('balance', balance);
-        }).catch((err) => {
-            if (err.response) {
-                console.log(err.response);
-            }
-        });
-    }
-
     componentDidMount() {
         setTitle({ pageTitle: 'Withdrawal' });
-    }
-
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -51,7 +23,14 @@ export default class Deposit extends PureComponent {
                     <div className="deposit-in bg-color-box pad10">
                         <h4 className="header-i4">SELECT WITHDRAWAL METHOD</h4>
                         <ul className="diposit-list d-flex flex-wrap justify-content-space">
-                            <li><a href="#"><img src="images/eTransfer.png" /></a> <a href="#">Interac eTransfer </a></li>
+                            <li>
+                                <Link to={{ pathname: '/withdraw-etransfer' }}>
+                                    <img src="images/eTransfer.png" />
+                                </Link>
+                                <Link to={{ pathname: '/withdraw-etransfer' }}>
+                                    Interac eTransfer
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">
@@ -65,3 +44,5 @@ export default class Deposit extends PureComponent {
         );
     }
 }
+
+export default withRouter(Withdraw);

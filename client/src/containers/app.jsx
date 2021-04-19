@@ -40,7 +40,8 @@ import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
-import ETransfer from "../pages/etransfer";
+import DepositETransfer from "../pages/depositEtransfer";
+import WithdrawETransfer from "../pages/withdrawEtransfer";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -176,6 +177,8 @@ class App extends PureComponent {
             '/transaction-history',
             '/withdraw',
             '/account',
+            '/deposit-etransfer',
+            '/withdraw-etransfer',
         ].includes(pathname);
 
         return (
@@ -257,7 +260,8 @@ class App extends PureComponent {
                                                 <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
-                                                <Route path="/etransfer" render={(props) => <ETransfer {...props} user={user} />} />
+                                                <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
+                                                <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
                                                 <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
                                                     removeBet={this.removeBet} />} />
                                                 {/* {

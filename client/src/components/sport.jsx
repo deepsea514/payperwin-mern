@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { setTitle } from '../libs/documentTitleBuilder'
-import resObjPath from '../libs/resObjPath'
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 

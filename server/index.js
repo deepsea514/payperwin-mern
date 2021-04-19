@@ -1342,10 +1342,13 @@ expressApp.get(
 expressApp.get(
     '/sportsdir',
     async (req, res) => {
-        const { name } = req.query;
-        const sportData = await SportsDir.findOne({});
+        const sportData = await SportsDir.find({});
         if (sportData) {
-            res.json(sportData.sports);
+            let sports = [];
+            for (const sport of sportData) {
+                sports = [...sports, ...sport.sports];
+            }
+            res.json(sports);
         } else {
             res.status(404).end();
         }
@@ -1448,7 +1451,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
     const { amount, email, phone, method } = data;
     if (method == "eTransfer") {
         if (!amount || !email || !phone) {
-            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone is required." });
+            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
         }
         try {
             const { user } = req;
@@ -1476,7 +1479,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
                                 "sku": uniqid
                             }
                         ],
-                        "notification_url": "https://api.payperwin.co/premier/result",
+                        "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
                         "amount_shipping": 0.00,
                         "udf1": user._id,
                         "udf2": uniqid,
@@ -1492,13 +1495,79 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
                 if (data.status == "APPROVED") {
                     const deposit = new FinancialLog({
                         financialtype: 'deposit',
-                        uniqid: `D${ID()}`,
+                        uniqid,
                         user: user._id,
                         amount,
                         method,
                         status: "Pending"
                     });
                     await deposit.save();
+                    return res.json({ success: 1, message: "Please wait until deposit is finished." });
+                }
+                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+            } catch (error) {
+                console.log("deposit => ", error);
+                return res.status(400).json({ success: 0, message: "Failed to create deposit." });
+            }
+        } catch (error) {
+            return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
+        }
+    }
+    else {
+        return res.status(400).json({ success: 0, message: "Method is not suitable." });
+    }
+});
+
+expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, res) => {
+    const data = req.body;
+    const { amount, method } = data;
+    if (method == "eTransfer") {
+        if (!amount) {
+            return res.status(400).json({ success: 0, message: "Withdraw Amount is required." });
+        }
+        try {
+            const { user } = req;
+            try {
+                const uniqid = `W${ID()}`;
+                const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                const amount2 = Number(amount).toFixed(2);
+                const { data } = await axios.post(`${PremiumPay.url}/${PremiumPay.sid}`,
+                    {
+                        "payby": "etransfer",
+                        "amount": amount2,
+                        "first_name": user.firstname,
+                        "last_name": user.lastname,
+                        "email": user.email,
+                        "phone": user.phone,
+                        "address": "Artery roads",
+                        "city": "Edmonton",
+                        "state": "AB",
+                        "country": "CA",
+                        "zip_code": "T5A",
+                        "ip_address": "159.203.4.60",
+                        "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
+                        "amount_shipping": 0.00,
+                        "udf1": user._id,
+                        "udf2": uniqid,
+                        "signature": signature
+                    }
+                );
+                await PremierResponse.create(data);
+
+                const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                if (responsesignature != data.signature) {
+                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                }
+                if (data.status == "APPROVED") {
+                    const withdraw = new FinancialLog({
+                        financialtype: 'withdraw',
+                        uniqid,
+                        user: user._id,
+                        amount,
+                        method,
+                        status: "Pending"
+                    });
+                    await withdraw.save();
                     return res.json({ success: 1, message: "Please wait until deposit is finished." });
                 }
                 return res.status(400).json({ success: 0, message: "Failed to create etransfer." });

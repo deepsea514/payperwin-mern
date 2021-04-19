@@ -1,37 +1,12 @@
 import React, { PureComponent } from 'react';
-// import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
-const config = require('../../../config.json');
-const serverUrl = config.appUrl;
 
 class Deposit extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {};
     }
-
-    // updateBalance(amount) {
-    //     const { updateUser } = this.props;
-    //     const url = `${serverUrl}/balanceUpdate`;
-    //     axios({
-    //         method: 'post',
-    //         url,
-    //         data: {
-    //             amount,
-    //         },
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         withCredentials: true,
-    //     }).then(({ data: balance }) => {
-    //         updateUser('balance', balance);
-    //     }).catch((err) => {
-    //         if (err.response) {
-    //             console.log(err.response);
-    //         }
-    //     });
-    // }
 
     componentDidMount() {
         setTitle({ pageTitle: 'Deposit' });
@@ -47,10 +22,10 @@ class Deposit extends PureComponent {
                         <h4 className="header-i4">SELECT DEPOSIT METHOD</h4>
                         <ul className="diposit-list d-flex flex-wrap justify-content-space">
                             <li>
-                                <Link to={{ pathname: '/etransfer' }}>
+                                <Link to={{ pathname: '/deposit-etransfer' }}>
                                     <img src="images/eTransfer.png" />
                                 </Link>
-                                <Link to={{ pathname: '/etransfer' }}>
+                                <Link to={{ pathname: '/deposit-etransfer' }}>
                                     Interac eTransfer
                                 </Link>
                             </li>
@@ -63,7 +38,6 @@ class Deposit extends PureComponent {
                         Please see the payment methods pages of the site for more information on fees.
                     </p>
                 </div>
-                {/* <button className="form-button" onClick={() => this.updateBalance(100)}>Deposit $100 (Testing Purposes)</button> */}
             </div>
         );
     }

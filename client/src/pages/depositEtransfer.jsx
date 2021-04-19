@@ -30,7 +30,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class ETransfer extends PureComponent {
+class DepositETransfer extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -210,4 +210,4 @@ class ETransfer extends PureComponent {
     }
 }
 
-export default withRouter(withStyles(useStyles, { withTheme: true })(ETransfer));
+export default withRouter(withStyles(useStyles, { withTheme: true })(DepositETransfer));

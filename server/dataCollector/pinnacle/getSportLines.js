@@ -13,8 +13,8 @@ const databaseName = 'PayPerWinDev'
 console.info('Using database:', databaseName);
 mongoose.connect(`mongodb://localhost/${databaseName}`, {
     authSource: "admin",
-    // user: config.mongo.username,
-    // pass: config.mongo.password,
+    user: config.mongo.username,
+    pass: config.mongo.password,
     useMongoClient: true,
 });
 
