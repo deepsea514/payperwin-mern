@@ -72,7 +72,8 @@
         "existing": "Existing Clients"
     },
     "PremiumPay": {
-        "url": "https://secure.premierpay.ca/api/v2/payment",
+        "paymenturl": "https://secure.premierpay.ca/api/v2/payment",
+        "payouturl": "https://secure.premierpay.ca/api/v2/payout",
         "sid": 201,
         "rcode": "69d82724EAfB6653A4e60072bf8136Da"
     }

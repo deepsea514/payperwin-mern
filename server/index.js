@@ -1458,7 +1458,7 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
             try {
                 const uniqid = `D${ID()}`;
                 const signature = generatePremierRequestSignature(email, amount, user._id, uniqid);
-                const { data } = await axios.post(`${PremiumPay.url}/${PremiumPay.sid}`,
+                const { data } = await axios.post(`${PremiumPay.paymenturl}/${PremiumPay.sid}`,
                     {
                         "payby": "etransfer",
                         "first_name": user.firstname,
@@ -1531,7 +1531,7 @@ expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, re
                 const uniqid = `W${ID()}`;
                 const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
                 const amount2 = Number(amount).toFixed(2);
-                const { data } = await axios.post(`${PremiumPay.url}/${PremiumPay.sid}`,
+                const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
                     {
                         "payby": "etransfer",
                         "amount": amount2,
