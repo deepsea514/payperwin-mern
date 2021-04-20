@@ -13,7 +13,7 @@ Date.prototype.addHours = function (h) {
     return this;
 }
 
-function matchResults(sportName, events) {
+async function matchResults(sportName, events) {
     const betpools = await BetPool.find(
         {
             origin: 'rundown',
