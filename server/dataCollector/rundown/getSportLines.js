@@ -39,7 +39,7 @@ async function getSportLines(sportName, call) {
                     eventSportData = [...eventSportData, ...eventsData.events];
                 }
             }
-
+            console.log("eventSportData => ", eventSportData);
             const sport = await Sport.findOne({ originSportId: id });
             const existingEvents = sport ? sport.leagues[0].events : [];
 
@@ -69,7 +69,7 @@ async function getSportLines(sportName, call) {
                 await sportsDir.save();
             }
         } catch (e) {
-            console.log(e);
+            console.log("getSportError => ", e);
         }
     } else {
     }
