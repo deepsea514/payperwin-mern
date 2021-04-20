@@ -13,6 +13,7 @@ function getLinesFromSportData(data, leagueId, eventId, lineId) {
                     lineData.teamB = teamB;
                     lineData.startDate = startDate;
                     lineData.lines = lines;
+                    lineData.origin = data.origin;
                     found = true;
                 }
             });

@@ -103,8 +103,8 @@ class App extends PureComponent {
     }
 
 
-    addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index) {
-        const newBet = { name, type, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, };
+    addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin) {
+        const newBet = { name, type, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin };
         const { betSlip } = this.state;
         this.setState({
             betSlip: update(betSlip, {
@@ -264,27 +264,6 @@ class App extends PureComponent {
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
                                                 <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
                                                     removeBet={this.removeBet} />} />
-                                                {/* {
-                                                        () => {
-                                                            setTitle({ pageTitle: '' });
-                                                            return (
-                                                                <React.Fragment>
-                                                                    <Carousel autoPlay={8000} animationSpeed={1800} infinite
-                                                                        stopAutoPlayOnHover={true}>
-                                                                        <Link to={{ pathname: '/how-it-works' }}>
-                                                                            <img src="/images/Banner 1.jpg" />
-                                                                        </Link>
-                                                                        <Link to={{ pathname: '/how-it-works' }}>
-                                                                            <img src="/images/Banner 2.png" />
-                                                                        </Link>
-                                                                    </Carousel>
-                                                                    <Highlights addBet={this.addBet} betSlip={betSlip}
-                                                                        removeBet={this.removeBet} />
-                                                                </React.Fragment>
-                                                            );
-                                                        }
-                                                    }
-                                                </Route> */}
                                             </Switch>
                                         </div>
                                         <div className="col-sm-3 side-bar">

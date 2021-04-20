@@ -11,7 +11,7 @@ function mergeExistingOdds(events, oldEvents) {
         lastDate = (new Date()).getTime();
     }
     else {
-        lastDate = (new Date(events[0].startDate)).getTime();
+        lastDate = (new Date(events[events.length - 1].startDate)).getTime();
     }
     oldEvents = oldEvents.filter(event => {
         let date = (new Date(event.startDate)).getTime();

@@ -46,7 +46,11 @@ async function doStuff() {
     // Check  betpools
     const betpools = await BetPool.find(
         // settle matches that started before 3 hours ago
-        { matchStartDate: { $lt: new Date().addHours(3) }, result: { $exists: false } }
+        {
+            origin: 'pinnacle',
+            matchStartDate: { $lt: new Date().addHours(3) },
+            result: { $exists: false }
+        }
     );
 
     // console.log(betpools);

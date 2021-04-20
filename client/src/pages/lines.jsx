@@ -82,7 +82,7 @@ class Lines extends PureComponent {
             return <div>Loading...</div>;
         }
 
-        const { teamA, teamB, startDate, leagueName, lines } = data;
+        const { teamA, teamB, startDate, leagueName, lines, origin } = data;
         return (
             <div className="content detailed-lines">
                 <center>
@@ -138,6 +138,8 @@ class Lines extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `${teamA}`,
+                                                                            null,
+                                                                            origin
                                                                         )}>
                                                                     <div className="vertical-align">
                                                                         <div className="points">{teamA}</div>
@@ -168,6 +170,8 @@ class Lines extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `${teamB}`,
+                                                                            null,
+                                                                            origin
                                                                         )}>
                                                                     <div className="vertical-align">
                                                                         <div className="points">{teamB}</div>
@@ -229,6 +233,7 @@ class Lines extends PureComponent {
                                                                                     lineQuery,
                                                                                     `${teamA} ${spread.hdp > 0 ? '+' : ''}${spread.hdp}`,
                                                                                     i,
+                                                                                    origin
                                                                                 )}
                                                                     >
                                                                         <div className="vertical-align">
@@ -269,6 +274,7 @@ class Lines extends PureComponent {
                                                                                     lineQuery,
                                                                                     `${teamB} ${-1 * spread.hdp > 0 ? '+' : ''}${-1 * spread.hdp}`,
                                                                                     i,
+                                                                                    origin
                                                                                 )}>
                                                                         <div className="vertical-align">
                                                                             <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
@@ -338,6 +344,7 @@ class Lines extends PureComponent {
                                                                                     lineQuery,
                                                                                     `Over ${total.points}`,
                                                                                     i,
+                                                                                    origin
                                                                                 )}
                                                                     >
                                                                         <div className="vertical-align">
@@ -378,6 +385,7 @@ class Lines extends PureComponent {
                                                                                     lineQuery,
                                                                                     `Under ${total.points}`,
                                                                                     i,
+                                                                                    origin
                                                                                 )
                                                                         }
                                                                     >

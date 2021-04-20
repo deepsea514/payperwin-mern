@@ -3,12 +3,12 @@ import Sport from './sport';
 import sportNameIcon from '../helpers/sportNameIcon';
 
 const sports = [
-    'Boxing',
     'Soccer',
-    'Mixed Martial Arts',
-    'Hockey',
-    'Basketball',
-    'Table Tennis',
+    'NHL',
+    'MLB',
+    'NBA',
+    'WNBA',
+    'NFL',
 ];
 
 export default class Highlights extends PureComponent {

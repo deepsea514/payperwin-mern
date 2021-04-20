@@ -741,6 +741,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                         win: toWin,
                         lineQuery,
                         pickName,
+                        origin
                     } = bet;
                     if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                         errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
@@ -879,6 +880,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                             points: hdp ? hdp : points ? points : null,
                                                             homeBets: pick === 'home' ? [betId] : [],
                                                             awayBets: pick === 'away' ? [betId] : [],
+                                                            origin
                                                         }
                                                     );
 
