@@ -2,6 +2,7 @@ const getSportLines = require('./getSportLines');
 const sleep = require('../../libs/sleep');
 const sports = require("./sports.json");
 const mongoose = require('mongoose');
+const config = require('../../../config.json');
 let call = 0;
 
 // Database
