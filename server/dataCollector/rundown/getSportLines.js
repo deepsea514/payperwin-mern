@@ -33,7 +33,7 @@ async function getSportLines(sportName, call) {
                 const url = `${config.rundownApiHost}/sports/${id}/events/${dateStr}?include=scores&offset=-300`;
                 const { data: eventsData } = await axios.get(url, reqConfig);
                 if (i == 0 || i == -1) {
-                    await matchResults(eventsData.events);
+                    await matchResults(name, eventsData.events);
                 }
                 else {
                     eventSportData = [...eventSportData, ...eventsData.events];
