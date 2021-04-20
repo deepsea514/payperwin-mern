@@ -1,4 +1,4 @@
-const dotenvresult = require('dotenv').config();
+require('dotenv').config();
 const mongoose = require('mongoose');
 const BetPool = require('./models/betpool');
 const Bet = require('./models/bet');
@@ -57,6 +57,7 @@ async function doStuff() {
     // loop through betpools
     if (!betpools || betpools.length === 0) {
         console.log('no eligible betpools');
+        return;
     }
     for (const betpool of betpools) {
         const {
@@ -72,13 +73,11 @@ async function doStuff() {
             teamB,
             points
         } = betpool;
-        console.log(betpool);
         let matchCancelled = false;
         if (homeBets.length > 0 && awayBets.length > 0) {
             // checkmatchresult
             try {
                 const url = `${config.pinnacleApiHost}/v1/fixtures/settled?sportId=${sportId}&leagueIds=${leagueId}`;
-                console.log('getting', url);
                 let result = await ApiCache.findOne({ url });
                 if (!result || (result.updatedAt && new Date() - new Date(result.updatedAt) > 1000 * 60 * 59)) {
                     // TODO: last/since
@@ -171,13 +170,13 @@ async function doStuff() {
                                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
                                     to: email,
                                     subject: 'You won a wager!',
-                                    text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: http://dev.payperwin.ca/history`,
+                                    text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
                                     html: simpleresponsive(`
                                         <p>
                                             Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                         </p>
                                         `,
-                                        { href: 'http://dev.payperwin.ca/history', name: 'Settled Bets' }
+                                        { href: 'https://payperwin.co/history', name: 'Settled Bets' }
                                     ),
                                 };
                                 sgMail.send(msg);

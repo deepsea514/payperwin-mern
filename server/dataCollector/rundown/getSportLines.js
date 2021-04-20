@@ -24,12 +24,13 @@ async function getSportLines(sportName, call) {
             },
         };
         try {
-            let date = (new Date()).getTime();
+            const TodayDate = (new Date()).getTime();
             let eventSportData = [];
             for (let i = ((call % 12 == 0) ? -1 : 0); i < numberOfDateToGet; i++) {
+                const date =  TodayDate + 24 * 3600 * 1000 * i;
                 const dateStr = dateformat(new Date(date), "isoDate");
                 console.log(`Getting events for ${name} in ${dateStr}`);
-                const url = `${config.rundownApiHost}/sports/${id}/events/${dateStr}`;
+                const url = `${config.rundownApiHost}/sports/${id}/events/${dateStr}?include=scores&offset=-300`;
                 const { data: eventsData } = await axios.get(url, reqConfig);
                 if (i <= 0) {
                     matchResults(eventsData.events);
@@ -37,7 +38,6 @@ async function getSportLines(sportName, call) {
                 else {
                     eventSportData = [...eventSportData, ...eventsData.events];
                 }
-                date += 24 * 3600 * 1000;
             }
 
             const sport = await Sport.findOne({ originSportId: id });
