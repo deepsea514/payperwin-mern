@@ -32,7 +32,6 @@ function formatFixturesOdds(fixtures, odds) {
             originSportId: mergedData.sportId,
             originFixturesLast: mergedData.last,
             originOddsLast: mergedData.oddsLast,
-            originSportId: mergedData.sportId,
             leagues: [],
         };
         mergedData.league.forEach(league => {

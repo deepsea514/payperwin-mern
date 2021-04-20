@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import { setTitle } from '../libs/documentTitleBuilder'
 import sportNameIcon from '../helpers/sportNameIcon';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 import '../style/all.min.css';
-
 
 class SportsList extends PureComponent {
     constructor(props) {

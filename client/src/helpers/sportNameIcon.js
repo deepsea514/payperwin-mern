@@ -1,4 +1,3 @@
-
 const sportIcons = {
   'E Sports': 'fas fa-headset',
   'Baseball': 'fas fa-baseball-ball',
@@ -55,6 +54,13 @@ const sportIcons = {
   'Olympics': 'fas fa-trophy',
   'Athletics': 'fas fa-running',
   'Badminton': 'fap fa-racquet',
+  'NFL': 'fas fa-football-ball',
+  'NHL': 'fas fa-hockey-puck',
+  'MLB': 'fas fa-baseball-ball',
+  'NBA': 'fas fa-basketball-ball',
+  'WNBA': 'fas fa-basketball-ball',
+  'NCAA': 'fas fa-basketball-ball',
+  'UFC': 'fas fa-boxing-glove'
 };
 
 function sportNameIcon(name) {
