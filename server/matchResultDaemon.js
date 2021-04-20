@@ -159,13 +159,13 @@ async function doStuff() {
                                 console.log(betChanges);
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin } });
-                                await Admin.findOneAndUpdate({}, {
-                                    $inc: {
-                                        userWallet: betAmount + payableToWin,
-                                        betsWallet: (betAmount + payableToWin) * -1,
-                                        // TODO: update fee wallet
-                                    }
-                                });
+                                // await Admin.findOneAndUpdate({}, {
+                                //     $inc: {
+                                //         userWallet: betAmount + payableToWin,
+                                //         betsWallet: (betAmount + payableToWin) * -1,
+                                //         // TODO: update fee wallet
+                                //     }
+                                // });
                                 // TODO: email winner
                                 const msg = {
                                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
@@ -222,13 +222,13 @@ async function doStuff() {
                 // refund user
                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                await Admin.findOneAndUpdate({}, {
-                    $inc: {
-                        betsWallet: betAmount * -1,
-                        userWallet: betAmount,
-                        // TODO: update fee wallet
-                    }
-                });
+                // await Admin.findOneAndUpdate({}, {
+                //     $inc: {
+                //         betsWallet: betAmount * -1,
+                //         userWallet: betAmount,
+                //         // TODO: update fee wallet
+                //     }
+                // });
             }
             for (const betId of awayBets) {
                 const bet = await Bet.findOne({ _id: betId });
@@ -237,13 +237,13 @@ async function doStuff() {
                 // refund user
                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                await Admin.findOneAndUpdate({}, {
-                    $inc: {
-                        betsWallet: betAmount * -1,
-                        userWallet: betAmount,
-                        // TODO: update fee wallet
-                    }
-                });
+                // await Admin.findOneAndUpdate({}, {
+                //     $inc: {
+                //         betsWallet: betAmount * -1,
+                //         userWallet: betAmount,
+                //         // TODO: update fee wallet
+                //     }
+                // });
             }
             // // set bet as cancelled 'minimum bets not met'
             await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
