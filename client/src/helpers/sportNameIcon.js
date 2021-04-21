@@ -60,7 +60,7 @@ const sportIcons = {
   'NBA': 'fas fa-basketball-ball',
   'WNBA': 'fas fa-basketball-ball',
   'NCAA': 'fas fa-basketball-ball',
-  'UFC': 'fas fa-boxing-glove'
+  'UFC': 'fap fa-boxing-glove'
 };
 
 function sportNameIcon(name) {

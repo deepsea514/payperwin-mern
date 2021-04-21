@@ -1,22 +1,9 @@
-const mongoose = require('mongoose');
 const axios = require('axios');
 const sports = require('./sports.json');
 const formatFixturesOdds = require('./formatFixturesOdds');
 const Sport = require('../../models/sport');
 const sleep = require('../../libs/sleep');
 const config = require('../../../config.json');
-
-// Database
-mongoose.Promise = global.Promise;
-const databaseName = 'PayPerWinDev'
-// const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
-console.info('Using database:', databaseName);
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
-    authSource: "admin",
-    // user: config.mongo.username,
-    // pass: config.mongo.password,
-    useMongoClient: true,
-});
 
 async function getSportLines(sportName) {
     const sportData = sports.find((sportObj) => sportObj.name.toLowerCase() === sportName.toLowerCase());
