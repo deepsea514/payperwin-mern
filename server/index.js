@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const User = require('./models/user');
 const LoginLog = require("./models/loginlog");
@@ -1530,37 +1531,37 @@ expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, re
         try {
             const { user } = req;
             try {
-                const uniqid = `W${ID()}`;
-                const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
-                const amount2 = Number(amount).toFixed(2);
-                const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
-                    {
-                        "payby": "etransfer",
-                        "amount": amount2,
-                        "first_name": user.firstname,
-                        "last_name": user.lastname,
-                        "email": user.email,
-                        "phone": user.phone,
-                        "address": "Artery roads",
-                        "city": "Edmonton",
-                        "state": "AB",
-                        "country": "CA",
-                        "zip_code": "T5A",
-                        "ip_address": "159.203.4.60",
-                        "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
-                        "amount_shipping": 0.00,
-                        "udf1": user._id,
-                        "udf2": uniqid,
-                        "signature": signature
-                    }
-                );
-                await PremierResponse.create(data);
+                // const uniqid = `W${ID()}`;
+                // const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                // const amount2 = Number(amount).toFixed(2);
+                // const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
+                //     {
+                //         "payby": "etransfer",
+                //         "amount": amount2,
+                //         "first_name": user.firstname,
+                //         "last_name": user.lastname,
+                //         "email": user.email,
+                //         "phone": user.phone,
+                //         "address": "Artery roads",
+                //         "city": "Edmonton",
+                //         "state": "AB",
+                //         "country": "CA",
+                //         "zip_code": "T5A",
+                //         "ip_address": "159.203.4.60",
+                //         "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
+                //         "amount_shipping": 0.00,
+                //         "udf1": user._id,
+                //         "udf2": uniqid,
+                //         "signature": signature
+                //     }
+                // );
+                // await PremierResponse.create(data);
 
-                const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-                if (responsesignature != data.signature) {
-                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-                }
-                if (data.status == "APPROVED") {
+                // const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                // if (responsesignature != data.signature) {
+                //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                // }
+                // if (data.status == "APPROVED") {
                     const withdraw = new FinancialLog({
                         financialtype: 'withdraw',
                         uniqid,
@@ -1571,8 +1572,8 @@ expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, re
                     });
                     await withdraw.save();
                     return res.json({ success: 1, message: "Please wait until deposit is finished." });
-                }
-                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+                // }
+                // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.log("deposit => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create deposit." });
