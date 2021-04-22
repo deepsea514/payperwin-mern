@@ -46,7 +46,7 @@ import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
-import VerificationProof from "../components/VerificationProof";
+import VerificationProof from "../components/verificationProof";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
