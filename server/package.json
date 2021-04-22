@@ -23,6 +23,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "express-brute": "^1.0.1",
+    "express-fileupload": "^1.2.1",
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^2.2.31",

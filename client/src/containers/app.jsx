@@ -269,7 +269,7 @@ class App extends PureComponent {
                                                 <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
-                                                {user && !user.roles.verified && <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />}
+                                                <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
                                                     removeBet={this.removeBet} />} />
                                             </Switch>

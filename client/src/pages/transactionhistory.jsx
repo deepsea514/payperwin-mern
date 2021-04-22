@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import axios from "axios";
-import config from "../../../config.json";
 import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import config from "../../../config.json";
 const serverUrl = config.appUrl;
 
 class TransactionHistory extends Component {

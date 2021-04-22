@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const User = require('./models/user');
 const LoginLog = require("./models/loginlog");
@@ -46,6 +45,8 @@ const PremiumPay = config.PremiumPay;
 const FinancialStatus = config.FinancialStatus;
 const io = require("./libs/socket");
 const BetSportsBook = require('./models/betsportsbook');
+const Verification = require('./models/verification');
+const fileUpload = require('express-fileupload');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -1562,16 +1563,16 @@ expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, re
                 //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 // }
                 // if (data.status == "APPROVED") {
-                    const withdraw = new FinancialLog({
-                        financialtype: 'withdraw',
-                        uniqid,
-                        user: user._id,
-                        amount,
-                        method,
-                        status: "Pending"
-                    });
-                    await withdraw.save();
-                    return res.json({ success: 1, message: "Please wait until deposit is finished." });
+                const withdraw = new FinancialLog({
+                    financialtype: 'withdraw',
+                    uniqid,
+                    user: user._id,
+                    amount,
+                    method,
+                    status: "Pending"
+                });
+                await withdraw.save();
+                return res.json({ success: 1, message: "Please wait until deposit is finished." });
                 // }
                 // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
@@ -1619,6 +1620,107 @@ expressApp.post(
         }
     }
 );
+
+expressApp.get(
+    '/checkverified',
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            let response = {
+                verified: false,
+                verify_submitted: {
+                    address: false,
+                    identification: false,
+                }
+            };
+            const { user } = req;
+            if (user.roles.verified) {
+                response.verified = true;
+                return res.json(response);
+            }
+            const verification = await Verification.findOne({ user: user._id });
+            if (!verification) {
+                return res.json(response);
+            }
+            if (verification.address) {
+                response.verify_submitted.address = true;
+            }
+            if (verification.identification) {
+                response.verify_submitted.identification = true;
+            }
+            res.json(response);
+        } catch (error) {
+            res.status(400).json({ success: 0, message: "can't load data" });
+        }
+    }
+);
+
+expressApp.post(
+    '/verification',
+    bruteforce.prevent,
+    isAuthenticated,
+    fileUpload(),
+    async (req, res) => {
+        try {
+            const { files, user } = req;
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('You alread verified.');
+            }
+            if (!files) {
+                return res.status(400).send('No files were uploaded.');
+            }
+            const keys = Object.keys(files);
+            if (!keys.length) {
+                return res.status(400).send('No files were uploaded.');
+            }
+            const name = keys[0];
+            let verification = await Verification.findOne({ user: user._id });
+            if (verification && verification[name]) {
+                res.status(400).json({ success: 0, message: "Already submitted" });
+            }
+            if (!verification) {
+                verification = new Verification({
+                    user: user._id,
+                    address: null,
+                    identification: null
+                });
+            }
+            verification[name] = {
+                contentType: files[name].mimetype,
+                data: files[name].data
+            }
+            await verification.save();
+            res.json({ message: "success" });
+        } catch (error) {
+            res.status(400).json({ success: 0, message: "can't save image" });
+        }
+    }
+)
+
+expressApp.get(
+    '/verification-image/:name',
+    bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const { user } = req;
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('You alread verified.');
+            }
+            const { name } = req.params;
+            let verification = await Verification.findOne({ user: user._id });
+            if (!verification || !verification[name]) {
+                return res.status(404).json({ success: 0, message: "image not found" });
+            }
+            res.json(verification[name]);
+
+        } catch (error) {
+            res.status(400).json({ success: 0, message: "can't find image" });
+        }
+    }
+)
 
 // Admin
 expressApp.use('/admin', adminRouter);
