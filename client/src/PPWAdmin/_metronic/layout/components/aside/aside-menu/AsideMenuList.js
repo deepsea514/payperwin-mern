@@ -35,6 +35,20 @@ export function AsideMenuList({ layoutProps }) {
 
                 {/*begin::1 Level*/}
                 <li
+                    className={`menu-item ${getMenuItemActive("/kyc", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/kyc/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                        </span>
+                        <span className="menu-text">KYC</span>
+                    </Link>
+                </li>
+                {/*end::1 Level*/}
+
+                {/*begin::1 Level*/}
+                <li
                     className={`menu-item ${getMenuItemActive("/customers", false)}`}
                     aria-haspopup="true"
                 >

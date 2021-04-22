@@ -7,7 +7,6 @@ export const actionTypes = {
     getBetActivities: "Get Bet Activities",
     getBetActivitiesSuccess: "Get Bet Activities Success",
     filterBetActivitiesChange: "Filter Bet Activities Change",
-    changeBetPage: "Change Bet Page Action",
     getSportsSuccess: "Get Sports Success",
 };
 

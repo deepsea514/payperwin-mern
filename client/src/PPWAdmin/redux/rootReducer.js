@@ -10,6 +10,7 @@ import * as wager_feeds from "../modules/wager-feed/redux/reducers";
 import * as autobets from "../modules/autobet/redux/reducers";
 import * as email_templates from "../modules/email-templates/redux/reducers";
 import * as promotions from "../modules/promotions/redux/reducers";
+import * as kyc from "../modules/kyc/redux/reducers";
 
 export const rootReducer = combineReducers({
     customer: customer.reducer,
@@ -21,6 +22,7 @@ export const rootReducer = combineReducers({
     autobets: autobets.reducer,
     email_templates: email_templates.reducer,
     promotions: promotions.reducer,
+    kyc: kyc.reducer,
 });
 
 export function* rootSaga() {
@@ -34,5 +36,6 @@ export function* rootSaga() {
         autobets.saga(),
         email_templates.saga(),
         promotions.saga(),
+        kyc.saga(),
     ]);
 }

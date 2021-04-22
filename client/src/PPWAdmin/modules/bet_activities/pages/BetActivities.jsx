@@ -1,5 +1,5 @@
 import React from "react"
-import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
@@ -357,7 +357,6 @@ class BetActivities extends React.Component {
         );
     }
 }
-
 
 const mapStateToProps = (state) => ({
     bet_activities: state.bet_activities.bet_activities,

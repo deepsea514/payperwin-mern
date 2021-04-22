@@ -14,6 +14,7 @@ const AutoBet = require("./models/autobet");
 const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
 const BetSportsBook = require("./models/betsportsbook");
+const Verification = require("./models/verification");
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
 const config = require("../config.json");
@@ -1507,19 +1508,22 @@ adminRouter.get(
         if (!page) page = 1;
         page = parseInt(page);
         page--;
-
-        const total = await Promotion.find({ deletedAt: null }).count();
-        Promotion.find({ deletedAt: null })
-            .sort({ createdAt: -1 })
-            .skip(page * perPage)
-            .limit(perPage)
-            .exec(function (error, data) {
-                if (error) {
-                    res.status(404).json({ error: 'Can\'t find promotions.' });
-                    return;
-                }
-                res.status(200).json({ total, perPage, page: page + 1, data });
-            });
+        try {
+            const total = await Promotion.find({ deletedAt: null }).count();
+            Promotion.find({ deletedAt: null })
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find promotions.' });
+                        return;
+                    }
+                    res.status(200).json({ total, perPage, page: page + 1, data });
+                });
+        } catch {
+            res.status(500).json({ error: 'Can\'t find promotions.' });
+        }
     }
 )
 
@@ -1541,6 +1545,159 @@ adminRouter.get(
             res.json(result);
         } catch (error) {
             res.status(404).json({ error: 'Can\'t find promotion.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/verifications',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        try {
+            const total = await Verification.find().count();
+            Verification.find()
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['username'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    data = data.map(verification => {
+                        return {
+                            user_id: verification.user._id,
+                            username: verification.user.username,
+                            address: verification.address ? {
+                                name: verification.address.name,
+                                submitted_at: verification.address.submitted_at
+                            } : null,
+                            identification: verification.identification ? {
+                                name: verification.identification.name,
+                                submitted_at: verification.identification.submitted_at
+                            } : null,
+                        }
+                    });
+                    res.status(200).json({ total, perPage, page: page + 1, data });
+                });
+        } catch {
+            res.status(404).json({ error: 'Can\'t find verifications.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/verification-image',
+    authenticateJWT,
+    async function (req, res) {
+        const { user_id, name } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            let verification = await Verification.findOne({ user: user_id });
+            if (!verification || !verification[name]) {
+                return res.status(404).json({ success: 0, message: "Image not found" });
+            }
+
+            res.json(verification[name]);
+        } catch {
+            return res.status(400).send('Can\'t find image.');
+        }
+    }
+)
+
+adminRouter.post(
+    '/verification-accept',
+    authenticateJWT,
+    async function (req, res) {
+        const { user_id } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            user.roles = {
+                ...user.roles,
+                verified: true
+            }
+            await user.save();
+            await Verification.deleteMany({ user: user._id });
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'Your identify was verified!',
+                text: `Your identify was verified!`,
+                html: simpleresponsive(
+                    `Hi <b>${user.firstname}</b>.
+                    <br><br>
+                    Just a quick reminder that your identify was verified. You can withdraw from your Payper Win account by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
+            res.send("User verified successfully.");
+        } catch (error) {
+            console.log("accept Error => ", error);
+            res.status(400).send("Can't verify user.");
+        }
+    }
+)
+
+adminRouter.post(
+    '/verification-decline',
+    authenticateJWT,
+    async function (req, res) {
+        const { user_id } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            await Verification.deleteMany({ user: user._id });
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'Your identify verification was declined!',
+                text: `Your identify verification was declined!`,
+                html: simpleresponsive(
+                    `Hi <b>${user.firstname}</b>.
+                    <br><br>
+                    Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
+            res.send("User declined.");
+        } catch (error) {
+            console.log("declined Error => ", error);
+            res.status(400).send("Can't decline user.");
         }
     }
 )

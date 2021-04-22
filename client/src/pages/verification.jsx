@@ -25,12 +25,6 @@ class Verification extends PureComponent {
                     identification: identification ? "submitted" : "required",
                 });
             });
-
-        // axios.get(`${serverUrl}/verification-image/identification`, { withCredentials: true })
-        //     .then(({ data }) => {
-        //         const { contentType, data: imageData } = data;
-        //         const image = `data:${contentType};base64,${imageData}`;
-        //     })
     }
 
     handleFileUpload = (e) => {
