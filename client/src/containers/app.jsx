@@ -44,6 +44,9 @@ import DepositETransfer from "../pages/depositEtransfer";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
+import Verification from "../pages/verification";
+import VerificationNotify from "../components/verificationNotify";
+import VerificationProof from "../components/VerificationProof";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
@@ -179,7 +182,9 @@ class App extends PureComponent {
             '/account',
             '/deposit-etransfer',
             '/withdraw-etransfer',
+            '/verification',
         ].includes(pathname);
+        const verified = user && user.roles.verified;
 
         return (
             <div className={`background dark-theme ${scrolledTop ? 'scrolled-top' : ''}`}>
@@ -199,7 +204,9 @@ class App extends PureComponent {
                                         <SidebarAccount
                                             toggleField={this.toggleField}
                                             sidebarShowAccountLinks={sidebarShowAccountLinks}
-                                            accountMenuMobileOpen={accountMenuMobileOpen} />
+                                            accountMenuMobileOpen={accountMenuMobileOpen}
+                                            user={user}
+                                        />
                                         <SidebarSports
                                             toggleField={this.toggleField}
                                             sportsMenuMobileOpen={sportsMenuMobileOpen}
@@ -262,14 +269,17 @@ class App extends PureComponent {
                                                 <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
+                                                {user && !user.roles.verified && <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />}
                                                 <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
                                                     removeBet={this.removeBet} />} />
                                             </Switch>
                                         </div>
                                         <div className="col-sm-3 side-bar">
-                                            <BetSlip betSlip={betSlip} openBetSlipMenu={openBetSlipMenu} toggleField={this.toggleField}
+                                            {!sidebarShowAccountLinks && <BetSlip betSlip={betSlip} openBetSlipMenu={openBetSlipMenu} toggleField={this.toggleField}
                                                 removeBet={this.removeBet} updateBet={this.updateBet} user={user} updateUser={updateUser}
-                                                history={history} />
+                                                history={history} />}
+                                            {!verified && pathname == '/withdraw' && <VerificationNotify />}
+                                            {!verified && pathname == '/verification' && <VerificationProof />}
                                         </div>
                                     </div>
                                 }}

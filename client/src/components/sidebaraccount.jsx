@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 class SidebarAccount extends Component {
     render() {
-        const { toggleField, accountMenuMobileOpen, sidebarShowAccountLinks } = this.props;
+        const { toggleField, accountMenuMobileOpen, sidebarShowAccountLinks, user } = this.props;
         return (
             <div className={`col-sm-2 responsive-v ${sidebarShowAccountLinks ? '' : 'hide'}`}
                 style={accountMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
@@ -62,9 +62,9 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/security' }}><i className="fas fa-baseball-ball"></i>Password and security </Link>
                     </li>
-                    {/* <li>
-                        <Link to={{ pathname: '/' }}><i className="fas fa-baseball-ball"></i>Verification</Link>
-                    </li> */}
+                    {user && !user.roles.verified && <li>
+                        <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i>Verification</Link>
+                    </li>}
                 </ul>
 
                 {/* <h3 className="cat-heading">RESPONSIBLE GAMING</h3>

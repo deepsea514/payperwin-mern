@@ -1956,3 +1956,57 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     padding: 10px;
     margin: 10px 0 0 60px;
 }
+
+.verification-notify-container {
+    border-radius: 6px;
+    background: white;
+}
+
+.verification-notify-header {
+    padding: 18px;
+    background: #fbdb90;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.verification-notify-list {
+    padding: 18px 18px 0px 18px;
+}
+
+.verification-notify-list ul {
+    font-size: 16px;
+}
+
+.verification-notify-footer {
+    padding: 0px 18px 16px 18px;
+}
+
+.verification-notify-footer a {
+    font-size: 14px;
+    color: black;
+}
+
+.verification-proof-container {
+    background: white;
+    padding: 18px;
+    border-radius: 4px;
+}
+
+.verification-proof-container ul {
+    padding-left: 16px;
+    font-size: 12px;
+    list-style-type: initial;
+}
+
+@media (max-width: 767px) {
+    .verification-notify-container {
+        display: none;
+    }
+    .verification-proof-container {
+        display: none;
+    }
+}
+
+.verification-items {
+    cursor: pointer;
+}
