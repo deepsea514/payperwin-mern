@@ -1686,7 +1686,6 @@ expressApp.post(
                     identification: null
                 });
             }
-            console.log(files);
             verification[name] = {
                 contentType: files[name].mimetype,
                 name: files[name].name,
