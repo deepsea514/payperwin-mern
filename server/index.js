@@ -1686,9 +1686,12 @@ expressApp.post(
                     identification: null
                 });
             }
+            console.log(files);
             verification[name] = {
                 contentType: files[name].mimetype,
-                data: files[name].data
+                name: files[name].name,
+                data: files[name].data,
+                submitted_at: new Date()
             }
             await verification.save();
             res.json({ message: "success" });
