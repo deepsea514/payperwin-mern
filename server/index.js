@@ -1592,7 +1592,7 @@ expressApp.post(
                 let totalwagers = await Bet.aggregate(
                     {
                         $match: {
-                            userId: new ObjectId(id),
+                            userId: new ObjectId(user._id),
                             deletedAt: null,
                         }
                     },
@@ -1613,7 +1613,7 @@ expressApp.post(
                 let totalwinsportsbook = await BetSportsBook.aggregate(
                     {
                         $match: {
-                            userId: new ObjectId(id),
+                            userId: new ObjectId(user._id),
                             Name: "SETTLED",
                             "WagerInfo.ProfitAndLoss": {
                                 $gt: 0
@@ -1636,7 +1636,7 @@ expressApp.post(
                 let totalwinbet = await Bet.aggregate(
                     {
                         $match: {
-                            userId: new ObjectId(id),
+                            userId: new ObjectId(user._id),
                             status: "Settled - Win",
                             deletedAt: null,
                         }
