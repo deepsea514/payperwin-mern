@@ -51,9 +51,12 @@ class Sport extends PureComponent {
                             if (lines) {
                                 lines.forEach((line, i) => {
                                     if (i === 0) {
-                                        if (line.moneyline && line.moneyline.draw) {
-                                            delete line.moneyline;
-                                        } else {
+                                        // if (line.moneyline && line.moneyline.draw) {
+                                        //     delete line.moneyline;
+                                        // } else {
+                                        //     event.lineCount++;
+                                        // }
+                                        if (line.moneyline) {
                                             event.lineCount++;
                                         }
                                         if (line.spreads) {
