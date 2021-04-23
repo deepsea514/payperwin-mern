@@ -1657,7 +1657,27 @@ expressApp.post(
 
                 const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
 
-                if (amount > maxwithdraw) {
+                let totalwithdraw = await FinancialLog.aggregate(
+                    {
+                        $match: {
+                            financialtype: "withdraw",
+                            user: new ObjectId(user._id),
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$amount"
+                            }
+                        }
+                    }
+                )
+                if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+                else totalwithdraw = 0;
+
+                if ((amount + totalwithdraw) > maxwithdraw) {
                     return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
                 }
 
