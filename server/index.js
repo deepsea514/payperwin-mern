@@ -1571,26 +1571,16 @@ expressApp.post(
                 //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 // }
                 // if (data.status == "APPROVED") {
-                let totalsportsbookwagers = await BetSportsBook.aggregate(
-                    {
-                        $match: {
-                            userId: new ObjectId(user._id),
-                            deletedAt: null,
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$WagerInfo.ToRisk"
-                            }
-                        }
+                let totalsportsbookwagers = 0;
+                let totalwinsportsbook = 0;
+                const betSportsbookHistory = await BetSportsBook.find({ userId: user._id });
+                for (const bet of betSportsbookHistory) {
+                    totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
+                    const profit = Number(bet.WagerInfo.ProfitAndLoss);
+                    if(profit > 0) {
+                        totalwinsportsbook += profit;
                     }
-                );
-                console.log("totalsportsbookwagers", totalsportsbookwagers)
-                
-                if (totalsportsbookwagers.length) totalsportsbookwagers = totalsportsbookwagers[0].total;
-                else totalsportsbookwagers = 0;
+                }
 
                 let totalwagers = await Bet.aggregate(
                     {
@@ -1612,29 +1602,6 @@ expressApp.post(
                 else totalwagers = 0;
 
                 totalwagers += totalsportsbookwagers;
-
-                let totalwinsportsbook = await BetSportsBook.aggregate(
-                    {
-                        $match: {
-                            userId: new ObjectId(user._id),
-                            Name: "SETTLED",
-                            "WagerInfo.ProfitAndLoss": {
-                                $gt: 0
-                            },
-                            deletedAt: null,
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$WagerInfo.ProfitAndLoss"
-                            }
-                        }
-                    }
-                );
-                if (totalwinsportsbook.length) totalwinsportsbook = totalwinsportsbook[0].total;
-                else totalwinsportsbook = 0;
 
                 let totalwinbet = await Bet.aggregate(
                     {
@@ -1679,12 +1646,6 @@ expressApp.post(
                 )
                 if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
                 else totalwithdraw = 0;
-
-                console.log("totalwagers", totalwagers)
-                console.log("totalwinbet", totalwinbet)
-                console.log("totalwithdraw", totalwithdraw)
-                console.log("maxwithdraw", maxwithdraw)
-
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
                     return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });

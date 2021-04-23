@@ -266,22 +266,16 @@ adminRouter.get(
             );
             const lastsportsbookbets = await BetSportsBook.find({ userId: id, deletedAt: null })
                 .sort({ createdAt: -1 }).limit(8);
-            let totalsportsbookwagers = await BetSportsBook.aggregate(
-                {
-                    $match: {
-                        userId: new ObjectId(id),
-                        deletedAt: null,
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        total: {
-                            $sum: "$WagerInfo.ToRisk"
-                        }
-                    }
-                }
-            );
+
+            const betSportsbookHistory = await BetSportsBook.find({
+                userId: new ObjectId(id),
+                deletedAt: null,
+            });
+            let totalsportsbookwagers = 0;
+            for (const bet of betSportsbookHistory) {
+                totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
+            }
+
             let totaldeposit = await FinancialLog.aggregate(
                 {
                     $match: {
@@ -303,8 +297,7 @@ adminRouter.get(
 
             if (totalwagers.length) totalwagers = totalwagers[0].total;
             else totalwagers = 0;
-            if (totalsportsbookwagers.length) totalsportsbookwagers = totalsportsbookwagers[0].total;
-            else totalsportsbookwagers = 0;
+
             totalwagers += totalsportsbookwagers;
 
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
@@ -1141,27 +1134,18 @@ const getTotalWager = async function (datefrom, dateto) {
 }
 
 const getTotalWagerSportsBook = async function (datefrom, dateto) {
-    const total = await BetSportsBook.aggregate(
-        {
-            $match: {
-                deletedAt: null,
-                createdAt: {
-                    $gte: datefrom,
-                    $lte: dateto
-                }
-            }
-        },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: "$WagerInfo.ToRisk"
-                }
-            }
+    const betSportsbookHistory = await BetSportsBook.find({
+        deletedAt: null,
+        createdAt: {
+            $gte: datefrom,
+            $lte: dateto
         }
-    );
-    if (total.length) return total[0].total;
-    return 0;
+    });
+    let total = 0;
+    for (const bet of betSportsbookHistory) {
+        total += Number(bet.WagerInfo.ToRisk);
+    }
+    return total;
 }
 
 const getTotalPlayer = async function (datefrom, dateto) {
