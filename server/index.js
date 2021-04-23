@@ -1539,7 +1539,8 @@ expressApp.post(
             }
 
             try {
-                // const uniqid = `W${ID()}`;
+                const uniqid = `W${ID()}`;
+
                 // const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
                 // const amount2 = Number(amount).toFixed(2);
                 // const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
@@ -1676,6 +1677,12 @@ expressApp.post(
                 )
                 if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
                 else totalwithdraw = 0;
+
+                console.log("totalwagers", totalwagers)
+                console.log("totalwinbet", totalwinbet)
+                console.log("totalwithdraw", totalwithdraw)
+                console.log("maxwithdraw", maxwithdraw)
+
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
                     return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
