@@ -64,7 +64,7 @@ class Customers extends React.Component {
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
-                    <td><Link to={`/${customer._id}/profile`}>{customer.username}</Link></td>
+                    <td><Link to={`/${customer._id}/profile`}>{customer.username}&nbsp;{customer.roles.verified ? <i className="fas fa-check-circle text-success"></i> : null}</Link></td>
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td>{customer.email}</td>
                     <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
