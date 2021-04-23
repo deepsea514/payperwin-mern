@@ -1522,71 +1522,166 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
     }
 });
 
-expressApp.post('/withdraw', bruteforce.prevent, isAuthenticated, async (req, res) => {
-    const data = req.body;
-    const { amount, method } = data;
-    if (method == "eTransfer") {
-        if (!amount) {
-            return res.status(400).json({ success: 0, message: "Withdraw Amount is required." });
-        }
-        const { user } = req;
-        if (!user.roles.verified) {
-            return res.status(400).json({ success: 0, message: "You should verify your identify to make withdraw." });
-        }
-        
-        try {
-            // const uniqid = `W${ID()}`;
-            // const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
-            // const amount2 = Number(amount).toFixed(2);
-            // const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
-            //     {
-            //         "payby": "etransfer",
-            //         "amount": amount2,
-            //         "first_name": user.firstname,
-            //         "last_name": user.lastname,
-            //         "email": user.email,
-            //         "phone": user.phone,
-            //         "address": "Artery roads",
-            //         "city": "Edmonton",
-            //         "state": "AB",
-            //         "country": "CA",
-            //         "zip_code": "T5A",
-            //         "ip_address": "159.203.4.60",
-            //         "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
-            //         "amount_shipping": 0.00,
-            //         "udf1": user._id,
-            //         "udf2": uniqid,
-            //         "signature": signature
-            //     }
-            // );
-            // await PremierResponse.create(data);
+expressApp.post(
+    '/withdraw',
+    bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        const data = req.body;
+        const { amount, method } = data;
+        if (method == "eTransfer") {
+            if (!amount) {
+                return res.json({ success: 0, message: "Withdraw Amount is required." });
+            }
+            const { user } = req;
+            if (!user.roles.verified) {
+                return res.json({ success: 0, message: "You should verify your identify to make withdraw." });
+            }
 
-            // const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-            // if (responsesignature != data.signature) {
-            //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-            // }
-            // if (data.status == "APPROVED") {
-            const withdraw = new FinancialLog({
-                financialtype: 'withdraw',
-                uniqid,
-                user: user._id,
-                amount,
-                method,
-                status: "Pending"
-            });
-            await withdraw.save();
-            return res.json({ success: 1, message: "Please wait until withdraw is finished." });
-            // }
-            // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
-        } catch (error) {
-            console.log("withdraw => ", error);
-            return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
+            try {
+                // const uniqid = `W${ID()}`;
+                // const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                // const amount2 = Number(amount).toFixed(2);
+                // const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
+                //     {
+                //         "payby": "etransfer",
+                //         "amount": amount2,
+                //         "first_name": user.firstname,
+                //         "last_name": user.lastname,
+                //         "email": user.email,
+                //         "phone": user.phone,
+                //         "address": "Artery roads",
+                //         "city": "Edmonton",
+                //         "state": "AB",
+                //         "country": "CA",
+                //         "zip_code": "T5A",
+                //         "ip_address": "159.203.4.60",
+                //         "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
+                //         "amount_shipping": 0.00,
+                //         "udf1": user._id,
+                //         "udf2": uniqid,
+                //         "signature": signature
+                //     }
+                // );
+                // await PremierResponse.create(data);
+
+                // const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                // if (responsesignature != data.signature) {
+                //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                // }
+                // if (data.status == "APPROVED") {
+                let totalsportsbookwagers = await BetSportsBook.aggregate(
+                    {
+                        $match: {
+                            userId: new ObjectId(user._id),
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$WagerInfo.ToRisk"
+                            }
+                        }
+                    }
+                );
+                if (totalsportsbookwagers.length) totalsportsbookwagers = totalsportsbookwagers[0].total;
+                else totalsportsbookwagers = 0;
+
+                let totalwagers = await Bet.aggregate(
+                    {
+                        $match: {
+                            userId: new ObjectId(id),
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$bet"
+                            }
+                        }
+                    }
+                );
+                if (totalwagers.length) totalwagers = totalwagers[0].total;
+                else totalwagers = 0;
+
+                totalwagers += totalsportsbookwagers;
+
+                let totalwinsportsbook = await BetSportsBook.aggregate(
+                    {
+                        $match: {
+                            userId: new ObjectId(id),
+                            Name: "SETTLED",
+                            "WagerInfo.ProfitAndLoss": {
+                                $gt: 0
+                            },
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$WagerInfo.ProfitAndLoss"
+                            }
+                        }
+                    }
+                );
+                if (totalwinsportsbook.length) totalwinsportsbook = totalwinsportsbook[0].total;
+                else totalwinsportsbook = 0;
+
+                let totalwinbet = await Bet.aggregate(
+                    {
+                        $match: {
+                            userId: new ObjectId(id),
+                            status: "Settled - Win",
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$credited"
+                            }
+                        }
+                    }
+                );
+                if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
+                else totalwinbet = 0;
+
+                totalwinbet += totalwinsportsbook;
+
+                const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
+
+                if (amount > maxwithdraw) {
+                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                }
+
+                const withdraw = new FinancialLog({
+                    financialtype: 'withdraw',
+                    uniqid,
+                    user: user._id,
+                    amount,
+                    method,
+                    status: "Pending"
+                });
+                await withdraw.save();
+                return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+                // }
+                // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+            } catch (error) {
+                console.log("withdraw => ", error);
+                return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
+            }
         }
-    }
-    else {
-        return res.status(400).json({ success: 0, message: "Method is not suitable." });
-    }
-});
+        else {
+            return res.status(400).json({ success: 0, message: "Method is not suitable." });
+        }
+    });
 
 expressApp.post(
     '/transactions',

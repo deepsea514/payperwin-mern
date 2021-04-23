@@ -35,6 +35,7 @@ class WithdrawETransfer extends PureComponent {
             withdrawSuccess: false,
             withdrawError: null,
             agreeWithdraw: false,
+            errMsg: '',
         };
     }
 
@@ -44,12 +45,18 @@ class WithdrawETransfer extends PureComponent {
 
     onSubmit = (values, formik) => {
         axios.post(`${serverUrl}/withdraw`, values, { withCredentials: true })
-            .then(() => {
-                this.setState({ withdrawSuccess: true });
+            .then(({ data }) => {
+                const { success, message } = data;
+                if (success) {
+                    this.setState({ withdrawSuccess: true });
+                }
+                else {
+                    this.setState({ withdrawError: true, errMsg: message });
+                }
                 formik.setSubmitting(false);
             })
             .catch(() => {
-                this.setState({ withdrawError: true });
+                this.setState({ withdrawError: true, errMsg: "Can't make withdraw. Please try again later." });
                 formik.setSubmitting(false);
             })
     }
@@ -66,7 +73,7 @@ class WithdrawETransfer extends PureComponent {
 
     render() {
         const { classes, user } = this.props;
-        const { withdrawError, withdrawSuccess, agreeWithdraw } = this.state;
+        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg } = this.state;
         const initialvalues = {
             amount: 0,
             method: 'eTransfer'
@@ -87,7 +94,7 @@ class WithdrawETransfer extends PureComponent {
                         {!withdrawSuccess && <div className={classes.formContent}>
                             <p className="dpsit mb-2">Please Note</p>
                             <p className="dpsit mt-0">An email will be sent to : {user ? user.email : ''} with instructions on how to claim your funds.</p>
-                            {withdrawError && <p className="text-danger">Can't make withdraw. Please try again later</p>}
+                            {withdrawError && <p className="text-danger">{errMsg}</p>}
                             {user && <Formik
                                 initialValues={initialvalues}
                                 validationSchema={withdrawSchema}
