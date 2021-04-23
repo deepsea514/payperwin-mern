@@ -233,7 +233,7 @@ class Customers extends React.Component {
                                                 <th scope="col" className="text-right">Balance</th>
                                                 <th scope="col"># of Bets</th>
                                                 <th scope="col">Total Wager</th>
-                                                <th scope="col" width="20%"></th>
+                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
