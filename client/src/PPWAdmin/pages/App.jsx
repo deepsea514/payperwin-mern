@@ -15,6 +15,7 @@ import WagerFeedsModule from "../modules/wager-feed/pages";
 import AutoBet from "../modules/autobet/pages/AutoBet";
 import EmailTemplatesModule from "../modules/email-templates/pages";
 import PromotionModule from "../modules/promotions/pages";
+import KYC from "../modules/kyc/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -77,6 +78,9 @@ export default class App extends Component {
 
                     {/* promotions */}
                     <Route path="/promotions" component={PromotionModule} />
+
+                    {/* KYC(Know Your Customers) */}
+                    <Route path="/kyc" component={KYC} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
