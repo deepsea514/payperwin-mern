@@ -108,7 +108,7 @@ class Sport extends PureComponent {
                 {
                     leagues.map(league => {
                         const { name: leagueName, originId: leagueId } = league;
-                        const events = league.events.map((event, i) => {
+                        let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
                             if (
                                 !lines
@@ -411,18 +411,21 @@ class Sport extends PureComponent {
                                 </ul>
                             );
                         });
+                        events = events.filter(event => event);
                         return (
-                            <div className="tab-content" id="myTabContent" key={leagueName}>
-                                <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                    <ul className="table-list table-list-top d-flex">
-                                        <li>{leagueName}</li>
-                                        <li>MONEY LINE</li>
-                                        <li>HANDICAP</li>
-                                        <li>OVER UNDER</li>
-                                    </ul>
-                                    {events}
+                            events.length ?
+                                <div className="tab-content" id="myTabContent" key={leagueName}>
+                                    <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                        <ul className="table-list table-list-top d-flex">
+                                            <li>{leagueName}</li>
+                                            <li>MONEY LINE</li>
+                                            <li>HANDICAP</li>
+                                            <li>OVER UNDER</li>
+                                        </ul>
+                                        {events}
+                                    </div>
                                 </div>
-                            </div>
+                                : null
                         );
                     })
                 }

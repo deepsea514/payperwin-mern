@@ -35,7 +35,7 @@ async function getSportLines(sportName) {
                 // get sportid from sport
                 // save to pinnacle db
                 // update our db
-                const sport = await Sport.findOne({ originSportId: sport_id });
+                const sport = await Sport.findOne({ originSportId: id });
                 if (sport) {
                     await sport.update(
                         formattedSportData,
