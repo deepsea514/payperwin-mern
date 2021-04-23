@@ -1678,6 +1678,7 @@ expressApp.post(
                 if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
                 else totalwithdraw = 0;
 
+                console.log("totalsportsbookwagers", totalsportsbookwagers)
                 console.log("totalwagers", totalwagers)
                 console.log("totalwinbet", totalwinbet)
                 console.log("totalwithdraw", totalwithdraw)
