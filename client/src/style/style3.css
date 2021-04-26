@@ -129,7 +129,7 @@ a.log-in-btn {
 }
 
 .content {
-    overflow-x: hidden;
+    overflow-x: auto;
 }
 
 .table-list, .table-list-top {
