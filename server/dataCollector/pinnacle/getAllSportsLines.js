@@ -52,17 +52,17 @@ async function getAllSportsLines() {
             const { hasOfferings, eventCount, name } = soccer;
             if (hasOfferings && eventCount > 0) {
                 const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
-                if (
-                    !sportData
-                    || new Date() - new Date(sportData.updatedAt) > (1000 * 60 * 60 * 20)
-                ) {
+                // if (
+                //     !sportData
+                //     || new Date() - new Date(sportData.updatedAt) > (1000 * 60 * 60 * 20)
+                // ) {
                     console.log('Getting lines for', name);
                     await getSportLines(name);
                     console.log('sleeping...')
                     await sleep(61 * 1000);
-                } else {
-                    console.log(name, 'skipped, already got within 20 hours');
-                }
+                // } else {
+                //     console.log(name, 'skipped, already got within 20 hours');
+                // }
             }
         } else {
             console.log('no data');
