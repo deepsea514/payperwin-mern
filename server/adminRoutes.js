@@ -1550,7 +1550,7 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .populate('user', ['username'])
+                .populate('user', ['username', 'address', 'address2', 'city', 'postalcode', 'phone'])
                 .exec(function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
@@ -1560,6 +1560,10 @@ adminRouter.get(
                         return {
                             user_id: verification.user._id,
                             username: verification.user.username,
+                            addressStr: verification.user.address,
+                            city: verification.user.city,
+                            postalcode: verification.user.postalcode,
+                            phone: verification.user.phone,
                             address: verification.address ? {
                                 name: verification.address.name,
                                 submitted_at: verification.address.submitted_at

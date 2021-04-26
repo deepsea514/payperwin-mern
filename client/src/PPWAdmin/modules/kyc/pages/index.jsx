@@ -149,15 +149,30 @@ class KYC extends Component {
 
         return verifications.map((verification, index) => (
             <tr key={index} className="text-hover-primary" style={{ cursor: 'pointer' }}>
-                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}><span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{index + 1}</span></td>
-                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}><span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.username}</span></td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{index + 1}</span>
+                </td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.username}</span>
+                </td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.addressStr}</span>
+                </td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.city}</span>
+                </td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.postalcode}</span>
+                </td>
+                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.phone}</span>
+                </td>
                 <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
                     {verification.address && <>
                         <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.address.name}</span><br />
-                        <span className="font-weight-bolder text-hover-primary mb-1">Submitted At: {this.getDateFormat(verification.address.submitted_at)}</span>
+                        <span className="text-hover-primary mb-1">Submitted At: {this.getDateFormat(verification.address.submitted_at)}</span>
                     </>}
-                </td>
-                <td scope="col" onClick={() => this.verificationDetail(verification.user_id)}>
+                    <br />
                     {verification.identification && <>
                         <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">{verification.identification.name}</span><br />
                         <span className="text-hover-primary mb-1">Submitted At: {this.getDateFormat(verification.identification.submitted_at)}</span>
@@ -196,8 +211,11 @@ class KYC extends Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">User Name</th>
-                                            <th scope="col">Address verification file</th>
-                                            <th scope="col">Identify verification file</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">City</th>
+                                            <th scope="col">Postal Code</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Files</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>

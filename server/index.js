@@ -1754,7 +1754,17 @@ expressApp.post(
                 return res.status(400).send('You alread verified.');
             }
             if (!files) {
-                return res.status(400).send('No files were uploaded.');
+                const { address, address2, city, postalcode, phone } = req.body;
+                if (!address || !city || !postalcode || !phone) {
+                    return res.status(400).send('Please fill all the informations.');
+                }
+                user.address = address;
+                user.address2 = address2;
+                user.city = city;
+                user.postalcode = postalcode;
+                user.phone = phone;
+                await user.save();
+                return res.json({ message: "success" });
             }
             const keys = Object.keys(files);
             if (!keys.length) {
@@ -1807,6 +1817,15 @@ expressApp.get(
         } catch (error) {
             res.status(400).json({ success: 0, message: "can't find image" });
         }
+    }
+)
+
+expressApp.get(
+    '/address',
+    isAuthenticated,
+    async (req, res) => {
+        const { address, address2, city, postalcode, phone } = req.user;
+        return res.json({ address, address2, city, postalcode, phone });
     }
 )
 
