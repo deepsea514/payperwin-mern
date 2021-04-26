@@ -51,14 +51,14 @@ class Sport extends PureComponent {
                             if (lines) {
                                 lines.forEach((line, i) => {
                                     if (i === 0) {
-                                        // if (line.moneyline && line.moneyline.draw) {
-                                        //     delete line.moneyline;
-                                        // } else {
-                                        //     event.lineCount++;
-                                        // }
-                                        if (line.moneyline) {
+                                        if (line.moneyline && line.moneyline.draw) {
+                                            delete line.moneyline;
+                                        } else {
                                             event.lineCount++;
                                         }
+                                        // if (line.moneyline) {
+                                        //     event.lineCount++;
+                                        // }
                                         if (line.spreads) {
                                             event.lineCount += line.spreads.length;
                                         }
@@ -145,6 +145,23 @@ class Sport extends PureComponent {
                                                     moneyline ? (
                                                         (() => {
                                                             const moneylineDifference = Math.abs(Math.abs(moneyline.home) - Math.abs(moneyline.away)) / 2;
+                                                            // let bigHome = 1;
+                                                            // if (moneyline.home > 0) {
+                                                            //     if (moneyline.away > 0) {
+                                                            //         bigHome = -1;
+                                                            //     }
+                                                            //     if (moneyline.away < 0) {
+                                                            //         if()
+                                                            //     }
+                                                            // }
+                                                            // if (moneyline.home < 0) {
+                                                            //     if (moneyline.away > 0) {
+
+                                                            //     }
+                                                            //     if (moneyline.away < 0) {
+
+                                                            //     }
+                                                            // }
                                                             const newHome = moneyline.home + moneylineDifference;
                                                             const newAway = moneyline.away + moneylineDifference;
                                                             // TODO: Refactor this to be simpler
