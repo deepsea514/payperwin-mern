@@ -91,7 +91,7 @@ async function emailNotTaken(options) {
 async function ageCanBet(options) {
     const { obj, value } = options;
     const now = (new Date()).getTime();
-    const birthday = value.getTime();
+    const birthday = (new Date(value)).getTime();
     switch (obj.country) {
         case 'Canada':
             if ((now - birthday) < 19 * 365 * 24 * 3600 * 1000)

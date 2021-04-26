@@ -284,7 +284,7 @@ class Verification extends PureComponent {
                             <p>Postal&nbsp;Code:&nbsp;&nbsp;{addressInfo.postalcode}</p>
                             <p>Phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{addressInfo.phone}</p>
 
-                            <h7>Address Information is already submitted. If you want to submit again, <strong style={{ cursor: "pointer" }} onClick={() => this.setState({ submitSuccess: null })}>Click Here!</strong></h7>
+                            <h6>Address Information is already submitted. If you want to submit again, <strong style={{ cursor: "pointer" }} onClick={() => this.setState({ submitSuccess: null })}>Click Here!</strong></h6>
                         </>}
 
                         <h4 className="mt-3">DOCUMENT STATUS</h4>

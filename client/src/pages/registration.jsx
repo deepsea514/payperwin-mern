@@ -4,7 +4,7 @@ import { withRouter, Link } from 'react-router-dom';
 import {
     Grid, Button, Card, CardContent, FormLabel,
     CardHeader, FormControl, Stepper, Step, StepLabel,
-    RadioGroup, FormControlLabel, Radio, Checkbox
+    RadioGroup, FormControlLabel, Radio, Checkbox, TextField
 } from '@material-ui/core';
 import { Form } from "react-bootstrap";
 import axios from 'axios';
@@ -13,8 +13,6 @@ import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import StepConnector from '@material-ui/core/StepConnector';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dateformat from "dateformat";
@@ -419,14 +417,18 @@ class Registration extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Birthday</Form.Label>
-                        <DatePicker
+                        <TextField
+                            type="date"
+                            value={dateofbirth}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            error={errors.dateofbirth !== undefined}
                             name="dateofbirth"
                             className="form-control"
-                            wrapperClassName="input-group"
-                            selected={dateofbirth}
-                            onChange={(val) => this.handleChangeSpec('dateofbirth', val)}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
                             placeholder="Enter Birthday"
-                            isInvalid={errors.dateofbirth !== undefined}
                             required
                         />
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
