@@ -199,6 +199,7 @@ class PersonaInformation extends React.Component {
                                                 formik
                                             )}`}
                                             name="username"
+                                            readOnly
                                             {...formik.getFieldProps("username")}
                                         />
                                         {formik.touched.username && formik.errors.username ? (

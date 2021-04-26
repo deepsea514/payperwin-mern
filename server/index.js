@@ -142,7 +142,7 @@ passport.use(new LocalStrategy((username, password, done) => {
 }));
 
 
-function sendVerificationEmail(email, req) {
+function sendVerificationEmail(email, username, req) {
     const { hostname, protocol, headers, subdomains } = req;
     const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
     const emailHash = seededRandomString(email, 10);
@@ -159,8 +159,7 @@ function sendVerificationEmail(email, req) {
             html: simpleresponsive(
                 `Hi <b>${email}</b>.
                 <br><br>
-                Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
-                your Payper Win account by logging in now.
+                Just a quick reminder that you registered to PayperWin with name ${username}
                 <br><br>
                 Verify your email address by following this link:`,
                 { href: emailValidationPath, name: 'Verify Email' }),
@@ -182,8 +181,7 @@ passport.use('local-signup', new LocalStrategy(
     async (req, username, password, done) => {
         const { email, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            address, address2, city, postalcode, phone,
-            securityquiz, securityans, vipcode, } = req.body;
+            vipcode, } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(() => {
@@ -212,8 +210,7 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    address, address2, city, postalcode, phone,
-                    securityquiz, securityans, vipcode,
+                    vipcode,
                     roles: {
                         registered: true,
                     },
@@ -225,7 +222,7 @@ passport.use('local-signup', new LocalStrategy(
                 newUser.save(async (err2) => {
                     if (err2) console.error(err2);
                     else {
-                        sendVerificationEmail(email, req);
+                        sendVerificationEmail(email, username, req);
                         if (vipcode && vipcode != "") {
                             const promotion = await Promotion.findOne({ name: vipcode });
                             if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
@@ -300,6 +297,10 @@ expressApp.post(
     '/register',
     bruteforce.prevent,
     async (req, res, next) => {
+        const { firstname, lastname } = req.body;
+        const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
+        console.log(username);
+        req.body.username = username;
         passport.authenticate('local-signup', (err, user, info) => {
             if (err) {
                 console.error('/register err:', err);
@@ -393,36 +394,36 @@ expressApp.get('/emailTaken', (req, res) => {
     );
 });
 
-expressApp.post('/sendVerificationEmail', bruteforce.prevent, isAuthenticated, async (req, res) => {
-    const {
-        email: newEmail,
-    } = req.body;
-    User.findOne(
-        { username: req.user.username },
-        async (err, user) => {
-            if (err) {
-                res.send(err);
-            }
+// expressApp.post('/sendVerificationEmail', bruteforce.prevent, isAuthenticated, async (req, res) => {
+//     const {
+//         email: newEmail,
+//     } = req.body;
+//     User.findOne(
+//         { username: req.user.username },
+//         async (err, user) => {
+//             if (err) {
+//                 res.send(err);
+//             }
 
-            if (user) {
-                const emailChanged = newEmail !== req.user.email;
-                if (emailChanged) {
-                    user.email = newEmail;
-                    const rolesCopy = { ...user.roles };
-                    delete rolesCopy.emailVerified;
-                    user.roles = { ...rolesCopy };
-                    await user.save((err2) => {
-                        if (err2) {
-                            console.error(err2);
-                        }
-                    });
-                }
-                const { email } = user;
-                sendVerificationEmail(email, req);
-            }
-        },
-    );
-});
+//             if (user) {
+//                 const emailChanged = newEmail !== req.user.email;
+//                 if (emailChanged) {
+//                     user.email = newEmail;
+//                     const rolesCopy = { ...user.roles };
+//                     delete rolesCopy.emailVerified;
+//                     user.roles = { ...rolesCopy };
+//                     await user.save((err2) => {
+//                         if (err2) {
+//                             console.error(err2);
+//                         }
+//                     });
+//                 }
+//                 const { email } = user;
+//                 sendVerificationEmail(email, req);
+//             }
+//         },
+//     );
+// });
 
 expressApp.get('/validateEmail', bruteforce.prevent, async (req, res) => {
     const { h, email } = req.query;
@@ -1577,7 +1578,7 @@ expressApp.post(
                 for (const bet of betSportsbookHistory) {
                     totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
                     const profit = Number(bet.WagerInfo.ProfitAndLoss);
-                    if(profit > 0) {
+                    if (profit > 0) {
                         totalwinsportsbook += profit;
                     }
                 }

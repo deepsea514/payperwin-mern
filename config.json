@@ -31,12 +31,6 @@
             "currency": "CAD",
             "symbol": "$",
             "fee": 5
-        },
-        {
-            "country": "United States",
-            "currency": "USD",
-            "symbol": "$",
-            "fee": 4
         }
     ],
     "FinancialStatus": {

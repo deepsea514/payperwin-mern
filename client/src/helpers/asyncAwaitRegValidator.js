@@ -94,7 +94,6 @@ async function ageCanBet(options) {
     const birthday = value.getTime();
     switch (obj.country) {
         case 'Canada':
-            console.log(now - birthday)
             if ((now - birthday) < 19 * 365 * 24 * 3600 * 1000)
                 return 'You should be 19 years old to bet.';
             return true;

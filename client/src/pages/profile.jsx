@@ -107,7 +107,7 @@ export default class Profile extends Component {
             })
     }
 
-    sendVerificationEmail = (email) => {
+    // sendVerificationEmail = (email) => {
         // const url = `${serverUrl}/sendVerificationEmail`;
         // axios(
         //     {
@@ -121,7 +121,7 @@ export default class Profile extends Component {
         //     },
         // );
         // this.setState({ emailSent: true });
-    }
+    // }
 
     getInputClasses = (formik, fieldname) => {
         if (formik.touched[fieldname] && formik.errors[fieldname]) {

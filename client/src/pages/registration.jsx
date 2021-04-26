@@ -130,7 +130,6 @@ const initState = {
     cPassword: '',
 
     title: 'Mr',
-    username: '',
     firstname: '',
     lastname: '',
     dateofbirth: '',
@@ -158,24 +157,18 @@ const initState = {
         cPassword: false,
 
         title: true,
-        username: false,
         firstname: false,
         lastname: false,
         dateofbirth: true,
 
         currency: true,
-        address: false,
-        address2: false,
-        city: false,
-        postalcode: false,
-        phone: true,
 
-        securityquiz: false,
-        securityans: false,
+        // securityquiz: false,
+        // securityans: false,
         vipcode: false,
     },
     activeStep: 0,
-    steps: ['', '', '', ''],
+    steps: ['', ''],
 };
 
 class Registration extends Component {
@@ -207,11 +200,13 @@ class Registration extends Component {
                 if (country) {
                     const currency = country.currency;
                     this.setState({
+                        country: e.target.value,
                         currency,
                         region: '',
-                        touched: { ...touched, currency: true, region: false }
+                        touched: { ...touched, country: true, currency: true, region: false }
                     });
                 }
+                break;
             default:
                 this.setState({
                     [e.target.name]: e.target.value,
@@ -251,15 +246,13 @@ class Registration extends Component {
             .then((result) => {
 
                 if (result === true) {
-                    const { username, email, password, firstname, lastname, country, currency,
-                        title, dateofbirth, address, address2, city, postalcode, phone,
-                        securityquiz, securityans, vipcode } = this.state;
+                    const { email, password, firstname, lastname, country, currency, region,
+                        title, dateofbirth, vipcode } = this.state;
                     axios.post(`${serverUrl}/register`,
                         {
-                            username, email, password, firstname, lastname,
+                            email, password, firstname, lastname, region,
                             country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                            address, address2, city, postalcode, phone,
-                            securityquiz, securityans, vipcode,
+                            vipcode,
                         },
                         {
                             headers: {
@@ -316,9 +309,8 @@ class Registration extends Component {
     getStepContent = (activeStep) => {
         const {
             country, email, password, cPassword, region,
-            title, username, firstname, lastname, dateofbirth,
-            currency, address, address2, city, postalcode, phone,
-            securityquiz, securityans, vipcode, agreeTerms, agreePrivacy,
+            firstname, lastname, dateofbirth,
+            vipcode, agreeTerms, agreePrivacy,
             rcptchVerified,
             errors,
         } = this.state;
@@ -397,27 +389,6 @@ class Registration extends Component {
                 </>;
             case 1:
                 return <>
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend">Title</FormLabel>
-                        <RadioGroup row aria-label="gender" name="title" value={title} onChange={this.handleChange}>
-                            <FormControlLabel value="Mr" control={<Radio />} label="Mr" />
-                            <FormControlLabel value="Ms" control={<Radio />} label="Ms" />
-                        </RadioGroup>
-                    </FormControl>
-                    <Form.Group>
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="username"
-                            value={username}
-                            onChange={this.handleChange}
-                            onBlur={this.handleDirty}
-                            placeholder="Enter Username"
-                            isInvalid={errors.username !== undefined}
-                            required
-                        />
-                        {errors.username ? <div className="registration-feedback">{errors.username}</div> : null}
-                    </Form.Group>
                     <Form.Group>
                         <Form.Label>First Name</Form.Label>
                         <Form.Control
@@ -460,30 +431,69 @@ class Registration extends Component {
                         />
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
                     </Form.Group>
+                    <Form.Group>
+                        <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="vipcode"
+                            value={vipcode}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter VIP Code"
+                            isInvalid={errors.vipcode !== undefined}
+                        />
+                        {errors.vipcode ? <div className="registration-feedback">{errors.vipcode}</div> : null}
+                    </Form.Group>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={agreeTerms}
+                                onChange={this.handleChange}
+                                name="agreeTerms"
+                                color="primary"
+                            />
+                        }
+                        margin="normal"
+                        labelPlacement="end"
+                        label={
+                            <div>
+                                <span>
+                                    I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's <Link to={'/terms-and-conditions'}>Terms And Conditions</Link> and <Link to={'/betting-rules'}>Betting Rules.</Link></span>
+                            </div>
+                        }
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={agreePrivacy}
+                                onChange={this.handleChange}
+                                name="agreePrivacy"
+                                color="primary"
+                            />
+                        }
+                        margin="normal"
+                        labelPlacement="end"
+                        label={
+                            <div>
+                                <span>
+                                    I have read and agree to PayPerWin's <Link to={'/privacy-policy'}>Privacy Policy</Link>.
+                                </span>
+                            </div>
+                        }
+                    />
+                    {
+                        window.recaptchaSiteKey ? <Recaptcha
+                            sitekey={window.recaptchaSiteKey}
+                            render="explicit"
+                            verifyCallback={this.recaptchaCallback}
+                            onloadCallback={() => true}
+                        /> : null
+                    }
+                    {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null}
                 </>;
             case 2:
                 return <>
-                    <Form.Group>
-                        <Form.Label>Country</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="country"
-                            value={country}
-                            required
-                            readOnly
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Currency</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="currency"
-                            value={currency}
-                            required
-                            readOnly
-                        />
-                    </Form.Group>
-                    <Form.Group>
+                    {/* <Form.Group>
                         <Form.Label>Home Address</Form.Label>
                         <Form.Control
                             type="text"
@@ -553,11 +563,11 @@ class Registration extends Component {
                             required
                         />
                         {errors.phone ? <div className="registration-feedback">{errors.phone}</div> : null}
-                    </Form.Group>
+                    </Form.Group> */}
                 </>;
             case 3:
                 return <>
-                    <Form.Group>
+                    {/* <Form.Group>
                         <Form.Label>Security Question</Form.Label>
                         <Form.Control
                             type="text"
@@ -584,66 +594,8 @@ class Registration extends Component {
                             required
                         />
                         {errors.securityans ? <div className="registration-feedback">{errors.securityans}</div> : null}
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="vipcode"
-                            value={vipcode}
-                            onChange={this.handleChange}
-                            onBlur={this.handleDirty}
-                            placeholder="Enter VIP Code"
-                            isInvalid={errors.vipcode !== undefined}
-                        />
-                        {errors.vipcode ? <div className="registration-feedback">{errors.vipcode}</div> : null}
-                    </Form.Group>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={agreeTerms}
-                                onChange={this.handleChange}
-                                name="agreeTerms"
-                                color="primary"
-                            />
-                        }
-                        margin="normal"
-                        labelPlacement="end"
-                        label={
-                            <div>
-                                <span>
-                                    I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's <Link to={'/terms-and-conditions'}>Terms And Conditions</Link> and <Link to={'/betting-rules'}>Betting Rules.</Link></span>
-                            </div>
-                        }
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={agreePrivacy}
-                                onChange={this.handleChange}
-                                name="agreePrivacy"
-                                color="primary"
-                            />
-                        }
-                        margin="normal"
-                        labelPlacement="end"
-                        label={
-                            <div>
-                                <span>
-                                    I have read and agree to PayPerWin's <Link to={'/privacy-policy'}>Privacy Policy</Link>.
-                                </span>
-                            </div>
-                        }
-                    />
-                    {
-                        window.recaptchaSiteKey ? <Recaptcha
-                            sitekey={window.recaptchaSiteKey}
-                            render="explicit"
-                            verifyCallback={this.recaptchaCallback}
-                            onloadCallback={() => true}
-                        /> : null
-                    }
-                    {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null}
+                    </Form.Group> */}
+
                 </>;
             default:
                 return 'Unknown step';
@@ -663,23 +615,25 @@ class Registration extends Component {
                 return false;
             case 1:
                 if ((errors.title || !touched.title) ||
-                    (errors.username || !touched.username) ||
                     (errors.firstname || !touched.firstname) ||
                     (errors.lastname || !touched.lastname) ||
-                    (errors.dateofbirth || !touched.dateofbirth))
+                    (errors.dateofbirth || !touched.dateofbirth) ||
+                    !agreeTerms || !agreePrivacy
+                )
                     return true;
                 return false;
             case 2:
-                if ((errors.address || !touched.address) ||
-                    (errors.city || !touched.city) ||
-                    (errors.postalcode || !touched.postalcode) ||
-                    (errors.phone || !touched.phone))
-                    return true;
+                // if ((errors.address || !touched.address) ||
+                //     (errors.city || !touched.city) ||
+                //     (errors.postalcode || !touched.postalcode) ||
+                //     (errors.phone || !touched.phone))
+                // return true;
                 return false;
             case 3:
-                if ((errors.securityquiz || !touched.securityquiz) ||
-                    (errors.securityans || !touched.securityans) ||
-                    !agreeTerms || !agreePrivacy)
+                // if ((errors.securityquiz || !touched.securityquiz) ||
+                //     (errors.securityans || !touched.securityans) ||
+                //     !agreeTerms || !agreePrivacy)
+                if (!agreeTerms || !agreePrivacy)
                     return true;
                 return false;
             default:
