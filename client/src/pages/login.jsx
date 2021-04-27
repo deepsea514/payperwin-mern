@@ -17,7 +17,7 @@ const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
 const Form = ({
-    username, // eslint-disable-line react/prop-types
+    email, // eslint-disable-line react/prop-types
     password, // eslint-disable-line react/prop-types
     errors, // eslint-disable-line react/prop-types
     handleChange, // eslint-disable-line react/prop-types
@@ -36,13 +36,14 @@ const Form = ({
                 />
                 <CardContent style={{ backgroundColor: '#f5f5f5' }}>
                     <TextField
-                        label="Username"
-                        name="username"
-                        value={username}
+                        label="Email"
+                        name="email"
+                        value={email}
+                        type="email"
                         onChange={handleChange}
                         onBlur={handleDirty}
-                        error={errors.username !== undefined}
-                        helperText={errors.username}
+                        error={errors.email !== undefined}
+                        helperText={errors.email}
                         margin="normal"
                         fullWidth
                         variant="outlined"
@@ -82,20 +83,17 @@ const Form = ({
                         Submit
                     </Button>
                     <div className="login-recovery">
-                        <Link to="/usernameRecovery" onClick={closeModal}>
-                            Forgot Username
-                    </Link>{' '}
                         <Link to="/passwordRecovery" onClick={closeModal}>
                             Forgot Password
-                    </Link>{' '}
+                        </Link>
                         <br />
                         <br />
-                    - OR -
-                    <br />
-                    Don't have an account?
-                    <Link to="/SignUp" onClick={closeModal} className="sign-up-button">
+                        - OR -
+                        <br />
+                        Don't have an account?
+                        <Link to="/SignUp" onClick={closeModal} className="sign-up-button">
                             Sign Up
-                    </Link>{' '}
+                        </Link>
                     </div>
                 </CardContent>
             </Card>
@@ -104,7 +102,7 @@ const Form = ({
 );
 
 const initState = {
-    username: '',
+    email: '',
     password: '',
     rcptchVerified: false,
     errors: {},
@@ -140,13 +138,13 @@ class Login extends Component {
         registrationValidation.validateFields(this.state)
             .then((result) => {
                 if (result === true) {
-                    const { username, password } = this.state;
+                    const { email, password } = this.state;
                     const url = `${serverUrl}/login`;
                     axios({
                         method: 'post',
                         url,
                         data: {
-                            username,
+                            email,
                             password,
                         },
                         headers: {

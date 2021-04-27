@@ -13,7 +13,6 @@ const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
 const Form = ({
-    username, // eslint-disable-line react/prop-types
     email, // eslint-disable-line react/prop-types
     errors, // eslint-disable-line react/prop-types
     handleChange, // eslint-disable-line react/prop-types
@@ -29,19 +28,6 @@ const Form = ({
                     title="Password Recovery"
                 />
                 <CardContent style={{ backgroundColor: '#f5f5f5' }}>
-                    <TextField
-                        label="Username"
-                        name="username"
-                        value={username}
-                        onChange={handleChange}
-                        onBlur={handleDirty}
-                        error={errors.username !== undefined}
-                        helperText={errors.username}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        required
-                    />
                     <TextField
                         label="Email"
                         name="email"
@@ -75,7 +61,6 @@ const Form = ({
 );
 
 const initState = {
-    username: '',
     email: '',
     errors: {},
 };
@@ -102,8 +87,8 @@ export default class Login extends Component {
         registrationValidation.validateFields(this.state)
             .then((result) => {
                 if (result === true) {
-                    const { username, email } = this.state;
-                    const url = `${serverUrl}/sendPasswordRecovery?username=${username}&email=${email}`;
+                    const { email } = this.state;
+                    const url = `${serverUrl}/sendPasswordRecovery?email=${email}`;
                     axios({
                         method: 'get',
                         url,

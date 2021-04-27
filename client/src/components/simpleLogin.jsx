@@ -8,7 +8,7 @@ const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
 const Form = ({
-    username, // eslint-disable-line react/prop-types
+    email, // eslint-disable-line react/prop-types
     password, // eslint-disable-line react/prop-types
     errors, // eslint-disable-line react/prop-types
     handleChange, // eslint-disable-line react/prop-types
@@ -20,11 +20,12 @@ const Form = ({
     <React.Fragment>
         <div className="form-group email-d">
             <input
-                label="Username"
-                name="username"
-                value={username}
+                label="Email"
+                name="email"
+                type="email"
+                value={email}
                 className="form-control form-control-sm"
-                placeholder="Username"
+                placeholder="Email"
                 onChange={handleChange}
                 onBlur={handleDirty}
             />
@@ -57,7 +58,7 @@ const Form = ({
 );
 
 const initState = {
-    username: '',
+    email: '',
     password: '',
     errors: {},
 };
@@ -83,13 +84,13 @@ class Login extends Component {
         registrationValidation.validateFields(this.state)
             .then((result) => {
                 if (result === true) {
-                    const { username, password } = this.state;
+                    const { email, password } = this.state;
                     const url = `${serverUrl}/login`;
                     axios({
                         method: 'post',
                         url,
                         data: {
-                            username,
+                            email,
                             password,
                         },
                         headers: {
@@ -159,11 +160,11 @@ class Login extends Component {
                             <div>
                                 {
                                     errors.server ? <div className="form-error">{errors.server}</div>
-                                        : errors.username ? <div className="form-error">{errors.username}</div>
+                                        : errors.email ? <div className="form-error">{errors.email}</div>
                                             : errors.password ? <div className="form-error">{errors.password}</div> : null
                                 }
                             </div>
-                            <div className="frgt-pswrd"> Forgot <Link to="/usernameRecovery">username</Link> or <Link to="/passwordRecovery">password?</Link></div>
+                            <div className="frgt-pswrd"> Forgot <Link to="/passwordRecovery">password?</Link></div>
                         </div>
                     )
                 }

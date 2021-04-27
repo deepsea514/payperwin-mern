@@ -121,25 +121,31 @@ function isAuthenticated(req, res, next) {
     res.status(403).send('Authentication Required.');
 }
 
-passport.use(new LocalStrategy((username, password, done) => {
-    User.findOne({ username: new RegExp(`^${username}$`, 'i') }, async (err, user) => {
-        if (err) { console.error(err); return done(err); }
-        if (!user) {
-            if (process.env.NODE_ENV === 'development') {
-                console.log('incorrect username', username);
+passport.use(new LocalStrategy(
+    {
+        usernameField: 'email',
+        passwordField: 'password'
+    },
+    (email, password, done) => {
+        User.findOne({ email: new RegExp(`^${email}$`, 'i') }, async (err, user) => {
+            if (err) { console.error(err); return done(err); }
+            if (!user) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('incorrect email', email);
+                }
+                return done(null, false, { message: 'Incorrect email.' });
             }
-            return done(null, false, { message: 'Incorrect username.' });
-        }
-        const validPassword = await user.validPassword(password);
-        if (!validPassword) {
-            if (process.env.NODE_ENV === 'development') {
-                console.log(user.username, 'incorrect password', password);
+            const validPassword = await user.validPassword(password);
+            if (!validPassword) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(user.username, 'incorrect password', password);
+                }
+                return done(null, false, { message: 'Incorrect password.' });
             }
-            return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-    });
-}));
+            return done(null, user);
+        });
+    }
+));
 
 
 function sendVerificationEmail(email, username, req) {
@@ -174,12 +180,12 @@ function sendVerificationEmail(email, username, req) {
 passport.use('local-signup', new LocalStrategy(
     {
         // by default, local strategy uses username and password, we will override with username
-        // usernameField: 'username',
-        // passwordField: 'password',
+        usernameField: 'email',
+        passwordField: 'password',
         passReqToCallback: true, // allows us to pass back the entire request to the callback
     },
-    async (req, username, password, done) => {
-        const { email, firstname, lastname,
+    async (req, email, password, done) => {
+        const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
             vipcode, } = req.body;
         // asynchronous
@@ -189,7 +195,7 @@ passport.use('local-signup', new LocalStrategy(
             // we are checking to see if the user trying to login already exists
             User.findOne({
                 $or: [
-                    { username: new RegExp(`^${username}$`, 'i') },
+
                     { email: new RegExp(`^${email}$`, 'i') },
                 ],
             }, async (err, user) => {
@@ -360,23 +366,6 @@ expressApp.get('/logout', (req, res) => {
 });
 
 
-expressApp.get('/usernameTaken', (req, res) => {
-    const { username } = req.query;
-    User.findOne(
-        { username: new RegExp(`^${username}$`, 'i') },
-        (err, user) => {
-            if (err) {
-                throw Error(err);
-            }
-            if (user && user.username === username) {
-                res.json({ usernameTaken: true });
-            } else {
-                res.json({ usernameTaken: false });
-            }
-        },
-    );
-});
-
 expressApp.get('/emailTaken', (req, res) => {
     const { email } = req.query;
     User.findOne(
@@ -494,38 +483,38 @@ expressApp.post('/passwordChange', bruteforce.prevent, isAuthenticated, async (r
     );
 });
 
-expressApp.get('/recoverUsername', bruteforce.prevent, async (req, res) => {
-    const { hostname, protocol, headers, subdomains } = req;
-    const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-    const { email } = req.query;
-    User.findOne(
-        { email: new RegExp(`^${email}$`, 'i') },
-        (err, user) => {
-            if (err) {
-                res.send(err);
-            }
-            if (user) {
-                // if (process.env.NODE_ENV === 'development') {
-                //   console.log(`Your username is ${user.username}`);
-                // } else {
-                const msg = {
-                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
-                    to: email, // An array if you have multiple recipients.
-                    subject: 'Username Recovery',
-                    text: `You requested username recovery. Your username: ${user.username}`,
-                    html: simpleresponsive(`
-                        You requested username recovery. Your username: <b>${user.username}</b>
-                    `),
-                };
-                sgMail.send(msg);
-                // }
-                res.json("Please check your email for your Payper Win username");
-            } else {
-                res.status(403).json({ error: 'User with that email not found.' });
-            }
-        },
-    );
-});
+// expressApp.get('/recoverUsername', bruteforce.prevent, async (req, res) => {
+//     const { hostname, protocol, headers, subdomains } = req;
+//     const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
+//     const { email } = req.query;
+//     User.findOne(
+//         { email: new RegExp(`^${email}$`, 'i') },
+//         (err, user) => {
+//             if (err) {
+//                 res.send(err);
+//             }
+//             if (user) {
+//                 // if (process.env.NODE_ENV === 'development') {
+//                 //   console.log(`Your username is ${user.username}`);
+//                 // } else {
+//                 const msg = {
+//                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
+//                     to: email, // An array if you have multiple recipients.
+//                     subject: 'Username Recovery',
+//                     text: `You requested username recovery. Your username: ${user.username}`,
+//                     html: simpleresponsive(`
+//                         You requested username recovery. Your username: <b>${user.username}</b>
+//                     `),
+//                 };
+//                 sgMail.send(msg);
+//                 // }
+//                 res.json("Please check your email for your Payper Win username");
+//             } else {
+//                 res.status(403).json({ error: 'User with that email not found.' });
+//             }
+//         },
+//     );
+// });
 
 // Helps keep the domain consistent when having multiple domains point to same app
 const serverHostToClientHost = config.serverHostToClientHost;
@@ -533,10 +522,9 @@ const serverHostToClientHost = config.serverHostToClientHost;
 expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => {
     const { hostname, protocol, headers, subdomains } = req;
     const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-    const { username, email } = req.query;
+    const { email } = req.query;
     User.findOne(
         {
-            username: new RegExp(`^${username}$`, 'i'),
             email: new RegExp(`^${email}$`, 'i'),
         },
         async (err, user) => {
@@ -576,7 +564,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 }
                 // }
             } else {
-                res.status(403).json({ error: 'User with that username and email not found.' });
+                res.status(403).json({ error: 'User with that email not found.' });
             }
         },
     );

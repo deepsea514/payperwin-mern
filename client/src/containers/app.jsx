@@ -215,7 +215,7 @@ class App extends PureComponent {
                                         <div className="col-md-7 p-0">
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
-                                                <Route path="/usernameRecovery" component={UsernameRecovery} />
+                                                {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}
                                                 <Route path="/usernameChange" render={(props) =>
                                                     <UsernameChange getUser={getUser} {...props} />} />
                                                 <Route path="/passwordRecovery" component={PasswordRecovery} />
