@@ -75,7 +75,7 @@ class Sport extends PureComponent {
                                                 return false;
                                             });
                                             event.lineCount += filteredSpreads.length;
-                                            line.spreads = filteredSpreads;
+                                            line.spreads = filteredSpreads.length ? filteredSpreads : null;
                                         }
                                         // if (totals) {
                                         //     event.lineCount += totals.length;
@@ -87,7 +87,7 @@ class Sport extends PureComponent {
                                                 return false;
                                             });
                                             event.lineCount += filteredTotals.length;
-                                            line.totals = filteredTotals;
+                                            line.totals = filteredTotals.length ? filteredTotals : null;
                                         }
                                     }
                                 });

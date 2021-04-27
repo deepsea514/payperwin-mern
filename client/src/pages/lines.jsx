@@ -66,7 +66,7 @@ class Lines extends PureComponent {
                                                 return true;
                                             return false;
                                         });
-                                        line.spreads = filteredSpreads;
+                                        line.spreads = filteredSpreads.length ? filteredSpreads : null;
                                     }
 
                                     if (totals) {
@@ -75,7 +75,7 @@ class Lines extends PureComponent {
                                                 return true;
                                             return false;
                                         });
-                                        line.totals = filteredTotals;
+                                        line.totals = filteredTotals.length ? filteredTotals : null;
                                     }
                                 });
                             }
