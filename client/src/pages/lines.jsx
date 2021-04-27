@@ -51,8 +51,31 @@ class Lines extends PureComponent {
                             const { lines } = event;
                             if (lines) {
                                 lines.forEach(line => {
-                                    if (line.moneyline && line.moneyline.draw) {
-                                        delete line.moneyline;
+                                    const { moneyline, spreads, totals } = line;
+                                    if (moneyline) {
+                                        if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
+                                        }
+                                        else {
+                                            delete line.moneyline;
+                                        }
+                                    }
+
+                                    if (spreads) {
+                                        const filteredSpreads = spreads.filter(spread => {
+                                            if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+                                                return true;
+                                            return false;
+                                        });
+                                        line.spreads = filteredSpreads;
+                                    }
+
+                                    if (totals) {
+                                        const filteredTotals = totals.filter(total => {
+                                            if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+                                                return true;
+                                            return false;
+                                        });
+                                        line.totals = filteredTotals;
                                     }
                                 });
                             }
@@ -107,8 +130,17 @@ class Lines extends PureComponent {
                                     moneyline ? (
                                         (() => {
                                             const moneylineDifference = Math.abs(Math.abs(moneyline.home) - Math.abs(moneyline.away)) / 2;
-                                            const newHome = moneyline.home + moneylineDifference;
-                                            const newAway = moneyline.away + moneylineDifference;
+                                            let bigHome = 1;
+                                            if (moneyline.home > 0) {
+                                                if (moneyline.away > moneyline.home) bigHome = 1;
+                                                else bigHome = -1;
+                                            }
+                                            if (moneyline.home < 0) {
+                                                if (moneyline.away > moneyline.home) bigHome = -1;
+                                                else bigHome = 1;
+                                            }
+                                            const newHome = moneyline.home + moneylineDifference * bigHome;
+                                            const newAway = moneyline.away + moneylineDifference * bigHome;
                                             // TODO: Refactor this to be simpler
                                             const lineQuery = {
                                                 sportName,
@@ -199,9 +231,18 @@ class Lines extends PureComponent {
                                             <div className="line-type-header">Spreads</div>
                                             {
                                                 spreads.map((spread, i) => {
-                                                    const moneylineDifference = Math.abs(Math.abs(spread.home) - Math.abs(spread.away)) / 2;
-                                                    const newHome = spread.home + moneylineDifference;
-                                                    const newAway = spread.away + moneylineDifference;
+                                                    const spreadDifference = Math.abs(Math.abs(spread.home) - Math.abs(spread.away)) / 2;
+                                                    let bigHome = 1;
+                                                    if (spread.home > 0) {
+                                                        if (Math.abs(spread.away) > Math.abs(spread.home)) bigHome = 1;
+                                                        else bigHome = -1;
+                                                    }
+                                                    if (spread.home < 0) {
+                                                        if (Math.abs(spread.away) > Math.abs(spread.home)) bigHome = -1;
+                                                        else bigHome = 1;
+                                                    }
+                                                    const newHome = spread.home + spreadDifference * bigHome;
+                                                    const newAway = spread.away + spreadDifference * bigHome;
                                                     const lineQuery = {
                                                         sportName,
                                                         leagueId,
@@ -310,9 +351,18 @@ class Lines extends PureComponent {
                                             <div className="line-type-header">Over/Under</div>
                                             {
                                                 totals.map((total, i) => {
-                                                    const moneylineDifference = Math.abs(Math.abs(total.over) - Math.abs(total.under)) / 2;
-                                                    const newHome = total.over + moneylineDifference;
-                                                    const newAway = total.under + moneylineDifference;
+                                                    const totalDifference = Math.abs(Math.abs(total.over) - Math.abs(total.under)) / 2;
+                                                    let bigHome = 1;
+                                                    if (total.over > 0) {
+                                                        if (Math.abs(total.under) > Math.abs(total.over)) bigHome = 1;
+                                                        else bigHome = -1;
+                                                    }
+                                                    if (total.over < 0) {
+                                                        if (Math.abs(total.under) > Math.abs(total.over)) bigHome = -1;
+                                                        else bigHome = 1;
+                                                    }
+                                                    const newHome = total.over + totalDifference * bigHome;
+                                                    const newAway = total.under + totalDifference * bigHome;
                                                     const lineQuery = {
                                                         sportName,
                                                         leagueId,

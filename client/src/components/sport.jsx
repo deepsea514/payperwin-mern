@@ -51,19 +51,43 @@ class Sport extends PureComponent {
                             if (lines) {
                                 lines.forEach((line, i) => {
                                     if (i === 0) {
-                                        if (line.moneyline && line.moneyline.draw) {
-                                            delete line.moneyline;
-                                        } else {
-                                            event.lineCount++;
-                                        }
-                                        // if (line.moneyline) {
+                                        const { moneyline, spreads, totals } = line;
+                                        // if (moneyline && moneyline.draw) {
+                                        //     delete line.moneyline;
+                                        // } else {
                                         //     event.lineCount++;
                                         // }
-                                        if (line.spreads) {
-                                            event.lineCount += line.spreads.length;
+                                        if (moneyline) {
+                                            if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
+                                                event.lineCount++;
+                                            }
+                                            else {
+                                                delete line.moneyline;
+                                            }
                                         }
-                                        if (line.totals) {
-                                            event.lineCount += line.totals.length;
+                                        // if (spreads) {
+                                        //     event.lineCount += spreads.length;
+                                        // }
+                                        if (spreads) {
+                                            const filteredSpreads = spreads.filter(spread => {
+                                                if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+                                                    return true;
+                                                return false;
+                                            });
+                                            event.lineCount += filteredSpreads.length;
+                                            line.spreads = filteredSpreads;
+                                        }
+                                        // if (totals) {
+                                        //     event.lineCount += totals.length;
+                                        // }
+                                        if (totals) {
+                                            const filteredTotals = totals.filter(total => {
+                                                if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+                                                    return true;
+                                                return false;
+                                            });
+                                            event.lineCount += filteredTotals.length;
+                                            line.totals = filteredTotals;
                                         }
                                     }
                                 });
@@ -145,25 +169,17 @@ class Sport extends PureComponent {
                                                     moneyline ? (
                                                         (() => {
                                                             const moneylineDifference = Math.abs(Math.abs(moneyline.home) - Math.abs(moneyline.away)) / 2;
-                                                            // let bigHome = 1;
-                                                            // if (moneyline.home > 0) {
-                                                            //     if (moneyline.away > 0) {
-                                                            //         bigHome = -1;
-                                                            //     }
-                                                            //     if (moneyline.away < 0) {
-                                                            //         if()
-                                                            //     }
-                                                            // }
-                                                            // if (moneyline.home < 0) {
-                                                            //     if (moneyline.away > 0) {
-
-                                                            //     }
-                                                            //     if (moneyline.away < 0) {
-
-                                                            //     }
-                                                            // }
-                                                            const newHome = moneyline.home + moneylineDifference;
-                                                            const newAway = moneyline.away + moneylineDifference;
+                                                            let bigHome = 1;
+                                                            if (moneyline.home > 0) {
+                                                                if (Math.abs(moneyline.away) > Math.abs(moneyline.home)) bigHome = 1;
+                                                                else bigHome = -1;
+                                                            }
+                                                            if (moneyline.home < 0) {
+                                                                if (Math.abs(moneyline.away) > Math.abs(moneyline.home)) bigHome = -1;
+                                                                else bigHome = 1;
+                                                            }
+                                                            const newHome = moneyline.home + moneylineDifference * bigHome;
+                                                            const newAway = moneyline.away + moneylineDifference * bigHome;
                                                             // TODO: Refactor this to be simpler
                                                             const lineQuery = {
                                                                 sportName,
@@ -236,9 +252,18 @@ class Sport extends PureComponent {
                                                 {
                                                     spreads ? (
                                                         (() => {
-                                                            const moneylineDifference = Math.abs(Math.abs(spreads[0].home) - Math.abs(spreads[0].away)) / 2;
-                                                            const newHome = spreads[0].home + moneylineDifference;
-                                                            const newAway = spreads[0].away + moneylineDifference;
+                                                            const spreadDifference = Math.abs(Math.abs(spreads[0].home) - Math.abs(spreads[0].away)) / 2;
+                                                            let bigHome = 1;
+                                                            if (spreads[0].home > 0) {
+                                                                if (Math.abs(spreads[0].away) > Math.abs(spreads[0].home)) bigHome = 1;
+                                                                else bigHome = -1;
+                                                            }
+                                                            if (spreads[0].home < 0) {
+                                                                if (Math.abs(spreads[0].away) > Math.abs(spreads[0].home)) bigHome = -1;
+                                                                else bigHome = 1;
+                                                            }
+                                                            const newHome = spreads[0].home + spreadDifference * bigHome;
+                                                            const newAway = spreads[0].away + spreadDifference * bigHome;
                                                             const lineQuery = {
                                                                 sportName,
                                                                 leagueId,
@@ -328,9 +353,18 @@ class Sport extends PureComponent {
                                                 }{
                                                     totals ? (
                                                         (() => {
-                                                            const moneylineDifference = Math.abs(Math.abs(totals[0].over) - Math.abs(totals[0].under)) / 2;
-                                                            const newHome = totals[0].over + moneylineDifference;
-                                                            const newAway = totals[0].under + moneylineDifference;
+                                                            const totalDifference = Math.abs(Math.abs(totals[0].over) - Math.abs(totals[0].under)) / 2;
+                                                            let bigHome = 1;
+                                                            if (totals[0].over > 0) {
+                                                                if (Math.abs(totals[0].under) > Math.abs(totals[0].over)) bigHome = 1;
+                                                                else bigHome = -1;
+                                                            }
+                                                            if (totals[0].over < 0) {
+                                                                if (Math.abs(totals[0].under) > Math.abs(totals[0].over)) bigHome = -1;
+                                                                else bigHome = 1;
+                                                            }
+                                                            const newHome = totals[0].over + totalDifference * bigHome;
+                                                            const newAway = totals[0].under + totalDifference * bigHome;
                                                             const lineQuery = {
                                                                 sportName,
                                                                 leagueId,
