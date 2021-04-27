@@ -121,7 +121,7 @@ ColorlibStepIcon.propTypes = {
 };
 
 const initState = {
-    country: '',
+    country: 'Canada',
     region: '',
     email: '',
     password: '',
@@ -132,7 +132,7 @@ const initState = {
     lastname: '',
     dateofbirth: '',
 
-    currency: '',
+    currency: 'CAD',
     address: '',
     address2: '',
     city: '',
@@ -148,7 +148,7 @@ const initState = {
 
     errors: {},
     touched: {
-        country: false,
+        country: true,
         region: false,
         email: false,
         password: false,
