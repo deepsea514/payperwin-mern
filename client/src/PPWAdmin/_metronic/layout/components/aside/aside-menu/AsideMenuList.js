@@ -40,7 +40,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/kyc/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/General/Shield-check.svg"} />
                         </span>
                         <span className="menu-text">KYC</span>
                     </Link>
@@ -54,7 +54,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/customers/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/General/User.svg"} />
                         </span>
                         <span className="menu-text">Customers</span>
                     </Link>
@@ -68,7 +68,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/bet-activities/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
                         </span>
                         <span className="menu-text">Bet Activities</span>
                     </Link>
@@ -81,7 +81,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/withdraw-log/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Shopping/Money.svg"} />
                         </span>
                         <span className="menu-text">Withdraw Logs</span>
                     </Link>
@@ -94,7 +94,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/deposit-log/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Shopping/Wallet.svg"} />
                         </span>
                         <span className="menu-text">Deposit Logs</span>
                     </Link>
@@ -107,7 +107,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/wager-feeds/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
                         </span>
                         <span className="menu-text">Wager Feeds</span>
                     </Link>
@@ -120,7 +120,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/autobet/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Devices/Laptop-macbook.svg"} />
                         </span>
                         <span className="menu-text">AutoBet</span>
                     </Link>
@@ -133,7 +133,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/events/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/General/Thunder-move.svg"} />
                         </span>
                         <span className="menu-text">Events</span>
                     </Link>
@@ -147,7 +147,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/email-templates/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Communication/Mail-opened.svg"} />
                         </span>
                         <span className="menu-text">Email Templates</span>
                     </Link>
@@ -161,7 +161,7 @@ export function AsideMenuList({ layoutProps }) {
                 >
                     <Link className="menu-link" to="/promotions/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Design/Layers.svg"} />
+                            <SVG src={"/media/svg/icons/Shopping/Cart3.svg"} />
                         </span>
                         <span className="menu-text">Promotions</span>
                     </Link>

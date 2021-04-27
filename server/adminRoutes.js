@@ -1556,7 +1556,7 @@ adminRouter.get(
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
                     }
-                    data = data.map(verification => {
+                    data = data.filter(veri => veri.user).map(verification => {
                         return {
                             user_id: verification.user._id,
                             username: verification.user.username,
