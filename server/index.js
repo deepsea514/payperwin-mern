@@ -755,16 +755,27 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                             if (line) {
                                 const { teamA, teamB, startDate, line: { home, away, draw, hdp, points, periodNumber } } = line;
                                 lineQuery.periodNumber = periodNumber;
-                                if (draw) {
+                                // if (draw) {
+                                // errors.push(`${pickName} ${odds[pick]} wager could not be placed. Invalid Bet Type.`);
+                                // } else {
+                                const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+                                const lineOdds = line.line[pickWithOverUnder];
+                                const oddsA = type === 'total' ? line.line.over : line.line.home;
+                                const oddsB = type === 'total' ? line.line.under : line.line.away;
+                                const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
+                                if (oddsA > 0 && oddsB > 0 || oddsA < 0 && oddsB < 0) {
                                     errors.push(`${pickName} ${odds[pick]} wager could not be placed. Invalid Bet Type.`);
                                 } else {
-                                    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
-                                    const lineOdds = line.line[pickWithOverUnder];
-                                    const oddsA = type === 'total' ? line.line.over : line.line.home;
-                                    const oddsB = type === 'total' ? line.line.under : line.line.away;
-                                    const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
-                                    const newLineOdds = lineOdds + oddsDifference;
-                                    // console.log(odds[pick], newLineOdds);
+                                    let bigHome = 1;
+                                    if (oddsA > 0) {
+                                        if (Math.abs(oddsB) > Math.abs(oddsA)) bigHome = 1;
+                                        else bigHome = -1;
+                                    }
+                                    if (oddsA < 0) {
+                                        if (Math.abs(oddsB) > Math.abs(oddsA)) bigHome = -1;
+                                        else bigHome = 1;
+                                    }
+                                    const newLineOdds = lineOdds + oddsDifference * bigHome;
                                     const oddsMatch = odds[pick] === newLineOdds;
                                     if (oddsMatch) {
                                         const betAfterFee = toBet /* * 0.98 */;
@@ -920,6 +931,7 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                         errors.push(`${pickName} ${odds[pick]} wager could not be placed. Odds have changed.`);
                                     }
                                 }
+                                // }
                             } else {
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Line not found`);
                             }
