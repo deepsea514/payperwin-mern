@@ -7,11 +7,13 @@ function mergeExistingOdds(events, oldEvents) {
         return date1 - date2;
     })
     let lastDate;
+    const afterOneHour = (new Date()).getTime() + 60 * 60 * 1000;
     if (events.length == 0) {
-        lastDate = (new Date()).getTime();
+        lastDate = afterOneHour;
     }
     else {
         lastDate = (new Date(events[events.length - 1].startDate)).getTime();
+        lastDate = lastDate > afterOneHour ? lastDate : afterOneHour;
     }
     oldEvents = oldEvents.filter(event => {
         let date = (new Date(event.startDate)).getTime();
@@ -53,6 +55,8 @@ function formatFixturesOdds(events, sportData, oldEvents) {
                 away: moneyline.moneyline_away,
                 draw: moneyline.moneyline_draw == UNSET ? null : moneyline.moneyline_draw
             };
+            if ((newMoneyline.home > 0 && newMoneyline.away > 0) || (newMoneyline.home < 0 && newMoneyline.away < 0))
+                newMoneyline = null;
         }
         line.moneyline = newMoneyline;
 
@@ -63,6 +67,8 @@ function formatFixturesOdds(events, sportData, oldEvents) {
                 home: spread.point_spread_home_money,
                 away: spread.point_spread_away_money
             }
+            if ((newSpread.home > 0 && newSpread.away > 0) || (newSpread.home < 0 && newSpread.away < 0))
+                newSpread = null;
         }
         if (newSpread)
             line.spreads = [newSpread];
@@ -76,13 +82,15 @@ function formatFixturesOdds(events, sportData, oldEvents) {
                 over: total.total_over_money,
                 points: total.total_over
             }
+            if ((newTotal.under > 0 && newTotal.over > 0) || (newTotal.under < 0 && newTotal.over < 0))
+                newTotal = null;
         }
         if (newTotal)
             line.totals = [newTotal];
         else
             line.totals = null;
 
-        if (line.totals && line.spreads) {
+        if (line.totals && line.spreads && line.moneyline) {
             let formattedEvent = {
                 lines: [line],
                 teamA: teams[0].is_home ? teams[0].name : teams[1].name,
