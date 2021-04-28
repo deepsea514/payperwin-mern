@@ -28,6 +28,7 @@ async function matchResults(sportName, events) {
     }
     for (const betpool of betpools) {
         const {
+            uid,
             homeBets,
             awayBets,
             eventId,
