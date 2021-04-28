@@ -33,14 +33,12 @@ const MTheme = React.lazy(() => import('./theme'));
 
 export default class AdminWrap extends Component {
     render() {
-        // const { user, getUser } = this.state;
         return (
-
             <MetronicLayoutProvider>
                 <MetronicSubheaderProvider>
                     <MetronicSplashScreenProvider>
-                        <Provider store={store}>
-                            <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}>
+                        {/* <Provider store={store}>
+                            <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}> */}
                                 <React.Suspense fallback={<LayoutSplashScreen />}>
                                     <MTheme />
                                     <MaterialThemeProvider>
@@ -52,8 +50,8 @@ export default class AdminWrap extends Component {
                                             </BrowserRouter>
                                     </MaterialThemeProvider>
                                 </React.Suspense>
-                            </PersistGate>
-                        </Provider>
+                            {/* </PersistGate>
+                        </Provider> */}
                     </MetronicSplashScreenProvider>
                 </MetronicSubheaderProvider>
             </MetronicLayoutProvider>

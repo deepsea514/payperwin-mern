@@ -94,8 +94,24 @@ class Lines extends PureComponent {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+    convertOdds = (odd) => {
+        const { oddFormat } = this.props;
+        switch (oddFormat) {
+            case 'decimal':
+                if (odd > 0) {
+                    return Number(1 + odd / 100).toFixed(2);
+                }
+                else {
+                    return Number(1 - 100 / odd).toFixed(2);
+                }
+            case 'american':
+            default:
+                return odd;
+        }
+    }
+
     render() {
-        const { match, addBet, betSlip, removeBet } = this.props;
+        const { match, addBet, betSlip, removeBet, oddFormat } = this.props;
         const { sportName, leagueId, eventId, lineId } = match.params;
         const { data, error } = this.state;
         if (error) {
@@ -153,8 +169,8 @@ class Lines extends PureComponent {
                                                 <React.Fragment>
                                                     <div className="line-type-header">Moneyline:</div>
                                                     <li>
-                                                        <div className="row">
-                                                            <div className="col-md-6 com-sm-12 col-12">
+                                                        <div className="row mx-0">
+                                                            <div className="col-md-6 com-sm-12 col-12 pl-0">
                                                                 <span className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                     onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ?
                                                                         () => removeBet(lineId, 'home')
@@ -177,16 +193,16 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamA}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {`${moneyline.home > 0 ? '+' : ''}${moneyline.home}`}
+                                                                                {oddFormat == 'decimal' ? this.convertOdds(moneyline.home) : `${moneyline.home > 0 ? '+' : ''}${moneyline.home}`}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {`${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </span>
                                                             </div>
-                                                            <div className="col-md-6 com-sm-12 col-12">
+                                                            <div className="col-md-6 com-sm-12 col-12 pr-0">
                                                                 <span className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                     onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ?
                                                                         () => removeBet(lineId, 'away')
@@ -209,10 +225,10 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamB}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {`${moneyline.away > 0 ? '+' : ''}${moneyline.away}`}
+                                                                                {oddFormat == 'decimal' ? this.convertOdds(moneyline.away) : `${moneyline.away > 0 ? '+' : ''}${moneyline.away}`}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {`${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -254,8 +270,8 @@ class Lines extends PureComponent {
                                                     if (spread.altLineId) lineQuery.altLineId = spread.altLineId;
                                                     return (
                                                         <li key={i}>
-                                                            <div className="row">
-                                                                <div className="col-md-6 com-sm-12 col-12">
+                                                            <div className="row mx-0">
+                                                                <div className="col-md-6 com-sm-12 col-12 pl-0">
                                                                     <span
                                                                         className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
@@ -281,22 +297,16 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${spread.hdp > 0 ? '+' : ''}${spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {
-                                                                                        `${spread.home > 0 ? '+' : ''}${spread.home}`
-                                                                                        // `${spread.hdp > 0 ? '+' : ''}${spread.hdp} ${spread.home > 0 ? '+' : ''}${spread.home}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(spread.home) : `${spread.home > 0 ? '+' : ''}${spread.home}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {
-                                                                                        `${newHome > 0 ? '+' : ''}${newHome}`
-                                                                                        // `${spread.hdp > 0 ? '+' : ''}${spread.hdp} ${spread.home > 0 ? '+' : ''}${spread.home}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </span>
                                                                 </div>
-                                                                <div className="col-md-6 com-sm-12 col-12">
+                                                                <div className="col-md-6 com-sm-12 col-12 pr-0">
                                                                     <span
                                                                         className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
@@ -321,16 +331,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {
-                                                                                        `${spread.away > 0 ? '+' : ''}${spread.away}`
-                                                                                        // `${spread.hdp < 0 ? '+' : ''}${spread.hdp * -1} ${spread.away > 0 ? '+' : ''}${spread.away}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(spread.away) : `${spread.away > 0 ? '+' : ''}${spread.away}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {
-                                                                                        `${newAway > 0 ? '+' : ''}${newAway}`
-                                                                                        // `${spread.hdp < 0 ? '+' : ''}${spread.hdp * -1} ${spread.away > 0 ? '+' : ''}${spread.away}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -374,8 +378,8 @@ class Lines extends PureComponent {
                                                     if (total.altLineId) lineQuery.altLineId = total.altLineId;
                                                     return (
                                                         <li key={i}>
-                                                            <div className="row">
-                                                                <div className="col-md-6 com-sm-12 col-12">
+                                                            <div className="row mx-0">
+                                                                <div className="col-md-6 com-sm-12 col-12 pl-0">
                                                                     <span
                                                                         className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
@@ -401,22 +405,16 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {
-                                                                                        `${total.over > 0 ? '+' : ''}${total.over}`
-                                                                                        // `${total.hdp > 0 ? '+' : ''}${total.hdp} ${total.over > 0 ? '+' : ''}${total.over}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(total.over) : `${total.over > 0 ? '+' : ''}${total.over}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {
-                                                                                        `${newHome > 0 ? '+' : ''}${newHome}`
-                                                                                        // `${total.hdp > 0 ? '+' : ''}${total.hdp} ${total.under > 0 ? '+' : ''}${total.under}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </span>
                                                                 </div>
-                                                                <div className="col-md-6 com-sm-12 col-12">
+                                                                <div className="col-md-6 com-sm-12 col-12 pr-0">
                                                                     <span
                                                                         className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
@@ -443,16 +441,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {
-                                                                                        `${total.under > 0 ? '+' : ''}${total.under}`
-                                                                                        // `${total.hdp < 0 ? '+' : ''}${total.hdp * -1} ${total.under > 0 ? '+' : ''}${total.under}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(total.under) : `${total.under > 0 ? '+' : ''}${total.under}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {
-                                                                                        `${newAway > 0 ? '+' : ''}${newAway}`
-                                                                                        // `${total.hdp < 0 ? '+' : ''}${total.hdp * -1} ${total.under > 0 ? '+' : ''}${total.under}`
-                                                                                    }
+                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>

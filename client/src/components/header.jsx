@@ -25,6 +25,8 @@ export default class Header extends PureComponent {
         super(props);
         this.state = {
             userDropDownOpen: false,
+            oddsDropDownOpen: false,
+            langDropDownOpen: false,
             timerInterval: null,
             timeString: dateformat(new Date(), "HH:MM:ss ('GMT' p)"),
         };
@@ -51,7 +53,6 @@ export default class Header extends PureComponent {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-
     toggleField(fieldName, forceState) {
         if (typeof this.state[fieldName] !== 'undefined') {
             this.setState({
@@ -63,12 +64,29 @@ export default class Header extends PureComponent {
     logout() {
         const { getUser, history } = this.props;
         logout(getUser, history);
-        this.setState({ userDropDownOpen: false });
+        this.setState({ userDropDownOpen: false, oddsDropDownOpen: false, langDropDownOpen: false });
+    }
+
+    getOddFormatString = () => {
+        const { oddFormat } = this.props;
+        switch (oddFormat) {
+            case 'decimal':
+                return "Decimal Odds";
+            case 'american':
+            default:
+                return 'American Odds';
+        }
+    }
+
+    setOddFormat = (format) => {
+        const { setOddFormat } = this.props;
+        setOddFormat(format);
+        this.setState({ oddsDropDownOpen: false });
     }
 
     render() {
-        const { userDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location } = this.props;
+        const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
+        const { toggleField, user, location, lang, setOddFormat, setLanguage } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -93,7 +111,7 @@ export default class Header extends PureComponent {
                                                 <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope" /></Link></li>
                                                 <li>
                                                     <Link to={{ pathname: '/deposit' }}>
-                                                        <span className="blue-icon">USD {user.balance ? user.balance.toFixed(2) : 0}</span>
+                                                        <span className="blue-icon">{user.currency} {user.balance ? user.balance.toFixed(2) : 0}</span>
                                                     </Link>
                                                 </li>
                                                 <li>
@@ -230,13 +248,47 @@ export default class Header extends PureComponent {
                                     {/* <li><a href="#"><span className="moon"></span><i className="fas fa-moon"></i></a></li> */}
                                     {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
-                                        <a href="#">
-                                            <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds<i className="fa fa-caret-down" aria-hidden="true"></i>
+                                        <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
+                                            <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
                                         </a>
+                                        {oddsDropDownOpen ? (
+                                            <React.Fragment>
+                                                <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
+                                                <div className="odds-dropdown">
+                                                    <ul>
+                                                        <li onClick={() => this.setOddFormat('american')}>
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds
+                                                            </li>
+                                                        <li onClick={() => this.setOddFormat('decimal')}>
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Decimal Odds
+                                                            </li>
+                                                    </ul>
+                                                </div>
+                                            </React.Fragment>
+                                        ) : null}
+
                                     </li>
-                                    <a href="#">
-                                    </a>
-                                    <li><a href="#"></a><a href="#">En <i className="fa fa-caret-down" aria-hidden="true"></i></a></li>
+                                    <li>
+                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>En <i className="fa fa-caret-down" aria-hidden="true"></i></a>
+                                        {langDropDownOpen ? (
+                                            <React.Fragment>
+                                                <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
+                                                <div className="odds-dropdown">
+                                                    <ul>
+                                                        <li onClick={() => { }}>
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>English
+                                                        </li>
+                                                        <li onClick={() => { }}>
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Chinese
+                                                        </li>
+                                                        <li onClick={() => { }}>
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Korean
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </React.Fragment>
+                                        ) : null}
+                                    </li>
                                     <li>{timeString}</li>
                                     <li><a href="#"><i className="fa fa-question-circle" aria-hidden="true"></i> Help </a></li>
                                 </ul>

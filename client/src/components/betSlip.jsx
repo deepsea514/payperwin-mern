@@ -62,9 +62,25 @@ class Bet extends PureComponent {
         this.setState(stateChange);
     }
 
+    convertOdds = (odd) => {
+        const { oddFormat } = this.props;
+        switch (oddFormat) {
+            case 'decimal':
+                if (odd > 0) {
+                    return Number(1 + odd / 100).toFixed(2);
+                }
+                else {
+                    return Number(1 - 100 / odd).toFixed(2);
+                }
+            case 'american':
+            default:
+                return odd;
+        }
+    }
+
     render() {
         const { stake, win } = this.state;
-        const { bet, removeBet } = this.props;
+        const { bet, removeBet, oddFormat } = this.props;
         console.log(bet)
         const { name, type, league, odds, pick, home, away, sportName, lineId, pickName } = bet;
         return (
@@ -76,7 +92,7 @@ class Bet extends PureComponent {
                 </div>
                 <div className="bet-type-league">{type} - {league}</div>
                 <span className="bet-pick">{pickName}</span>
-                <span className="bet-pick-odds">{odds[pick] > 0 ? '+' : ''}{odds[pick]}</span>
+                <span className="bet-pick-odds">{oddFormat == 'decimal' ? this.convertOdds(odds[pick]) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
                 <div>
                     <input
                         className="bet-stake"
@@ -161,9 +177,25 @@ export default class BetSlip extends PureComponent {
         });
     }
 
+    convertOdds = (odd) => {
+        const { oddFormat } = this.props;
+        switch (oddFormat) {
+            case 'decimal':
+                if (odd > 0) {
+                    return Number(1 + odd / 100).toFixed(2);
+                }
+                else {
+                    return Number(1 - 100 / odd).toFixed(2);
+                }
+            case 'american':
+            default:
+                return odd;
+        }
+    }
+
     render() {
         const { errors, confirmationOpen } = this.state;
-        const { betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user, history } = this.props;
+        const { betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user, history, oddFormat } = this.props;
         let totalStake = 0;
         let totalWin = 0;
         betSlip.forEach(b => {
@@ -204,9 +236,13 @@ export default class BetSlip extends PureComponent {
                                 {
                                     betSlip.length > 0 ? (
                                         <React.Fragment>
-                                            {
-                                                betSlip.map(bet => <Bet bet={bet} removeBet={removeBet} updateBet={updateBet} key={`${bet.lineId}${bet.pick}${bet.type}`} />)
-                                            }
+                                            {betSlip.map(bet => <Bet
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                oddFormat={oddFormat}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}`}
+                                            />)}
                                         </React.Fragment>
                                     ) :
                                         (

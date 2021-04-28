@@ -48,6 +48,8 @@ import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
 import VerificationProof from "../components/verificationProof";
 import { FormattedMessage, injectIntl } from "react-intl";
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -159,7 +161,7 @@ class App extends PureComponent {
             openBetSlipMenu,
             scrolledTop,
         } = this.state;
-        const { user, getUser, history, updateUser, location } = this.props;
+        const { user, getUser, history, updateUser, location, lang, oddFormat, setOddFormat, setLanguage } = this.props;
         const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
         const { pathname } = location;
         const sidebarShowAccountLinks = [
@@ -189,7 +191,17 @@ class App extends PureComponent {
         return (
             <div className={`background dark-theme ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon-2.ico'} />
-                <Header toggleField={this.toggleField} user={user} getUser={getUser} history={history} location={location} />
+                <Header
+                    toggleField={this.toggleField}
+                    user={user}
+                    getUser={getUser}
+                    history={history}
+                    location={location}
+                    setOddFormat={setOddFormat}
+                    oddFormat={oddFormat}
+                    setLanguage={setLanguage}
+                    lang={lang}
+                />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 <section className="main-section">
                     <div className="container">
@@ -245,13 +257,15 @@ class App extends PureComponent {
                                                         <React.Fragment>
                                                             <h1>{name}</h1>
                                                             <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet} sportName={name} />
+                                                                removeBet={this.removeBet} sportName={name}
+                                                                oddFormat={oddFormat}
+                                                            />
                                                         </React.Fragment>
                                                     );
                                                 }} />
                                                 <Route path="/lines/:sportName/:leagueId/:eventId"
                                                     render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} />}
+                                                        removeBet={this.removeBet} {...props} oddFormat={oddFormat} />}
                                                 />
                                                 <Route path="/betforward/:betId" component={BetForward} />
                                                 <Route path="/announcements" component={Announcements} />
@@ -270,14 +284,29 @@ class App extends PureComponent {
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
-                                                <Route path="/" render={(props) => <Dashboard addBet={this.addBet} betSlip={betSlip}
-                                                    removeBet={this.removeBet} />} />
+                                                <Route path="/" render={(props) =>
+                                                    <Dashboard
+                                                        addBet={this.addBet}
+                                                        betSlip={betSlip}
+                                                        removeBet={this.removeBet}
+                                                        oddFormat={oddFormat}
+                                                    />}
+                                                />
                                             </Switch>
                                         </div>
                                         <div className="col-sm-3 side-bar">
-                                            {!sidebarShowAccountLinks && <BetSlip betSlip={betSlip} openBetSlipMenu={openBetSlipMenu} toggleField={this.toggleField}
-                                                removeBet={this.removeBet} updateBet={this.updateBet} user={user} updateUser={updateUser}
-                                                history={history} />}
+                                            {!sidebarShowAccountLinks &&
+                                                <BetSlip
+                                                    betSlip={betSlip}
+                                                    oddFormat={oddFormat}
+                                                    openBetSlipMenu={openBetSlipMenu}
+                                                    toggleField={this.toggleField}
+                                                    removeBet={this.removeBet}
+                                                    updateBet={this.updateBet}
+                                                    user={user}
+                                                    updateUser={updateUser}
+                                                    history={history}
+                                                />}
                                             {!verified && pathname == '/withdraw' && <VerificationNotify />}
                                             {!verified && pathname == '/verification' && <VerificationProof />}
                                         </div>
@@ -293,7 +322,13 @@ class App extends PureComponent {
     }
 }
 
-export default withRouter(App);
+const mapStateToProps = (state) => ({
+    lang: state.frontend.lang,
+    oddFormat: state.frontend.oddFormat,
+});
+
+export default connect(mapStateToProps, frontend.actions)(withRouter(App))
+
 
 App.propTypes = {
     // match: PropTypes.object.isRequired,
