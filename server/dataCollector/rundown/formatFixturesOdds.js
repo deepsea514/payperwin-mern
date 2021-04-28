@@ -90,6 +90,7 @@ function formatFixturesOdds(events, sportData, oldEvents) {
         else
             line.totals = null;
 
+        console.log(line.totals, line.spreads, line.moneyline);
         if (line.totals && line.spreads && line.moneyline) {
             let formattedEvent = {
                 lines: [line],
