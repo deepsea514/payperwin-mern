@@ -121,7 +121,7 @@ export default class Header extends PureComponent {
                                                 </li>
                                                 <li>
                                                     <div href="#" className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
-                                                        <i className="fas fa-user" /><span className="not-mobile">{user.username}</span>
+                                                        <i className="fas fa-user" /><span className="not-mobile">{user.email}</span>
                                                         <i className="fa fa-caret-down not-mobile" />
                                                     </div>
                                                 </li>
@@ -132,7 +132,7 @@ export default class Header extends PureComponent {
                                                     <div className="login-dropdown">
                                                         <ul>
                                                             <li className="mobile username">
-                                                                {user.username}
+                                                                {user.email}
                                                             </li>
                                                             <li className="mobile" onClick={() => toggleField('accountMenuMobileOpen')}>
                                                                 My Account

@@ -285,6 +285,9 @@ a.log-in-btn {
 
 .login-nav .username {
     cursor: pointer;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    text-transform: none !important;
 }
 
 .deposit {
@@ -349,7 +352,7 @@ a.log-in-btn {
 
 .login-dropdown li.username {
     border-bottom: solid 1px #d3d3d3;
-    text-transform: uppercase;
+    text-transform: none !important;
     font-size: 14px;
     font-weight: 700;
 }
