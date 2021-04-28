@@ -34,7 +34,7 @@ export function Aside() {
                             {/* begin::Header Logo */}
                             <div className="header-logo">
                                 <Link to="/">
-                                    <img alt="logo" style={{ width: "100%", height: "auto" }} src={layoutProps.headerLogo} />
+                                    <img alt="logo" style={{ width: "100%", maxHeight: "auto", objectFit: "cover" }} src={layoutProps.headerLogo} />
                                 </Link>
                             </div>
                             {/* end::Header Logo */}
