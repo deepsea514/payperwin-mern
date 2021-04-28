@@ -171,7 +171,7 @@ class DepositLog extends React.Component {
                                         <DatePicker
                                             className="form-control"
                                             placeholderText="Search"
-                                            selected={filter.datefrom}
+                                            selected={filter.datefrom ? new Date(filter.datefrom) : null}
                                             onChange={date => {
                                                 this.onFilterChange({ datefrom: date });
                                             }} />
@@ -183,7 +183,7 @@ class DepositLog extends React.Component {
                                         <DatePicker
                                             className="form-control"
                                             placeholderText="Search"
-                                            selected={filter.dateto}
+                                            selected={filter.dateto ? new Date(filter.dateto) : null}
                                             onChange={date => {
                                                 this.onFilterChange({ dateto: date });
                                             }} />

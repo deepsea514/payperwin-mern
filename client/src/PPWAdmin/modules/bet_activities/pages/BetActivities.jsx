@@ -196,7 +196,7 @@ class BetActivities extends React.Component {
                                     <DatePicker
                                         className="form-control"
                                         placeholderText="Search"
-                                        selected={new Date(filter.datefrom)}
+                                        selected={filter.datefrom ? new Date(filter.datefrom) : null}
                                         onChange={date => {
                                             this.onFilterChange({ datefrom: date });
                                         }} />
@@ -208,7 +208,7 @@ class BetActivities extends React.Component {
                                     <DatePicker
                                         className="form-control"
                                         placeholderText="Search"
-                                        selected={new Date(filter.dateto)}
+                                        selected={filter.dateto ? new Date(filter.dateto) : null}
                                         onChange={date => {
                                             this.onFilterChange({ dateto: date });
                                         }} />
