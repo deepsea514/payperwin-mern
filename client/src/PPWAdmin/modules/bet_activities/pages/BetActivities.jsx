@@ -66,6 +66,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">{bet.bet} {bet.userId ? bet.userId.currency : null}</td>
+                    <td scope="col">{Number(bet.pickOdds).toFixed(2)}</td>
                     <td scope="col">{bet.userId ? bet.userId.username : null}</td>
                     <td scope="col">{bet.lineQuery.sportName}</td>
                     <td scope="col">{`${bet.teamA.name} vs ${bet.teamB.name}`}</td>
@@ -127,6 +128,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">{Number(bet.WagerInfo.ToRisk).toFixed(2)} {bet.userId.currency}</td>
+                    <td scope="col">{Number(bet.WagerInfo.Odds).toFixed(2)}</td>
                     <td scope="col">{bet.userId.username}</td>
                     <td scope="col">{bet.WagerInfo.Sport}</td>
                     <td scope="col">{
@@ -313,6 +315,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">#</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Amount</th>
+                                            <th scope="col">Odds</th>
                                             <th scope="col">User</th>
                                             <th scope="col">Sport</th>
                                             <th scope="col">Event</th>
@@ -327,6 +330,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">#</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Amount</th>
+                                            <th scope="col">Odds</th>
                                             <th scope="col">User</th>
                                             <th scope="col">Sport</th>
                                             <th scope="col">Event</th>
