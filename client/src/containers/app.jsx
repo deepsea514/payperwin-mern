@@ -45,6 +45,7 @@ import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
 import VerificationProof from "../components/verificationProof";
+import ContactUs from "../pages/contactUs";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -280,6 +281,7 @@ class App extends PureComponent {
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
+                                                <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>
                                                     <Dashboard
                                                         addBet={this.addBet}
