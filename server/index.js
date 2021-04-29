@@ -165,7 +165,7 @@ function sendVerificationEmail(email, username, req) {
             html: simpleresponsive(
                 `Hi <b>${email}</b>.
                 <br><br>
-                Just a quick reminder that you registered to PayperWin with name ${username}
+                Just a quick reminder that you registered to PayperWin.
                 <br><br>
                 Verify your email address by following this link:`,
                 { href: emailValidationPath, name: 'Verify Email' }),
@@ -383,37 +383,6 @@ expressApp.get('/emailTaken', (req, res) => {
     );
 });
 
-// expressApp.post('/sendVerificationEmail', bruteforce.prevent, isAuthenticated, async (req, res) => {
-//     const {
-//         email: newEmail,
-//     } = req.body;
-//     User.findOne(
-//         { username: req.user.username },
-//         async (err, user) => {
-//             if (err) {
-//                 res.send(err);
-//             }
-
-//             if (user) {
-//                 const emailChanged = newEmail !== req.user.email;
-//                 if (emailChanged) {
-//                     user.email = newEmail;
-//                     const rolesCopy = { ...user.roles };
-//                     delete rolesCopy.emailVerified;
-//                     user.roles = { ...rolesCopy };
-//                     await user.save((err2) => {
-//                         if (err2) {
-//                             console.error(err2);
-//                         }
-//                     });
-//                 }
-//                 const { email } = user;
-//                 sendVerificationEmail(email, req);
-//             }
-//         },
-//     );
-// });
-
 expressApp.get('/validateEmail', bruteforce.prevent, async (req, res) => {
     const { h, email } = req.query;
     User.findOne(
@@ -482,39 +451,6 @@ expressApp.post('/passwordChange', bruteforce.prevent, isAuthenticated, async (r
         },
     );
 });
-
-// expressApp.get('/recoverUsername', bruteforce.prevent, async (req, res) => {
-//     const { hostname, protocol, headers, subdomains } = req;
-//     const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-//     const { email } = req.query;
-//     User.findOne(
-//         { email: new RegExp(`^${email}$`, 'i') },
-//         (err, user) => {
-//             if (err) {
-//                 res.send(err);
-//             }
-//             if (user) {
-//                 // if (process.env.NODE_ENV === 'development') {
-//                 //   console.log(`Your username is ${user.username}`);
-//                 // } else {
-//                 const msg = {
-//                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
-//                     to: email, // An array if you have multiple recipients.
-//                     subject: 'Username Recovery',
-//                     text: `You requested username recovery. Your username: ${user.username}`,
-//                     html: simpleresponsive(`
-//                         You requested username recovery. Your username: <b>${user.username}</b>
-//                     `),
-//                 };
-//                 sgMail.send(msg);
-//                 // }
-//                 res.json("Please check your email for your Payper Win username");
-//             } else {
-//                 res.status(403).json({ error: 'User with that email not found.' });
-//             }
-//         },
-//     );
-// });
 
 // Helps keep the domain consistent when having multiple domains point to same app
 const serverHostToClientHost = config.serverHostToClientHost;
@@ -597,33 +533,6 @@ expressApp.post('/newPasswordFromToken', bruteforce.prevent, async (req, res) =>
                     });
                 } else {
                     res.status(403).json({ error: 'This password recovery link has expired.' });
-                }
-            }
-        },
-    );
-});
-
-expressApp.post('/usernameChange', bruteforce.prevent, async (req, res) => {
-    const { username } = req.body;
-    User.findOne(
-        { username: req.user.username },
-        (err, user) => {
-            if (err) {
-                console.log('usernameChange => ', err);
-                res.send(err);
-            }
-
-            if (user) {
-                if (false) { // TODO: decide wether to allow username change
-                    user.username = username;
-                    user.save((err2) => {
-                        if (err2) {
-                            console.error('err2', err2);
-                        }
-                        res.send('Successfully changed username!');
-                    });
-                } else {
-                    res.status(403).json({ error: 'You are not authorized to change username.' });
                 }
             }
         },

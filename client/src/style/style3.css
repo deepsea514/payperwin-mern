@@ -49,6 +49,14 @@ header {
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
 
+.emailspan {
+    text-overflow: ellipsis;
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+}
+
 .table-list li:nth-child(1) {
     width: 180px;
 }
@@ -285,8 +293,6 @@ a.log-in-btn {
 
 .login-nav .username {
     cursor: pointer;
-    text-overflow: ellipsis;
-    max-width: 180px;
     text-transform: none !important;
 }
 
@@ -355,6 +361,10 @@ a.log-in-btn {
     text-transform: none !important;
     font-size: 14px;
     font-weight: 700;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .login-dropdown li {
@@ -926,7 +936,6 @@ a.log-in-btn {
 .filter-dropdown a:hover {
     color: black;
 }
-
 
 .odds-dropdown {
     color: #333;

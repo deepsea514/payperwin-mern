@@ -6,9 +6,7 @@ import update from 'immutability-helper';
 import Favicon from 'react-favicon';
 import Registration from '../pages/registration';
 import Login from '../pages/login';
-import UsernameRecovery from '../pages/usernameRecovery';
 import PasswordRecovery from '../pages/passwordRecovery';
-import UsernameChange from '../pages/usernameChange';
 import Sports from '../pages/sports';
 import Sport from '../components/sport';
 import Lines from '../pages/lines';
@@ -228,8 +226,6 @@ class App extends PureComponent {
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
                                                 {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}
-                                                <Route path="/usernameChange" render={(props) =>
-                                                    <UsernameChange getUser={getUser} {...props} />} />
                                                 <Route path="/passwordRecovery" component={PasswordRecovery} />
                                                 <Route path="/login" component={Login} />
                                                 <Route path="/deposit" render={(props) =>

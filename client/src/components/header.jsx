@@ -121,8 +121,7 @@ export default class Header extends PureComponent {
                                                 </li>
                                                 <li>
                                                     <div href="#" className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
-                                                        <i className="fas fa-user" /><span className="not-mobile">{user.email}</span>
-                                                        <i className="fa fa-caret-down not-mobile" />
+                                                        <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan">{user.email}</span>&nbsp;<i className="fa fa-caret-down not-mobile" />
                                                     </div>
                                                 </li>
                                             </ul>
