@@ -1,15 +1,9 @@
+//.env
 require('dotenv').config();
+// models
 const User = require('./models/user');
 const LoginLog = require("./models/loginlog");
-const express = require('express');
-const apicache = require('apicache');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const compression = require('compression');
-const seededRandomString = require('./libs/seededRandomString');
-const getLineFromSportData = require('./libs/getLineFromSportData');
 const Sport = require('./models/sport');
-// const Admin = require('./models/admin');
 const Bet = require('./models/bet');
 const BetPool = require('./models/betpool');
 const SportsDir = require('./models/sportsDir');
@@ -17,36 +11,48 @@ const Pinnacle = require('./models/pinnacle');
 const ExpressBrute = require('express-brute');
 const AutoBet = require("./models/autobet");
 const AutoBetLog = require("./models/autobetlog");
+const Promotion = require('./models/promotion');
+const PromotionLog = require('./models/promotionlog');
+const FinancialLog = require('./models/financiallog');
+const PremierResponse = require('./models/premier-response');
+const BetSportsBook = require('./models/betsportsbook');
+const Verification = require('./models/verification');
+const Ticket = require("./models/ticket");
+//local helpers
+const seededRandomString = require('./libs/seededRandomString');
+const getLineFromSportData = require('./libs/getLineFromSportData');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require('../config.json');
-const adminRouter = require('./adminRoutes');
+const io = require("./libs/socket");
+const { generateToken } = require('./generateToken');
+const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./generateSignature');
+const InsufficientFunds = 8;
+const BetFee = 0.03;
+const PremiumPay = config.PremiumPay;
+const FinancialStatus = config.FinancialStatus;
+const fromEmailName = 'PAYPER Win';
+const fromEmailAddress = 'donotreply@payperwin.co';
+const adminEmailAddress = 'admin@payperwin.co';
+//external libraries
+const express = require('express');
+const apicache = require('apicache');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const compression = require('compression');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const sgMail = require('@sendgrid/mail');
-const { ObjectId } = require('mongodb');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.co';
+const { ObjectId } = require('mongodb');
 const axios = require('axios');
-const { generateToken } = require('./generateToken');
-const v1Router = require('./v1Routes');
-const Promotion = require('./models/promotion');
-const PromotionLog = require('./models/promotionlog');
-const FinancialLog = require('./models/financiallog');
-const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./generateSignature');
-const PremierResponse = require('./models/premier-response');
-const premierRouter = require('./premierRoutes');
-const InsufficientFunds = 8;
-const BetFee = 0.03;
-const PremiumPay = config.PremiumPay;
-const FinancialStatus = config.FinancialStatus;
-const io = require("./libs/socket");
-const BetSportsBook = require('./models/betsportsbook');
-const Verification = require('./models/verification');
 const fileUpload = require('express-fileupload');
+//express routers
+const v1Router = require('./v1Routes');
+const premierRouter = require('./premierRoutes');
+const adminRouter = require('./adminRoutes');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -1738,30 +1744,85 @@ expressApp.get(
     }
 )
 
+expressApp.post(
+    '/submitticket',
+    bruteforce.prevent,
+    fileUpload(),
+    async (req, res) => {
+        try {
+            const { files, body } = req;
+            const { email, phone, subject, department, description } = body;
+            if (!email || !phone || !subject || !department || !description) {
+                res.status(400).json({ success: 0, message: "Please fill all the fields." });
+            }
+            let file = null;
+            if (files) {
+                const keys = Object.keys(files);
+                const name = keys[0];
+                file = {
+                    contentType: files[name].mimetype,
+                    name: files[name].name,
+                    data: files[name].data,
+                }
+            }
+
+            const ticket = await Ticket.create({
+                email,
+                phone,
+                subject,
+                department,
+                description,
+                file
+            });
+
+            //TODO: send mail to admin
+            let attachments = [];
+            if (file) {
+                attachments.push({
+                    filename: file.name,
+                    type: file.contentType,
+                    content_id: 'attachment-image',
+                    content: file.data.toString("base64"),
+                    disposition: 'attachment'
+                });
+            }
+            const msg = {
+                to: adminEmailAddress,
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                subject: subject,
+                text: `Support Ticket from ${email}`,
+                attachments,
+                html: simpleresponsive(
+                    `<h4>Hi <b>PayperWin Admin</b>.</h4>
+                    <h5>${subject}</h5>
+                    <h5>I got a problem in <b>${department}</b>.</h5>
+                    <br>
+                    ${description}
+                    <br>` + (
+                        file ? `
+                    <p>Please see attached image.</p>
+                    
+                    ` : '' + 
+                    `<p>Email : ${email}</p>
+                    <p>Phone: ${phone}
+                    `
+                    ),
+                ),
+            };
+            await sgMail.send(msg);
+
+            res.json({ message: "success" });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({ success: 0, message: "can't save image" });
+        }
+    }
+)
+
 // Admin
 expressApp.use('/admin', adminRouter);
 expressApp.use('/v1', v1Router)
 expressApp.use('/premier', premierRouter);
-
-if (process.env.NODE_ENV === 'development') {
-    expressApp.get(
-        '/testemail',
-        async (req, res) => {
-            const { email } = req.query;
-            // if (email) {
-            const msg = {
-                to: email || 'toonamiafter@gmail.com', // default test email address
-                from: '"PAYPER Win" <donotreply@payperwin.co>',
-                subject: 'Test Email',
-                text: 'This is a test email for PAYPER Win http://dev.payperwin.ca',
-                html: simpleresponsive('This is a test email for', { href: 'http://dev.payperwin.ca', name: 'PAYPER Win' }),
-            };
-            await sgMail.send(msg);
-            res.end();
-            // }
-        },
-    );
-}
 
 // if (sslPort) {
 //   // Https

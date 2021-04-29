@@ -59,16 +59,29 @@ class ContactUs extends PureComponent {
     }
 
     onSubmit = (values, formik) => {
-        console.log(values);
-        // axios.post(`${serverUrl}/deposit`, values, { withCredentials: true })
-        //     .then(() => {
-        //         this.setState({ depositSuccess: true });
-        //         formik.setSubmitting(false);
-        //     })
-        //     .catch(() => {
-        //         this.setState({ depositError: true });
-        //         formik.setSubmitting(false);
-        //     })
+        let postData = new FormData();
+        if (values.file) {
+            postData.append("file", values.file, values.file.name);
+        }
+        delete values.file;
+
+        const keys = Object.keys(values);
+        keys.forEach(key => postData.append(key, values[key]));
+
+        const config = {
+            headers: { 'content-type': 'multipart/form-data' },
+            withCredentials: true,
+        }
+
+        axios.post(`${serverUrl}/submitticket`, postData, config)
+            .then(() => {
+                this.setState({ submitSuccess: true });
+                formik.setSubmitting(false);
+            })
+            .catch(() => {
+                this.setState({ submitError: true });
+                formik.setSubmitting(false);
+            })
     }
 
     getInputClasses = (formik, fieldname) => {
@@ -90,7 +103,7 @@ class ContactUs extends PureComponent {
             subject: '',
             department: '',
             description: '',
-            // file: null,
+            file: null,
         };
         const config = {
             readonly: false,
@@ -102,7 +115,7 @@ class ContactUs extends PureComponent {
                 <p>
                     The Customer Services email address is the primary contact for all Account, Betting and Payment related questions or issues.
                     Our customer service representatives are available to assist you by email 24 hours a day, 7 days a week.
-                    If you are already a member, remember to use the email address registered to your PayperWin account, and to include your Client ID.
+                    If you are already a member, remember to use the email address registered to your PayperWin account, and to include your Phone Number.
                     You can also contact us by sending an email to: <a href="mailto:customerservice@payperwin.co">customerservice@payperwin.co</a>
                 </p>
                 <hr />
@@ -155,9 +168,9 @@ class ContactUs extends PureComponent {
                                                     value={formik.values.phone}
                                                     {...formik.getFieldProps("phone")}
                                                     {...{
-                                                        onChange: (phone) => {
+                                                        onChange: (value, data, event, formattedValue) => {
                                                             formik.setFieldTouched('phone', true);
-                                                            formik.setFieldValue('phone', phone);
+                                                            formik.setFieldValue('phone', formattedValue);
                                                         },
                                                         onBlur: () => {
                                                             formik.setFieldTouched('phone', true);
@@ -250,8 +263,7 @@ class ContactUs extends PureComponent {
                                                     name="file"
                                                     ref={fileRef}
                                                     hidden
-                                                    tabIndex={1} // tabIndex of textarea
-                                                    // {...formik.getFieldProps("file")}
+                                                    accept="image/x-png,image/gif,image/jpeg"
                                                     {...{
                                                         onChange: (event) => {
                                                             formik.setFieldError("file", false);
@@ -292,8 +304,8 @@ class ContactUs extends PureComponent {
                             </Formik>
                         </div>}
                         {submitSuccess && <div>
-                            <center><h3>Deposit Pending</h3></center>
-                            <p>Your transaction has been sent for processing. please check your email for further information</p>
+                            <center><h3>Thanks for contacting us!</h3></center>
+                            <p>Your request has been sent for processing. please check your email for further information.</p>
                         </div>}
                     </div>
                 </div>
