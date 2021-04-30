@@ -1,7 +1,6 @@
+// Define Router
 const adminRouter = require('express').Router();
-const ExpressBrute = require('express-brute');
-const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
-const bruteforce = new ExpressBrute(store);
+// Models
 const Admin = require('./models/admin');
 const User = require("./models/user");
 const DepositReason = require("./models/depositreason");
@@ -15,15 +14,21 @@ const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
 const BetSportsBook = require("./models/betsportsbook");
 const Verification = require("./models/verification");
+//external Libraries
+const ExpressBrute = require('express-brute');
+const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
+const bruteforce = new ExpressBrute(store);
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
+const dateformat = require("dateformat");
+const { ObjectId } = require('mongodb');
+const sgMail = require('@sendgrid/mail');
+//local helpers
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
-const dateformat = require("dateformat");
-const { ObjectId } = require('mongodb');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const sgMail = require('@sendgrid/mail');
+const Ticket = require('./models/ticket');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
@@ -1689,5 +1694,121 @@ adminRouter.post(
         }
     }
 )
+
+adminRouter.get(
+    '/tickets',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage, status } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        if (!status) status = 'all';
+
+        try {
+            let findObj = {};
+            switch (status) {
+                case 'new':
+                    findObj = { repliedAt: null };
+                    break;
+                case 'replied':
+                    findObj = { repliedAt: { "$ne": null } };
+                    break;
+                case 'all':
+                default:
+                    break;
+            }
+            const total = await Ticket.find(findObj).count();
+            const tickets = await Ticket.find(findObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .select(['email', 'subject', 'department', 'createdAt', 'repliedAt']);
+
+            res.status(200).json({ total, perPage, page: page + 1, data: tickets });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find verifications.' });
+        }
+    }
+);
+
+adminRouter.get(
+    '/ticket/:id',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const ticket = await Ticket.findById(id);
+            if (!ticket) {
+                return res.status(404).json({ error: 'ticket not found' });
+            }
+
+            res.status(200).json(ticket);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find ticket.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/replyticket/:id',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const ticket = await Ticket.findById(id);
+            if (!ticket) {
+                return res.status(404).json({ error: 'Ticket not found.' });
+            }
+
+            if (ticket.repliedAt) {
+                return res.status(400).json({ error: 'Already Replied.' });
+            }
+
+            const { title, subject, content } = req.body;
+            if (!title || !subject || !content) {
+                return res.status(400).json({ error: 'Please fill all the fields.' });
+            }
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: ticket.email,
+                subject: subject,
+                text: title,
+                html: simpleresponsive(
+                    `<h4>Hi <b>${ticket.email}</b>, we carefully check your requirements.</h4>
+                    <br><br>
+                    ${content}
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
+            ticket.repliedAt = new Date();
+            await ticket.save();
+            res.send({ message: 'success' });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find ticket.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/ticket/:id',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            await Ticket.deleteMany({ _id: id });
+            res.json({ message: 'success' });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({ error: 'Can\'t delete ticket.' });
+        }
+    }
+);
 
 module.exports = adminRouter;

@@ -11,6 +11,8 @@ import * as autobets from "../modules/autobet/redux/reducers";
 import * as email_templates from "../modules/email-templates/redux/reducers";
 import * as promotions from "../modules/promotions/redux/reducers";
 import * as kyc from "../modules/kyc/redux/reducers";
+import * as tickets from "../modules/tickets/redux/reducers";
+
 import * as frontend from "../../redux/reducer";
 
 export const rootReducer = combineReducers({
@@ -24,6 +26,8 @@ export const rootReducer = combineReducers({
     email_templates: email_templates.reducer,
     promotions: promotions.reducer,
     kyc: kyc.reducer,
+    tickets: tickets.reducer,
+
     frontend: frontend.reducer,
 });
 
@@ -39,6 +43,8 @@ export function* rootSaga() {
         email_templates.saga(),
         promotions.saga(),
         kyc.saga(),
-        frontend.saga()
+        tickets.saga(),
+
+        frontend.saga(),
     ]);
 }

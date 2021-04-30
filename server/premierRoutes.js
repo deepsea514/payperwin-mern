@@ -1,14 +1,18 @@
+//define router
 const premierRouter = require('express').Router();
+//external libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store);
-const User = require("./models/user");
 const { ObjectId } = require('bson');
-const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const sgMail = require('@sendgrid/mail');
+//Models
+const User = require("./models/user");
 const PremierNotification = require('./models/premier-notification');
-const { generatePremierNotificationSignature } = require('./generateSignature');
 const FinancialLog = require('./models/financiallog');
+//local helpers
+const { generatePremierNotificationSignature } = require('./generateSignature');
+const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 

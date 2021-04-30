@@ -1,9 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import dateformat from "dateformat";
-import * as bet_activities from "../redux/reducers";
 import { getBetDetail } from "../redux/services";
 import sportNameIcon from '../../../../helpers/sportNameIcon';
 
@@ -182,7 +180,4 @@ class BetDetail extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-})
-
-export default connect(mapStateToProps, bet_activities)(BetDetail)
+export default BetDetail

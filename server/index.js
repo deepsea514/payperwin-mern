@@ -1800,13 +1800,12 @@ expressApp.post(
                     ${description}
                     <br>` + (
                         file ? `
-                    <p>Please see attached image.</p>
-                    
-                    ` : '' + 
+                        <p>Please see attached image.</p>
+                        ` : ''
+                    ) +
                     `<p>Email : ${email}</p>
                     <p>Phone: ${phone}
-                    `
-                    ),
+                    `,
                 ),
             };
             await sgMail.send(msg);

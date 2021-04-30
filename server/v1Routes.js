@@ -1,22 +1,24 @@
+// define router
 const v1Router = require('express').Router();
-const ExpressBrute = require('express-brute');
-const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
-const bruteforce = new ExpressBrute(store);
+// external libraries
+const { ObjectId } = require('bson');
+const sgMail = require('@sendgrid/mail');
+
+//Models
 const User = require("./models/user");
 const Pinnacle = require('./models/pinnacle');
 const BetSportsBook = require("./models/betsportsbook");
 const TransactionSportsBook = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
-const config = require("../config.json");
+//local helpers
 const { generateToken } = require('./generateToken');
-const { ObjectId } = require('bson');
-const InsufficientFunds = 8;
+const io = require('./libs/socket');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const sgMail = require('@sendgrid/mail');
+const config = require("../config.json");
+const InsufficientFunds = 8;
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
-const io = require('./libs/socket');
 const FinancialStatus = config.FinancialStatus;
 
 const ErrorCode = {

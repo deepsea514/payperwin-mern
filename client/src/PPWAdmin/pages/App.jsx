@@ -16,6 +16,7 @@ import AutoBet from "../modules/autobet/pages/AutoBet";
 import EmailTemplatesModule from "../modules/email-templates/pages";
 import PromotionModule from "../modules/promotions/pages";
 import KYC from "../modules/kyc/pages";
+import TicketsModule from "../modules/tickets/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -81,6 +82,9 @@ export default class App extends Component {
 
                     {/* KYC(Know Your Customers) */}
                     <Route path="/kyc" component={KYC} />
+
+                    {/* Support Ticket Module */}
+                    <Route path="/tickets" component={TicketsModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
