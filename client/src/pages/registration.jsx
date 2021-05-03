@@ -18,6 +18,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import dateformat from "dateformat";
 import clsx from 'clsx';
 import { RegionDropdown } from 'react-country-region-selector';
+import _ from 'lodash';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -312,6 +313,22 @@ class Registration extends Component {
             rcptchVerified,
             errors,
         } = this.state;
+        const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
+        const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+
         switch (activeStep) {
             case 0:
                 return <>
@@ -417,18 +434,62 @@ class Registration extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Birthday</Form.Label>
-                        <TextField
-                            type="date"
-                            value={dateofbirth}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            error={errors.dateofbirth !== undefined}
+                        <DatePicker
                             name="dateofbirth"
                             className="form-control"
-                            onChange={this.handleChange}
-                            onBlur={this.handleDirty}
+                            renderCustomHeader={({
+                                date,
+                                changeYear,
+                                changeMonth,
+                                decreaseMonth,
+                                increaseMonth,
+                                prevMonthButtonDisabled,
+                                nextMonthButtonDisabled
+                            }) => (
+                                <div
+                                    style={{
+                                        margin: 10,
+                                        display: "flex",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                                        {"<"}
+                                    </button>
+                                    <select
+                                        value={(new Date(date)).getFullYear()}
+                                        onChange={({ target: { value } }) => changeYear(value)}
+                                    >
+                                        {years.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <select
+                                        value={months[(new Date(date)).getMonth()]}
+                                        onChange={({ target: { value } }) =>
+                                            changeMonth(months.indexOf(value))
+                                        }
+                                    >
+                                        {months.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                                        {">"}
+                                    </button>
+                                </div>
+                            )}
+                            wrapperClassName="input-group"
+                            selected={dateofbirth}
+                            onChange={(val) => this.handleChangeSpec('dateofbirth', val)}
                             placeholder="Enter Birthday"
+                            isInvalid={errors.dateofbirth !== undefined}
                             required
                         />
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
