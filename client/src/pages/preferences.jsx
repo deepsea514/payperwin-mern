@@ -1,194 +1,183 @@
 
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { Form } from "react-bootstrap";
+import axios from 'axios';
+import { setPreferences } from "../redux/services";
+
+const config = require('../../../config.json');
+const serverUrl = config.appUrl;
 
 class Preferences extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            submitSuccess: false,
+            submitError: false,
+        }
+    }
+
+    getInputClasses = (formik, fieldname) => {
+        if (formik.touched[fieldname] && formik.errors[fieldname]) {
+            return "is-invalid";
+        }
+        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
+            return "is-valid";
+        }
+        return "";
+    };
+
+    onSubmit = (values, formik) => {
+        const { setPreference } = this.props;
+        setPreferences()
+            .then(() => {
+                this.setState({ submitSuccess: true });
+                setPreference(values);
+                formik.setSubmitting(false);
+            })
+            .catch(() => {
+                this.setState({ submitError: true });
+                formik.setSubmitting(false);
+            })
+    }
+
     render() {
+        const { oddsFormat, lang, dateFormat, timezone } = this.props;
+        const initialValues = { oddsFormat, lang, dateFormat, timezone };
+
+        const preferenceSchema = Yup.object().shape({
+            oddsFormat: Yup.string()
+                .required("You shuld select Odds Format."),
+            timezone: Yup.string()
+                .required("You shuld select Timezone."),
+            dateFormat: Yup.string()
+                .required("You shuld select Date Format."),
+            lang: Yup.string()
+                .required("You shuld select Language."),
+        });
         setTitle({ pageTitle: 'Preferences' });
         return (
             <React.Fragment>
                 <div className="col-in prfnce">
                     <h1 className="main-heading-in">Preferences</h1>
                     <div className="main-cnt">
-                        <form>
-                            <h3> DISPLAY PREFERENCES</h3>
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={preferenceSchema}
+                            onSubmit={this.onSubmit}>
+                            {
+                                (formik) => (
+                                    <form onSubmit={formik.handleSubmit}>
+                                        <h3> DISPLAY PREFERENCES</h3>
 
-                            <div className="form-group">
-                                <label>Odds display format</label>
-                                <select className="form-control">
-                                    <option> American Odds</option>
-                                    {/* <option> Decimal Odds</option> */}
-                                </select>
-                                <i className="fa fa-info-circle fl-rit"
-                                    aria-hidden="true"></i>
-                            </div>
+                                        <Form.Group>
+                                            <Form.Label>Odds display format</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="oddsFormat"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "oddsFormat"
+                                                )}`}
+                                                {...formik.getFieldProps("oddsFormat")}
+                                            >
+                                                <option value="american"> American Odds</option>
+                                                <option value="decimal"> Decimal Odds</option>
+                                            </Form.Control>
+                                            {formik.touched.oddsFormat && formik.errors.oddsFormat ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.oddsFormat}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
 
-                            <div className="form-group">
-                                <label>Default date format</label>
-                                <select className="form-control">
-                                    <option> DD-MM-YYYY</option>
-                                    <option> DD-MM-YYYY</option>
-                                    <option> DD-MM-YYYY</option>
-                                </select>
-                            </div>
+                                        <Form.Group>
+                                            <Form.Label>Default Date format</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="dateFormat"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "dateFormat"
+                                                )}`}
+                                                {...formik.getFieldProps("dateFormat")}
+                                            >
+                                                <option value="DD-MM-YYYY"> DD-MM-YYYY</option>
+                                            </Form.Control>
+                                            {formik.touched.dateFormat && formik.errors.dateFormat ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.dateFormat}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
 
-                            <div className="form-group">
-                                <label>Default time zone</label>
-                                <select className="form-control">
-                                    {/* <option value="-12:00">(GMT -12:00) Eniwetok, Kwajalein</option> */}
-                                    {/* <option value="-11:00">(GMT -11:00) Midway Island, Samoa</option> */}
-                                    <option value="-10:00">(GMT -10:00) Hawaii</option>
-                                    <option value="-09:50">(GMT -9:30) Taiohae</option>
-                                    <option value="-09:00">(GMT -9:00) Alaska</option>
-                                    <option value="-08:00">(GMT -8:00) Pacific Time (US &amp; Canada)</option>
-                                    <option value="-07:00">(GMT -7:00) Mountain Time (US &amp; Canada)</option>
-                                    <option value="-06:00">(GMT -6:00) Central Time (US &amp; Canada), Mexico City</option>
-                                    <option value="-05:00">(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima</option>
-                                    <option value="-04:50">(GMT -4:30) Caracas</option>
-                                    <option value="-04:00">(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz</option>
-                                    <option value="-03:50">(GMT -3:30) Newfoundland</option>
-                                    {/* <option value="-03:00">(GMT -3:00) Brazil, Buenos Aires, Georgetown</option>
-                                    <option value="-02:00">(GMT -2:00) Mid-Atlantic</option>
-                                    <option value="-01:00">(GMT -1:00) Azores, Cape Verde Islands</option>
-                                    <option value="+00:00">(GMT) Western Europe Time, London, Lisbon, Casablanca</option>
-                                    <option value="+01:00">(GMT +1:00) Brussels, Copenhagen, Madrid, Paris</option>
-                                    <option value="+02:00">(GMT +2:00) Kaliningrad, South Africa</option>
-                                    <option value="+03:00">(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg</option>
-                                    <option value="+03:50">(GMT +3:30) Tehran</option>
-                                    <option value="+04:00">(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi</option>
-                                    <option value="+04:50">(GMT +4:30) Kabul</option>
-                                    <option value="+05:00">(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent</option>
-                                    <option value="+05:50">(GMT +5:30) Bombay, Calcutta, Madras, New Delhi</option>
-                                    <option value="+05:75">(GMT +5:45) Kathmandu, Pokhara</option>
-                                    <option value="+06:00">(GMT +6:00) Almaty, Dhaka, Colombo</option>
-                                    <option value="+06:50">(GMT +6:30) Yangon, Mandalay</option>
-                                    <option value="+07:00">(GMT +7:00) Bangkok, Hanoi, Jakarta</option>
-                                    <option value="+08:00">(GMT +8:00) Beijing, Perth, Singapore, Hong Kong</option>
-                                    <option value="+08:75">(GMT +8:45) Eucla</option>
-                                    <option value="+09:00">(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk</option>
-                                    <option value="+09:50">(GMT +9:30) Adelaide, Darwin</option>
-                                    <option value="+10:00">(GMT +10:00) Eastern Australia, Guam, Vladivostok</option>
-                                    <option value="+10:50">(GMT +10:30) Lord Howe Island</option>
-                                    <option value="+11:00">(GMT +11:00) Magadan, Solomon Islands, New Caledonia</option>
-                                    <option value="+11:50">(GMT +11:30) Norfolk Island</option>
-                                    <option value="+12:00">(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka</option>
-                                    <option value="+12:75">(GMT +12:45) Chatham Islands</option>
-                                    <option value="+13:00">(GMT +13:00) Apia, Nukualofa</option>
-                                    <option value="+14:00">(GMT +14:00) Line Islands, Tokelau</option> */}
-                                </select>
-                            </div>
+                                        <Form.Group>
+                                            <Form.Label>Default time zone</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="timezone"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "timezone"
+                                                )}`}
+                                                {...formik.getFieldProps("timezone")}
+                                            >
+                                                <option value="-10:00">(GMT -10:00) Hawaii</option>
+                                                <option value="-09:50">(GMT -9:30) Taiohae</option>
+                                                <option value="-09:00">(GMT -9:00) Alaska</option>
+                                                <option value="-08:00">(GMT -8:00) Pacific Time (US &amp; Canada)</option>
+                                                <option value="-07:00">(GMT -7:00) Mountain Time (US &amp; Canada)</option>
+                                                <option value="-06:00">(GMT -6:00) Central Time (US &amp; Canada), Mexico City</option>
+                                                <option value="-05:00">(GMT -5:00) Eastern Time (US &amp; Canada), Bogota, Lima</option>
+                                                <option value="-04:50">(GMT -4:30) Caracas</option>
+                                                <option value="-04:00">(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz</option>
+                                                <option value="-03:50">(GMT -3:30) Newfoundland</option>
+                                            </Form.Control>
+                                            {formik.touched.timezone && formik.errors.timezone ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.timezone}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
 
-                            <div className="form-group mar30">
-                                <label>Language</label>
-                                <select className="form-control">
-                                    <option>English</option>
-                                </select>
-                            </div>
+                                        <Form.Group>
+                                            <Form.Label>Language</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="lang"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "lang"
+                                                )}`}
+                                                {...formik.getFieldProps("lang")}
+                                            >
+                                                <option value="en"> English</option>
+                                            </Form.Control>
+                                            {formik.touched.lang && formik.errors.lang ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.lang}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
 
-                            {/* <div className="form-group">
-                                <h3>BETTING PREFERENCES</h3>
-                                <p> <label className="container-checkbox">
-                                    <input type="checkbox" />
-                                    <span className="checkmark"></span>
-                                </label> Always accept better odds <i
-                                    className="fa fa-info-circle"
-                                    aria-hidden="true"></i>
-                                </p>
-
-                                <p>
-                                    <label className="container-checkbox">
-                                        <input type="checkbox" />
-                                        <span className="checkmark"></span>
-                                    </label> Use default stake amount <i
-                                        className="fa fa-info-circle"
-                                        aria-hidden="true"></i>
-                                </p>
-
-                                <p>
-                                    <label className="container-checkbox">
-                                        <input type="checkbox" />
-                                        <span className="checkmark"></span>
-                                    </label> Always bet maximum amount <i
-                                        className="fa fa-info-circle"
-                                        aria-hidden="true"></i>
-                                </p>
-
-                                <p>
-                                    <label className="container-checkbox">
-                                        <input type="checkbox" />
-                                        <span className="checkmark"></span>
-                                    </label> Enable BetNav predictions for
-                                                                                live soccer matchups? <i
-                                        className="fa fa-info-circle"
-                                        aria-hidden="true"></i>
-                                </p>
-                            </div>
-                            <br />
-                            <div className="form-group">
-                                <strong> Default for starting
-                                                                                pitchers</strong>
-                                <br />
-                                <br />
-                                <div className="bnt-dsbl">
-                                    <a className="lsted" href="#">Listed</a>
-                                    <a className="action"
-                                        href="#">Action</a>
-                                    <div className="clear-fix"></div>
-                                </div>
-                            </div> */}
-                            {/* <div className="prifrn redio-sec">
-                                <h4 className="h4">MARKETING PREFERENCES
-                                                                            </h4>
-                                <strong>Choose how you would prefer to be
-                                informed about our promotions and our
-                                                                                latest news. </strong>
-                                <div
-                                    className="rd-d d-flex justify-content-around">
-                                    <p>Email</p>
-                                    <p>
-                                        <input type="radio" id="test1"
-                                            name="radio-group" checked="" />
-                                        <label for="test1">Yes</label>
-                                    </p>
-                                    <p>
-                                        <input type="radio" id="test2"
-                                            name="radio-group" />
-                                        <label for="test2">no</label>
-                                    </p>
-                                </div>
-                                <div
-                                    className="rd-d d-flex justify-content-around">
-                                    <p>Phone</p>
-                                    <p>
-                                        <input type="radio" id="test3"
-                                            name="radio-group" checked="" />
-                                        <label for="test3">Yes</label>
-                                    </p>
-                                    <p>
-                                        <input type="radio" id="test4"
-                                            name="radio-group" />
-                                        <label for="test4">no</label>
-                                    </p>
-                                </div>
-                                <div
-                                    className="rd-d d-flex justify-content-around">
-                                    <p>Post</p>
-                                    <p>
-                                        <input type="radio" id="test3"
-                                            name="radio-group"
-                                            checked="true" />
-                                        <label for="test3">Yes</label>
-                                    </p>
-                                    <p>
-                                        <input type="radio" id="test4"
-                                            name="radio-group" />
-                                        <label for="test4">no</label>
-                                    </p>
-                                </div>
-                            </div> */}
-                            <button type="submit"
-                                className="clr-blue btn-smt">save </button>
-                        </form>
+                                        <button type="submit" className="clr-blue btn-smt">Save </button>
+                                    </form>
+                                )
+                            }
+                        </Formik>
                     </div>
                 </div>
             </React.Fragment>
@@ -196,4 +185,11 @@ class Preferences extends Component {
     }
 }
 
-export default Preferences;
+const mapStateToProps = (state) => ({
+    oddsFormat: state.frontend.oddsFormat,
+    lang: state.frontend.lang,
+    dateFormat: state.frontend.dateFormat,
+    timezone: state.frontend.timezone,
+});
+
+export default connect(mapStateToProps, frontend.actions)(Preferences)

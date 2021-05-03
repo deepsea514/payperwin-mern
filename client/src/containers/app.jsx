@@ -160,7 +160,7 @@ class App extends PureComponent {
             openBetSlipMenu,
             scrolledTop,
         } = this.state;
-        const { user, getUser, history, updateUser, location, lang, oddFormat, setOddFormat, setLanguage } = this.props;
+        const { user, getUser, history, updateUser, location, lang, oddsFormat, setOddsFormat, setLanguage } = this.props;
         const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
         const { pathname } = location;
         const sidebarShowAccountLinks = [
@@ -196,10 +196,6 @@ class App extends PureComponent {
                     getUser={getUser}
                     history={history}
                     location={location}
-                    setOddFormat={setOddFormat}
-                    oddFormat={oddFormat}
-                    setLanguage={setLanguage}
-                    lang={lang}
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 <section className="main-section">
@@ -255,18 +251,17 @@ class App extends PureComponent {
                                                             <h1>{name}</h1>
                                                             <Sport addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet} sportName={name}
-                                                                oddFormat={oddFormat}
                                                             />
                                                         </React.Fragment>
                                                     );
                                                 }} />
                                                 <Route path="/lines/:sportName/:leagueId/:eventId"
                                                     render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} oddFormat={oddFormat} />}
+                                                        removeBet={this.removeBet} {...props} />}
                                                 />
                                                 <Route path="/betforward/:betId" component={BetForward} />
                                                 <Route path="/announcements" component={Announcements} />
-                                                <Route path="/preferences" component={Preferences} />
+                                                <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
                                                 <Route path="/faq" component={Faq} />
                                                 <Route path="/inbox" component={Inbox} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
@@ -287,7 +282,6 @@ class App extends PureComponent {
                                                         addBet={this.addBet}
                                                         betSlip={betSlip}
                                                         removeBet={this.removeBet}
-                                                        oddFormat={oddFormat}
                                                     />}
                                                 />
                                             </Switch>
@@ -296,7 +290,6 @@ class App extends PureComponent {
                                             {!sidebarShowAccountLinks &&
                                                 <BetSlip
                                                     betSlip={betSlip}
-                                                    oddFormat={oddFormat}
                                                     openBetSlipMenu={openBetSlipMenu}
                                                     toggleField={this.toggleField}
                                                     removeBet={this.removeBet}
@@ -322,7 +315,7 @@ class App extends PureComponent {
 
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
-    oddFormat: state.frontend.oddFormat,
+    oddsFormat: state.frontend.oddsFormat,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

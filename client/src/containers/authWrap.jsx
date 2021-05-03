@@ -6,12 +6,15 @@ import App from '../containers/app';
 import UserContext from '../contexts/userContext';
 import axios from 'axios';
 import socket from "../helpers/socket";
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
 window.recaptchaSiteKey = config.recaptchaSiteKey;
 
-export default class AuthWrap extends Component {
+class AuthWrap extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -33,6 +36,7 @@ export default class AuthWrap extends Component {
     }
 
     getUser(callback) {
+        const { setPreference } = this.props;
         const url = `${serverUrl}/user?compress=false`;
         axios.get(url, {
             withCredentials: true,
@@ -42,6 +46,7 @@ export default class AuthWrap extends Component {
                 },
             },
         }).then(({ data: user }) => {
+            setPreference(user.preference);
             this.setState({ user }, () => {
                 if (callback) {
                     callback();
@@ -85,3 +90,10 @@ export default class AuthWrap extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    lang: state.frontend.lang,
+    oddsFormat: state.frontend.oddsFormat,
+});
+
+export default connect(mapStateToProps, frontend.actions)(AuthWrap)

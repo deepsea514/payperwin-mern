@@ -2,8 +2,11 @@ import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { setTitle } from '../libs/documentTitleBuilder'
-import getLinesFromSportData from '../libs/getLinesFromSportData'
+import { setTitle } from '../libs/documentTitleBuilder';
+import getLinesFromSportData from '../libs/getLinesFromSportData';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -95,8 +98,8 @@ class Lines extends PureComponent {
     }
 
     convertOdds = (odd) => {
-        const { oddFormat } = this.props;
-        switch (oddFormat) {
+        const { oddsFormat } = this.props;
+        switch (oddsFormat) {
             case 'decimal':
                 if (odd > 0) {
                     return Number(1 + odd / 100).toFixed(2);
@@ -111,7 +114,7 @@ class Lines extends PureComponent {
     }
 
     render() {
-        const { match, addBet, betSlip, removeBet, oddFormat } = this.props;
+        const { match, addBet, betSlip, removeBet, oddsFormat } = this.props;
         const { sportName, leagueId, eventId, lineId } = match.params;
         const { data, error } = this.state;
         if (error) {
@@ -193,10 +196,10 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamA}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {oddFormat == 'decimal' ? this.convertOdds(moneyline.home) : `${moneyline.home > 0 ? '+' : ''}${moneyline.home}`}
+                                                                                {oddsFormat == 'decimal' ? this.convertOdds(moneyline.home) : `${moneyline.home > 0 ? '+' : ''}${moneyline.home}`}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -225,10 +228,10 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamB}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {oddFormat == 'decimal' ? this.convertOdds(moneyline.away) : `${moneyline.away > 0 ? '+' : ''}${moneyline.away}`}
+                                                                                {oddsFormat == 'decimal' ? this.convertOdds(moneyline.away) : `${moneyline.away > 0 ? '+' : ''}${moneyline.away}`}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -297,10 +300,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${spread.hdp > 0 ? '+' : ''}${spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(spread.home) : `${spread.home > 0 ? '+' : ''}${spread.home}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(spread.home) : `${spread.home > 0 ? '+' : ''}${spread.home}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -331,10 +334,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(spread.away) : `${spread.away > 0 ? '+' : ''}${spread.away}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(spread.away) : `${spread.away > 0 ? '+' : ''}${spread.away}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -405,10 +408,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(total.over) : `${total.over > 0 ? '+' : ''}${total.over}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(total.over) : `${total.over > 0 ? '+' : ''}${total.over}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -441,10 +444,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(total.under) : `${total.under > 0 ? '+' : ''}${total.under}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(total.under) : `${total.under > 0 ? '+' : ''}${total.under}`}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -467,4 +470,9 @@ class Lines extends PureComponent {
     }
 }
 
-export default withRouter(Lines);
+const mapStateToProps = (state) => ({
+    lang: state.frontend.lang,
+    oddsFormat: state.frontend.oddsFormat,
+});
+
+export default connect(mapStateToProps, frontend.actions)(withRouter(Lines))

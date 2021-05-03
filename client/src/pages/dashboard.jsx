@@ -38,7 +38,7 @@ class Dashboard extends PureComponent {
 
     render() {
         const { showModal } = this.state;
-        const { addBet, betSlip, removeBet, oddFormat } = this.props;
+        const { addBet, betSlip, removeBet } = this.props;
 
         return (
             <React.Fragment>
@@ -70,7 +70,6 @@ class Dashboard extends PureComponent {
                     </Link>
                 </Carousel>
                 <Highlights addBet={addBet} betSlip={betSlip}
-                    oddFormat={oddFormat}
                     removeBet={removeBet} />
             </React.Fragment>
         );

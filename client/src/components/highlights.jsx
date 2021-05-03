@@ -21,7 +21,7 @@ export default class Highlights extends PureComponent {
 
     render() {
         const { sportIndex } = this.state;
-        const { addBet, betSlip, removeBet, oddFormat } = this.props;
+        const { addBet, betSlip, removeBet } = this.props;
         return (
             <div className="highlights">
                 <div className="bet-slip-header">SPORTS BETTING</div>
@@ -46,7 +46,6 @@ export default class Highlights extends PureComponent {
                     betSlip={betSlip}
                     removeBet={removeBet}
                     sportName={sports[sportIndex]}
-                    oddFormat={oddFormat}
                 />
             </div>
         );

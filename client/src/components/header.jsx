@@ -4,6 +4,9 @@ import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import dateformat from "dateformat";
 import { FormattedMessage, injectIntl } from "react-intl";
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -20,7 +23,8 @@ function logout(getUser, history) {
         history.replace({ pathname: '/' });
     });
 }
-export default class Header extends PureComponent {
+
+class Header extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,9 +71,9 @@ export default class Header extends PureComponent {
         this.setState({ userDropDownOpen: false, oddsDropDownOpen: false, langDropDownOpen: false });
     }
 
-    getOddFormatString = () => {
-        const { oddFormat } = this.props;
-        switch (oddFormat) {
+    getOddsFormatString = () => {
+        const { oddsFormat } = this.props;
+        switch (oddsFormat) {
             case 'decimal':
                 return "Decimal Odds";
             case 'american':
@@ -78,15 +82,15 @@ export default class Header extends PureComponent {
         }
     }
 
-    setOddFormat = (format) => {
-        const { setOddFormat } = this.props;
-        setOddFormat(format);
+    setOddsFormat = (format) => {
+        const { setOddsFormat } = this.props;
+        setOddsFormat(format);
         this.setState({ oddsDropDownOpen: false });
     }
 
     render() {
         const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location, lang, setOddFormat, setLanguage } = this.props;
+        const { toggleField, user, location } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -248,17 +252,17 @@ export default class Header extends PureComponent {
                                     {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
                                         <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
-                                            <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
+                                            <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddsFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
                                         </a>
                                         {oddsDropDownOpen ? (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
                                                 <div className="odds-dropdown">
                                                     <ul>
-                                                        <li onClick={() => this.setOddFormat('american')}>
+                                                        <li onClick={() => this.setOddsFormat('american')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds
                                                             </li>
-                                                        <li onClick={() => this.setOddFormat('decimal')}>
+                                                        <li onClick={() => this.setOddsFormat('decimal')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Decimal Odds
                                                             </li>
                                                     </ul>
@@ -328,3 +332,9 @@ export default class Header extends PureComponent {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    oddsFormat: state.frontend.oddsFormat,
+});
+
+export default connect(mapStateToProps, frontend.actions)(Header)

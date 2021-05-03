@@ -18,6 +18,7 @@ const PremierResponse = require('./models/premier-response');
 const BetSportsBook = require('./models/betsportsbook');
 const Verification = require('./models/verification');
 const Ticket = require("./models/ticket");
+const Preference = require('./models/preference');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -1185,7 +1186,11 @@ expressApp.get(
         let userObj = false;
         if (req.isAuthenticated()) {
             const { username, _id: userId, settings, roles, email, balance, phone } = req.user;
-            userObj = { username, userId: userId.toString(), roles, email, balance, phone };
+            let preference = await Preference.findOne({ user: userId });
+            if (!preference) {
+                preference = await Preference.create({ user: userId });
+            }
+            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
@@ -1849,6 +1854,38 @@ expressApp.post(
         } catch (error) {
             console.log(error);
             res.status(400).json({ success: 0, message: "can't save image" });
+        }
+    }
+)
+
+expressApp.post(
+    '/preferences',
+    isAuthenticated,
+    async (req, res) => {
+        const { lang, oddsFormat, dateFormat, timezone } = req.body;
+        const { _id } = req.user;
+        try {
+            let preference = await Preference.findOne({ user: _id });
+            if (!preference) {
+                preference = await Preference.create({ user: _id });
+            }
+            if (lang) {
+                preference.lang = lang;
+            }
+            if (oddsFormat) {
+                preference.oddsFormat = oddsFormat;
+            }
+            if (dateFormat) {
+                preference.dateFormat = dateFormat;
+            }
+            if (timezone) {
+                preference.timezone = timezone;
+            }
+
+            await preference.save();
+            return res.json({ message: "success" });
+        } catch (error) {
+            res.status(400).json({ error: "Can't change preference." });
         }
     }
 )
