@@ -79,8 +79,8 @@ const mongooptions = {
 }
 if (config.mongo && config.mongo.username) {
     mongooptions.authSource = "admin";
-    mongooptions.user = config.mongo.username;
-    mongooptions.pass = config.mongo.password;
+    // mongooptions.user = config.mongo.username;
+    // mongooptions.pass = config.mongo.password;
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
 
@@ -1343,7 +1343,42 @@ expressApp.get('/getPinnacleLogin',
             loginInfo,
             userInfo,
         })
-    });
+    }
+);
+
+expressApp.get('/pinnacleLogout',
+    // bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const { sandboxUrl, agentCode, agentKey, secretKey } = config;
+            let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
+            const token = generateToken(agentCode, agentKey, secretKey);
+            if (!pinnacle) {
+                return res.status(400).json({
+                    error: "Can't find pinnacle account."
+                });
+            }
+            try {
+                await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {
+                    userCode: agentCode,
+                    token
+                });
+
+            } catch (error) {
+                console.log(error);
+                return res.status(400).json({
+                    error: "Pinnacle logout failed."
+                });
+            }
+
+            return res.json({ message: 'succes' });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ error: "Pinnacle logout failed." });
+        }
+    }
+);
 
 expressApp.get('/vipCodeExist', async (req, res) => {
     const { vipcode } = req.query;

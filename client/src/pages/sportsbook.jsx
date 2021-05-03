@@ -37,6 +37,15 @@ class SportsBook extends PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        const { user } = this.props;
+        if (user) {
+            axios.get(`${serverUrl}/pinnacleLogout`, { withCredentials: true })
+                .then(() => console.log("logout success"))
+                .catch((err) => console.log("logout failed", err))
+        }
+    }
+
     dontShowModal = () => {
         this.setState({ showModal: false });
         let preference = JSON.parse(localStorage.getItem('frontend-preference'));
