@@ -79,8 +79,8 @@ const mongooptions = {
 }
 if (config.mongo && config.mongo.username) {
     mongooptions.authSource = "admin";
-    // mongooptions.user = config.mongo.username;
-    // mongooptions.pass = config.mongo.password;
+    mongooptions.user = config.mongo.username;
+    mongooptions.pass = config.mongo.password;
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
 
