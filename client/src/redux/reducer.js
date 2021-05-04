@@ -9,6 +9,7 @@ export const actionTypes = {
     setOddsFormat: "[Set Odd Format Action]",
     setDateFormat: "[Set Date Format Action]",
     setTimezone: "[Set Timezone Action]",
+    setSearch: "[Set Search Action]",
 };
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: "-07:00",
+    search: '',
 };
 
 export const reducer = persistReducer(
@@ -39,6 +41,9 @@ export const reducer = persistReducer(
             case actionTypes.setTimezone:
                 return { ...state, timezone: action.timezone };
 
+            case actionTypes.setSearch:
+                return { ...state, search: action.search };
+
             default:
                 return state;
         }
@@ -51,6 +56,7 @@ export const actions = {
     setOddsFormat: (oddsFormat = 'american') => ({ type: actionTypes.setOddsFormat, oddsFormat }),
     setTimezone: (timezone = -7) => ({ type: actionTypes.setTimezone, timezone }),
     setDateFormat: (dateFormat = -7) => ({ type: actionTypes.setDateFormat, dateFormat }),
+    setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
 };
 
 export function* saga() {

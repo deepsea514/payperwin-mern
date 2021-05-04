@@ -90,7 +90,7 @@ class Header extends PureComponent {
 
     render() {
         const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location } = this.props;
+        const { toggleField, user, location, search, setSearch } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -243,7 +243,7 @@ class Header extends PureComponent {
                             <div className="col-sm-4">
                                 <div className="search-box">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input className="searh-f" type="search" placeholder="Search" />
+                                    <input className="searh-f" type="search" placeholder="Search" value={search} onChange={(evt) => setSearch(evt.target.value)} />
                                 </div>
                             </div>
                             <div className="col-sm-8">
@@ -335,6 +335,7 @@ class Header extends PureComponent {
 
 const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
+    search: state.frontend.search,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)

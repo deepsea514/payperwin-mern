@@ -126,7 +126,7 @@ class Sport extends PureComponent {
     }
 
     render() {
-        const { match, addBet, betSlip, removeBet, sportName, oddsFormat } = this.props;
+        const { match, addBet, betSlip, removeBet, sportName, oddsFormat, search } = this.props;
         const { data, error } = this.state;
         if (error) {
             return <div>Error</div>;
@@ -156,6 +156,9 @@ class Sport extends PureComponent {
                         const { name: leagueName, originId: leagueId } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
+                            if (teamA.toLowerCase().indexOf(search.toLowerCase()) == -1 && teamB.toLowerCase().indexOf(search.toLowerCase()) == -1) {
+                                return null;
+                            }
                             if (!lines || !lines.length || new Date() > new Date(startDate))
                                 return null;
 
@@ -477,6 +480,7 @@ class Sport extends PureComponent {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    search: state.frontend.search,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(Sport))
