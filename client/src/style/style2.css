@@ -2010,3 +2010,40 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 .verification-items {
     cursor: pointer;
 }
+
+.card-name {
+    display: inline-block;
+    width: 50%;
+    margin-top: 50px;
+    font-size: 30px;
+    color: #444444;
+}
+
+.right {
+    margin: 0;
+    float: right;
+    display: inline-block;
+    margin-top: 40px !important;
+}
+
+.deposit-withdraw-table {
+    width: 100%;
+}
+
+.gray-cell {
+    padding: 15px;
+    background: #EFEFEF;
+    color: #000;
+    border-right: #fff 3px solid;
+    border-bottom: #fff 3px solid;
+}
+
+.title-cell {
+    color: #888;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.paymentoption-content {
+    font-size: 14px;
+}

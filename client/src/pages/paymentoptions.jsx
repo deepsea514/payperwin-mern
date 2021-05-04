@@ -1,17 +1,29 @@
-
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
+import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
 
 class PaymentOptions extends Component {
-    render() {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            option: null,
+        }
+    }
+
+    componentDidMount() {
         setTitle({ pageTitle: 'Payment Options' });
+    }
+
+    render() {
+        const { option } = this.state;
         return (
-            <div className="col-in">
+            <div className="col-in px-5">
                 <h1 className="main-heading-in">Payment methods</h1>
-                <div className="main-cnt">
+                {!option && <div className="main-cnt">
                     <p>
                         There are numerous payment options available to
-                        Pinnacle customers.
+                        PayPer Win customers.
                         They are determined by the currency you chose when
                         you open an account.
                     </p>
@@ -19,13 +31,8 @@ class PaymentOptions extends Component {
                     <div className="tab-container">
                         <div className="tab-navigation">
                             <label>Select currency</label>
-                            <select id="select-box"
-                                className="form-control">
-                                {/* <option value="1">Australian Dollars</option> */}
+                            <select id="select-box" className="form-control">
                                 <option value="2">Canadian Dollars</option>
-                                {/* <option value="3">Colombian Pesos</option>
-                                <option value="4">Czech Koruna</option>
-                                <option value="5">Norwegian Krone</option> */}
                             </select>
                         </div>
 
@@ -33,7 +40,7 @@ class PaymentOptions extends Component {
                             <br />
                             <h4 className="h4">Deposits</h4>
                             <div className="container">
-                                <div className="row pymnt-mthd">
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
                                         <img src="images/eTransfer.png" />
@@ -43,7 +50,7 @@ class PaymentOptions extends Component {
                                         <ul className="paymnt-mdhd">
                                             <li> Interac E-Transfer</li>
                                             <li>free : <strong>$10</strong> </li>
-                                            <li>min : <strong>$10</strong></li>
+                                            <li>min : <strong>$25</strong></li>
                                             <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
@@ -51,7 +58,8 @@ class PaymentOptions extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
+                {(option == 'etransfer') && <PaymentOptionEtransfer onBack={() => this.setState({ option: null })} />}
             </div>
         );
     }
