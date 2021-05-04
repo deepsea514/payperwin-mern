@@ -14,6 +14,7 @@ const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
 const BetSportsBook = require("./models/betsportsbook");
 const Verification = require("./models/verification");
+const Preference = require("./models/preference");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -232,7 +233,12 @@ adminRouter.get(
             return;
         }
         try {
-            const customer = await User.findById(id);
+            let customer = await User.findById(id);
+            let preference = await Preference.findOne({ user: id });
+            if (!preference)
+                preference = await Preference.create({ user: id });
+            customer = JSON.parse(JSON.stringify(customer));
+            customer.preference = preference;
             res.status(200).json(customer);
         }
         catch (error) {

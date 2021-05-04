@@ -20,7 +20,6 @@ class Withdraw extends React.Component {
     }
 
     componentDidMount() {
-        console.log('asdfsdf')
         this.getData();
     }
 

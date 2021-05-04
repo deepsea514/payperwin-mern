@@ -101,13 +101,13 @@ class Lines extends PureComponent {
         const { oddsFormat } = this.props;
         switch (oddsFormat) {
             case 'decimal':
-                if (odd > 0) {
+                if (odd > 0)
                     return Number(1 + odd / 100).toFixed(2);
-                }
-                else {
-                    return Number(1 - 100 / odd).toFixed(2);
-                }
+                return Number(1 - 100 / odd).toFixed(2);
             case 'american':
+                if (odd > 0)
+                    return '+' + odd.toFixed(2);
+                return odd.toFixed(2);
             default:
                 return odd;
         }
@@ -196,10 +196,10 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamA}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {oddsFormat == 'decimal' ? this.convertOdds(moneyline.home) : `${moneyline.home > 0 ? '+' : ''}${moneyline.home}`}
+                                                                                {this.convertOdds(moneyline.home)}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                {this.convertOdds(newHome)}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -228,10 +228,10 @@ class Lines extends PureComponent {
                                                                         <div className="points">{teamB}</div>
                                                                         <div className="odds">
                                                                             <div className="old-odds">
-                                                                                {oddsFormat == 'decimal' ? this.convertOdds(moneyline.away) : `${moneyline.away > 0 ? '+' : ''}${moneyline.away}`}
+                                                                                {this.convertOdds(moneyline.away)}
                                                                             </div>
                                                                             <div className="new-odds">
-                                                                                {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                {this.convertOdds(newAway)}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -300,10 +300,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${spread.hdp > 0 ? '+' : ''}${spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(spread.home) : `${spread.home > 0 ? '+' : ''}${spread.home}`}
+                                                                                    {this.convertOdds(spread.home)}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                    {this.convertOdds(newHome)}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -334,10 +334,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(spread.away) : `${spread.away > 0 ? '+' : ''}${spread.away}`}
+                                                                                    {this.convertOdds(spread.away)}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                    {this.convertOdds(newAway)}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -408,10 +408,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(total.over) : `${total.over > 0 ? '+' : ''}${total.over}`}
+                                                                                    {this.convertOdds(total.over)}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newHome) : `${newHome > 0 ? '+' : ''}${newHome}`}
+                                                                                    {this.convertOdds(newHome)}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -444,10 +444,10 @@ class Lines extends PureComponent {
                                                                             <div className="points">{`${total.points}`}</div>
                                                                             <div className="odds">
                                                                                 <div className="old-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(total.under) : `${total.under > 0 ? '+' : ''}${total.under}`}
+                                                                                    {this.convertOdds(total.under)}
                                                                                 </div>
                                                                                 <div className="new-odds">
-                                                                                    {oddsFormat == 'decimal' ? this.convertOdds(newAway) : `${newAway > 0 ? '+' : ''}${newAway}`}
+                                                                                    {this.convertOdds(newAway)}
                                                                                 </div>
                                                                             </div>
                                                                         </div>

@@ -117,6 +117,7 @@ class Bet extends React.Component {
         const { ppwBet } = this.state;
         const { bets, loading } = ppwBet;
         const { customer } = this.props;
+        const { preference } = customer;
 
         if (loading) {
             return (
@@ -156,6 +157,9 @@ class Bet extends React.Component {
                     <span className=" font-weight-500">
                         ${bet.bet} {customer.currency}
                     </span>
+                </td>
+                <td className="pl-0">
+                    {this.convertOdds(bet.pickOdds)}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
@@ -227,6 +231,9 @@ class Bet extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
+                    {this.convertOdds(bet.WagerInfo.Odds)}
+                </td>
+                <td className="pl-0">
                     <span className=" font-weight-500">
                         {bet.WagerInfo.Sport}
                     </span>
@@ -238,6 +245,26 @@ class Bet extends React.Component {
                 </td>
             </tr>
         ));
+    }
+
+    convertOdds = (odd) => {
+        const { customer } = this.props;
+        const { preference } = customer;
+        const { oddsFormat } = preference;
+
+        odd = Number(odd);
+        switch (oddsFormat) {
+            case 'decimal':
+                if (odd > 0)
+                    return Number(1 + odd / 100).toFixed(2) + '(Decimal Odds)';
+                return Number(1 - 100 / odd).toFixed(2) + '(Decimal Odds)';
+            case 'american':
+                if (odd > 0)
+                    return '+' + odd.toFixed(2) + '(American Odds)';
+                return odd.toFixed(2) + '(American Odds)';
+            default:
+                return odd;
+        }
     }
 
     getDate = (date) => {
@@ -277,6 +304,7 @@ class Bet extends React.Component {
                                             <th className="p-0" >#</th>
                                             <th className="p-0" >Time</th>
                                             <th className="p-0" >Amount</th>
+                                            <th className="p-0" >Odds</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
                                             <th className="p-0" >Line</th>
@@ -303,6 +331,7 @@ class Bet extends React.Component {
                                             <th className="p-0" >#</th>
                                             <th className="p-0" >Time</th>
                                             <th className="p-0" >Amount</th>
+                                            <th className="p-0" >Odds</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
                                         </tr>
