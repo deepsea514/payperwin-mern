@@ -2,6 +2,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
 import { setPreferences } from "./services";
+import Cookie from 'js-cookie';
 
 export const actionTypes = {
     setPreference: "[Set Preference Action]",
@@ -10,6 +11,7 @@ export const actionTypes = {
     setDateFormat: "[Set Date Format Action]",
     setTimezone: "[Set Timezone Action]",
     setSearch: "[Set Search Action]",
+    acceptCookieAction: "[Accept Cookie Action]",
 };
 
 const initialState = {
@@ -18,10 +20,11 @@ const initialState = {
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
     search: '',
+    acceptCookie: Cookie.get('acceptCookie'),
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat',] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -44,6 +47,10 @@ export const reducer = persistReducer(
             case actionTypes.setSearch:
                 return { ...state, search: action.search };
 
+            case actionTypes.acceptCookieAction:
+                Cookie.set('acceptCookie', true);
+                return { ...state, acceptCookie: true };
+
             default:
                 return state;
         }
@@ -57,6 +64,7 @@ export const actions = {
     setTimezone: (timezone) => ({ type: actionTypes.setTimezone, timezone }),
     setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
+    acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
 };
 
 export function* saga() {

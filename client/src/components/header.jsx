@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import { FormattedMessage, injectIntl } from "react-intl";
+import CookieAccept from "./cookieAccept";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
@@ -92,10 +93,11 @@ class Header extends PureComponent {
 
     render() {
         const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location, search, setSearch } = this.props;
+        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
+                {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
                 <div className="header-top">
                     <div className="container">
                         <div className="row">
@@ -339,6 +341,7 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     search: state.frontend.search,
     timezone: state.frontend.timezone,
+    acceptCookie: state.frontend.acceptCookie,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)
