@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import dayjs from 'dayjs';
 import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
+import timeHelper from "../helpers/timehelper";
+
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -126,7 +127,7 @@ class Sport extends PureComponent {
     }
 
     render() {
-        const { match, addBet, betSlip, removeBet, sportName, oddsFormat, search } = this.props;
+        const { match, addBet, betSlip, removeBet, sportName, timezone, search } = this.props;
         const { data, error } = this.state;
         if (error) {
             return <div>Error</div>;
@@ -171,7 +172,7 @@ class Sport extends PureComponent {
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
                                         <Link to={{ pathname: `/lines/${sportName}/${league.originId}/${event.originId}` }} className="widh-adf">
-                                            <strong>{teamA}</strong> <strong>{teamB}</strong>{dayjs(startDate).format('MM/DD/YYYY h:mma')}
+                                            <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
@@ -481,6 +482,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
     search: state.frontend.search,
+    timezone: state.frontend.timezone,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(Sport))

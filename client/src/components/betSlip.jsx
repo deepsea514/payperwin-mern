@@ -55,7 +55,6 @@ export default class BetSlip extends PureComponent {
                 this.setState(stateChanges);
             }
         }).catch((err) => {
-            console.log(1);
             if (err.response && err.response.data) {
                 const { error } = err.response.data;
                 this.setState({ formError: error });

@@ -168,7 +168,6 @@ class BetActivities extends React.Component {
 
     onPageChange = (page) => {
         const { getBetActivities, currentPage } = this.props;
-        console.log(page);
         if (page != currentPage)
             getBetActivities(page);
     }

@@ -16,12 +16,12 @@ const initialState = {
     lang: 'en',
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
-    timezone: "-07:00",
+    timezone: null,
     search: '',
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'timezone'] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat',] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -54,8 +54,8 @@ export const actions = {
     setPreference: (preference) => ({ type: actionTypes.setPreference, preference }),
     setLanguage: (lang = 'en') => ({ type: actionTypes.setLanguage, lang }),
     setOddsFormat: (oddsFormat = 'american') => ({ type: actionTypes.setOddsFormat, oddsFormat }),
-    setTimezone: (timezone = -7) => ({ type: actionTypes.setTimezone, timezone }),
-    setDateFormat: (dateFormat = -7) => ({ type: actionTypes.setDateFormat, dateFormat }),
+    setTimezone: (timezone) => ({ type: actionTypes.setTimezone, timezone }),
+    setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
 };
 

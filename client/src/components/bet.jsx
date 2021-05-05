@@ -79,7 +79,6 @@ class Bet extends PureComponent {
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat } = this.props;
-        console.log(bet)
         const { name, type, league, odds, pick, home, away, sportName, lineId, pickName } = bet;
         return (
             <div className="bet">

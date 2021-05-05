@@ -6,6 +6,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import getLinesFromSportData from '../libs/getLinesFromSportData';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
+import timeHelper from "../helpers/timehelper";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -114,7 +115,7 @@ class Lines extends PureComponent {
     }
 
     render() {
-        const { match, addBet, betSlip, removeBet, oddsFormat } = this.props;
+        const { match, addBet, betSlip, removeBet, timezone } = this.props;
         const { sportName, leagueId, eventId, lineId } = match.params;
         const { data, error } = this.state;
         if (error) {
@@ -129,7 +130,7 @@ class Lines extends PureComponent {
             <div className="content detailed-lines">
                 <center>
                     <div>
-                        {dayjs(startDate).format('dddd, MMMM D, YYYY h:mma')}
+                        {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
                     </div>
                     <strong>{teamA} VS {teamB}</strong>
                 </center>
@@ -473,6 +474,7 @@ class Lines extends PureComponent {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    timezone: state.frontend.timezone,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(Lines))

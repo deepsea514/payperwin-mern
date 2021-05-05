@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import SimpleLogin from './simpleLogin';
-import dateformat from "dateformat";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
+import timeHelper from "../helpers/timehelper";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -27,12 +27,13 @@ function logout(getUser, history) {
 class Header extends PureComponent {
     constructor(props) {
         super(props);
+        const { timezone } = props;
         this.state = {
             userDropDownOpen: false,
             oddsDropDownOpen: false,
             langDropDownOpen: false,
             timerInterval: null,
-            timeString: dateformat(new Date(), "HH:MM:ss ('GMT' p)"),
+            timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
         this.toggleField = this.toggleField.bind(this);
         this.logout = this.logout.bind(this);
@@ -43,7 +44,8 @@ class Header extends PureComponent {
     }
 
     headerTimer = () => {
-        const timeString = dateformat(new Date(), "HH:MM:ss ('GMT' p)")
+        const { timezone } = this.props;
+        const timeString = timeHelper.convertTimeClock(new Date(), timezone);
         this.setState({ timeString });
     }
 
@@ -336,6 +338,7 @@ class Header extends PureComponent {
 const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     search: state.frontend.search,
+    timezone: state.frontend.timezone,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)

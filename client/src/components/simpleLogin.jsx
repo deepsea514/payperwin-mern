@@ -114,7 +114,6 @@ class Login extends Component {
                         }
                     });
                 } else {
-                    console.log(result);
                     this.setState({
                         errors: result,
                     });
