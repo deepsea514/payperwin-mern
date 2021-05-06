@@ -19,7 +19,7 @@ export function AsideMenuList({ layoutProps }) {
         <>
             {/* begin::Menu Nav */}
             <ul className={`menu-nav ${layoutProps.ulClasses}`}>
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
                     aria-haspopup="true"
@@ -31,9 +31,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Dashboard</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/kyc", false)}`}
                     aria-haspopup="true"
@@ -45,9 +43,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">KYC</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/customers", false)}`}
                     aria-haspopup="true"
@@ -59,9 +55,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Customers</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/bet-activities", false)}`}
                     aria-haspopup="true"
@@ -73,8 +67,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Bet Activities</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/withdraw-log", false)}`}
                     aria-haspopup="true"
@@ -86,8 +79,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Withdraw Logs</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/deposit-log", false)}`}
                     aria-haspopup="true"
@@ -99,8 +91,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Deposit Logs</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/wager-feeds", false)}`}
                     aria-haspopup="true"
@@ -112,8 +103,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Wager Feeds</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/autobet", false)}`}
                     aria-haspopup="true"
@@ -125,8 +115,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">AutoBet</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
-                {/*begin::1 Level*/}
+
                 <li
                     className={`menu-item ${getMenuItemActive("/events", false)}`}
                     aria-haspopup="true"
@@ -138,9 +127,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Events</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
                     aria-haspopup="true"
@@ -152,9 +139,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Email Templates</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/promotions", false)}`}
                     aria-haspopup="true"
@@ -166,9 +151,7 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Promotions</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
 
-                {/*begin::1 Level*/}
                 <li
                     className={`menu-item ${getMenuItemActive("/tickets", false)}`}
                     aria-haspopup="true"
@@ -180,7 +163,19 @@ export function AsideMenuList({ layoutProps }) {
                         <span className="menu-text">Tickets</span>
                     </Link>
                 </li>
-                {/*end::1 Level*/}
+
+                <li
+                    className={`menu-item ${getMenuItemActive("/faq", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/faq/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Code/Question-circle.svg"} />
+                        </span>
+                        <span className="menu-text">FAQ</span>
+                    </Link>
+                </li>
+
             </ul>
             {/* end::Menu Nav */}
         </>

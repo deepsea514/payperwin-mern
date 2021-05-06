@@ -17,6 +17,7 @@ import EmailTemplatesModule from "../modules/email-templates/pages";
 import PromotionModule from "../modules/promotions/pages";
 import KYC from "../modules/kyc/pages";
 import TicketsModule from "../modules/tickets/pages";
+import FAQModule from "../modules/faq/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -85,6 +86,9 @@ export default class App extends Component {
 
                     {/* Support Ticket Module */}
                     <Route path="/tickets" component={TicketsModule} />
+
+                    {/* Support FAQ Module */}
+                    <Route path="/faq" component={FAQModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 

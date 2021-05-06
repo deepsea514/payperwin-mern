@@ -15,6 +15,8 @@ const PromotionLog = require("./models/promotionlog");
 const BetSportsBook = require("./models/betsportsbook");
 const Verification = require("./models/verification");
 const Preference = require("./models/preference");
+const FAQSubject = require("./models/faq_subject");
+const FAQCoFAQItemntent = require("./models/faq_item");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -30,6 +32,7 @@ const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
+const FAQItem = require('./models/faq_item');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
@@ -1816,5 +1819,166 @@ adminRouter.delete(
         }
     }
 );
+
+adminRouter.get(
+    '/faq-subjects',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        try {
+            const total = await FAQSubject.find().count();
+            const faq_subjects = await FAQSubject.find()
+                .sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
+
+            res.json({ total, perPage, page: page + 1, data: faq_subjects });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subjects.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/faq-subjects/:id',
+    authenticateJWT,
+    async function (req, res) {
+        const { id } = req.params;
+
+        try {
+            const faq_subject = await FAQSubject.findById(id)
+                .populate('items');
+
+            res.json(faq_subject);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subjects.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/faq-subjects',
+    authenticateJWT,
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { title } = req.body;
+        if (!title) {
+            return res.json({ error: 'Title is required.' });
+        }
+        try {
+            const exist = await FAQSubject.findOne({ title });
+            if (exist) {
+                return res.json({ error: 'Same title is already exists.' });
+            }
+            await FAQSubject.create({ title });
+            res.json({ success: true });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t create subject.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/faq-subjects/:id',
+    authenticateJWT,
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            await FAQSubject.deleteOne({ _id: id });
+            await FAQItem.deleteMany({ subject: id });
+            res.json({ success: true });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t delete subject.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/faq-subjects/:id/item',
+    authenticateJWT,
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        const { title, content } = req.body;
+        try {
+            const faq_subject = await FAQSubject.findById(id);
+            if (!faq_subject) {
+                return res.json({ error: 'Can\'t find Subject.' })
+            }
+            if (!title || !content) {
+                return res.json({ error: 'Title and content fields are required.' })
+            }
+            const faq_item = await FAQItem.create({
+                subject: id,
+                title, content
+            });
+
+            await faq_subject.update({
+                $push: {
+                    items: faq_item._id,
+                }
+            });
+            res.json({ success: true, faq_item });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t add item.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/faq-subjects/:subjectid/item/:id',
+    authenticateJWT,
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { subjectid, id } = req.params;
+        try {
+            const faq_subject = await FAQSubject.findById(subjectid);
+            if (!faq_subject) {
+                return res.json({ error: 'Can\'t find item.' })
+            }
+            const items = faq_subject.items.filter(item => item.toString() == id);
+            faq_subject.items = items;
+            await faq_subject.save();
+            await FAQItem.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json({ error: 'Can\'t delete item.' });
+        }
+    }
+)
+
+adminRouter.put(
+    '/faq-subjects/item/:id',
+    authenticateJWT,
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        const { title, content } = req.body;
+        try {
+            const faq_item = await FAQItem.findById(id);
+            if (!faq_item) {
+                return res.json({ error: 'Can\'t find Item.' })
+            }
+            if (!title || !content) {
+                return res.json({ error: 'Title and Content fields are required.' });
+            }
+            faq_item.title = title;
+            faq_item.content = content;
+            await faq_item.save();
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ error: 'Can\'t update item.' });
+        }
+    }
+)
 
 module.exports = adminRouter;

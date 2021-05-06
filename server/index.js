@@ -19,6 +19,7 @@ const BetSportsBook = require('./models/betsportsbook');
 const Verification = require('./models/verification');
 const Ticket = require("./models/ticket");
 const Preference = require('./models/preference');
+const FAQSubject = require("./models/faq_subject");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -1886,6 +1887,23 @@ expressApp.post(
             return res.json({ message: "success" });
         } catch (error) {
             res.status(400).json({ error: "Can't change preference." });
+        }
+    }
+)
+
+
+expressApp.get(
+    '/faqs',
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const faq_subjects = await FAQSubject.find()
+                .sort({ createdAt: 1 })
+                .populate('items')
+
+            res.json(faq_subjects);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subjects.' });
         }
     }
 )
