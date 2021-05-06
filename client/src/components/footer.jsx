@@ -7,7 +7,7 @@ const Footer = (props) => {
             <div className="container">
                 <div className="foooter-main">
                     <div className="d-flex flex-wr justify-content-between">
-                        <div className="footer-inner" style={{ display: 'none ' }}>
+                        <div className="footer-inner" style={{ display: 'none' }}>
                             <h3 className="footer-heading">Sports Betting </h3>
                             <ul>
                                 <li><Link to={{ pathname: '/sport/Soccer' }}>Soccer betting</Link></li>
@@ -19,18 +19,14 @@ const Footer = (props) => {
                                 <li><Link to={{ pathname: '/sport/Boxing' }}>Boxing betting</Link></li>
                             </ul>
                         </div>
-                        <div className="footer-inner" style={{ display: 'none ' }}>
+                        <div className="footer-inner">
                             <h3 className="footer-heading">About PAYPER Win </h3>
                             <ul>
-                                <li><a href="#">Corporate </a></li>
-                                <li><a href="#">Press </a></li>
-                                <li><a href="#">Affiliates </a></li>
-                                <li><a href="#">B2B </a></li>
-                                <li><a href="#">About </a></li>
-                                <li><a href="#">Why PAYPER Win? </a></li>
+                                <li><Link to="/privacy-policy">Privacy Policy </Link></li>
+                                <li><Link to="/terms-and-conditions">Terms & Conditions </Link></li>
                             </ul>
                         </div>
-                        <div className="footer-inner" style={{ display: 'none ' }}>
+                        <div className="footer-inner" style={{ display: 'none' }}>
                             <h3 className="footer-heading">Policies</h3>
                             <ul>
                                 <li><a href="#">Responsible Gaming </a></li>
@@ -39,18 +35,16 @@ const Footer = (props) => {
                                 <li><a href="#">Cookie Policy </a></li>
                             </ul>
                         </div>
-                        <div className="footer-inner" style={{ display: 'none ' }}>
+                        <div className="footer-inner">
                             <h3 className="footer-heading">Help &amp; Support </h3>
                             <ul>
-                                <li><a href="#">Contact us</a></li>
-                                <li><a href="#">Betting Rules </a></li>
-                                <li><a href="#">Help </a></li>
-                                <li><a href="#">System Status </a></li>
-                                <li><a href="#">Sitemap </a></li>
-                                <li><a href="#">Payment Options </a></li>
+                                <li><Link to="/payment-options">Payment Options </Link></li>
+                                <li><Link to="/betting-rules">Betting Rules </Link></li>
+                                <li><Link to="/support">Contact Us</Link></li>
+                                <li><Link to="/faq">FAQ </Link></li>
                             </ul>
                         </div>
-                        <div className="footer-inner" style={{ display: 'none ' }}>
+                        <div className="footer-inner">
                             <h3 className="footer-heading">Social </h3>
                             <ul>
                                 <li><a href="#"><i className="fab fa-facebook"></i>Facebook</a></li>
