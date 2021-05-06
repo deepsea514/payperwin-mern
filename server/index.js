@@ -1894,7 +1894,6 @@ expressApp.post(
 
 expressApp.get(
     '/faqs',
-    isAuthenticated,
     async (req, res) => {
         try {
             const faq_subjects = await FAQSubject.find()
