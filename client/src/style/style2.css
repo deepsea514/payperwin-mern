@@ -500,8 +500,19 @@ ul.list-s i {
 }
 
 .table-list-top {
-    background-color: transparent;
-    padding: 4px 0 4px 0;
+    padding: 3px 0 4px 10px;
+    background: #F9F9F9;
+    margin-bottom: 3px;
+}
+
+.table-title {
+    background: #273043;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 10px 10px;
+    border-radius: 3px 3px 0px 0;
+    border-bottom: #398cf8 4px solid;
 }
 
 .widh-adf strong {
@@ -2165,4 +2176,16 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
         background-color: #0a74ef;
         border-color: #0a74ef;
     }
+}
+
+.orange .old-odds {
+    color: #FFF !important;
+}
+
+.orange .old-odds::before {
+    background: #FFF !important;
+}
+
+.join:hover {
+    color: white;
 }
