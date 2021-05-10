@@ -34,105 +34,116 @@ async function matchResults(sportName, events) {
             eventId,
             lineType,
             points,
+            matchStartDate,
         } = betpool;
         let matchCancelled = false;
 
-        if (homeBets.length > 0 && awayBets.length > 0) {
-            const event = events.find((event) => event.event_id == eventId);
-            if (!event)
-                continue;
-            const { score } = event;
-            if (!score) continue;
-            const { event_status, event_status_detail, score_away, score_home } = score;
-            if (event_status_detail == "Final") {
-                let moneyLineWinner = null;
-                if (score_home > score_away)
-                    moneyLineWinner = 'home';
-                else if (score_away > score_home)
-                    moneyLineWinner = 'away';
+        const matchStartDateNum = new Date(matchStartDate).getTime();
+        const current = new Date().getTime();
+        if (matchStartDateNum < (current - 48 * 3600 * 1000)) {
+            matchCancelled = true;
+        }
+        else {
+            if (homeBets.length > 0 && awayBets.length > 0) {
+                const event = events.find((event) => event.event_id == eventId);
+                if (!event)
+                    continue;
+                const { score } = event;
+                if (!score) continue;
+                const { event_status, event_status_detail, score_away, score_home } = score;
+                if (event_status_detail == "Final") {
+                    let moneyLineWinner = null;
+                    if (score_home > score_away)
+                        moneyLineWinner = 'home';
+                    else if (score_away > score_home)
+                        moneyLineWinner = 'away';
 
-                const bets = await Bet.find({
-                    _id:
-                    {
-                        $in: [
-                            ...homeBets,
-                            ...awayBets,
-                        ]
-                    }
-                });
+                    const bets = await Bet.find({
+                        _id:
+                        {
+                            $in: [
+                                ...homeBets,
+                                ...awayBets,
+                            ]
+                        }
+                    });
 
-                for (const bet of bets) {
-                    const { _id, userId, bet: betAmount, toWin, pick, payableToWin } = bet;
-                    let betWin;
-                    if (lineType === 'moneyline') {
-                        betWin = pick === moneyLineWinner;
-                        console.log(lineType, 'betWin:', betWin, pick, moneyLineWinner);
-                    } else if (lineType === 'spread') {
-                        const spread = {
-                            home: points,
-                            away: points * -1,
-                        };
-                        const homeScoreHandiCapped = score_home + spread.home;
-                        const awayScoreHandiCapped = score_away + spread.away;
-                        let spreadWinner;
-                        if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
-                        else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
-                        betWin = pick === spreadWinner;
-                    } else if (lineType === 'total') {
-                        const totalPoints = score_home + score_away;
-                        const overUnderWinner = totalPoints > points ? 'home' : 'away';
-                        betWin = pick === overUnderWinner;
-                    }
+                    for (const bet of bets) {
+                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin } = bet;
+                        let betWin;
+                        if (lineType === 'moneyline') {
+                            betWin = pick === moneyLineWinner;
+                            console.log(lineType, 'betWin:', betWin, pick, moneyLineWinner);
+                        } else if (lineType === 'spread') {
+                            const spread = {
+                                home: points,
+                                away: points * -1,
+                            };
+                            const homeScoreHandiCapped = score_home + spread.home;
+                            const awayScoreHandiCapped = score_away + spread.away;
+                            let spreadWinner;
+                            if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
+                            else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
+                            betWin = pick === spreadWinner;
+                        } else if (lineType === 'total') {
+                            const totalPoints = score_home + score_away;
+                            const overUnderWinner = totalPoints > points ? 'home' : 'away';
+                            betWin = pick === overUnderWinner;
+                        }
 
-                    if (betWin === true) {
-                        const user = await User.findById(userId);
-                        const { balance, email } = user;
-                        const betChanges = {
-                            $set: {
-                                status: 'Settled - Win',
-                                walletBeforeCredited: balance,
-                                credited: betAmount + payableToWin,
-                                homeScore: score_home,
-                                awayScore: score_away,
+                        if (betWin === true) {
+                            const user = await User.findById(userId);
+                            const { balance, email } = user;
+                            const betChanges = {
+                                $set: {
+                                    status: 'Settled - Win',
+                                    walletBeforeCredited: balance,
+                                    credited: betAmount + payableToWin,
+                                    homeScore: score_home,
+                                    awayScore: score_away,
+                                }
                             }
-                        }
-                        await Bet.findByIdAndUpdate(_id, betChanges);
-                        await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount + payableToWin } });
-                        // TODO: email winner
-                        const msg = {
-                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
-                            to: email,
-                            subject: 'You won a wager!',
-                            text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
-                            html: simpleresponsive(`
-                                <p>
-                                    Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                </p>
-                                `,
-                                { href: 'https://payperwin.co/history', name: 'Settled Bets' }
-                            ),
-                        };
-                        sgMail.send(msg);
-                    } else if (betWin === false) {
-                        const betChanges = {
-                            $set: {
-                                status: 'Settled - Lose',
-                                homeScore: score_home,
-                                awayScore: score_away,
+                            await Bet.findByIdAndUpdate(_id, betChanges);
+                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount + payableToWin } });
+                            // TODO: email winner
+                            const msg = {
+                                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                to: email,
+                                subject: 'You won a wager!',
+                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
+                                html: simpleresponsive(`
+                                    <p>
+                                        Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                    </p>
+                                    `,
+                                    { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                                ),
+                            };
+                            sgMail.send(msg);
+                        } else if (betWin === false) {
+                            const betChanges = {
+                                $set: {
+                                    status: 'Settled - Lose',
+                                    homeScore: score_home,
+                                    awayScore: score_away,
+                                }
                             }
+                            const unplayableBet = payableToWin < toWin
+                                ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                            if (unplayableBet) {
+                                betChanges.$set.credited = unplayableBet;
+                                await User.findByIdAndUpdate(userId, { $inc: { balance: unplayableBet } });
+                            }
+                            await Bet.findByIdAndUpdate(_id, betChanges);
+                        } else {
+                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
-                        const unplayableBet = payableToWin < toWin
-                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                        if (unplayableBet) {
-                            betChanges.$set.credited = unplayableBet;
-                            await User.findByIdAndUpdate(userId, { $inc: { balance: unplayableBet } });
-                        }
-                        await Bet.findByIdAndUpdate(_id, betChanges);
-                    } else {
-                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                        await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
-                    await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                 }
+            }
+            else {
+                matchCancelled = true;
             }
         }
 
