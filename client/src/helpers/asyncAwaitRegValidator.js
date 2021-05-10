@@ -129,6 +129,14 @@ async function vipCodeExist(options) {
     }
 }
 
+async function involveLetterAndNumberAndSpecialCharacter(options) {
+    const { value } = options;
+    var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$");
+    if (pattern.test(value))
+        return true;
+    return "Password should include more than 1 Big letter, 1 Small letter, 1 Special Character and 1 Number."
+}
+
 const schema = {
     username: [
         { validator: isString },
@@ -166,8 +174,9 @@ const schema = {
     ],
     password: [
         { validator: isString },
-        { validator: min, options: { number: 6 } },
+        { validator: min, options: { number: 8 } },
         { validator: max, options: { number: 128 } },
+        { validator: involveLetterAndNumberAndSpecialCharacter },
         { validator: required },
     ],
     cPassword: [
