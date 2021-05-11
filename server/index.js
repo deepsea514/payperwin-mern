@@ -1941,9 +1941,21 @@ expressApp.get(
     '/faqs_general',
     async (req, res) => {
         try {
-            const faq_articles = await FAQItem.find().limit(10);
+            const { term } = req.query;
 
-            res.json(faq_articles);
+            if (term) {
+                const searchObj = {
+                    $or: [
+                        { title: { "$regex": term, "$options": "i" } },
+                        { content: { "$regex": term, "$options": "i" } }
+                    ]
+                }
+                const faq_subjects = await FAQItem.find(searchObj);
+                return res.json(faq_subjects);
+            } else {
+                const faq_subjects = await FAQItem.find().limit(9);
+                return res.json(faq_subjects);
+            }
         } catch (error) {
             res.status(404).json({ error: 'Can\'t find article.' });
         }

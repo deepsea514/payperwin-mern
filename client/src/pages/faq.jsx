@@ -7,6 +7,7 @@ import axios from 'axios';
 import FaqSubject from "../components/faq_subject";
 import FaqHome from "../components/faq_home";
 import FaqArticle from "../components/faq_article";
+import FaqSearch from "../components/faq_search";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -34,6 +35,7 @@ class Faq extends Component {
 
     render() {
         const { intl } = this.props;
+
         const { loading, faq_subjects } = this.state;
         setTitle({ pageTitle: 'Frequently Asked Questions' });
         return (
@@ -43,7 +45,7 @@ class Faq extends Component {
                         <div className="hc-search-c">
                             <h2 className="heading">How can we help you today?</h2>
                             <center>
-                                <form className="hc-search-form" autoComplete="off" id="hc-search-form">
+                                <form className="hc-search-form" autoComplete="off" id="hc-search-form" action="/faq/search">
                                     <div className="hc-search-input">
                                         <label htmlFor="support-search-input" className="hide">Enter your search term here...</label>
                                         <input placeholder="Enter your search term here..." type="text" name="term" className="special ui-autoComplete-input" rel="page-search" id="support-search-input" autoComplete="off" />
@@ -71,6 +73,7 @@ class Faq extends Component {
                     <Switch>
                         <Route path="/faq/subjects/:id" component={FaqSubject} />
                         <Route path="/faq/article/:id-:content" component={FaqArticle} />
+                        <Route path="/faq/search" component={FaqSearch} />
                         <Route path="/faq" component={FaqHome} />
                     </Switch>
                 </section>
