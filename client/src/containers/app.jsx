@@ -205,6 +205,7 @@ class App extends PureComponent {
                                 <SportsBook {...props} user={user} />} />
                             <Route path="/signup" render={(props) =>
                                 <Registration getUser={getUser} {...props} />} />
+                            <Route path="/faq" component={Faq} />
                             <Route path="/">
                                 {() => {
                                     return <div className="row">
@@ -262,7 +263,6 @@ class App extends PureComponent {
                                                 <Route path="/betforward/:betId" component={BetForward} />
                                                 <Route path="/announcements" component={Announcements} />
                                                 <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
-                                                <Route path="/faq" component={Faq} />
                                                 <Route path="/inbox" component={Inbox} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
                                                 <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />

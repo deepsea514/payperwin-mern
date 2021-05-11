@@ -6,7 +6,9 @@ const FAQItemSchema = new Schema(
     {
         subject: { type: Schema.Types.ObjectId, ref: 'FAQSubject' },
         title: { type: String, required: true },
-        content: { type: String, required: true }
+        content: { type: String, required: true },
+        voteUp: { type: Number, default: 0 },
+        voteDown: { type: Number, default: 0 },
     },
     {
         timestamps: true,

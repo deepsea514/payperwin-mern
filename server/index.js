@@ -20,6 +20,7 @@ const Verification = require('./models/verification');
 const Ticket = require("./models/ticket");
 const Preference = require('./models/preference');
 const FAQSubject = require("./models/faq_subject");
+const FAQItem = require('./models/faq_item');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -1898,11 +1899,53 @@ expressApp.get(
         try {
             const faq_subjects = await FAQSubject.find()
                 .sort({ createdAt: 1 })
-                .populate('items')
-
             res.json(faq_subjects);
         } catch (error) {
             res.status(404).json({ error: 'Can\'t find subjects.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/faq_subject/:id',
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const faq_subject = await FAQSubject.findById(id)
+                .populate('items');
+            res.json(faq_subject);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subject.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/faq_article/:id',
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const faq_article = await FAQItem.findById(id)
+                .populate("subject");
+            if (!faq_article || !faq_article.subject) {
+                return res.status(404).json({ error: 'Can\'t find article.' });
+            }
+            res.json(faq_article);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find article.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/faqs_general',
+    async (req, res) => {
+        try {
+            const faq_articles = await FAQItem.find().limit(10);
+
+            res.json(faq_articles);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find article.' });
         }
     }
 )
