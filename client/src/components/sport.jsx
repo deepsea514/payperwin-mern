@@ -151,7 +151,8 @@ class Sport extends PureComponent {
             </li>
         );
         return (
-            <div className="content">
+            <div className="content mt-2">
+                <div className="table-title">HIGHLIGHTS</div>
                 {
                     leagues.map(league => {
                         const { name: leagueName, originId: leagueId } = league;
@@ -458,9 +459,8 @@ class Sport extends PureComponent {
                         events = events.filter(event => event);
                         return (
                             events.length ?
-                                <div className="tab-content mt-2" id="myTabContent" key={leagueName}>
+                                <div className="tab-content" id="myTabContent" key={leagueName}>
                                     <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                        <div className="table-title">HIGHLIGHTS</div>
                                         <ul className="table-list table-list-top d-flex">
                                             <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                             <li>MONEY LINE</li>
