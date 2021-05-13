@@ -12,6 +12,7 @@ export const actionTypes = {
     setTimezone: "[Set Timezone Action]",
     setSearch: "[Set Search Action]",
     acceptCookieAction: "[Accept Cookie Action]",
+    require2FAAction: "[Require 2FA Action]",
 };
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
     timezone: null,
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
+    require_2fa: false,
 };
 
 export const reducer = persistReducer(
@@ -51,6 +53,9 @@ export const reducer = persistReducer(
                 Cookie.set('acceptCookie', true);
                 return { ...state, acceptCookie: true };
 
+            case actionTypes.require2FAAction:
+                return { ...state, require_2fa: action.require_2fa };
+
             default:
                 return state;
         }
@@ -65,6 +70,7 @@ export const actions = {
     setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
     acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
+    require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
 };
 
 export function* saga() {

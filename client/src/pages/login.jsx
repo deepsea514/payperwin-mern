@@ -13,6 +13,8 @@ import { Link, withRouter } from 'react-router-dom';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import UserContext from '../contexts/userContext';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -25,7 +27,6 @@ const Form = ({
     handleDirty, // eslint-disable-line react/prop-types
     recaptchaCallback, // eslint-disable-line react/prop-types
     pathNameLoginOrChat,
-    closeModal,
 }) => (
     <Grid container justify="center">
         <Grid item xs={12} sm={7} md={7} lg={7}>
@@ -83,7 +84,7 @@ const Form = ({
                         Submit
                     </Button>
                     <div className="login-recovery">
-                        <Link to="/passwordRecovery" onClick={closeModal}>
+                        <Link to="/passwordRecovery">
                             Forgot Password
                         </Link>
                         <br />
@@ -91,7 +92,7 @@ const Form = ({
                         - OR -
                         <br />
                         Don't have an account?
-                        <Link to="/SignUp" onClick={closeModal} className="sign-up-button">
+                        <Link to="/SignUp" className="sign-up-button">
                             Sign Up
                         </Link>
                     </div>
@@ -127,7 +128,7 @@ class Login extends Component {
     }
 
     handleSubmit(userContextValue) {
-        const { history, location: { pathname }, closeModal } = this.props;
+        const { history, location: { pathname }, require2FAAction } = this.props;
         const { getUser } = userContextValue;
         const { rcptchVerified, errors } = this.state;
         if (window.recaptchaSiteKey && !rcptchVerified) {
@@ -151,13 +152,14 @@ class Login extends Component {
                             'Content-Type': 'application/json',
                         },
                         withCredentials: true,
-                    }).then((/* { data } */) => {
-                        getUser();
-                        if (pathname === '/login') {
-                            history.replace({ pathname: '/' });
-                        }
-                        if (closeModal) {
-                            closeModal();
+                    }).then(({ data }) => {
+                        if (data._2fa_required == false) {
+                            getUser();
+                            if (pathname === '/login') {
+                                history.replace({ pathname: '/' });
+                            }
+                        } else {
+                            require2FAAction();
                         }
                     }).catch((err) => {
                         if (err.response) {
@@ -198,7 +200,7 @@ class Login extends Component {
     }
 
     render() {
-        const { location: { pathname }, closeModal } = this.props;
+        const { location: { pathname } } = this.props;
         return (
             <UserContext.Consumer>
                 {
@@ -211,7 +213,6 @@ class Login extends Component {
                                 handleDirty={this.handleDirty}
                                 recaptchaCallback={this.recaptchaCallback}
                                 pathNameLoginOrChat={pathname === '/login' || pathname === '/chat/'}
-                                closeModal={closeModal}
                             />
 
                         </div>
@@ -222,7 +223,7 @@ class Login extends Component {
     }
 }
 
-export default withRouter(Login);
+export default connect(null, frontend.actions)(withRouter(Login))
 
 Login.propTypes = {
     // match: PropTypes.object.isRequired,

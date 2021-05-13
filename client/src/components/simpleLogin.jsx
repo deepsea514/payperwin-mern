@@ -4,6 +4,8 @@ import { Link, withRouter } from 'react-router-dom';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import UserContext from '../contexts/userContext';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -15,7 +17,6 @@ const Form = ({
     handleSubmit, // eslint-disable-line react/prop-types
     handleDirty, // eslint-disable-line react/prop-types
     pathNameLoginOrChat,
-    closeModal,
 }) => (
     <React.Fragment>
         <div className="form-group email-d">
@@ -77,7 +78,7 @@ class Login extends Component {
     }
 
     handleSubmit(userContextValue) {
-        const { history, location: { pathname }, closeModal } = this.props;
+        const { history, location: { pathname }, require2FAAction } = this.props;
         const { getUser } = userContextValue;
         const { errors } = this.state;
 
@@ -97,13 +98,14 @@ class Login extends Component {
                             'Content-Type': 'application/json',
                         },
                         withCredentials: true,
-                    }).then((/* { data } */) => {
-                        getUser();
-                        if (pathname === '/login') {
-                            history.replace({ pathname: '/' });
-                        }
-                        if (closeModal) {
-                            closeModal();
+                    }).then(({ data }) => {
+                        if (data._2fa_required == false) {
+                            getUser();
+                            if (pathname === '/login') {
+                                history.replace({ pathname: '/' });
+                            }
+                        } else {
+                            require2FAAction();
                         }
                     }).catch((err) => {
                         if (err.response) {
@@ -139,7 +141,7 @@ class Login extends Component {
     }
 
     render() {
-        const { location: { pathname }, closeModal } = this.props;
+        const { location: { pathname } } = this.props;
         const { errors } = this.state;
         return (
             <UserContext.Consumer>
@@ -153,7 +155,6 @@ class Login extends Component {
                                     handleSubmit={() => this.handleSubmit(userContextValue)}
                                     handleDirty={this.handleDirty}
                                     pathNameLoginOrChat={pathname === '/login' || pathname === '/chat/'}
-                                    closeModal={closeModal}
                                 />
                             </div>
                             <div>
@@ -172,4 +173,4 @@ class Login extends Component {
     }
 }
 
-export default withRouter(Login);
+export default connect(null, frontend.actions)(withRouter(Login));

@@ -593,6 +593,10 @@ a.log-in-btn {
     float: right;
 }
 
+.form-button:disabled {
+    background-color: gray;
+}
+
 .form-button {
     padding: 7px 20px;
     background: #ED254E;

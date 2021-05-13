@@ -46,7 +46,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cookieSession = require('cookie-session');
+// const cookieSession = require('cookie-session');
+const expressSession = require('express-session');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { ObjectId } = require('mongodb');
@@ -60,6 +61,20 @@ const adminRouter = require('./adminRoutes');
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
 };
+
+const get2FACode = function () {
+    return '' + Math.random().toString(10).substr(2, 6);
+};
+
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
+}
+
+Date.prototype.addMins = function (m) {
+    this.setTime(this.getTime() + (m * 60 * 1000));
+    return this;
+}
 
 let port = config.serverPort;
 // let sslPort = 443;
@@ -125,6 +140,13 @@ expressApp.use(compression({ filter: shouldCompress }));
 // is authenticated middleware
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+        const { user, session } = req;
+        if (user.roles.enable_2fa) {
+            //TODO check 2fa
+            if (session._2fa_code) {
+                return res.status(403).send('2 Factor Authentication Required.');
+            }
+        }
         return next();
     }
     res.status(403).send('Authentication Required.');
@@ -289,14 +311,29 @@ passport.deserializeUser((id, done) => {
 });
 
 const sessionSecret = 'secret for cookie session can be literally anything even this';
-expressApp.use(cookieParser(sessionSecret));
-expressApp.use(cookieSession({ name: 'session-a', /* domain: 'jujubug.us', */ keys: [sessionSecret], maxAge: 90 * 24 * 60 * 60 * 1000 }));
+// expressApp.use(cookieParser(sessionSecret));
+// expressApp.use(cookieSession({
+//     name: 'session-a',
+//     /* domain: 'jujubug.us', */
+//     keys: [sessionSecret],
+//     maxAge: 90 * 24 * 60 * 60 * 1000
+// }));
+expressApp.use(expressSession({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        name: 'session-a',
+        keys: [sessionSecret],
+        maxAge: 90 * 24 * 60 * 60 * 1000,
+    },
+}));
 
 expressApp.use(function (req, res, next) {
     const { hostname, subdomains } = req;
     if (hostname) {
         const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-        req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
+        // req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
     }
     next();
 })
@@ -346,6 +383,7 @@ expressApp.post(
 );
 
 expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
+    const { session } = req;
     passport.authenticate('local', (err, user/* , info */) => {
         if (err) { return next(err); }
         if (!user) { return res.status(403).json({ error: 'Incorrect username or password' }); }
@@ -360,19 +398,118 @@ expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
                 ip_address
             });
             log.save(function (error) {
-                if (error) console.log("login", error);
-                else console.log(`User login log - ${user.username}`);
+                if (error) console.log("login Error", error);
+                // else console.log(`User login log - ${user.username}`);
             });
 
-            return res.send(user.username);
+            if (user.roles.enable_2fa) {
+                const _2fa_code = get2FACode();
+                session._2fa_code = {
+                    _2fa_code,
+                    expire: new Date().addMins(10),
+                };
+                send2FAVerifyEmail(user.email, _2fa_code);
+                return res.json({ name: user.username, _2fa_required: true });
+            }
+            return res.json({ name: user.username, _2fa_required: false });
         });
     })(req, res, next);
 });
+
+function send2FAVerifyEmail(email, code) {
+    const msg = {
+        from: `"${fromEmailName}" <${fromEmailAddress}>`,
+        to: email,
+        subject: 'Please verify your login',
+        text: `Verification code is ${code}`,
+        html: simpleresponsive(
+            `Hi <b>${email}</b>.
+            <br><br>
+            This email is to inform your verification code.
+            This code is available during 10 minutes.
+            <br><br>
+            <h4>${code}</h4>
+            `),
+    };
+    sgMail.send(msg);
+}
+
+expressApp.post(
+    '/resend-2fa-code',
+    async (req, res) => {
+        const { session, user } = req;
+        console.log('resend verify email', user.email);
+        if (req.isAuthenticated()) {
+            const _2fa_code = get2FACode();
+            session._2fa_code = {
+                _2fa_code,
+                expire: new Date().addMins(10),
+            };
+            try {
+                send2FAVerifyEmail(user.email, _2fa_code);
+                res.send('success');
+            } catch (error) {
+                res.status(400).send("Can't send verification code.");
+            }
+        } else {
+            res.status(403).send("Authentication required");
+        }
+    }
+)
+
+expressApp.post(
+    '/verify-2fa-code',
+    async (req, res) => {
+        const { session, user } = req;
+        console.log('verify code', user.email);
+        if (req.isAuthenticated()) {
+            const { verification_code } = req.body;
+            if (!session._2fa_code || new Date(session._2fa_code.expire).getTime() < new Date().getTime()) {
+                const _2fa_code = get2FACode();
+                session._2fa_code = {
+                    _2fa_code,
+                    expire: new Date().addMins(10),
+                };
+                try {
+                    send2FAVerifyEmail(user.email, _2fa_code);
+                    return res.send({ success: false, message: "Verification code expired. We sent you new verification code." });
+                } catch (error) {
+                    return res.status(400).send("Can't send verification code.");
+                }
+            } else if (session._2fa_code._2fa_code != verification_code) {
+                return res.send({ success: false, message: "Verification code mismatch." });
+            } else {
+                delete session._2fa_code;
+                return res.send({ success: true });
+            }
+        } else {
+            res.status(403).send("Authentication required");
+        }
+    }
+)
 
 expressApp.get('/logout', (req, res) => {
     req.logout();
     res.send('logged out');
 });
+
+expressApp.post(
+    '/enable-2fa',
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const { user } = req;
+            const { enable_2fa } = req.body;
+            user.roles = {
+                ...user.roles,
+                enable_2fa
+            };
+            await user.save();
+            return res.send("Successfully updated.");
+        } catch (error) {
+            res.status(400).send("Can't update.");
+        }
+    })
 
 
 expressApp.get('/emailTaken', (req, res) => {
@@ -462,7 +599,6 @@ expressApp.post('/passwordChange', bruteforce.prevent, isAuthenticated, async (r
 });
 
 // Helps keep the domain consistent when having multiple domains point to same app
-const serverHostToClientHost = config.serverHostToClientHost;
 
 expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => {
     const { hostname, protocol, headers, subdomains } = req;
@@ -479,7 +615,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
-                const passwordRecoveryPath = `${protocol}://${serverHostToClientHost[req.headers.host]}/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
+                const passwordRecoveryPath = `https://payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
                 // if (process.env.NODE_ENV === 'development') {
                 //   console.log(`Hey ${user.username}, you can create a new password here:\n${passwordRecoveryPath}`);
                 // } else {
@@ -877,6 +1013,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         return arr.filter((_v, index) => results[index]);
     }
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
+        if (!autobet.userId) return false;
         const today = new Date();
         let fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         if (autobet.peorid == AutoBetPeorid.weekly) {
@@ -1184,6 +1321,7 @@ expressApp.get(
 
 expressApp.get(
     '/user',
+    isAuthenticated,
     async (req, res) => {
         let userObj = false;
         if (req.isAuthenticated()) {
@@ -1203,6 +1341,7 @@ expressApp.get(
 
 expressApp.get(
     '/profile',
+    isAuthenticated,
     async (req, res) => {
         let userObj = false;
         if (req.isAuthenticated()) {

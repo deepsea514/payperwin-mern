@@ -1,9 +1,47 @@
 
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
+import axios from 'axios';
+import { Link } from "react-router-dom";
+const config = require('../../../config.json');
+const serverUrl = config.appUrl;
 
 class Security extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            enable_2fa: 'false',
+        }
+    }
+
+    getSnapshotBeforeUpdate(prevProps) {
+        const { user } = this.props;
+        return { enable_2fa: user ? true : false };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (snapshot.enable_2fa) {
+            const { user } = this.props;
+            const enable_2fa = user.roles.enable_2fa == true ? 'true' : 'false';
+            if (prevState.enable_2fa != enable_2fa) {
+                this.setState({ enable_2fa });
+            }
+        }
+    }
+
+    handleChange = (evt) => {
+        const { getUser } = this.props;
+        const value = evt.target.value;
+        this.setState({ enable_2fa: value });
+        axios.post(`${serverUrl}/enable-2fa`, { enable_2fa: value == 'true' }, { withCredentials: true })
+            .then(() => {
+                getUser();
+            });
+    }
+
     render() {
+        const { enable_2fa } = this.state;
         setTitle({ pageTitle: 'Password and Security' });
         return (
             <div className="col-in">
@@ -13,60 +51,46 @@ class Security extends Component {
                         <div className="row">
                             <div className="col-12">
                                 <div className="card scrity mt-3 tab-card">
-                                    <div
-                                        className="card-header tab-card-header">
-                                        <ul className="nav nav-tabs card-header-tabs"
-                                            id="myTab" role="tablist">
+                                    <div className="card-header tab-card-header">
+                                        <ul className="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                                             <li className="nav-item">
-                                                <a className="nav-link"
-                                                    id="one-tab"
-                                                    data-toggle="tab"
-                                                    href="#one" role="tab"
-                                                    aria-controls="One"
-                                                    aria-selected="true">PASSWORD AND SECURITY</a>
+                                                <a className="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">PASSWORD AND SECURITY</a>
                                             </li>
                                             <li className="nav-item">
-                                                <a className="nav-link"
-                                                    id="two-tab"
-                                                    data-toggle="tab"
-                                                    href="#two" role="tab"
-                                                    aria-controls="Two"
-                                                    aria-selected="false">LAST LOGINS</a>
+                                                <a className="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">LAST LOGINS</a>
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <div className="tab-content"
-                                        id="myTabContent">
-                                        <div className="tab-pane fade show active p-3"
-                                            id="one" role="tabpanel"
-                                            aria-labelledby="one-tab">
+                                    <div className="tab-content" id="myTabContent">
+                                        <div className="tab-pane fade show active p-3" id="one" role="tabpanel" aria-labelledby="one-tab">
                                             <h4 className="h4"> PASSWORD</h4>
                                             <div className="form-group">
                                                 <label>Current password</label>
-                                                <input type="text"
-                                                    name="pswrd"
-                                                    className="form-control" />
+                                                <input type="text" name="pswrd" className="form-control" />
                                             </div>
 
                                             <div className="form-group">
                                                 <label>New password</label>
-                                                <input type="text"
-                                                    name="nw-pswrd"
-                                                    className="form-control" />
+                                                <input type="text" name="nw-pswrd" className="form-control" />
                                             </div>
 
                                             <div className="form-group">
                                                 <label>Confirm password</label>
-                                                <input type="text"
-                                                    name="crn-pswrd"
-                                                    className="form-control" />
+                                                <input type="text" name="crn-pswrd" className="form-control" />
                                             </div>
 
-                                            <button type="submit"
-                                                className="btn-smt">save</button>
+                                            <button type="submit" className="form-button">SAVE</button>
                                             <br />
                                             <br />
+
+                                            <h4 className="h4">Enable Two-Factor Authorization</h4>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup aria-label="gender" name="gender1" value={enable_2fa} onChange={this.handleChange}>
+                                                    <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                                                    <FormControlLabel value="false" control={<Radio />} label="No" />
+                                                </RadioGroup>
+                                            </FormControl>
                                             {/* <h4 className="h4">SECURITY QUESTION AND ANSWER</h4>
                                             <div className="form-group">
                                                 <label>Security question</label>
