@@ -52,6 +52,12 @@ class AuthWrap extends Component {
                     callback();
                 }
             });
+        }).catch(() => {
+            this.setState({ user: false }, () => {
+                if (callback) {
+                    callback();
+                }
+            });
         });
     }
 

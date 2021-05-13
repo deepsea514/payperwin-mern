@@ -46,6 +46,7 @@ import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
 import VerificationProof from "../components/verificationProof";
 import ContactUs from "../pages/contactUs";
+import TfaModal from "../components/tfamodal";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -160,7 +161,7 @@ class App extends PureComponent {
             openBetSlipMenu,
             scrolledTop,
         } = this.state;
-        const { user, getUser, history, updateUser, location, lang, oddsFormat, setOddsFormat, setLanguage } = this.props;
+        const { user, getUser, history, updateUser, location, require_2fa } = this.props;
         const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
         const { pathname } = location;
         const sidebarShowAccountLinks = [
@@ -198,6 +199,7 @@ class App extends PureComponent {
                     location={location}
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
+                {require_2fa && <TfaModal getUser={getUser} />}
                 <section className="main-section">
                     <div className="container">
                         <Switch>
@@ -266,7 +268,7 @@ class App extends PureComponent {
                                                 <Route path="/inbox" component={Inbox} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
                                                 <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
-                                                <Route path="/security" component={Security} />
+                                                <Route path="/security" render={(props) => <Security {...props} user={user} getUser={getUser} />} />
                                                 <Route path="/account" component={Profile} />
                                                 <Route path="/self-exclusion" component={SelfExcusion} />
                                                 <Route path="/deactivation" component={Deactivation} />
@@ -316,6 +318,7 @@ class App extends PureComponent {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    require_2fa: state.frontend.require_2fa,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))
