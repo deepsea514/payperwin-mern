@@ -134,7 +134,7 @@ async function involveLetterAndNumberAndSpecialCharacter(options) {
     var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$");
     if (pattern.test(value))
         return true;
-    return "Password should include more than 1 Big letter, 1 Small letter, 1 Special Character and 1 Number."
+    return "Password should include at least 1 uppercase, 1 lowercase, 1 special character, and 1 number."
 }
 
 const schema = {
@@ -174,9 +174,9 @@ const schema = {
     ],
     password: [
         { validator: isString },
-        { validator: min, options: { number: 8 } },
-        { validator: max, options: { number: 128 } },
-        { validator: involveLetterAndNumberAndSpecialCharacter },
+        { validator: involveLetterAndNumberAndSpecialCharacter, hasTag: 'registration' },
+        { validator: min, options: { number: 8 }, hasTag: 'registration' },
+        { validator: max, options: { number: 128 }, hasTag: 'registration' },
         { validator: required },
     ],
     cPassword: [
