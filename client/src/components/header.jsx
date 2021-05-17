@@ -297,7 +297,7 @@ class Header extends PureComponent {
                                         ) : null}
                                     </li>
                                     <li>{timeString}</li>
-                                    <li><a href="#"><i className="fa fa-question-circle" aria-hidden="true"></i> Help </a></li>
+                                    <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> Help </Link></li>
                                 </ul>
                             </div>
                         </div>
