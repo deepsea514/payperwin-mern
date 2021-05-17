@@ -97,7 +97,7 @@ class Deposit extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {deposit.reason.title}
+                        {deposit.reason ? deposit.reason.title : null}
                     </span>
                 </td>
                 <td className="pl-0">
