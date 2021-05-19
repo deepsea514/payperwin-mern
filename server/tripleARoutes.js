@@ -25,7 +25,7 @@ const ID = function () {
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const sig = req.headers['triplea-signature'];
-        const noti = await TripleANotification.create({ signature: sig, body: req.body });
+        const noti = await TripleANotification.create({ signature: sig, body: req.body, rawBody: req.rawBody });
         let timestamp, signature;
         for (let sig_part of sig.split(',')) {
             let [key, value] = sig_part.split('=');
@@ -41,7 +41,7 @@ const signatureCheck = async (req, res, next) => {
         }
 
         let check_signature = crypto.createHmac('sha256', TripleA)
-            .update(`${timestamp}.${JSON.stringify(req.rawBody)}`)
+            .update(`${timestamp}.${req.rawBody}`)
             .digest('hex');
 
         let curr_timestamp = Math.round((new Date()).getTime() / 1000);
