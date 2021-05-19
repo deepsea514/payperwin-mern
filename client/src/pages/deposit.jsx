@@ -29,6 +29,14 @@ class Deposit extends PureComponent {
                                     Interac eTransfer
                                 </Link>
                             </li>
+                            <li>
+                                <Link to={{ pathname: '/deposit-bitcoin' }}>
+                                    <img src="images/bitcoin.png" />
+                                </Link>
+                                <Link to={{ pathname: '/deposit-bitcoin' }}>
+                                    Bitcoin
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">

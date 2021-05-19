@@ -33,6 +33,7 @@ const InsufficientFunds = 8;
 const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
 const FinancialStatus = config.FinancialStatus;
+const TripleA = config.TripleA;
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
@@ -48,6 +49,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 // const cookieSession = require('cookie-session');
 const expressSession = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { ObjectId } = require('mongodb');
@@ -57,6 +59,7 @@ const fileUpload = require('express-fileupload');
 const v1Router = require('./v1Routes');
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
+const tripleARouter = require("./tripleARoutes");
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -84,8 +87,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Brute Force Mitigation Middleware
-const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
-const bruteforce = new ExpressBrute(store);
+const bruteStore = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
+const bruteforce = new ExpressBrute(bruteStore);
 
 // Database
 mongoose.Promise = global.Promise;
@@ -101,6 +104,18 @@ if (config.mongo && config.mongo.username) {
     mongooptions.pass = config.mongo.password;
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
+const store = new MongoDBStore(
+    {
+        uri: `mongodb://localhost/${databaseName}`,
+        databaseName: databaseName,
+        collection: 'sessions',
+        expires: 90 * 24 * 60 * 60 * 1000,
+        connectionOptions: mongooptions
+    },
+    function (error) {
+        // Should have gotten an error
+    }
+);
 
 // Server
 const expressApp = express();
@@ -322,6 +337,7 @@ expressApp.use(expressSession({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
+    store,
     cookie: {
         name: 'session-a',
         keys: [sessionSecret],
@@ -1614,6 +1630,57 @@ expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res
             return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
         }
     }
+    else if (method == "Bitcoin") {
+        if (!amount || !email || !phone) {
+            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
+        }
+        const { user } = req;
+        let access_token = null;
+        try {
+            const params = new URLSearchParams();
+            params.append('client_id', TripleA.client_id);
+            params.append('client_secret', TripleA.client_secret);
+            params.append('grant_type', 'client_credentials');
+            const { data } = await axios.post(TripleA.tokenurl, params);
+            access_token = data.access_token;
+        } catch (error) {
+            return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        }
+        if (!access_token) {
+            return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        }
+        const body = {
+            "type": "widget",
+            "api_id": TripleA.api_id,
+            "crypto_currency": "BTC",
+            "order_currency": "CAD",
+            "order_amount": amount,
+            "notify_email": email,
+            "notify_url": "https://api.payperwin.co/triplea/bitcoin-deposit",
+            "notify_secret": TripleA.notify_secret,
+            "payer_id": user._id,
+            "payer_name": user.username,
+            "payer_email": email,
+            // "payer_phone": phone,
+            "payer_address": user.address,
+        };
+        let hosted_url = null;
+        try {
+            const { data } = await axios.post(TripleA.paymenturl, body, {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            });
+            hosted_url = data.hosted_url;
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+        }
+        if (!hosted_url) {
+            return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+        }
+        return res.json({ hosted_url });
+    }
     else {
         return res.status(400).json({ success: 0, message: "Method is not suitable." });
     }
@@ -2105,6 +2172,7 @@ expressApp.get(
 expressApp.use('/admin', adminRouter);
 expressApp.use('/v1', v1Router)
 expressApp.use('/premier', premierRouter);
+expressApp.use('/triplea', tripleARouter);
 
 // if (sslPort) {
 //   // Https

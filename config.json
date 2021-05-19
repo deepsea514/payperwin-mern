@@ -70,5 +70,13 @@
         "payouturl": "https://secure.premierpay.ca/api/v2/payout",
         "sid": 201,
         "rcode": "69d82724EAfB6653A4e60072bf8136Da"
+    },
+    "TripleA": {
+        "tokenurl": "https://api.triple-a.io/api/v1/oauth/token",
+        "paymenturl": "https://api.triple-a.io/api/v1/payment/request",
+        "client_id": "oacid-ckosbmtpd0001dkns7fv7am94",
+        "client_secret": "64d9dd14620bf0cfe865f1ab6a9f68d87f35afe03200c1b1bed379a2a3565cb8",
+        "notify_secret": "1234567890payperwin!@#$%^&*()",
+        "api_id": "HA1621238651KeRe"
     }
 }

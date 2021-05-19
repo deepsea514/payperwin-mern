@@ -39,6 +39,7 @@ import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
 import DepositETransfer from "../pages/depositEtransfer";
+import DepositBitcoin from "../pages/depositBitcoin";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
@@ -276,6 +277,7 @@ class App extends PureComponent {
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
+                                                <Route path="/deposit-bitcoin" render={(props) => <DepositBitcoin {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />

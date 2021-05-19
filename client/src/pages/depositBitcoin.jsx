@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import Iframe from 'react-iframe';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -30,7 +31,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class DepositETransfer extends PureComponent {
+class DepositBitcoin extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -47,22 +48,23 @@ class DepositETransfer extends PureComponent {
             }),
             depositSuccess: false,
             depositError: null,
+            hosted_url: null,
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Deposit with eTransfer' });
+        setTitle({ pageTitle: 'Deposit with Bitcoin' });
     }
 
     onSubmit = (values, formik) => {
         axios.post(`${serverUrl}/deposit`, values, { withCredentials: true })
-            .then(() => {
-                this.setState({ depositSuccess: true });
+            .then(({ data }) => {
                 formik.setSubmitting(false);
+                this.setState({ depositSuccess: true, hosted_url: data.hosted_url });
             })
             .catch(() => {
-                this.setState({ depositError: true });
                 formik.setSubmitting(false);
+                this.setState({ depositError: true });
             })
     }
 
@@ -78,16 +80,16 @@ class DepositETransfer extends PureComponent {
 
     render() {
         const { classes, user } = this.props;
-        const { depositSchema, depositError, depositSuccess } = this.state;
+        const { depositSchema, depositError, depositSuccess, hosted_url } = this.state;
         const initialvalues = {
             amount: 0,
             email: (user ? user.email : ''),
             phone: (user ? user.phone : ''),
-            method: 'eTransfer'
+            method: 'Bitcoin'
         };
         return (
             <div className="col-in">
-                <h3>Interac e-Transfer Deposit</h3>
+                <h3>Bitcoin Deposit</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!depositSuccess && <div className={classes.formContent}>
@@ -194,20 +196,27 @@ class DepositETransfer extends PureComponent {
                                 }
                             </Formik>}
                         </div>}
-                        {depositSuccess && <div>
+                        {depositSuccess && !hosted_url && <div>
                             <center><h3>Deposit Pending</h3></center>
                             <p>Your transaction has been sent for processing. please check your email for further information</p>
+                        </div>}
+                        {depositSuccess && hosted_url && <div>
+                            <Iframe url={hosted_url}
+                                width="100%"
+                                height="600px"
+                                display="initial"
+                                position="relative" />
                         </div>}
                     </div>
                 </div>
                 <fieldset className="depositFieldset">
-                    <legend>Interac E-Tranfer Deposit Limits</legend>
-                    <p>Minumum Deposit: CAD 25.00</p>
-                    <p>Maximum Deposit: CAD 3,000.00</p>
+                    <legend>Bitcoin Deposit Limits</legend>
+                    <p>Minumum Deposit: CAD 5.00</p>
+                    <p>Maximum Deposit: CAD 5,000.00</p>
                 </fieldset>
             </div>
         );
     }
 }
 
-export default withRouter(withStyles(useStyles, { withTheme: true })(DepositETransfer));
+export default withRouter(withStyles(useStyles, { withTheme: true })(DepositBitcoin));
