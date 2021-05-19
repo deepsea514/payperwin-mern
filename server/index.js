@@ -27,8 +27,8 @@ const getLineFromSportData = require('./libs/getLineFromSportData');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require('../config.json');
 const io = require("./libs/socket");
-const { generateToken } = require('./generateToken');
-const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./generateSignature');
+const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
+const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
@@ -1453,7 +1453,7 @@ expressApp.get('/getPinnacleLogin',
     async (req, res) => {
         const { sandboxUrl, agentCode, agentKey, secretKey } = config;
         let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-        const token = generateToken(agentCode, agentKey, secretKey);
+        const token = generatePinnacleToken(agentCode, agentKey, secretKey);
         if (!pinnacle) {
             try {
                 const { data } = await axios.post(`${sandboxUrl}/player/create`, {}, {
@@ -1519,7 +1519,7 @@ expressApp.get('/pinnacleLogout',
         try {
             const { sandboxUrl, agentCode, agentKey, secretKey } = config;
             let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-            const token = generateToken(agentCode, agentKey, secretKey);
+            const token = generatePinnacleToken(agentCode, agentKey, secretKey);
             if (!pinnacle) {
                 return res.status(400).json({
                     error: "Can't find pinnacle account."
