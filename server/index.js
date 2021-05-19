@@ -1563,128 +1563,132 @@ expressApp.get('/vipCodeExist', async (req, res) => {
     }
 });
 
-expressApp.post('/deposit', bruteforce.prevent, isAuthenticated, async (req, res) => {
-    const data = req.body;
-    const { amount, email, phone, method } = data;
-    if (method == "eTransfer") {
-        if (!amount || !email || !phone) {
-            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
-        }
-        try {
-            const { user } = req;
-            try {
-                const uniqid = `D${ID()}`;
-                const signature = generatePremierRequestSignature(email, amount, user._id, uniqid);
-                const { data } = await axios.post(`${PremiumPay.paymenturl}/${PremiumPay.sid}`,
-                    {
-                        "payby": "etransfer",
-                        "first_name": user.firstname,
-                        "last_name": user.lastname,
-                        "email": email,
-                        "phone": phone,
-                        "address": "Artery roads",
-                        "city": "Edmonton",
-                        "state": "AB",
-                        "country": "CA",
-                        "zip_code": "T5A",
-                        "ip_address": "159.203.4.60",
-                        "items": [
-                            {
-                                "name": "ETransfer Deposit to PayperWin",
-                                "quantity": 1,
-                                "unit_price": amount,
-                                "sku": uniqid
-                            }
-                        ],
-                        "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
-                        "amount_shipping": 0.00,
-                        "udf1": user._id,
-                        "udf2": uniqid,
-                        "signature": signature
-                    }
-                );
-                await PremierResponse.create(data);
-
-                const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-                if (responsesignature != data.signature) {
-                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-                }
-                if (data.status == "APPROVED") {
-                    const deposit = new FinancialLog({
-                        financialtype: 'deposit',
-                        uniqid,
-                        user: user._id,
-                        amount,
-                        method,
-                        status: "Pending"
-                    });
-                    await deposit.save();
-                    return res.json({ success: 1, message: "Please wait until deposit is finished." });
-                }
-                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
-            } catch (error) {
-                console.log("deposit => ", error);
-                return res.status(400).json({ success: 0, message: "Failed to create deposit." });
+expressApp.post('/deposit',
+    // bruteforce.prevent,
+    isAuthenticated,
+    async (req, res) => {
+        const data = req.body;
+        const { amount, email, phone, method } = data;
+        if (method == "eTransfer") {
+            if (!amount || !email || !phone) {
+                return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
-        } catch (error) {
-            return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
-        }
-    }
-    else if (method == "Bitcoin") {
-        if (!amount || !email || !phone) {
-            return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
-        }
-        const { user } = req;
-        let access_token = null;
-        try {
-            const params = new URLSearchParams();
-            params.append('client_id', TripleA.client_id);
-            params.append('client_secret', TripleA.client_secret);
-            params.append('grant_type', 'client_credentials');
-            const { data } = await axios.post(TripleA.tokenurl, params);
-            access_token = data.access_token;
-        } catch (error) {
-            return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-        }
-        if (!access_token) {
-            return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-        }
-        const body = {
-            "type": "widget",
-            "api_id": TripleA.api_id,
-            "crypto_currency": "BTC",
-            "order_currency": "CAD",
-            "order_amount": amount,
-            "notify_email": email,
-            "notify_url": "https://api.payperwin.co/triplea/bitcoin-deposit",
-            "notify_secret": TripleA.notify_secret,
-            "payer_id": user._id,
-            "payer_name": user.username,
-            "payer_email": email,
-            // "payer_phone": phone,
-            "payer_address": user.address,
-        };
-        let hosted_url = null;
-        try {
-            const { data } = await axios.post(TripleA.paymenturl, body, {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
+            try {
+                const { user } = req;
+                try {
+                    const uniqid = `D${ID()}`;
+                    const signature = generatePremierRequestSignature(email, amount, user._id, uniqid);
+                    const { data } = await axios.post(`${PremiumPay.paymenturl}/${PremiumPay.sid}`,
+                        {
+                            "payby": "etransfer",
+                            "first_name": user.firstname,
+                            "last_name": user.lastname,
+                            "email": email,
+                            "phone": phone,
+                            "address": "Artery roads",
+                            "city": "Edmonton",
+                            "state": "AB",
+                            "country": "CA",
+                            "zip_code": "T5A",
+                            "ip_address": "159.203.4.60",
+                            "items": [
+                                {
+                                    "name": "ETransfer Deposit to PayperWin",
+                                    "quantity": 1,
+                                    "unit_price": amount,
+                                    "sku": uniqid
+                                }
+                            ],
+                            "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
+                            "amount_shipping": 0.00,
+                            "udf1": user._id,
+                            "udf2": uniqid,
+                            "signature": signature
+                        }
+                    );
+                    await PremierResponse.create(data);
+
+                    const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                    if (responsesignature != data.signature) {
+                        return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                    }
+                    if (data.status == "APPROVED") {
+                        const deposit = new FinancialLog({
+                            financialtype: 'deposit',
+                            uniqid,
+                            user: user._id,
+                            amount,
+                            method,
+                            status: "Pending"
+                        });
+                        await deposit.save();
+                        return res.json({ success: 1, message: "Please wait until deposit is finished." });
+                    }
+                    return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+                } catch (error) {
+                    console.log("deposit => ", error);
+                    return res.status(400).json({ success: 0, message: "Failed to create deposit." });
                 }
-            });
-            hosted_url = data.hosted_url;
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+            } catch (error) {
+                return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
+            }
         }
-        if (!hosted_url) {
-            return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+        else if (method == "Bitcoin") {
+            if (!amount || !email || !phone) {
+                return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
+            }
+            const { user } = req;
+            let access_token = null;
+            try {
+                const params = new URLSearchParams();
+                params.append('client_id', TripleA.client_id);
+                params.append('client_secret', TripleA.client_secret);
+                params.append('grant_type', 'client_credentials');
+                const { data } = await axios.post(TripleA.tokenurl, params);
+                access_token = data.access_token;
+            } catch (error) {
+                return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+            }
+            if (!access_token) {
+                return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+            }
+            const body = {
+                "type": "widget",
+                "api_id": TripleA.api_id,
+                "crypto_currency": "BTC",
+                "order_currency": "CAD",
+                "order_amount": amount,
+                "notify_email": email,
+                "notify_url": "https://api.payperwin.co/triplea/bitcoin-deposit",
+                "notify_secret": TripleA.notify_secret,
+                "payer_id": user._id,
+                "payer_name": user.username,
+                "payer_email": email,
+                // "payer_phone": phone,
+                "payer_address": user.address,
+            };
+            let hosted_url = null;
+            try {
+                const { data } = await axios.post(TripleA.paymenturl, body, {
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`
+                    }
+                });
+                hosted_url = data.hosted_url;
+            } catch (error) {
+                console.log(error);
+                return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+            }
+            if (!hosted_url) {
+                return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+            }
+            return res.json({ hosted_url });
         }
-        return res.json({ hosted_url });
+        else {
+            return res.status(400).json({ success: 0, message: "Method is not suitable." });
+        }
     }
-    else {
-        return res.status(400).json({ success: 0, message: "Method is not suitable." });
-    }
-});
+);
 
 expressApp.post(
     '/withdraw',
