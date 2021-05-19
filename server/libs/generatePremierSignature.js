@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const config = require('../config.json');
+const config = require('../../config.json');
 const PremiumPay = config.PremiumPay;
 
 function generatePremierRequestSignature(email, amount, udf1, udf2, udf3, udf4, udf5, udf6) {
