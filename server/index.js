@@ -49,7 +49,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 // const cookieSession = require('cookie-session');
 const expressSession = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(expressSession);
+// const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { ObjectId } = require('mongodb');
@@ -104,18 +104,18 @@ if (config.mongo && config.mongo.username) {
     mongooptions.pass = config.mongo.password;
 }
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
-const store = new MongoDBStore(
-    {
-        uri: `mongodb://localhost/${databaseName}`,
-        databaseName: databaseName,
-        collection: 'sessions',
-        expires: 90 * 24 * 60 * 60 * 1000,
-        connectionOptions: mongooptions
-    },
-    function (error) {
-        // Should have gotten an error
-    }
-);
+// const store = new MongoDBStore(
+//     {
+//         uri: `mongodb://localhost/${databaseName}`,
+//         databaseName: databaseName,
+//         collection: 'sessions',
+//         expires: 90 * 24 * 60 * 60 * 1000,
+//         connectionOptions: mongooptions
+//     },
+//     function (error) {
+//         // Should have gotten an error
+//     }
+// );
 
 // Server
 const expressApp = express();
@@ -337,7 +337,7 @@ expressApp.use(expressSession({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
-    store,
+    // store,
     cookie: {
         name: 'session-a',
         keys: [sessionSecret],
