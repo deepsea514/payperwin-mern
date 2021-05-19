@@ -12,7 +12,7 @@ const TransactionSportsBook = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
 //local helpers
-const { generateToken } = require('./generateToken');
+const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const io = require('./libs/socket');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require("../config.json");
@@ -61,7 +61,7 @@ const tokenCheck = (req, res, next) => {
             });
         }
 
-        const token = generateToken(agentCode, agentKey, secretKey, Timestamp);
+        const token = generatePinnacleToken(agentCode, agentKey, secretKey, Timestamp);
         if (token != SignatureFromReq) {
             return res.json({
                 "ErrorCode": ErrorCode.AuthenticationFailed,

@@ -40,7 +40,7 @@ const signatureCheck = async (req, res, next) => {
             }
         }
 
-        let check_signature = crypto.createHmac('sha256', TripleA)
+        let check_signature = crypto.createHmac('sha256', TripleA.notify_secret)
             .update(`${timestamp}.${req.rawBody}`)
             .digest('hex');
 

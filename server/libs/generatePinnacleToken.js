@@ -283,11 +283,10 @@ function encryptAES(secretKey, tokenPayLoad) {
     return buf.toString('base64')
 }
 
-function generateToken(agentCode, agentKey, secretKey, timestamp = null) {
+function generatePinnacleToken(agentCode, agentKey, secretKey, timestamp = null) {
     if (timestamp == null) {
         timestamp = new Date().getTime();
     }
-    console.log(timestamp)
     const hashToken = md5(agentCode + timestamp + agentKey);
     const tokenPayLoad = agentCode + '|' + timestamp + '|' + hashToken;
     const token = encryptAES(secretKey, tokenPayLoad);
@@ -295,5 +294,5 @@ function generateToken(agentCode, agentKey, secretKey, timestamp = null) {
 }
 
 module.exports = {
-    generateToken
+    generatePinnacleToken
 }

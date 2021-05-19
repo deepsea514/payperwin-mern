@@ -11,7 +11,7 @@ const User = require("./models/user");
 const PremierNotification = require('./models/premier-notification');
 const FinancialLog = require('./models/financiallog');
 //local helpers
-const { generatePremierNotificationSignature } = require('./generateSignature');
+const { generatePremierNotificationSignature } = require('./libs/generatePremierSignature');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
