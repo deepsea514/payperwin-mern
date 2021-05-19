@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const TripleANotificationSchema = new Schema({
     body: Object,
+    rawBody: String,
     signature: String,
     succeed: { type: Boolean, default: false }
 });
