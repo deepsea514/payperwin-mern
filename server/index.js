@@ -355,7 +355,11 @@ expressApp.use(function (req, res, next) {
 })
 // expressApp.use(session({ secret: 'change this', resave: false, saveUninitialized: false, cookie: { maxAge: 24 * 60 * 60 * 1000 } }));
 expressApp.use(bodyParser.urlencoded({ extended: false }));
-expressApp.use(bodyParser.json());
+expressApp.use(bodyParser.json({
+    verify: (req, res, buf) => {
+        req.rawBody = buf;
+    }
+}));
 
 expressApp.use(passport.initialize());
 expressApp.use(passport.session());
@@ -1654,8 +1658,8 @@ expressApp.post('/deposit',
             }
             const body = {
                 "type": "widget",
-                "api_id": TripleA.api_id,
-                "crypto_currency": "BTC",
+                "api_id": TripleA.testMode ? TripleA.test_api_id : TripleA.api_id,
+                "crypto_currency": TripleA.testMode ? "testBTC" : "BTC",
                 "order_currency": "CAD",
                 "order_amount": amount,
                 "notify_email": email,
@@ -1664,8 +1668,9 @@ expressApp.post('/deposit',
                 "payer_id": user._id,
                 "payer_name": user.username,
                 "payer_email": email,
-                // "payer_phone": phone,
-                // "payer_address": user.address,
+                "webhook_data" : {
+                    "payer_id": user._id,
+                },
             };
             let hosted_url = null;
             try {
