@@ -1665,7 +1665,7 @@ expressApp.post('/deposit',
                 "payer_name": user.username,
                 "payer_email": email,
                 // "payer_phone": phone,
-                "payer_address": user.address,
+                // "payer_address": user.address,
             };
             let hosted_url = null;
             try {
