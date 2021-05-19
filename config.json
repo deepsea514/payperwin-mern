@@ -77,6 +77,8 @@
         "client_id": "oacid-ckosbmtpd0001dkns7fv7am94",
         "client_secret": "64d9dd14620bf0cfe865f1ab6a9f68d87f35afe03200c1b1bed379a2a3565cb8",
         "notify_secret": "1234567890payperwin!@#$%^&*()",
-        "api_id": "HA1621238651KeRe"
+        "api_id": "HA1621238651KeRe",
+        "test_api_id": "HA1621238651Xci6_t",
+        "testMode": true
     }
 }

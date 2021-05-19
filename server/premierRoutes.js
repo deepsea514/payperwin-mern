@@ -15,6 +15,8 @@ const { generatePremierNotificationSignature } = require('./generateSignature');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const config = require('../config.json');
+const FinancialStatus = config.FinancialStatus;
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -59,7 +61,7 @@ premierRouter.post('/etransfer-deposit',
                     });
                 }
                 await deposit.update({
-                    status: "Success"
+                    status: FinancialStatus.success
                 });
                 await user.update({
                     balance: user.balance + deposit.amount

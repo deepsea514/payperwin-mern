@@ -5,7 +5,6 @@ const crypto = require('crypto');
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store);
-const { ObjectId } = require('bson');
 const sgMail = require('@sendgrid/mail');
 //Models
 const User = require("./models/user");
@@ -17,6 +16,11 @@ const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const TripleA = config.TripleA;
+const FinancialStatus = config.FinancialStatus;
+
+const ID = function () {
+    return '' + Math.random().toString(10).substr(2, 9);
+};
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -37,7 +41,7 @@ const signatureCheck = async (req, res, next) => {
         }
 
         let check_signature = crypto.createHmac('sha256', TripleA)
-            .update(`${timestamp}.${JSON.stringify(req.body)}`)
+            .update(`${timestamp}.${JSON.stringify(req.rawBody)}`)
             .digest('hex');
 
         let curr_timestamp = Math.round((new Date()).getTime() / 1000);
@@ -63,7 +67,51 @@ tripleARouter.post('/bitcoin-deposit',
     bruteforce.prevent,
     signatureCheck,
     async (req, res) => {
-        res.json({ success: true });
+        const { payment_amount, payment_tier, webhook_data } = req.body;
+        if (webhook_data && payment_tier == 'good') {
+            const uniqid = `D${ID()}`;
+            const user = await User.findById(webhook_data.payer_id);
+            if (!user) {
+                return res.json({ succes: false, message: "Can't find User."});
+            }
+            await FinancialLog.create({
+                financialtype: 'deposit',
+                uniqid,
+                user: webhook_data.payer_id,
+                amount: payment_amount,
+                method: 'Bitcoin',
+                status: FinancialStatus.success
+            });
+            await user.update({
+                $inc: {
+                    balance: payment_amount
+                }
+            });
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'You’ve got funds in your account',
+                text: `You’ve got funds in your account`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
+                    <br><br>
+                    Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
+                    your Payper Win account by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
+            return res.json({
+                success: true,
+                message: "Deposit success"
+            });
+        } else {
+            return res.json({
+                success: false,
+                message: "Waiting for payment"
+            });
+        }
     }
 );
 
