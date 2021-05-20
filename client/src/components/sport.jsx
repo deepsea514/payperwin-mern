@@ -138,12 +138,12 @@ class Sport extends PureComponent {
         const { leagues, origin } = data;
         const emptyBoxLine = (
             <li>
-                <span className="box-mony-line">
+                <span className="box-odds">
                     <div className="vertical-align">
                         <i className="fap fa-do-not-enter" />
                     </div>
                 </span>
-                <span className="box-mony-line">
+                <span className="box-odds">
                     <div className="vertical-align">
                         <i className="fap fa-do-not-enter" />
                     </div>
@@ -207,7 +207,7 @@ class Sport extends PureComponent {
                                                     };
                                                     return (
                                                         <li>
-                                                            <span className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                            <span className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ?
                                                                     () => removeBet(lineId, 'home')
                                                                     : () => addBet(
@@ -234,7 +234,7 @@ class Sport extends PureComponent {
                                                                     </div>
                                                                 </div>
                                                             </span>
-                                                            <span className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                            <span className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ?
                                                                     () => removeBet(lineId, 'away')
                                                                     : () => addBet(
@@ -291,7 +291,7 @@ class Sport extends PureComponent {
                                                     return (
                                                         <li>
                                                             <span
-                                                                className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={
                                                                     betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type)
                                                                         ? () => removeBet(lineId, 'home')
@@ -322,7 +322,7 @@ class Sport extends PureComponent {
                                                                 </div>
                                                             </span>
                                                             <span
-                                                                className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={
                                                                     betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type)
                                                                         ? () => removeBet(lineId, 'away')
@@ -380,7 +380,7 @@ class Sport extends PureComponent {
                                                     return (
                                                         <li>
                                                             <span
-                                                                className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={
                                                                     betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type)
                                                                         ? () => removeBet(lineId, 'home')
@@ -411,7 +411,7 @@ class Sport extends PureComponent {
                                                                 </div>
                                                             </span>
                                                             <span
-                                                                className={`box-mony-line ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                className={`box-odds ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                 onClick={
                                                                     betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type)
                                                                         ? () => removeBet(lineId, 'away')

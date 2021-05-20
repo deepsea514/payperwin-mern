@@ -61,7 +61,7 @@ header {
     width: 180px;
 }
 
-.box-mony-line {
+.box-odds {
     width: 60px;
     height: 74px;
     padding: 0 11px;
@@ -70,16 +70,16 @@ header {
     font-size: 12px;
 }
 
-.box-mony-line:not(:first-child) {
+.box-odds:not(:first-child) {
     margin-left: 4px;
 }
 
-.box-mony-line.line-full {
+.box-odds.line-full {
     margin-left: 0 !important;
     width: 100% !important;
 }
 
-.box-mony-line i {
+.box-odds i {
     font-size: 20px;
     color: #c7c7c7;
     margin-top: 0 !important;
@@ -95,7 +95,7 @@ header {
     padding: 0 10px;
 }
 
-.box-mony-line:hover {
+.box-odds:hover {
     border-color: #ED254E;
     box-shadow: inset 0px -13px 15px -5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, .2);
     cursor: pointer;
@@ -697,7 +697,15 @@ a.log-in-btn {
     margin-bottom: 5px;
 }
 
-.detailed-lines .box-mony-line {
+.line-type-header-moneyline {
+    border-bottom: #ED254E 3px solid;
+}
+
+.box-moneyline {
+    height: 40px !important;
+}
+
+.detailed-lines .box-odds {
     width: 50%;
     text-align: left;
     height: 30px;

@@ -171,11 +171,11 @@ class Lines extends PureComponent {
                                             };
                                             return (
                                                 <React.Fragment>
-                                                    <div className="line-type-header">Moneyline:</div>
+                                                    <div className="line-type-header line-type-header-moneyline">Moneyline:</div>
                                                     <li>
                                                         <div className="row mx-0">
                                                             <div className="col-md-6 com-sm-12 col-12">
-                                                                <span className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                <span className={`box-odds box-moneyline line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                     onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type) ?
                                                                         () => removeBet(lineId, 'home')
                                                                         : () => addBet(
@@ -207,7 +207,7 @@ class Lines extends PureComponent {
                                                                 </span>
                                                             </div>
                                                             <div className="col-md-6 com-sm-12 col-12">
-                                                                <span className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
+                                                                <span className={`box-odds box-moneyline line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ? 'orange' : null}`}
                                                                     onClick={betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type) ?
                                                                         () => removeBet(lineId, 'away')
                                                                         : () => addBet(
@@ -277,7 +277,7 @@ class Lines extends PureComponent {
                                                             <div className="row mx-0">
                                                                 <div className="col-md-6 com-sm-12 col-12">
                                                                     <span
-                                                                        className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
+                                                                        className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
                                                                             betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index)
                                                                                 ? () => removeBet(lineId, 'home', i)
@@ -312,7 +312,7 @@ class Lines extends PureComponent {
                                                                 </div>
                                                                 <div className="col-md-6 com-sm-12 col-12">
                                                                     <span
-                                                                        className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
+                                                                        className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
                                                                             betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index)
                                                                                 ? () => removeBet(lineId, 'away', i)
@@ -385,7 +385,7 @@ class Lines extends PureComponent {
                                                             <div className="row mx-0">
                                                                 <div className="col-md-6 com-sm-12 col-12 ">
                                                                     <span
-                                                                        className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
+                                                                        className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
                                                                             betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index)
                                                                                 ? () => removeBet(lineId, 'home', i)
@@ -420,7 +420,7 @@ class Lines extends PureComponent {
                                                                 </div>
                                                                 <div className="col-md-6 com-sm-12 col-12 ">
                                                                     <span
-                                                                        className={`box-mony-line line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
+                                                                        className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
                                                                         onClick={
                                                                             betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index)
                                                                                 ? () => removeBet(lineId, 'away', i)
