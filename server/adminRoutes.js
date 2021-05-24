@@ -16,7 +16,6 @@ const BetSportsBook = require("./models/betsportsbook");
 const Verification = require("./models/verification");
 const Preference = require("./models/preference");
 const FAQSubject = require("./models/faq_subject");
-const FAQCoFAQItemntent = require("./models/faq_item");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -26,10 +25,12 @@ const accessTokenSecret = 'PPWAdminSecretKey';
 const dateformat = require("dateformat");
 const { ObjectId } = require('mongodb');
 const sgMail = require('@sendgrid/mail');
+const axios = require('axios');
 //local helpers
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
+const TripleA = config.TripleA;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
@@ -868,6 +869,54 @@ adminRouter.patch(
                 }
                 userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
             }
+
+            if (data.status == FinancialStatus.inprogress) {
+                if (withdraw.method == "Bitcoin") {
+                    const amount = data.amount ? data.amount : withdraw.amount;
+                    const prebalance = parseInt(userdata.balance);
+                    const withdrawamount = parseInt(amount);
+                    if (prebalance < withdrawamount + fee) {
+                        res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+                        return;
+                    }
+
+                    let access_token = null;
+                    try {
+                        const params = new URLSearchParams();
+                        params.append('client_id', TripleA.client_id);
+                        params.append('client_secret', TripleA.client_secret);
+                        params.append('grant_type', 'client_credentials');
+                        const { data } = await axios.post(TripleA.tokenurl, params);
+                        access_token = data.access_token;
+                    } catch (error) {
+                        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+                    }
+                    if (!access_token) {
+                        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+                    }
+                    const body = {
+                        "merchant_key": withdraw._id,
+                        "email": userdata.email,
+                        "withdraw_currency": "CAD",
+                        "withdraw_amount": withdrawamount,
+                        "crypto_currency": TripleA.testMode ? "testBTC" : "BTC",
+                        "remarks": "Bitcoin Withdraw",
+                        "notify_url": "https://api.payperwin.co/triplea/bitcoin-withdraw",
+                        "notify_secret": TripleA.notify_secret
+                    };
+                    try {
+                        await axios.post(TripleA.payouturl, body, {
+                            headers: {
+                                'Authorization': `Bearer ${access_token}`
+                            }
+                        });
+                    } catch (error) {
+                        console.log(error);
+                        return res.status(500).json({ success: 0, message: "Can't make withdraw." });
+                    }
+                }
+            }
+
             await withdraw.update(data, { new: true }).exec();
             await userdata.save();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
@@ -877,7 +926,7 @@ adminRouter.patch(
             res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
         }
     }
-)
+);
 
 adminRouter.delete(
     '/withdraw',

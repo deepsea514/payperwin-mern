@@ -78,6 +78,12 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                                 {deposit.status}
                             </span>
                         </td>}
+                    {deposit.status === FinancialStatus.inprogress &&
+                        <td className="pl-0">
+                            <span className="label label-lg label-light-info label-inline">
+                                {deposit.status}
+                            </span>
+                        </td>}
                 </tr>
             );
         });

@@ -72,7 +72,7 @@ tripleARouter.post('/bitcoin-deposit',
             const uniqid = `D${ID()}`;
             const user = await User.findById(webhook_data.payer_id);
             if (!user) {
-                return res.json({ succes: false, message: "Can't find User."});
+                return res.json({ succes: false, message: "Can't find User." });
             }
             await FinancialLog.create({
                 financialtype: 'deposit',
@@ -112,6 +112,14 @@ tripleARouter.post('/bitcoin-deposit',
                 message: "Waiting for payment"
             });
         }
+    }
+);
+
+tripleARouter.post('/bitcoin-withdraw',
+    bruteforce.prevent,
+    signatureCheck,
+    async (req, res) => {
+        res.json({ success: true });
     }
 );
 

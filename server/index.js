@@ -1668,7 +1668,7 @@ expressApp.post('/deposit',
                 "payer_id": user._id,
                 "payer_name": user.username,
                 "payer_email": email,
-                "webhook_data" : {
+                "webhook_data": {
                     "payer_id": user._id,
                 },
             };
@@ -1694,6 +1694,64 @@ expressApp.post('/deposit',
         }
     }
 );
+
+const getMaxWithdraw = async (user) => {
+    let totalsportsbookwagers = 0;
+    let totalwinsportsbook = 0;
+    const betSportsbookHistory = await BetSportsBook.find({ userId: user._id });
+    for (const bet of betSportsbookHistory) {
+        totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
+        const profit = Number(bet.WagerInfo.ProfitAndLoss);
+        if (profit > 0) {
+            totalwinsportsbook += profit;
+        }
+    }
+
+    let totalwagers = await Bet.aggregate(
+        {
+            $match: {
+                userId: new ObjectId(user._id),
+                deletedAt: null,
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$bet"
+                }
+            }
+        }
+    );
+    if (totalwagers.length) totalwagers = totalwagers[0].total;
+    else totalwagers = 0;
+
+    totalwagers += totalsportsbookwagers;
+
+    let totalwinbet = await Bet.aggregate(
+        {
+            $match: {
+                userId: new ObjectId(user._id),
+                status: "Settled - Win",
+                deletedAt: null,
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$credited"
+                }
+            }
+        }
+    );
+    if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
+    else totalwinbet = 0;
+
+    totalwinbet += totalwinsportsbook;
+    const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
+    return maxwithdraw;
+}
 
 expressApp.post(
     '/withdraw',
@@ -1744,61 +1802,8 @@ expressApp.post(
                 //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 // }
                 // if (data.status == "APPROVED") {
-                let totalsportsbookwagers = 0;
-                let totalwinsportsbook = 0;
-                const betSportsbookHistory = await BetSportsBook.find({ userId: user._id });
-                for (const bet of betSportsbookHistory) {
-                    totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
-                    const profit = Number(bet.WagerInfo.ProfitAndLoss);
-                    if (profit > 0) {
-                        totalwinsportsbook += profit;
-                    }
-                }
 
-                let totalwagers = await Bet.aggregate(
-                    {
-                        $match: {
-                            userId: new ObjectId(user._id),
-                            deletedAt: null,
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$bet"
-                            }
-                        }
-                    }
-                );
-                if (totalwagers.length) totalwagers = totalwagers[0].total;
-                else totalwagers = 0;
-
-                totalwagers += totalsportsbookwagers;
-
-                let totalwinbet = await Bet.aggregate(
-                    {
-                        $match: {
-                            userId: new ObjectId(user._id),
-                            status: "Settled - Win",
-                            deletedAt: null,
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$credited"
-                            }
-                        }
-                    }
-                );
-                if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
-                else totalwinbet = 0;
-
-                totalwinbet += totalwinsportsbook;
-
-                const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
+                const maxwithdraw = getMaxWithdraw(user);
 
                 let totalwithdraw = await FinancialLog.aggregate(
                     {
@@ -1840,11 +1845,62 @@ expressApp.post(
                 console.log("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
             }
-        }
-        else {
+        } else if (method == "Bitcoin") {
+            if (!amount) {
+                return res.json({ success: 0, message: "Withdraw Amount is required." });
+            }
+            const { user } = req;
+            if (!user.roles.verified) {
+                return res.json({ success: 0, message: "You should verify your identify to make withdraw." });
+            }
+
+            try {
+                const uniqid = `W${ID()}`;
+                const maxwithdraw = getMaxWithdraw(user);
+
+                let totalwithdraw = await FinancialLog.aggregate(
+                    {
+                        $match: {
+                            financialtype: "withdraw",
+                            user: new ObjectId(user._id),
+                            deletedAt: null,
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "$amount"
+                            }
+                        }
+                    }
+                )
+                if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+                else totalwithdraw = 0;
+
+                if ((amount + totalwithdraw) > maxwithdraw) {
+                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                }
+
+                const withdraw = new FinancialLog({
+                    financialtype: 'withdraw',
+                    uniqid,
+                    user: user._id,
+                    amount,
+                    method,
+                    status: "Pending"
+                });
+                await withdraw.save();
+                return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+            } catch (error) {
+                console.log("withdraw => ", error);
+                return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
+            }
+        } else {
             return res.status(400).json({ success: 0, message: "Method is not suitable." });
         }
-    });
+    }
+);
 
 expressApp.post(
     '/transactions',

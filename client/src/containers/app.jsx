@@ -41,12 +41,14 @@ import BettingRules from "../pages/bettingRules";
 import DepositETransfer from "../pages/depositEtransfer";
 import DepositBitcoin from "../pages/depositBitcoin";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
+import WithdrawBitcoin from "../pages/withdrawBitcoin";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
 import VerificationProof from "../components/verificationProof";
 import ContactUs from "../pages/contactUs";
+import GoToTop from "../components/gotoTop";
 import TfaModal from "../components/tfamodal";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
@@ -185,6 +187,8 @@ class App extends PureComponent {
             '/account',
             '/deposit-etransfer',
             '/withdraw-etransfer',
+            '/deposit-bitcoin',
+            '/withdraw-bitcoin',
             '/verification',
         ].includes(pathname);
         const verified = user && user.roles.verified;
@@ -279,6 +283,7 @@ class App extends PureComponent {
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
                                                 <Route path="/deposit-bitcoin" render={(props) => <DepositBitcoin {...props} user={user} />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
+                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawBitcoin {...props} user={user} />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>
@@ -302,13 +307,14 @@ class App extends PureComponent {
                                                     updateUser={updateUser}
                                                     history={history}
                                                 />}
-                                            {!verified && pathname == '/withdraw' && <VerificationNotify />}
+                                            {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
                                             {!verified && pathname == '/verification' && <VerificationProof />}
                                         </div>
                                     </div>
                                 }}
                             </Route>
                         </Switch>
+                        <GoToTop />
                     </div>
                 </section>
                 <Footer />

@@ -7,6 +7,7 @@ import getLinesFromSportData from '../libs/getLinesFromSportData';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
+import GoToTop from "../components/gotoTop";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
