@@ -1442,11 +1442,6 @@ expressApp.get(
 );
 
 
-expressApp.get('/logout', (req, res) => {
-    req.logout();
-    res.send('logged out');
-});
-
 expressApp.get('/getPinnacleLogin',
     // bruteforce.prevent,
     isAuthenticated,
@@ -1532,7 +1527,6 @@ expressApp.get('/pinnacleLogout',
                 });
 
             } catch (error) {
-                console.log(error);
                 return res.status(400).json({
                     error: "Pinnacle logout failed."
                 });
