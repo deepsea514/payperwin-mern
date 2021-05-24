@@ -144,11 +144,11 @@ tripleARouter.post('/bitcoin-withdraw',
 
             const msg = {
                 from: `"${fromEmailName}" <${fromEmailAddress}>`,
-                to: user.email,
+                to: userdata.email,
                 subject: 'You’ve got withdraw in your account',
                 text: `You’ve got withdraw from your account`,
                 html: simpleresponsive(
-                    `Hi <b>${user.email}</b>.
+                    `Hi <b>${userdata.email}</b>.
                     <br><br>
                     Just a quick reminder that you currently have withdraw from your Payper Win account. You can find out how much is in
                     your Payper Win account by logging in now.
@@ -162,11 +162,11 @@ tripleARouter.post('/bitcoin-withdraw',
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
             const msg = {
                 from: `"${fromEmailName}" <${fromEmailAddress}>`,
-                to: user.email,
+                to: userdata.email,
                 subject: 'Withdraw is canceled',
                 text: `Withdraw is canceled`,
                 html: simpleresponsive(
-                    `Hi <b>${user.email}</b>.
+                    `Hi <b>${userdata.email}</b>.
                     <br><br>
                     Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in
                     your Payper Win account by logging in now.
