@@ -17,6 +17,7 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const TripleA = config.TripleA;
 const FinancialStatus = config.FinancialStatus;
+const CountryInfo = config.CountryInfo;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -140,10 +141,38 @@ tripleARouter.post('/bitcoin-withdraw',
             userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.success }).exec();
             await userdata.save();
+
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'You’ve got withdraw in your account',
+                text: `You’ve got withdraw from your account`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
+                    <br><br>
+                    Just a quick reminder that you currently have withdraw from your Payper Win account. You can find out how much is in
+                    your Payper Win account by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
             return res.json({ success: true });
         } else if (status == "cancel") {
             console.log("triple Payout", 'cancel withdraw');
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'Withdraw is canceled',
+                text: `Withdraw is canceled`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
+                    <br><br>
+                    Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in
+                    your Payper Win account by logging in now.
+                    <br><br>`),
+            };
+            sgMail.send(msg);
             return res.json({ success: true });
         } else {
             return res.json({ success: false, message: 'Waiting approve.' });
