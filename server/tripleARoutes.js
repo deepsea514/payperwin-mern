@@ -119,40 +119,26 @@ tripleARouter.post('/bitcoin-withdraw',
     bruteforce.prevent,
     signatureCheck,
     async (req, res) => {
-        const { remarks, status } = req.body;
-        let withdrawId = remarks.split("Bitcoin Withdraw |")[1];
-        if (!withdrawId) {
-            return res.json({ success: false, message: "Can't find withdraw." });
+        const { payout_reference, status } = req.body;
+        const withdraw = await FinancialLog.findOne({ note: payout_reference });
+        if (!withdraw) {
+            return res.json({ success: false, message: 'Can\'t find withdraw log.' });
+        }
+        if (withdraw.status == FinancialStatus.success) {
+            return res.json({ success: false, message: 'Can\'t update finished withdraw.' });
+        }
+        const userdata = await User.findById(withdraw.user);
+        if (!userdata) {
+            return res.json({ success: false, message: 'Can\'t find user.' });
         }
         if (status == "done") {
-            const withdraw = await FinancialLog.findById(withdrawId);
-            if (withdraw.status == FinancialStatus.success) {
-                return res.json({ success: false, message: 'Can\'t update finished withdraw.' });
-            }
-
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
-                return res.json({ success: false, message: 'Can\'t find user.' });
-            }
             const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
             userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.success }).exec();
             await userdata.save();
             return res.json({ success: true });
         } else if (status == "cancel") {
-            const withdraw = await FinancialLog.findById(withdrawId);
-            if (withdraw.status == FinancialStatus.success) {
-                return res.json({ success: false, message: 'Can\'t update finished withdraw.' });
-            }
-
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
-                return res.json({ success: false, message: 'Can\'t find user.' });
-            }
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
-            // userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
-            // await userdata.save();
             return res.json({ success: true });
         } else {
             return res.json({ success: false, message: 'Waiting approve.' });

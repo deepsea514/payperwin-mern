@@ -904,16 +904,19 @@ adminRouter.patch(
                         "notify_url": "https://api.payperwin.co/triplea/bitcoin-withdraw",
                         "notify_secret": TripleA.notify_secret
                     };
+                    let payout_reference = null;
                     try {
-                        await axios.post(TripleA.payouturl, body, {
+                        const { data } = await axios.post(TripleA.payouturl, body, {
                             headers: {
                                 'Authorization': `Bearer ${access_token}`
                             }
                         });
+                        payout_reference = data.payout_reference;
                     } catch (error) {
                         console.log(error);
                         return res.status(500).json({ success: 0, message: "Can't make withdraw." });
                     }
+                    withdraw.note = payout_reference;
                 }
             }
 
