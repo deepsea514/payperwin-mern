@@ -917,6 +917,7 @@ adminRouter.patch(
                         return res.status(500).json({ success: 0, message: "Can't make withdraw." });
                     }
                     withdraw.note = payout_reference;
+                    await withdraw.save();
                 }
             }
 
