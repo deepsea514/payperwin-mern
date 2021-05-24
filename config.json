@@ -81,6 +81,7 @@
         "notify_secret": "1234567890payperwin!@#$%^&*()",
         "api_id": "HA1621238651KeRe",
         "test_api_id": "HA1621238651Xci6_t",
+        "merchant_key": "mkey-ckosbmtp10000dkns23mu6y92",
         "testMode": true
     }
 }
