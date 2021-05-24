@@ -76,6 +76,7 @@ class WithdrawLog extends React.Component {
                     {log.status === FinancialStatus.success && <td><span className="label label-success label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     {log.status === FinancialStatus.pending && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     {log.status === FinancialStatus.onhold && <td><span className="label label-warning label-inline font-weight-lighter mr-2">{log.status}</span></td>}
+                    {log.status === FinancialStatus.inprogress && <td><span className="label label-info label-inline font-weight-lighter mr-2">{log.status}</span></td>}
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>{log.fee}</td>

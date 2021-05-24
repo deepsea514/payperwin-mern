@@ -31,6 +31,14 @@ class Withdraw extends PureComponent {
                                     Interac eTransfer
                                 </Link>
                             </li>
+                            <li>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    <img src="images/bitcoin.png" />
+                                </Link>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    Bitcoin
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">

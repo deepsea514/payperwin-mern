@@ -36,7 +36,8 @@
     "FinancialStatus": {
         "success": "Successful",
         "pending": "Pending",
-        "onhold": "On-hold"
+        "onhold": "On-hold",
+        "inprogress": "In Progress"
     },
     "PaymentMethod": [
         "eTransfer",
@@ -74,6 +75,7 @@
     "TripleA": {
         "tokenurl": "https://api.triple-a.io/api/v1/oauth/token",
         "paymenturl": "https://api.triple-a.io/api/v1/payment/request",
+        "payouturl": "https://api.triple-a.io/api/v1/payout/withdraw/local/crypto",
         "client_id": "oacid-ckosbmtpd0001dkns7fv7am94",
         "client_secret": "64d9dd14620bf0cfe865f1ab6a9f68d87f35afe03200c1b1bed379a2a3565cb8",
         "notify_secret": "1234567890payperwin!@#$%^&*()",

@@ -110,6 +110,9 @@ class Withdraw extends React.Component {
                     {deposit.status == FinancialStatus.onhold && <span className="label label-lg label-light-warning label-inline">
                         {deposit.status}
                     </span>}
+                    {deposit.status == FinancialStatus.inprogress && <span className="label label-lg label-light-info label-inline">
+                        {deposit.status}
+                    </span>}
                 </td>
             </tr>
         ));

@@ -74,6 +74,12 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, root
                                 {withdraw.status}
                             </span>
                         </td>}
+                    {withdraw.status === FinancialStatus.inprogress &&
+                        <td className="pl-0">
+                            <span className="label label-lg label-light-info label-inline">
+                                {withdraw.status}
+                            </span>
+                        </td>}
                 </tr>
             );
         });
