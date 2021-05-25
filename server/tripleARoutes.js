@@ -68,8 +68,8 @@ tripleARouter.post('/bitcoin-deposit',
     bruteforce.prevent,
     signatureCheck,
     async (req, res) => {
-        const { payment_amount, payment_tier, webhook_data } = req.body;
-        if (webhook_data && payment_tier == 'good') {
+        const { receive_amount, payment_tier, webhook_data } = req.body;
+        if (webhook_data && (payment_tier == 'good' || payment_tier == 'short')) {
             const uniqid = `D${ID()}`;
             const user = await User.findById(webhook_data.payer_id);
             if (!user) {
@@ -79,13 +79,13 @@ tripleARouter.post('/bitcoin-deposit',
                 financialtype: 'deposit',
                 uniqid,
                 user: webhook_data.payer_id,
-                amount: payment_amount,
+                amount: receive_amount,
                 method: 'Bitcoin',
                 status: FinancialStatus.success
             });
             await user.update({
                 $inc: {
-                    balance: payment_amount
+                    balance: receive_amount
                 }
             });
 
