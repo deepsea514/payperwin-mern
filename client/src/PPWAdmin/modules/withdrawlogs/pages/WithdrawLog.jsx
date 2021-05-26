@@ -28,8 +28,10 @@ class WithdrawLog extends React.Component {
             statusSchema: Yup.object().shape({
                 status: Yup.string()
                     .required("Status field is required"),
+                _2fa_code: Yup.string()
+                    .required("2FA code field is required")
             }),
-            initialValues: { status: '' },
+            initialValues: { status: '', _2fa_code: '' },
             editStatusId: null,
             perPage: 25,
         };
@@ -83,7 +85,7 @@ class WithdrawLog extends React.Component {
                     <td></td>
                     <td>
                         {log.status !== FinancialStatus.success && <DropdownButton title="Actions">
-                            <Dropdown.Item onClick={() => this.setState({ editStatusId: log._id, initialValues: { status: log.status } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ editStatusId: log._id, initialValues: { status: log.status, _2fa_code: '' } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ deleteId: log._id })}><i className="fas fa-trash"></i>&nbsp; Delete Log</Dropdown.Item>
                         </DropdownButton>}
                     </td>
@@ -327,6 +329,21 @@ class WithdrawLog extends React.Component {
                                             {formik.touched.status && formik.errors.status ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.status}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>2FA Code<span className="text-danger">*</span></label>
+                                            <input name="_2fa_code" placeholder="Enter 2FA Code"
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "_2fa_code"
+                                                )}`}
+                                                {...formik.getFieldProps("_2fa_code")}
+                                            />
+                                            {formik.touched._2fa_code && formik.errors._2fa_code ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors._2fa_code}
                                                 </div>
                                             ) : null}
                                         </div>

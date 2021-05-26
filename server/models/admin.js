@@ -12,6 +12,7 @@ const AdminSchema = new Schema({
     betsWallet: Number,
     totalWallet: Number,
     userWallet: Number,
+    twoFactorAuthenticationCode: String,
 });
 
 AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
