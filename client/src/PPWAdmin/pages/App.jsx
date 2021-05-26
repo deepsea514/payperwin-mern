@@ -18,6 +18,7 @@ import PromotionModule from "../modules/promotions/pages";
 import KYC from "../modules/kyc/pages";
 import TicketsModule from "../modules/tickets/pages";
 import FAQModule from "../modules/faq/pages";
+import GenerateToken from "./GenrateToken";
 
 export default class App extends Component {
     constructor(props) {
@@ -50,6 +51,9 @@ export default class App extends Component {
             <Layout history={history}>
                 <Switch>
                     {/* <BrowserRouter basename="PPWAdmin"> */}
+
+                    {/* token */}
+                    <Route path="/token" component={GenerateToken} />
 
                     {/* dashboard */}
                     <Route path="/dashboard" component={AdminDashboard} />

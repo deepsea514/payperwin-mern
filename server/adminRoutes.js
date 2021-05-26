@@ -26,6 +26,8 @@ const dateformat = require("dateformat");
 const { ObjectId } = require('mongodb');
 const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
 //local helpers
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
@@ -58,6 +60,58 @@ const authenticateJWT = (req, res, next) => {
     }
 };
 
+
+function getTwoFactorAuthenticationCode(email) {
+    const secretCode = speakeasy.generateSecret({
+        name: `${email}(PPW)`
+    });
+    return {
+        otpauthUrl: secretCode.otpauth_url,
+        base32: secretCode.base32,
+    }
+}
+
+function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, user) {
+    return speakeasy.totp.verify({
+        secret: user.twoFactorAuthenticationCode,
+        encoding: 'base32',
+        token: twoFactorAuthenticationCode,
+    });
+}
+
+adminRouter.post(
+    '/generateAuthCode',
+    bruteforce.prevent,
+    authenticateJWT,
+    async (req, res, next) => {
+        const { user, body } = req;
+        const { password } = body;
+        const admin = await Admin.findById(user._id);
+        if (admin)
+            admin.comparePassword(password, async (error, isMatch) => {
+                if (error) {
+                    return res.status(400).json({ error: "Can't generate qrcode" });
+                }
+                if (isMatch) {
+                    const { otpauthUrl, base32 } = getTwoFactorAuthenticationCode(user.email);
+                    await Admin.findByIdAndUpdate(user._id, {
+                        twoFactorAuthenticationCode: base32,
+                    });
+                    QRCode.toDataURL(otpauthUrl, {}, (error, url) => {
+                        if (error) return res.status(400).json({ error: "Can't generate qrcode" });
+                        return res.json({ qrcode: url });
+                    })
+                }
+                else {
+                    return res.json({ qrcode: null, error: "Password doesn't not match." });
+                }
+            });
+        else {
+            return res.status(400).json({ error: "Can't generate qrcode" });
+        }
+    }
+);
+
 adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -89,7 +143,6 @@ adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
         res.status(404).json({ error: 'Can\'t find admin.' });
         return;
     }
-
 });
 
 adminRouter.post(
@@ -846,6 +899,15 @@ adminRouter.patch(
     async (req, res) => {
         try {
             let { id, data } = req.body;
+            const { _2fa_code } = data;
+            if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
+            const isCodeValid = await verifyTwoFactorAuthenticationCode(
+                _2fa_code, req.user,
+            );
+            if (!isCodeValid) {
+                return res.status(403).json({ error: 'Invalid Code.' });
+            }
+
 
             const withdraw = await FinancialLog.findById(id);
             if (withdraw.status == FinancialStatus.success) {
