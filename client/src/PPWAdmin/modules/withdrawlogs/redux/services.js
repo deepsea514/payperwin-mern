@@ -17,13 +17,17 @@ export function getWithdrawLog(page, filter, perPage = null) {
 }
 
 export function updateWithdraw(id, data) {
-    return axios.patch(`${serverUrl}/withdraw`, { id, data }, { withCredentials: true });
+    const _2fa_code = data._2fa_code;
+    delete data._2fa_code;
+    return axios.patch(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}`, { id, _2fa_code, data }, { withCredentials: true });
 }
 
 export function deleteWithdraw(id) {
     return axios.delete(`${serverUrl}/withdraw?id=${id}`, { withCredentials: true });
 }
 
-export function addWithdraw(credit) {
-    return axios.post(`${serverUrl}/withdraw`, credit, { withCredentials: true });
+export function addWithdraw(data) {
+    const _2fa_code = data._2fa_code;
+    delete data._2fa_code;
+    return axios.post(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}`, data, { withCredentials: true });
 }

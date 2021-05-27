@@ -25,6 +25,7 @@ class AddWithdraw extends React.Component {
                 amount: 0,
                 method: "",
                 status: '',
+                _2fa_code: '',
             },
             withdrawSchema: Yup.object().shape({
                 user: Yup.object()
@@ -36,7 +37,9 @@ class AddWithdraw extends React.Component {
                 method: Yup.string()
                     .required("Method field is required"),
                 status: Yup.string()
-                    .required("Status field is required.")
+                    .required("Status field is required."),
+                _2fa_code: Yup.string()
+                    .required("2FA code field is required")
             }),
         }
     }
@@ -63,7 +66,8 @@ class AddWithdraw extends React.Component {
             user: values.user.value,
             amount: values.amount,
             method: values.method,
-            status: values.status
+            status: values.status,
+            _2fa_code: values._2fa_code,
         };
         addWithdraw(withdraw).then(() => {
             this.setState({ isSuccess: true });
@@ -262,6 +266,21 @@ class AddWithdraw extends React.Component {
                                             {formik.touched.status && formik.errors.status ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.status}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>2FA Code<span className="text-danger">*</span></label>
+                                            <input name="_2fa_code" placeholder="Enter 2FA Code"
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "_2fa_code"
+                                                )}`}
+                                                {...formik.getFieldProps("_2fa_code")}
+                                            />
+                                            {formik.touched._2fa_code && formik.errors._2fa_code ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors._2fa_code}
                                                 </div>
                                             ) : null}
                                         </div>

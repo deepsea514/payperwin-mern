@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import App from "./pages/App";
 import axios from 'axios';
 import update from 'immutability-helper';
+import Favicon from 'react-favicon';
 const config = require('../../../config.json');
 const serverUrl = config.appAdminUrl;
 
@@ -40,6 +41,7 @@ export default class AdminWrap extends Component {
                         {/* <Provider store={store}>
                             <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}> */}
                                 <React.Suspense fallback={<LayoutSplashScreen />}>
+                                    <Favicon url={'/images/favicon-2.ico'} />
                                     <MTheme />
                                     <MaterialThemeProvider>
                                             <BrowserRouter basename={"PPWAdmin"}>

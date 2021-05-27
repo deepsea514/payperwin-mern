@@ -2,13 +2,10 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
+import { Dropdown, Nav } from "react-bootstrap";
 import objectPath from "object-path";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
-import axios from "axios";
-const config = require('../../../../../../../../config.json');
-const serverUrl = config.appAdminUrl;
 
 export function UserProfileDropdown({ history }) {
     const uiService = useHtmlClassService();
@@ -77,13 +74,29 @@ export function UserProfileDropdown({ history }) {
                                 <span className="symbol-label text-success font-weight-bold font-size-h4">
                                     A
                                 </span>
-                                {/*<img alt="Pic" className="hidden" src={user.pic} />*/}
                             </div>
                             <div className="text-white m-0 flex-grow-1 mr-3 font-size-h5">
                                 Admin
                             </div>
                         </div>
                     )}
+                    <div className="navi navi-spacer-x-0 pt-5">
+                        <Link to="/token" className="navi-item px-8 cursor-pointer">
+                            <div className="navi-link">
+                                <div className="navi-icon mr-2">
+                                    <i className="flaticon2-calendar-3 text-success" />
+                                </div>
+                                <div className="navi-text">
+                                    <div className="font-weight-bold cursor-pointer">
+                                        Generate Token
+                                    </div>
+                                    <div className="text-muted">
+                                        Get Google Authenticator token
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
                 </>
                 <div className="navi navi-spacer-x-0 pt-5">
                     <div className="navi-footer  px-8 py-5">
