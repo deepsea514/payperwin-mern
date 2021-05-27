@@ -71,12 +71,23 @@ function getTwoFactorAuthenticationCode(email) {
     }
 }
 
-function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, user) {
-    return speakeasy.totp.verify({
-        secret: user.twoFactorAuthenticationCode,
+function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, token) {
+    return speakeasy.time.verify({
+        secret: twoFactorAuthenticationCode,
         encoding: 'base32',
-        token: twoFactorAuthenticationCode,
+        token: token,
     });
+}
+
+const verifyTwoFactorAuthenticationCodeMiddleware = async (req, res, next) => {
+    const admin = await Admin.findById(req.user._id);
+    const { _2fa_code } = req.query;
+    if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
+    const isCodeValid = await verifyTwoFactorAuthenticationCode(admin.twoFactorAuthenticationCode, _2fa_code);
+    if (!isCodeValid) {
+        return res.status(403).json({ error: 'Invalid Code.' });
+    }
+    next();
 }
 
 adminRouter.post(
@@ -93,14 +104,22 @@ adminRouter.post(
                     return res.status(400).json({ error: "Can't generate qrcode" });
                 }
                 if (isMatch) {
-                    const { otpauthUrl, base32 } = getTwoFactorAuthenticationCode(user.email);
-                    await Admin.findByIdAndUpdate(user._id, {
-                        twoFactorAuthenticationCode: base32,
-                    });
-                    QRCode.toDataURL(otpauthUrl, {}, (error, url) => {
-                        if (error) return res.status(400).json({ error: "Can't generate qrcode" });
-                        return res.json({ qrcode: url });
-                    })
+                    if(admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
+                        QRCode.toDataURL(admin.otpauthUrl, {}, (error, url) => {
+                            if (error) return res.status(400).json({ error: "Can't get qrcode" });
+                            return res.json({ qrcode: url });
+                        });
+                    } else {
+                        const { otpauthUrl, base32 } = getTwoFactorAuthenticationCode(user.email);
+                        await Admin.findByIdAndUpdate(user._id, {
+                            twoFactorAuthenticationCode: base32,
+                            otpauthUrl: otpauthUrl,
+                        });
+                        QRCode.toDataURL(otpauthUrl, {}, (error, url) => {
+                            if (error) return res.status(400).json({ error: "Can't generate qrcode" });
+                            return res.json({ qrcode: url });
+                        });
+                    }
                 }
                 else {
                     return res.json({ qrcode: null, error: "Password doesn't not match." });
@@ -896,18 +915,17 @@ adminRouter.get(
 adminRouter.patch(
     '/withdraw',
     authenticateJWT,
+    verifyTwoFactorAuthenticationCodeMiddleware,
     async (req, res) => {
         try {
+            // const admin = await Admin.findById(req.user._id);
             let { id, data } = req.body;
-            const { _2fa_code } = data;
-            if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
-            const isCodeValid = await verifyTwoFactorAuthenticationCode(
-                _2fa_code, req.user,
-            );
-            if (!isCodeValid) {
-                return res.status(403).json({ error: 'Invalid Code.' });
-            }
-
+            // const { _2fa_code } = data;
+            // if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
+            // const isCodeValid = await verifyTwoFactorAuthenticationCode(admin.twoFactorAuthenticationCode, _2fa_code);
+            // if (!isCodeValid) {
+            //     return res.status(403).json({ error: 'Invalid Code.' });
+            // }
 
             const withdraw = await FinancialLog.findById(id);
             if (withdraw.status == FinancialStatus.success) {

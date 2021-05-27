@@ -13,6 +13,7 @@ const AdminSchema = new Schema({
     totalWallet: Number,
     userWallet: Number,
     twoFactorAuthenticationCode: String,
+    otpauthUrl: String,
 });
 
 AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
