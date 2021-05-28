@@ -72,6 +72,7 @@ function getTwoFactorAuthenticationCode(email) {
 }
 
 function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, token) {
+    console.log(twoFactorAuthenticationCode, token);
     return speakeasy.time.verify({
         secret: twoFactorAuthenticationCode,
         encoding: 'base32',
