@@ -106,12 +106,12 @@ adminRouter.post(
                     return res.status(400).json({ error: "Can't generate qrcode" });
                 }
                 if (isMatch) {
-                    if(admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
-                        QRCode.toDataURL(admin.otpauthUrl, {}, (error, url) => {
-                            if (error) return res.status(400).json({ error: "Can't get qrcode" });
-                            return res.json({ qrcode: url });
-                        });
-                    } else {
+                    // if(admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
+                    //     QRCode.toDataURL(admin.otpauthUrl, {}, (error, url) => {
+                    //         if (error) return res.status(400).json({ error: "Can't get qrcode" });
+                    //         return res.json({ qrcode: url });
+                    //     });
+                    // } else {
                         const { otpauthUrl, base32 } = getTwoFactorAuthenticationCode(user.email);
                         await Admin.findByIdAndUpdate(user._id, {
                             twoFactorAuthenticationCode: base32,
@@ -121,7 +121,7 @@ adminRouter.post(
                             if (error) return res.status(400).json({ error: "Can't generate qrcode" });
                             return res.json({ qrcode: url });
                         });
-                    }
+                    // }
                 }
                 else {
                     return res.json({ qrcode: null, error: "Password doesn't not match." });
