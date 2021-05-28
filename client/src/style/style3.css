@@ -573,6 +573,12 @@ a.log-in-btn {
     display: block;
 }
 
+@media (max-width: 500px) {
+    .modal.confirmation .col-in {
+        margin: 50vh 10px !important;
+    }
+}
+
 .modal.confirmation .col-in {
     position: relative;
     z-index: 2;
@@ -702,7 +708,7 @@ a.log-in-btn {
 }
 
 .box-moneyline {
-    /*height: 40px !important;*/
+    /* height: 40px !important; */
 }
 
 .detailed-lines .box-odds {
