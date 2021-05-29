@@ -19,7 +19,9 @@ export function getWithdrawLog(page, filter, perPage = null) {
 export function updateWithdraw(id, data) {
     const _2fa_code = data._2fa_code;
     delete data._2fa_code;
-    return axios.patch(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}`, { id, _2fa_code, data }, { withCredentials: true });
+    let time = (new Date()).getTime();
+    time = Math.floor(time / 1000);
+    return axios.patch(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}&time=${time}`, { id, data }, { withCredentials: true });
 }
 
 export function deleteWithdraw(id) {
@@ -29,5 +31,7 @@ export function deleteWithdraw(id) {
 export function addWithdraw(data) {
     const _2fa_code = data._2fa_code;
     delete data._2fa_code;
-    return axios.post(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}`, data, { withCredentials: true });
+    let time = (new Date()).getTime();
+    time = Math.floor(time / 1000);
+    return axios.post(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}&time=${time}`, data, { withCredentials: true });
 }
