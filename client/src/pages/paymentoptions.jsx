@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
+import PaymentOptionBitcoin from "../components/paymentOptionBitcoin";
 
 class PaymentOptions extends Component {
     constructor(props) {
@@ -49,8 +50,23 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Interac E-Transfer</li>
-                                            <li>free : <strong>$10</strong> </li>
-                                            <li>min : <strong>$25</strong></li>
+                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Min : <strong>$25</strong></li>
+                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/bitcoin.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> Bitcoin</li>
+                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Min : <strong>$25</strong></li>
                                             <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
@@ -60,6 +76,7 @@ class PaymentOptions extends Component {
                     </div>
                 </div>}
                 {(option == 'etransfer') && <PaymentOptionEtransfer onBack={() => this.setState({ option: null })} />}
+                {(option == 'bitcoin') && <PaymentOptionBitcoin onBack={() => this.setState({ option: null })} />}
             </div>
         );
     }

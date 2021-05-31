@@ -97,7 +97,7 @@
         border-left: 3px solid #ED254E;
     }
     .navbar-mobile .nav-item.active {
-        border: none;
+        /* border: none; */
     }
     /* .navbar-nav .nav-item:hover {
     border: none;

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import sportNameIcon from '../helpers/sportNameIcon';
+// import sportNameIcon from '../helpers/sportNameIcon';
+import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 
@@ -83,7 +84,8 @@ class Bet extends PureComponent {
         return (
             <div className="bet">
                 <div>
-                    <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} />
+                    {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
+                    <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                     {` ${name}`}
                     <i className="fal fa-times" onClick={() => removeBet(lineId, pick)} />
                 </div>
