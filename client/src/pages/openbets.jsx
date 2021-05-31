@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-import sportNameIcon from '../helpers/sportNameIcon';
+// import sportNameIcon from '../helpers/sportNameIcon';
+import sportNameImage from "../helpers/sportNameImage";
 import dayjs from 'dayjs';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -138,7 +139,8 @@ export default class OpenBets extends PureComponent {
                                 </div>
                             </div>
                             <div className="open-bets-event">
-                                <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} />
+                                {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
+                                <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                                 {`${teamA.name} vs ${teamB.name}`}
                                 {homeScore && awayScore ? <div>{pickName}</div> : null}
                                 <div>Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:MM')}</div>

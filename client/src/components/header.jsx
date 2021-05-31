@@ -197,14 +197,14 @@ class Header extends PureComponent {
                                                 </Link>
                                             </center>
                                         </li>
-                                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
+                                        <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                     <i className="fas fa-info"></i>How It Works
                                                 </Link>
                                             </center>
                                         </li>
-                                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
+                                        <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/faq' }} className="nav-link">
                                                     <i className="fas fa-question"></i>FAQ

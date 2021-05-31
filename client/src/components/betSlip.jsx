@@ -147,7 +147,10 @@ export default class BetSlip extends PureComponent {
                                     onClick={
                                         user
                                             ? this.placeBets
-                                            : () => history.replace({ pathname: '/login' })
+                                            : () => {
+                                                history.replace({ pathname: '/login' });
+                                                toggleField('openBetSlipMenu');
+                                            }
                                     }
                                 >
                                     {user ? 'Place All Bets' : 'Log in and Place Bets'}

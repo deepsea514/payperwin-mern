@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PaymentOptionEtransfer extends Component {
+class PaymentOptionBitcoin extends Component {
     render() {
         const { onBack } = this.props;
         return (
@@ -11,8 +11,8 @@ class PaymentOptionEtransfer extends Component {
                     <strong><i className="fas fa-chevron-left"></i> Back</strong>
                 </a>
                 <div>
-                    <span className="card-name">Interac e-Transfer</span>
-                    <img className="right" style={{ border: "none" }} src="images/eTransfer.png" alt="Interac e-Transfer" width="170" height="70" />
+                    <span className="card-name">Bitcoin</span>
+                    <img className="right" style={{ border: "none" }} src="images/bitcoin.png" alt="Interac e-Transfer" width="170" height="auto" />
                 </div>
 
                 <hr />
@@ -73,38 +73,45 @@ class PaymentOptionEtransfer extends Component {
                 </div>
 
                 <article class="paymentoption-content mt-5">
-                    <p>Please note that additional limits may be applied by Interac or your financial institution.</p>
+                    <strong>PAYPER Win currently works with third party exchange providers that convert cryptocurrencies into the FIAT currency of your player account. Although we work to ensure that all costs are minimal, there may be fluctuations in the fees charged and conversion rates. We do not offer Bitcoin as an account currency.</strong>
+                    <br />
                     <br />
                     <strong>Processing Time</strong>
                     <br />
                     <ul style={{ listStyle: 'circle', marginLeft: '20px' }}>
-                        <li>Interac e-Transfer deposits are usually completed in a few minutes but in rare circumstances can take a few hours.</li>
-                        <li>Interac e-Transfer withdrawals will be processed into your bank account within one business day.</li>
-                        <li>If you have accumulated transactions valuing CAD 7,500, international financial regulations require us to request proof of identification.</li>
+                        <li>Deposits are usually confirmed within 30-60 minutes.</li>
+                        <li>Withdrawals are processed instantly.</li>
+                        <li>You may be asked to confirm your withdrawal request by clicking on a confirmation link that will be sent to your registered email address.</li>
+                        <li>The payment information displayed (rate/address/QR code) is only valid for 10 minutes.</li>
                     </ul>
                     <br />
                     <strong>Fees</strong>
                     <ul style={{ listStyle: 'circle', marginLeft: '20px' }}>
-                        <li>Each PayPer Win customer receives one free withdrawal per calendar month.</li>
-                        <li>Additional withdrawals during that month incur the fee listed above.</li>
+                        <li>PayPer Win absorbs all processing fees for deposits into your player account; however, we do not cover any Bitcoin network fees.</li>
+                        <li>The exchange rate provided by our supplier is locked for 10 minutes. If you broadcast your transaction to the network within this time frame, you will receive the quoted rate.</li>
+                        <li>For payouts, there may be fees charged by the exchange service which will not be reimbursed.</li>
+                        <li>Each PayPer Win customer receives one free withdrawal per calendar month. Additional withdrawals during that month will incur the fee listed in the table above.</li>
                     </ul>
                     <br />
                     <p>PayPer Win makes every effort to ensure our payment processing rules strike a balance between being fair to our customers and free of fees, while also enabling us to keep offering the best value odds online. Whenever possible we absorb transaction fees, however failure to meet our deposit roll-over threshold (three times deposit amount) will incur a 10% processing fee on the withdrawal amount (minimum fee: $20 USD or equivalent), plus any applicable withdrawal fee. Please note that we reserve the right to reject withdrawals if the rollover requirement is not completed.</p>
                     <br />
                     <strong>Important Information</strong>
                     <ul style={{ listStyle: 'circle', marginLeft: '20px' }}>
-                        <li>All funds must be sent and received from an Interac e-Transfer account registered in the same name as the PayPer Win account holder only. Funds received by PayPer Win sent by an Interac e-Transfer account registered to a person other than the account holder will not be accepted. Please make sure your personal details are correct by using the Account Details option in your account.</li>
-                        <li>If you deposit funds to your PayPer Win account using Interac e-Transfer, payouts must be processed back to the same Interac e-Transfer account up to, but not limited to, the amount initially deposited.</li>
+                        <li>All customers using this option must submit proof of ID and Address prior to any transactions being processed. If not already done, please log in and go to the Personal Details section of the website to upload your documents.</li>
+                        <li>Funds NOT sent from exchanges or commercial wallet applications may require supporting Due Diligence documentation.</li>
+                        <li>Transactions using cryptocurrency obtained from Hydra Market (or similar services) are not accepted.</li>
+                        <li>PayPer Win uses an exchange service to convert your Bitcoin into your player account currency. We do not offer Bitcoin as an account currency.</li>
                     </ul>
                     <br />
                     <strong>Making a Deposit</strong>
                     <div>
                         <ul style={{ listStyle: 'number', marginLeft: '20px' }}>
                             <li>Log in to your PayPer Win account.</li>
-                            <li>Go to the Cashier section and click on the Interac e-Transfer icon in the deposit section.</li>
-                            <li>Enter the amount and confirm your email address and phone number on the form and select "Submit".</li>
-                            <li>You will receive an email with instructions to complete the transaction.</li>
-                            <li>If your deposit is successful, the funds will be added to your PayPer Win account.</li>
+                            <li>Go to the Cashier section and click on the Bitcoin icon in the deposit section.</li>
+                            <li>Enter the deposit amount.</li>
+                            <li>After you click “Submit”, you will be presented with payment information, including a QR code that you can scan and a payment amount and address to send your Bitcoin to.</li>
+                            <li>Please follow the steps in your Bitcoin wallet to confirm the payment.</li>
+                            <li>If your deposit is successful, the funds will be added to your Pinnacle account within 30-60 minutes.</li>
                         </ul>
                     </div>
                     <br />
@@ -112,10 +119,10 @@ class PaymentOptionEtransfer extends Component {
                     <div>
                         <ul style={{ listStyle: 'number', marginLeft: '20px' }}>
                             <li>Log in to your PayPer Win account.</li>
-                            <li>Go to the Cashier section and click on the Interac e-Transfer icon in the withdrawal section.</li>
-                            <li>Enter the amount, ensuring that your email address and phone number are correct and select "Submit".</li>
-                            <li>If the email address and phone number are not correct, please contact customerservice@payperwin.co to update your account information before submitting the request.</li>
-                            <li>Once the transaction is approved, the funds will be deducted from your PayPer Win player account and you will receive an email with instructions to claim your funds at Interac.</li>
+                            <li>Go to the Cashier section and click on the Bitcoin icon in the withdrawal section.</li>
+                            <li>Enter the withdrawal amount and your cryptocurrency wallet address and submit.</li>
+                            <li>Once your request is completed, the transaction will be reviewed for processing.</li>
+                            <li>You will receive an email confirmation when your withdrawal request is approved.</li>
                         </ul>
                     </div>
                     <br />
@@ -125,4 +132,4 @@ class PaymentOptionEtransfer extends Component {
     }
 }
 
-export default PaymentOptionEtransfer;
+export default PaymentOptionBitcoin;

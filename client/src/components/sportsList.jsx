@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import sportNameIcon from '../helpers/sportNameIcon';
+// import sportNameIcon from '../helpers/sportNameIcon';
+import sportNameImage from "../helpers/sportNameImage";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 import '../style/all.min.css';
@@ -54,7 +55,9 @@ class SportsList extends PureComponent {
                                     to={{ pathname: `/sport/${sport.name}` }}
                                     style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
                                 >
-                                    <i className={`${sportNameIcon(name) || 'fas fa-trophy'}`} />{name}<span>{sport.eventCount}</span>
+                                    {/* <i className={`${sportNameIcon(name) || 'fas fa-trophy'}`} /> */}
+                                    <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
+                                    {name}<span>{sport.eventCount}</span>
                                 </Link>
                             </li>
                         ) : null;
