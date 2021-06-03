@@ -64,7 +64,7 @@ class Events extends React.Component {
 
     getBetOptions = (candidates) => {
         return candidates.map(candidate => (
-            <p>{candidate.name}: {candidate.odds[candidate.odds.length - 1]}</p>
+            <p key={candidate.name}>{candidate.name}: {candidate.odds[candidate.odds.length - 1]}</p>
         ));
     }
 
