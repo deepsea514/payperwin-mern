@@ -2172,6 +2172,14 @@ adminRouter.get(
             if (EventStatus[status]) {
                 findObj = { status: EventStatus[status].value };
             }
+            if (EventResult[result]) {
+                findObj = { ...findObj, result: EventResult[result].value };
+                if (result == "pending") {
+                    findObj = { ...findObj, startDate: { $gte: new Date() } };
+                } else if (result == "outdated") {
+                    findObj = { ...findObj, startDate: { $lt: new Date() } };
+                }
+            }
             const total = await Event.find(findObj).count();
             const events = await Event.find(findObj)
                 .sort({ createdAt: -1 })
