@@ -8,6 +8,19 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
     const getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
+
+    const getPPWBetType = (type) => {
+        switch (type) {
+            case "moneyline":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
+            case "spread":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+            case "total":
+            default:
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+        }
+    }
+
     const tableBody = () => {
         if (loadingbets)
             return (
@@ -32,6 +45,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         }
 
         return lastbets.map((bet, index) => {
+            if (!bet.userId) return null;
             return (
                 <tr key={index} onClick={gotoBet} style={{ cursor: "pointer" }} className="text-hover-primary">
                     <td className="pl-0">
@@ -59,24 +73,9 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                             {`${bet.teamA.name} vs ${bet.teamB.name}`}
                         </span>
                     </td>
-                    {bet.lineQuery.type == "moneyline" &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-danger label-inline" style={{ textTransform: "uppercase" }}>
-                                {bet.lineQuery.type}
-                            </span>
-                        </td>}
-                    {bet.lineQuery.type == "spread" &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-info label-inline" style={{ textTransform: "uppercase" }}>
-                                {bet.lineQuery.type}
-                            </span>
-                        </td>}
-                    {bet.lineQuery.type == "total" &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-success label-inline" style={{ textTransform: "uppercase" }}>
-                                {bet.lineQuery.type}
-                            </span>
-                        </td>}
+                    <td className="pl-0">
+                        {getPPWBetType(bet.lineQuery.type)}
+                    </td>
                 </tr>
             )
         })

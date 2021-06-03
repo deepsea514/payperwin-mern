@@ -29,6 +29,82 @@ class BetDetail extends React.Component {
         return dateformat(new Date(date), "mediumDate");
     }
 
+    getPPWBetType = (type) => {
+        switch (type) {
+            case "moneyline":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
+            case "spread":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+            case "total":
+            default:
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+        }
+    }
+
+    getPPWBetStatus = (status) => {
+        switch (status) {
+            case "Pending":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">Pending</span>
+            case "Partial Match":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span>
+            case "Matched":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Matched</span>
+            case "Cancelled":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">Cancelled</span>
+            case "Settled - Lose":
+                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Lose</span>
+            case "Settled - Win":
+            default:
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
+        }
+    }
+
+    getPinnacleBetType = (type) => {
+        switch (type.toLowerCase()) {
+            case "single":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
+            case "parlay":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+            case "teaser":
+            default:
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+        }
+    }
+
+    getPInnacleBetStatus = (status) => {
+        switch (status) {
+            case "BETTED":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">BETTED</span>
+            case "ACCEPTED":
+                return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">ACCEPTED</span>
+            case "SETTLED":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">SETTLED</span>
+            case "CANCELLED":
+                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">SETTLED</span>
+            case "REJECTED":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">REJECTED</span>
+            case "ROLLBACKED":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">ROLLBACKED</span>
+            case "UNSETTLED":
+            default:
+                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">UNSETTLED</span>
+        }
+    }
+
+    getPPWBetMatch = (status) => {
+        switch (status) {
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
+            case "Cancelled":
+            case "Settled - Lose":
+            case "Settled - Win":
+            default:
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+        }
+    }
+
     render() {
         const { loading, bet, } = this.state;
         return (
@@ -83,23 +159,15 @@ class BetDetail extends React.Component {
                                         </tr>
                                         <tr>
                                             <th>Line</th>
-                                            {bet.lineQuery.type == "moneyline" && <td scope="col" style={{ textTransform: "uppercase" }}><span className="label label-danger label-inline font-weight-lighter mr-2">{bet.lineQuery.type}</span></td>}
-                                            {bet.lineQuery.type == "spread" && <td scope="col" style={{ textTransform: "uppercase" }}><span className="label label-info label-inline font-weight-lighter mr-2">{bet.lineQuery.type}</span></td>}
-                                            {bet.lineQuery.type == "total" && <td scope="col" style={{ textTransform: "uppercase" }}><span className="label label-success label-inline font-weight-lighter mr-2">{bet.lineQuery.type}</span></td>}
+                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.lineQuery.type)}</td>
                                             <th>House</th>
-                                            <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">PPW</span></td>
+                                            <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                                         </tr>
                                         <tr>
                                             <th>Status</th>
-                                            {bet.status == "Pending" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Pending</span></td>}
-                                            {bet.status == "Partial Match" && <td scope="col"><span className="label label-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span></td>}
-                                            {bet.status == "Matched" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Matched</span></td>}
-                                            {bet.status == "Cancelled" && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Cancelled</span></td>}
-                                            {bet.status == "Settled - Lose" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Lose</span></td>}
-                                            {bet.status == "Settled - Win" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Win</span></td>}
+                                            <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
                                             <th>Match</th>
-                                            {(bet.status == "Matched" || bet.status == "Partial Match" || bet.status == "Pending") && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Open</span></td>}
-                                            {(bet.status == "Settled - Win" || bet.status == "Settled - Lose" || bet.status == "Cancelled") && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Settled</span></td>}
+                                            <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
                                         </tr>
                                         <tr>
                                             <th>Transaction ID</th>
@@ -136,30 +204,15 @@ class BetDetail extends React.Component {
                                                     bet.WagerInfo.EventName}</td>
                                         </tr>
                                         <tr>
-                                            <th>Status</th>
-                                            {bet.Name == "BETTED" && <td scope="col"><span className="label label-light-info label-inline font-weight-lighter mr-2">BETTED</span></td>}
-                                            {bet.Name == "ACCEPTED" && <td scope="col"><span className="label label-light-primary label-inline font-weight-lighter mr-2">ACCEPTED</span></td>}
-                                            {bet.Name == "SETTLED" && <td scope="col"><span className="label label-light-success label-inline font-weight-lighter mr-2">SETTLED</span></td>}
-                                            {bet.Name == "CANCELLED" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">SETTLED</span></td>}
-                                            {bet.Name == "REJECTED" && <td scope="col"><span className="label label-light-danger label-inline font-weight-lighter mr-2">REJECTED</span></td>}
-                                            {bet.Name == "ROLLBACKED" && <td scope="col"><span className="label label-light-warning label-inline font-weight-lighter mr-2">ROLLBACKED</span></td>}
-                                            {bet.Name == "UNSETTLED" && <td scope="col"><span className="label label-warning label-inline font-weight-lighter mr-2">UNSETTLED</span></td>}
-
-                                            <th>House</th>
-                                            <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Pinnacle</span></td>
+                                            <th>Type</th>
+                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td>
                                         </tr>
-                                        {/* <tr>
+                                        <tr>
                                             <th>Status</th>
-                                            {bet.status == "Pending" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Pending</span></td>}
-                                            {bet.status == "Partial Match" && <td scope="col"><span className="label label-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span></td>}
-                                            {bet.status == "Matched" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Matched</span></td>}
-                                            {bet.status == "Cancelled" && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Cancelled</span></td>}
-                                            {bet.status == "Settled - Lose" && <td scope="col"><span className="label label-danger label-inline font-weight-lighter mr-2">Lose</span></td>}
-                                            {bet.status == "Settled - Win" && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Win</span></td>}
-                                            <th>Match</th>
-                                            {(bet.status == "Matched" || bet.status == "Partial Match" || bet.status == "Pending") && <td scope="col"><span className="label label-info label-inline font-weight-lighter mr-2">Open</span></td>}
-                                            {(bet.status == "Settled - Win" || bet.status == "Settled - Lose" || bet.status == "Cancelled") && <td scope="col"><span className="label label-success label-inline font-weight-lighter mr-2">Settled</span></td>}
-                                        </tr> */}
+                                            <td scope="col">{this.getPInnacleBetStatus(bet.Name)}</td>
+                                            <th>House</th>
+                                            <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">Pinnacle</span></td>
+                                        </tr>
                                         <tr>
                                             <th>Wager ID</th>
                                             <td scope="col">{bet.WagerInfo.WagerId}</td>

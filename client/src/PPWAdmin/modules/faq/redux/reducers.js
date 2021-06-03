@@ -16,7 +16,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "faq", whitelist: ['currentPage'] },
+    { storage, key: "faq", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getFAQSubjects:

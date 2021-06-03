@@ -13,6 +13,7 @@ import * as promotions from "../modules/promotions/redux/reducers";
 import * as kyc from "../modules/kyc/redux/reducers";
 import * as tickets from "../modules/tickets/redux/reducers";
 import * as faq from "../modules/faq/redux/reducers";
+import * as events from "../modules/events/redux/reducers";
 
 import * as frontend from "../../redux/reducer";
 
@@ -29,6 +30,7 @@ export const rootReducer = combineReducers({
     kyc: kyc.reducer,
     tickets: tickets.reducer,
     faq: faq.reducer,
+    events: events.reducer,
 
     frontend: frontend.reducer,
 });
@@ -47,6 +49,7 @@ export function* rootSaga() {
         kyc.saga(),
         tickets.saga(),
         faq.saga(),
+        events.saga(),
 
         frontend.saga(),
     ]);

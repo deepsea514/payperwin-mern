@@ -16,7 +16,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "promotions", whitelist: ['currentPage'] },
+    { storage, key: "promotions", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getPromotionsAction:

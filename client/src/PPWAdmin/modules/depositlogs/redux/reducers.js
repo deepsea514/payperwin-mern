@@ -27,7 +27,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "depositlogs", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "depositlogs", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getDepositLog:

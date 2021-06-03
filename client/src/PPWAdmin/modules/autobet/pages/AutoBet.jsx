@@ -77,9 +77,7 @@ class AutoBet extends React.Component {
                 <td>{bet.budget}</td>
                 <td>{bet.userId.balance}</td>
 
-                {bet.status === AutoBetStatus.active && <td><span className="label label-success label-inline font-weight-lighter mr-2">{bet.status}</span></td>}
-                {bet.status === AutoBetStatus.inActive && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{bet.status}</span></td>}
-
+                <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>
                 <td>
                     <DropdownButton title="Actions">
@@ -89,6 +87,13 @@ class AutoBet extends React.Component {
                 </td>
             </tr>
         ));
+    }
+
+    getStatus = (status) => {
+        if (status === AutoBetStatus.active)
+            return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">{status}</span>
+        return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">{status}</span>
+
     }
 
     onPageChange = (page) => {

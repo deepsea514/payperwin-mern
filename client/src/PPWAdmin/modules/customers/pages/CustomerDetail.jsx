@@ -142,7 +142,7 @@ class CustomerDetail extends React.Component {
                                                 <th>Created</th>
                                                 <td>{this.getDate(customer.createdAt)}</td>
                                                 <th>Status</th>
-                                                <td><span className="label label-success label-inline font-weight-lighter mr-2">Active</span></td>
+                                                <td><span className="label label-lg label-success label-inline font-weight-lighter mr-2">Active</span></td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -17,7 +17,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "wager-feeds", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "wager-feeds", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getAutoBetsAction:

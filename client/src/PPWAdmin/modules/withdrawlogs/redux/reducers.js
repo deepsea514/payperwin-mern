@@ -27,7 +27,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "withdrawlogs", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "withdrawlogs", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getWithdrawLog:
