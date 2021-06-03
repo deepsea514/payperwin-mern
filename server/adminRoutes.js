@@ -16,6 +16,7 @@ const BetSportsBook = require("./models/betsportsbook");
 const Verification = require("./models/verification");
 const Preference = require("./models/preference");
 const FAQSubject = require("./models/faq_subject");
+const Event = require("./models/event");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -28,11 +29,14 @@ const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
+const _ = require("lodash");
 //local helpers
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const TripleA = config.TripleA;
+const EventStatus = config.EventStatus;
+const EventResult = config.EventResult;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
@@ -111,7 +115,7 @@ adminRouter.post(
                     return res.status(400).json({ error: "Can't generate qrcode" });
                 }
                 if (isMatch) {
-                    if(admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
+                    if (admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
                         QRCode.toDataURL(admin.otpauthUrl, {}, (error, url) => {
                             if (error) return res.status(400).json({ error: "Can't get qrcode" });
                             return res.json({ qrcode: url });
@@ -2120,5 +2124,66 @@ adminRouter.put(
         }
     }
 )
+
+adminRouter.post(
+    '/events',
+    authenticateJWT,
+    bruteforce.prevent,
+    async (req, res) => {
+        try {
+            let { name, startDate, candidates } = req.body;
+            if (!name || !startDate || !candidates) {
+                return res.status(400).json({ error: 'Please enter all required fields.' });
+            }
+            if (!_.isArray(candidates) || candidates.length < 2) {
+                return res.status(400).json({ error: 'Candidate field mismatch.' });
+            }
+            candidates = candidates.map(candidate => {
+                return {
+                    name: candidate.name,
+                    odds: [candidate.odds]
+                }
+            })
+            await Event.create({ name, startDate, candidates });
+            res.json({ success: "Event created." });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ error: 'Can\'t create Event.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/events',
+    authenticateJWT,
+    async function (req, res) {
+        let { page, perPage, status, result } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        if (!status) status = 'all';
+        if (!result) result = 'all';
+
+        try {
+            let findObj = {};
+            if (EventStatus[status]) {
+                findObj = { status: EventStatus[status].value };
+            }
+            const total = await Event.find(findObj).count();
+            const events = await Event.find(findObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage);
+
+            res.status(200).json({ total, perPage, page: page + 1, data: events });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find verifications.' });
+        }
+    }
+);
 
 module.exports = adminRouter;

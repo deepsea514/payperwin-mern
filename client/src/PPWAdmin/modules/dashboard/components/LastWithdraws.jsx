@@ -56,33 +56,27 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, root
                             {withdraw.method}
                         </span>
                     </td>
-                    {withdraw.status === FinancialStatus.success &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-success label-inline">
-                                {withdraw.status}
-                            </span>
-                        </td>}
-                    {withdraw.status === FinancialStatus.pending &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-primary label-inline">
-                                {withdraw.status}
-                            </span>
-                        </td>}
-                    {withdraw.status === FinancialStatus.onhold &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-warning label-inline">
-                                {withdraw.status}
-                            </span>
-                        </td>}
-                    {withdraw.status === FinancialStatus.inprogress &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-info label-inline">
-                                {withdraw.status}
-                            </span>
-                        </td>}
+                    <td className="pl-0">
+                        {getFinancialStatus(withdraw.status)}
+                    </td>
                 </tr>
             );
         });
+    }
+
+    const getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+
+        }
     }
 
     const gotoWithdraw = () => {

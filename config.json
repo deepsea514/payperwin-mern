@@ -83,5 +83,33 @@
         "test_api_id": "HA1621238651Xci6_t",
         "merchant_key": "mkey-ckosbmtp10000dkns23mu6y92",
         "testMode": true
+    },
+    "EventStatus": {
+        "pending": {
+            "label": "Pending",
+            "value": 0
+        },
+        "matched": {
+            "label": "Matched",
+            "value": 1
+        }
+    },
+    "EventResult": {
+        "pending": {
+            "label": "Pending",
+            "value": 0
+        },
+        "outdated": {
+            "label": "Outdated",
+            "value": 0
+        },
+        "settled": {
+            "label": "Settled",
+            "value": 2
+        },
+        "canceled": {
+            "label": "Canceled",
+            "value": 3
+        }
     }
 }

@@ -172,18 +172,22 @@ class Bet extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0" style={{ textTransform: "uppercase" }}>
-                    {bet.lineQuery.type == "moneyline" && <span className="label label-lg label-light-danger label-inline">
-                        {bet.lineQuery.type}
-                    </span>}
-                    {bet.lineQuery.type == "spread" && <span className="label label-lg label-light-info label-inline">
-                        {bet.lineQuery.type}
-                    </span>}
-                    {bet.lineQuery.type == "total" && <span className="label label-lg label-light-success label-inline">
-                        {bet.lineQuery.type}
-                    </span>}
+                    {this.getPPWBetType(bet.lineQuery.type)}
                 </td>
             </tr>
         ));
+    }
+
+    getPPWBetType = (type) => {
+        switch (type) {
+            case "moneyline":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
+            case "spread":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+            case "total":
+            default:
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+        }
     }
 
     tableSportsBookBody = () => {

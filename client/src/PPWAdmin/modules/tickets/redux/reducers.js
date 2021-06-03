@@ -17,7 +17,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "tickets", whitelist: ['currentPage'] },
+    { storage, key: "tickets", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getTickets:

@@ -29,7 +29,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "bet-activities", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "bet-activities", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getBetActivities:

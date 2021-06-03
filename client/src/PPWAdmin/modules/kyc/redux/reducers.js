@@ -16,7 +16,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "verifications", whitelist: ['currentPage'] },
+    { storage, key: "verifications", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getVerifications:

@@ -75,10 +75,7 @@ class WithdrawLog extends React.Component {
                     <td>{log.amount}</td>
                     <td>{log.user ? log.user.username : null}</td>
                     <td>{log.method}</td>
-                    {log.status === FinancialStatus.success && <td><span className="label label-success label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    {log.status === FinancialStatus.pending && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    {log.status === FinancialStatus.onhold && <td><span className="label label-warning label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    {log.status === FinancialStatus.inprogress && <td><span className="label label-info label-inline font-weight-lighter mr-2">{log.status}</span></td>}
+                    <td>{this.getFinancialStatus(log.status)}</td>
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>{log.fee}</td>
@@ -92,6 +89,20 @@ class WithdrawLog extends React.Component {
                 </tr>
             )
         })
+    }
+
+    getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+        }
     }
 
     deleteLog = () => {
