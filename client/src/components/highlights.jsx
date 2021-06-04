@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import Sport from './sport';
+import Others from "./others";
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 
@@ -10,6 +11,7 @@ const sports = [
     'NBA',
     'WNBA',
     'NFL',
+    'Other'
 ];
 
 export default class Highlights extends PureComponent {
@@ -35,20 +37,25 @@ export default class Highlights extends PureComponent {
                                     onClick={() => this.setState({ sportIndex: i })}
                                     key={sport}
                                 >
-                                    {/* <i className={`${sportNameIcon(s) || 'fas fa-trophy'}`} /> */}
-                                    <img src={sportNameImage(sport)} width="18" height="18"/>
+                                    <img src={sportNameImage(sport)} width="18" height="18" />
                                     <span className="nav-link">{sport}</span>
                                 </li>
                             );
                         })
                     }
                 </ul>
-                <Sport
-                    addBet={addBet}
-                    betSlip={betSlip}
-                    removeBet={removeBet}
-                    sportName={sports[sportIndex]}
-                />
+                {sports[sportIndex] == "Other" ?
+                    <Others
+                        addBet={addBet}
+                        betSlip={betSlip}
+                        removeBet={removeBet}
+                    /> :
+                    <Sport
+                        addBet={addBet}
+                        betSlip={betSlip}
+                        removeBet={removeBet}
+                        sportName={sports[sportIndex]}
+                    />}
             </div>
         );
     }

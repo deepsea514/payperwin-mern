@@ -45,7 +45,6 @@ export default class CreateEvents extends React.Component {
                     { name: '', odds: 0 },
                     { name: '', odds: 0 }
                 ],
-                friends: [],
             },
             eventSchema: Yup.object().shape({
                 name: Yup.string()
@@ -94,9 +93,13 @@ export default class CreateEvents extends React.Component {
     };
 
     onSubmit = (values, formik) => {
+        const { history } = this.props;
         addEvent(values).then(() => {
             formik.setSubmitting(false);
             this.setState({ isSuccess: true });
+            setTimeout(() => {
+                history.push("/");
+            }, 2000);
         }).catch(() => {
             formik.setSubmitting(false);
             this.setState({ isError: true });

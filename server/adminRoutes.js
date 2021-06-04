@@ -2141,6 +2141,7 @@ adminRouter.post(
             candidates = candidates.map(candidate => {
                 return {
                     name: candidate.name,
+                    currentOdds: candidate.odds,
                     odds: [candidate.odds]
                 }
             })

@@ -21,6 +21,7 @@ const Ticket = require("./models/ticket");
 const Preference = require('./models/preference');
 const FAQSubject = require("./models/faq_subject");
 const FAQItem = require('./models/faq_item');
+const Event = require("./models/event");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -34,6 +35,8 @@ const BetFee = 0.03;
 const PremiumPay = config.PremiumPay;
 const FinancialStatus = config.FinancialStatus;
 const TripleA = config.TripleA;
+const EventStatus = config.EventStatus;
+const EventResult = config.EventResult;
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
@@ -1416,6 +1419,9 @@ expressApp.get(
     '/sport',
     async (req, res) => {
         const { name } = req.query;
+        if (name == "Other") {
+
+        }
         const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
         if (sportData) {
             res.json(sportData);
@@ -1429,17 +1435,32 @@ expressApp.get(
     '/sportsdir',
     async (req, res) => {
         const sportData = await SportsDir.find({});
+        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventResult.pending.value }).count();
         if (sportData) {
             let sports = [];
             for (const sport of sportData) {
                 sports = [...sports, ...sport.sports];
             }
+            sports.push({
+                eventCount: customBets,
+                hasOfferings: true,
+                name: "Other"
+            });
             res.json(sports);
         } else {
             res.status(404).end();
         }
     },
 );
+
+expressApp.get(
+    '/others',
+    async (req, res) => {
+        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventResult.pending.value })
+            .sort({ createdAt: -1 });
+        res.json(customBets);
+    },
+)
 
 
 expressApp.get('/getPinnacleLogin',

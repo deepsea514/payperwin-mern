@@ -60,7 +60,8 @@ const sportImages = {
     'NBA': '/images/icons/basketball.png',
     'WNBA': '/images/icons/basketball.png',
     'NCAA': '/images/icons/athelete.png',
-    'UFC': '/images/icons/boxing.png'
+    'UFC': '/images/icons/boxing.png',
+    'Other': '/images/icons/other.png'
   };
   
   function sportNameImage(name) {
