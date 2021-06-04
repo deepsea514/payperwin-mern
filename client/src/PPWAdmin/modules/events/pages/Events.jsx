@@ -49,6 +49,7 @@ class Events extends React.Component {
                 </tr>
             );
         }
+
         return events.map((event, index) => (
             <tr key={index}>
                 <td>{event.name}</td>
@@ -64,7 +65,7 @@ class Events extends React.Component {
 
     getBetOptions = (candidates) => {
         return candidates.map(candidate => (
-            <p key={candidate.name}>{candidate.name}: {candidate.odds[candidate.odds.length - 1]}</p>
+            <p key={candidate.name}>{candidate.name}: {candidate.currentOdds}</p>
         ));
     }
 

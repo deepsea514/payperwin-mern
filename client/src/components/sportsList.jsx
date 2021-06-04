@@ -50,21 +50,34 @@ class SportsList extends PureComponent {
                         const { name } = sport;
                         const hasEvents = sport.eventCount > 0;
                         return hasEvents || showNoEvents ? (
-                            <li key={name}>
-                                <Link
-                                    to={{ pathname: `/sport/${sport.name}` }}
-                                    style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
-                                >
-                                    {/* <i className={`${sportNameIcon(name) || 'fas fa-trophy'}`} /> */}
-                                    <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                    {name}<span>{sport.eventCount}</span>
-                                </Link>
-                            </li>
+                            name == "Other" ?
+                                (
+                                    <li key={name}>
+                                        <Link
+                                            to={{ pathname: `/others` }}
+                                            style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                        >
+                                            <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
+                                            {name}<span>{sport.eventCount}</span>
+                                        </Link>
+                                    </li >
+                                ) :
+                                (
+                                    <li key={name}>
+                                        <Link
+                                            to={{ pathname: `/sport/${sport.name}` }}
+                                            style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                        >
+                                            <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
+                                            {name}<span>{sport.eventCount}</span>
+                                        </Link>
+                                    </li>
+                                )
                         ) : null;
                     }
                     )
                 }
-            </ul>
+            </ul >
         );
     }
 }

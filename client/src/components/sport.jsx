@@ -56,11 +56,6 @@ class Sport extends PureComponent {
                                 lines.forEach((line, i) => {
                                     if (i === 0) {
                                         const { moneyline, spreads, totals } = line;
-                                        // if (moneyline && moneyline.draw) {
-                                        //     delete line.moneyline;
-                                        // } else {
-                                        //     event.lineCount++;
-                                        // }
                                         if (moneyline) {
                                             if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
                                                 event.lineCount++;
@@ -69,9 +64,6 @@ class Sport extends PureComponent {
                                                 delete line.moneyline;
                                             }
                                         }
-                                        // if (spreads) {
-                                        //     event.lineCount += spreads.length;
-                                        // }
                                         if (spreads) {
                                             const filteredSpreads = spreads.filter(spread => {
                                                 if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
@@ -81,9 +73,6 @@ class Sport extends PureComponent {
                                             event.lineCount += filteredSpreads.length;
                                             line.spreads = filteredSpreads.length ? filteredSpreads : null;
                                         }
-                                        // if (totals) {
-                                        //     event.lineCount += totals.length;
-                                        // }
                                         if (totals) {
                                             const filteredTotals = totals.filter(total => {
                                                 if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))

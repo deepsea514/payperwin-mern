@@ -50,6 +50,7 @@ import VerificationProof from "../components/verificationProof";
 import ContactUs from "../pages/contactUs";
 import GoToTop from "../components/gotoTop";
 import TfaModal from "../components/tfamodal";
+import Others from "../components/others";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -259,6 +260,16 @@ class App extends PureComponent {
                                                             <h1>{name}</h1>
                                                             <Sport addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet} sportName={name}
+                                                            />
+                                                        </React.Fragment>
+                                                    );
+                                                }} />
+                                                <Route path="/others" render={(props) => {
+                                                    return (
+                                                        <React.Fragment>
+                                                            <h1>Others</h1>
+                                                            <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                removeBet={this.removeBet}
                                                             />
                                                         </React.Fragment>
                                                     );
