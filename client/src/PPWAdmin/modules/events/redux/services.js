@@ -9,9 +9,8 @@ export function addEvent(data) {
 export function getEvents(page, filter, perPage = null) {
     let url = `${serverUrl}/events?page=${page}`;
     if (perPage) url += `&perPage=${perPage}`;
-    const { status, result } = filter;
+    const { status } = filter;
     if (status && status != '') url += `&status=${encodeURIComponent(status)}`;
-    if (result && result != '') url += `&result=${encodeURIComponent(result)}`;
 
     return axios.get(url, { withCredentials: true });
 }

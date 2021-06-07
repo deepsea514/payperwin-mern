@@ -36,7 +36,6 @@ const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const TripleA = config.TripleA;
 const EventStatus = config.EventStatus;
-const EventResult = config.EventResult;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
@@ -2158,7 +2157,7 @@ adminRouter.get(
     '/events',
     authenticateJWT,
     async function (req, res) {
-        let { page, perPage, status, result } = req.query;
+        let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
         if (!page) page = 1;
@@ -2166,18 +2165,14 @@ adminRouter.get(
         page--;
 
         if (!status) status = 'all';
-        if (!result) result = 'all';
 
         try {
             let findObj = {};
             if (EventStatus[status]) {
-                findObj = { status: EventStatus[status].value };
-            }
-            if (EventResult[result]) {
-                findObj = { ...findObj, result: EventResult[result].value };
-                if (result == "pending") {
+                findObj = { ...findObj, status: EventStatus[status].value };
+                if (status == "pending") {
                     findObj = { ...findObj, startDate: { $gte: new Date() } };
-                } else if (result == "outdated") {
+                } else if (status == "outdated") {
                     findObj = { ...findObj, startDate: { $lt: new Date() } };
                 }
             }

@@ -89,16 +89,6 @@
             "label": "Pending",
             "value": 0
         },
-        "matched": {
-            "label": "Matched",
-            "value": 1
-        }
-    },
-    "EventResult": {
-        "pending": {
-            "label": "Pending",
-            "value": 0
-        },
         "outdated": {
             "label": "Outdated",
             "value": 0
