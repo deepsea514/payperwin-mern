@@ -8,7 +8,6 @@ import dateformat from "dateformat";
 
 const config = require("../../../../../../config.json");
 const EventStatus = config.EventStatus;
-const EventResult = config.EventResult;
 
 class Events extends React.Component {
     constructor(props) {
@@ -56,8 +55,7 @@ class Events extends React.Component {
                 <td>{dateformat(new Date(event.startDate), "default")}</td>
                 <td>{this.getBetOptions(event.candidates)}</td>
                 <td></td>
-                <td>{this.getStatus(event.status)}</td>
-                <td>{this.getResult(event)}</td>
+                <td>{this.getStatus(event)}</td>
                 <td></td>
             </tr>
         ));
@@ -69,20 +67,14 @@ class Events extends React.Component {
         ));
     }
 
-    getStatus = (status) => {
-        if (status == EventStatus['matched'].value)
-            return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">{EventStatus['matched'].label}</span>
-        return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">{EventStatus['pending'].label}</span>
-    }
-
-    getResult = (event) => {
-        if (event.result == EventResult['settled'].value)
-            return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{EventResult['settled'].label}</span>
-        if (event.result == EventResult['canceled'].value)
-            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{EventResult['canceled'].label}</span>
+    getStatus = (event) => {
+        if (event.status == EventStatus['settled'].value)
+            return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{EventStatus['settled'].label}</span>
+        if (event.status == EventStatus['canceled'].value)
+            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{EventStatus['canceled'].label}</span>
         if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
-            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">{EventResult['pending'].label}</span>
-        return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">{EventResult['outdated'].label}</span>
+            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">{EventStatus['pending'].label}</span>
+        return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">{EventStatus['outdated'].label}</span>
 
     }
 
@@ -93,12 +85,6 @@ class Events extends React.Component {
     renderStatus = () => {
         return Object.keys(EventStatus).map(function (key) {
             return <option key={key} value={key}>{EventStatus[key].label}</option>
-        });
-    }
-
-    renderResult = () => {
-        return Object.keys(EventResult).map(function (key) {
-            return <option key={key} value={key}>{EventResult[key].label}</option>
         });
     }
 
@@ -132,20 +118,6 @@ class Events extends React.Component {
                                 <div className="col-lg-3 col-md-4">
                                     <select
                                         className="form-control"
-                                        value={filter.result}
-                                        onChange={e => {
-                                            this.onFilterChange({ result: e.target.value });
-                                        }} >
-                                        <option value="">Choose Result...</option>
-                                        {this.renderResult()}
-                                    </select>
-                                    <small className="form-text text-muted">
-                                        <b>Search</b> by Result
-                                    </small>
-                                </div>
-                                <div className="col-lg-3 col-md-4">
-                                    <select
-                                        className="form-control"
                                         value={filter.status}
                                         onChange={e => {
                                             this.onFilterChange({ status: e.target.value });
@@ -167,7 +139,6 @@ class Events extends React.Component {
                                             <th scope="col">Bet Options</th>
                                             <th scope="col">Total Money Bet</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Result</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>

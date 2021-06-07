@@ -36,7 +36,6 @@ const PremiumPay = config.PremiumPay;
 const FinancialStatus = config.FinancialStatus;
 const TripleA = config.TripleA;
 const EventStatus = config.EventStatus;
-const EventResult = config.EventResult;
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
@@ -1435,7 +1434,7 @@ expressApp.get(
     '/sportsdir',
     async (req, res) => {
         const sportData = await SportsDir.find({});
-        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventResult.pending.value }).count();
+        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventStatus.pending.value }).count();
         if (sportData) {
             let sports = [];
             for (const sport of sportData) {
@@ -1456,7 +1455,7 @@ expressApp.get(
 expressApp.get(
     '/others',
     async (req, res) => {
-        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventResult.pending.value })
+        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventStatus.pending.value })
             .sort({ createdAt: -1 });
         res.json(customBets);
     },

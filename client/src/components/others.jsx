@@ -91,26 +91,29 @@ class Others extends PureComponent {
                                     </div>
                                     <ul style={{ background: "white", paddingTop: "15px" }}>
                                         {candidates.map((candidate, index) => {
+                                            const exist = betSlip.find((b) => b.lineId === event._id && b.pick === candidate.name && b.type === 'moneyline');
                                             return (
                                                 <li key={index}>
                                                     <div className="row mx-0">
                                                         <div className="col-md-12 com-sm-12 col-12">
-                                                            <span className={`box-odds box-moneyline line-full `}
-                                                                onClick={() => addBet(
-                                                                    name,
-                                                                    'moneyline',
-                                                                    'Other',
-                                                                    odds,
-                                                                    candidate.name,
-                                                                    null,
-                                                                    null,
-                                                                    "Other",
-                                                                    event._id,
-                                                                    event,
-                                                                    candidate.name,
-                                                                    null,
-                                                                    "other"
-                                                                )}>
+                                                            <span className={`box-odds box-moneyline line-full ${exist ? 'orange' : null}`}
+                                                                onClick={exist ?
+                                                                    () => removeBet(event._id, candidate.name) :
+                                                                    () => addBet(
+                                                                        name,
+                                                                        'moneyline',
+                                                                        'Other',
+                                                                        odds,
+                                                                        candidate.name,
+                                                                        null,
+                                                                        null,
+                                                                        "Other",
+                                                                        event._id,
+                                                                        event._id,
+                                                                        candidate.name,
+                                                                        null,
+                                                                        "other"
+                                                                    )}>
                                                                 <div className="vertical-align">
                                                                     <div className="points">{candidate.name}</div>
                                                                     <div className="odds">

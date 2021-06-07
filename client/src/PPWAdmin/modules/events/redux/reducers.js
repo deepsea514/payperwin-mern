@@ -6,7 +6,6 @@ import { getEvents } from "./services";
 export const actionTypes = {
     getEvents: "Get Events",
     getEventsSuccess: "Get Events Success",
-    updateEventStatusSuccess: "Update Event Status Success",
     filterEventChange: "Filter Event Change",
 };
 
@@ -17,7 +16,6 @@ const initialState = {
     loading: false,
     filter: {
         status: '',
-        result: '',
     },
 };
 
@@ -31,14 +29,6 @@ export const reducer = persistReducer(
             case actionTypes.getEventsSuccess:
                 return { ...state, ...action.data, ...{ loading: false } };
 
-            case actionTypes.updateEventStatusSuccess:
-                const events = state.events.map(log => {
-                    if (log._id == action.id)
-                        return action.data;
-                    return log;
-                });
-                return { ...state, ...{ events } };
-
             case actionTypes.filterEventChange:
                 return { ...state, ...{ filter: { ...state.filter, ...action.filter } } };
 
@@ -51,7 +41,6 @@ export const reducer = persistReducer(
 export const actions = {
     getEvents: (page = 1) => ({ type: actionTypes.getEvents, page }),
     getEventsSuccess: (data) => ({ type: actionTypes.getEventsSuccess, data }),
-    updateEventStatusSuccess: (id, data) => ({ type: actionTypes.updateEventStatusSuccess, id, data }),
     filterEventChange: (filter) => ({ type: actionTypes.filterEventChange, filter }),
 };
 
