@@ -22,6 +22,7 @@ const Preference = require('./models/preference');
 const FAQSubject = require("./models/faq_subject");
 const FAQItem = require('./models/faq_item');
 const Event = require("./models/event");
+const EventBetPool = require("./models/eventbetpool");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -646,7 +647,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                     to: email, // An array if you have multiple recipients.
                     subject: 'Password Reset Request for Payper Win',
                     text: `You requested password recovery. You can create a new password here: ${passwordRecoveryPath}`,
-                    html: simpleresponsive(`Hi <b>${user.firstname}</b>.
+                    html: simpleresponsive(`Hi <b>${user.email}</b>.
                             <br><br>
                             Someone has requested a new password for the following account on Payper Win:
                             <br><br>
@@ -780,39 +781,173 @@ async function calculateBetsStatus(betpoolUid) {
     }
 }
 
-expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
-    const {
-        betSlip,
-    } = req.body;
+expressApp.post(
+    '/placeBets',
+    isAuthenticated,
+    /* bruteforce.prevent, */
+    async (req, res) => {
+        const {
+            betSlip,
+        } = req.body;
 
 
-    if (!req.user) {
-        res.status(403).json({ errors: ['You have to be logged in to place bets.'] });
-        return;
-    }
-    User.findOne(
-        { username: req.user.username },
-        async (err, user) => {
-            if (err) {
-                console.log('placeBets => ', err);
-                res.send(err);
-                return;
-            }
-            const errors = [];
-            if (user) {
-                for (const bet of betSlip) {
-                    const {
-                        odds,
-                        pick, // TODO: fix over under pick
-                        stake: toBet,
-                        win: toWin,
-                        lineQuery,
-                        pickName,
-                        origin
-                    } = bet;
-                    if (!odds || !pick || !toBet || !toWin || !lineQuery) {
-                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
-                    } else {
+        if (!req.user) {
+            res.status(403).json({ errors: ['You have to be logged in to place bets.'] });
+            return;
+        }
+        const { user } = req;
+        const errors = [];
+        if (user) {
+            for (const bet of betSlip) {
+                const {
+                    odds,
+                    pick, // TODO: fix over under pick
+                    stake: toBet,
+                    win: toWin,
+                    lineId,
+                    lineQuery,
+                    pickName,
+                    origin,
+                    type
+                } = bet;
+                if (!odds || !pick || !toBet || !toWin || !lineQuery) {
+                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
+                } else {
+
+                    // TODO: error if match has already started
+                    // TODO: prevent certain types of bets
+                    if (origin == 'other') {
+                        const event = await Event.findById(lineId);
+                        const { name, startDate, candidates, status } = event;
+                        if (status == EventStatus.pending.value) {
+                            if ((new Date(startDate)).getTime() <= (new Date()).getTime()) {
+                                errors.push(`${pickName} ${odds[pick]} wager could not be placed. It is outdated.`);
+                            }
+                            else {
+                                const betAfterFee = toBet;
+                                const pickedCandidate = candidates.find(candidate => candidate.name == pick);
+                                if (pickedCandidate) {
+                                    const toWin = calculateToWinFromBet(betAfterFee, pickedCandidate.currentOdds);
+                                    const fee = Number((toBet * BetFee).toFixed(2));
+                                    const balanceChange = toBet * -1;
+                                    const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
+                                    if (newBalance >= InsufficientFunds) {
+                                        // insert bet doc to bets table
+                                        const newBetObj = {
+                                            userId: user._id,
+                                            transactionID: `B${ID()}`,
+                                            teamA: null,
+                                            teamB: null,
+                                            pick: pick,
+                                            pickOdds: pickedCandidate.currentOdds,
+                                            oldOdds: null,
+                                            pickName: pickName,
+                                            bet: betAfterFee,
+                                            toWin: toWin,
+                                            fee: fee,
+                                            matchStartDate: startDate,
+                                            status: 'Pending',
+                                            lineQuery: lineQuery,
+                                            lineId: lineId,
+                                            origin: origin
+                                        };
+                                        const newBet = new Bet(newBetObj);
+                                        console.info(`created new bet`);
+                                        try {
+                                            const savedBet = await newBet.save();
+
+                                            const msg = {
+                                                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                                to: user.email,
+                                                subject: 'Your bet was accepted',
+                                                text: `Your bet was accepted`,
+                                                html: simpleresponsive(
+                                                    `Hi <b>${user.email}</b>.
+                                                        <br><br>
+                                                        This email is to advise that your bet for ${name} ${type} for ${betAfterFee} was accepted on ${new Date()}
+                                                        <br><br>`),
+                                            };
+                                            sgMail.send(msg);
+
+                                            const betId = savedBet.id;
+                                            // add betId to betPool
+                                            const exists = await EventBetPool.findOne({ eventId: new ObjectId(lineId) });
+                                            if (exists) {
+                                                console.log('update existing betpool');
+                                                const betPoolCandidates = exists.candidates.map(candidate => {
+                                                    return {
+                                                        name: candidate.name,
+                                                        odds: candidate.currentOdds,
+                                                        betTotal: pick === candidate.name ? candidate.betTotal + betAfterFee : candidate.betTotal,
+                                                        toWinTotal: pick === candidate.name ? candidate.toWinTotal + toWin : candidate.toWinTotal,
+                                                        bets: pick === candidate.name ? [...candidate.bets, betId] : candidate.bets
+                                                    };
+                                                })
+
+                                                await exists.update({ candidates: betPoolCandidates });
+                                            } else {
+                                                // Create new bet pool
+                                                const betPoolCandidates = candidates.map(candidate => {
+                                                    return {
+                                                        name: candidate.name,
+                                                        odds: candidate.currentOdds,
+                                                        betTotal: pick === candidate.name ? betAfterFee : 0,
+                                                        toWinTotal: pick === candidate.name ? toWin : 0,
+                                                        bets: pick === candidate.name ? [betId] : []
+                                                    };
+                                                })
+                                                console.log('creating betpool');
+                                                const newBetPool = new EventBetPool(
+                                                    {
+                                                        eventId: lineId,
+                                                        candidates: betPoolCandidates,
+                                                        matchStartDate: startDate,
+                                                        lineType: type,
+                                                    }
+                                                );
+
+                                                try {
+                                                    await newBetPool.save();
+                                                } catch (err) {
+                                                    console.log('can\'t save newBetPool => ' + err);
+                                                }
+                                            }
+
+                                            // await calculateBetsStatus(JSON.stringify(lineQuery));
+
+                                            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
+                                            user.balance = newBalance;
+                                            try {
+                                                await FinancialLog.create({
+                                                    financialtype: 'bet',
+                                                    uniqid: `BP${ID()}`,
+                                                    user: user._id,
+                                                    amount: toBet,
+                                                    method: 'bet',
+                                                    status: FinancialStatus.success,
+                                                });
+                                                await user.save();
+                                            } catch (err) {
+                                                console.log('can\'t save user balance => ' + err);
+                                            }
+                                        }
+                                        catch (e2) {
+                                            if (e2) console.error('newBetError', e2);
+                                        }
+
+                                    } else {
+                                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $${InsufficientFunds} to place bets.`);
+                                    }
+                                } else {
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Can't find candidate.`);
+                                }
+                            }
+                        }
+                        else {
+                            errors.push(`${pickName} ${odds[pick]} wager could not be placed. Already Settled or Cancelled.`);
+                        }
+                    }
+                    else {
                         const {
                             sportName,
                             leagueId,
@@ -821,8 +956,6 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                             type,
                             altLineId,
                         } = lineQuery;
-                        // TODO: error if match has already started
-                        // TODO: prevent certain types of bets
                         const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
                         if (sportData) {
                             const { originSportId } = sportData;
@@ -885,6 +1018,8 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                 // index,
                                                 status: 'Pending',
                                                 lineQuery,
+                                                lineId: lineId,
+                                                origin: origin
                                             };
                                             if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
                                             const newBet = new Bet(newBetObj);
@@ -901,13 +1036,12 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                                                     subject: 'Your bet was accepted',
                                                     text: `Your bet was accepted`,
                                                     html: simpleresponsive(
-                                                        `Hi <b>${user.firstname}</b>.
-                                                        <br><br>
-                                                        This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
-                                                        <br><br>`),
+                                                        `Hi <b>${user.email}</b>.
+                                                            <br><br>
+                                                            This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
+                                                            <br><br>`),
                                                 };
                                                 sgMail.send(msg);
-
 
                                                 const betId = savedBet.id;
                                                 // add betId to betPool
@@ -1014,14 +1148,14 @@ expressApp.post('/placeBets', /* bruteforce.prevent, */ async (req, res) => {
                         }
                     }
                 }
-                res.json({
-                    balance: user.balance,
-                    errors,
-                });
             }
-        },
-    );
-});
+            res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+    }
+);
 
 async function checkAutoBet(bet, betpool, user, sportData, line) {
     const { AutoBetStatus, AutoBetPeorid } = config;
