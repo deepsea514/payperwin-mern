@@ -29,9 +29,7 @@ export function deleteWithdraw(id) {
 }
 
 export function addWithdraw(data) {
-    const _2fa_code = data._2fa_code;
-    delete data._2fa_code;
     let time = (new Date()).getTime();
     time = Math.floor(time / 1000);
-    return axios.post(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}&time=${time}`, data, { withCredentials: true });
+    return axios.post(`${serverUrl}/withdraw`, data, { withCredentials: true });
 }
