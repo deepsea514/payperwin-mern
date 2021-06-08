@@ -6,6 +6,7 @@ const BetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         lineQuery: Object,
+        lineId: String,
         teamA: {
             name: String,
             odds: String,
@@ -35,7 +36,8 @@ const BetSchema = new Schema(
         payableToWin: Number, // how much has been matched with opposing bets
         // betStartDate: Date,
         // betEndDate: Date,
-        transactionID: { type: String, unique: true }
+        transactionID: { type: String, unique: true },
+        origin: String,
     },
     {
         timestamps: true,

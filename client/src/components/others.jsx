@@ -84,7 +84,11 @@ class Others extends PureComponent {
                             return (
                                 <div key={index} className="mt-2">
                                     <div className="line-type-header mb-0">{name}</div>
-                                    <div className="table-list table-list-top d-flex">
+                                    <div className="d-flex" style={{
+                                        padding: "3px 0 4px 10px",
+                                        background: "#F9F9F9",
+                                        marginBottom: "3px"
+                                    }}>
                                         <a style={{ fontSize: "12px", color: "#2b2b2c" }}>
                                             {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </a>
@@ -109,7 +113,7 @@ class Others extends PureComponent {
                                                                         null,
                                                                         "Other",
                                                                         event._id,
-                                                                        event._id,
+                                                                        event.name,
                                                                         candidate.name,
                                                                         null,
                                                                         "other"

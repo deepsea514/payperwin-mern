@@ -7,7 +7,7 @@ const EventSchema = new Schema(
         name: { type: String, unique: true, required: true },
         candidates: Array, // { name: String, odds: Array, currentOdds: Number, score: Number }
         startDate: { type: Date, required: true },
-        result: { type: Number, default: 0 },
+        status: { type: Number, default: 0 },
     },
     {
         timestamps: true,
