@@ -914,7 +914,8 @@ adminRouter.get(
                 .skip(page * perPage)
                 .limit(perPage)
                 .populate('user', ['username', 'currency']).populate('reason', ['title']);
-            res.json({ perPage, total, page: page + 1, data: withdraws });
+            const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.pending });
+            res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });

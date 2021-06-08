@@ -72,14 +72,12 @@ class WithdrawLog extends React.Component {
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{log.amount}</td>
+                    <td>{Number(log.amount).toFixed(2)}</td>
                     <td>{log.user ? log.user.username : null}</td>
                     <td>{log.method}</td>
                     <td>{this.getFinancialStatus(log.status)}</td>
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
-                    <td>{log.fee}</td>
-                    <td></td>
                     <td>
                         {log.status !== FinancialStatus.success && <DropdownButton title="Actions">
                             <Dropdown.Item onClick={() => this.setState({ editStatusId: log._id, initialValues: { status: log.status, _2fa_code: '' } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
@@ -177,7 +175,7 @@ class WithdrawLog extends React.Component {
                                 </div>
                                 <div className="card-toolbar">
                                     <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
-                                        <i className="fas fa-credit-card"></i>&nbsp; Add New Withdraw
+                                        <i className="fas fa-credit-card"></i>&nbsp; Manual Withdraw
                                 </Link>
                                 </div>
                             </div>
@@ -277,8 +275,6 @@ class WithdrawLog extends React.Component {
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Withdraw ID</th>
                                                 <th scope="col">Date</th>
-                                                <th scope="col">Fee</th>
-                                                <th scope="col">Request Date</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>

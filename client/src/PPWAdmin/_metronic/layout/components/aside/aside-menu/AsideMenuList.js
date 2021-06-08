@@ -1,12 +1,15 @@
 /* eslint-disable jsx-a11y/role-supports-aria-props */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { checkIsActive } from "../../../../_helpers";
+import { connect } from "react-redux";
+import * as kyc from "../../../../../modules/kyc/redux/reducers";
+import * as withdrawlog from "../../../../../modules/withdrawlogs/redux/reducers";
 
-export function AsideMenuList({ layoutProps }) {
+function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLog, pending_total }) {
     const location = useLocation();
     const getMenuItemActive = (url, hasSubmenu = false) => {
         return checkIsActive(location, url)
@@ -14,6 +17,10 @@ export function AsideMenuList({ layoutProps }) {
             "menu-item-active"} menu-item-open menu-item-not-hightlighted`
             : "";
     };
+    useEffect(() => {
+        getVerifications();
+        getWithdrawLog();
+    })
 
     return (
         <>
@@ -41,6 +48,7 @@ export function AsideMenuList({ layoutProps }) {
                             <SVG src={"/media/svg/icons/General/Shield-check.svg"} />
                         </span>
                         <span className="menu-text">KYC</span>
+                        {kyc_total && <span className="badge badge-pill badge-primary">&nbsp;{kyc_total}&nbsp;</span>}
                     </Link>
                 </li>
 
@@ -77,6 +85,7 @@ export function AsideMenuList({ layoutProps }) {
                             <SVG src={"/media/svg/icons/Shopping/Money.svg"} />
                         </span>
                         <span className="menu-text">Withdraw Logs</span>
+                        {pending_total && <span className="badge badge-pill badge-primary">&nbsp;{pending_total}&nbsp;</span>}
                     </Link>
                 </li>
 
@@ -181,3 +190,15 @@ export function AsideMenuList({ layoutProps }) {
         </>
     );
 }
+
+const mapStateToProps = (state) => ({
+    kyc_total: state.kyc.total,
+    pending_total: state.withdrawlog.pending_total,
+});
+
+const mapActionsToProps = {
+    getVerifications: kyc.actions.getVerifications,
+    getWithdrawLog: withdrawlog.actions.getWithdrawLog,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(AsideMenuList);

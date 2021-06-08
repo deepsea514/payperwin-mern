@@ -33,7 +33,7 @@ export function Aside() {
                         <>
                             {/* begin::Header Logo */}
                             <div className="header-logo">
-                                <Link to="/" style={{display: 'block'}}>
+                                <Link to="/" style={{ display: 'block' }}>
                                     <img alt="logo" style={{ width: "100%", maxHeight: "auto", objectFit: "cover" }} src={layoutProps.headerLogo} />
                                 </Link>
                             </div>
