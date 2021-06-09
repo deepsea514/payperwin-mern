@@ -241,7 +241,7 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </div>
-                <div className="header-search">
+                {pathname !== '/sportsbook' && <div className="header-search">
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-4">
@@ -302,7 +302,7 @@ class Header extends PureComponent {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
                 <div className="modal fade" id="myModal" role="dialog" style={{ display: 'none' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
