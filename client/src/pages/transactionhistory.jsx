@@ -22,7 +22,9 @@ class TransactionHistory extends Component {
                 deposit: false,
                 withdraw: false
             },
-            daterange: null
+            daterange: null,
+            page: 1,
+            loading: false,
         };
     }
 
@@ -30,12 +32,18 @@ class TransactionHistory extends Component {
         this.getHistory();
     }
 
-    getHistory = () => {
-        const { filter, daterange } = this.state;
-        axios.post(`${serverUrl}/transactions`, { filter, daterange }, { withCredentials: true })
+    getHistory = (page = 0, clear = true) => {
+        const { filter, daterange, transactions } = this.state;
+        this.setState({ loading: true, });
+        axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
             .then(({ data }) => {
-                this.setState({ transactions: data });
-            });
+                if (clear) {
+                    this.setState({ transactions: data, page });
+                }
+                else {
+                    this.setState({ transactions: [...transactions, ...data], page });
+                }
+            }).finally(() => this.setState({ loading: false }));
     }
 
     getDate = (date) => {
@@ -48,6 +56,8 @@ class TransactionHistory extends Component {
                 return '';
             case 'withdraw':
                 return '-';
+            case 'betwon':
+                return '';
             case 'bet':
                 switch (method) {
                     case 'bet':
@@ -75,6 +85,8 @@ class TransactionHistory extends Component {
                 return `Deposit made through ${method}`;
             case 'withdraw':
                 return `Withdraw made through ${method}`;
+            case 'betwon':
+                return `Won the bet.`;
             case 'bet':
                 switch (method) {
                     case 'bet':
@@ -141,7 +153,7 @@ class TransactionHistory extends Component {
                 });
             }
         }
-        this.getHistory();
+        // this.getHistory();
     }
 
     handleChangeDate = async (event, picker) => {
@@ -156,7 +168,7 @@ class TransactionHistory extends Component {
 
     render() {
         setTitle({ pageTitle: 'Transaction History' });
-        const { transactions, showFilter, filter, daterange } = this.state;
+        const { transactions, showFilter, filter, daterange, page, loading } = this.state;
         const { user } = this.props;
         return (
             <div className="col-in">
@@ -237,9 +249,9 @@ class TransactionHistory extends Component {
                             <div className="col-sm-2 text-right">
                                 <strong> AMOUNT </strong>
                             </div>
-                            <div className="col-sm-2 text-right">
+                            {/* <div className="col-sm-2 text-right">
                                 <strong> BALANCE </strong>
-                            </div>
+                            </div> */}
                         </div>
                         {transactions.map((transaction, index) => (
                             <div className="row amount-col bg-color-box" key={index}>
@@ -250,14 +262,20 @@ class TransactionHistory extends Component {
                                 <div className="col-sm-2 text-right">
                                     <small>{this.getInOut(transaction.financialtype, transaction.method) + this.getFormattedAmount(transaction.amount)}</small>
                                 </div>
-                                <div className="col-sm-2 text-right">
+                                {/* <div className="col-sm-2 text-right">
                                     <small>{user ? this.getFormattedAmount(user.balance) : null}</small>
-                                </div>
+                                </div> */}
                             </div>
                         ))}
                     </div>
                     <div className="load-m text-center">
-                        <a className="load-more" href="#">Load More</a>
+                        <a className="load-more"
+                            disabled={loading}
+                            onClick={() => this.getHistory(page + 1, false)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            Load More
+                        </a>
                     </div>
                 </div>
             </div>

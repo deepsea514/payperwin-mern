@@ -2,12 +2,18 @@ require('dotenv').config();
 const BetPool = require('../../models/betpool');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
+const FinancialLog = require("../../models/financiallog");
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const FinancialStatus = config.FinancialStatus;
+
+const ID = function () {
+    return '' + Math.random().toString(10).substr(2, 9);
+};
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
@@ -105,6 +111,14 @@ async function matchResults(sportName, events) {
                             }
                             await Bet.findByIdAndUpdate(_id, betChanges);
                             await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount + payableToWin } });
+                            await FinancialLog.create({
+                                financialtype: 'betwon',
+                                uniqid: `BW${ID()}`,
+                                user: userId,
+                                amount: betAmount + payableToWin,
+                                method: 'betwon',
+                                status: FinancialStatus.success,
+                            });
                             // TODO: email winner
                             const msg = {
                                 from: `"${fromEmailName}" <${fromEmailAddress}>`,
