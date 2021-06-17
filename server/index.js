@@ -8,7 +8,6 @@ const Bet = require('./models/bet');
 const BetPool = require('./models/betpool');
 const SportsDir = require('./models/sportsDir');
 const Pinnacle = require('./models/pinnacle');
-const ExpressBrute = require('express-brute');
 const AutoBet = require("./models/autobet");
 const AutoBetLog = require("./models/autobetlog");
 const Promotion = require('./models/promotion');
@@ -23,6 +22,7 @@ const FAQSubject = require("./models/faq_subject");
 const FAQItem = require('./models/faq_item');
 const Event = require("./models/event");
 const EventBetPool = require("./models/eventbetpool");
+const Message = require("./models/message");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -42,6 +42,7 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
 //external libraries
 const express = require('express');
+const ExpressBrute = require('express-brute');
 const apicache = require('apicache');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -1486,7 +1487,13 @@ expressApp.get(
             if (!preference) {
                 preference = await Preference.create({ user: userId });
             }
-            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference };
+            const messages = await Message
+                .find({
+                    published_at: { $ne: null },
+                    userFor: userId,
+                })
+                .count();
+            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
@@ -1494,6 +1501,63 @@ expressApp.get(
         res.json(userObj);
     },
 );
+
+expressApp.get(
+    '/inbox',
+    isAuthenticated,
+    async (req, res) => {
+        const { _id: user_id } = req.user;
+        const messages = await Message
+            .find({
+                published_at: { $ne: null },
+                userFor: user_id,
+            })
+            .select(['title', 'published_at']);
+        res.json(messages);
+    },
+);
+
+expressApp.get(
+    '/inbox/:id',
+    isAuthenticated,
+    async (req, res) => {
+        const { _id: user_id } = req.user;
+        const { id } = req.params;
+        const message = await Message
+            .findOne({
+                published_at: { $ne: null },
+                userFor: user_id,
+                _id: new ObjectId(id)
+            });
+        if (message)
+            res.json(message);
+        else
+            res.status(404).json({ error: "can't get message" });
+    },
+);
+
+expressApp.delete(
+    '/inbox/:id',
+    isAuthenticated,
+    async (req, res) => {
+        const { _id: user_id } = req.user;
+        const { id } = req.params;
+        const message = await Message
+            .findOne({
+                published_at: { $ne: null },
+                userFor: user_id,
+                _id: new ObjectId(id)
+            });
+        if (message) {
+            message.userFor = message.userFor.filter((user) => user.toString() != user_id.toString());
+            await message.save();
+            res.json({ success: true });
+        }
+        else
+            res.status(404).json({ error: "can't get message" });
+    },
+);
+
 
 expressApp.get(
     '/profile',

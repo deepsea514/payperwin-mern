@@ -168,7 +168,7 @@ class App extends PureComponent {
         const { user, getUser, history, updateUser, location, require_2fa } = this.props;
         const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
         const { pathname } = location;
-        const sidebarShowAccountLinks = [
+        let sidebarShowAccountLinks = [
             '/bets',
             '/bets-sportsbook',
             '/deposit',
@@ -192,6 +192,7 @@ class App extends PureComponent {
             '/withdraw-bitcoin',
             '/verification',
         ].includes(pathname);
+        sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
 
         return (
@@ -281,7 +282,7 @@ class App extends PureComponent {
                                                 <Route path="/betforward/:betId" component={BetForward} />
                                                 <Route path="/announcements" component={Announcements} />
                                                 <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
-                                                <Route path="/inbox" component={Inbox} />
+                                                <Route path="/inbox" render={(props) => <Inbox {...props} getUser={getUser} />} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
                                                 <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
                                                 <Route path="/security" render={(props) => <Security {...props} user={user} getUser={getUser} />} />

@@ -19,6 +19,7 @@ import KYC from "../modules/kyc/pages";
 import TicketsModule from "../modules/tickets/pages";
 import FAQModule from "../modules/faq/pages";
 import GenerateToken from "./GenrateToken";
+import MessageCenterModule from "../modules/message-center/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -93,6 +94,9 @@ export default class App extends Component {
 
                     {/* Support FAQ Module */}
                     <Route path="/faq" component={FAQModule} />
+
+                    {/* Message Center Module */}
+                    <Route path="/message-center" component={MessageCenterModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 

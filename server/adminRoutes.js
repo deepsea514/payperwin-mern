@@ -17,6 +17,7 @@ const Verification = require("./models/verification");
 const Preference = require("./models/preference");
 const FAQSubject = require("./models/faq_subject");
 const Event = require("./models/event");
+const Message = require("./models/message");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -2190,5 +2191,103 @@ adminRouter.get(
         }
     }
 );
+
+adminRouter.post(
+    '/messages',
+    authenticateJWT,
+    async (req, res) => {
+        const { type, publish, title, content } = req.body;
+        if (publish) {
+            const { is_greater_balance, greater_balance,
+                is_last_online_before, last_online_before,
+                is_last_online_after, last_online_after,
+                is_wager_more, wager_more,
+                is_user_from, user_from, } = req.body;
+            let users = [];
+            try {
+                if (is_greater_balance) {
+                    const users_balance = await User.find({ balance: { $gte: greater_balance } });
+                    users = [...users_balance];
+                }
+                if (is_wager_more) {
+                    const users_wager = await User.find();
+                    users_wager.forEach(user => {
+                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                if (is_user_from) {
+                    const users_from = await User.find({ country: user_from });
+                    users_from.forEach(user => {
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                if (is_last_online_before) {
+                    // const online_before_login_log = await LoginLog
+                    //     .aggregate([
+                    //         {
+                    //             $group: {
+                    //                 "_id": "$user",
+                    //                 createdAt: {
+                    //                     $max: '$createdAt',
+                    //                 }
+                    //             }
+                    //         },
+                    //         {
+                    //             $match: {
+                    //                 createdAt: {
+                    //                     $lte: new Date(last_online_before)
+                    //                 }
+                    //             }
+                    //         },
+                    //         {
+                    //             $lookup: {
+                    //                 from: "User",
+                    //                 localField: "user",
+                    //                 foreignField: "_id",
+                    //                 as: "user"
+                    //             }
+                    //         }
+                    //     ])
+                    // .find({ createdAt: { $lte: new Date(last_online_before) } })
+                    // .populate('user');
+                    // console.log(JSON.parse(JSON.stringify(online_before_login_log)));
+
+                }
+
+                if (type == 'internal') {
+                    await Message.create({
+                        ...req.body,
+                        published_at: new Date(),
+                        userFor: users.map(user => user._id),
+                    });
+                } else {
+                    users.map(user => {
+                        const msg = {
+                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            to: user.email,
+                            subject: title,
+                            text: title,
+                            html: simpleresponsive(content),
+                        };
+                        sgMail.send(msg);
+                    })
+                }
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        } else {
+            try {
+                await Message.create(req.body);
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        }
+    }
+)
 
 module.exports = adminRouter;
