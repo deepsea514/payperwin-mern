@@ -116,10 +116,10 @@ class Header extends PureComponent {
                                     ? (
                                         <div className="login-nav-contain">
                                             <ul className="login-nav">
-                                                <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope" /></Link></li>
+                                                <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
                                                 <li>
                                                     <Link to={{ pathname: '/deposit' }}>
-                                                        <span className="blue-icon">{user.currency} {user.balance ? user.balance.toFixed(2) : 0}</span>
+                                                        <span className="blue-icon">CAD {user.currency} {user.balance ? user.balance.toFixed(2) : 0}</span>
                                                     </Link>
                                                 </li>
                                                 <li>
@@ -265,10 +265,10 @@ class Header extends PureComponent {
                                                     <ul>
                                                         <li onClick={() => this.setOddsFormat('american')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds
-                                                            </li>
+                                                        </li>
                                                         <li onClick={() => this.setOddsFormat('decimal')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Decimal Odds
-                                                            </li>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </React.Fragment>

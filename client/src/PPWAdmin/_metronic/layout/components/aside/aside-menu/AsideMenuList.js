@@ -65,6 +65,18 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                 </li>
 
                 <li
+                    className={`menu-item ${getMenuItemActive("/message-center", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/message-center/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Communication/Mail-box.svg"} />
+                        </span>
+                        <span className="menu-text">Messages</span>
+                    </Link>
+                </li>
+
+                <li
                     className={`menu-item ${getMenuItemActive("/bet-activities", false)}`}
                     aria-haspopup="true"
                 >

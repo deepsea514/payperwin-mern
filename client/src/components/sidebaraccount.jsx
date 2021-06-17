@@ -9,7 +9,7 @@ class SidebarAccount extends Component {
                 style={accountMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('accountMenuMobileOpen', false)}>
 
-                {/* <h3 className="cat-heading">MESSAGE CENTER</h3>
+                <h3 className="cat-heading">MESSAGE CENTER</h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
                         <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i>Inbox</Link>
@@ -17,7 +17,7 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/announcements' }}><i className="fas fa-bell"></i>Announcements </Link>
                     </li>
-                </ul> */}
+                </ul>
 
                 <h3 className="cat-heading">MY BETS</h3>
                 <ul className="left-cat top-cls-sport">
