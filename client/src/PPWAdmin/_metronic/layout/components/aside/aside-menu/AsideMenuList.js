@@ -48,7 +48,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/General/Shield-check.svg"} />
                         </span>
                         <span className="menu-text">KYC</span>
-                        {kyc_total && <span className="badge badge-pill badge-primary">&nbsp;{kyc_total}&nbsp;</span>}
+                        {kyc_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{kyc_total}&nbsp;</span>}
                     </Link>
                 </li>
 
@@ -97,7 +97,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/Shopping/Money.svg"} />
                         </span>
                         <span className="menu-text">Withdraw Logs</span>
-                        {pending_total && <span className="badge badge-pill badge-primary">&nbsp;{pending_total}&nbsp;</span>}
+                        {pending_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_total}&nbsp;</span>}
                     </Link>
                 </li>
 
