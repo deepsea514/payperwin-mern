@@ -1,12 +1,17 @@
 const BetPool = require('../../models/betpool');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
+const FinancialLog = require("../../models/financiallog");
 const ApiCache = require('../../models/apiCache');
 const axios = require('axios');
 const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
+const FinancialStatus = config.FinancialStatus;
 
+const ID = function () {
+    return '' + Math.random().toString(10).substr(2, 9);
+};
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -121,6 +126,14 @@ async function matchResults() {
                                 console.log(betChanges);
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin } });
+                                await FinancialLog.create({
+                                    financialtype: 'betwon',
+                                    uniqid: `BW${ID()}`,
+                                    user: userId,
+                                    amount: betAmount + payableToWin,
+                                    method: 'betwon',
+                                    status: FinancialStatus.success,
+                                });
                                 // TODO: email winner
                                 const msg = {
                                     from: `"${fromEmailName}" <${fromEmailAddress}>`,

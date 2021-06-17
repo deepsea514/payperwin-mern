@@ -2120,7 +2120,7 @@ expressApp.post(
     isAuthenticated,
     async (req, res) => {
         try {
-            const { filter, daterange } = req.body;
+            const { filter, daterange, page } = req.body;
             let searchObj = {
                 user: req.user._id,
                 status: FinancialStatus.success,
@@ -2130,15 +2130,50 @@ expressApp.post(
                 const { startDate, endDate } = daterange;
                 searchObj = {
                     ...searchObj,
-                    ...{
-                        updatedAt: {
-                            "$gte": new Date(startDate),
-                            "$lte": new Date(endDate),
-                        }
+                    updatedAt: {
+                        "$gte": new Date(startDate),
+                        "$lte": new Date(endDate),
                     }
                 }
             }
-            const financials = await FinancialLog.find(searchObj);
+            if (filter) {
+                if (filter.all == false) {
+                    let orCon = [];
+                    if (filter.betwon) {
+                        orCon.push({
+                            financialtype: "betwon",
+                            status: FinancialStatus.success
+                        });
+                    }
+                    if (filter.placebet) {
+                        orCon.push({
+                            financialtype: "bet",
+                            status: FinancialStatus.success
+                        });
+                    }
+                    if (filter.deposit) {
+                        orCon.push({
+                            financialtype: "deposit",
+                            status: FinancialStatus.success
+                        });
+                    }
+                    if (filter.withdraw) {
+                        orCon.push({
+                            financialtype: "withdraw",
+                            status: FinancialStatus.success
+                        });
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        $or: orCon
+                    }
+                }
+            }
+            const perPage = 20;
+            const financials = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(perPage * page)
+                .limit(perPage);
             res.json(financials);
         } catch (error) {
             console.log("transactions => ", error);
