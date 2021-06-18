@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createRef } from "react";
 import { Link } from "react-router-dom";
 import * as withdrawlogs from "../redux/reducers";
 import { connect } from "react-redux";
@@ -7,10 +7,11 @@ import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import { deleteWithdraw, updateWithdraw } from "../redux/services";
+import { deleteWithdraw, getWithdrawLogAsCSV, updateWithdraw } from "../redux/services";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
+import { CSVLink } from 'react-csv';
 
 
 const config = require("../../../../../../config.json");
@@ -34,7 +35,9 @@ class WithdrawLog extends React.Component {
             initialValues: { status: '', _2fa_code: '' },
             editStatusId: null,
             perPage: 25,
+            withdrawDownloadData: []
         };
+        this.csvRef = createRef();
     }
 
     componentDidMount() {
@@ -158,9 +161,18 @@ class WithdrawLog extends React.Component {
         this.props.filterWithdrawChange(filter);
     }
 
+    downloadCSV = () => {
+        const { filter } = this.props;
+        getWithdrawLogAsCSV(filter)
+            .then(async ({ data }) => {
+                await this.setState({ withdrawDownloadData: data });
+                this.csvRef.current.link.click();
+            })
+    }
+
     render() {
         const { modal, resMessage, modalvariant, deleteId, statusSchema,
-            initialValues, editStatusId, perPage, } = this.state;
+            initialValues, editStatusId, perPage, withdrawDownloadData } = this.state;
         const { total, currentPage, filter } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -174,9 +186,19 @@ class WithdrawLog extends React.Component {
                                     <h3 className="card-label">Withdraw Log</h3>
                                 </div>
                                 <div className="card-toolbar">
+                                    <CSVLink
+                                        data={withdrawDownloadData}
+                                        filename='withdraw-report.csv'
+                                        className='hidden'
+                                        ref={this.csvRef}
+                                        target='_blank'
+                                    />
+                                    <button className="btn btn-success font-weight-bolder font-size-sm mr-2" onClick={this.downloadCSV}>
+                                        <i className="fas fa-download"></i>&nbsp; Download as CSV
+                                    </button>
                                     <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
                                         <i className="fas fa-credit-card"></i>&nbsp; Manual Withdraw
-                                </Link>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="card-body">
