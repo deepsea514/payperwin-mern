@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createRef } from "react";
 import * as depositlogs from "../redux/reducers";
 import { connect } from "react-redux";
 import dateformat from "dateformat";
@@ -6,11 +6,12 @@ import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import { deleteDeposit, updateDeposit } from "../redux/services";
+import { deleteDeposit, updateDeposit, getDepositLogAsCSV } from "../redux/services";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
+import { CSVLink } from 'react-csv';
 
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
@@ -31,7 +32,9 @@ class DepositLog extends React.Component {
             initialValues: { status: '' },
             editStatusId: null,
             perPage: 25,
+            depositDownloadData: []
         };
+        this.csvRef = createRef();
     }
 
     componentDidMount() {
@@ -157,8 +160,17 @@ class DepositLog extends React.Component {
             getDepositLog(page);
     }
 
+    downloadCSV = () => {
+        const { filter } = this.props;
+        getDepositLogAsCSV(filter)
+            .then(async ({ data }) => {
+                await this.setState({ depositDownloadData: data });
+                this.csvRef.current.link.click();
+            })
+    }
+
     render() {
-        const { modal, resMessage, modalvariant, deleteId, statusSchema,
+        const { modal, resMessage, modalvariant, deleteId, statusSchema, depositDownloadData,
             initialValues, editStatusId, perPage, } = this.state;
         const { total, currentPage, filter } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
@@ -173,6 +185,16 @@ class DepositLog extends React.Component {
                                     <h3 className="card-label">Deposit Log</h3>
                                 </div>
                                 <div className="card-toolbar">
+                                    <CSVLink
+                                        data={depositDownloadData}
+                                        filename='deposit-report.csv'
+                                        className='hidden'
+                                        ref={this.csvRef}
+                                        target='_blank'
+                                    />
+                                    <button className="btn btn-success font-weight-bolder font-size-sm mr-2" onClick={this.downloadCSV}>
+                                        <i className="fas fa-download"></i>&nbsp; Download as CSV
+                                    </button>
                                     <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
                                         <i className="fas fa-credit-card"></i>&nbsp; Add New Deposit
                                     </Link>

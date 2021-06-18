@@ -69,6 +69,7 @@
     "react-bootstrap-table2-filter": "^1.3.3",
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-country-region-selector": "^3.0.2",
+    "react-csv": "^2.0.3",
     "react-datepicker": "^3.4.1",
     "react-dom": "^16.8.4",
     "react-favicon": "0.0.14",

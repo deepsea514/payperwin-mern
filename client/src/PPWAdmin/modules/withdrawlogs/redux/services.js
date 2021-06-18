@@ -33,3 +33,12 @@ export function addWithdraw(data) {
     time = Math.floor(time / 1000);
     return axios.post(`${serverUrl}/withdraw`, data, { withCredentials: true });
 }
+
+export function getWithdrawLogAsCSV(filter) {
+    let url = `${serverUrl}/withdraw-csv?format=csv`;
+    const { datefrom, dateto } = filter;
+    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
+    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
+
+    return axios.get(url, { withCredentials: true });
+}

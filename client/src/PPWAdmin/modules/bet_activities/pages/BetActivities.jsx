@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createRef } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
@@ -7,15 +7,18 @@ import * as bet_activities from "../redux/reducers";
 import dateformat from "dateformat";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { getSports } from "../redux/services";
+import { getSports, getWagerActivityAsCSV } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
+import { CSVLink } from 'react-csv';
 
 class BetActivities extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             perPage: 25,
+            wagerActivityDownloadData: []
         }
+        this.csvRef = createRef();
     }
 
     componentDidMount() {
@@ -68,9 +71,9 @@ class BetActivities extends React.Component {
                     <td scope="col">{bet.bet} {bet.userId ? bet.userId.currency : null}</td>
                     <td scope="col">{Number(bet.pickOdds).toFixed(2)}</td>
                     <td scope="col">{bet.userId ? bet.userId.username : null}</td>
-                    <td scope="col">{bet.lineQuery.sportName}</td>
-                    <td scope="col">{`${bet.teamA.name} vs ${bet.teamB.name}`}</td>
-                    <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.lineQuery.type)}</td>
+                    <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
+                    <td scope="col">{bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                    <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}</td>
                     <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                     <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
                     <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
@@ -228,8 +231,17 @@ class BetActivities extends React.Component {
         return sports.map((sport) => <option key={sport._id} value={sport.originSportId}>{sport.name}</option>)
     }
 
+    downloadCSV = () => {
+        const { filter } = this.props;
+        getWagerActivityAsCSV(filter)
+            .then(async ({ data }) => {
+                await this.setState({ wagerActivityDownloadData: data });
+                this.csvRef.current.link.click();
+            })
+    }
+
     render() {
-        const { perPage } = this.state;
+        const { perPage, wagerActivityDownloadData } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -240,6 +252,18 @@ class BetActivities extends React.Component {
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Bet Activities</h3>
+                            </div>
+                            <div className="card-toolbar">
+                                <CSVLink
+                                    data={wagerActivityDownloadData}
+                                    filename='wager-report.csv'
+                                    className='hidden'
+                                    ref={this.csvRef}
+                                    target='_blank'
+                                />
+                                <button className="btn btn-success font-weight-bolder font-size-sm" onClick={this.downloadCSV}>
+                                    <i className="fas fa-download"></i>&nbsp; Download as CSV
+                                </button>
                             </div>
                         </div>
                         <div className="card-body">
@@ -272,6 +296,7 @@ class BetActivities extends React.Component {
                                     <select
                                         className="form-control"
                                         value={filter.sport}
+                                        disabled={filter.house == 'pinnacle'}
                                         onChange={e => {
                                             this.onFilterChange({ sport: e.target.value });
                                         }} >
@@ -340,7 +365,7 @@ class BetActivities extends React.Component {
                                     />
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Min Amount
-                                        </small>
+                                    </small>
                                 </div>
                                 <div className="col-lg-2 col-md-3">
                                     <input
@@ -355,7 +380,7 @@ class BetActivities extends React.Component {
                                     />
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Max Amount
-                                        </small>
+                                    </small>
                                 </div>
                             </div>
                             <div className="">

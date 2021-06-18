@@ -736,6 +736,58 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/deposit-csv',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { datefrom, dateto } = req.query;
+            let searchObj = { financialtype: 'deposit', deletedAt: null, status: FinancialStatus.success };
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const withdraws = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('user', ['username', 'currency', 'email']);
+            let csvbody = [['Date', 'Name', 'Email', 'Amount', 'Method']];
+            withdraws.forEach(withdraw => {
+                csvbody.push([
+                    dateformat(withdraw.updatedAt, "default"),
+                    withdraw.user.username,
+                    withdraw.user.email,
+                    `$${Number(withdraw.amount).toFixed(2)}`,
+                    withdraw.method]);
+            })
+            res.send(csvbody);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
+        }
+    }
+)
+
 adminRouter.patch(
     '/deposit',
     authenticateJWT,
@@ -917,6 +969,58 @@ adminRouter.get(
                 .populate('user', ['username', 'currency']).populate('reason', ['title']);
             const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/withdraw-csv',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { datefrom, dateto } = req.query;
+            let searchObj = { financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.success };
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const withdraws = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('user', ['username', 'currency', 'email']);
+            let csvbody = [['Date', 'Name', 'Email', 'Amount', 'Method']];
+            withdraws.forEach(withdraw => {
+                csvbody.push([
+                    dateformat(withdraw.updatedAt, "default"),
+                    withdraw.user.username,
+                    withdraw.user.email,
+                    `$${Number(withdraw.amount).toFixed(2)}`,
+                    withdraw.method]);
+            })
+            res.send(csvbody);
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
@@ -1188,6 +1292,52 @@ adminRouter.get(
                 page++;
                 return res.json({ total, perPage, page, data, });
             } else if (house == 'pinnacle') {
+                if (datefrom || dateto) {
+                    let dateObj = {};
+                    if (datefrom) {
+                        datefrom = new Date(datefrom);
+                        if (!isNaN(datefrom.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $gte: datefrom }
+                            }
+                        }
+                    }
+                    if (dateto) {
+                        dateto = new Date(dateto);
+                        if (!isNaN(dateto.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $lte: dateto }
+                            }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ createdAt: dateObj }
+                    }
+                }
+
+                if (minamount || maxamount) {
+                    let amountObj = {}
+                    if (minamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
+                        }
+                    }
+                    if (maxamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ $expr: amountObj }
+                    }
+                }
+
                 const total = await BetSportsBook.find(searchObj).count();
                 const data = await BetSportsBook.find(searchObj)
                     .sort({ createdAt: -1 })
@@ -1200,6 +1350,169 @@ adminRouter.get(
             }
 
 
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t find bets.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/bets-csv',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { datefrom, dateto, sport, minamount, maxamount } = req.query;
+            let searchObj = { deletedAt: null };
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+
+            if (sport) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ "lineQuery.sportId": parseInt(sport) }
+                }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: parseInt(minamount) }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: parseInt(maxamount) }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ bet: amountObj }
+                }
+            }
+
+            const bets = await Bet.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('userId', ['username', 'currency', 'email']);
+
+            searchObj = {};
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ $expr: amountObj }
+                }
+            }
+
+            const betSportsBook = await BetSportsBook.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('userId', ['username', 'email', 'currency']);
+
+            let data = [
+                ['House', 'Name', 'Email', 'Sport', 'Game', 'Wager', 'Odds', 'Results', 'Win/Loss', 'Time']
+            ];
+            bets.forEach(bet => {
+                let results = '-';
+                let winLoss = '-';
+                if (bet.status == 'Settled - Win') {
+                    results = 'WIN';
+                    winLoss = '+ $' + Number(bet.credited).toFixed(2);
+                }
+                if (bet.status == 'Settled - Lose') {
+                    results = 'LOSE'
+                    winLoss = '+ $' + Number(bet.bet).toFixed(2);
+                }
+                data.push([
+                    'PPW',
+                    bet.userId.username,
+                    bet.userId.email,
+                    bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
+                    bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`,
+                    `$ ${bet.bet}`,
+                    Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
+                    results,
+                    winLoss,
+                    dateformat(bet.updatedAt, 'default')
+                ]);
+            })
+            betSportsBook.forEach(bet => {
+                data.push([
+                    'Pinnacle',
+                    bet.userId.username,
+                    bet.userId.email,
+                    bet.WagerInfo.Sport,
+                    bet.WagerInfo.EventName,
+                    `$ ${Number(bet.WagerInfo.ToRisk)}`,
+                    Number(bet.WagerInfo.Odds) > 0 ? `+${Number(bet.WagerInfo.Odds).toFixed(2)}` : `${Number(bet.WagerInfo.Odds).toFixed(2)}`,
+                    bet.WagerInfo.Outcome ? bet.WagerInfo.Outcome : '-',
+                    bet.WagerInfo.ProfitAndLoss ? (Number(bet.WagerInfo.ProfitAndLoss) > 0 ? `+ $${Number(bet.WagerInfo.ProfitAndLoss).toFixed(2)}` : `- $${Number(-bet.WagerInfo.ProfitAndLoss).toFixed(2)}`) : '-',
+                    dateformat(bet.updatedAt, 'default')
+                ]);
+            })
+            res.json(data);
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
