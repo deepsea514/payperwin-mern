@@ -64,7 +64,7 @@ class Preferences extends Component {
             <React.Fragment>
                 <div className="col-in prfnce">
                     <h1 className="main-heading-in">Preferences</h1>
-                    <div className="main-cnt">
+                    <div className="main-cnt ml-2">
                         {timezone && <Formik
                             initialValues={initialValues}
                             validationSchema={preferenceSchema}
