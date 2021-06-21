@@ -15,6 +15,7 @@ import * as tickets from "../modules/tickets/redux/reducers";
 import * as faq from "../modules/faq/redux/reducers";
 import * as messages from "../modules/message-center/redux/reducers";
 import * as events from "../modules/events/redux/reducers";
+import * as active_users from "../modules/active_users/redux/reducers";
 
 import * as frontend from "../../redux/reducer";
 
@@ -33,6 +34,7 @@ export const rootReducer = combineReducers({
     faq: faq.reducer,
     events: events.reducer,
     messages: messages.reducer,
+    active_users: active_users.reducer,
 
     frontend: frontend.reducer,
 });
@@ -53,6 +55,7 @@ export function* rootSaga() {
         faq.saga(),
         events.saga(),
         messages.saga(),
+        active_users.saga(),
 
         frontend.saga(),
     ]);

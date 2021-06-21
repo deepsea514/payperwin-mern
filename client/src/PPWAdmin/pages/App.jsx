@@ -20,6 +20,7 @@ import TicketsModule from "../modules/tickets/pages";
 import FAQModule from "../modules/faq/pages";
 import GenerateToken from "./GenrateToken";
 import MessageCenterModule from "../modules/message-center/pages";
+import ActiveUsersModule from "../modules/active_users/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -97,6 +98,9 @@ export default class App extends Component {
 
                     {/* Message Center Module */}
                     <Route path="/message-center" component={MessageCenterModule} />
+
+                    {/* Active Users */}
+                    <Route path="/active-users" component={ActiveUsersModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
