@@ -2603,8 +2603,6 @@ adminRouter.post(
     }
 )
 
-// https://stackoverflow.com/questions/32063941/how-to-sort-documents-based-on-length-of-an-array-field
-// https://stackoverflow.com/questions/30000665/mongodb-mongoose-sort-by-summing-two-fields
 adminRouter.get(
     '/active-user',
     // authenticateJWT,
@@ -2626,12 +2624,36 @@ adminRouter.get(
         ])
         data = await Bet.populate(data, { path: "betHistory" });
         data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
-        // data = data.map(data => {
-        //     let win = 0, loss = 0;
-        //     data.betHistory.forEach(bet => {
-
-        //     })
-        // })
+        data = data.map(data => {
+            let win = 0, loss = 0;
+            data.betHistory.forEach(bet => {
+                if (bet.status == 'Settled - Lose') {
+                    loss += bet.bet;
+                    return;
+                } else if (bet.status == 'Settled - Win') {
+                    win += bet.credited;
+                    return;
+                }
+            });
+            data.betSportsbookHistory.forEach(bet => {
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
+                    loss += Number(bet.WagerInfo.ToRisk);
+                    return;
+                }
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
+                    win += Number(bet.WagerInfo.ProfitAndLoss);
+                    return;
+                }
+            })
+            return {
+                username: data.username,
+                email: data.email,
+                total_bets: data.total_bets,
+                win,
+                loss,
+                res: win - loss
+            }
+        })
         res.json(data);
     }
 )
