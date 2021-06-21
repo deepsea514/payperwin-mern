@@ -2632,7 +2632,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.credited;
+                    win += bet.payableToWin;
                     return;
                 }
             });
@@ -2691,7 +2691,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.credited;
+                    win += bet.payableToWin;
                     return;
                 }
             });
