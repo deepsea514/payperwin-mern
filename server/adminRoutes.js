@@ -2603,4 +2603,37 @@ adminRouter.post(
     }
 )
 
+// https://stackoverflow.com/questions/32063941/how-to-sort-documents-based-on-length-of-an-array-field
+// https://stackoverflow.com/questions/30000665/mongodb-mongoose-sort-by-summing-two-fields
+adminRouter.get(
+    '/active-user',
+    // authenticateJWT,
+    async (req, res) => {
+        let { count } = req.query;
+        if (!count) count = 20;
+        let data = await User.aggregate([
+            {
+                "$project": {
+                    "username": 1,
+                    "email": 1,
+                    "betHistory": 1,
+                    "betSportsbookHistory": 1,
+                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                }
+            },
+            { "$sort": { "total_bets": -1 } },
+            { "$limit": count },
+        ])
+        data = await Bet.populate(data, { path: "betHistory" });
+        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
+        // data = data.map(data => {
+        //     let win = 0, loss = 0;
+        //     data.betHistory.forEach(bet => {
+
+        //     })
+        // })
+        res.json(data);
+    }
+)
+
 module.exports = adminRouter;

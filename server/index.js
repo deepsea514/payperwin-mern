@@ -270,6 +270,8 @@ passport.use('local-signup', new LocalStrategy(
                     roles: {
                         registered: true,
                     },
+                    betHistory: [],
+                    betSportsbookHistory: [],
                 };
                 const newUser = new User(newUserObj);
                 console.info(`created new user ${username}`);
