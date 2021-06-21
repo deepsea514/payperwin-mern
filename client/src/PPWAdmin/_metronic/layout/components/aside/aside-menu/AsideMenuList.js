@@ -89,6 +89,18 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                 </li>
 
                 <li
+                    className={`menu-item ${getMenuItemActive("/active-users", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/active-users/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
+                        </span>
+                        <span className="menu-text">Active Users</span>
+                    </Link>
+                </li>
+
+                <li
                     className={`menu-item ${getMenuItemActive("/withdraw-log", false)}`}
                     aria-haspopup="true"
                 >

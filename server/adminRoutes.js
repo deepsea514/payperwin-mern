@@ -2605,10 +2605,11 @@ adminRouter.post(
 
 adminRouter.get(
     '/active-user',
-    // authenticateJWT,
+    authenticateJWT,
     async (req, res) => {
         let { count } = req.query;
         if (!count) count = 20;
+        count = parseInt(count);
         let data = await User.aggregate([
             {
                 "$project": {
@@ -2649,12 +2650,71 @@ adminRouter.get(
                 username: data.username,
                 email: data.email,
                 total_bets: data.total_bets,
-                win,
-                loss,
-                res: win - loss
+                win: '$' + Number(win).toFixed(2),
+                loss: '$' + Number(loss).toFixed(2),
+                res: win >= loss ? ('$' + Number(win - loss).toFixed(2)) : ('- $' + Number(loss - win).toFixed(2))
             }
         })
         res.json(data);
+    }
+)
+
+adminRouter.get(
+    '/active-user-csv',
+    authenticateJWT,
+    async (req, res) => {
+        let { count } = req.query;
+        if (!count) count = 20;
+        count = parseInt(count);
+        let data = await User.aggregate([
+            {
+                "$project": {
+                    "username": 1,
+                    "email": 1,
+                    "betHistory": 1,
+                    "betSportsbookHistory": 1,
+                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                }
+            },
+            { "$sort": { "total_bets": -1 } },
+            { "$limit": count },
+        ])
+        data = await Bet.populate(data, { path: "betHistory" });
+        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
+        let csvData = [
+            ['Name', 'Email', '# of Bets', 'Win', 'Loss', 'Net']
+        ]
+        data = data.map(data => {
+            let win = 0, loss = 0;
+            data.betHistory.forEach(bet => {
+                if (bet.status == 'Settled - Lose') {
+                    loss += bet.bet;
+                    return;
+                } else if (bet.status == 'Settled - Win') {
+                    win += bet.credited;
+                    return;
+                }
+            });
+            data.betSportsbookHistory.forEach(bet => {
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
+                    loss += Number(bet.WagerInfo.ToRisk);
+                    return;
+                }
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
+                    win += Number(bet.WagerInfo.ProfitAndLoss);
+                    return;
+                }
+            })
+            csvData.push([
+                data.username,
+                data.email,
+                data.total_bets,
+                '$' + Number(win).toFixed(2),
+                '$' + Number(loss).toFixed(2),
+                win >= loss ? ('$' + Number(win - loss).toFixed(2)) : ('- $' + Number(loss - win).toFixed(2))
+            ])
+        })
+        res.json(csvData);
     }
 )
 
