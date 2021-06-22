@@ -25,9 +25,9 @@ class Sport extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName } = this.props;
-        const { sportName: prevSportName } = prevProps;
-        const sportChanged = sportName !== prevSportName;
+        const { sportName, league } = this.props;
+        const { sportName: prevSportName, league: prevLeague } = prevProps;
+        const sportChanged = (sportName !== prevSportName || league !== prevLeague);
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
@@ -35,7 +35,7 @@ class Sport extends PureComponent {
     }
 
     getSport() {
-        const { sportName } = this.props;
+        const { sportName, league: leagueName } = this.props;
         if (sportName) {
             const url = `${serverUrl}/sport?name=${sportName}`;
             axios({
@@ -47,6 +47,9 @@ class Sport extends PureComponent {
             }).then(({ data }) => {
                 if (data) {
                     // Remove moneyline with draw
+                    if (leagueName)
+                        data.leagues = data.leagues.filter(league => league.name == leagueName);
+
                     data.leagues.forEach(league => {
                         const { events } = league;
                         events.forEach(event => {
