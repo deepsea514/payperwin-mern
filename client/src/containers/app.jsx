@@ -253,8 +253,24 @@ class App extends PureComponent {
                                                 } />
                                                 <Route path="/how-it-works" component={HowTo} />
                                                 <Route path="/sports" component={Sports} />
+                                                <Route path="/sport/:name/:league" render={(props) => {
+                                                    const { match } = props;
+                                                    console.log(match);
+                                                    const name = resObjPath(match, 'params.name');
+                                                    const league = resObjPath(match, 'params.league');
+                                                    return (
+                                                        <React.Fragment>
+                                                            <h1>{name}: {league}</h1>
+                                                            <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                removeBet={this.removeBet} sportName={name}
+                                                                league={league}
+                                                            />
+                                                        </React.Fragment>
+                                                    );
+                                                }} />
                                                 <Route path="/sport/:name" render={(props) => {
                                                     const { match } = props;
+                                                    console.log(match);
                                                     const name = resObjPath(match, 'params.name');
                                                     return (
                                                         <React.Fragment>

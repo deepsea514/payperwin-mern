@@ -879,7 +879,7 @@ expressApp.post(
                                             fee: fee,
                                             matchStartDate: startDate,
                                             status: 'Pending',
-                                            lineQuery: lineQuery,
+                                            lineQuery: { lineId: lineId },
                                             lineId: lineId,
                                             origin: origin
                                         };
@@ -1647,12 +1647,35 @@ expressApp.get(
     '/sport',
     async (req, res) => {
         const { name } = req.query;
-        if (name == "Other") {
-
-        }
         const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
         if (sportData) {
             res.json(sportData);
+        } else {
+            res.json([]);
+        }
+    },
+);
+
+expressApp.get(
+    '/sportleague',
+    async (req, res) => {
+        const { name } = req.query;
+        const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+        if (sportData) {
+            let data = sportData.leagues.map(league => {
+                const { name, events } = league;
+                let filteredEvents = events.filter(event => {
+                    return (new Date(event.startDate)).getTime() > (new Date()).getTime()
+                });
+                return {
+                    name,
+                    eventCount: filteredEvents.length,
+                }
+            })
+            data = data.filter(data => data.eventCount)
+            data.sort((a, b) => b.eventCount - a.eventCount);
+            data = data.slice(0, 5);
+            res.json(data);
         } else {
             res.json([]);
         }

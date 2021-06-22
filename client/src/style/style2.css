@@ -324,6 +324,15 @@ ul.list-s i {
     color: #72777f;
     text-decoration: none;
     display: block;
+    cursor: pointer;
+}
+
+.left-cat li div {
+    font-size: 12px;
+    color: #72777f;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
 }
 
 .no-bets h4 {
@@ -415,8 +424,51 @@ ul.list-s i {
     border-bottom: 3px solid #ED254E;
 }
 
+.left-cat li div span {
+    float: right;
+}
+
 .left-cat li a span {
     float: right;
+}
+
+.left-cat li.sports-dropdown {
+    padding: 0;
+    position: relative;
+}
+
+.left-cat li.sports-dropdown div {
+    padding: 5px 10px;
+}
+
+.left-cat li.sports-dropdown:hover {
+    background: none;
+    border-radius: none;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.left-cat li.sports-dropdown:hover div {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.left-cat>li.sports-dropdown div span:nth-child(3) {
+    display: initial;
+}
+
+.left-cat>li.sports-dropdown div:hover span:nth-child(3) {
+    display: none;
+}
+
+.left-cat>li.sports-dropdown div span:nth-child(4) {
+    display: none;
+}
+
+.left-cat>li.sports-dropdown div:hover span:nth-child(4) {
+    display: initial;
 }
 
 .fabrte {
