@@ -736,10 +736,7 @@ async function calculateBetsStatus(betpoolUid) {
         away: teamA.betTotal,
     }
     for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin, userId } = bet;
-        // console.log(bet, payPool[pick]);
-        // TODO: i dont think this algo is correct
-        // I think you have to account for how much money is refunded to player for unmatched bet
+        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
         let payableToWin = 0;
         if (payPool[pick]) {
             if (payPool[pick] > 0) {
@@ -759,26 +756,58 @@ async function calculateBetsStatus(betpoolUid) {
                 status: matchingStatus,
             }
         };
-        // console.log(betChanges);
         if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            // console.log(2);
-            // if (matchingStatus === 'Matched') {
-            //   const user = await User.findById(userId);
-            //   const { email } = user;
-            //   const msg = {
-            //     from: `"${fromEmailName}" <${fromEmailAddress}>`,
-            //     to: email,
-            //     subject: 'Your bet has been matched!',
-            //     text: `Your bet has been matched. You can view your open bets here: http://dev.payperwin.ca/bets`,
-            //     html: `
-            //                 <p>
-            //                   Your bet has been matched. You can view your open bets here:
-            //                   <a href="http://dev.payperwin.ca/bets">Open Bets</a>
-            //                 </p>
-            //               `,
-            //   };
-            //   sgMail.send(msg);
-            // }
+            await Bet.findOneAndUpdate({ _id }, betChanges);
+        }
+    }
+}
+
+async function calculateCustomBetsStatus(eventId) {
+    const betpool = await EventBetPool.findOne({ eventId: eventId });
+    const { candidates } = betpool;
+    let totalPayable = { betTotal: 0, toWinTotal: 0 };
+    let betsArray = [];
+    candidates.forEach(candidate => {
+        totalPayable.betTotal += candidate.betTotal;
+        totalPayable.toWinTotal += candidate.toWinTotal;
+        betsArray = [...betsArray, ...candidate.bets];
+    });
+
+    const bets = await Bet.find({
+        _id:
+        {
+            $in: betsArray
+        }
+    });
+    let payPool = {};
+    candidates.forEach(candidate => {
+        payPool[candidate.name] = totalPayable.betTotal - candidate.betTotal;
+    });
+
+    for (const bet of bets) {
+        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+        let payableToWin = 0;
+
+        if (payPool[pick]) {
+            if (payPool[pick] > 0) {
+                payableToWin += toWin;
+                payPool[pick] -= toWin;
+                if (payPool[pick] < 0)
+                    payableToWin += payPool[pick];
+            }
+        }
+        let matchingStatus;
+        if (payableToWin === toWin) matchingStatus = 'Matched';
+        else if (payableToWin === 0) matchingStatus = 'Pending';
+        else matchingStatus = 'Partial Match'
+        const betChanges = {
+            $set: {
+                payableToWin,
+                matchingStatus,
+                status: matchingStatus,
+            }
+        };
+        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
             await Bet.findOneAndUpdate({ _id }, betChanges);
         }
     }
@@ -916,7 +945,7 @@ expressApp.post(
                                                 }
                                             }
 
-                                            // await calculateBetsStatus(JSON.stringify(lineQuery));
+                                            await calculateCustomBetsStatus(lineId);
 
                                             user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
                                             user.balance = newBalance;
@@ -1349,61 +1378,61 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     }
 }
 
-expressApp.get(
-    '/betforward',
-    async (req, res) => {
-        if (req.user && req.user.username) {
-            const { betId } = req.query;
-            const bet = await Bet.findById(new ObjectId(betId));
-            if (bet) {
-                const { lineQuery, pick, pickName, payableToWin, bet: betAmount, toWin, pickOdds, oldOdds } = bet;
-                const { sportName, leagueId, eventId, lineId, type, altLineId, sportId, periodNumber } = lineQuery;
-                const unplayableBet = payableToWin < toWin
-                    ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                const data = {
-                    "oddsFormat": "AMERICAN", // HAVE
-                    "uniqueRequestId": betId,
-                    "acceptBetterLine": true, // TRUE
-                    "stake": /* unplayableBet */ 1, // HAVE
-                    "winRiskStake": "RISK", // "RISK"
-                    "lineId": lineId, // HAVE
-                    "altLineId": altLineId || null, // HAVE
-                    "pitcher1MustStart": true, // ??? TRUE
-                    "pitcher2MustStart": true, // ??? TRUE
-                    "fillType": "NORMAL", // "NORMAL"
-                    "sportId": sportId, // HAVE 
-                    "eventId": eventId, // HAVE
-                    "periodNumber": periodNumber || 0, // HAVE (NOW)
-                    "betType": type, // HAVE
-                    "team": pick === 'home' ? "TEAM1" : "TEAM2", // HAVE
-                    "side": pick === 'over' ? "OVER" : "UNDER" // OMIT OR HAVE
-                };
-                try {
-                    // await axios({
-                    //   method: 'post',
-                    //   url: `${config.pinnacleApiHost}/v2/bets/straight`,
-                    //   data,
-                    //   maxRedirects: 999,
-                    //   headers: {
-                    //     'User-Agent': 'PostmanRuntime/7.24.1',
-                    //     'Authorization': 'Basic SkIxMDUyNzIyOkN1cnpvbjg4OA==',
-                    //     'Accept': 'application/json',
-                    //   },
-                    // });
-                    // TODO: remove original bet if unmatched or modify the bet and toWin amount
-                    await calculateBetsStatus(JSON.stringify(lineQuery));
-                } catch (e) {
-                    console.log("betforward => ", e);
-                    res.status(404).json({ error: 'There was a problem submitting this bet.' });
-                }
-            } else {
-                res.status(404).json({ error: 'BetId not found.' });
-            }
-        } else {
-            res.status(404).end();
-        }
-    },
-);
+// expressApp.get(
+//     '/betforward',
+//     async (req, res) => {
+//         if (req.user && req.user.username) {
+//             const { betId } = req.query;
+//             const bet = await Bet.findById(new ObjectId(betId));
+//             if (bet) {
+//                 const { lineQuery, pick, pickName, payableToWin, bet: betAmount, toWin, pickOdds, oldOdds } = bet;
+//                 const { sportName, leagueId, eventId, lineId, type, altLineId, sportId, periodNumber } = lineQuery;
+//                 const unplayableBet = payableToWin < toWin
+//                     ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+//                 const data = {
+//                     "oddsFormat": "AMERICAN", // HAVE
+//                     "uniqueRequestId": betId,
+//                     "acceptBetterLine": true, // TRUE
+//                     "stake": /* unplayableBet */ 1, // HAVE
+//                     "winRiskStake": "RISK", // "RISK"
+//                     "lineId": lineId, // HAVE
+//                     "altLineId": altLineId || null, // HAVE
+//                     "pitcher1MustStart": true, // ??? TRUE
+//                     "pitcher2MustStart": true, // ??? TRUE
+//                     "fillType": "NORMAL", // "NORMAL"
+//                     "sportId": sportId, // HAVE 
+//                     "eventId": eventId, // HAVE
+//                     "periodNumber": periodNumber || 0, // HAVE (NOW)
+//                     "betType": type, // HAVE
+//                     "team": pick === 'home' ? "TEAM1" : "TEAM2", // HAVE
+//                     "side": pick === 'over' ? "OVER" : "UNDER" // OMIT OR HAVE
+//                 };
+//                 try {
+//                     // await axios({
+//                     //   method: 'post',
+//                     //   url: `${config.pinnacleApiHost}/v2/bets/straight`,
+//                     //   data,
+//                     //   maxRedirects: 999,
+//                     //   headers: {
+//                     //     'User-Agent': 'PostmanRuntime/7.24.1',
+//                     //     'Authorization': 'Basic SkIxMDUyNzIyOkN1cnpvbjg4OA==',
+//                     //     'Accept': 'application/json',
+//                     //   },
+//                     // });
+//                     // TODO: remove original bet if unmatched or modify the bet and toWin amount
+//                     await calculateBetsStatus(JSON.stringify(lineQuery));
+//                 } catch (e) {
+//                     console.log("betforward => ", e);
+//                     res.status(404).json({ error: 'There was a problem submitting this bet.' });
+//                 }
+//             } else {
+//                 res.status(404).json({ error: 'BetId not found.' });
+//             }
+//         } else {
+//             res.status(404).end();
+//         }
+//     },
+// );
 
 expressApp.get(
     '/line',
