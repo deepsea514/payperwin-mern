@@ -303,7 +303,7 @@ class App extends PureComponent {
                                                 <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
                                                 <Route path="/security" render={(props) => <Security {...props} user={user} getUser={getUser} />} />
                                                 <Route path="/account" component={Profile} />
-                                                <Route path="/self-exclusion" component={SelfExcusion} />
+                                                <Route path="/self-exclusion" render={(props) => <SelfExcusion {...props} user={user} getUser={getUser} />} />
                                                 <Route path="/deactivation" component={Deactivation} />
                                                 <Route path="/privacy-policy" component={PrivacyPolicy} />
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />

@@ -40,11 +40,15 @@ class Inbox extends Component {
                             <InboxDetail {...props} />
                         )} />
                         <Route path="/" render={(props) =>
-                            <div className="col-in pad-bt">
+                            <div className="col-in ">
                                 <h1 className="main-heading-in">Inbox</h1>
                                 <div className="main-cnt">
                                     {error && <h6>{error}</h6>}
-                                    {!error && messages.length == 0 && <p>There are no messages in your inbox.</p>}
+                                    {!error && messages.length == 0 && <div className="text-center mb-0">
+                                        <img src="images/announ-img.jpg" />
+                                        <br />
+                                        <strong>There are no messages in your announcements.</strong>
+                                    </div>}
                                     {!error && messages.length != 0 && messages.map(message => (
                                         <div className="in-text" key={message._id}>
                                             <Link to={`/${message._id}`}> {dayjs(message.published_at).format('ddd, MMM DD, YYYY, HH:mm')} </Link>
