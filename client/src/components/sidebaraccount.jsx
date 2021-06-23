@@ -67,15 +67,15 @@ class SidebarAccount extends Component {
                     </li>}
                 </ul>
 
-                {/* <h3 className="cat-heading">RESPONSIBLE GAMING</h3>
+                <h3 className="cat-heading">RESPONSIBLE GAMING</h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
-                        <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-hockey-puck"></i>Self exclusion</Link>
+                        <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i>Self exclusion</Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link to={{ pathname: '/deactivation' }}><i className="far fa-user-circle"></i>Account deactivation</Link>
-                    </li>
-                </ul> */}
+                    </li> */}
+                </ul>
             </div>
         );
     }
