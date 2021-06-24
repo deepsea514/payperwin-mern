@@ -71,6 +71,36 @@ class PaymentOptions extends Component {
                                         </ul>
                                     </div>
                                 </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/Ethereum.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> Ethereum</li>
+                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Min : <strong>$25</strong></li>
+                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/USDT.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> USDT</li>
+                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Min : <strong>$25</strong></li>
+                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

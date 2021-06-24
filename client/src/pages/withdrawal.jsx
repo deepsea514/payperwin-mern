@@ -39,6 +39,22 @@ class Withdraw extends PureComponent {
                                     Bitcoin
                                 </Link>
                             </li>
+                            <li>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    <img src="images/Ethereum.png" />
+                                </Link>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    Ethereum
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    <img src="images/USDT.png" />
+                                </Link>
+                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                    USDT
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">
