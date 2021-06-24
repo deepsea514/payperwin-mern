@@ -1873,7 +1873,7 @@ expressApp.get('/vipCodeExist', async (req, res) => {
     }
 });
 
-const depositTripleA = (req, res, method) => {
+const depositTripleA = async (req, res, method) => {
     const { user } = req;
     let access_token = null;
     try {
