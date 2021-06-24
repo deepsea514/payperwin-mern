@@ -84,7 +84,7 @@
         "eth_api_id": "ETH16243429283TH",
         "usdt_api_id": "USDT1624342928Sx",
         "merchant_key": "mkey-ckosbmtp10000dkns23mu6y92",
-        "testMode": true
+        "testMode": false
     },
     "EventStatus": {
         "pending": {
