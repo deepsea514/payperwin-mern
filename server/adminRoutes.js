@@ -1028,7 +1028,7 @@ adminRouter.get(
     }
 )
 
-const tripleAWithdraw = async (req, res, data, userdata, withdraw) => {
+const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
     const amount = data.amount ? data.amount : withdraw.amount;
     const prebalance = parseInt(userdata.balance);
     const withdrawamount = parseInt(amount);
@@ -1135,7 +1135,7 @@ adminRouter.patch(
 
             if (data.status == FinancialStatus.inprogress) {
                 if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
-                    const result = tripleAWithdraw(req, res, data, userdata, withdraw)
+                    const result = tripleAWithdraw(req, res, data, userdata, withdraw, fee)
                     if (!result)
                         return;
                 }
