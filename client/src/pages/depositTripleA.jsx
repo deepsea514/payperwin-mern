@@ -31,7 +31,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class DepositBitcoin extends PureComponent {
+class DepositTripleA extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,7 +53,8 @@ class DepositBitcoin extends PureComponent {
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Deposit with Bitcoin' });
+        const { method } = this.props;
+        setTitle({ pageTitle: `Deposit with ${method}` });
     }
 
     onSubmit = (values, formik) => {
@@ -79,17 +80,17 @@ class DepositBitcoin extends PureComponent {
     };
 
     render() {
-        const { classes, user } = this.props;
+        const { classes, user, method } = this.props;
         const { depositSchema, depositError, depositSuccess, hosted_url } = this.state;
         const initialvalues = {
             amount: 0,
             email: (user ? user.email : ''),
             phone: (user ? user.phone : ''),
-            method: 'Bitcoin'
+            method
         };
         return (
             <div className="col-in">
-                <h3>Bitcoin Deposit</h3>
+                <h3>{method} Deposit</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!depositSuccess && <div className={classes.formContent}>
@@ -210,7 +211,7 @@ class DepositBitcoin extends PureComponent {
                     </div>
                 </div>
                 <fieldset className="depositFieldset">
-                    <legend>Bitcoin Deposit Limits</legend>
+                    <legend>{method} Deposit Limits</legend>
                     <p>Minumum Deposit: CAD 5.00</p>
                     <p>Maximum Deposit: CAD 5,000.00</p>
                 </fieldset>
@@ -219,4 +220,4 @@ class DepositBitcoin extends PureComponent {
     }
 }
 
-export default withRouter(withStyles(useStyles, { withTheme: true })(DepositBitcoin));
+export default withRouter(withStyles(useStyles, { withTheme: true })(DepositTripleA));

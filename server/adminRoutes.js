@@ -1028,6 +1028,73 @@ adminRouter.get(
     }
 )
 
+const tripleAWithdraw = (req, res, data, userdata, withdraw) => {
+    const amount = data.amount ? data.amount : withdraw.amount;
+    const prebalance = parseInt(userdata.balance);
+    const withdrawamount = parseInt(amount);
+    if (prebalance < withdrawamount + fee) {
+        res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+        return false;
+    }
+
+    let access_token = null;
+    try {
+        const params = new URLSearchParams();
+        params.append('client_id', TripleA.client_id);
+        params.append('client_secret', TripleA.client_secret);
+        params.append('grant_type', 'client_credentials');
+        const { data } = await axios.post(TripleA.tokenurl, params);
+        access_token = data.access_token;
+    } catch (error) {
+        res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        return false;
+    }
+    if (!access_token) {
+        res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        return false
+    }
+
+    let crypto_currency = "testBTC";
+    switch (method) {
+        case "Ethereum":
+            crypto_currency = "ETH";
+            break;
+        case "Tether":
+            crypto_currency = "USDT";
+            break;
+        case "Bitcoin":
+        default:
+            crypto_currency = "BTC";
+    }
+    crypto_currency = TripleA.testMode ? "testBTC" : crypto_currency
+
+    const body = {
+        "merchant_key": TripleA.merchant_key,
+        "email": userdata.email,
+        "withdraw_currency": "CAD",
+        "withdraw_amount": withdrawamount,
+        "crypto_currency": crypto_currency,
+        "remarks": "Bitcoin Withdraw |" + withdraw._id,
+        "notify_url": "https://api.payperwin.co/triplea/withdraw",
+        "notify_secret": TripleA.notify_secret
+    };
+    let payout_reference = null;
+    try {
+        const { data } = await axios.post(TripleA.payouturl, body, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+        payout_reference = data.payout_reference;
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: 0, message: "Can't make withdraw." });
+        return false;
+    }
+    withdraw.note = payout_reference;
+    await withdraw.save();
+}
+
 adminRouter.patch(
     '/withdraw',
     authenticateJWT,
@@ -1067,53 +1134,10 @@ adminRouter.patch(
             }
 
             if (data.status == FinancialStatus.inprogress) {
-                if (withdraw.method == "Bitcoin") {
-                    const amount = data.amount ? data.amount : withdraw.amount;
-                    const prebalance = parseInt(userdata.balance);
-                    const withdrawamount = parseInt(amount);
-                    if (prebalance < withdrawamount + fee) {
-                        res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+                if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
+                    const result = tripleAWithdraw(req, res, data, userdata, withdraw)
+                    if (!result)
                         return;
-                    }
-
-                    let access_token = null;
-                    try {
-                        const params = new URLSearchParams();
-                        params.append('client_id', TripleA.client_id);
-                        params.append('client_secret', TripleA.client_secret);
-                        params.append('grant_type', 'client_credentials');
-                        const { data } = await axios.post(TripleA.tokenurl, params);
-                        access_token = data.access_token;
-                    } catch (error) {
-                        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-                    }
-                    if (!access_token) {
-                        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-                    }
-                    const body = {
-                        "merchant_key": TripleA.merchant_key,
-                        "email": userdata.email,
-                        "withdraw_currency": "CAD",
-                        "withdraw_amount": withdrawamount,
-                        "crypto_currency": TripleA.testMode ? "testBTC" : "BTC",
-                        "remarks": "Bitcoin Withdraw |" + withdraw._id,
-                        "notify_url": "https://api.payperwin.co/triplea/bitcoin-withdraw",
-                        "notify_secret": TripleA.notify_secret
-                    };
-                    let payout_reference = null;
-                    try {
-                        const { data } = await axios.post(TripleA.payouturl, body, {
-                            headers: {
-                                'Authorization': `Bearer ${access_token}`
-                            }
-                        });
-                        payout_reference = data.payout_reference;
-                    } catch (error) {
-                        console.log(error);
-                        return res.status(500).json({ success: 0, message: "Can't make withdraw." });
-                    }
-                    withdraw.note = payout_reference;
-                    await withdraw.save();
                 }
             }
 

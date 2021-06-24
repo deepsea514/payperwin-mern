@@ -39,9 +39,9 @@ import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
 import DepositETransfer from "../pages/depositEtransfer";
-import DepositBitcoin from "../pages/depositBitcoin";
+import DepositTripleA from "../pages/depositTripleA";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
-import WithdrawBitcoin from "../pages/withdrawBitcoin";
+import WithdrawTripleA from "../pages/withdrawTripleA";
 import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
@@ -189,7 +189,11 @@ class App extends PureComponent {
             '/deposit-etransfer',
             '/withdraw-etransfer',
             '/deposit-bitcoin',
+            '/deposit-ethereum',
+            '/deposit-tether',
             '/withdraw-bitcoin',
+            '/withdraw-ethereum',
+            '/withdraw-tether',
             '/verification',
         ].includes(pathname);
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
@@ -309,9 +313,13 @@ class App extends PureComponent {
                                                 <Route path="/terms-and-conditions" component={TermsAndConditions} />
                                                 <Route path="/betting-rules" component={BettingRules} />
                                                 <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
-                                                <Route path="/deposit-bitcoin" render={(props) => <DepositBitcoin {...props} user={user} />} />
+                                                <Route path="/deposit-bitcoin" render={(props) => <DepositTripleA {...props} user={user} method="Bitcoin" />} />
+                                                <Route path="/deposit-ethereum" render={(props) => <DepositTripleA {...props} user={user} method="Ethereum" />} />
+                                                <Route path="/deposit-tether" render={(props) => <DepositTripleA {...props} user={user} method="Tether" />} />
                                                 <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
-                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawBitcoin {...props} user={user} />} />
+                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawTripleA {...props} user={user} method="Bitcoin" />} />
+                                                <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} method="Ethereum" />} />
+                                                <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} method="Tether" />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>

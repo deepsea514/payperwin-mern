@@ -40,19 +40,19 @@ class Withdraw extends PureComponent {
                                 </Link>
                             </li>
                             <li>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                <Link to={{ pathname: '/withdraw-ethereum' }}>
                                     <img src="images/Ethereum.png" />
                                 </Link>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                <Link to={{ pathname: '/withdraw-ethereum' }}>
                                     Ethereum
                                 </Link>
                             </li>
                             <li>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
+                                <Link to={{ pathname: '/withdraw-tether' }}>
                                     <img src="images/USDT.png" />
                                 </Link>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
-                                    USDT
+                                <Link to={{ pathname: '/withdraw-tether' }}>
+                                    Tether
                                 </Link>
                             </li>
                         </ul>
