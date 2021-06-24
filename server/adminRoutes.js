@@ -1028,7 +1028,7 @@ adminRouter.get(
     }
 )
 
-const tripleAWithdraw = (req, res, data, userdata, withdraw) => {
+const tripleAWithdraw = async (req, res, data, userdata, withdraw) => {
     const amount = data.amount ? data.amount : withdraw.amount;
     const prebalance = parseInt(userdata.balance);
     const withdrawamount = parseInt(amount);
