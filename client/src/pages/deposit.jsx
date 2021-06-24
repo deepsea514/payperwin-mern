@@ -38,19 +38,19 @@ class Deposit extends PureComponent {
                                 </Link>
                             </li>
                             <li>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
+                                <Link to={{ pathname: '/deposit-ethereum' }}>
                                     <img src="images/Ethereum.png" />
                                 </Link>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
-                                Ethereum
+                                <Link to={{ pathname: '/deposit-ethereum' }}>
+                                    Ethereum
                                 </Link>
                             </li>
                             <li>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
+                                <Link to={{ pathname: '/deposit-tether' }}>
                                     <img src="images/USDT.png" />
                                 </Link>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
-                                    USDT
+                                <Link to={{ pathname: '/deposit-tether' }}>
+                                    Tether
                                 </Link>
                             </li>
                         </ul>

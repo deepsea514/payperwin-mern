@@ -28,7 +28,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class withdrawBitcoin extends PureComponent {
+class WithdrawTripleA extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,7 +40,8 @@ class withdrawBitcoin extends PureComponent {
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Withdraw with eTransfer' });
+        const { method } = this.props;
+        setTitle({ pageTitle: `Withdraw with ${method}` });
     }
 
     onSubmit = (values, formik) => {
@@ -72,12 +73,12 @@ class withdrawBitcoin extends PureComponent {
     };
 
     render() {
-        const { classes, user } = this.props;
+        const { classes, user, method } = this.props;
         const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg } = this.state;
         const initialvalues = {
             amount: 0,
             // wallet: '',
-            method: 'Bitcoin'
+            method: method
         };
         const balance = Number(user ? user.balance : 0);
         const balanceStr = balance.toFixed(2);
@@ -85,13 +86,11 @@ class withdrawBitcoin extends PureComponent {
             amount: Yup.number()
                 .min(0, "Minimum Withdraw Amount is 25 CAD.")
                 .max(balance, `Maximum Withdraw Amount is ${balanceStr} CAD.`),
-            // wallet: Yup.string()
-            //     .required("Bitcoin wallet is required"),
             method: Yup.string(),
         });
         return (
             <div className="col-in">
-                <h3>Bitcoin Withdraw</h3>
+                <h3>{method} Withdraw</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!withdrawSuccess && <div className={classes.formContent}>
@@ -182,7 +181,7 @@ class withdrawBitcoin extends PureComponent {
                                                 </Button>
                                             </div>
                                             <div>
-                                                <span className="dpsit"><strong>*Click this button only once.</strong> Going back to this page and clicking this button again could result in multiple Bitcoin requests.</span>
+                                                <span className="dpsit"><strong>*Click this button only once.</strong> Going back to this page and clicking this button again could result in multiple Withdraw requests.</span>
                                             </div>
                                         </form>
                                     }
@@ -197,13 +196,13 @@ class withdrawBitcoin extends PureComponent {
                                 Please contact our Customer Service Department for more information at customerservice@payperwin.com
                             </p>
                             <p>
-                                For more information on withdrawing with Bitcoin please click here
+                                For more information on withdrawing with {method} please click here
                             </p>
                         </div>}
                     </div>
                 </div>
                 <fieldset className="depositFieldset">
-                    <legend>Bitcoin Withdraw Limits</legend>
+                    <legend>{method} Withdraw Limits</legend>
                     <p>Minumum Withdraw: CAD 25.00</p>
                     <p>Maximum Withdraw: CAD {balanceStr}</p>
                 </fieldset>
@@ -212,4 +211,4 @@ class withdrawBitcoin extends PureComponent {
     }
 }
 
-export default withRouter(withStyles(useStyles, { withTheme: true })(withdrawBitcoin));
+export default withRouter(withStyles(useStyles, { withTheme: true })(WithdrawTripleA));

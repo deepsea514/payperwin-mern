@@ -42,7 +42,9 @@
     "PaymentMethod": [
         "eTransfer",
         "Credit Card",
-        "Bitcoin"
+        "Bitcoin",
+        "Ethereum",
+        "Tether"
     ],
     "AutoBetStatus": {
         "active": "Active",

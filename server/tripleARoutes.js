@@ -64,17 +64,31 @@ const signatureCheck = async (req, res, next) => {
     }
 }
 
-tripleARouter.post('/bitcoin-deposit',
+tripleARouter.post('/deposit',
     bruteforce.prevent,
     signatureCheck,
     async (req, res) => {
-        const { receive_amount, payment_tier, webhook_data } = req.body;
+        const { receive_amount, payment_tier, webhook_data, crypto_currency } = req.body;
         if (webhook_data && (payment_tier == 'good' || payment_tier == 'short')) {
             const uniqid = `D${ID()}`;
             const user = await User.findById(webhook_data.payer_id);
             if (!user) {
                 return res.json({ succes: false, message: "Can't find User." });
             }
+            let method = 'Bitcoin';
+            switch (crypto_currency) {
+                case "ETH":
+                    method = 'Ethereum';
+                    break;
+                case "USDT":
+                    method = 'Tether';
+                    break;
+                case "testBTC":
+                case "BTC":
+                    method = 'Bitcoin';
+                    break;
+            }
+
             await FinancialLog.create({
                 financialtype: 'deposit',
                 uniqid,
@@ -116,7 +130,7 @@ tripleARouter.post('/bitcoin-deposit',
     }
 );
 
-tripleARouter.post('/bitcoin-withdraw',
+tripleARouter.post('/withdraw',
     bruteforce.prevent,
     signatureCheck,
     async (req, res) => {

@@ -1873,6 +1873,73 @@ expressApp.get('/vipCodeExist', async (req, res) => {
     }
 });
 
+const depositTripleA = (req, res, method) => {
+    const { user } = req;
+    let access_token = null;
+    try {
+        const params = new URLSearchParams();
+        params.append('client_id', TripleA.client_id);
+        params.append('client_secret', TripleA.client_secret);
+        params.append('grant_type', 'client_credentials');
+        const { data } = await axios.post(TripleA.tokenurl, params);
+        access_token = data.access_token;
+    } catch (error) {
+        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+    }
+    if (!access_token) {
+        return res.status(500).json({ success: 0, message: "Can't get Access Token." });
+    }
+    const body = {
+        "type": "widget",
+        "merchant_key": TripleA.merchant_key,
+        "order_currency": "CAD",
+        "order_amount": amount,
+        "notify_email": email,
+        "notify_url": "https://api.payperwin.co/triplea/deposit",
+        "notify_secret": TripleA.notify_secret,
+        "payer_id": user._id,
+        "payer_name": user.username,
+        "payer_email": email,
+        "webhook_data": {
+            "payer_id": user._id,
+        },
+    };
+    let hosted_url = null;
+
+    let api_id = TripleA.btc_api_id;
+    switch (method) {
+        case 'Ethereum':
+            api_id = TripleA.eth_api_id;
+            break;
+        case 'USDT':
+            api_id = TripleA.usdt_api_id;
+            break;
+        case 'Bitcoin':
+        default:
+            break;
+    }
+    api_id = TripleA.testMode ? TripleA.test_btc_api_id : api_id;
+
+    try {
+        const { data } = await axios.post(
+            `${TripleA.paymenturl}/${api_id}`,
+            body,
+            {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            });
+        hosted_url = data.hosted_url;
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+    }
+    if (!hosted_url) {
+        return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
+    }
+    return res.json({ hosted_url });
+}
+
 expressApp.post('/deposit',
     // bruteforce.prevent,
     isAuthenticated,
@@ -1943,59 +2010,11 @@ expressApp.post('/deposit',
                 return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
             }
         }
-        else if (method == "Bitcoin") {
+        else if (method == "Bitcoin" || method == "Ethereum" || method == "Tether") {
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
-            const { user } = req;
-            let access_token = null;
-            try {
-                const params = new URLSearchParams();
-                params.append('client_id', TripleA.client_id);
-                params.append('client_secret', TripleA.client_secret);
-                params.append('grant_type', 'client_credentials');
-                const { data } = await axios.post(TripleA.tokenurl, params);
-                access_token = data.access_token;
-            } catch (error) {
-                return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-            }
-            if (!access_token) {
-                return res.status(500).json({ success: 0, message: "Can't get Access Token." });
-            }
-            const body = {
-                "type": "widget",
-                "merchant_key": TripleA.merchant_key,
-                "order_currency": "CAD",
-                "order_amount": amount,
-                "notify_email": email,
-                "notify_url": "https://api.payperwin.co/triplea/bitcoin-deposit",
-                "notify_secret": TripleA.notify_secret,
-                "payer_id": user._id,
-                "payer_name": user.username,
-                "payer_email": email,
-                "webhook_data": {
-                    "payer_id": user._id,
-                },
-            };
-            let hosted_url = null;
-            try {
-                const { data } = await axios.post(
-                    `${TripleA.paymenturl}/${TripleA.testMode ? TripleA.test_btc_api_id : TripleA.btc_api_id}`,
-                    body,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${access_token}`
-                        }
-                    });
-                hosted_url = data.hosted_url;
-            } catch (error) {
-                console.log(error);
-                return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
-            }
-            if (!hosted_url) {
-                return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
-            }
-            return res.json({ hosted_url });
+            depositTripleA(req, res, method)
         }
         else {
             return res.status(400).json({ success: 0, message: "Method is not suitable." });
