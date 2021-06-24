@@ -1964,8 +1964,7 @@ expressApp.post('/deposit',
             }
             const body = {
                 "type": "widget",
-                "api_id": TripleA.testMode ? TripleA.test_api_id : TripleA.api_id,
-                "crypto_currency": TripleA.testMode ? "testBTC" : "BTC",
+                "merchant_key": TripleA.merchant_key,
                 "order_currency": "CAD",
                 "order_amount": amount,
                 "notify_email": email,
@@ -1980,11 +1979,14 @@ expressApp.post('/deposit',
             };
             let hosted_url = null;
             try {
-                const { data } = await axios.post(TripleA.paymenturl, body, {
-                    headers: {
-                        'Authorization': `Bearer ${access_token}`
-                    }
-                });
+                const { data } = await axios.post(
+                    `${TripleA.paymenturl}/${TripleA.testMode ? TripleA.test_btc_api_id : TripleA.btc_api_id}`,
+                    body,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${access_token}`
+                        }
+                    });
                 hosted_url = data.hosted_url;
             } catch (error) {
                 console.log(error);
