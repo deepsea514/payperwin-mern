@@ -94,7 +94,7 @@ tripleARouter.post('/deposit',
                 uniqid,
                 user: webhook_data.payer_id,
                 amount: receive_amount,
-                method: 'Bitcoin',
+                method: method,
                 status: FinancialStatus.success
             });
             await user.update({
