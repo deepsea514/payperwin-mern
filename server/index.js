@@ -1873,7 +1873,8 @@ expressApp.get('/vipCodeExist', async (req, res) => {
     }
 });
 
-const depositTripleA = async (req, res, method) => {
+const depositTripleA = async (req, res, data) => {
+    const { amount, email, method } = data;
     const { user } = req;
     let access_token = null;
     try {
@@ -2014,7 +2015,7 @@ expressApp.post('/deposit',
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
-            depositTripleA(req, res, method)
+            depositTripleA(req, res, data);
         }
         else {
             return res.status(400).json({ success: 0, message: "Method is not suitable." });
