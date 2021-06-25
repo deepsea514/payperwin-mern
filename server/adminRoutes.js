@@ -1055,7 +1055,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
     }
 
     let crypto_currency = "testBTC";
-    switch (method) {
+    switch (withdraw.method) {
         case "Ethereum":
             crypto_currency = "ETH";
             break;
@@ -1093,6 +1093,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
     }
     withdraw.note = payout_reference;
     await withdraw.save();
+    return true;
 }
 
 adminRouter.patch(
