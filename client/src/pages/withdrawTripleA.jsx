@@ -193,7 +193,7 @@ class WithdrawTripleA extends PureComponent {
                             <p>
                                 Your withdrawal request has been sent for manual processing.
                                 You will receive an email as verification when the withdrawal is complete.
-                                Please contact our Customer Service Department for more information at customerservice@payperwin.com
+                                Please contact our Customer Service Department for more information at customerservice@payperwin.co
                             </p>
                             <p>
                                 For more information on withdrawing with {method} please click here

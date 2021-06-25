@@ -1912,7 +1912,7 @@ const depositTripleA = async (req, res, data) => {
         case 'Ethereum':
             api_id = TripleA.eth_api_id;
             break;
-        case 'USDT':
+        case 'Tether':
             api_id = TripleA.usdt_api_id;
             break;
         case 'Bitcoin':
