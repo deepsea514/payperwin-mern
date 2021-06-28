@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const EventSchema = new Schema(
     {
         name: { type: String, unique: true, required: true },
-        candidates: Array, // { name: String, odds: Array, currentOdds: Number, score: Number }
+        teamA: Object, // { name: String, odds: Array, currentOdds: Number }
+        teamB: Object, // { name: String, odds: Array, currentOdds: Number }
         startDate: { type: Date, required: true },
         status: { type: Number, default: 0 },
     },

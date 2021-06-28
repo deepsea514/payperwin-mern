@@ -72,7 +72,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{Number(bet.pickOdds).toFixed(2)}</td>
                     <td scope="col">{bet.userId ? bet.userId.username : null}</td>
                     <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
-                    <td scope="col">{bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                    <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                     <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}</td>
                     <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                     <td scope="col">{this.getPPWBetStatus(bet.status)}</td>

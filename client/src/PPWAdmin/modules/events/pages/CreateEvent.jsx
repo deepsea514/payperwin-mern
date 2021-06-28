@@ -41,24 +41,24 @@ export default class CreateEvents extends React.Component {
             initialvalues: {
                 name: "",
                 startDate: "",
-                candidates: [
-                    { name: '', odds: 0 },
-                    { name: '', odds: 0 }
-                ],
+                teamA: { name: '', odds: 0 },
+                teamB: { name: '', odds: 0 },
             },
             eventSchema: Yup.object().shape({
                 name: Yup.string()
                     .required("Event Name is required."),
                 startDate: Yup.string()
                     .required("Start Date is required."),
-                candidates: Yup.array()
-                    .of(
-                        Yup.object().shape({
-                            name: Yup.string().required("Candidate Name is required."),
-                            odds: Yup.number().required("Odds is required."),
-                        })
-                    )
-                    .min(2, "Candidates should be at least 2."),
+                teamA: Yup.object()
+                    .shape({
+                        name: Yup.string().required("TeamA Name is required."),
+                        odds: Yup.number().required("Odds is required."),
+                    }),
+                teamB: Yup.object()
+                    .shape({
+                        name: Yup.string().required("TeamB Name is required."),
+                        odds: Yup.number().required("Odds is required."),
+                    }),
             }),
         };
     }
@@ -73,20 +73,18 @@ export default class CreateEvents extends React.Component {
         return "";
     };
 
-    getInputClassesInArray = (formik, fieldname, index, childfieldname) => {
+    getInputClassesInObject = (formik, fieldname, childfieldname) => {
         if (!formik.touched[fieldname] ||
-            !formik.touched[fieldname][index] ||
-            !formik.errors[fieldname] ||
-            !formik.errors[fieldname][index]) {
+            !formik.errors[fieldname]) {
             return "";
         }
 
-        if (formik.touched[fieldname][index][childfieldname] &&
-            formik.errors[fieldname][index][childfieldname]) {
+        if (formik.touched[fieldname][childfieldname] &&
+            formik.errors[fieldname][childfieldname]) {
             return "is-invalid";
         }
-        if (formik.touched[fieldname][index][childfieldname] &&
-            !formik.errors[fieldname][index][childfieldname]) {
+        if (formik.touched[fieldname][childfieldname] &&
+            !formik.errors[fieldname][childfieldname]) {
             return "is-valid";
         }
         return "";
@@ -274,95 +272,94 @@ export default class CreateEvents extends React.Component {
                                                 ) : null}
                                             </div>
                                         </div>
-                                        <FieldArray
-                                            name="candidates"
-                                            render={({ insert, remove, push }) => (
-                                                <>
-                                                    <div className={`mb-1 ${this.getInputClasses(
-                                                        formik,
-                                                        "candidates"
-                                                    )}`}>
-                                                        {values.candidates.length > 0 &&
-                                                            values.candidates.map((friend, index) => (
-                                                                <div className="form-row" key={index}>
-                                                                    <div className="form-group col-md-6">
-                                                                        <label>Candidate Name <span className="text-danger">*</span></label>
-                                                                        <Field
-                                                                            className={`form-control 
-                                                                        ${this.getInputClassesInArray(
-                                                                                formik,
-                                                                                `candidates`, index, `name`
-                                                                            )}`}
-                                                                            name={`candidates.${index}.name`}
-                                                                            placeholder="name"
-                                                                            type="text"
-                                                                        />
-                                                                        {errors &&
-                                                                            errors.candidates &&
-                                                                            errors.candidates[index] &&
-                                                                            errors.candidates[index].name &&
-                                                                            touched &&
-                                                                            touched.candidates &&
-                                                                            touched.candidates[index] &&
-                                                                            touched.candidates[index].name && (
-                                                                                <div className="invalid-feedback">
-                                                                                    {errors.candidates[index].name}
-                                                                                </div>
-                                                                            )}
-                                                                    </div>
 
-                                                                    <div className="form-group col-md-6">
-                                                                        <label>Odds <span className="text-danger">*</span></label>
-                                                                        <div className={`input-group
-                                                                        ${this.getInputClassesInArray(
-                                                                            formik,
-                                                                            `candidates`, index, `odds`
-                                                                        )}`}
-                                                                        >
-                                                                            <Field
-                                                                                className={`form-control ${this.getInputClassesInArray(
-                                                                                    formik,
-                                                                                    `candidates`, index, `odds`
-                                                                                )}`}
-                                                                                name={`candidates.${index}.odds`}
-                                                                                placeholder="odds"
-                                                                            />
-                                                                            <div className="input-group-append">
-                                                                                <button className="btn btn-outline-secondary" type="button" onClick={() => remove(index)}>
-                                                                                    <i className="fa fa-times text-danger"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                        {errors &&
-                                                                            errors.candidates &&
-                                                                            errors.candidates[index] &&
-                                                                            errors.candidates[index].odds &&
-                                                                            touched &&
-                                                                            touched.candidates &&
-                                                                            touched.candidates[index] &&
-                                                                            touched.candidates[index].odds && (
-                                                                                <div className="invalid-feedback">
-                                                                                    {errors.candidates[index].odds}
-                                                                                </div>
-                                                                            )}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        <div className="form-group col-md-12">
-                                                            <button className="btn btn-success btn-sm" type="button" onClick={() => push(new Candidate())}>
-                                                                Add a Candidate
-                                                        </button>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label>TeamA Name <span className="text-danger">*</span></label>
+                                                <input name="teamA.name" placeholder="TeamA Name"
+                                                    className={`form-control ${this.getInputClassesInObject(
+                                                        formik,
+                                                        "teamA", "name"
+                                                    )}`}
+                                                    {...getFieldProps("teamA.name")}
+                                                />
+                                                {errors &&
+                                                    errors.teamA &&
+                                                    errors.teamA.name &&
+                                                    touched &&
+                                                    touched.teamA &&
+                                                    touched.teamA.name && (
+                                                        <div className="invalid-feedback">
+                                                            {errors.teamA.name}
                                                         </div>
-                                                    </div>
-                                                    {errors &&
-                                                        _.isString(errors.candidates) &&
-                                                        touched &&
-                                                        _.isArray(touched.candidates) && (
-                                                            <div className="invalid-feedback">{errors.candidates}</div>
-                                                        )}
-                                                </>
-                                            )}
-                                        />
+                                                    )}
+                                            </div>
+
+                                            <div className="form-group col-md-6">
+                                                <label>Odds <span className="text-danger">*</span></label>
+                                                <input name="teamA.odds" placeholder="TeamA Odds"
+                                                    className={`form-control ${this.getInputClassesInObject(
+                                                        formik,
+                                                        "teamA", "odds"
+                                                    )}`}
+                                                    {...getFieldProps("teamA.odds")}
+                                                />
+                                                {errors &&
+                                                    errors.teamA &&
+                                                    errors.teamA.odds &&
+                                                    touched &&
+                                                    touched.teamA &&
+                                                    touched.teamA.odds && (
+                                                        <div className="invalid-feedback">
+                                                            {errors.teamA.odds}
+                                                        </div>
+                                                    )}
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label>TeamB Name <span className="text-danger">*</span></label>
+                                                <input name="teamB.name" placeholder="TeamB Name"
+                                                    className={`form-control ${this.getInputClassesInObject(
+                                                        formik,
+                                                        "teamB", "name"
+                                                    )}`}
+                                                    {...getFieldProps("teamB.name")}
+                                                />
+                                                {errors &&
+                                                    errors.teamB &&
+                                                    errors.teamB.name &&
+                                                    touched &&
+                                                    touched.teamB &&
+                                                    touched.teamB.name && (
+                                                        <div className="invalid-feedback">
+                                                            {errors.teamB.name}
+                                                        </div>
+                                                    )}
+                                            </div>
+
+                                            <div className="form-group col-md-6">
+                                                <label>Odds <span className="text-danger">*</span></label>
+                                                <input name="teamB.odds" placeholder="TeamB Odds"
+                                                    className={`form-control ${this.getInputClassesInObject(
+                                                        formik,
+                                                        "teamB", "odds"
+                                                    )}`}
+                                                    {...getFieldProps("teamB.odds")}
+                                                />
+                                                {errors &&
+                                                    errors.teamB &&
+                                                    errors.teamB.odds &&
+                                                    touched &&
+                                                    touched.teamB &&
+                                                    touched.teamB.odds && (
+                                                        <div className="invalid-feedback">
+                                                            {errors.teamB.odds}
+                                                        </div>
+                                                    )}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="card-footer">
                                         <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>Submit</button>

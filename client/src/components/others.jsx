@@ -76,11 +76,10 @@ class Others extends PureComponent {
                 <div className="tab-content" >
                     {
                         data.map((event, index) => {
-                            const { startDate, name, candidates } = event;
-                            let odds = {};
-                            candidates.forEach((candidate) => {
-                                odds[candidate.name] = candidate.currentOdds;
-                            });
+                            const { startDate, name, teamA, teamB } = event;
+                            const teamAExist = betSlip.find((b) => b.lineId === event._id && b.pick === 'home' && b.type === 'moneyline');
+                            const teamBExist = betSlip.find((b) => b.lineId === event._id && b.pick === 'away' && b.type === 'moneyline');
+
                             return (
                                 <div key={index} className="mt-2">
                                     <div className="line-type-header mb-0">{name}</div>
@@ -93,46 +92,66 @@ class Others extends PureComponent {
                                             {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </a>
                                     </div>
-                                    <ul style={{ background: "white", paddingTop: "15px" }}>
-                                        {candidates.map((candidate, index) => {
-                                            const exist = betSlip.find((b) => b.lineId === event._id && b.pick === candidate.name && b.type === 'moneyline');
-                                            return (
-                                                <li key={index}>
-                                                    <div className="row mx-0">
-                                                        <div className="col-md-12 com-sm-12 col-12">
-                                                            <span className={`box-odds box-moneyline line-full ${exist ? 'orange' : null}`}
-                                                                onClick={exist ?
-                                                                    () => removeBet(event._id, candidate.name) :
-                                                                    () => addBet(
-                                                                        name,
-                                                                        'moneyline',
-                                                                        'Other',
-                                                                        odds,
-                                                                        candidate.name,
-                                                                        null,
-                                                                        null,
-                                                                        "Other",
-                                                                        event._id,
-                                                                        event.name,
-                                                                        candidate.name,
-                                                                        null,
-                                                                        "other"
-                                                                    )}>
-                                                                <div className="vertical-align">
-                                                                    <div className="points">{candidate.name}</div>
-                                                                    <div className="odds">
-                                                                        <div className="new-odds">
-                                                                            {this.convertOdds(candidate.currentOdds)}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </span>
+                                    <div className="row mx-0 pt-2 bg-white">
+                                        <div className="col-md-6 com-sm-6 col-12">
+                                            <span className={`box-odds box-moneyline line-full ${teamAExist ? 'orange' : null}`}
+                                                onClick={teamAExist ?
+                                                    () => removeBet(event._id, 'home') :
+                                                    () => addBet(
+                                                        name,
+                                                        'moneyline',
+                                                        'Other',
+                                                        { home: teamA.currentOdds, away: teamB.currentOdds },
+                                                        'home',
+                                                        teamA.name,
+                                                        teamB.name,
+                                                        "Other",
+                                                        event._id,
+                                                        event.name,
+                                                        teamA.name,
+                                                        null,
+                                                        "other"
+                                                    )}>
+                                                <div className="vertical-align">
+                                                    <div className="points">{teamA.name}</div>
+                                                    <div className="odds">
+                                                        <div className="new-odds">
+                                                            {this.convertOdds(teamA.currentOdds)}
                                                         </div>
                                                     </div>
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <div className="col-md-6 com-sm-6 col-12">
+                                            <span className={`box-odds box-moneyline line-full ${teamBExist ? 'orange' : null}`}
+                                                onClick={teamBExist ?
+                                                    () => removeBet(event._id, 'away') :
+                                                    () => addBet(
+                                                        name,
+                                                        'moneyline',
+                                                        'Other',
+                                                        { home: teamA.currentOdds, away: teamB.currentOdds },
+                                                        'away',
+                                                        teamA.name,
+                                                        teamB.name,
+                                                        "Other",
+                                                        event._id,
+                                                        event.name,
+                                                        teamB.name,
+                                                        null,
+                                                        "other"
+                                                    )}>
+                                                <div className="vertical-align">
+                                                    <div className="points">{teamB.name}</div>
+                                                    <div className="odds">
+                                                        <div className="new-odds">
+                                                            {this.convertOdds(teamB.currentOdds)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             )
                         })

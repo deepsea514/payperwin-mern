@@ -214,7 +214,7 @@ class Sport extends PureComponent {
                                                                             sportName,
                                                                             lineId,
                                                                             lineQuery,
-                                                                            `${teamA}`,
+                                                                            teamA,
                                                                             null,
                                                                             origin
                                                                         )}>
