@@ -14,3 +14,11 @@ export function getEvents(page, filter, perPage = null) {
 
     return axios.get(url, { withCredentials: true });
 }
+
+export function getEvent(id) {
+    return axios.get(`${serverUrl}/events/${id}`, { withCredentials: true });
+}
+
+export function editEvent(id, data) {
+    return axios.put(`${serverUrl}/events/${id}`, data, { withCredentials: true });
+}
