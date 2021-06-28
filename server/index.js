@@ -765,36 +765,31 @@ async function calculateBetsStatus(betpoolUid) {
 
 async function calculateCustomBetsStatus(eventId) {
     const betpool = await EventBetPool.findOne({ eventId: eventId });
-    const { candidates } = betpool;
-    let totalPayable = { betTotal: 0, toWinTotal: 0 };
-    let betsArray = [];
-    candidates.forEach(candidate => {
-        totalPayable.betTotal += candidate.betTotal;
-        totalPayable.toWinTotal += candidate.toWinTotal;
-        betsArray = [...betsArray, ...candidate.bets];
-    });
+    const { homeBets, awayBets, teamA, teamB } = betpool;
 
     const bets = await Bet.find({
         _id:
         {
-            $in: betsArray
+            $in: [
+                ...homeBets,
+                ...awayBets,
+            ]
         }
     });
-    let payPool = {};
-    candidates.forEach(candidate => {
-        payPool[candidate.name] = totalPayable.betTotal - candidate.betTotal;
-    });
+
+    const payPool = {
+        home: teamB.betTotal,
+        away: teamA.betTotal,
+    }
 
     for (const bet of bets) {
         const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
         let payableToWin = 0;
-
         if (payPool[pick]) {
             if (payPool[pick] > 0) {
                 payableToWin += toWin;
                 payPool[pick] -= toWin;
-                if (payPool[pick] < 0)
-                    payableToWin += payPool[pick];
+                if (payPool[pick] < 0) payableToWin += payPool[pick];
             }
         }
         let matchingStatus;
@@ -891,14 +886,14 @@ expressApp.post(
                 // TODO: prevent certain types of bets
                 if (origin == 'other') {
                     const event = await Event.findById(lineId);
-                    const { name, startDate, candidates, status } = event;
+                    const { name, startDate, teamA, teamB, status } = event;
                     if (status == EventStatus.pending.value) {
                         if ((new Date(startDate)).getTime() <= (new Date()).getTime()) {
                             errors.push(`${pickName} ${odds[pick]} wager could not be placed. It is outdated.`);
                         }
                         else {
                             const betAfterFee = toBet;
-                            const pickedCandidate = candidates.find(candidate => candidate.name == pick);
+                            const pickedCandidate = pick == 'home' ? teamA : teamB;
                             if (pickedCandidate) {
                                 const toWin = calculateToWinFromBet(betAfterFee, pickedCandidate.currentOdds);
                                 const fee = Number((toBet * BetFee).toFixed(2));
@@ -909,8 +904,8 @@ expressApp.post(
                                     const newBetObj = {
                                         userId: user._id,
                                         transactionID: `B${ID()}`,
-                                        teamA: null,
-                                        teamB: null,
+                                        teamA: teamA.name,
+                                        teamB: teamB.name,
                                         pick: pick,
                                         pickOdds: pickedCandidate.currentOdds,
                                         oldOdds: null,
@@ -920,7 +915,10 @@ expressApp.post(
                                         fee: fee,
                                         matchStartDate: startDate,
                                         status: 'Pending',
-                                        lineQuery: { lineId: lineId },
+                                        lineQuery: {
+                                            lineId: lineId,
+                                            eventName: lineQuery
+                                        },
                                         lineId: lineId,
                                         origin: origin
                                     };
@@ -947,33 +945,49 @@ expressApp.post(
                                         const exists = await EventBetPool.findOne({ eventId: new ObjectId(lineId) });
                                         if (exists) {
                                             console.log('update existing betpool');
-                                            const betPoolCandidates = exists.candidates.map(candidate => {
-                                                return {
-                                                    name: candidate.name,
-                                                    odds: candidate.currentOdds,
-                                                    betTotal: pick === candidate.name ? candidate.betTotal + betAfterFee : candidate.betTotal,
-                                                    toWinTotal: pick === candidate.name ? candidate.toWinTotal + toWin : candidate.toWinTotal,
-                                                    bets: pick === candidate.name ? [...candidate.bets, betId] : candidate.bets
-                                                };
-                                            })
-
-                                            await exists.update({ candidates: betPoolCandidates });
+                                            if (pick == 'home') {
+                                                const teamA = {
+                                                    name: exists.teamA.name,
+                                                    odds: exists.teamA.currentOdds,
+                                                    betTotal: exists.teamA.betTotal + betAfterFee,
+                                                    toWinTotal: exists.teamA.toWinTotal + toWin,
+                                                }
+                                                const homeBets = [...exists.homeBets, betId];
+                                                await exists.update({ teamA: teamA, homeBets: homeBets });
+                                            } else {
+                                                const teamB = {
+                                                    name: exists.teamB.name,
+                                                    odds: exists.teamB.currentOdds,
+                                                    betTotal: exists.teamB.betTotal + betAfterFee,
+                                                    toWinTotal: exists.teamB.toWinTotal + toWin,
+                                                }
+                                                const awayBets = [...exists.awayBets, betId];
+                                                await exists.update({ teamB: teamB, awayBets: awayBets });
+                                            }
                                         } else {
                                             // Create new bet pool
-                                            const betPoolCandidates = candidates.map(candidate => {
-                                                return {
-                                                    name: candidate.name,
-                                                    odds: candidate.currentOdds,
-                                                    betTotal: pick === candidate.name ? betAfterFee : 0,
-                                                    toWinTotal: pick === candidate.name ? toWin : 0,
-                                                    bets: pick === candidate.name ? [betId] : []
-                                                };
-                                            })
+                                            const newTeamA = {
+                                                name: teamA.name,
+                                                odds: teamA.currentOdds,
+                                                betTotal: pick === 'home' ? betAfterFee : 0,
+                                                toWinTotal: pick === 'home' ? toWin : 0,
+                                            }
+                                            const homeBets = pick === 'home' ? [betId] : [];
+                                            const newTeamB = {
+                                                name: teamB.name,
+                                                odds: teamB.currentOdds,
+                                                betTotal: pick === 'away' ? betAfterFee : 0,
+                                                toWinTotal: pick === 'away' ? toWin : 0,
+                                            }
+                                            const awayBets = pick === 'away' ? [betId] : []
                                             console.log('creating betpool');
                                             const newBetPool = new EventBetPool(
                                                 {
                                                     eventId: lineId,
-                                                    candidates: betPoolCandidates,
+                                                    teamA: newTeamA,
+                                                    teamB: newTeamB,
+                                                    homeBets: homeBets,
+                                                    awayBets: awayBets,
                                                     matchStartDate: startDate,
                                                     lineType: type,
                                                 }

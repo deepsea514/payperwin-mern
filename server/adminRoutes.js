@@ -2470,21 +2470,21 @@ adminRouter.post(
     bruteforce.prevent,
     async (req, res) => {
         try {
-            let { name, startDate, candidates } = req.body;
-            if (!name || !startDate || !candidates) {
+            let { name, startDate, teamA, teamB } = req.body;
+            if (!name || !startDate || !teamA || !teamB) {
                 return res.status(400).json({ error: 'Please enter all required fields.' });
             }
-            if (!_.isArray(candidates) || candidates.length < 2) {
-                return res.status(400).json({ error: 'Candidate field mismatch.' });
+            teamA = {
+                name: teamA.name,
+                currentOdds: teamA.odds,
+                odds: [teamA.odds]
             }
-            candidates = candidates.map(candidate => {
-                return {
-                    name: candidate.name,
-                    currentOdds: candidate.odds,
-                    odds: [candidate.odds]
-                }
-            })
-            await Event.create({ name, startDate, candidates });
+            teamB = {
+                name: teamB.name,
+                currentOdds: teamB.odds,
+                odds: [teamB.odds]
+            }
+            await Event.create({ name, startDate, teamA, teamB });
             res.json({ success: "Event created." });
         } catch (error) {
             console.log(error);

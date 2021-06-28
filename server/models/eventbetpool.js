@@ -5,14 +5,22 @@ const { Schema } = mongoose;
 const EventBetpoolSchema = new Schema(
     {
         eventId: { type: Schema.Types.ObjectId, ref: "Event" },
-        candidates: [{
-            name: String,
-            odds: String,
-            betTotal: Number,
-            toWinTotal: Number,
-            score: Number,
-            bets: [{ type: Schema.Types.ObjectId, ref: "Bet" }]
-        }],
+        teamA: {
+            name: { type: String },
+            odds: { type: String },
+            betTotal: { type: Number },
+            toWinTotal: { type: Number },
+            score: { type: Number },
+        },
+        teamB: {
+            name: { type: String },
+            odds: { type: String },
+            betTotal: { type: Number },
+            toWinTotal: { type: Number },
+            score: { type: Number },
+        },
+        homeBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
+        awayBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
         matchStartDate: Date,
         lineType: String,
         result: String,

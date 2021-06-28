@@ -137,9 +137,8 @@ export default class OpenBets extends PureComponent {
                                     </div>
                                 </div>
                                 <div className="open-bets-event">
-                                    {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                    {lineQuery}
+                                    {lineQuery.eventName}
                                     <div>Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}</div>
                                     {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
                                 </div>

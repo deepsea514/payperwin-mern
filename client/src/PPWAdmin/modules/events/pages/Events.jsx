@@ -53,17 +53,14 @@ class Events extends React.Component {
             <tr key={index}>
                 <td>{event.name}</td>
                 <td>{dateformat(new Date(event.startDate), "default")}</td>
-                <td>{this.getBetOptions(event.candidates)}</td>
+                <td>
+                    <p>{event.teamA.name}: {event.teamA.currentOdds}</p>
+                    <p>{event.teamB.name}: {event.teamB.currentOdds}</p>
+                </td>
                 <td></td>
                 <td>{this.getStatus(event)}</td>
                 <td></td>
             </tr>
-        ));
-    }
-
-    getBetOptions = (candidates) => {
-        return candidates.map(candidate => (
-            <p key={candidate.name}>{candidate.name}: {candidate.currentOdds}</p>
         ));
     }
 
