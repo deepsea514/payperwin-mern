@@ -6,7 +6,8 @@ import { Formik, Form } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import _ from "lodash";
-import { addEvent } from "../redux/services";
+import { editEvent, getEvent } from "../redux/services";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 
 const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
 const months = [
@@ -24,19 +25,15 @@ const months = [
     "December"
 ];
 
-export default class CreateEvents extends React.Component {
+export default class EditEvent extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             isError: false,
             isSuccess: false,
-            initialValues: {
-                name: "",
-                startDate: "",
-                teamA: { name: '', odds: 0 },
-                teamB: { name: '', odds: 0 },
-            },
+            initialValues: null,
+            loading: false,
             eventSchema: Yup.object().shape({
                 name: Yup.string()
                     .required("Event Name is required."),
@@ -54,6 +51,30 @@ export default class CreateEvents extends React.Component {
                     }),
             }),
         };
+    }
+
+    componentDidMount() {
+        const { match: { params: { id } } } = this.props;
+        this.setState({ initialValues: null, loading: true });
+        getEvent(id)
+            .then(({ data }) => {
+                const initialValues = {
+                    name: data.name,
+                    startDate: new Date(data.startDate),
+                    teamA: {
+                        name: data.teamA.name,
+                        odds: data.teamA.currentOdds
+                    },
+                    teamB: {
+                        name: data.teamB.name,
+                        odds: data.teamB.currentOdds
+                    },
+                }
+                this.setState({ initialValues: initialValues, loading: false });
+            })
+            .catch(() => {
+                this.setState({ initialValues: null, loading: true });
+            });
     }
 
     getInputClasses = (formik, fieldname) => {
@@ -84,8 +105,8 @@ export default class CreateEvents extends React.Component {
     };
 
     onSubmit = (values, formik) => {
-        const { history } = this.props;
-        addEvent(values).then(() => {
+        const { history, match: { params: { id } } } = this.props;
+        editEvent(id, values).then(() => {
             formik.setSubmitting(false);
             this.setState({ isSuccess: true });
             setTimeout(() => {
@@ -98,11 +119,16 @@ export default class CreateEvents extends React.Component {
     }
 
     render() {
-        const { initialValues, eventSchema, isError, isSuccess } = this.state;
+        const { initialValues, eventSchema, isError, isSuccess, loading } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
-                    <Formik
+                    {loading && <center className="mt-5"><Preloader use={ThreeDots}
+                        size={100}
+                        strokeWidth={10}
+                        strokeColor="#F0AD4E"
+                        duration={800} /></center>}
+                    {initialValues && !loading && <Formik
                         validationSchema={eventSchema}
                         initialValues={initialValues}
                         onSubmit={this.onSubmit}
@@ -113,7 +139,7 @@ export default class CreateEvents extends React.Component {
                                 <div className="card card-custom gutter-b">
                                     <div className="card-header">
                                         <div className="card-title">
-                                            <h3 className="card-label">Add a Event</h3>
+                                            <h3 className="card-label">Edit Event</h3>
                                         </div>
                                     </div>
                                     <div className="card-body">
@@ -130,7 +156,7 @@ export default class CreateEvents extends React.Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Addition Failed
+                                                    Can't save changes
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ isError: false })}>
                                                     <button
@@ -159,7 +185,7 @@ export default class CreateEvents extends React.Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Successfully Added.
+                                                    Successfully Saved.
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ isSuccess: false })}>
                                                     <button
@@ -361,7 +387,7 @@ export default class CreateEvents extends React.Component {
                                 </div>
                             </Form>
                         }}
-                    </Formik>
+                    </Formik>}
                 </div>
             </div>
         );

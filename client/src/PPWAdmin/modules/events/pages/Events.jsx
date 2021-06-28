@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const config = require("../../../../../../config.json");
 const EventStatus = config.EventStatus;
@@ -59,7 +60,13 @@ class Events extends React.Component {
                 </td>
                 <td></td>
                 <td>{this.getStatus(event)}</td>
-                <td></td>
+                <td>
+                    <DropdownButton title="Actions">
+                        <Dropdown.Item as={Link} to={`/edit/${event._id}`}>
+                            <i className="far fa-eye"></i>&nbsp; Edit
+                        </Dropdown.Item>
+                    </DropdownButton>
+                </td>
             </tr>
         ));
     }
@@ -127,7 +134,7 @@ class Events extends React.Component {
                                     </small>
                                 </div>
                             </div>
-                            <div className="table-responsive">
+                            <div className="">
                                 <table className="table">
                                     <thead>
                                         <tr>

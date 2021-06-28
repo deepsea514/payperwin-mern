@@ -2494,6 +2494,64 @@ adminRouter.post(
 )
 
 adminRouter.get(
+    '/events/:id',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            res.status(200).json(event);
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find events.' });
+        }
+    }
+);
+
+adminRouter.put(
+    '/events/:id',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        const { name, startDate, teamA, teamB } = req.body;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            if (name) {
+                event.name = name;
+            }
+            if (startDate) {
+                event.startDate = startDate;
+            }
+            if (teamA) {
+                event.teamA = {
+                    name: teamA.name,
+                    currentOdds: teamA.odds,
+                    odds: [...event.teamA.odds, teamA.odds]
+                }
+            }
+            if (teamB) {
+                event.teamB = {
+                    name: teamB.name,
+                    currentOdds: teamB.odds,
+                    odds: [...event.teamB.odds, teamB.odds]
+                }
+            }
+            await event.save();
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+adminRouter.get(
     '/events',
     authenticateJWT,
     async function (req, res) {
@@ -2525,7 +2583,7 @@ adminRouter.get(
             res.status(200).json({ total, perPage, page: page + 1, data: events });
         } catch (error) {
             console.log(error);
-            res.status(404).json({ error: 'Can\'t find verifications.' });
+            res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
 );
