@@ -79,7 +79,6 @@ async function matchResults(sportName, events) {
                         let betWin;
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
-                            console.log(lineType, 'betWin:', betWin, pick, moneyLineWinner);
                         } else if (lineType === 'spread') {
                             const spread = {
                                 home: points,

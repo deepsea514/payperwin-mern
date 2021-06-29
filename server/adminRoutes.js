@@ -13,6 +13,7 @@ const AutoBet = require("./models/autobet");
 const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
 const BetSportsBook = require("./models/betsportsbook");
+const EventBetPool = require("./models/eventbetpool");
 const Verification = require("./models/verification");
 const Preference = require("./models/preference");
 const FAQSubject = require("./models/faq_subject");
@@ -2543,6 +2544,158 @@ adminRouter.put(
                 }
             }
             await event.save();
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+async function matchResults(eventId, matchResult) {
+    const betpool = await EventBetPool.findOne({
+        eventId: eventId,
+        // matchStartDate: { $lt: new Date() },
+        result: { $exists: false }
+    });
+
+    if (!betpool) {
+        console.log('no eligible betpool');
+        return false;
+    }
+
+    const { homeBets, awayBets } = betpool;
+    let matchCancelled = false;
+    if (homeBets.length > 0 && awayBets.length > 0) {
+        try {
+            const { homeScore, awayScore, cancellationReason } = matchResult;
+            if (cancellationReason) {
+                matchCancelled = true;
+            }
+            if (!cancellationReason) {
+                let moneyLineWinner = null;
+                if (homeScore > awayScore) moneyLineWinner = 'home';
+                else if (awayScore > homeScore) moneyLineWinner = 'away';
+                const bets = await Bet.find({
+                    _id:
+                    {
+                        $in: [
+                            ...homeBets,
+                            ...awayBets,
+                        ]
+                    }
+                });
+                for (const bet of bets) {
+                    const { _id, userId, bet: betAmount, toWin, pick, payableToWin } = bet;
+                    let betWin = pick === moneyLineWinner;
+
+                    if (betWin === true) {
+                        const user = await User.findById(userId);
+                        const { balance, email } = user;
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Win',
+                                walletBeforeCredited: balance,
+                                credited: betAmount + payableToWin,
+                                homeScore,
+                                awayScore,
+                            }
+                        }
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin } });
+                        await FinancialLog.create({
+                            financialtype: 'betwon',
+                            uniqid: `BW${ID()}`,
+                            user: userId,
+                            amount: betAmount + payableToWin,
+                            method: 'betwon',
+                            status: FinancialStatus.success,
+                        });
+                        // TODO: email winner
+                        const msg = {
+                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            to: email,
+                            subject: 'You won a wager!',
+                            text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
+                            html: simpleresponsive(`
+                                        <p>
+                                            Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                        </p>
+                                        `,
+                                { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                            ),
+                        };
+                        sgMail.send(msg);
+                    } else if (betWin === false) {
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Lose',
+                                homeScore,
+                                awayScore,
+                            }
+                        }
+                        const unplayableBet = payableToWin < toWin
+                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                        if (unplayableBet) {
+                            betChanges.$set.credited = unplayableBet;
+                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                        }
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                    } else {
+                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                    }
+                    await betpool.update({ $set: { result: 'Settled' } });
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    } else {
+        matchCancelled = true;
+    }
+    if (matchCancelled) {
+        for (const betId of homeBets) {
+            const bet = await Bet.findOne({ _id: betId });
+            const { _id, userId, bet: betAmount } = bet;
+            // refund user
+            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+        }
+        for (const betId of awayBets) {
+            const bet = await Bet.findOne({ _id: betId });
+            const { _id, userId, bet: betAmount } = bet;
+            // refund user
+            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+        }
+        await betpool.update({ $set: { result: 'Cancelled' } });
+    }
+}
+
+adminRouter.post(
+    '/events/:id/settle',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        const { teamAScore, teamBScore } = req.body;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            // if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
+            //     return res.status(404).json({ error: 'Event is not started yet.' });
+            // }
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+                return res.status(404).json({ error: 'Event is already finished.' });
+            }
+            event.status = EventStatus.settled.value;
+            event.teamAScore = teamAScore;
+            event.teamBScore = teamBScore;
+            await event.save();
+
+            await matchResults(id, { homeScore: teamAScore, awayScore: teamBScore });
+
             res.status(200).json({ success: true });
         } catch (error) {
             console.log(error);

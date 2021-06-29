@@ -63,12 +63,23 @@ class Events extends React.Component {
                 <td>
                     <DropdownButton title="Actions">
                         <Dropdown.Item as={Link} to={`/edit/${event._id}`}>
-                            <i className="far fa-eye"></i>&nbsp; Edit
+                            <i className="far fa-edit"></i>&nbsp; Edit
                         </Dropdown.Item>
+                        {this.isSettleEnabled(event) && <Dropdown.Item as={Link} to={`/settle/${event._id}`}>
+                            <i className="fas fa-check"></i>&nbsp; Settle
+                        </Dropdown.Item>}
                     </DropdownButton>
                 </td>
             </tr>
         ));
+    }
+
+    isSettleEnabled(event) {
+        // if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
+        //     return false;
+        if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value)
+            return false;
+        return true;
     }
 
     getStatus = (event) => {

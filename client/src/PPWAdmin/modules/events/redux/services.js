@@ -22,3 +22,7 @@ export function getEvent(id) {
 export function editEvent(id, data) {
     return axios.put(`${serverUrl}/events/${id}`, data, { withCredentials: true });
 }
+
+export function settleEvent(id, data) {
+    return axios.post(`${serverUrl}/events/${id}/settle`, data, { withCredentials: true });
+}

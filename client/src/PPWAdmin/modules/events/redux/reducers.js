@@ -2,6 +2,8 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
 import { getEvents } from "./services";
+const config = require("../../../../../../config.json");
+const EventStatus = config.EventStatus;
 
 export const actionTypes = {
     getEvents: "Get Events",
@@ -15,7 +17,7 @@ const initialState = {
     currentPage: 1,
     loading: false,
     filter: {
-        status: '',
+        status: EventStatus['pending'].value,
     },
 };
 
