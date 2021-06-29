@@ -55,7 +55,6 @@ async function matchResults() {
                     // TODO: last/since
                     result = await axios.get(url, reqConfig);
                     // TODO: last/since merge previous
-                    console.log(result.data);
                     if (result) {
                         await ApiCache.findOneAndUpdate({ url }, result, { upsert: true });
                     }
@@ -88,7 +87,6 @@ async function matchResults() {
                             let betWin;
                             if (lineType === 'moneyline') {
                                 betWin = pick === moneyLineWinner;
-                                console.log(lineType, 'betWin:', betWin, pick, moneyLineWinner);
                             } else if (lineType === 'spread') {
                                 const spread = {
                                     home: points,
@@ -97,17 +95,13 @@ async function matchResults() {
                                 const homeScoreHandiCapped = homeScore + spread.home;
                                 const awayScoreHandiCapped = awayScore + spread.away;
                                 let spreadWinner;
-                                console.log(homeScore, spread.home);
-                                console.log(homeScoreHandiCapped, awayScoreHandiCapped);
                                 if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
                                 else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                                 betWin = pick === spreadWinner;
-                                console.log(lineType, 'betWin:', betWin, pick, spreadWinner);
                             } else if (lineType === 'total') {
                                 const totalPoints = homeScore + awayScore;
                                 const overUnderWinner = totalPoints > points ? 'home' : 'away';
                                 betWin = pick === overUnderWinner;
-                                console.log(lineType, 'betWin:', betWin, pick, overUnderWinner);
                             }
 
                             if (betWin === true) {
@@ -123,7 +117,6 @@ async function matchResults() {
                                         awayScore,
                                     }
                                 }
-                                console.log(betChanges);
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin } });
                                 await FinancialLog.create({
@@ -163,7 +156,6 @@ async function matchResults() {
                                     betChanges.$set.credited = unplayableBet;
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
                                 }
-                                console.log(betChanges);
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                             } else {
                                 console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
@@ -184,7 +176,6 @@ async function matchResults() {
             for (const betId of homeBets) {
                 const bet = await Bet.findOne({ _id: betId });
                 const { _id, userId, bet: betAmount } = bet;
-                console.log('betObj', bet, betAmount);
                 // refund user
                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
@@ -192,7 +183,6 @@ async function matchResults() {
             for (const betId of awayBets) {
                 const bet = await Bet.findOne({ _id: betId });
                 const { _id, userId, bet: betAmount } = bet;
-                console.log('betObj', bet, betAmount);
                 // refund user
                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
