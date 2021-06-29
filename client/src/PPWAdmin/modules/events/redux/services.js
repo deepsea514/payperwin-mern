@@ -26,3 +26,7 @@ export function editEvent(id, data) {
 export function settleEvent(id, data) {
     return axios.post(`${serverUrl}/events/${id}/settle`, data, { withCredentials: true });
 }
+
+export function cancelEvent(id) {
+    return axios.post(`${serverUrl}/events/${id}/cancel`, {}, { withCredentials: true });
+}

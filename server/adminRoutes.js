@@ -2683,9 +2683,9 @@ adminRouter.post(
             if (!event) {
                 return res.status(404).json({ error: 'Can\'t find events.' });
             }
-            // if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
-            //     return res.status(404).json({ error: 'Event is not started yet.' });
-            // }
+            if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
+                return res.status(404).json({ error: 'Event is not started yet.' });
+            }
             if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
                 return res.status(404).json({ error: 'Event is already finished.' });
             }
@@ -2695,6 +2695,32 @@ adminRouter.post(
             await event.save();
 
             await matchResults(id, { homeScore: teamAScore, awayScore: teamBScore });
+
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/events/:id/cancel',
+    authenticateJWT,
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+                return res.status(404).json({ error: 'Event is already finished.' });
+            }
+            event.status = EventStatus.canceled.value;
+            await event.save();
+
+            await matchResults(id, { homeScore: null, awayScore: null, cancellationReason: true });
 
             res.status(200).json({ success: true });
         } catch (error) {
