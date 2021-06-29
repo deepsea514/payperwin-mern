@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
+import { cancelEvent } from "../redux/services";
 
 const config = require("../../../../../../config.json");
 const EventStatus = config.EventStatus;
@@ -16,6 +17,10 @@ class Events extends React.Component {
 
         this.state = {
             perPage: 25,
+            cancelId: null,
+            modal: false,
+            resMessage: '',
+            modalvariant: ''
         };
     }
 
@@ -61,14 +66,13 @@ class Events extends React.Component {
                 <td></td>
                 <td>{this.getStatus(event)}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/edit/${event._id}`}>
-                            <i className="far fa-edit"></i>&nbsp; Edit
-                        </Dropdown.Item>
-                        {this.isSettleEnabled(event) && <Dropdown.Item as={Link} to={`/settle/${event._id}`}>
-                            <i className="fas fa-check"></i>&nbsp; Settle
-                        </Dropdown.Item>}
-                    </DropdownButton>
+                    {this.isSettleEnabled(event) &&
+                        <DropdownButton title="Actions">
+                            <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item>
+                            <Dropdown.Item as={Link} to={`/settle/${event._id}`}><i className="fas fa-check"></i>&nbsp; Settle </Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
+                        </DropdownButton>
+                    }
                 </td>
             </tr>
         ));
@@ -109,8 +113,21 @@ class Events extends React.Component {
             getEvents(page);
     }
 
+    cancelEvent = () => {
+        const { getEvents } = this.props;
+        const { cancelId } = this.state;
+        cancelEvent(cancelId)
+            .then(() => {
+                getEvents();
+                this.setState({ modal: true, cancelId: null, resMessage: "Successfully canceled!", modalvariant: "success" });
+            })
+            .catch(() => {
+                this.setState({ modal: true, cancelId: null, resMessage: "Cancel Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { perPage, } = this.state;
+        const { perPage, cancelId, modal, resMessage, modalvariant } = this.state;
         const { total, currentPage, filter } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -170,6 +187,29 @@ class Events extends React.Component {
                                 />
                             </div>
                         </div>
+                        <Modal show={cancelId != null} onHide={() => this.setState({ cancelId: null })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Do you want to cancel this event?</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => this.setState({ cancelId: null })}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" onClick={this.cancelEvent}>
+                                    Confirm
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>{resMessage}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Footer>
+                                <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                 </div>
             </div>
