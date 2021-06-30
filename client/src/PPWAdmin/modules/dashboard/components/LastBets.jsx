@@ -55,26 +55,26 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className="font-weight-bolder d-block font-size-lg">
-                            {bet.userId.username}
+                            {bet.userId ? bet.userId.username : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.bet} {bet.userId.currency}
+                            {bet.bet} {bet.userId ? bet.userId.currency : 'CAD'}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.lineQuery.sportName}
+                            {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {`${bet.teamA.name} vs ${bet.teamB.name}`}
+                            {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </span>
                     </td>
                     <td className="pl-0">
-                        {getPPWBetType(bet.lineQuery.type)}
+                        {getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}
                     </td>
                 </tr>
             )

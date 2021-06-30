@@ -21,6 +21,7 @@ import FAQModule from "../modules/faq/pages";
 import GenerateToken from "./GenrateToken";
 import MessageCenterModule from "../modules/message-center/pages";
 import ActiveUsersModule from "../modules/active_users/pages";
+import MetaTagsModule from "../modules/meta-tags/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -101,6 +102,9 @@ export default class App extends Component {
 
                     {/* Active Users */}
                     <Route path="/active-users" component={ActiveUsersModule} />
+
+                    {/* meta tags */}
+                    <Route path="/meta-tags" component={MetaTagsModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 

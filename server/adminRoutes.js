@@ -19,6 +19,7 @@ const Preference = require("./models/preference");
 const FAQSubject = require("./models/faq_subject");
 const Event = require("./models/event");
 const Message = require("./models/message");
+const MetaTag = require("./models/meta-tag");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -2979,5 +2980,39 @@ adminRouter.get(
         res.json(csvData);
     }
 )
+
+adminRouter.get(
+    '/meta/:title',
+    authenticateJWT,
+    async (req, res) => {
+        const { title } = req.params;
+        const meta_tag = await MetaTag.findOne({ pageTitle: title });
+        res.json(meta_tag);
+    }
+);
+
+adminRouter.put(
+    '/meta/:title',
+    authenticateJWT,
+    async (req, res) => {
+        const { title } = req.params;
+        const data = req.body;
+        const meta_tag = await MetaTag.findOne({ pageTitle: title });
+        try {
+            if (meta_tag) {
+                await meta_tag.update(data);
+            } else {
+                await MetaTag.create({
+                    pageTitle: title,
+                    ...data
+                });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json("Can't save meta data.");
+        }
+    }
+);
 
 module.exports = adminRouter;
