@@ -1,0 +1,158 @@
+[
+    {
+        "title": "Peer to Peer Betting",
+        "path": "/"
+    },
+    {
+        "title": "Instant/Live Betting",
+        "path": "/sportsbook"
+    },
+    {
+        "title": "Registration",
+        "path": "/signup"
+    },
+    {
+        "title": "FAQ",
+        "path": "/faq"
+    },
+    {
+        "title": "Recover Password",
+        "path": "/passwordRecovery"
+    },
+    {
+        "title": "New Password from Token",
+        "path": "/newPasswordFromToken"
+    },
+    {
+        "title": "Login",
+        "path": "/login"
+    },
+    {
+        "title": "Deposit",
+        "path": "/deposit"
+    },
+    {
+        "title": "Deposit with Etransfer",
+        "path": "/deposit-etransfer"
+    },
+    {
+        "title": "Deposit with Bitcoin",
+        "path": "/deposit-bitcoin"
+    },
+    {
+        "title": "Deposit with Ethereum",
+        "path": "/deposit-ethereum"
+    },
+    {
+        "title": "Deposit with Tether",
+        "path": "/deposit-ethereum"
+    },
+    {
+        "title": "Withdraw",
+        "path": "/withdraw"
+    },
+    {
+        "title": "Withdraw with Etransfer",
+        "path": "/withdraw-etransfer"
+    },
+    {
+        "title": "Withdraw with Bitcoin",
+        "path": "/withdraw-bitcoin"
+    },
+    {
+        "title": "Withdraw with Ethereum",
+        "path": "/withdraw-ethereum"
+    },
+    {
+        "title": "Withdraw with Tether",
+        "path": "/withdraw-tether"
+    },
+    {
+        "title": "Open Bets",
+        "path": "/bets"
+    },
+    {
+        "title": "Bet History",
+        "path": "/history"
+    },
+    {
+        "title": "Open Sportsbook Bets",
+        "path": "/bets-sportsbook"
+    },
+    {
+        "title": "Sportsbook Bet History",
+        "path": "/history-sportsbook"
+    },
+    {
+        "title": "How it works",
+        "path": "/how-it-works"
+    },
+    {
+        "title": "Sports List",
+        "path": "/sports"
+    },
+    {
+        "title": "Betting on Sports League",
+        "path": "/sport/:name/:league"
+    },
+    {
+        "title": "Betting on Sports",
+        "path": "/sport/:name"
+    },
+    {
+        "title": "Betting on Custom Events",
+        "path": "/others"
+    },
+    {
+        "title": "Betting on Detailed sports line",
+        "path": "/lines/:sportName/:leagueId/:eventId"
+    },
+    {
+        "title": "Preferences",
+        "path": "/preferences"
+    },
+    {
+        "title": "Message Inbox",
+        "path": "/inbox"
+    },
+    {
+        "title": "Transaction History",
+        "path": "/transaction-history"
+    },
+    {
+        "title": "Account Security",
+        "path": "/security"
+    },
+    {
+        "title": "Account Detail",
+        "path": "/account"
+    },
+    {
+        "title": "Self Exclusion",
+        "path": "/self-exclusion"
+    },
+    {
+        "title": "Account Deactivation",
+        "path": "/deactivation"
+    },
+    {
+        "title": "Privacy Policy",
+        "path": "/privacy-policy"
+    },
+    {
+        "title": "Terms and Conditions",
+        "path": "/terms-and-conditions"
+    },
+    {
+        "title": "Betting Rules",
+        "path": "/betting-rules"
+    },
+    {
+        "title": "Customer Verification",
+        "path": "/verification"
+    },
+    {
+        "title": "Customer support",
+        "path": "/support"
+    }
+]

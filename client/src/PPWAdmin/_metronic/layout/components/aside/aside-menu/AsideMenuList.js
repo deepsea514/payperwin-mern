@@ -94,7 +94,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                 >
                     <Link className="menu-link" to="/active-users/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
+                            <SVG src={"/media/svg/icons/Files/User-folder.svg"} />
                         </span>
                         <span className="menu-text">Active Users</span>
                     </Link>
@@ -125,7 +125,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                     </Link>
                 </li>
 
-                <li
+                {/* <li
                     className={`menu-item ${getMenuItemActive("/wager-feeds", false)}`}
                     aria-haspopup="true"
                 >
@@ -135,7 +135,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Wager Feeds</span>
                     </Link>
-                </li>
+                </li> */}
 
                 <li
                     className={`menu-item ${getMenuItemActive("/autobet", false)}`}
@@ -170,6 +170,18 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/Communication/Mail-opened.svg"} />
                         </span>
                         <span className="menu-text">Email Templates</span>
+                    </Link>
+                </li>
+
+                <li
+                    className={`menu-item ${getMenuItemActive("/meta-tags", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/meta-tags/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/General/Search.svg"} />
+                        </span>
+                        <span className="menu-text">Meta Tags</span>
                     </Link>
                 </li>
 

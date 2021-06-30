@@ -10,7 +10,6 @@ import PasswordRecovery from '../pages/passwordRecovery';
 import Sports from '../pages/sports';
 import Sport from '../components/sport';
 import Lines from '../pages/lines';
-import BetForward from '../pages/betForward';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import OpenBets from '../pages/openbets';
@@ -299,8 +298,7 @@ class App extends PureComponent {
                                                     render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} />}
                                                 />
-                                                <Route path="/betforward/:betId" component={BetForward} />
-                                                <Route path="/announcements" component={Announcements} />
+                                                {/* <Route path="/announcements" component={Announcements} /> */}
                                                 <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
                                                 <Route path="/inbox" render={(props) => <Inbox {...props} getUser={getUser} />} />
                                                 <Route path="/payment-options" component={PaymentOptions} />
