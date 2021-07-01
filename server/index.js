@@ -23,6 +23,7 @@ const FAQItem = require('./models/faq_item');
 const Event = require("./models/event");
 const EventBetPool = require("./models/eventbetpool");
 const Message = require("./models/message");
+const MetaTag = require("./models/meta-tag");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -2609,6 +2610,15 @@ expressApp.get(
         }
     }
 )
+
+expressApp.get(
+    '/meta/:title',
+    async (req, res) => {
+        const { title } = req.params;
+        const meta_tag = await MetaTag.findOne({ pageTitle: title });
+        res.json(meta_tag);
+    }
+);
 
 // Admin
 expressApp.use('/admin', adminRouter);

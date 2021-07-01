@@ -1,11 +1,11 @@
-
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import axios from "axios";
 import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import DocumentMeta from 'react-document-meta';
 import config from "../../../config.json";
 const serverUrl = config.appUrl;
 
@@ -25,11 +25,16 @@ class TransactionHistory extends Component {
             daterange: null,
             page: 1,
             loading: false,
+            metaData: null,
         };
     }
 
     componentDidMount() {
         this.getHistory();
+        const title = 'Transaction History';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     getHistory = (page = 0, clear = true) => {
@@ -167,11 +172,10 @@ class TransactionHistory extends Component {
     }
 
     render() {
-        setTitle({ pageTitle: 'Transaction History' });
-        const { transactions, showFilter, filter, daterange, page, loading } = this.state;
-        const { user } = this.props;
+        const { transactions, showFilter, filter, daterange, page, loading, metaData } = this.state;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Transaction history</h1>
                 <div className="main-cnt">
                     <ul

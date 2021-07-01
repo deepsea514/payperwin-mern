@@ -71,6 +71,7 @@
     "react-country-region-selector": "^3.0.2",
     "react-csv": "^2.0.3",
     "react-datepicker": "^3.4.1",
+    "react-document-meta": "^3.0.0-beta.2",
     "react-dom": "^16.8.4",
     "react-favicon": "0.0.14",
     "react-iframe": "^1.8.0",

@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
+import DocumentMeta from 'react-document-meta';
 
 class Deactivation extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            metaData: null
+        }
+    }
+
+    componentDidMount() {
+        const title = 'Account Deactivation';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+    }
+
     render() {
-        setTitle({ pageTitle: 'Deactivation' });
+        const { metaData } = this.state;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Account deactivation</h1>
 
                 <div className="main-cnt redio-sec">

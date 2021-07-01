@@ -1,6 +1,6 @@
 import React, { PureComponent, useRef } from 'react';
 import axios from 'axios';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 import { Form } from "react-bootstrap";
@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import JoditEditor from "jodit-react";
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -51,11 +52,15 @@ class ContactUs extends PureComponent {
             }),
             submitSuccess: false,
             submitError: null,
+            metaData: null,
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Submit a ticket' });
+        const title = 'Customer Support';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     onSubmit = (values, formik) => {
@@ -96,7 +101,7 @@ class ContactUs extends PureComponent {
 
     render() {
         const { classes } = this.props;
-        const { ticketSchema, submitError, submitSuccess } = this.state;
+        const { ticketSchema, submitError, submitSuccess, metaData } = this.state;
         const initialvalues = {
             email: '',
             phone: '',
@@ -111,6 +116,7 @@ class ContactUs extends PureComponent {
         };
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Customer services</h3>
                 <p>
                     The Customer Services email address is the primary contact for all Account, Betting and Payment related questions or issues.

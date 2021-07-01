@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -16,11 +16,16 @@ class Sport extends PureComponent {
         this.state = {
             data: null,
             error: null,
+            metaData: null,
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Sports' });
+        const { league } = this.props;
+        const title = league ? 'Betting on Sports' : 'Betting on Sports League';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
         this.getSport();
     }
 
@@ -120,7 +125,7 @@ class Sport extends PureComponent {
 
     render() {
         const { match, addBet, betSlip, removeBet, sportName, timezone, search } = this.props;
-        const { data, error } = this.state;
+        const { data, error, metaData } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -144,6 +149,7 @@ class Sport extends PureComponent {
         );
         return (
             <div className="mt-2">
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="table-title">HIGHLIGHTS</div>
                 <div className="content">
                     {

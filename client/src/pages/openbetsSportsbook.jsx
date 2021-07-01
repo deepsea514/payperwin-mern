@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { Link, withRouter } from 'react-router-dom';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import sportNameIcon from '../helpers/sportNameIcon';
 import dayjs from 'dayjs';
+import DocumentMeta from 'react-document-meta';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -18,7 +18,11 @@ export default class OpenBetsSportsBook extends PureComponent {
 
     componentDidMount() {
         const { settledBets } = this.props;
-        setTitle({ pageTitle: settledBets ? 'Bet History(SportsBook)' : 'Open Bets(SportsBook)' });
+        const title = settledBets ? 'Bet History(SportsBook)' : 'Open Bets(SportsBook)';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+
         this.getBetHistory();
     }
 
@@ -62,10 +66,11 @@ export default class OpenBetsSportsBook extends PureComponent {
     }
 
     render() {
-        const { bets } = this.state;
-        const { openBets, settledBets } = this.props;
+        const { bets, metaData } = this.state;
+        const { settledBets } = this.props;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h3>{settledBets ? 'Bet History(SportsBook)' : 'Open Bets(SportsBook)'}</h3>
                 {bets.map(betObj => {
                     const {

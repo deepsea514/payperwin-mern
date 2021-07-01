@@ -12,9 +12,11 @@ import Recaptcha from 'react-recaptcha';
 import { Link, withRouter } from 'react-router-dom';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import UserContext from '../contexts/userContext';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
+import DocumentMeta from 'react-document-meta';
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -107,6 +109,7 @@ const initState = {
     password: '',
     rcptchVerified: false,
     errors: {},
+    metaData: null
 };
 
 class Login extends Component {
@@ -120,7 +123,10 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Login' });
+        const title = 'Login';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     handleChange(e) {
@@ -201,11 +207,13 @@ class Login extends Component {
 
     render() {
         const { location: { pathname } } = this.props;
+        const { metaData } = this.state;
         return (
             <UserContext.Consumer>
                 {
                     userContextValue => (
                         <div className="content">
+                            {metaData && <DocumentMeta {...metaData} />}
                             <Form
                                 {...this.state}
                                 handleChange={this.handleChange}

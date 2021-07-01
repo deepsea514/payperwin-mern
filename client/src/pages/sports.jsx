@@ -1,20 +1,30 @@
 import React, { PureComponent } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder'
+import { setMeta } from '../libs/documentTitleBuilder'
 import SportsList from '../components/sportsList';
+import DocumentMeta from 'react-document-meta';
 
 export default class Sports extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            metaData: null,
+        };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Sports' });
+        const title = 'Sports List';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     render() {
+        const { metaData } = this.state;
         return (
-            <SportsList />
+            <>
+                {metaData && <DocumentMeta {...metaData} />}
+                <SportsList />
+            </>
         );
     }
 }

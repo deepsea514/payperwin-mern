@@ -14,9 +14,9 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i>Inbox</Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link to={{ pathname: '/announcements' }}><i className="fas fa-bell"></i>Announcements </Link>
-                    </li>
+                    </li> */}
                 </ul>
 
                 <h3 className="cat-heading">MY BETS</h3>

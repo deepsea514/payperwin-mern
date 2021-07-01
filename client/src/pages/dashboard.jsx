@@ -1,23 +1,26 @@
 import React, { PureComponent } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Highlights from '../components/highlights';
-
-const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+import DocumentMeta from 'react-document-meta';
 
 class Dashboard extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             showModal: false,
+            metaData: null
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: '' });
+        const title = 'Peer to Peer Betting';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+
         const preference = JSON.parse(localStorage.getItem('frontend-preference'));
         if (!preference || !preference.p2pModal) {
             setTimeout(() => {
@@ -37,11 +40,12 @@ class Dashboard extends PureComponent {
     }
 
     render() {
-        const { showModal } = this.state;
+        const { showModal, metaData } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
 
         return (
             <React.Fragment>
+                {metaData && <DocumentMeta {...metaData} />}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
@@ -51,11 +55,11 @@ class Dashboard extends PureComponent {
                             <b>PEER 2 PEER BETTING</b>
                             <hr />
                             <p>
-                                Here is where you beat the bookie. 
-                                The odds are even and better than you will find anywhere else online. 
-                                The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. 
-                                Payper win will take 3% from only the winner for facilitating the transaction and making sure you get paid. 
-                                Payper win gurantees all winning bets will be paid. 
+                                Here is where you beat the bookie.
+                                The odds are even and better than you will find anywhere else online.
+                                The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete.
+                                Payper win will take 3% from only the winner for facilitating the transaction and making sure you get paid.
+                                Payper win gurantees all winning bets will be paid.
                                 If patience isn't your virtue, say no more; we suggest doing an Instant bet.
                             </p>
                             <div className="text-right">

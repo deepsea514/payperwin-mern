@@ -1,20 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { setTitle } from '../libs/documentTitleBuilder'
+import { setMeta } from '../libs/documentTitleBuilder';
+import DocumentMeta from 'react-document-meta';
 
 class Withdraw extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            metaData: null
+        };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Withdrawal' });
+        const title = 'Withdraw';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     render() {
+        const { metaData } = this.props;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Withdraw</h3>
                 <div className="main-cnt">
                     <p className="dpsit">

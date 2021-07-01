@@ -1,18 +1,23 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
-import { setTitle } from '../libs/documentTitleBuilder'
+import { setMeta } from '../libs/documentTitleBuilder'
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import DocumentMeta from 'react-document-meta';
 
 class HowTo extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            metaData: null
+        };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'How It Works' });
+        const title = 'How it works';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     handleChange(e) {
@@ -21,8 +26,10 @@ class HowTo extends PureComponent {
 
     render() {
         const { intl } = this.props;
+        const { metaData } = this.state;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="how-it-works">
                     <h2>
                         How

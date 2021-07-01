@@ -1,12 +1,12 @@
-
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -18,7 +18,15 @@ class Preferences extends Component {
         this.state = {
             submitSuccess: false,
             submitError: false,
+            metaData: null,
         }
+    }
+
+    componentDidMount() {
+        const title = 'Preferences';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     getInputClasses = (formik, fieldname) => {
@@ -48,6 +56,7 @@ class Preferences extends Component {
     render() {
         const { oddsFormat, lang, dateFormat, timezone } = this.props;
         const initialValues = { oddsFormat, lang, dateFormat, timezone };
+        const { metaData } = this.state;
 
         const preferenceSchema = Yup.object().shape({
             oddsFormat: Yup.string()
@@ -59,9 +68,10 @@ class Preferences extends Component {
             lang: Yup.string()
                 .required("You shuld select Language."),
         });
-        setTitle({ pageTitle: 'Preferences' });
+
         return (
             <React.Fragment>
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="col-in prfnce">
                     <h1 className="main-heading-in">Preferences</h1>
                     <div className="main-cnt ml-2">

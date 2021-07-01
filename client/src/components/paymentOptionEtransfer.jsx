@@ -72,7 +72,7 @@ class PaymentOptionEtransfer extends Component {
                     </table>
                 </div>
 
-                <article class="paymentoption-content mt-5">
+                <article className="paymentoption-content mt-5">
                     <p>Please note that additional limits may be applied by Interac or your financial institution.</p>
                     <br />
                     <strong>Processing Time</strong>
