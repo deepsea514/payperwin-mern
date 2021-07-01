@@ -1,9 +1,9 @@
-
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import DocumentMeta from 'react-document-meta';
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -12,7 +12,15 @@ class Security extends Component {
         super(props);
         this.state = {
             enable_2fa: 'false',
+            metaData: null,
         }
+    }
+
+    componentDidMount() {
+        const title = 'Account Security';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     getSnapshotBeforeUpdate(prevProps) {
@@ -41,10 +49,10 @@ class Security extends Component {
     }
 
     render() {
-        const { enable_2fa } = this.state;
-        setTitle({ pageTitle: 'Password and Security' });
+        const { enable_2fa, metaData } = this.state;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Password and security</h1>
                 <div className="main-cnt">
                     <form>

@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
+import DocumentMeta from 'react-document-meta';
 
 class TermsAndConditions extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showMobile: null,
+            metaData: null,
         }
     }
+
+    componentDidMount() {
+        const title = 'Terms and Conditions';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+    }
+
     setVisible = (value) => {
         const { showMobile } = this.state;
         if (showMobile == value)
@@ -15,11 +25,12 @@ class TermsAndConditions extends Component {
         else
             this.setState({ showMobile: value });
     }
+
     render() {
-        const { showMobile } = this.state;
-        setTitle({ pageTitle: 'Privacy Policy' });
+        const { showMobile, metaData } = this.state;
         return (
             <React.Fragment>
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="content-container">
                     <div className="block help-contact">
                         <h1 className="title-bar background darkblue">Terms and Conditions</h1>
@@ -722,7 +733,7 @@ class TermsAndConditions extends Component {
                                                             <ol className="sub show-number" start="18">
                                                                 <li>We trade as PayPerWin and the PINNACLE name and logo are registered trademarks. Any unauthorised use of our trademark and logo may result in legal action being taken against you. The www.payperwin.com uniform resource locator (URL) is owned by us and no unauthorised use of the URL is permitted on another website or digital platform without our prior written consent.</li>
                                                                 <li>As between us and you, we are the sole owners of the rights in and to the Service, our technology, software and business systems (the "<strong><em>Systems</em></strong>") as well as our odds.
-                                                    <div className="list-alike">
+                                                                    <div className="list-alike">
                                                                         <p><span>i.</span>you must not use your personal profile for your own commercial gain (such as selling your status update to an advertiser); and</p>
                                                                         <p><span>ii.</span>when selecting a nickname for your Account we reserve the right to remove or reclaim it if we believe it appropriate.</p>
                                                                     </div>

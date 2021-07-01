@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 import { Form } from "react-bootstrap";
@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Iframe from 'react-iframe';
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -49,12 +50,16 @@ class DepositTripleA extends PureComponent {
             depositSuccess: false,
             depositError: null,
             hosted_url: null,
+            metaData: null
         };
     }
 
     componentDidMount() {
         const { method } = this.props;
-        setTitle({ pageTitle: `Deposit with ${method}` });
+        const title = `Deposit with ${method}`;
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     onSubmit = (values, formik) => {
@@ -81,7 +86,7 @@ class DepositTripleA extends PureComponent {
 
     render() {
         const { classes, user, method } = this.props;
-        const { depositSchema, depositError, depositSuccess, hosted_url } = this.state;
+        const { depositSchema, depositError, depositSuccess, hosted_url, metaData } = this.state;
         const initialvalues = {
             amount: 0,
             email: (user ? user.email : ''),
@@ -90,6 +95,7 @@ class DepositTripleA extends PureComponent {
         };
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h3>{method} Deposit</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">

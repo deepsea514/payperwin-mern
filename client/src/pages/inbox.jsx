@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Link, Switch, Route, BrowserRouter } from "react-router-dom";
 import InboxDetail from "./inboxDetail";
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -14,11 +15,17 @@ class Inbox extends Component {
         this.state = {
             messages: [],
             error: null,
+            metaData: null,
         }
     }
     componentDidMount() {
         const { getUser } = this.props;
-        setTitle({ pageTitle: 'Inbox' });
+
+        const title = 'Message Inbox';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+
         axios.get(`${serverUrl}/inbox`, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({ messages: data })
@@ -30,10 +37,11 @@ class Inbox extends Component {
     }
 
     render() {
-        const { messages, error } = this.state;
+        const { messages, error, metaData } = this.state;
 
         return (
             <React.Fragment>
+                {metaData && <DocumentMeta {...metaData} />}
                 <BrowserRouter basename="/inbox">
                     <Switch>
                         <Route path="/:id" render={(props) => (

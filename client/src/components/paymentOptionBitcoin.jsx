@@ -72,7 +72,7 @@ class PaymentOptionBitcoin extends Component {
                     </table>
                 </div>
 
-                <article class="paymentoption-content mt-5">
+                <article className="paymentoption-content mt-5">
                     <strong>PAYPER Win currently works with third party exchange providers that convert cryptocurrencies into the FIAT currency of your player account. Although we work to ensure that all costs are minimal, there may be fluctuations in the fees charged and conversion rates. We do not offer Bitcoin as an account currency.</strong>
                     <br />
                     <br />

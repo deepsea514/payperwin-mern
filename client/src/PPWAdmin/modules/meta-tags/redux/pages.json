@@ -20,7 +20,7 @@
         "path": "/passwordRecovery"
     },
     {
-        "title": "New Password from Token",
+        "title": "New Password",
         "path": "/newPasswordFromToken"
     },
     {
@@ -28,11 +28,15 @@
         "path": "/login"
     },
     {
+        "title": "Payment Methods",
+        "path": "/payment-options"
+    },
+    {
         "title": "Deposit",
         "path": "/deposit"
     },
     {
-        "title": "Deposit with Etransfer",
+        "title": "Deposit with eTransfer",
         "path": "/deposit-etransfer"
     },
     {
@@ -76,11 +80,11 @@
         "path": "/history"
     },
     {
-        "title": "Open Sportsbook Bets",
+        "title": "Open Bets(SportsBook)",
         "path": "/bets-sportsbook"
     },
     {
-        "title": "Sportsbook Bet History",
+        "title": "Bet History(SportsBook)",
         "path": "/history-sportsbook"
     },
     {
@@ -152,7 +156,7 @@
         "path": "/verification"
     },
     {
-        "title": "Customer support",
+        "title": "Customer Support",
         "path": "/support"
     }
 ]

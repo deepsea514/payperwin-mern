@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { Link, withRouter } from 'react-router-dom';
-import dayjs from 'dayjs';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { withRouter } from 'react-router-dom';
+import { setMeta } from '../libs/documentTitleBuilder';
 import getLinesFromSportData from '../libs/getLinesFromSportData';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
-import GoToTop from "../components/gotoTop";
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -18,11 +17,15 @@ class Lines extends PureComponent {
         this.state = {
             data: null,
             error: null,
+            metaData: null,
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Lines' });
+        const title = 'Betting on Detailed sports line';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
         this.getSport();
     }
 
@@ -117,8 +120,8 @@ class Lines extends PureComponent {
 
     render() {
         const { match, addBet, betSlip, removeBet, timezone } = this.props;
-        const { sportName, leagueId, eventId, lineId } = match.params;
-        const { data, error } = this.state;
+        const { sportName, leagueId, eventId } = match.params;
+        const { data, error, metaData } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -129,6 +132,7 @@ class Lines extends PureComponent {
         const { teamA, teamB, startDate, leagueName, lines, origin } = data;
         return (
             <div className="content detailed-lines">
+                {metaData && <DocumentMeta {...metaData} />}
                 <center>
                     <div>
                         {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}

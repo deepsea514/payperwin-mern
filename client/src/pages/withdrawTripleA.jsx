@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Form } from "react-bootstrap";
 import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -36,12 +37,16 @@ class WithdrawTripleA extends PureComponent {
             withdrawError: null,
             agreeWithdraw: false,
             errMsg: '',
+            metaData: null
         };
     }
 
     componentDidMount() {
         const { method } = this.props;
-        setTitle({ pageTitle: `Withdraw with ${method}` });
+        const title = `Withdraw with ${method}`;
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     onSubmit = (values, formik) => {
@@ -74,7 +79,7 @@ class WithdrawTripleA extends PureComponent {
 
     render() {
         const { classes, user, method } = this.props;
-        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg } = this.state;
+        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
         const initialvalues = {
             amount: 0,
             // wallet: '',
@@ -88,8 +93,10 @@ class WithdrawTripleA extends PureComponent {
                 .max(balance, `Maximum Withdraw Amount is ${balanceStr} CAD.`),
             method: Yup.string(),
         });
+
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <h3>{method} Withdraw</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">

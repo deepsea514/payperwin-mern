@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import Iframe from 'react-iframe';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -12,11 +12,16 @@ class SportsBook extends PureComponent {
             loginUrl: null,
             loading: false,
             showModal: false,
+            metaData: null
         };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'SportsBook' });
+        const title = 'Instant/Live Betting';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+
         this.setState({ loading: true });
         axios.get(`${serverUrl}/getPinnacleLogin`, { withCredentials: true })
             .then(({ data }) => {
@@ -57,11 +62,12 @@ class SportsBook extends PureComponent {
     }
 
     render() {
-        const { loginUrl, loading, showModal } = this.state;
+        const { loginUrl, loading, showModal, metaData } = this.state;
         const { user } = this.props;
 
         return (
             <div className="row">
+                {metaData && <DocumentMeta {...metaData} />}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">

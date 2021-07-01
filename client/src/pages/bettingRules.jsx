@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
+import DocumentMeta from 'react-document-meta';
 
 class BettingRules extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showMobile: null,
+            metaData: null,
         }
     }
+
+    componentDidMount() {
+        const title = 'Betting Rules';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+    }
+
     setVisible = (value) => {
         const { showMobile } = this.state;
         if (showMobile == value)
@@ -15,11 +25,12 @@ class BettingRules extends Component {
         else
             this.setState({ showMobile: value });
     }
+
     render() {
-        const { showMobile } = this.state;
-        setTitle({ pageTitle: 'Betting Rules' });
+        const { showMobile, metaData } = this.state;
         return (
             <React.Fragment>
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="content-container">
                     <h1 className="title-bar background darkblue">Betting Rules</h1>
                     <div className="block box">
@@ -147,7 +158,7 @@ class BettingRules extends Component {
                                         <ol >
                                             <li>The posted dates and times of fixtures are purely informational. Payper win cannot guarantee accuracy. An incorrectly posted date and/or time is not grounds for voiding bets.</li>
                                             <li>If a fixture isn’t completed within 30 hours of its officially planned starting time, then all bets on that fixture will be void. The exceptions to this rule are:
-                                            <ol>
+                                                <ol>
                                                     <li>Fixtures which in their normal course can take longer than 30 hours, such as golf tournaments.</li>
                                                     <li>Sport-specific exceptions laid out in the rules section for each individual sport.</li>
                                                     <li>Bets on the “First Team to Score” have action as soon as there is a score, regardless of whether the fixture is completed.</li>
@@ -222,7 +233,7 @@ class BettingRules extends Component {
                                 </div>
                                 <div className="rules gray" id="Athletics">
                                     <h2 className="privacy-policy-section-title desktop" >Athletics</h2>
-                                    <h2 className="privacy-policy-section-title accordion-toggle"onClick={() => this.setVisible(3)}>
+                                    <h2 className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(3)}>
                                         Athletics
                                         <div className="arrow-up" style={{ display: showMobile == 3 ? 'block' : 'none' }}></div>
                                         <div className="arrow-down" style={{ display: showMobile != 3 ? 'block' : 'none' }}></div>
@@ -423,7 +434,7 @@ class BettingRules extends Component {
                                 </div>
                                 <div className="rules gray" id="Cycling">
                                     <h2 className="privacy-policy-section-title desktop" >Cycling</h2>
-                                    <h2 className="privacy-policy-section-title accordion-toggle"onClick={() => this.setVisible(13)}>
+                                    <h2 className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(13)}>
                                         Cycling
                                         <div className="arrow-up" style={{ display: showMobile == 13 ? 'block' : 'none' }}></div>
                                         <div className="arrow-down" style={{ display: showMobile != 13 ? 'block' : 'none' }}></div>
