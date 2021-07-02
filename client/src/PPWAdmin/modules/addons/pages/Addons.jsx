@@ -4,6 +4,7 @@ import PinnacleSandbox from "../components/PinnacleSandbox";
 import PremierPay from "../components/PremierPay";
 import TheRundown from "../components/TheRundown";
 import TripleA from "../components/TripleA";
+import SendGrid from "../components/SendGrid";
 
 class Addons extends React.Component {
     constructor(props) {
@@ -30,6 +31,10 @@ class Addons extends React.Component {
                             <div className="row">
                                 <div className="col-md-6 col-12">
                                     <Pinnacle />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6 col-12">
+                                    <SendGrid />
                                     <hr />
                                 </div>
                                 <div className="col-md-6 col-12">
