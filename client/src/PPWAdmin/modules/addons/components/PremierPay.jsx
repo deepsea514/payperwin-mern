@@ -28,7 +28,7 @@ export default class PremierPay extends React.Component {
 
     componentDidMount() {
         this.setState({ loading: false });
-        getAddon('pinnacle')
+        getAddon('premierpay')
             .then(({ data }) => {
                 if (data) {
                     this.setState({ initialValues: data.value, loading: false });
@@ -50,7 +50,7 @@ export default class PremierPay extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ isError: false, isError: false, });
-        setAddon('pinnacle', values)
+        setAddon('premierpay', values)
             .then(() => {
                 this.setState({ isSuccess: true })
                 formik.setSubmitting(false);

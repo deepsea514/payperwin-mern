@@ -7,7 +7,10 @@ const axios = require('axios');
 const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
+const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
+const fromEmailName = 'PAYPER Win';
+const fromEmailAddress = 'donotreply@payperwin.co';
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);

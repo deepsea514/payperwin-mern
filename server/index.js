@@ -1,5 +1,3 @@
-//.env
-require('dotenv').config();
 // models
 const User = require('./models/user');
 const LoginLog = require("./models/loginlog");
@@ -24,6 +22,7 @@ const Event = require("./models/event");
 const EventBetPool = require("./models/eventbetpool");
 const Message = require("./models/message");
 const MetaTag = require("./models/meta-tag");
+const Addon = require("./models/addon");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -57,7 +56,6 @@ const expressSession = require('express-session');
 const dateformat = require("dateformat");
 // const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { ObjectId } = require('mongodb');
 const axios = require('axios');
 const fileUpload = require('express-fileupload');
@@ -100,7 +98,6 @@ const bruteforce = new ExpressBrute(bruteStore);
 mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
 // const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
-console.info('Using database:', databaseName);
 const mongooptions = {
     useMongoClient: true,
 }
@@ -109,7 +106,16 @@ if (config.mongo && config.mongo.username) {
     mongooptions.user = config.mongo.username;
     mongooptions.pass = config.mongo.password;
 }
-mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions);
+
+mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions).then(async () => {
+    console.info('Using database:', databaseName);
+    const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
+    if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
+        console.warn('Send Grid Key is not set');
+        return;
+    }
+    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
+});
 // const store = new MongoDBStore(
 //     {
 //         uri: `mongodb://localhost/${databaseName}`,
@@ -1432,62 +1438,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         if (e2) console.error('newBetError', e2);
     }
 }
-
-// expressApp.get(
-//     '/betforward',
-//     async (req, res) => {
-//         if (req.user && req.user.username) {
-//             const { betId } = req.query;
-//             const bet = await Bet.findById(new ObjectId(betId));
-//             if (bet) {
-//                 const { lineQuery, pick, pickName, payableToWin, bet: betAmount, toWin, pickOdds, oldOdds } = bet;
-//                 const { sportName, leagueId, eventId, lineId, type, altLineId, sportId, periodNumber } = lineQuery;
-//                 const unplayableBet = payableToWin < toWin
-//                     ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-//                 const data = {
-//                     "oddsFormat": "AMERICAN", // HAVE
-//                     "uniqueRequestId": betId,
-//                     "acceptBetterLine": true, // TRUE
-//                     "stake": /* unplayableBet */ 1, // HAVE
-//                     "winRiskStake": "RISK", // "RISK"
-//                     "lineId": lineId, // HAVE
-//                     "altLineId": altLineId || null, // HAVE
-//                     "pitcher1MustStart": true, // ??? TRUE
-//                     "pitcher2MustStart": true, // ??? TRUE
-//                     "fillType": "NORMAL", // "NORMAL"
-//                     "sportId": sportId, // HAVE 
-//                     "eventId": eventId, // HAVE
-//                     "periodNumber": periodNumber || 0, // HAVE (NOW)
-//                     "betType": type, // HAVE
-//                     "team": pick === 'home' ? "TEAM1" : "TEAM2", // HAVE
-//                     "side": pick === 'over' ? "OVER" : "UNDER" // OMIT OR HAVE
-//                 };
-//                 try {
-//                     // await axios({
-//                     //   method: 'post',
-//                     //   url: `${config.pinnacleApiHost}/v2/bets/straight`,
-//                     //   data,
-//                     //   maxRedirects: 999,
-//                     //   headers: {
-//                     //     'User-Agent': 'PostmanRuntime/7.24.1',
-//                     //     'Authorization': 'Basic SkIxMDUyNzIyOkN1cnpvbjg4OA==',
-//                     //     'Accept': 'application/json',
-//                     //   },
-//                     // });
-//                     // TODO: remove original bet if unmatched or modify the bet and toWin amount
-//                     await calculateBetsStatus(JSON.stringify(lineQuery));
-//                 } catch (e) {
-//                     console.log("betforward => ", e);
-//                     res.status(404).json({ error: 'There was a problem submitting this bet.' });
-//                 }
-//             } else {
-//                 res.status(404).json({ error: 'BetId not found.' });
-//             }
-//         } else {
-//             res.status(404).end();
-//         }
-//     },
-// );
 
 expressApp.get(
     '/line',

@@ -22,7 +22,7 @@ export default class SendGrid extends React.Component {
 
     componentDidMount() {
         this.setState({ loading: false });
-        getAddon('pinnacle')
+        getAddon('sendgrid')
             .then(({ data }) => {
                 if (data) {
                     this.setState({ initialValues: data.value, loading: false });
@@ -41,7 +41,7 @@ export default class SendGrid extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ isError: false, isError: false, });
-        setAddon('pinnacle', values)
+        setAddon('sendgrid', values)
             .then(() => {
                 this.setState({ isSuccess: true })
                 formik.setSubmitting(false);
