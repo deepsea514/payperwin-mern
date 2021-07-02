@@ -23,6 +23,15 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
     useMongoClient: true,
 }).then(async () => {
     console.info('Using database:', databaseName);
+
+    const lineInterval = 1000 * 60 * 60;
+    getAllSportsLines();
+    setInterval(getAllSportsLines, lineInterval);
+
+    const resultInterval = 1000 * 60 * 60 * 12;
+    matchResults();
+    setInterval(matchResults, resultInterval);
+
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
         console.warn('Send Grid Key is not set');
@@ -33,8 +42,7 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
 
 async function getAllSportsLines() {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
-    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.pinnacleApiHost) {
-        console.log(pinnacleAddon | pinnacleAddon.value)
+    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.value.pinnacleApiHost) {
         console.warn("Pinnacle Api is not set");
         return;
     }
@@ -75,11 +83,3 @@ async function getAllSportsLines() {
     }
     console.log('finished');
 }
-
-const lineInterval = 1000 * 60 * 60;
-getAllSportsLines();
-setInterval(getAllSportsLines, lineInterval);
-
-const resultInterval = 1000 * 60 * 60 * 12;
-matchResults();
-setInterval(matchResults, resultInterval);
