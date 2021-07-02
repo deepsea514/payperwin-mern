@@ -10,8 +10,7 @@ const axios = require('axios');
 
 async function getSportLines(sportName) {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
-    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.pinnacleApiHost) {
-        console.log(pinnacleAddon | pinnacleAddon.value)
+    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.value.pinnacleApiHost) {
         console.warn("Pinnacle Api is not set");
         return;
     }
