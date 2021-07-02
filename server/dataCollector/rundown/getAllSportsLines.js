@@ -15,7 +15,7 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
     user: config.mongo.username,
     pass: config.mongo.password,
     useMongoClient: true,
-}).then(() => {
+}).then(async () => {
     console.info('Using database:', databaseName);
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
