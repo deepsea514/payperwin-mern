@@ -6,7 +6,6 @@ const FinancialLog = require("../../models/financiallog");
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;

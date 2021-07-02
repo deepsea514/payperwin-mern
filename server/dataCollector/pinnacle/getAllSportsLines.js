@@ -1,33 +1,34 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const getSportLines = require('./getSportLines');
-const sleep = require('../../libs/sleep');
+//Models
 const Sport = require('../../models/sport');
 const SportsDir = require('../../models/sportsDir');
-const axios = require('axios');
-const config = require('../../../config.json');
-const BetPool = require('../../models/betpool');
-const Bet = require('../../models/bet');
-const User = require('../../models/user');
-const ApiCache = require('../../models/apiCache');
-const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
-const simpleresponsive = require('../../emailtemplates/simpleresponsive');
+const Addon = require("../../models/addon");
+//local helpers
+const getSportLines = require('./getSportLines');
+const sleep = require('../../libs/sleep');
 const matchResults = require('./matchResults');
+const config = require('../../../config.json');
+//external libraries
+const mongoose = require('mongoose');
+const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const fromEmailName = 'PAYPER Win';
-const fromEmailAddress = 'donotreply@payperwin.co';
 
 // Database
 mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
 // const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
-console.info('Using database:', databaseName);
 mongoose.connect(`mongodb://localhost/${databaseName}`, {
     authSource: "admin",
     user: config.mongo.username,
     pass: config.mongo.password,
     useMongoClient: true,
+}).then(() => {
+    console.info('Using database:', databaseName);
+    const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
+    if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
+        console.warn('Send Grid Key is not set');
+        return;
+    }
+    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
 const reqConfig = {
@@ -52,10 +53,10 @@ async function getAllSportsLines() {
                 //     !sportData
                 //     || new Date() - new Date(sportData.updatedAt) > (1000 * 60 * 60 * 20)
                 // ) {
-                    console.log('Getting lines for', name);
-                    await getSportLines(name);
-                    console.log('sleeping...')
-                    await sleep(61 * 1000);
+                console.log('Getting lines for', name);
+                await getSportLines(name);
+                console.log('sleeping...')
+                await sleep(61 * 1000);
                 // } else {
                 //     console.log(name, 'skipped, already got within 20 hours');
                 // }

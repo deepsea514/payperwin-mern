@@ -1,8 +1,9 @@
+const Addon = require("../../models/addon");
 const getSportLines = require('./getSportLines');
-const sleep = require('../../libs/sleep');
 const sports = require("./sports.json");
 const mongoose = require('mongoose');
 const config = require('../../../config.json');
+const sgMail = require('@sendgrid/mail');
 let call = 0;
 
 // Database
@@ -14,6 +15,14 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
     user: config.mongo.username,
     pass: config.mongo.password,
     useMongoClient: true,
+}).then(() => {
+    console.info('Using database:', databaseName);
+    const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
+    if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
+        console.warn('Send Grid Key is not set');
+        return;
+    }
+    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
 async function getAllSportsLines() {
