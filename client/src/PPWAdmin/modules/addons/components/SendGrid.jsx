@@ -125,7 +125,7 @@ export default class SendGrid extends React.Component {
                                         </span>
                                     </div>
                                     <div className="alert-text font-weight-bold">
-                                        Successfully Updated.
+                                        Successfully Updated. Please restart ppwserver.
                                     </div>
                                     <div className="alert-close" onClick={() => this.setState({ isSuccess: false })}>
                                         <button
