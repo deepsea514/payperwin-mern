@@ -17,6 +17,11 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
     useMongoClient: true,
 }).then(async () => {
     console.info('Using database:', databaseName);
+
+    const intervalTime = 1000 * 60 * 60;
+    getAllSportsLines();
+    setInterval(getAllSportsLines, intervalTime);
+
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
         console.warn('Send Grid Key is not set');
@@ -40,7 +45,3 @@ async function getAllSportsLines() {
     console.log('finished getting sportsline in ', Date());
     call++;
 }
-
-const intervalTime = 1000 * 60 * 60;
-getAllSportsLines();
-setInterval(getAllSportsLines, intervalTime);

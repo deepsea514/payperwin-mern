@@ -9,6 +9,12 @@ const config = require('../../../config.json');
 const dateformat = require("dateformat");
 
 async function getSportLines(sportName, call) {
+    const rundownAddon = await Addon.findOne({ name: 'rundown' });
+    if (!rundownAddon || !rundownAddon.value || !rundownAddon.value.rundownApiHost) {
+        console.warn("Rundown Api is not set");
+        return;
+    }
+    const { rundownApiHost, rundownXRapidapiKey, rundownXRapidapiHost } = rundownAddon.value;
     const numberOfDateToGet = (call % 12 == 0) ? 15 : 5; // 90
     const sportData = sports.find((sportObj) => sportObj.name.toLowerCase() === sportName.toLowerCase());
     if (sportData) {
@@ -17,8 +23,8 @@ async function getSportLines(sportName, call) {
         const reqConfig = {
             maxRedirects: 999,
             headers: {
-                'x-rapidapi-key': config.rundownXRapidapiKey,
-                "x-rapidapi-host": config.rundownXRapidapiHost,
+                'x-rapidapi-key': rundownXRapidapiKey,
+                "x-rapidapi-host": rundownXRapidapiHost,
                 "useQueryString": true,
                 'Accept': 'application/json',
             },
@@ -27,10 +33,10 @@ async function getSportLines(sportName, call) {
             const TodayDate = (new Date()).getTime();
             let eventSportData = [];
             for (let i = ((call % 12 == 0) ? -1 : 0); i < numberOfDateToGet; i++) {
-                const date =  TodayDate + 24 * 3600 * 1000 * i;
+                const date = TodayDate + 24 * 3600 * 1000 * i;
                 const dateStr = dateformat(new Date(date), "isoDate");
                 console.log(`Getting events for ${name} in ${dateStr}`);
-                const url = `${config.rundownApiHost}/sports/${id}/events/${dateStr}?include=scores&offset=-300`;
+                const url = `${rundownApiHost}/sports/${id}/events/${dateStr}?include=scores&offset=-300`;
                 const { data: eventsData } = await axios.get(url, reqConfig);
                 if (i == 0 || i == -1) {
                     await matchResults(name, eventsData.events);
