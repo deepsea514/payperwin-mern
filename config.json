@@ -2,10 +2,6 @@
     "serverHostUrl": "https://payperwin.co",
     "serverPort": 8080,
     "clientPort": 8000,
-    "sandboxUrl": "https://paapistg.oreo88.com/b2b",
-    "agentCode": "PXW02",
-    "agentKey": "0606d87a-4941-4a05-a6c1-b94cc12dc1b2",
-    "secretKey": "IFcHXjqnGe7o2ruh",
     "corsHosts": [
         "https://payperwin.co",
         "https://www.payperwin.co"
@@ -62,26 +58,6 @@
     "PromotionFor": {
         "new": "New Clients",
         "existing": "Existing Clients"
-    },
-    "PremiumPay": {
-        "paymenturl": "https://secure.premierpay.ca/api/v2/payment",
-        "payouturl": "https://secure.premierpay.ca/api/v2/payout",
-        "sid": 201,
-        "rcode": "69d82724EAfB6653A4e60072bf8136Da"
-    },
-    "TripleA": {
-        "tokenurl": "https://api.triple-a.io/api/v2/oauth/token",
-        "paymenturl": "https://api.triple-a.io/api/v2/payment/account",
-        "payouturl": "https://api.triple-a.io/api/v2/payout/withdraw/local/crypto",
-        "client_id": "oacid-ckosbmtpd0001dkns7fv7am94",
-        "client_secret": "64d9dd14620bf0cfe865f1ab6a9f68d87f35afe03200c1b1bed379a2a3565cb8",
-        "notify_secret": "1234567890payperwin!@#$%^&*()",
-        "btc_api_id": "HA1621238651KeRe",
-        "test_btc_api_id": "HA1621238651Xci6_t",
-        "eth_api_id": "ETH16243429283TH",
-        "usdt_api_id": "USDT1624342928Sx",
-        "merchant_key": "mkey-ckosbmtp10000dkns23mu6y92",
-        "testMode": false
     },
     "EventStatus": {
         "pending": {
