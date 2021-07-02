@@ -1723,7 +1723,14 @@ expressApp.get('/getPinnacleLogin',
     // bruteforce.prevent,
     isAuthenticated,
     async (req, res) => {
-        const { sandboxUrl, agentCode, agentKey, secretKey } = config;
+        const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+        if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
+            console.warn("Pinnacel Sandbox Api is not set");
+            return res.status(400).json({
+                error: "Can't create pinnacle user."
+            });
+        }
+        const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
         let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
         const token = generatePinnacleToken(agentCode, agentKey, secretKey);
         if (!pinnacle) {
@@ -1789,7 +1796,14 @@ expressApp.get('/pinnacleLogout',
     isAuthenticated,
     async (req, res) => {
         try {
-            const { sandboxUrl, agentCode, agentKey, secretKey } = config;
+            const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+            if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
+                console.warn("Pinnacel Sandbox Api is not set");
+                return res.status(400).json({
+                    error: "Can't create pinnacle user."
+                });
+            }
+            const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
             let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
             const token = generatePinnacleToken(agentCode, agentKey, secretKey);
             if (!pinnacle) {
