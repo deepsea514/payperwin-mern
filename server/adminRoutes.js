@@ -20,6 +20,7 @@ const FAQSubject = require("./models/faq_subject");
 const Event = require("./models/event");
 const Message = require("./models/message");
 const MetaTag = require("./models/meta-tag");
+const Addon = require("./models/addon");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -3014,5 +3015,35 @@ adminRouter.put(
         }
     }
 );
+
+adminRouter.get(
+    '/addons/:name',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.params;
+        const addon = await Addon.findOne({ name });
+        res.json(addon);
+    }
+)
+
+adminRouter.put(
+    '/addons/:name',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.params;
+        const data = req.body;
+        const addon = await Addon.findOne({ name });
+        try {
+            if (addon) {
+                await addon.update({ value: data });
+            } else {
+                await Addon.create({ name, value: data });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false, });
+        }
+    }
+)
 
 module.exports = adminRouter;

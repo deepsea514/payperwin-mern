@@ -22,6 +22,7 @@ import GenerateToken from "./GenrateToken";
 import MessageCenterModule from "../modules/message-center/pages";
 import ActiveUsersModule from "../modules/active_users/pages";
 import MetaTagsModule from "../modules/meta-tags/pages";
+import Addons from "../modules/addons/pages/Addons";
 
 export default class App extends Component {
     constructor(props) {
@@ -105,6 +106,9 @@ export default class App extends Component {
 
                     {/* meta tags */}
                     <Route path="/meta-tags" component={MetaTagsModule} />
+
+                    {/* Addons */}
+                    <Route path="/addons" component={Addons} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
