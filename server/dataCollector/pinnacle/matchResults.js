@@ -1,12 +1,16 @@
+//Models
 const BetPool = require('../../models/betpool');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
 const ApiCache = require('../../models/apiCache');
-const axios = require('axios');
+const Addon = require('../../models/addon');
+//Local helpers
 const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
+//external libraries
+const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER Win';
@@ -22,6 +26,12 @@ Date.prototype.addHours = function (h) {
 }
 
 async function matchResults() {
+    const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
+    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.pinnacleApiHost) {
+        console.warn("Pinnacle Api is not set");
+        return;
+    }
+    const { pinnacleApiHost, pinnacleAuthorizationHeader } = pinnacleAddon.value;
     // Check  betpools
     const betpools = await BetPool.find(
         // settle matches that started before 3 hours ago
@@ -52,10 +62,18 @@ async function matchResults() {
         if (homeBets.length > 0 && awayBets.length > 0) {
             // checkmatchresult
             try {
-                const url = `${config.pinnacleApiHost}/v1/fixtures/settled?sportId=${sportId}&leagueIds=${leagueId}`;
+                const url = `${pinnacleApiHost}/v1/fixtures/settled?sportId=${sportId}&leagueIds=${leagueId}`;
                 let result = await ApiCache.findOne({ url });
                 if (!result || (result.updatedAt && new Date() - new Date(result.updatedAt) > 1000 * 60 * 59)) {
                     // TODO: last/since
+                    const reqConfig = {
+                        maxRedirects: 999,
+                        headers: {
+                            'User-Agent': 'PostmanRuntime/7.24.1',
+                            'Authorization': pinnacleAuthorizationHeader,
+                            'Accept': 'application/json',
+                        },
+                    };
                     result = await axios.get(url, reqConfig);
                     // TODO: last/since merge previous
                     if (result) {

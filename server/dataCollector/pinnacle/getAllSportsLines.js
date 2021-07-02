@@ -31,17 +31,22 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
-const reqConfig = {
-    maxRedirects: 999,
-    headers: {
-        'Authorization': config.pinnacleAuthorizationHeader,
-        'Accept': 'application/json',
-    },
-};
-
 async function getAllSportsLines() {
-    const url = `${config.pinnacleApiHost}/v2/sports`; // pinnacle or proxy url for /v2/sports endpoint
+    const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
+    if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.pinnacleApiHost) {
+        console.warn("Pinnacle Api is not set");
+        return;
+    }
+    const { pinnacleApiHost, pinnacleAuthorizationHeader } = pinnacleAddon.value;
+    const url = `${pinnacleApiHost}/v2/sports`; // pinnacle or proxy url for /v2/sports endpoint
     try {
+        const reqConfig = {
+            maxRedirects: 999,
+            headers: {
+                'Authorization': pinnacleAuthorizationHeader,
+                'Accept': 'application/json',
+            },
+        };
         const { data } = await axios.get(url, reqConfig);
         if (data) {
             const soccer = data.sports.find(sport => sport.name.toLowerCase() == 'soccer');
