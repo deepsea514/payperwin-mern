@@ -34,6 +34,7 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
 async function getAllSportsLines() {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
     if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.pinnacleApiHost) {
+        console.log(pinnacleAddon | pinnacleAddon.value)
         console.warn("Pinnacle Api is not set");
         return;
     }
