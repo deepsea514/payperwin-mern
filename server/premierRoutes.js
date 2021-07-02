@@ -22,7 +22,7 @@ const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const data = req.body;
         const notify = await PremierNotification.create(data);
-        const signature = generatePremierNotificationSignature(data.txid, data.status, data.amount_raw, data.descriptor)
+        const signature = await generatePremierNotificationSignature(data.txid, data.status, data.amount_raw, data.descriptor)
         if (signature == data.signature_v2) {
             notify.succeed = true;
             await notify.save();

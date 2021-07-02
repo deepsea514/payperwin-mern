@@ -33,9 +33,7 @@ const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
-const PremiumPay = config.PremiumPay;
 const FinancialStatus = config.FinancialStatus;
-const TripleA = config.TripleA;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
@@ -1855,13 +1853,34 @@ expressApp.get('/vipCodeExist', async (req, res) => {
 const depositTripleA = async (req, res, data) => {
     const { amount, email, method } = data;
     const { user } = req;
+
+    const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
+    if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
+        console.warn("TripleA Api is not set");
+        return false;
+    }
+    const {
+        tokenurl,
+        paymenturl,
+        payouturl,
+        client_id,
+        client_secret,
+        notify_secret,
+        btc_api_id,
+        test_btc_api_id,
+        eth_api_id,
+        usdt_api_id,
+        merchant_key,
+        testMode,
+    } = tripleAAddon.value;
+
     let access_token = null;
     try {
         const params = new URLSearchParams();
-        params.append('client_id', TripleA.client_id);
-        params.append('client_secret', TripleA.client_secret);
+        params.append('client_id', client_id);
+        params.append('client_secret', client_secret);
         params.append('grant_type', 'client_credentials');
-        const { data } = await axios.post(TripleA.tokenurl, params);
+        const { data } = await axios.post(tokenurl, params);
         access_token = data.access_token;
     } catch (error) {
         return res.status(500).json({ success: 0, message: "Can't get Access Token." });
@@ -1871,12 +1890,12 @@ const depositTripleA = async (req, res, data) => {
     }
     const body = {
         "type": "widget",
-        "merchant_key": TripleA.merchant_key,
+        "merchant_key": merchant_key,
         "order_currency": "CAD",
         "order_amount": amount,
         "notify_email": email,
         "notify_url": "https://api.payperwin.co/triplea/deposit",
-        "notify_secret": TripleA.notify_secret,
+        "notify_secret": notify_secret,
         "payer_id": user._id,
         "payer_name": user.username,
         "payer_email": email,
@@ -1886,23 +1905,23 @@ const depositTripleA = async (req, res, data) => {
     };
     let hosted_url = null;
 
-    let api_id = TripleA.btc_api_id;
+    let api_id = btc_api_id;
     switch (method) {
         case 'Ethereum':
-            api_id = TripleA.eth_api_id;
+            api_id = eth_api_id;
             break;
         case 'Tether':
-            api_id = TripleA.usdt_api_id;
+            api_id = usdt_api_id;
             break;
         case 'Bitcoin':
         default:
             break;
     }
-    api_id = TripleA.testMode ? TripleA.test_btc_api_id : api_id;
+    api_id = testMode ? test_btc_api_id : api_id;
 
     try {
         const { data } = await axios.post(
-            `${TripleA.paymenturl}/${api_id}`,
+            `${paymenturl}/${api_id}`,
             body,
             {
                 headers: {
@@ -1930,12 +1949,18 @@ expressApp.post('/deposit',
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
+            const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
+            if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
+                console.warn("PremierPay Api is not set");
+                return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
+            }
+            const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
             try {
                 const { user } = req;
                 try {
                     const uniqid = `D${ID()}`;
-                    const signature = generatePremierRequestSignature(email, amount, user._id, uniqid);
-                    const { data } = await axios.post(`${PremiumPay.paymenturl}/${PremiumPay.sid}`,
+                    const signature = await generatePremierRequestSignature(email, amount, user._id, uniqid);
+                    const { data } = await axios.post(`${paymenturl}/${sid}`,
                         {
                             "payby": "etransfer",
                             "first_name": user.firstname,
@@ -1965,7 +1990,7 @@ expressApp.post('/deposit',
                     );
                     await PremierResponse.create(data);
 
-                    const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                    const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
                     if (responsesignature != data.signature) {
                         return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                     }
@@ -2077,11 +2102,16 @@ expressApp.post(
             }
 
             try {
-                const uniqid = `W${ID()}`;
-
-                // const signature = generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                // const uniqid = `W${ID()}`;
+                // const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
+                // if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
+                //     console.warn("PremierPay Api is not set");
+                //     return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
+                // }
+                // const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
+                // const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
                 // const amount2 = Number(amount).toFixed(2);
-                // const { data } = await axios.post(`${PremiumPay.payouturl}/${PremiumPay.sid}`,
+                // const { data } = await axios.post(`${payouturl}/${sid}`,
                 //     {
                 //         "payby": "etransfer",
                 //         "amount": amount2,
@@ -2104,7 +2134,7 @@ expressApp.post(
                 // );
                 // await PremierResponse.create(data);
 
-                // const responsesignature = generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                // const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
                 // if (responsesignature != data.signature) {
                 //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 // }

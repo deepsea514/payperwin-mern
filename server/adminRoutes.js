@@ -38,7 +38,6 @@ const _ = require("lodash");
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
-const TripleA = config.TripleA;
 const EventStatus = config.EventStatus;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
@@ -1040,13 +1039,33 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
         return false;
     }
 
+    const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
+    if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
+        console.warn("TripleA Api is not set");
+        return false;
+    }
+    const { 
+        tokenurl,
+        paymenturl,
+        payouturl,
+        client_id,
+        client_secret,
+        notify_secret,
+        btc_api_id,
+        test_btc_api_id,
+        eth_api_id,
+        usdt_api_id,
+        merchant_key,
+        testMode,
+     } = tripleAAddon.value;
+
     let access_token = null;
     try {
         const params = new URLSearchParams();
-        params.append('client_id', TripleA.client_id);
-        params.append('client_secret', TripleA.client_secret);
+        params.append('client_id', client_id);
+        params.append('client_secret', client_secret);
         params.append('grant_type', 'client_credentials');
-        const { data } = await axios.post(TripleA.tokenurl, params);
+        const { data } = await axios.post(tokenurl, params);
         access_token = data.access_token;
     } catch (error) {
         res.status(500).json({ success: 0, message: "Can't get Access Token." });
@@ -1069,21 +1088,21 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
         default:
             crypto_currency = "BTC";
     }
-    crypto_currency = TripleA.testMode ? "testBTC" : crypto_currency
+    crypto_currency = testMode ? "testBTC" : crypto_currency
 
     const body = {
-        "merchant_key": TripleA.merchant_key,
+        "merchant_key": merchant_key,
         "email": userdata.email,
         "withdraw_currency": "CAD",
         "withdraw_amount": withdrawamount,
         "crypto_currency": crypto_currency,
         "remarks": "Bitcoin Withdraw |" + withdraw._id,
         "notify_url": "https://api.payperwin.co/triplea/withdraw",
-        "notify_secret": TripleA.notify_secret
+        "notify_secret": notify_secret
     };
     let payout_reference = null;
     try {
-        const { data } = await axios.post(TripleA.payouturl, body, {
+        const { data } = await axios.post(payouturl, body, {
             headers: {
                 'Authorization': `Bearer ${access_token}`
             }

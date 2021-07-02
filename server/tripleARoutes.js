@@ -10,12 +10,12 @@ const sgMail = require('@sendgrid/mail');
 const User = require("./models/user");
 const TripleANotification = require('./models/tripleA-notification');
 const FinancialLog = require('./models/financiallog');
+const Addon = require('./models/addon');
 //local helpers
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER Win';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
-const TripleA = config.TripleA;
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 
@@ -41,7 +41,16 @@ const signatureCheck = async (req, res, next) => {
             }
         }
 
-        let check_signature = crypto.createHmac('sha256', TripleA.notify_secret)
+        const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
+        if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
+            console.warn("TripleA Api is not set");
+            return false;
+        }
+        const {
+            notify_secret,
+        } = tripleAAddon.value;
+
+        let check_signature = crypto.createHmac('sha256', notify_secret)
             .update(`${timestamp}.${req.rawBody}`)
             .digest('hex');
 
