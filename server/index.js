@@ -1688,12 +1688,31 @@ expressApp.get(
 expressApp.get(
     '/sportsdir',
     async (req, res) => {
-        const sportData = await SportsDir.find({});
+        const sportsData = await SportsDir.find({});
         const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventStatus.pending.value }).count();
-        if (sportData) {
+        if (sportsData) {
             let sports = [];
-            for (const sport of sportData) {
-                sports = [...sports, ...sport.sports];
+            for (const sport of sportsData) {
+                for (const sp of sport.sports) {
+                    const sportData = await Sport.findOne({ name: sp.name });
+                    if (sportData) {
+                        let eventCount = 0;
+                        sportData.leagues.map((league) => {
+                            eventCount += league.events.filter(event => (new Date(event.startDate)).getTime() > (new Date()).getTime()).length;
+                        });
+                        sports.push({
+                            eventCount: eventCount,
+                            hasOfferings: true,
+                            name: sp.name
+                        })
+                        continue;
+                    }
+                    sports.push({
+                        eventCount: 0,
+                        hasOfferings: true,
+                        name: sp.name
+                    })
+                }
             }
             sports.push({
                 eventCount: customBets,
