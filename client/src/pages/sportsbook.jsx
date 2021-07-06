@@ -73,7 +73,6 @@ class SportsBook extends PureComponent {
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
                         <div>
-                            <br />
                             <b>Instant/Live Betting</b>
                             <hr />
                             <p>

@@ -721,13 +721,17 @@ a.log-in-btn {
     margin-right: 10px;
 }
 
-.detailed-lines .points, .detailed-lines .old-odds, .detailed-lines .new-odds {
+.detailed-lines .points, .detailed-lines .old-odds, .detailed-lines .new-odds, .detailed-lines .origin-odds {
     display: inline-block;
     font-size: 12px;
 }
 
-.detailed-lines .old-odds, .detailed-lines .new-odds {
+.detailed-lines .old-odds, .detailed-lines .new-odds, .detailed-lines .origin-odds {
     min-width: 38px;
+}
+
+.origin-odds {
+    color: #d35b5b;
 }
 
 .detailed-lines .odds {

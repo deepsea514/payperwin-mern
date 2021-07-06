@@ -51,7 +51,6 @@ class Dashboard extends PureComponent {
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
                         <div>
-                            <br />
                             <b>PEER 2 PEER BETTING</b>
                             <hr />
                             <p>

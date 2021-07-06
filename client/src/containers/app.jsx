@@ -123,7 +123,7 @@ class App extends PureComponent {
         });
     }
 
-    removeBet(lineId, pick, all = false, index) {
+    removeBet(lineId, type, pick, index, all = false) {
         const { betSlip } = this.state;
         if (all) {
             this.setState({
@@ -132,7 +132,8 @@ class App extends PureComponent {
                 })
             });
         } else {
-            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && (typeof index === 'number' ? b.index === index : true));
+            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true));
+            // console.log(indexOfBet);
             if (typeof indexOfBet === 'number') {
                 this.setState({
                     betSlip: update(betSlip, {
