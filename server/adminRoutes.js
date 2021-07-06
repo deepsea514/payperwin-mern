@@ -1044,7 +1044,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
         console.warn("TripleA Api is not set");
         return false;
     }
-    const { 
+    const {
         tokenurl,
         paymenturl,
         payouturl,
@@ -1057,7 +1057,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
         usdt_api_id,
         merchant_key,
         testMode,
-     } = tripleAAddon.value;
+    } = tripleAAddon.value;
 
     let access_token = null;
     try {
@@ -1229,6 +1229,43 @@ adminRouter.get(
                             value: user._id,
                             label: user.username,
                             balance: user.balance,
+                        }
+                    })
+                    res.status(200).json(result);
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/searchsports',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = { deletedAt: null };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ name: { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            Sport.find(searchObj)
+                .sort('createdAt')
+                .select(['name'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    const result = data.map(sport => {
+                        return {
+                            value: sport.name,
+                            label: sport.name,
                         }
                     })
                     res.status(200).json(result);

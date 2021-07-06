@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
-import { searchUsers } from "../../customers/redux/services";
+import { searchUsers, searchSports } from "../../customers/redux/services";
 const config = require("../../../../../../config.json");
 const AutoBetStatus = config.AutoBetStatus;
 const AutoBetPeorid = config.AutoBetPeorid;
@@ -14,16 +14,18 @@ export default class AutoBetModal extends React.Component {
         super(props);
 
         this.state = {
-            initialvalues: {
-                user: '',
+            initialValues: props.initialValues ? props.initialValues : {
+                user: null,
                 budget: 0,
                 maxRisk: 0,
                 peorid: AutoBetPeorid.daily,
                 priority: 0,
+                sports: [],
                 status: AutoBetStatus.active
             },
             autobetSchema: Yup.object().shape({
                 user: Yup.object()
+                    .nullable()
                     .required("User field is required."),
                 budget: Yup.number()
                     .moreThan(0, "Budget should be more than 0")
@@ -35,12 +37,14 @@ export default class AutoBetModal extends React.Component {
                     .required("Peorid field is required."),
                 priority: Yup.number()
                     .required("Pririty field is required."),
+                sports: Yup.array().of(Yup.object())
+                    .min(1, "Please choose at least a sport."),
                 status: Yup.string()
                     .required("Status field is required."),
             }),
             loadingUser: false,
+            loadingSports: false,
         }
-
     }
 
     getOptions = (name, cb) => {
@@ -51,6 +55,17 @@ export default class AutoBetModal extends React.Component {
         }).catch(() => {
             cb([]);
             this.setState({ loadingUser: false });
+        })
+    }
+
+    getSports = (name, cb) => {
+        this.setState({ loadingSports: true });
+        searchSports(name).then(({ data }) => {
+            cb(data);
+            this.setState({ loadingSports: false });
+        }).catch(() => {
+            cb([]);
+            this.setState({ loadingSports: false });
         })
     }
 
@@ -77,15 +92,15 @@ export default class AutoBetModal extends React.Component {
     };
 
     render() {
-        const { show, onHide, onSubmit, title } = this.props;
-        const { initialvalues, autobetSchema, loadingUser } = this.state;
+        const { show, onHide, onSubmit, title, edit } = this.props;
+        const { initialValues, autobetSchema, loadingUser, loadingSports } = this.state;
         return (
             <Modal show={show} onHide={onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 {show && <Formik
-                    initialValues={initialvalues}
+                    initialValues={initialValues}
                     validationSchema={autobetSchema}
                     onSubmit={onSubmit}>
                     {
@@ -94,7 +109,7 @@ export default class AutoBetModal extends React.Component {
                                 <Modal.Body>
                                     <div className="form-group">
                                         <label>User<span className="text-danger">*</span></label>
-                                        <AsyncSelect
+                                        {!edit && <AsyncSelect
                                             className={`basic-single ${this.getInputClasses(
                                                 formik,
                                                 "user"
@@ -116,7 +131,15 @@ export default class AutoBetModal extends React.Component {
                                                 },
 
                                             }}
-                                        />
+                                        />}
+                                        {edit && <input name="user"
+                                                className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "user"
+                                                )}`}
+                                                readOnly
+                                                value={formik.values.user.label}
+                                            />}
                                         {formik.touched.user && formik.errors.user ? (
                                             <div className="invalid-feedback">
                                                 {formik.errors.user}
@@ -190,6 +213,38 @@ export default class AutoBetModal extends React.Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
+                                        <label>Sports<span className="text-danger">*</span></label>
+                                        <AsyncSelect
+                                            className={`basic-single ${this.getInputClasses(
+                                                formik,
+                                                "sports"
+                                            )}`}
+                                            classNamePrefix="select"
+                                            isSearchable={true}
+                                            isMulti
+                                            name="sports"
+                                            loadOptions={this.getSports}
+                                            noOptionsMessage={() => "No Sports"}
+                                            value={formik.values.sports}
+                                            isLoading={loadingSports}
+                                            {...formik.getFieldProps("sports")}
+                                            {...{
+                                                onChange: (sports) => {
+                                                    if (!sports) return;
+                                                    formik.setFieldValue("sports", sports);
+                                                    formik.setFieldTouched("sports", true);
+                                                    formik.setFieldError("sports", false);
+                                                },
+
+                                            }}
+                                        />
+                                        {formik.touched.sports && formik.errors.sports ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.sports}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
                                         <label>Status<span className="text-danger">*</span></label>
                                         <select name="status" placeholder="Choose status"
                                             className={`form-control ${this.getInputClasses(
@@ -210,10 +265,10 @@ export default class AutoBetModal extends React.Component {
                                 <Modal.Footer>
                                     <Button variant="light-primary" onClick={onHide}>
                                         Cancel
-                                        </Button>
+                                    </Button>
                                     <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
                                         Save
-                                        </Button>
+                                    </Button>
                                 </Modal.Footer>
                             </form>
                         }

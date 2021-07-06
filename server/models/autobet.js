@@ -10,6 +10,7 @@ const AutoBetSchema = new Schema(
         budget: Number,
         peorid: String,
         status: String,
+        sports: { type: Array, default: [] },
         deletedAt: Date,
     },
     {

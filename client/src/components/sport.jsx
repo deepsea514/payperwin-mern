@@ -303,7 +303,9 @@ class Sport extends PureComponent {
                                                             eventId,
                                                             lineId,
                                                             type: 'spread',
+                                                            index: 0,
                                                         };
+                                                        if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
                                                         const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type);
                                                         const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
                                                         return (
@@ -325,7 +327,7 @@ class Sport extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
-                                                                            null,
+                                                                            0,
                                                                             origin
                                                                         )}
                                                                 >
@@ -361,7 +363,7 @@ class Sport extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
-                                                                            null,
+                                                                            0,
                                                                             origin
                                                                         )}>
                                                                     <div className="vertical-align">
@@ -393,7 +395,9 @@ class Sport extends PureComponent {
                                                             eventId,
                                                             lineId,
                                                             type: 'total',
+                                                            index: 0
                                                         };
+                                                        if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
                                                         const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type);
                                                         const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
                                                         return (
@@ -415,7 +419,7 @@ class Sport extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `Over ${totals[0].points}`,
-                                                                            null,
+                                                                            0,
                                                                             origin
                                                                         )}
                                                                 >
@@ -451,7 +455,7 @@ class Sport extends PureComponent {
                                                                             lineId,
                                                                             lineQuery,
                                                                             `Under ${totals[0].points}`,
-                                                                            null,
+                                                                            0,
                                                                             origin
                                                                         )
                                                                     }

@@ -923,7 +923,8 @@ expressApp.post(
                                         status: 'Pending',
                                         lineQuery: {
                                             lineId: lineId,
-                                            eventName: lineQuery
+                                            eventName: lineQuery,
+                                            sportName: 'other',
                                         },
                                         lineId: lineId,
                                         origin: origin
@@ -1273,7 +1274,8 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             autobet.status == AutoBetStatus.active &&                   //Check active status
             autobet.userId.balance >= InsufficientFunds + toBet &&      //Check Balance
             autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            (bettedamount < (autobet.budget - toBet))                   //Check Budget
+            (bettedamount < (autobet.budget - toBet)) &&                //Check Budget
+            autobet.sports.find((sport) => sport == lineQuery.sportName)
         );
     });
 
@@ -1285,12 +1287,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
 
     const selectedauto = autobetusers[0];
     pick = pick == 'home' ? "away" : "home";
-
-    // const americanOdds = odds[pick];
-    // const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
-    // const calculateWin = (toBet * 1) * decimalOdds;
-    // const roundToPennies = Number((calculateWin).toFixed(2));
-    // const toWin = roundToPennies;
 
     const { type, altLineId, } = lineQuery;
 

@@ -24,7 +24,7 @@ class AutoBet extends React.Component {
             resMessage: "",
             modalvariant: "success",
             deleteId: null,
-            editStatusId: null,
+            editId: null,
             initialValues: null,
             statusSchema: Yup.object().shape({
                 status: Yup.string()
@@ -40,6 +40,24 @@ class AutoBet extends React.Component {
 
     getDateFormat = (date) => {
         return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
+    }
+
+    setEditId = (bet) => {
+        this.setState({
+            editId: bet._id,
+            initialValues: {
+                user: {
+                    value: bet.userId._id,
+                    label: bet.userId.username
+                },
+                budget: bet.budget,
+                maxRisk: bet.maxRisk,
+                peorid: bet.peorid,
+                priority: bet.priority,
+                sports: bet.sports.map(sport => ({ value: sport, label: sport })),
+                status: bet.status
+            }
+        })
     }
 
     tableBody = () => {
@@ -81,7 +99,7 @@ class AutoBet extends React.Component {
                 <td>{this.getDateFormat(bet.createdAt)}</td>
                 <td>
                     <DropdownButton title="Actions">
-                        <Dropdown.Item onClick={() => this.setState({ editStatusId: bet._id, initialValues: { status: bet.status } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
+                        <Dropdown.Item onClick={() => this.setEditId(bet)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}><i className="fas fa-trash"></i>&nbsp; Delete Autobet</Dropdown.Item>
                     </DropdownButton>
                 </td>
@@ -104,15 +122,10 @@ class AutoBet extends React.Component {
 
     addAutoBetUser = (values, formik) => {
         const { getAutoBetsAction } = this.props;
-        if (!values.user) {
-            formik.setFieldTouched('user', true);
-            formik.setFieldError('user', "You should select user");
-            formik.setSubmitting(false);
-            return;
-        }
         const autobet = {
             ...values,
             userId: values.user.value,
+            sports: values.sports.map(sport => sport.value)
         };
         delete autobet.user;
         createAutoBet(autobet)
@@ -124,6 +137,27 @@ class AutoBet extends React.Component {
             .catch(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
+            })
+    }
+
+    editAutoBetUser = (values, formik) => {
+        const autobet = {
+            ...values,
+            sports: values.sports.map(sport => sport.value)
+        };
+        delete autobet.user;
+        
+        const { editId: editId } = this.state;
+        const { updateAutoBetSuccess } = this.props;
+        updateAutoBet(editId, autobet)
+            .then(({ data }) => {
+                formik.setSubmitting(false);
+                updateAutoBetSuccess(editId, data);
+                this.setState({ modal: true, editId: null, resMessage: "Successfully changed!", modalvariant: "success" });
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, editId: null, resMessage: "Modification Failed!", modalvariant: "danger" });
             })
     }
 
@@ -143,21 +177,6 @@ class AutoBet extends React.Component {
         return "";
     };
 
-    changeStatus = (values, formik) => {
-        const { editStatusId } = this.state;
-        const { updateAutoBetSuccess } = this.props;
-        updateAutoBet(editStatusId, values)
-            .then(({ data }) => {
-                formik.setSubmitting(false);
-                updateAutoBetSuccess(editStatusId, data);
-                this.setState({ modal: true, editStatusId: null, resMessage: "Successfully changed!", modalvariant: "success" });
-            })
-            .catch(() => {
-                formik.setSubmitting(false);
-                this.setState({ modal: true, editStatusId: null, resMessage: "Modification Failed!", modalvariant: "danger" });
-            })
-    }
-
     deleteAutoBet = () => {
         const { deleteId } = this.state;
         const { getAutoBetsAction } = this.props;
@@ -172,8 +191,8 @@ class AutoBet extends React.Component {
     }
 
     render() {
-        const { perPage, addModal, modal, resMessage, modalvariant, editStatusId,
-            initialValues, statusSchema, deleteId } = this.state;
+        const { perPage, addModal, modal, resMessage, modalvariant, editId: editId,
+            initialValues, deleteId } = this.state;
         const { total, currentPage } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -240,49 +259,14 @@ class AutoBet extends React.Component {
                     </Modal.Footer>
                 </Modal>
 
-                {editStatusId && <Modal show={editStatusId != null} onHide={() => this.setState({ editStatusId: null })}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Change Autobet status</Modal.Title>
-                    </Modal.Header>
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={statusSchema}
-                        onSubmit={this.changeStatus}>
-                        {
-                            (formik) => {
-                                return <form onSubmit={formik.handleSubmit}>
-                                    <Modal.Body>
-                                        <div className="form-group">
-                                            <label>Status<span className="text-danger">*</span></label>
-                                            <select name="status" placeholder="Choose Status"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "status"
-                                                )}`}
-                                                {...formik.getFieldProps("status")}
-                                            >
-                                                {this.renderStatus()}
-                                            </select>
-                                            {formik.touched.status && formik.errors.status ? (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.status}
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="light-primary" onClick={() => this.setState({ editStatusId: null })}>
-                                            Cancel
-                                        </Button>
-                                        <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
-                                            Save
-                                        </Button>
-                                    </Modal.Footer>
-                                </form>
-                            }
-                        }
-                    </Formik>
-                </Modal>}
+                {editId && <AutoBetModal
+                    show={editId != null}
+                    onHide={() => this.setState({ editId: null })}
+                    title="Edit AutoBet User"
+                    edit={true}
+                    initialValues={initialValues}
+                    onSubmit={this.editAutoBetUser}
+                />}
 
                 <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
                     <Modal.Header closeButton>
