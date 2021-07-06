@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
@@ -97,18 +97,6 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
                         </span>
                         <span className="menu-text">Bet Activities</span>
-                    </Link>
-                </li>
-
-                <li
-                    className={`menu-item ${getMenuItemActive("/active-users", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/active-users/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Files/User-folder.svg"} />
-                        </span>
-                        <span className="menu-text">Active Users</span>
                     </Link>
                 </li>
 
@@ -231,6 +219,84 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">FAQ</span>
                     </Link>
+                </li>
+
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/reports",
+                        true
+                    )}`}
+                    aria-haspopup="true"
+                    data-menu-toggle="hover"
+                >
+                    <NavLink className="menu-link menu-toggle border-0" to="/reports">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Design/Pencil.svg"} />
+                        </span>
+                        <span className="menu-text">Reports</span>
+                    </NavLink>
+                    <div className="menu-submenu">
+                        <i className="menu-arrow" />
+                        <ul className="menu-subnav">
+                            <li className="menu-item menu-item-parent" aria-haspopup="true">
+                                <span className="menu-link">
+                                    <span className="menu-text">Reports</span>
+                                </span>
+                            </li>
+                            <li
+                                className={`menu-item ${getMenuItemActive(
+                                    "/reports/wager"
+                                )}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/reports/wager">
+                                    <i className="menu-bullet menu-bullet-dot">
+                                        <span />
+                                    </i>
+                                    <span className="menu-text">Wager Activities</span>
+                                </NavLink>
+                            </li>
+                            <li
+                                className={`menu-item ${getMenuItemActive(
+                                    "/reports/users"
+                                )}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/reports/users">
+                                    <i className="menu-bullet menu-bullet-dot">
+                                        <span />
+                                    </i>
+                                    <span className="menu-text">Active Users</span>
+                                </NavLink>
+                            </li>
+                            <li
+                                className={`menu-item ${getMenuItemActive(
+                                    "/reports/deposit"
+                                )}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/reports/deposit">
+                                    <i className="menu-bullet menu-bullet-dot">
+                                        <span />
+                                    </i>
+                                    <span className="menu-text">Deposit</span>
+                                </NavLink>
+                            </li>
+                            <li
+                                className={`menu-item ${getMenuItemActive(
+                                    "/reports/withdraw"
+                                )}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/reports/withdraw">
+                                    <i className="menu-bullet menu-bullet-dot">
+                                        <span />
+                                    </i>
+                                    <span className="menu-text">Withdraw</span>
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
             </ul>

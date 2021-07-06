@@ -23,6 +23,7 @@ import MessageCenterModule from "../modules/message-center/pages";
 import ActiveUsersModule from "../modules/active_users/pages";
 import MetaTagsModule from "../modules/meta-tags/pages";
 import Addons from "../modules/addons/pages/Addons";
+import ReportsModule from "../modules/reports";
 
 export default class App extends Component {
     constructor(props) {
@@ -109,6 +110,9 @@ export default class App extends Component {
 
                     {/* Addons */}
                     <Route path="/addons" component={Addons} />
+
+                    {/* Reports */}
+                    <Route path="/reports" component={ReportsModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
