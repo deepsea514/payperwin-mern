@@ -101,7 +101,7 @@ class Others extends PureComponent {
                                         <div className="col-md-6 com-sm-6 col-12">
                                             <span className={`box-odds box-moneyline line-full ${teamAExist ? 'orange' : null}`}
                                                 onClick={teamAExist ?
-                                                    () => removeBet(event._id, 'home') :
+                                                    () => removeBet(event._id, 'moneyline', 'home') :
                                                     () => addBet(
                                                         name,
                                                         'moneyline',
@@ -130,7 +130,7 @@ class Others extends PureComponent {
                                         <div className="col-md-6 com-sm-6 col-12">
                                             <span className={`box-odds box-moneyline line-full ${teamBExist ? 'orange' : null}`}
                                                 onClick={teamBExist ?
-                                                    () => removeBet(event._id, 'away') :
+                                                    () => removeBet(event._id, 'moneyline', 'away') :
                                                     () => addBet(
                                                         name,
                                                         'moneyline',

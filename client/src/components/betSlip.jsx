@@ -47,7 +47,7 @@ export default class BetSlip extends PureComponent {
             const stateChanges = {};
             if (successCount) {
                 updateUser('balance', balance);
-                removeBet(null, null, true);
+                removeBet(null, null, null, null, true);
                 stateChanges.confirmationOpen = true;
             }
             if (errors) stateChanges.errors = errors;
@@ -109,7 +109,7 @@ export default class BetSlip extends PureComponent {
                                                 bet={bet}
                                                 removeBet={removeBet}
                                                 updateBet={updateBet}
-                                                key={`${bet.lineId}${bet.pick}${bet.type}`}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
                                             />)}
                                         </React.Fragment>
                                     ) :

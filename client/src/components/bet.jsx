@@ -80,14 +80,14 @@ class Bet extends PureComponent {
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat } = this.props;
-        const { name, type, league, odds, pick, home, away, sportName, lineId, pickName } = bet;
+        const { name, type, league, odds, pick, sportName, lineId, pickName, index } = bet;
         return (
             <div className="bet">
                 <div>
                     {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                     {` ${name}`}
-                    <i className="fal fa-times" onClick={() => removeBet(lineId, pick)} />
+                    <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index)} />
                 </div>
                 <div className="bet-type-league">{type} - {league}</div>
                 <span className="bet-pick">{pickName}</span>
