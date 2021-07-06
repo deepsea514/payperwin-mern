@@ -41,8 +41,13 @@ class WithdrawLog extends React.Component {
     }
 
     componentDidMount() {
-        const { getWithdrawLog } = this.props;
-        getWithdrawLog();
+        const { getWithdrawLog, report, filterWithdrawChange } = this.props;
+        if (report) {
+            filterWithdrawChange({ status: FinancialStatus.success });
+        }
+        else {
+            getWithdrawLog();
+        }
     }
 
     tableBody = () => {
@@ -173,7 +178,7 @@ class WithdrawLog extends React.Component {
     render() {
         const { modal, resMessage, modalvariant, deleteId, statusSchema,
             initialValues, editStatusId, perPage, withdrawDownloadData } = this.state;
-        const { total, currentPage, filter } = this.props;
+        const { total, currentPage, filter, report } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
         return (
@@ -196,9 +201,9 @@ class WithdrawLog extends React.Component {
                                     <button className="btn btn-success font-weight-bolder font-size-sm mr-2" onClick={this.downloadCSV}>
                                         <i className="fas fa-download"></i>&nbsp; Download as CSV
                                     </button>
-                                    <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
+                                    {report != true && <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
                                         <i className="fas fa-credit-card"></i>&nbsp; Manual Withdraw
-                                    </Link>
+                                    </Link>}
                                 </div>
                             </div>
                             <div className="card-body">
@@ -233,7 +238,8 @@ class WithdrawLog extends React.Component {
                                             value={filter.status}
                                             onChange={e => {
                                                 this.onFilterChange({ status: e.target.value });
-                                            }} >
+                                            }}
+                                            disabled={report == true}>
                                             <option value="">Choose Status...</option>
                                             {this.renderStatus()}
                                         </select>
