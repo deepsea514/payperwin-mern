@@ -63,3 +63,7 @@ export function getCustomerWithdraws(id, page, perPage) {
 export function getCustomerBets(id, page, perPage, src = 'ppw') {
     return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}&src=${src}`);   
 }
+
+export function searchSports(name) {
+    return axios.get(`${serverUrl}/searchsports?name=${name}`);
+}
