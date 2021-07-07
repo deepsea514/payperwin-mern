@@ -150,7 +150,7 @@ class Lines extends PureComponent {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Unfortinately Payper Win is unable to provide better odds, but feel free to place a wager on our sportsbook. Use your Payper Win wallet balance to place bets.
+                            Unfortunately Payper Win is unable to provide better odds for this particular bet
                             </p>
                             <div className="text-right">
                                 <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>
