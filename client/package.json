@@ -75,6 +75,7 @@
     "react-dom": "^16.8.4",
     "react-favicon": "0.0.14",
     "react-iframe": "^1.8.0",
+    "react-image-file-resizer": "^0.4.7",
     "react-inlinesvg": "^2.2.2",
     "react-intl": "^5.11.0",
     "react-loading": "^2.0.3",

@@ -24,6 +24,7 @@ import ActiveUsersModule from "../modules/active_users/pages";
 import MetaTagsModule from "../modules/meta-tags/pages";
 import Addons from "../modules/addons/pages/Addons";
 import ReportsModule from "../modules/reports";
+import ArticlesModule from "../modules/articles/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -113,6 +114,9 @@ export default class App extends Component {
 
                     {/* Reports */}
                     <Route path="/reports" component={ReportsModule} />
+
+                    {/* Articles */}
+                    <Route path="/articles" component={ArticlesModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 
