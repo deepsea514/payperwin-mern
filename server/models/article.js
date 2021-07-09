@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const ArticleSchema = new Schema({
     logo: { type: String, required: true, default: null },
     title: { type: String, required: true },
+    subtitle: { type: String, required: true },
     content: { type: String, required: true },
     categories: [{ type: String, required: true }],
     permalink: { type: String, required: true, unique: true },

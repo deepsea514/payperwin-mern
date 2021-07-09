@@ -1,37 +1,25 @@
 
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import axios from 'axios';
-import FaqSubject from "../components/faq_subject";
-import FaqHome from "../components/faq_home";
-import FaqArticle from "../components/faq_article";
-import FaqSearch from "../components/faq_search";
-import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
-class Faq extends Component {
+class ArticleArchive extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             loading: false,
             faq_subjects: null,
-            metaData: null
         }
     }
 
     componentDidMount() {
-        const title = 'FAQ';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
-
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/faqs`, { withCredentials: true })
+        axios.get(`${serverUrl}/articles`, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({ loading: false, faq_subjects: data });
             })
@@ -41,17 +29,16 @@ class Faq extends Component {
     }
 
     render() {
-        const { intl } = this.props;
-        const { loading, faq_subjects, metaData } = this.state;
+        const { faq_subjects } = this.state;
 
         return (
             <div className="col-in faq">
-                {metaData && <DocumentMeta {...metaData} />}
                 <section className="help-center">
                     <div className="hc-search">
                         <div className="hc-search-c">
                             <div className="heading">
-                                <h2>How can we help you today?</h2>
+                                <h2>ARTICLES</h2>
+                                <p>Find the article you are looking for</p>
                             </div>
                             <center>
                                 <form className="hc-search-form" autoComplete="off" id="hc-search-form" action="/faq/search">
@@ -77,18 +64,9 @@ class Faq extends Component {
                         ))}
                     </section>
                 </section>
-
-                <section className="main faq-content rounded-3" style={{ display: "block" }}>
-                    <Switch>
-                        <Route path="/faq/subjects/:id" component={FaqSubject} />
-                        <Route path="/faq/article/:id-:content" component={FaqArticle} />
-                        <Route path="/faq/search" component={FaqSearch} />
-                        <Route path="/faq" component={FaqHome} />
-                    </Switch>
-                </section>
             </div>
         );
     }
 }
 
-export default injectIntl(Faq);
+export default injectIntl(ArticleArchive);

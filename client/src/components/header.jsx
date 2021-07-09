@@ -211,6 +211,13 @@ class Header extends PureComponent {
                                                 </Link>
                                             </center>
                                         </li>
+                                        <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/articles' }} className="nav-link">
+                                                    <i className="fas fa-newspaper"></i>ARTICLES
+                                                </Link>
+                                            </center>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
@@ -233,6 +240,11 @@ class Header extends PureComponent {
                                         <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/faq' }} className="nav-link">
                                                 <i className="fas fa-question"></i>FAQ
+                                            </Link>
+                                        </li>
+                                        <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
+                                            <Link to={{ pathname: '/articles' }} className="nav-link">
+                                                <i className="fas fa-newspaper"></i>ARTICLES
                                             </Link>
                                         </li>
                                     </ul>
