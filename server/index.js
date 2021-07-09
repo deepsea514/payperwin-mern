@@ -23,6 +23,8 @@ const EventBetPool = require("./models/eventbetpool");
 const Message = require("./models/message");
 const MetaTag = require("./models/meta-tag");
 const Addon = require("./models/addon");
+const Article = require("./models/article");
+const ArticleCategory = require("./models/article_category");
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -2620,6 +2622,18 @@ expressApp.get(
         res.json(meta_tag);
     }
 );
+
+expressApp.get(
+    '/articles/home',
+    async (req, res) => {
+        try {
+            const articles = await Article.find({ published_at: { $ne: null } }).sort({ published_at: -1 }).limit(6);
+            res.json(articles);
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
 
 // Admin
 expressApp.use('/admin', adminRouter);

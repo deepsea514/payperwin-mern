@@ -50,6 +50,7 @@ import ContactUs from "../pages/contactUs";
 import GoToTop from "../components/gotoTop";
 import TfaModal from "../components/tfamodal";
 import Others from "../components/others";
+import Articles from "../pages/articles";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -219,6 +220,7 @@ class App extends PureComponent {
                             <Route path="/signup" render={(props) =>
                                 <Registration getUser={getUser} {...props} />} />
                             <Route path="/faq" component={Faq} />
+                            <Route path="/articles" component={Articles} />
                             <Route path="/">
                                 {() => {
                                     return <div className="row">

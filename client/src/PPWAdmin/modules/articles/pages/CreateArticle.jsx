@@ -16,6 +16,7 @@ class CreateArticle extends React.Component {
             initialValues: {
                 logo: '',
                 title: '',
+                subtitle: '',
                 categories: [],
                 content: '',
                 permalink: '',
@@ -30,6 +31,9 @@ class CreateArticle extends React.Component {
                     .min(3, "Minimum 3 symbols")
                     .max(50, "Maximum 50 symbols")
                     .required("Title is required."),
+                subtitle: Yup.string()
+                    .min(3, "Minimum 3 symbols")
+                    .required("Sub Title is required."),
                 categories: Yup.array().of(Yup.object())
                     .min(1, "Article should have at least a category"),
                 permalink: Yup.string()
@@ -293,6 +297,23 @@ class CreateArticle extends React.Component {
                                                 {formik.touched.permalink && formik.errors.permalink ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.permalink}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                        <div className="form-row form-group">
+                                            <div className="col">
+                                                <label>Sub Title<span className="text-danger">*</span></label>
+                                                <textarea type="text" name="subtitle" className={`form-control ${this.getInputClasses(
+                                                    formik,
+                                                    "subtitle"
+                                                )}`}
+                                                    rows={5}
+                                                    {...formik.getFieldProps("subtitle")}
+                                                    placeholder="Sub Title" />
+                                                {formik.touched.subtitle && formik.errors.subtitle ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.subtitle}
                                                     </div>
                                                 ) : null}
                                             </div>
