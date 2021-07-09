@@ -17,6 +17,7 @@ import * as messages from "../modules/message-center/redux/reducers";
 import * as events from "../modules/events/redux/reducers";
 import * as active_users from "../modules/active_users/redux/reducers";
 import * as meta_tags from "../modules/meta-tags/redux/reducers";
+import * as articles from "../modules/articles/redux/reducers";
 
 import * as frontend from "../../redux/reducer";
 
@@ -37,6 +38,7 @@ export const rootReducer = combineReducers({
     messages: messages.reducer,
     active_users: active_users.reducer,
     meta_tags: meta_tags.reducer,
+    articles: articles.reducer,
 
     frontend: frontend.reducer,
 });
@@ -59,6 +61,7 @@ export function* rootSaga() {
         messages.saga(),
         active_users.saga(),
         meta_tags.saga(),
+        articles.saga(),
 
         frontend.saga(),
     ]);

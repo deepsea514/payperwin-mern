@@ -21,6 +21,8 @@ const Event = require("./models/event");
 const Message = require("./models/message");
 const MetaTag = require("./models/meta-tag");
 const Addon = require("./models/addon");
+const Article = require("./models/article");
+const ArticleCategory = require("./models/article_category");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -3099,6 +3101,146 @@ adminRouter.put(
         } catch (error) {
             res.status(500).json({ success: false, });
         }
+    }
+)
+
+adminRouter.post(
+    '/articles',
+    authenticateJWT,
+    async (req, res) => {
+        const data = req.body;
+        let articleObj = {
+            ...data,
+            published_at: data.publish ? new Date() : null
+        };
+        delete articleObj.publish;
+        try {
+            await Article.create(articleObj);
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/drafts',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { perPage, page } = req.query;
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+            const total = await Article.find({ published_at: null }).count();
+            const articles = await Article.find({ published_at: null }).sort({ createdAt: 1 });
+            res.json({ total, perPage, page: page + 1, data: articles });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/drafts/:id',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const article = await Article.findById(id);
+            res.json(article);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.put(
+    '/articles/:id',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            let articleObj = {
+                ...data,
+                published_at: data.publish ? new Date() : null
+            };
+            delete articleObj.publish;
+            await Article.findByIdAndUpdate(id, articleObj);
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/:id',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await Article.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/categories',
+    authenticateJWT,
+    async (req, res) => {
+        const categories = await ArticleCategory.find().sort({ createdAt: -1 });
+        res.json(categories);
+    }
+)
+
+adminRouter.post(
+    '/articles/categories',
+    authenticateJWT,
+    async (req, res) => {
+        const data = req.body;
+        try {
+            await ArticleCategory.create(data);
+            res.json({ success: true });
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/categories/:id',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await ArticleCategory.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/searchcategories',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        const categories = await ArticleCategory.find({ title: { "$regex": name, "$options": "i" } });
+        res.json(categories.map(category => ({ label: category.title, value: category.title })));
     }
 )
 

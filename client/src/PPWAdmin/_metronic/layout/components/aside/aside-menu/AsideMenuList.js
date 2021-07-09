@@ -222,6 +222,18 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                 </li>
 
                 <li
+                    className={`menu-item ${getMenuItemActive("/articles", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/articles/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Code/Option.svg"} />
+                        </span>
+                        <span className="menu-text">Articles</span>
+                    </Link>
+                </li>
+
+                <li
                     className={`menu-item menu-item-submenu ${getMenuItemActive(
                         "/reports",
                         true
