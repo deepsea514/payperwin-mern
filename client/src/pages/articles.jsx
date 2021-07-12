@@ -3,13 +3,11 @@ import React, { Component } from 'react';
 import { setMeta } from '../libs/documentTitleBuilder';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
-import axios from 'axios';
 import DocumentMeta from 'react-document-meta';
 import ArticleHome from '../components/articlehome';
-import ArticleArchive from '../components/articlearchive';
-
-const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+import Article from "../components/article";
+import ArticleCategories from '../components/articlecategories';
+import ArticleCategory from "../components/articlecategory";
 
 class Articles extends Component {
     constructor(props) {
@@ -29,15 +27,15 @@ class Articles extends Component {
 
     render() {
         const { intl } = this.props;
-        const { loading, faq_subjects, metaData } = this.state;
+        const { metaData } = this.state;
 
         return (
             <div>
                 {metaData && <DocumentMeta {...metaData} />}
                 <Switch>
-                    <Route path="/articles/category/:categoryname" component={ArticleHome} />
-                    <Route path="/articles/category" component={ArticleHome} />
-                    <Route path="/articles/archive" component={ArticleArchive} />
+                    <Route path="/articles/category/:categoryname" component={ArticleCategory} />
+                    <Route path="/articles/category" render={ArticleCategories} />
+                    <Route path="/articles/:permalink/:id" component={Article} />
                     <Route path="/articles" component={ArticleHome} />
                 </Switch>
             </div>
