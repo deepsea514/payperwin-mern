@@ -45,7 +45,7 @@ class Articles extends React.Component {
             return (
                 <tr>
                     <td colSpan="11" align="center">
-                        <h3>No Drafts</h3>
+                        <h3>No Articles</h3>
                     </td>
                 </tr>
             );
@@ -57,6 +57,7 @@ class Articles extends React.Component {
                 <td><img src={article.logo} width="60" height="30" /></td>
                 <td>{article.title}</td>
                 <td>{this.getDateFormat(article.createdAt)}</td>
+                <td>{article.published_at ? this.getDateFormat(article.published_at) : null}</td>
                 <td>
                     <DropdownButton title="Actions">
                         <Dropdown.Item as={Link} to={`/edit/${article._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
@@ -91,7 +92,7 @@ class Articles extends React.Component {
 
     render() {
         const { perPage, modal, resMessage, modalvariant, deleteId } = this.state;
-        const { total, currentPage } = this.props;
+        const { total, currentPage, filter, filterArticleChangeAction } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
         return (
@@ -113,6 +114,25 @@ class Articles extends React.Component {
                         </div>
                         <div className="card-body">
                             <div className="">
+                                <div className="form-group row">
+                                    <div className="col-lg-3 col-md-4">
+                                        <select
+                                            value={filter.status}
+                                            className="form-control"
+                                            name="status"
+                                            onChange={(e) => {
+                                                filterArticleChangeAction({ status: e.target.value });
+                                            }}
+                                        >
+                                            <option value='all'>All</option>
+                                            <option value='draft'>Draft</option>
+                                            <option value='published'>Published</option>
+                                        </select>
+                                        <small className="form-text text-muted">
+                                            <b>Search</b> by Status
+                                        </small>
+                                    </div>
+                                </div>
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -120,6 +140,7 @@ class Articles extends React.Component {
                                             <th scope="col"></th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Created At</th>
+                                            <th scope="col">Published At</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
@@ -175,6 +196,7 @@ const mapStateToProps = (state) => ({
     loading_drafts: state.articles.loading_drafts,
     total: state.articles.total_drafts,
     currentPage: state.articles.currentPage_drafts,
+    filter: state.articles.filter,
 })
 
 
