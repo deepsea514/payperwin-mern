@@ -3125,18 +3125,34 @@ adminRouter.post(
 )
 
 adminRouter.get(
-    '/articles/drafts',
+    '/articles',
     authenticateJWT,
     async (req, res) => {
         try {
-            let { perPage, page } = req.query;
+            let { perPage, page, status } = req.query;
+
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page = parseInt(page);
             page--;
-            const total = await Article.find({ published_at: null }).count();
-            const articles = await Article.find({ published_at: null }).sort({ createdAt: 1 });
+
+            if (!status) status = 'all';
+
+            let searchObj = {};
+            switch (status) {
+                case 'draft':
+                    searchObj = { published_at: null };
+                    break;
+                case 'published':
+                    searchObj = { published_at: { $ne: null } };
+                    break;
+                case 'all':
+                default:
+            }
+
+            const total = await Article.find(searchObj).count();
+            const articles = await Article.find(searchObj).sort({ createdAt: 1 });
             res.json({ total, perPage, page: page + 1, data: articles });
         } catch (error) {
             console.log(error)
@@ -3146,7 +3162,7 @@ adminRouter.get(
 )
 
 adminRouter.get(
-    '/articles/drafts/:id',
+    '/articles/:id',
     authenticateJWT,
     async (req, res) => {
         try {

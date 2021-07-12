@@ -6,12 +6,16 @@ export function createArticle(value) {
     return axios.post(`${serverUrl}/articles`, value, { withCredentials: true });
 }
 
-export function getArticleDrafts(page) {
-    return axios.get(`${serverUrl}/articles/drafts?page=${page}`);
+export function getArticleDrafts(page, filter) {
+    let url = `${serverUrl}/articles?page=${page}`;
+    if (filter.status) {
+        url += `&status=${filter.status}`;
+    }
+    return axios.get(url);
 }
 
 export function getArticleDraft(id) {
-    return axios.get(`${serverUrl}/articles/drafts/${id}`);
+    return axios.get(`${serverUrl}/articles/${id}`);
 }
 
 export function deleteArticle(id) {
