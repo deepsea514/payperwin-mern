@@ -2627,7 +2627,103 @@ expressApp.get(
     '/articles/home',
     async (req, res) => {
         try {
-            const articles = await Article.find({ published_at: { $ne: null } }).sort({ published_at: -1 }).limit(6);
+            const articles = await Article.find({ published_at: { $ne: null } })
+                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
+                .sort({ published_at: -1 })
+                .limit(6);
+            res.json(articles);
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/article-category',
+    async (req, res) => {
+        try {
+            const categories = await ArticleCategory.find({});
+            res.json(categories);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/article/:id',
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const article = await Article.findOne({ _id: id, published_at: { $ne: null } })
+            res.json(article);
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/articles/categories/:categoryname',
+    async (req, res) => {
+        const { categoryname } = req.params;
+        try {
+            const articles = await Article.find({ published_at: { $ne: null }, categories: categoryname })
+                .sort({ published_at: -1 })
+            res.json(articles);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/articles/related/:id',
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const article = await Article.findById(id);
+            if (article) {
+                const articles = await Article.find({ _id: { $ne: article._id }, published_at: { $ne: null }, categories: article.categories })
+                    .select(['categories', 'permalink', 'title', 'published_at'])
+                    .sort({ published_at: -1 })
+                    .limit(10);
+                res.json(articles);
+            }
+            else {
+                res.status(404).json({ success: false });
+            }
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/articles/recent',
+    async (req, res) => {
+        try {
+            const articles = await Article.find({ published_at: { $ne: null } })
+                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
+                .sort({ published_at: -1 })
+                .limit(10);
+            res.json(articles);
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.get(
+    '/articles/popular',
+    async (req, res) => {
+        try {
+            const articles = await Article.find({ published_at: { $ne: null } })
+                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
+                .sort({ createdAt: 1 })
+                .limit(10);
             res.json(articles);
         } catch (error) {
             res.status(500).json({ success: false });
