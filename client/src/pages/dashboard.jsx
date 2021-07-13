@@ -13,18 +13,24 @@ class Dashboard extends PureComponent {
             showModal: false,
             metaData: null
         };
+        this._isMounted = false;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidMount() {
+        this._isMounted = true;
         const title = 'Peer to Peer Betting';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
+        this._isMounted && setMeta(title, (metaData) => {
+            this._isMounted && this.setState({ metaData: metaData });
         })
 
         const preference = JSON.parse(localStorage.getItem('frontend-preference'));
         if (!preference || !preference.p2pModal) {
             setTimeout(() => {
-                this.setState({ showModal: true });
+                this._isMounted && this.setState({ showModal: true });
             }, 1500);
         }
     }

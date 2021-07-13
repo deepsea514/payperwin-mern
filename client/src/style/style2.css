@@ -3203,3 +3203,55 @@ input.special {
 .category-intro-container p a {
     color: #ED254E;
 }
+
+.maintenance-container {
+    text-align: center;
+    padding: 80px;
+}
+
+.maintenance-article {
+    display: block;
+    text-align: left;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.maintenance-article h1 {
+    font-size: 50px !important;
+}
+
+.maintenance-article p {
+    font: 20px Helvetica, sans-serif !important;
+    color: #333 !important;
+}
+
+.maintenance-article img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 700px) {
+    .maintenance-container {
+        text-align: center;
+        padding: 20px;
+    }
+    .maintenance-article {
+        display: block;
+        text-align: left;
+        width: 90%;
+        margin: auto auto;
+    }
+    .maintenance-article h1 {
+        font-size: 30px !important;
+    }
+    .maintenance-article p {
+        font: 18px Helvetica, sans-serif !important;
+        color: #333 !important;
+    }
+    .maintenance-article img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+}

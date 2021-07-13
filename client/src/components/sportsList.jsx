@@ -6,6 +6,8 @@ import sportNameImage from "../helpers/sportNameImage";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 import '../style/all.min.css';
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -19,10 +21,12 @@ class SportsList extends PureComponent {
             error: null,
             leaguesData: null,
         };
+        this._isMounted = false;
     }
 
     componentDidMount() {
-        this.getSports();
+        this._isMounted = true;
+        this._isMounted && this.getSports();
     }
 
     getSports() {
@@ -33,13 +37,19 @@ class SportsList extends PureComponent {
             headers: {
                 'Content-Type': 'application/json',
             },
+            cancelToken: source.token
         }).then(({ data }) => {
             if (data) {
-                this.setState({ sports: data })
+                this._isMounted && this.setState({ sports: data })
             }
         }).catch((err) => {
-            this.setState({ error: err });
+            this._isMounted && this.setState({ error: err });
         });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        source.cancel('Operation canceled by the user.');
     }
 
     getLeagues = (evt, name) => {
@@ -126,7 +136,7 @@ class SportsList extends PureComponent {
                                                     <Link
                                                         to={{ pathname: `/sport/${name}` }}
                                                     >
-                                                        <span style={sportNameSpanStyle}>{this.ellipsisTitle('All Leagues')}</span>                                                        
+                                                        <span style={sportNameSpanStyle}>{this.ellipsisTitle('All Leagues')}</span>
                                                     </Link>
                                                 </li>
                                             </ul>}
