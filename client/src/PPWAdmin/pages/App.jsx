@@ -26,6 +26,7 @@ import Addons from "../modules/addons/pages/Addons";
 import ReportsModule from "../modules/reports";
 import ArticlesModule from "../modules/articles/pages";
 import FrontendManageModule from "../modules/frontend/pages";
+import ChangePassword from './ChangePassword';
 
 export default class App extends Component {
     constructor(props) {
@@ -58,6 +59,9 @@ export default class App extends Component {
             <Layout history={history}>
                 <Switch>
                     {/* <BrowserRouter basename="PPWAdmin"> */}
+
+                    {/* change password */}
+                    <Route path="/change-password" component={ChangePassword} />
 
                     {/* token */}
                     <Route path="/token" component={GenerateToken} />

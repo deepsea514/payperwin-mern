@@ -84,7 +84,7 @@ export function UserProfileDropdown({ history }) {
                         <Link to="/token" className="navi-item px-8 cursor-pointer">
                             <div className="navi-link">
                                 <div className="navi-icon mr-2">
-                                    <i className="flaticon2-calendar-3 text-success" />
+                                    <i className="icon-2x flaticon2-calendar-3 text-success" />
                                 </div>
                                 <div className="navi-text">
                                     <div className="font-weight-bold cursor-pointer">
@@ -92,6 +92,23 @@ export function UserProfileDropdown({ history }) {
                                     </div>
                                     <div className="text-muted">
                                         Get Google Authenticator token
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="navi navi-spacer-x-0 pt-5">
+                        <Link to="/change-password" className="navi-item px-8 cursor-pointer">
+                            <div className="navi-link">
+                                <div className="navi-icon mr-2">
+                                    <i className="icon-2x flaticon-lock text-success" />
+                                </div>
+                                <div className="navi-text">
+                                    <div className="font-weight-bold cursor-pointer">
+                                        Change Password
+                                    </div>
+                                    <div className="text-muted">
+                                        Change admin password
                                     </div>
                                 </div>
                             </div>
