@@ -1,8 +1,12 @@
 import React from "react";
+import { setTitle } from '../libs/documentTitleBuilder';
+import Favicon from 'react-favicon';
 
 export default function Maintenance() {
+    setTitle({pageTitle: 'We are in maintenance mode.'});
     return (
         <div className="maintenance-container">
+            <Favicon url={'/images/favicon-2.ico'} />
             <article className="maintenance-article">
                 <center><img src="/media/logos/payperwin-web-dark.png"/></center>
                 <h1 className="pt-5">We&rsquo;ll be back soon!</h1>
