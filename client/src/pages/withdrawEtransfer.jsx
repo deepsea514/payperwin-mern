@@ -79,7 +79,7 @@ class WithdrawETransfer extends PureComponent {
     render() {
         const { classes, user } = this.props;
         const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
-        const initialvalues = {
+        const initialValues = {
             amount: 0,
             method: 'eTransfer'
         };
@@ -102,7 +102,7 @@ class WithdrawETransfer extends PureComponent {
                             <p className="dpsit mt-0">An email will be sent to : {user ? user.email : ''} with instructions on how to claim your funds.</p>
                             {withdrawError && <p className="text-danger">{errMsg}</p>}
                             {user && <Formik
-                                initialValues={initialvalues}
+                                initialValues={initialValues}
                                 validationSchema={withdrawSchema}
                                 onSubmit={this.onSubmit}>
                                 {

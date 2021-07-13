@@ -134,7 +134,7 @@ class Verification extends PureComponent {
     render() {
         const { user, classes } = this.props;
         const { address, identification, addressInfo, verifyFormSchema, submitSuccess, submitError, metaData } = this.state;
-        const initialvalues = {
+        const initialValues = {
             address: (addressInfo ? addressInfo.address : ''),
             address2: (addressInfo ? addressInfo.address2 : ''),
             city: (addressInfo ? addressInfo.city : ''),
@@ -155,7 +155,7 @@ class Verification extends PureComponent {
                     <div className="bg-color-box pad10">
                         <h4>ADDRESS INFORMATION</h4>
                         {!submitSuccess && <Formik
-                            initialValues={initialvalues}
+                            initialValues={initialValues}
                             validationSchema={verifyFormSchema}
                             onSubmit={this.onSubmit}>
                             {

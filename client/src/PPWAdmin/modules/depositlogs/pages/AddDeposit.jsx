@@ -21,7 +21,7 @@ class AddDeposit extends React.Component {
             isSuccess: false,
             loadingUser: false,
             reasons: [],
-            initialvalues: {
+            initialValues: {
                 user: null,
                 amount: 0,
                 reason: '',
@@ -111,13 +111,13 @@ class AddDeposit extends React.Component {
     }
 
     render() {
-        const { initialvalues, depositSchema, isError, isSuccess, loadingUser } = this.state;
+        const { initialValues, depositSchema, isError, isSuccess, loadingUser } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
                     <Formik
                         validationSchema={depositSchema}
-                        initialValues={initialvalues}
+                        initialValues={initialValues}
                         onSubmit={this.onSubmit}
                     >
                         {(formik) => {

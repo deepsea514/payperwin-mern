@@ -84,7 +84,7 @@ class DepositETransfer extends PureComponent {
     render() {
         const { classes, user } = this.props;
         const { depositSchema, depositError, depositSuccess, metaData } = this.state;
-        const initialvalues = {
+        const initialValues = {
             amount: 0,
             email: (user ? user.email : ''),
             phone: (user ? user.phone : ''),
@@ -100,7 +100,7 @@ class DepositETransfer extends PureComponent {
                             <p className="dpsit">Please confirm the information below is correct.</p>
                             {depositError && <p className="text-danger">Can't make deposit. Please try again later</p>}
                             {user && <Formik
-                                initialValues={initialvalues}
+                                initialValues={initialValues}
                                 validationSchema={depositSchema}
                                 onSubmit={this.onSubmit}>
                                 {

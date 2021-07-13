@@ -80,7 +80,7 @@ class WithdrawTripleA extends PureComponent {
     render() {
         const { classes, user, method } = this.props;
         const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
-        const initialvalues = {
+        const initialValues = {
             amount: 0,
             // wallet: '',
             method: method
@@ -103,7 +103,7 @@ class WithdrawTripleA extends PureComponent {
                         {!withdrawSuccess && <div className={classes.formContent}>
                             {withdrawError && <p className="text-danger">{errMsg}</p>}
                             {user && <Formik
-                                initialValues={initialvalues}
+                                initialValues={initialValues}
                                 validationSchema={withdrawSchema}
                                 onSubmit={this.onSubmit}>
                                 {
