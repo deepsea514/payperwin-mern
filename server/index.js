@@ -25,6 +25,7 @@ const MetaTag = require("./models/meta-tag");
 const Addon = require("./models/addon");
 const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
+const Frontend = require('./models/frontend');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -2728,6 +2729,15 @@ expressApp.get(
         } catch (error) {
             res.status(500).json({ success: false });
         }
+    }
+)
+
+expressApp.get(
+    '/frontend/:name',
+    async (req, res) => {
+        const { name } = req.params;
+        const frontend = await Frontend.findOne({ name: name });
+        res.json(frontend);
     }
 )
 

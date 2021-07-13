@@ -25,6 +25,7 @@ import MetaTagsModule from "../modules/meta-tags/pages";
 import Addons from "../modules/addons/pages/Addons";
 import ReportsModule from "../modules/reports";
 import ArticlesModule from "../modules/articles/pages";
+import FrontendManageModule from "../modules/frontend/pages";
 
 export default class App extends Component {
     constructor(props) {
@@ -117,6 +118,9 @@ export default class App extends Component {
 
                     {/* Articles */}
                     <Route path="/articles" component={ArticlesModule} />
+
+                    {/* Frontend */}
+                    <Route path="/frontend" component={FrontendManageModule} />
 
                     <Redirect exact from="/" to="/dashboard" />
 

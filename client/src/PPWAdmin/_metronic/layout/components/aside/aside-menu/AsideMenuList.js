@@ -162,6 +162,18 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                 </li>
 
                 <li
+                    className={`menu-item ${getMenuItemActive("/frontend", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/frontend/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Devices/Display3.svg"} />
+                        </span>
+                        <span className="menu-text">Frontend Management</span>
+                    </Link>
+                </li>
+
+                <li
                     className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
                     aria-haspopup="true"
                 >
