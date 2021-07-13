@@ -12,7 +12,7 @@ class GenerateToken extends React.Component {
         this.state = {
             qrcode: null,
             errMsg: null,
-            initialvalues: {
+            initialValues: {
                 password: '',
             },
             schema: Yup.object().shape({
@@ -50,7 +50,7 @@ class GenerateToken extends React.Component {
     }
 
     render() {
-        const { initialvalues, schema, qrcode, errMsg } = this.state;
+        const { initialValues, schema, qrcode, errMsg } = this.state;
         return (
             <div className="card">
                 <div className="card-header">
@@ -63,7 +63,7 @@ class GenerateToken extends React.Component {
                         <div className="col-md-6">
                             <Formik
                                 validationSchema={schema}
-                                initialValues={initialvalues}
+                                initialValues={initialValues}
                                 onSubmit={this.onSubmit}
                             >
                                 {(formik) => {
