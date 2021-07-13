@@ -20,7 +20,7 @@ class AddWithdraw extends React.Component {
             isError: false,
             isSuccess: false,
             loadingUser: false,
-            initialvalues: {
+            initialValues: {
                 user: null,
                 amount: 0,
                 method: "",
@@ -106,13 +106,13 @@ class AddWithdraw extends React.Component {
     }
 
     render() {
-        const { initialvalues, withdrawSchema, isError, isSuccess, loadingUser } = this.state;
+        const { initialValues, withdrawSchema, isError, isSuccess, loadingUser } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
                     <Formik
                         validationSchema={withdrawSchema}
-                        initialValues={initialvalues}
+                        initialValues={initialValues}
                         onSubmit={this.onSubmit}
                     >
                         {(formik) => {

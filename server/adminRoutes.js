@@ -2859,38 +2859,38 @@ adminRouter.post(
                         users.push(user);
                     })
                 }
-                if (is_last_online_before) {
-                    // const online_before_login_log = await LoginLog
-                    //     .aggregate([
-                    //         {
-                    //             $group: {
-                    //                 "_id": "$user",
-                    //                 createdAt: {
-                    //                     $max: '$createdAt',
-                    //                 }
-                    //             }
-                    //         },
-                    //         {
-                    //             $match: {
-                    //                 createdAt: {
-                    //                     $lte: new Date(last_online_before)
-                    //                 }
-                    //             }
-                    //         },
-                    //         {
-                    //             $lookup: {
-                    //                 from: "User",
-                    //                 localField: "user",
-                    //                 foreignField: "_id",
-                    //                 as: "user"
-                    //             }
-                    //         }
-                    //     ])
-                    // .find({ createdAt: { $lte: new Date(last_online_before) } })
-                    // .populate('user');
-                    // console.log(JSON.parse(JSON.stringify(online_before_login_log)));
+                // if (is_last_online_before) {
+                //     const online_before_login_log = await LoginLog
+                //         .aggregate([
+                //             {
+                //                 $group: {
+                //                     "_id": "$user",
+                //                     createdAt: {
+                //                         $max: '$createdAt',
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $match: {
+                //                     createdAt: {
+                //                         $lte: new Date(last_online_before)
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $lookup: {
+                //                     from: "User",
+                //                     localField: "user",
+                //                     foreignField: "_id",
+                //                     as: "user"
+                //                 }
+                //             }
+                //         ])
+                //     .find({ createdAt: { $lte: new Date(last_online_before) } })
+                //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
-                }
+                // }
 
                 if (type == 'internal') {
                     await Message.create({
@@ -2917,6 +2917,155 @@ adminRouter.post(
         } else {
             try {
                 await Message.create(req.body);
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        }
+    }
+)
+
+adminRouter.get(
+    '/messages',
+    authenticateJWT,
+    async (req, res) => {
+        let { perPage, page } = req.query;
+
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        const total = await Message.find({ published_at: null }).count();
+        const messages = await Message.find({ published_at: null })
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage);
+
+        res.json({ total, perPage, page: page + 1, data: messages });
+    }
+)
+
+adminRouter.get(
+    '/messages/:id',
+    authenticateJWT,
+    async (req, res) => {
+        let { id } = req.params;
+
+        const message = await Message.findOne({ _id: id, published_at: null })
+        res.json(message);
+    }
+)
+
+adminRouter.delete(
+    '/messages/:id',
+    authenticateJWT,
+    async (req, res) => {
+        let { id } = req.params;
+
+        await Message.deleteMany({ _id: id, published_at: null })
+        res.json({ success: true });
+    }
+)
+
+adminRouter.put(
+    '/messages/:id',
+    authenticateJWT,
+    async (req, res) => {
+        let { id } = req.params;
+        const data = req.body;
+
+        const message = await Message.findOne({ _id: id, published_at: null })
+        if (!message) {
+            return res, status(404).json({ success: false });
+        }
+        const { type, publish, title, content } = req.body;
+        if (publish) {
+            const { is_greater_balance, greater_balance,
+                is_last_online_before, last_online_before,
+                is_last_online_after, last_online_after,
+                is_wager_more, wager_more,
+                is_user_from, user_from, } = req.body;
+            let users = [];
+            try {
+                if (is_greater_balance) {
+                    const users_balance = await User.find({ balance: { $gte: greater_balance } });
+                    users = [...users_balance];
+                }
+                if (is_wager_more) {
+                    const users_wager = await User.find();
+                    users_wager.forEach(user => {
+                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                if (is_user_from) {
+                    const users_from = await User.find({ country: user_from });
+                    users_from.forEach(user => {
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                // if (is_last_online_before) {
+                //     const online_before_login_log = await LoginLog
+                //         .aggregate([
+                //             {
+                //                 $group: {
+                //                     "_id": "$user",
+                //                     createdAt: {
+                //                         $max: '$createdAt',
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $match: {
+                //                     createdAt: {
+                //                         $lte: new Date(last_online_before)
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $lookup: {
+                //                     from: "User",
+                //                     localField: "user",
+                //                     foreignField: "_id",
+                //                     as: "user"
+                //                 }
+                //             }
+                //         ])
+                //     .find({ createdAt: { $lte: new Date(last_online_before) } })
+                //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
+
+                // }
+
+                if (type == 'internal') {
+                    await message.update({
+                        ...req.body,
+                        published_at: new Date(),
+                        userFor: users.map(user => user._id),
+                    });
+                } else {
+                    users.map(user => {
+                        const msg = {
+                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            to: user.email,
+                            subject: title,
+                            text: title,
+                            html: simpleresponsive(content),
+                        };
+                        sgMail.send(msg);
+                    })
+                }
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        } else {
+            try {
+                await message.update(req.body);
                 res.json({ success: true });
             } catch (error) {
                 res.status(400).json({ success: false, error: error.toString() });
@@ -3152,7 +3301,9 @@ adminRouter.get(
             }
 
             const total = await Article.find(searchObj).count();
-            const articles = await Article.find(searchObj).sort({ createdAt: 1 });
+            const articles = await Article.find(searchObj).sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: articles });
         } catch (error) {
             console.log(error)

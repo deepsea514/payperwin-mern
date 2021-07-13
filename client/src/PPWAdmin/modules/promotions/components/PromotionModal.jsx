@@ -13,7 +13,7 @@ export default class PromotionModal extends React.Component {
         super(props);
 
         this.state = {
-            initialvalues: {
+            initialValues: {
                 name: '',
                 description: '',
                 expiration_date: '',
@@ -69,14 +69,14 @@ export default class PromotionModal extends React.Component {
 
     render() {
         const { show, onHide, onSubmit, title } = this.props;
-        const { initialvalues, promotionSchema } = this.state;
+        const { initialValues, promotionSchema } = this.state;
         return (
             <Modal show={show} onHide={onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 {show && <Formik
-                    initialValues={initialvalues}
+                    initialValues={initialValues}
                     validationSchema={promotionSchema}
                     onSubmit={onSubmit}>
                     {

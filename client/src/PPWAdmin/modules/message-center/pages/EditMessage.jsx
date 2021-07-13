@@ -7,7 +7,7 @@ import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { createMessage } from "../redux/services";
+import { editMessageDraft, getMessageDraft } from "../redux/services";
 
 const config = require("../../../../../../config.json");
 const CountryInfo = config.CountryInfo;
@@ -28,25 +28,12 @@ const months = [
     "December"
 ];
 
-class CreateMessage extends React.Component {
+class EditMessage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            initialValues: {
-                title: '',
-                type: 'internal',
-                content: '',
-                is_greater_balance: false,
-                greater_balance: 0,
-                is_last_online_before: false,
-                last_online_before: new Date(),
-                is_last_online_after: false,
-                last_online_after: new Date(),
-                is_wager_more: false,
-                wager_more: 0,
-                is_user_from: false,
-                user_from: '',
-            },
+            initialValues: null,
+            loading: false,
             messageSchema: Yup.object().shape({
                 title: Yup.string()
                     .min(3, "Minimum 3 symbols")
@@ -85,6 +72,32 @@ class CreateMessage extends React.Component {
     };
 
     componentDidMount() {
+        const { match: { params: { id } } } = this.props;
+        this.setState({ loading: true });
+        getMessageDraft(id)
+            .then(({ data: message }) => {
+                this.setState({
+                    loading: false,
+                    initialValues: message ? {
+                        title: message.title,
+                        type: message.type,
+                        content: message.content,
+                        is_greater_balance: message.is_greater_balance,
+                        greater_balance: message.greater_balance,
+                        is_last_online_before: message.is_last_online_before,
+                        last_online_before: message.last_online_before,
+                        is_last_online_after: message.is_last_online_after,
+                        last_online_after: message.last_online_after,
+                        is_wager_more: message.is_wager_more,
+                        wager_more: message.wager_more,
+                        is_user_from: message.is_user_from,
+                        user_from: message.user_from,
+                    } : null
+                });
+            })
+            .catch(() => {
+                this.setState({ loading: false, initialValues: null })
+            })
     }
 
     validateMessage = (values, formik) => {
@@ -102,14 +115,14 @@ class CreateMessage extends React.Component {
     }
 
     onSubmit = (values, formik) => {
-        const { history } = this.props;
+        const { match: { params: { id } }, history } = this.props;
         if (!this.validateMessage(values, formik)) {
             formik.setSubmitting(false);
             return;
         }
         formik.setSubmitting(true);
         this.setState({ isSuccess: false, isError: false });
-        createMessage({ ...values, publish: true })
+        editMessageDraft(id, { ...values, publish: true })
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ isSuccess: true });
@@ -124,10 +137,10 @@ class CreateMessage extends React.Component {
     }
 
     onSaveDraft = (values, formik) => {
-        const { history } = this.props;
+        const { match: { params: { id } }, history } = this.props;
         formik.setSubmitting(true);
         this.setState({ isSuccess: false, isError: false });
-        createMessage({ ...values, publish: false })
+        editMessageDraft(id, { ...values, publish: false })
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ isSuccess: true });
@@ -142,7 +155,7 @@ class CreateMessage extends React.Component {
     }
 
     render() {
-        const { initialValues, messageSchema, isError, isSuccess } = this.state;
+        const { initialValues, messageSchema, isError, isSuccess, loading } = this.state;
         const config = {
             readonly: false,
             height: 350
@@ -157,7 +170,17 @@ class CreateMessage extends React.Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <Formik
+                            {!loading && !initialValues && <center>
+                                <h2>No Available data.</h2>
+                            </center>}
+                            {loading && <center>
+                                <Preloader use={ThreeDots}
+                                    size={100}
+                                    strokeWidth={10}
+                                    strokeColor="#F0AD4E"
+                                    duration={800} />
+                            </center>}
+                            {!loading && initialValues && <Formik
                                 validationSchema={messageSchema}
                                 initialValues={initialValues}
                                 onSubmit={this.onSubmit}
@@ -486,7 +509,7 @@ class CreateMessage extends React.Component {
                                         </div>
                                     </form>
                                 }}
-                            </Formik>
+                            </Formik>}
                         </div>
                     </div>
                 </div>
@@ -495,4 +518,4 @@ class CreateMessage extends React.Component {
     }
 }
 
-export default CreateMessage;
+export default EditMessage;

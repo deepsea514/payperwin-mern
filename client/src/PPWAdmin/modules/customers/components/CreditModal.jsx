@@ -14,7 +14,7 @@ export default class CreditModal extends React.Component {
 
         if (props.type == "deposit") {
             this.state = {
-                initialvalues: {
+                initialValues: {
                     amount: 0,
                     method: "",
                     reason: "",
@@ -35,7 +35,7 @@ export default class CreditModal extends React.Component {
         }
         else {
             this.state = {
-                initialvalues: {
+                initialValues: {
                     amount: 0,
                     method: "",
                     status: '',
@@ -81,14 +81,14 @@ export default class CreditModal extends React.Component {
 
     render() {
         const { show, onHide, onSubmit, title, type } = this.props;
-        const { initialvalues, creditSchema } = this.state;
+        const { initialValues, creditSchema } = this.state;
         return (
             <Modal show={show} onHide={onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 {show && <Formik
-                    initialValues={initialvalues}
+                    initialValues={initialValues}
                     validationSchema={creditSchema}
                     onSubmit={onSubmit}>
                     {

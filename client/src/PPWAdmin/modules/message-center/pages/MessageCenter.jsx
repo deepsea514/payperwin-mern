@@ -5,17 +5,24 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { Link } from "react-router-dom";
 import * as messages from "../redux/reducers";
+import dateformat from "dateformat";
+import { deleteMessageDraft } from "../redux/services.js";
 
 class MessageCenter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             perPage: 25,
+            deleteId: null,
+            modal: false,
+            resMessage: '',
+            modalvariant: '',
         }
     }
 
     componentDidMount() {
-
+        const { getMessagesAction } = this.props;
+        getMessagesAction();
     }
 
     tableBody = () => {
@@ -43,14 +50,43 @@ class MessageCenter extends React.Component {
                 </tr>
             );
         }
+
+        return message_drafts.map((message, index) => (
+            <tr key={index}>
+                <th scope="col">{index + 1}</th>
+                <th scope="col">{message.title}</th>
+                <th scope="col">{message.type}</th>
+                <th scope="col">{dateformat(new Date(message.createdAt), "yyyy-mm-dd HH:MM")}</th>
+                <th scope="col">
+                    <DropdownButton title="Actions">
+                        <Dropdown.Item as={Link} to={`/edit/${message._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => this.setState({ deleteId: message._id })}><i className="fas fa-trash"></i>&nbsp; Delete Draft</Dropdown.Item>
+                    </DropdownButton>
+                </th>
+            </tr>
+        ))
     }
 
     onPageChange = (page) => {
+        const { getMessagesAction } = this.props;
+        getMessagesAction(page);
+    }
 
+    deleteMessageDraft = () => {
+        const { deleteId } = this.state;
+        const { getMessagesAction } = this.props;
+        deleteMessageDraft(deleteId)
+        .then(() => {
+            this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
+            getMessagesAction();
+        })
+        .catch(() => {
+            this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+        })
     }
 
     render() {
-        const { perPage } = this.state;
+        const { perPage, deleteId, modal, resMessage, modalvariant } = this.state;
         const { total, currentPage } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -75,6 +111,7 @@ class MessageCenter extends React.Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Title</th>
+                                            <th scope="col">Type</th>
                                             <th scope="col">Created At</th>
                                             <th scope="col"></th>
                                         </tr>
@@ -92,6 +129,31 @@ class MessageCenter extends React.Component {
                                     onChangePage={(page) => this.onPageChange(page + 1)}
                                 />
                             </div>
+
+                            <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>{resMessage}</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Footer>
+                                    <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                                        Close
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+
+                            <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Do you want to delete this Draft?</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="primary" onClick={this.deleteMessageDraft}>
+                                        Confirm
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                     </div>
                 </div>

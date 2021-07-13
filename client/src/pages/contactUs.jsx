@@ -102,7 +102,7 @@ class ContactUs extends PureComponent {
     render() {
         const { classes } = this.props;
         const { ticketSchema, submitError, submitSuccess, metaData } = this.state;
-        const initialvalues = {
+        const initialValues = {
             email: '',
             phone: '',
             subject: '',
@@ -132,7 +132,7 @@ class ContactUs extends PureComponent {
                             <br />
                             {submitError && <p className="text-danger">Submit failed. Please try again later</p>}
                             <Formik
-                                initialValues={initialvalues}
+                                initialValues={initialValues}
                                 validationSchema={ticketSchema}
                                 onSubmit={this.onSubmit}>
                                 {

@@ -30,7 +30,7 @@ class CustomerDetail extends React.Component {
                         then: Yup.string().oneOf([Yup.ref("password")], "Password and Confirm Password didn't match"),
                     }),
             }),
-            initialvalues: {
+            initialValues: {
                 password: "",
                 confirmpassword: ""
             },
@@ -83,7 +83,7 @@ class CustomerDetail extends React.Component {
     };
 
     render() {
-        const { customer, loading, showHistory, resetPassword, PasswordSchema, initialvalues, isSuccess, isError } = this.state;
+        const { customer, loading, showHistory, resetPassword, PasswordSchema, initialValues, isSuccess, isError } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-11 order-xxl-12 text-center">
@@ -185,7 +185,7 @@ class CustomerDetail extends React.Component {
                         <Modal.Title>Reset Password</Modal.Title>
                     </Modal.Header>
                     <Formik
-                        initialValues={initialvalues}
+                        initialValues={initialValues}
                         validationSchema={PasswordSchema}
                         onSubmit={this.changePassword}>
                         {
