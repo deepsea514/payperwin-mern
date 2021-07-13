@@ -4,6 +4,8 @@ import Others from "./others";
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 import axios from "axios";
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -16,19 +18,27 @@ export default class Highlights extends PureComponent {
             sports: [],
             loading: false,
         };
+        this._isMounted = false;
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+        source.cancel('Operation canceled by the user.');
+    }
+
+
     componentDidMount() {
-        this.setState({ loading: true });
-        axios.get(`${serverUrl}/frontend/featured_sports`)
+        this._isMounted = true;
+        this._isMounted && this.setState({ loading: true });
+        axios.get(`${serverUrl}/frontend/featured_sports`, { cancelToken: source.token })
             .then(({ data }) => {
-                this.setState({
+                this._isMounted && this.setState({
                     loading: false,
                     sports: data ? data.value.sports : []
                 })
             })
             .catch(() => {
-                this.setState({ loading: false, sports: [] })
+                this._isMounted && this.setState({ loading: false, sports: [] })
             })
     }
 

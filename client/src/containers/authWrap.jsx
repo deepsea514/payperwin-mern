@@ -23,9 +23,11 @@ class AuthWrap extends Component {
         };
         this.getUser = this.getUser.bind(this);
         this.updateUser = this.updateUser.bind(this);
+        this._isMounted = false;
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.getUser();
         socket.on("sportsbook-accepted", (id) => {
             const { user } = this.state;
@@ -33,6 +35,10 @@ class AuthWrap extends Component {
                 window.location = '/bets-sportsbook';
             }
         });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     getUser(callback) {
@@ -47,13 +53,13 @@ class AuthWrap extends Component {
             },
         }).then(({ data: user }) => {
             setPreference(user.preference);
-            this.setState({ user }, () => {
+            this._isMounted && this.setState({ user }, () => {
                 if (callback) {
                     callback();
                 }
             });
         }).catch(() => {
-            this.setState({ user: false }, () => {
+            this._isMounted && this.setState({ user: false }, () => {
                 if (callback) {
                     callback();
                 }
@@ -63,7 +69,7 @@ class AuthWrap extends Component {
 
     updateUser(field, value) {
         const { user } = this.state;
-        this.setState({
+        this._isMounted && this.setState({
             user: update(user, {
                 [field]: {
                     $set: value,

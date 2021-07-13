@@ -38,19 +38,23 @@ class Header extends PureComponent {
         };
         this.toggleField = this.toggleField.bind(this);
         this.logout = this.logout.bind(this);
+        this._isMounted = false;
     }
 
     componentDidMount() {
+        this._isMounted = true;
         const timerInterval = setInterval(this.headerTimer, 1000);
+        this._isMounted && this.setState({ timerInterval })
     }
 
     headerTimer = () => {
         const { timezone } = this.props;
         const timeString = timeHelper.convertTimeClock(new Date(), timezone);
-        this.setState({ timeString });
+        this._isMounted && this.setState({ timeString });
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         const { timerInterval } = this.state;
         clearInterval(timerInterval);
         this.setState({ timerInterval: null });
@@ -88,7 +92,7 @@ class Header extends PureComponent {
     setOddsFormat = (format) => {
         const { setOddsFormat } = this.props;
         setOddsFormat(format);
-        this.setState({ oddsDropDownOpen: false });
+        this._isMounted && this.setState({ oddsDropDownOpen: false });
     }
 
     render() {
