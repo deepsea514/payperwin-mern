@@ -3,27 +3,37 @@ import Sport from './sport';
 import Others from "./others";
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
+import axios from "axios";
 
-const sports = [
-    'Soccer',
-    'NHL',
-    'MLB',
-    'NBA',
-    'WNBA',
-    'NFL',
-    'Other'
-];
+const config = require('../../../config.json');
+const serverUrl = config.appUrl;
 
 export default class Highlights extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             sportIndex: 0,
+            sports: [],
+            loading: false,
         };
     }
 
+    componentDidMount() {
+        this.setState({ loading: true });
+        axios.get(`${serverUrl}/frontend/featured_sports`)
+            .then(({ data }) => {
+                this.setState({
+                    loading: false,
+                    sports: data ? data.value.sports : []
+                })
+            })
+            .catch(() => {
+                this.setState({ loading: false, sports: [] })
+            })
+    }
+
     render() {
-        const { sportIndex } = this.state;
+        const { sportIndex, sports, loading } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
         return (
             <div className="highlights">
@@ -44,7 +54,8 @@ export default class Highlights extends PureComponent {
                         })
                     }
                 </ul>
-                {sports[sportIndex] == "Other" ?
+                {loading && <div>Loading...</div>}
+                {sports[sportIndex] && (sports[sportIndex] == "Other" ?
                     <Others
                         addBet={addBet}
                         betSlip={betSlip}
@@ -55,7 +66,7 @@ export default class Highlights extends PureComponent {
                         betSlip={betSlip}
                         removeBet={removeBet}
                         sportName={sports[sportIndex]}
-                    />}
+                    />)}
             </div>
         );
     }

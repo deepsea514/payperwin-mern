@@ -7,6 +7,7 @@ const DepositReason = require("./models/depositreason");
 const FinancialLog = require("./models/financiallog");
 const Bet = require("./models/bet");
 const Sport = require("./models/sport");
+const SportsDir = require("./models/sportsDir");
 const LoginLog = require('./models/loginlog');
 const Email = require("./models/email");
 const AutoBet = require("./models/autobet");
@@ -23,6 +24,7 @@ const MetaTag = require("./models/meta-tag");
 const Addon = require("./models/addon");
 const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
+const Frontend = require("./models/frontend");
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -1270,6 +1272,11 @@ adminRouter.get(
                             label: sport.name,
                         }
                     })
+                    if ("Other".search(new RegExp(name, 'i')) != -1)
+                        result.push({
+                            value: "Other",
+                            label: "Other",
+                        })
                     res.status(200).json(result);
                 })
         }
@@ -3410,5 +3417,37 @@ adminRouter.get(
         res.json(categories.map(category => ({ label: category.title, value: category.title })));
     }
 )
+
+adminRouter.get(
+    '/frontend/:name',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.params;
+        const frontend = await Frontend.findOne({ name: name });
+        res.json(frontend);
+    }
+)
+
+adminRouter.put(
+    '/frontend/:name',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.params;
+        const value = req.body;
+        try {
+            const frontend = await Frontend.findOne({ name: name });
+            if (!frontend) {
+                await Frontend.create({ name: name, value: value });
+            } else {
+                await frontend.update({ value: value });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false })
+        }
+    }
+)
+
+
 
 module.exports = adminRouter;
