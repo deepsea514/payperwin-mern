@@ -3448,6 +3448,25 @@ adminRouter.put(
     }
 )
 
+adminRouter.post(
+    '/change-password',
+    authenticateJWT,
+    async (req, res) => {
+        const { oldPassword, password } = req.body;
+        const admin = await Admin.findById(req.user._id);
+        if (!admin) {
+            return res.status(403).json({ error: 'Can\'t find user.' });
+        }
+        const validPassword = await admin.validPassword(oldPassword);
+        if (validPassword) {
+            admin.password = password;
+            await admin.save();
+            return res.json({ success: true });
+        } else {
+            return res.json({ error: 'Password doesn\'t match' });
+        }
+    }
+)
 
 
 module.exports = adminRouter;
