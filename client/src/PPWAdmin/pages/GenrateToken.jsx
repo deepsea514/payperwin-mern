@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
 import config from "../../../../config.json";
+import { getInputClasses } from "../../helpers/getInputClasses";
 const serverUrl = config.appAdminUrl;
 
 class GenerateToken extends React.Component {
@@ -21,16 +22,6 @@ class GenerateToken extends React.Component {
             }),
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         this.setState({ qrcode: null, errMsg: null, });
@@ -72,10 +63,7 @@ class GenerateToken extends React.Component {
                                         <div className="form-group">
                                             <label>Password<span className="text-danger">*</span></label>
                                             <input name="password" type="password" placeholder="Enter password"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "password"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "password")}`}
                                                 {...formik.getFieldProps("password")}
                                             />
                                             {formik.touched.password && formik.errors.password ? (

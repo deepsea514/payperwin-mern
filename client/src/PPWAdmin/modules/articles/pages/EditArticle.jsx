@@ -9,6 +9,7 @@ import { updateArticle, getArticleDraft, searchCategories } from "../redux/servi
 import Resizer from "react-image-file-resizer";
 import AsyncSelect from 'react-select/async';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class EditArticle extends React.Component {
     constructor(props) {
@@ -44,16 +45,6 @@ class EditArticle extends React.Component {
         }
         this.logoRef = createRef();
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     componentDidMount() {
         const { match: { params: { id } } } = this.props;
@@ -277,10 +268,10 @@ class EditArticle extends React.Component {
                                             <div className="col">
                                                 <p>Please keep ratio as 1:2</p>
                                                 <button type="button" className="btn btn-success mr-2" onClick={this.clickUploadButton}>Upload Logo File</button>
-                                                <input ref={this.logoRef} className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "logo"
-                                                )}`} onChange={(e) => this.handleFileUpload(e, formik)} type="file" style={{ display: "none" }} accept="image/x-png,image/gif,image/jpeg" />
+                                                <input ref={this.logoRef}
+                                                    className={`form-control ${getInputClasses(formik, "logo")}`}
+                                                    onChange={(e) => this.handleFileUpload(e, formik)} type="file"
+                                                    style={{ display: "none" }} accept="image/x-png,image/gif,image/jpeg" />
                                                 {formik.touched.logo && formik.errors.logo ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.logo}
@@ -294,10 +285,8 @@ class EditArticle extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Title<span className="text-danger">*</span></label>
-                                                <input type="text" name="title" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "title"
-                                                )}`}
+                                                <input type="text" name="title"
+                                                    className={`form-control ${getInputClasses(formik, "title")}`}
                                                     {...formik.getFieldProps("title")}
                                                     placeholder="Title" />
                                                 {formik.touched.title && formik.errors.title ? (
@@ -308,10 +297,8 @@ class EditArticle extends React.Component {
                                             </div>
                                             <div className="col">
                                                 <label>PermaLink<span className="text-danger">*</span></label>
-                                                <input type="text" name="permalink" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "permalink"
-                                                )}`}
+                                                <input type="text" name="permalink"
+                                                    className={`form-control ${getInputClasses(formik, "permalink")}`}
                                                     {...formik.getFieldProps("permalink")}
                                                     placeholder="PermaLink" />
                                                 {formik.touched.permalink && formik.errors.permalink ? (
@@ -324,10 +311,8 @@ class EditArticle extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Sub Title<span className="text-danger">*</span></label>
-                                                <textarea type="text" name="subtitle" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "subtitle"
-                                                )}`}
+                                                <textarea type="text" name="subtitle"
+                                                    className={`form-control ${getInputClasses(formik, "subtitle")}`}
                                                     rows={5}
                                                     {...formik.getFieldProps("subtitle")}
                                                     placeholder="Sub Title" />
@@ -342,10 +327,7 @@ class EditArticle extends React.Component {
                                         <div className="form-group">
                                             <label>Categories<span className="text-danger">*</span></label>
                                             <AsyncSelect
-                                                className={`basic-single ${this.getInputClasses(
-                                                    formik,
-                                                    "categories"
-                                                )}`}
+                                                className={`basic-single ${getInputClasses(formik, "categories")}`}
                                                 classNamePrefix="select"
                                                 isSearchable={true}
                                                 isMulti
@@ -394,7 +376,8 @@ class EditArticle extends React.Component {
                                                     }}
                                                 />
                                             </div>
-                                            <input className={`form-control ${this.getInputClasses(formik, "logo")}`} style={{ display: "none" }} />
+                                            <input className={`form-control ${getInputClasses(formik, "logo")}`}
+                                                style={{ display: "none" }} />
                                             {formik.touched.content && formik.errors.content ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.content}
@@ -404,10 +387,8 @@ class EditArticle extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Meta Title</label>
-                                                <input type="text" name="meta_title" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "meta_title"
-                                                )}`}
+                                                <input type="text" name="meta_title"
+                                                    className={`form-control ${getInputClasses(formik, "meta_title")}`}
                                                     {...formik.getFieldProps("meta_title")}
                                                     placeholder="Meta Title" />
                                                 {formik.touched.meta_title && formik.errors.meta_title ? (
@@ -418,10 +399,8 @@ class EditArticle extends React.Component {
                                             </div>
                                             <div className="col">
                                                 <label>Meta Keywords</label>
-                                                <input type="text" name="meta_keywords" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "meta_keywords"
-                                                )}`}
+                                                <input type="text" name="meta_keywords"
+                                                    className={`form-control ${getInputClasses(formik, "meta_keywords")}`}
                                                     {...formik.getFieldProps("meta_keywords")}
                                                     placeholder="Meta Keywords" />
                                                 {formik.touched.meta_keywords && formik.errors.meta_keywords ? (
@@ -434,10 +413,8 @@ class EditArticle extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Meta Description</label>
-                                                <textarea type="text" name="meta_description" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "meta_description"
-                                                )}`}
+                                                <textarea type="text" name="meta_description"
+                                                    className={`form-control ${getInputClasses(formik, "meta_description")}`}
                                                     rows={5}
                                                     {...formik.getFieldProps("meta_description")}
                                                     placeholder="Meta Description" />

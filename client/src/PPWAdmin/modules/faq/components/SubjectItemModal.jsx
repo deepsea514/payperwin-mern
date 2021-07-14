@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Modal, Button } from "react-bootstrap";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class SubjectItemModal extends Component {
     constructor(props) {
@@ -21,16 +22,6 @@ export default class SubjectItemModal extends Component {
             }),
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { FAQSubjectSchema, initialValues } = this.state;
@@ -52,10 +43,7 @@ export default class SubjectItemModal extends Component {
                                     <div className="form-group">
                                         <label>Title<span className="text-danger">*</span></label>
                                         <input name="title" placeholder="Enter title"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "title"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "title")}`}
                                             {...formik.getFieldProps("title")}
                                         />
                                         {formik.touched.title && formik.errors.title ? (
@@ -67,10 +55,7 @@ export default class SubjectItemModal extends Component {
                                     <div className="form-group">
                                         <label>Content<span className="text-danger">*</span></label>
                                         <textarea name="content" placeholder="Enter content" rows="6"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "content"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "content")}`}
                                             {...formik.getFieldProps("content")}
                                         />
                                         {formik.touched.content && formik.errors.content ? (

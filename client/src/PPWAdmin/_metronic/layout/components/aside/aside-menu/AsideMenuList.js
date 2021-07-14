@@ -8,8 +8,10 @@ import { checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
 import * as kyc from "../../../../../modules/kyc/redux/reducers";
 import * as withdrawlog from "../../../../../modules/withdrawlogs/redux/reducers";
+import config from "../../../../../../../../config.json";
+const AdminRoles = config.AdminRoles;
 
-function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLog, pending_total }) {
+function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLog, pending_total, currentUser }) {
     const location = useLocation();
     const getMenuItemActive = (url, hasSubmenu = false) => {
         return checkIsActive(location, url)
@@ -17,17 +19,27 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
             "menu-item-active"} menu-item-open menu-item-not-hightlighted`
             : "";
     };
+
     useEffect(() => {
         getVerifications();
         getWithdrawLog();
     })
+
+    const isAvailable = (module) => {
+        if (currentUser) {
+            if (AdminRoles[currentUser.role] && AdminRoles[currentUser.role][module])
+                return true;
+            return false;
+        }
+        return false;
+    }
 
     return (
         <>
             {/* begin::Menu Nav */}
             <ul className={`menu-nav ${layoutProps.ulClasses}`}>
 
-                <li
+                {currentUser && isAvailable('dashboard') && <li
                     className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
                     aria-haspopup="true"
                 >
@@ -37,9 +49,21 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Dashboard</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('admins') && <li
+                    className={`menu-item ${getMenuItemActive("/admin", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/admin/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Files/User-folder.svg"} />
+                        </span>
+                        <span className="menu-text">Admins</span>
+                    </Link>
+                </li>}
+
+                {currentUser && isAvailable('kyc') && <li
                     className={`menu-item ${getMenuItemActive("/kyc", false)}`}
                     aria-haspopup="true"
                 >
@@ -50,9 +74,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         <span className="menu-text">KYC</span>
                         {kyc_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{kyc_total}&nbsp;</span>}
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('customers') && <li
                     className={`menu-item ${getMenuItemActive("/customers", false)}`}
                     aria-haspopup="true"
                 >
@@ -62,9 +86,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Customers</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('messages') && <li
                     className={`menu-item ${getMenuItemActive("/message-center", false)}`}
                     aria-haspopup="true"
                 >
@@ -74,9 +98,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Messages</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('addons') && <li
                     className={`menu-item ${getMenuItemActive("/addons", false)}`}
                     aria-haspopup="true"
                 >
@@ -86,9 +110,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Addons</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('bet_activities') && <li
                     className={`menu-item ${getMenuItemActive("/bet-activities", false)}`}
                     aria-haspopup="true"
                 >
@@ -98,9 +122,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Bet Activities</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('withdraw_logs') && <li
                     className={`menu-item ${getMenuItemActive("/withdraw-log", false)}`}
                     aria-haspopup="true"
                 >
@@ -111,9 +135,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         <span className="menu-text">Withdraw Logs</span>
                         {pending_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_total}&nbsp;</span>}
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('deposit_logs') && <li
                     className={`menu-item ${getMenuItemActive("/deposit-log", false)}`}
                     aria-haspopup="true"
                 >
@@ -123,7 +147,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Deposit Logs</span>
                     </Link>
-                </li>
+                </li>}
 
                 {/* <li
                     className={`menu-item ${getMenuItemActive("/wager-feeds", false)}`}
@@ -137,7 +161,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                     </Link>
                 </li> */}
 
-                <li
+                {currentUser && isAvailable('autobet') && <li
                     className={`menu-item ${getMenuItemActive("/autobet", false)}`}
                     aria-haspopup="true"
                 >
@@ -147,9 +171,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">AutoBet</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('events') && <li
                     className={`menu-item ${getMenuItemActive("/events", false)}`}
                     aria-haspopup="true"
                 >
@@ -159,9 +183,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Events</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('frontend') && <li
                     className={`menu-item ${getMenuItemActive("/frontend", false)}`}
                     aria-haspopup="true"
                 >
@@ -171,9 +195,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Frontend Management</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('email_templates') && <li
                     className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
                     aria-haspopup="true"
                 >
@@ -183,9 +207,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Email Templates</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('meta_tags') && <li
                     className={`menu-item ${getMenuItemActive("/meta-tags", false)}`}
                     aria-haspopup="true"
                 >
@@ -195,9 +219,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Meta Tags</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('promotions') && <li
                     className={`menu-item ${getMenuItemActive("/promotions", false)}`}
                     aria-haspopup="true"
                 >
@@ -207,9 +231,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Promotions</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('tickets') && <li
                     className={`menu-item ${getMenuItemActive("/tickets", false)}`}
                     aria-haspopup="true"
                 >
@@ -219,9 +243,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Tickets</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('faq') && <li
                     className={`menu-item ${getMenuItemActive("/faq", false)}`}
                     aria-haspopup="true"
                 >
@@ -231,9 +255,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">FAQ</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('articles') && <li
                     className={`menu-item ${getMenuItemActive("/articles", false)}`}
                     aria-haspopup="true"
                 >
@@ -243,9 +267,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                         </span>
                         <span className="menu-text">Articles</span>
                     </Link>
-                </li>
+                </li>}
 
-                <li
+                {currentUser && isAvailable('reports') && <li
                     className={`menu-item menu-item-submenu ${getMenuItemActive(
                         "/reports",
                         true
@@ -321,10 +345,9 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li>}
 
             </ul>
-            {/* end::Menu Nav */}
         </>
     );
 }
@@ -332,6 +355,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
 const mapStateToProps = (state) => ({
     kyc_total: state.kyc.total,
     pending_total: state.withdrawlog.pending_total,
+    currentUser: state.currentUser.currentUser,
 });
 
 const mapActionsToProps = {

@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
@@ -134,16 +135,6 @@ class DepositLog extends React.Component {
             formik.setSubmitting(false);
         })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     renderStatus = () => {
         return Object.keys(FinancialStatus).map(function (key, index) {
@@ -354,10 +345,7 @@ class DepositLog extends React.Component {
                                         <div className="form-group">
                                             <label>Status<span className="text-danger">*</span></label>
                                             <select name="status" placeholder="Choose Status"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "status"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "status")}`}
                                                 {...formik.getFieldProps("status")}
                                             >
                                                 <option value="">Choose status ...</option>

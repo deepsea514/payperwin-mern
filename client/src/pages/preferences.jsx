@@ -7,6 +7,7 @@ import { Formik } from "formik";
 import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -28,16 +29,6 @@ class Preferences extends Component {
             this.setState({ metaData: metaData });
         })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         const { setPreference: setPreferenceReducer } = this.props;
@@ -91,10 +82,7 @@ class Preferences extends Component {
                                                 name="oddsFormat"
                                                 placeholder=""
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "oddsFormat"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "oddsFormat")}`}
                                                 {...formik.getFieldProps("oddsFormat")}
                                             >
                                                 <option value="american"> American Odds</option>
@@ -114,10 +102,7 @@ class Preferences extends Component {
                                                 name="dateFormat"
                                                 placeholder=""
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "dateFormat"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "dateFormat")}`}
                                                 {...formik.getFieldProps("dateFormat")}
                                             >
                                                 <option value="DD-MM-YYYY"> DD-MM-YYYY</option>
@@ -136,10 +121,7 @@ class Preferences extends Component {
                                                 name="timezone"
                                                 placeholder=""
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "timezone"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "timezone")}`}
                                                 {...formik.getFieldProps("timezone")}
                                             >
                                                 <option value="-12:00">(GMT -12:00) Eniwetok, Kwajalein</option>
@@ -197,10 +179,7 @@ class Preferences extends Component {
                                                 name="lang"
                                                 placeholder=""
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "lang"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "lang")}`}
                                                 {...formik.getFieldProps("lang")}
                                             >
                                                 <option value="en"> English</option>

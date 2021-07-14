@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class Pinnacle extends React.Component {
     constructor(props) {
@@ -54,16 +55,6 @@ export default class Pinnacle extends React.Component {
                 formik.setSubmitting(false);
             })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, initialValues, pinnacleSchema, isError, isSuccess } = this.state;
@@ -147,10 +138,7 @@ export default class Pinnacle extends React.Component {
 
                             <div className="form-group">
                                 <label>Pinnacle Api Host<span className="text-danger">*</span></label>
-                                <input type="text" name="pinnacleApiHost" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "pinnacleApiHost"
-                                )}`}
+                                <input type="text" name="pinnacleApiHost" className={`form-control ${getInputClasses(formik, "pinnacleApiHost")}`}
                                     {...formik.getFieldProps("pinnacleApiHost")}
                                     placeholder="Pinnacle Api Host" />
                                 {formik.touched.pinnacleApiHost && formik.errors.pinnacleApiHost ? (
@@ -161,10 +149,7 @@ export default class Pinnacle extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Pinnacle Authorization Header<span className="text-danger">*</span></label>
-                                <input type="text" name="pinnacleAuthorizationHeader" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "pinnacleAuthorizationHeader"
-                                )}`}
+                                <input type="text" name="pinnacleAuthorizationHeader" className={`form-control ${getInputClasses(formik, "pinnacleAuthorizationHeader")}`}
                                     {...formik.getFieldProps("pinnacleAuthorizationHeader")}
                                     placeholder="Pinnacle Authorization Header" />
                                 {formik.touched.pinnacleAuthorizationHeader && formik.errors.pinnacleAuthorizationHeader ? (

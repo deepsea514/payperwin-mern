@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import _ from "lodash";
 import { editEvent, getEvent } from "../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { getInputClasses, getInputClassesInObject } from "../../../../helpers/getInputClasses";
 
 const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
 const months = [
@@ -76,33 +77,6 @@ export default class EditEvent extends React.Component {
                 this.setState({ initialValues: null, loading: true });
             });
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
-    getInputClassesInObject = (formik, fieldname, childfieldname) => {
-        if (!formik.touched[fieldname] ||
-            !formik.errors[fieldname]) {
-            return "";
-        }
-
-        if (formik.touched[fieldname][childfieldname] &&
-            formik.errors[fieldname][childfieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname][childfieldname] &&
-            !formik.errors[fieldname][childfieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         const { history, match: { params: { id } } } = this.props;
@@ -205,10 +179,7 @@ export default class EditEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>Event Name <span className="text-danger">*</span></label>
                                                 <input name="name" placeholder="Event Name"
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "name"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "name")}`}
                                                     {...getFieldProps("name")}
                                                 />
                                                 {touched.name && errors.name ? (
@@ -221,10 +192,7 @@ export default class EditEvent extends React.Component {
                                                 <label>Start Date <span className="text-danger">*</span></label>
                                                 <DatePicker
                                                     name="startDate"
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "startDate"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "startDate")}`}
                                                     showTimeSelect
                                                     renderCustomHeader={({
                                                         date,
@@ -296,10 +264,7 @@ export default class EditEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>TeamA Name <span className="text-danger">*</span></label>
                                                 <input name="teamA.name" placeholder="TeamA Name"
-                                                    className={`form-control ${this.getInputClassesInObject(
-                                                        formik,
-                                                        "teamA", "name"
-                                                    )}`}
+                                                    className={`form-control ${getInputClassesInObject(formik, "teamA", "name")}`}
                                                     {...getFieldProps("teamA.name")}
                                                 />
                                                 {errors &&
@@ -317,10 +282,7 @@ export default class EditEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>Odds <span className="text-danger">*</span></label>
                                                 <input name="teamA.odds" placeholder="TeamA Odds"
-                                                    className={`form-control ${this.getInputClassesInObject(
-                                                        formik,
-                                                        "teamA", "odds"
-                                                    )}`}
+                                                    className={`form-control ${getInputClassesInObject(formik, "teamA", "odds")}`}
                                                     {...getFieldProps("teamA.odds")}
                                                 />
                                                 {errors &&
@@ -340,10 +302,7 @@ export default class EditEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>TeamB Name <span className="text-danger">*</span></label>
                                                 <input name="teamB.name" placeholder="TeamB Name"
-                                                    className={`form-control ${this.getInputClassesInObject(
-                                                        formik,
-                                                        "teamB", "name"
-                                                    )}`}
+                                                    className={`form-control ${getInputClassesInObject(formik, "teamB", "name")}`}
                                                     {...getFieldProps("teamB.name")}
                                                 />
                                                 {errors &&
@@ -361,10 +320,7 @@ export default class EditEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>Odds <span className="text-danger">*</span></label>
                                                 <input name="teamB.odds" placeholder="TeamB Odds"
-                                                    className={`form-control ${this.getInputClassesInObject(
-                                                        formik,
-                                                        "teamB", "odds"
-                                                    )}`}
+                                                    className={`form-control ${getInputClassesInObject(formik, "teamB", "odds")}`}
                                                     {...getFieldProps("teamB.odds")}
                                                 />
                                                 {errors &&

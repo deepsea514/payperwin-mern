@@ -1,30 +1,44 @@
-import React from "react"
-import { Preloader, ThreeDots } from 'react-preloader-icon';
+import React, { createRef } from "react"
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
-import JoditEditor from "jodit-react";
-import { getEmailTemplateDetail, updateEmailTemplate } from "../redux/services";
+import { createAdmin } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
-class EditEmailTemplates extends React.Component {
+class CreateAdmin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: null,
-            loading: false,
-            emailSchema: Yup.object().shape({
-                title: Yup.string()
+            initialValues: {
+                email: '',
+                username: '',
+                password: '',
+                confirmpassword: '',
+                role: '',
+            },
+            adminSchema: Yup.object().shape({
+                email: Yup.string()
+                    .email("Email is not correct")
+                    .required("Email is required"),
+                username: Yup.string()
                     .min(3, "Minimum 3 symbols")
                     .max(50, "Maximum 50 symbols")
-                    .required("Title is required."),
-                subject: Yup.string()
-                    .min(3, "Minimum 3 symbols")
-                    .max(50, "Maximum 50 symbols")
-                    .required("Subject is required."),
-                content: Yup.string()
-                    .required("Content is required."),
+                    .required("Name is required."),
+                password: Yup.string()
+                    .min(3, "Minimum 8 symbols")
+                    .required("Password is required."),
+                confirmpassword: Yup.string()
+                    .required("Please confirm password.")
+                    .when("password", {
+                        is: (val) => (val && val.length > 0 ? true : false),
+                        then: Yup.string().oneOf(
+                            [Yup.ref("password")],
+                            "Password and Confirm Password didn't match"
+                        ),
+                    }),
+                role: Yup.string()
+                    .required("Role is required."),
             }),
             isError: false,
             isSuccess: false,
@@ -32,58 +46,42 @@ class EditEmailTemplates extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ loading: true });
-        const { match } = this.props;
-        getEmailTemplateDetail(match.params.title)
-            .then(({ data }) => {
-                const { email_template } = data;
-                this.setState({ loading: false, email: email_template });
-            })
-            .catch(() => {
-                this.setState({ loading: false, email: null });
-            });
     }
 
     onSubmit = (values, formik) => {
+        const { history } = this.props;
         formik.setSubmitting(true);
         this.setState({ isSuccess: false, isError: false });
-        const { match } = this.props;
-        updateEmailTemplate(match.params.title, values)
+        createAdmin(values)
             .then(() => {
+                formik.setSubmitting(false);
                 this.setState({ isSuccess: true });
-            }).catch((error) => {
-                console.log(error);
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
                 this.setState({ isError: true });
-            }).finally(() => {
-                formik.setSubmitting(false)
-            });
+            })
     }
 
     render() {
-        const { email, loading, emailSchema, isError, isSuccess } = this.state;
-        const config = {
-            readonly: false,
-            height: 200
-        };
+        const { initialValues, adminSchema, isError, isSuccess } = this.state;
+
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Edit Email Template</h3>
+                                <h3 className="card-label">Create a New Admin</h3>
                             </div>
                         </div>
                         <div className="card-body">
-                            {!loading && email == null && <h1>No data available</h1>}
-                            {loading && <center className="mt-5"><Preloader use={ThreeDots}
-                                size={100}
-                                strokeWidth={10}
-                                strokeColor="#F0AD4E"
-                                duration={800} /></center>}
-                            {!loading && email && <Formik
-                                validationSchema={emailSchema}
-                                initialValues={email}
+                            <Formik
+                                validationSchema={adminSchema}
+                                initialValues={initialValues}
                                 onSubmit={this.onSubmit}
                             >
                                 {(formik) => {
@@ -101,7 +99,7 @@ class EditEmailTemplates extends React.Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Update Failed
+                                                    Can't create admin
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ isError: false })}>
                                                     <button
@@ -130,7 +128,7 @@ class EditEmailTemplates extends React.Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Successfully Updated.
+                                                    Successfully Created.
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ isSuccess: false })}>
                                                     <button
@@ -149,62 +147,80 @@ class EditEmailTemplates extends React.Component {
 
                                         <div className="form-row form-group">
                                             <div className="col">
-                                                <label>Title<span className="text-danger">*</span></label>
-                                                <input type="text" name="title"
-                                                    className={`form-control ${getInputClasses(formik, "title")}`}
-                                                    {...formik.getFieldProps("title")}
-                                                    placeholder="Title" />
-                                                {formik.touched.title && formik.errors.title ? (
+                                                <label>Email<span className="text-danger">*</span></label>
+                                                <input type="text" name="email"
+                                                    className={`form-control ${getInputClasses(formik, "email")}`}
+                                                    {...formik.getFieldProps("email")}
+                                                    placeholder="Email" />
+                                                {formik.touched.email && formik.errors.email ? (
                                                     <div className="invalid-feedback">
-                                                        {formik.errors.title}
+                                                        {formik.errors.email}
                                                     </div>
                                                 ) : null}
                                             </div>
                                             <div className="col">
-                                                <label>Subject<span className="text-danger">*</span></label>
-                                                <input type="text" name="subject"
-                                                    className={`form-control ${getInputClasses(formik, "subject")}`}
-                                                    {...formik.getFieldProps("subject")}
-                                                    placeholder="Subject" />
-                                                {formik.touched.subject && formik.errors.subject ? (
+                                                <label>Name<span className="text-danger">*</span></label>
+                                                <input type="text" name="username"
+                                                    className={`form-control ${getInputClasses(formik, "username")}`}
+                                                    {...formik.getFieldProps("username")}
+                                                    placeholder="Name" />
+                                                {formik.touched.username && formik.errors.username ? (
                                                     <div className="invalid-feedback">
-                                                        {formik.errors.subject}
+                                                        {formik.errors.username}
                                                     </div>
                                                 ) : null}
                                             </div>
                                         </div>
-
                                         <div className="form-row form-group">
                                             <div className="col">
-                                                <label>Content<span className="text-danger">*</span></label>
-                                                <JoditEditor
-                                                    // ref={editor}
-                                                    config={config}
-                                                    name="content"
-                                                    tabIndex={1} // tabIndex of textarea
-                                                    {...formik.getFieldProps("content")}
-                                                    {...{
-                                                        onChange: (content) => {
-                                                            formik.setFieldError("content", false);
-                                                            formik.setFieldTouched("content", true);
-                                                            formik.setFieldValue("content", content);
-                                                        },
-                                                        onBlur: (content) => {
-                                                            formik.setFieldError("content", false);
-                                                            formik.setFieldTouched("content", true);
-                                                            // formik.setFieldValue("content", content);
-                                                        }
-                                                    }}
-                                                />
+                                                <label>Password</label>
+                                                <input type="password" name="password"
+                                                    className={`form-control ${getInputClasses(formik, "password")}`}
+                                                    {...formik.getFieldProps("password")}
+                                                    placeholder="Password" />
+                                                {formik.touched.password && formik.errors.password ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.password}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className="col">
+                                                <label>Confirm Password</label>
+                                                <input type="password" name="confirmpassword"
+                                                    className={`form-control ${getInputClasses(formik, "confirmpassword")}`}
+                                                    {...formik.getFieldProps("confirmpassword")}
+                                                    placeholder="Confirm Password" />
+                                                {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.confirmpassword}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                        <div className="form-row form-group">
+                                            <div className="col-6">
+                                                <label>Role</label>
+                                                <select type="text" name="role"
+                                                    className={`form-control ${getInputClasses(formik, "role")}`}
+                                                    {...formik.getFieldProps("role")}>
+                                                    <option value="">Please select a role</option>
+                                                    <option value="Customer Service">Customer Service</option>
+                                                    <option value="Super Admin">Super Admin</option>
+                                                </select>
+                                                {formik.touched.role && formik.errors.role ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.role}
+                                                    </div>
+                                                ) : null}
                                             </div>
                                         </div>
                                         <div className="form-row">
-                                            <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Submit</button>
+                                            <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Create Admin</button>
                                             <Link to="/" className="btn btn-secondary">Cancel</Link>
                                         </div>
                                     </form>
                                 }}
-                            </Formik>}
+                            </Formik>
                         </div>
                     </div>
                 </div>
@@ -213,4 +229,4 @@ class EditEmailTemplates extends React.Component {
     }
 }
 
-export default EditEmailTemplates;
+export default CreateAdmin;

@@ -2,6 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
+import { getInputClasses } from "../../helpers/getInputClasses";
 import config from "../../../../config.json";
 const serverUrl = config.appAdminUrl;
 
@@ -36,16 +37,6 @@ class ChangePassword extends React.Component {
             }),
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         this.setState({ resMsg: null, isSuccess: false, isError: false, });
@@ -87,10 +78,7 @@ class ChangePassword extends React.Component {
                                     <div className="form-group">
                                         <label>Old Password<span className="text-danger">*</span></label>
                                         <input name="oldPassword" type="password" placeholder="Enter Old password"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "oldPassword"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "oldPassword")}`}
                                             {...formik.getFieldProps("oldPassword")}
                                         />
                                         {formik.touched.oldPassword && formik.errors.oldPassword ? (
@@ -102,10 +90,7 @@ class ChangePassword extends React.Component {
                                     <div className="form-group">
                                         <label>Password<span className="text-danger">*</span></label>
                                         <input name="password" type="password" placeholder="Enter password"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "password"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "password")}`}
                                             {...formik.getFieldProps("password")}
                                         />
                                         {formik.touched.password && formik.errors.password ? (
@@ -117,10 +102,7 @@ class ChangePassword extends React.Component {
                                     <div className="form-group">
                                         <label>Confirm Password<span className="text-danger">*</span></label>
                                         <input name="changepassword" type="password" placeholder="Enter password"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "changepassword"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "changepassword")}`}
                                             {...formik.getFieldProps("changepassword")}
                                         />
                                         {formik.touched.changepassword && formik.errors.changepassword ? (

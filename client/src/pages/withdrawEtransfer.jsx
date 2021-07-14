@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -66,16 +67,6 @@ class WithdrawETransfer extends PureComponent {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { classes, user } = this.props;
         const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
@@ -115,10 +106,7 @@ class WithdrawETransfer extends PureComponent {
                                                     name="amount"
                                                     placeholder="Enter Withdraw Amount"
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "amount"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "amount")}`}
                                                     {...formik.getFieldProps("amount")}
                                                 />
                                                 {formik.touched.amount && formik.errors.amount ? (

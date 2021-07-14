@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import { Button, Modal } from "react-bootstrap";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class TicketDetail extends React.Component {
     constructor(props) {
@@ -91,16 +92,6 @@ class TicketDetail extends React.Component {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { loading, ticket, initialValues, emailSchema, isSuccess, isError, archive } = this.state;
         const config = {
@@ -182,7 +173,7 @@ class TicketDetail extends React.Component {
                                                     </div>
                                                     <div className="alert-text font-weight-bold">
                                                         Can't send email. Please try again later
-                                                </div>
+                                                    </div>
                                                     <div className="alert-close" onClick={() => this.setState({ isError: false })}>
                                                         <button
                                                             type="button"
@@ -211,7 +202,7 @@ class TicketDetail extends React.Component {
                                                     </div>
                                                     <div className="alert-text font-weight-bold">
                                                         Email sent to customer.
-                                                </div>
+                                                    </div>
                                                     <div className="alert-close" onClick={() => this.setState({ isSuccess: false })}>
                                                         <button
                                                             type="button"
@@ -231,10 +222,8 @@ class TicketDetail extends React.Component {
                                             <div className="form-row form-group">
                                                 <div className="col">
                                                     <label>Title<span className="text-danger">*</span></label>
-                                                    <input type="text" name="title" className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "title"
-                                                    )}`}
+                                                    <input type="text" name="title"
+                                                        className={`form-control ${getInputClasses(formik, "title")}`}
                                                         {...formik.getFieldProps("title")}
                                                         placeholder="Title" />
                                                     {formik.touched.title && formik.errors.title ? (
@@ -245,10 +234,8 @@ class TicketDetail extends React.Component {
                                                 </div>
                                                 <div className="col">
                                                     <label>Subject<span className="text-danger">*</span></label>
-                                                    <input type="text" name="subject" className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "subject"
-                                                    )}`}
+                                                    <input type="text" name="subject"
+                                                        className={`form-control ${getInputClasses(formik, "subject")}`}
                                                         {...formik.getFieldProps("subject")}
                                                         placeholder="Subject" />
                                                     {formik.touched.subject && formik.errors.subject ? (

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import { getMetaTagDetail, updateMetaTagDetail } from "../redux/services";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class EditMetaTags extends React.Component {
     constructor(props) {
@@ -27,16 +28,6 @@ class EditMetaTags extends React.Component {
             isSuccess: false,
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     componentDidMount() {
         this.setState({ loading: true });
@@ -165,10 +156,8 @@ class EditMetaTags extends React.Component {
 
                                         <div className="form-group">
                                             <label>Title<span className="text-danger">*</span></label>
-                                            <input type="text" name="title" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "title"
-                                            )}`}
+                                            <input type="text" name="title"
+                                                className={`form-control ${getInputClasses(formik, "title")}`}
                                                 {...formik.getFieldProps("title")}
                                                 placeholder="Meta Title" />
                                             {formik.touched.title && formik.errors.title ? (
@@ -179,10 +168,8 @@ class EditMetaTags extends React.Component {
                                         </div>
                                         <div className="form-group">
                                             <label>Description<span className="text-danger">*</span></label>
-                                            <textarea type="text" name="description" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "description"
-                                            )}`}
+                                            <textarea type="text" name="description"
+                                                className={`form-control ${getInputClasses(formik, "description")}`}
                                                 {...formik.getFieldProps("description")}
                                                 rows={6}
                                                 placeholder="Meta Description" />
@@ -194,10 +181,8 @@ class EditMetaTags extends React.Component {
                                         </div>
                                         <div className="form-group">
                                             <label>Keywords<span className="text-danger">*</span></label>
-                                            <textarea type="text" name="keywords" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "keywords"
-                                            )}`}
+                                            <textarea type="text" name="keywords"
+                                                className={`form-control ${getInputClasses(formik, "keywords")}`}
                                                 {...formik.getFieldProps("keywords")}
                                                 rows={6}
                                                 placeholder="Meta keywords" />

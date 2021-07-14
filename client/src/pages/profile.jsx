@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -114,30 +115,20 @@ export default class Profile extends Component {
     }
 
     // sendVerificationEmail = (email) => {
-        // const url = `${serverUrl}/sendVerificationEmail`;
-        // axios(
-        //     {
-        //         method: 'post',
-        //         url,
-        //         data: JSON.stringify({ email }),
-        //         withCredentials: true,
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     },
-        // );
-        // this.setState({ emailSent: true });
+    // const url = `${serverUrl}/sendVerificationEmail`;
+    // axios(
+    //     {
+    //         method: 'post',
+    //         url,
+    //         data: JSON.stringify({ email }),
+    //         withCredentials: true,
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     },
+    // );
+    // this.setState({ emailSent: true });
     // }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, profileData, profileSchema, initialValues, isSuccess, isError, metaData } = this.state;
@@ -178,10 +169,7 @@ export default class Profile extends Component {
                                             <label>User Name <span className="text-danger">*</span></label>
                                             <input type="text" placeholder="User Name"
                                                 name="username"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "username"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "username")}`}
                                                 {...formik.getFieldProps("username")}
                                                 readOnly
                                             />
@@ -197,10 +185,7 @@ export default class Profile extends Component {
                                             <label>First Name <span className="text-danger">*</span></label>
                                             <input type="text" placeholder="First Name"
                                                 name="firstname"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "firstname"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "firstname")}`}
                                                 {...formik.getFieldProps("firstname")}
                                                 readOnly
                                             />
@@ -214,10 +199,7 @@ export default class Profile extends Component {
                                             <label>Last Name <span className="text-danger">*</span></label>
                                             <input type="text" placeholder="Last Name"
                                                 name="lastname"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "lastname"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "lastname")}`}
                                                 {...formik.getFieldProps("lastname")}
                                                 readOnly
                                             />
@@ -233,10 +215,7 @@ export default class Profile extends Component {
                                             <label>Email <span className="text-danger">*</span></label>
                                             <input type="email" placeholder="Email"
                                                 name="email"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "email"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "email")}`}
                                                 {...formik.getFieldProps("email")}
                                             />
                                             {formik.touched.email && formik.errors.email ? (
@@ -277,10 +256,7 @@ export default class Profile extends Component {
                                             <label>Country <span className="text-danger">*</span></label>
                                             <input type="country" placeholder="Country" readOnly
                                                 name="country"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "country"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "country")}`}
                                                 {...formik.getFieldProps("country")}
                                             />
                                         </div>
@@ -288,10 +264,7 @@ export default class Profile extends Component {
                                             <label>Currency <span className="text-danger">*</span></label>
                                             <input type="currency" placeholder="Currency" readOnly
                                                 name="currency"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "currency"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "currency")}`}
                                                 {...formik.getFieldProps("currency")}
                                             />
                                         </div>
@@ -299,10 +272,7 @@ export default class Profile extends Component {
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Region <span className="text-danger">*</span></label>
-                                            <RegionDropdown className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "region"
-                                            )}`}
+                                            <RegionDropdown className={`form-control ${getInputClasses(formik, "region")}`}
                                                 valueType="short"
                                                 {...formik.getFieldProps("region")}
                                                 country={formik.values.country}
@@ -329,10 +299,7 @@ export default class Profile extends Component {
                                             <label>City <span className="text-danger">*</span></label>
                                             <input type="city" placeholder="City"
                                                 name="city"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "city"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "city")}`}
                                                 {...formik.getFieldProps("city")}
                                             />
                                             {formik.touched.city && formik.errors.city ? (
@@ -345,10 +312,7 @@ export default class Profile extends Component {
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Address <span className="text-danger">*</span></label>
-                                            <input type="text" name="address" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "address"
-                                            )}`}
+                                            <input type="text" name="address" className={`form-control ${getInputClasses(formik, "address")}`}
                                                 {...formik.getFieldProps("address")}
                                                 placeholder="Address" />
                                             {formik.touched.address && formik.errors.address ? (
@@ -359,10 +323,7 @@ export default class Profile extends Component {
                                         </div>
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Address 2</label>
-                                            <input type="text" name="address2" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "address2"
-                                            )}`}
+                                            <input type="text" name="address2" className={`form-control ${getInputClasses(formik, "address2")}`}
                                                 {...formik.getFieldProps("address2")}
                                                 placeholder="Address 2" />
                                             {formik.touched.address2 && formik.errors.address2 ? (
@@ -375,10 +336,7 @@ export default class Profile extends Component {
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Postal Code <span className="text-danger">*</span></label>
-                                            <input type="text" name="postalcode" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "postalcode"
-                                            )}`}
+                                            <input type="text" name="postalcode" className={`form-control ${getInputClasses(formik, "postalcode")}`}
                                                 {...formik.getFieldProps("postalcode")}
                                                 placeholder="Postal Code" />
                                             {formik.touched.postalcode && formik.errors.postalcode ? (
@@ -395,10 +353,7 @@ export default class Profile extends Component {
                                                 placeholder="Enter Phone Number"
                                                 containerClass="input-group"
                                                 dropdownClass="input-group-append"
-                                                inputClass={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "phone"
-                                                )}`}
+                                                inputClass={`form-control ${getInputClasses(formik, "phone")}`}
                                                 required
                                                 value={formik.values.phone}
                                                 {...formik.getFieldProps("phone")}

@@ -10,6 +10,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { withStyles } from "@material-ui/core/styles";
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 import config from "../../../config.json";
 const serverUrl = config.appUrl;
@@ -108,16 +109,6 @@ class Verification extends PureComponent {
         this.refs[field].click();
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     onSubmit = (values, formik) => {
         this.setState({ submitSuccess: false, submitError: false });
         axios.post(`${serverUrl}/verification`, values, { withCredentials: true })
@@ -169,10 +160,7 @@ class Verification extends PureComponent {
                                                 name="address"
                                                 placeholder="Enter Address"
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "address"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "address")}`}
                                                 {...formik.getFieldProps("address")}
                                             />
                                             {formik.touched.address && formik.errors.address ? (
@@ -188,10 +176,7 @@ class Verification extends PureComponent {
                                                 name="address2"
                                                 placeholder="Enter 2nd Address"
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "address2"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "address2")}`}
                                                 {...formik.getFieldProps("address2")}
                                             />
                                             {formik.touched.address2 && formik.errors.address2 ? (
@@ -207,10 +192,7 @@ class Verification extends PureComponent {
                                                 name="city"
                                                 placeholder="Enter City"
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "city"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "city")}`}
                                                 {...formik.getFieldProps("city")}
                                             />
                                             {formik.touched.city && formik.errors.city ? (
@@ -226,10 +208,7 @@ class Verification extends PureComponent {
                                                 name="postalcode"
                                                 placeholder="Enter Postal Code"
                                                 required
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "postalcode"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "postalcode")}`}
                                                 {...formik.getFieldProps("postalcode")}
                                             />
                                             {formik.touched.postalcode && formik.errors.postalcode ? (
@@ -246,10 +225,7 @@ class Verification extends PureComponent {
                                                 placeholder="Enter Phone Number"
                                                 containerClass="input-group"
                                                 dropdownClass="input-group-append"
-                                                inputClass={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "phone"
-                                                )}`}
+                                                inputClass={`form-control ${getInputClasses(formik, "phone")}`}
                                                 required
                                                 value={formik.values.phone}
                                                 {...formik.getFieldProps("phone")}

@@ -181,25 +181,6 @@ adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
     }
 });
 
-adminRouter.post(
-    '/createnew',
-    authenticateJWT,
-    async (req, res) => {
-        const { email, password, username } = req.body;
-        try {
-            await Admin.create({ email, password, username });
-            res.status(200).json("Admin created");
-            return;
-        } catch (error) {
-            res.status(400).json({
-                error,
-                message: "Admin creation failed. Please try with new credentials."
-            });
-            return;
-        }
-    },
-);
-
 adminRouter.patch(
     '/changePassword',
     authenticateJWT,
@@ -233,9 +214,9 @@ adminRouter.get('/logout', (req, res) => {
 adminRouter.get(
     '/user',
     authenticateJWT,
-    (req, res) => {
-        delete req.user.password;
-        res.status(200).json(req.user);
+    async (req, res) => {
+        let admin = await Admin.findById(req.user._id);
+        res.json({ username: admin.username, email: admin.email, role: admin.role, _id: admin._id });
     },
 );
 
@@ -3467,6 +3448,65 @@ adminRouter.post(
         }
     }
 )
+
+adminRouter.get(
+    '/admins',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            let { perPage, page, role } = req.query;
+
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+
+            if (!role) role = 'all';
+
+            let searchObj = {};
+            switch (role) {
+                case 'super_admin':
+                    searchObj = { role: 'Super Admin' };
+                    break;
+                case 'customer_service':
+                    searchObj = { role: 'Customer Service' };
+                    break;
+                case 'all':
+                default:
+            }
+
+            const total = await Admin.find(searchObj).count();
+            const admins = await Admin.find(searchObj).sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
+            res.json({ total, perPage, page: page + 1, data: admins });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.post(
+    '/admins',
+    authenticateJWT,
+    async (req, res) => {
+        const { email, password, username, role } = req.body;
+        try {
+            await Admin.create({ email, password, username, role });
+            res.status(200).json("Admin created");
+            return;
+        } catch (error) {
+            res.status(400).json({
+                error,
+                message: "Admin creation failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
+
 
 
 module.exports = adminRouter;

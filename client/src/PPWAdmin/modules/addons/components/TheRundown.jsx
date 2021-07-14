@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class TheRundown extends React.Component {
     constructor(props) {
@@ -57,16 +58,6 @@ export default class TheRundown extends React.Component {
                 formik.setSubmitting(false);
             })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, initialValues, rundownSchema, isError, isSuccess } = this.state;
@@ -150,10 +141,7 @@ export default class TheRundown extends React.Component {
 
                             <div className="form-group">
                                 <label>The Rundown Api Host<span className="text-danger">*</span></label>
-                                <input type="text" name="rundownApiHost" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "rundownApiHost"
-                                )}`}
+                                <input type="text" name="rundownApiHost" className={`form-control ${getInputClasses(formik, "rundownApiHost")}`}
                                     {...formik.getFieldProps("rundownApiHost")}
                                     placeholder="The Rundown Api Host" />
                                 {formik.touched.rundownApiHost && formik.errors.rundownApiHost ? (
@@ -164,10 +152,7 @@ export default class TheRundown extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>The Rundown XRapid Api Key<span className="text-danger">*</span></label>
-                                <input type="text" name="rundownXRapidapiKey" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "rundownXRapidapiKey"
-                                )}`}
+                                <input type="text" name="rundownXRapidapiKey" className={`form-control ${getInputClasses(formik, "rundownXRapidapiKey")}`}
                                     {...formik.getFieldProps("rundownXRapidapiKey")}
                                     placeholder="The Rundown XRapid Api Key" />
                                 {formik.touched.rundownXRapidapiKey && formik.errors.rundownXRapidapiKey ? (
@@ -178,10 +163,7 @@ export default class TheRundown extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>The Rundown XRapid Api Host<span className="text-danger">*</span></label>
-                                <input type="text" name="rundownXRapidapiHost" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "rundownXRapidapiHost"
-                                )}`}
+                                <input type="text" name="rundownXRapidapiHost" className={`form-control ${getInputClasses(formik, "rundownXRapidapiHost")}`}
                                     {...formik.getFieldProps("rundownXRapidapiHost")}
                                     placeholder="The Rundown XRapid Api Host" />
                                 {formik.touched.rundownXRapidapiHost && formik.errors.rundownXRapidapiHost ? (

@@ -6,6 +6,7 @@ import { Formik, Form } from "formik";
 import "react-datepicker/dist/react-datepicker.css";
 import { settleEvent, getEvent } from "../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class SettleEvent extends React.Component {
     constructor(props) {
@@ -39,16 +40,6 @@ export default class SettleEvent extends React.Component {
                 this.setState({ initialValues: null, loading: true, event: null });
             });
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         const { history, match: { params: { id } } } = this.props;
@@ -152,10 +143,7 @@ export default class SettleEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>Team A Score <span className="text-danger">*</span></label>
                                                 <input name="teamAScore" placeholder="Team A Score"
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "teamAScore"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "teamAScore")}`}
                                                     {...getFieldProps("teamAScore")}
                                                 />
                                                 {errors &&
@@ -172,10 +160,7 @@ export default class SettleEvent extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>Team B Score <span className="text-danger">*</span></label>
                                                 <input name="teamBScore" placeholder="Team B Score"
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "teamBScore"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "teamBScore")}`}
                                                     {...getFieldProps("teamBScore")}
                                                 />
                                                 {errors &&

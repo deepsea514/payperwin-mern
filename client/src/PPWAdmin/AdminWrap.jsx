@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import "react-app-polyfill/ie11";
+import "react-app-polyfill/stable";
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Login from "./pages/Login";
 import App from "./pages/App";
@@ -26,6 +28,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import "./_metronic/_assets/plugins/flaticon/flaticon.css";
 import "./_metronic/_assets/plugins/flaticon2/flaticon.css";
 import "./_metronic/_assets/plugins/keenthemes-icons/font/ki.css";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 import * as _redux from "./redux";
 
 _redux.setupAxios(axios);

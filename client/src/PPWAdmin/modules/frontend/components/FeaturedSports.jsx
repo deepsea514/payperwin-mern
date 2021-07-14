@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import AsyncSelect from 'react-select/async';
 import { getFrontendInfo, saveFrontendInfo, searchSports } from '../redux/services';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class FeaturedSports extends Component {
     constructor(props) {
@@ -22,16 +23,6 @@ export default class FeaturedSports extends Component {
             loadingSports: false,
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     componentDidMount() {
         this.setState({ loading: false });
@@ -162,10 +153,7 @@ export default class FeaturedSports extends Component {
 
                             <div className="form-group">
                                 <AsyncSelect
-                                    className={`basic-single ${this.getInputClasses(
-                                        formik,
-                                        "sports"
-                                    )}`}
+                                    className={`basic-single ${getInputClasses(formik, "sports")}`}
                                     classNamePrefix="select"
                                     isSearchable={true}
                                     isMulti
