@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 
 const config = require("../../../../../../config.json");
@@ -135,16 +136,6 @@ class WithdrawLog extends React.Component {
             formik.setSubmitting(false);
         })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     renderStatus = () => {
         return Object.keys(FinancialStatus).map(function (key, index) {
@@ -352,10 +343,7 @@ class WithdrawLog extends React.Component {
                                         <div className="form-group">
                                             <label>Status<span className="text-danger">*</span></label>
                                             <select name="status" placeholder="Choose Status"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "status"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "status")}`}
                                                 {...formik.getFieldProps("status")}
                                             >
                                                 <option value="">Choose status ...</option>
@@ -370,10 +358,7 @@ class WithdrawLog extends React.Component {
                                         <div className="form-group">
                                             <label>2FA Code<span className="text-danger">*</span></label>
                                             <input name="_2fa_code" placeholder="Enter 2FA Code"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "_2fa_code"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "_2fa_code")}`}
                                                 {...formik.getFieldProps("_2fa_code")}
                                             />
                                             {formik.touched._2fa_code && formik.errors._2fa_code ? (

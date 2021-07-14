@@ -8,7 +8,7 @@ import * as articles from "../redux/reducers";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { createCategory, deleteCategory } from "../redux/services.js";
-
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class Categories extends React.Component {
     constructor(props) {
@@ -96,16 +96,6 @@ class Categories extends React.Component {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { addModal, initialValues, categorySchema, modal, resMessage, modalvariant, deleteId } = this.state;
         return (
@@ -153,10 +143,7 @@ class Categories extends React.Component {
                                                 <div className="form-group">
                                                     <label>Category Title<span className="text-danger">*</span></label>
                                                     <input name="title" placeholder="Enter Category Title"
-                                                        className={`form-control ${this.getInputClasses(
-                                                            formik,
-                                                            "title"
-                                                        )}`}
+                                                        className={`form-control ${getInputClasses(formik, "title")}`}
                                                         {...formik.getFieldProps("title")}
                                                     />
                                                     {formik.touched.title && formik.errors.title ? (

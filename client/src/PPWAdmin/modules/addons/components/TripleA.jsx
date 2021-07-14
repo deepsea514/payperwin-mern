@@ -5,6 +5,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
 import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class TripleA extends React.Component {
     constructor(props) {
@@ -94,16 +95,6 @@ export default class TripleA extends React.Component {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { loading, initialValues, tripleASchema, isError, isSuccess } = this.state;
         return (
@@ -186,10 +177,7 @@ export default class TripleA extends React.Component {
 
                             <div className="form-group">
                                 <label>Token Url<span className="text-danger">*</span></label>
-                                <input type="text" name="tokenurl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "tokenurl"
-                                )}`}
+                                <input type="text" name="tokenurl" className={`form-control ${getInputClasses(formik, "tokenurl")}`}
                                     {...formik.getFieldProps("tokenurl")}
                                     placeholder="Token Url" />
                                 {formik.touched.tokenurl && formik.errors.tokenurl ? (
@@ -200,10 +188,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Payment Url<span className="text-danger">*</span></label>
-                                <input type="text" name="paymenturl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "paymenturl"
-                                )}`}
+                                <input type="text" name="paymenturl" className={`form-control ${getInputClasses(formik, "paymenturl")}`}
                                     {...formik.getFieldProps("paymenturl")}
                                     placeholder="Payment Url" />
                                 {formik.touched.paymenturl && formik.errors.paymenturl ? (
@@ -214,10 +199,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Payout Url<span className="text-danger">*</span></label>
-                                <input type="text" name="payouturl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "payouturl"
-                                )}`}
+                                <input type="text" name="payouturl" className={`form-control ${getInputClasses(formik, "payouturl")}`}
                                     {...formik.getFieldProps("payouturl")}
                                     placeholder="Payout Url" />
                                 {formik.touched.payouturl && formik.errors.payouturl ? (
@@ -228,10 +210,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Client ID<span className="text-danger">*</span></label>
-                                <input type="text" name="client_id" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "client_id"
-                                )}`}
+                                <input type="text" name="client_id" className={`form-control ${getInputClasses(formik, "client_id")}`}
                                     {...formik.getFieldProps("client_id")}
                                     placeholder="Client ID" />
                                 {formik.touched.client_id && formik.errors.client_id ? (
@@ -242,10 +221,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Client Secret<span className="text-danger">*</span></label>
-                                <input type="text" name="client_secret" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "client_secret"
-                                )}`}
+                                <input type="text" name="client_secret" className={`form-control ${getInputClasses(formik, "client_secret")}`}
                                     {...formik.getFieldProps("client_secret")}
                                     placeholder="Client Secret" />
                                 {formik.touched.client_secret && formik.errors.client_secret ? (
@@ -256,10 +232,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Notify Secret<span className="text-danger">*</span></label>
-                                <input type="text" name="notify_secret" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "notify_secret"
-                                )}`}
+                                <input type="text" name="notify_secret" className={`form-control ${getInputClasses(formik, "notify_secret")}`}
                                     {...formik.getFieldProps("notify_secret")}
                                     placeholder="Notify Secret" />
                                 {formik.touched.notify_secret && formik.errors.notify_secret ? (
@@ -270,10 +243,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>BTC Api ID<span className="text-danger">*</span></label>
-                                <input type="text" name="btc_api_id" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "btc_api_id"
-                                )}`}
+                                <input type="text" name="btc_api_id" className={`form-control ${getInputClasses(formik, "btc_api_id")}`}
                                     {...formik.getFieldProps("btc_api_id")}
                                     placeholder="BTC Api ID" />
                                 {formik.touched.btc_api_id && formik.errors.btc_api_id ? (
@@ -284,10 +254,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>TestBTC Api ID<span className="text-danger">*</span></label>
-                                <input type="text" name="test_btc_api_id" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "test_btc_api_id"
-                                )}`}
+                                <input type="text" name="test_btc_api_id" className={`form-control ${getInputClasses(formik, "test_btc_api_id")}`}
                                     {...formik.getFieldProps("test_btc_api_id")}
                                     placeholder="TestBTC Api ID" />
                                 {formik.touched.test_btc_api_id && formik.errors.test_btc_api_id ? (
@@ -298,10 +265,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>ETH Api ID<span className="text-danger">*</span></label>
-                                <input type="text" name="eth_api_id" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "eth_api_id"
-                                )}`}
+                                <input type="text" name="eth_api_id" className={`form-control ${getInputClasses(formik, "eth_api_id")}`}
                                     {...formik.getFieldProps("eth_api_id")}
                                     placeholder="ETH Api ID" />
                                 {formik.touched.eth_api_id && formik.errors.eth_api_id ? (
@@ -312,10 +276,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>USDT Api ID<span className="text-danger">*</span></label>
-                                <input type="text" name="usdt_api_id" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "usdt_api_id"
-                                )}`}
+                                <input type="text" name="usdt_api_id" className={`form-control ${getInputClasses(formik, "usdt_api_id")}`}
                                     {...formik.getFieldProps("usdt_api_id")}
                                     placeholder="USDT Api ID" />
                                 {formik.touched.usdt_api_id && formik.errors.usdt_api_id ? (
@@ -326,10 +287,7 @@ export default class TripleA extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Merchant Key<span className="text-danger">*</span></label>
-                                <input type="text" name="merchant_key" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "merchant_key"
-                                )}`}
+                                <input type="text" name="merchant_key" className={`form-control ${getInputClasses(formik, "merchant_key")}`}
                                     {...formik.getFieldProps("merchant_key")}
                                     placeholder="Merchant Key" />
                                 {formik.touched.merchant_key && formik.errors.merchant_key ? (
@@ -339,7 +297,7 @@ export default class TripleA extends React.Component {
                                 ) : null}
                             </div>
                             <FormControl component="fieldset">
-                            <label>Test Mode<span className="text-danger">*</span></label>
+                                <label>Test Mode<span className="text-danger">*</span></label>
                                 <RadioGroup aria-label="Test Mode" name="testMode" {...formik.getFieldProps("testMode")}>
                                     <FormControlLabel value="true" control={<Radio />} label="Yes" />
                                     <FormControlLabel value="false" control={<Radio />} label="No" />

@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class PinnacleSandbox extends React.Component {
     constructor(props) {
@@ -60,16 +61,6 @@ export default class PinnacleSandbox extends React.Component {
                 formik.setSubmitting(false);
             })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, initialValues, pinnacleSandboxSchema, isError, isSuccess } = this.state;
@@ -153,10 +144,7 @@ export default class PinnacleSandbox extends React.Component {
 
                             <div className="form-group">
                                 <label>Pinnacle Sandbox Url<span className="text-danger">*</span></label>
-                                <input type="text" name="sandboxUrl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "sandboxUrl"
-                                )}`}
+                                <input type="text" name="sandboxUrl" className={`form-control ${getInputClasses(formik, "sandboxUrl")}`}
                                     {...formik.getFieldProps("sandboxUrl")}
                                     placeholder="Pinnacle Api Host" />
                                 {formik.touched.sandboxUrl && formik.errors.sandboxUrl ? (
@@ -167,10 +155,7 @@ export default class PinnacleSandbox extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Agent Code<span className="text-danger">*</span></label>
-                                <input type="text" name="agentCode" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "agentCode"
-                                )}`}
+                                <input type="text" name="agentCode" className={`form-control ${getInputClasses(formik, "agentCode")}`}
                                     {...formik.getFieldProps("agentCode")}
                                     placeholder="Agent Code" />
                                 {formik.touched.agentCode && formik.errors.agentCode ? (
@@ -181,10 +166,7 @@ export default class PinnacleSandbox extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Agent Key<span className="text-danger">*</span></label>
-                                <input type="text" name="agentKey" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "agentKey"
-                                )}`}
+                                <input type="text" name="agentKey" className={`form-control ${getInputClasses(formik, "agentKey")}`}
                                     {...formik.getFieldProps("agentKey")}
                                     placeholder="Agent Key" />
                                 {formik.touched.agentKey && formik.errors.agentKey ? (
@@ -195,10 +177,7 @@ export default class PinnacleSandbox extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Secret Key<span className="text-danger">*</span></label>
-                                <input type="text" name="secretKey" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "secretKey"
-                                )}`}
+                                <input type="text" name="secretKey" className={`form-control ${getInputClasses(formik, "secretKey")}`}
                                     {...formik.getFieldProps("secretKey")}
                                     placeholder="Secret Key" />
                                 {formik.touched.secretKey && formik.errors.secretKey ? (

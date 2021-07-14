@@ -47,8 +47,8 @@ export default class Main extends Component {
                             <BrowserRouter basename="">
                                 <Switch>
                                     <Route path="/PPWAdmin" component={AdminWrap} />
-                                    {maintenance ? <Route path="/maintenance" component={Maintenance} /> : null}
-                                    {maintenance ? <Redirect to="/maintenance" /> : <Route exact path="/" render={(props) => <AuthWrap {...props} maintenance={maintenance} />} />}
+                                    <Route path="/maintenance" render={(props) => <Maintenance maintenance={maintenance} {...props} />} />
+                                    {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <AuthWrap {...props} />} />}
                                 </Switch>
                             </BrowserRouter>
                         </I18nProvider>

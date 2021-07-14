@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from "react-redux";
+import * as currentUser from "../redux/reducers";
 const config = require('../../../../config.json');
 const serverUrl = config.appAdminUrl;
 import axios from 'axios';
@@ -27,18 +29,23 @@ import ReportsModule from "../modules/reports";
 import ArticlesModule from "../modules/articles/pages";
 import FrontendManageModule from "../modules/frontend/pages";
 import ChangePassword from './ChangePassword';
+import AdminModule from "../modules/admin/pages";
 
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props);
+
+        this._Mounted = false;
     }
 
     componentDidMount() {
+        this._Mounted = true;
         this.checkUser();
     }
 
     checkUser = () => {
-        const url = `${serverUrl}/user?compress=false`;
+        const { setCurrentUserAction } = this.props;
+        const url = `${serverUrl}/user`;
         axios.get(url, {
             withCredentials: true,
             cache: {
@@ -47,10 +54,15 @@ export default class App extends Component {
                 },
             },
         }).then(({ data: user }) => {
-            // this.props.history.push("/");
+            this._Mounted && setCurrentUserAction(user);
         }).catch(err => {
+            this._Mounted && setCurrentUserAction(null);
             this.props.history.push("/login");
         })
+    }
+
+    componentWillUnmount() {
+        this._Mounted = false;
     }
 
     render() {
@@ -68,6 +80,9 @@ export default class App extends Component {
 
                     {/* dashboard */}
                     <Route path="/dashboard" component={AdminDashboard} />
+
+                    {/* Admin */}
+                    <Route path="/admin" component={AdminModule} />
 
                     {/* customers */}
                     <Route path="/customers" component={CustomerModule} />
@@ -135,3 +150,5 @@ export default class App extends Component {
         );
     }
 }
+
+export default connect(null, currentUser.actions)(App)

@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -71,16 +72,6 @@ class DepositETransfer extends PureComponent {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { classes, user } = this.props;
         const { depositSchema, depositError, depositSuccess, metaData } = this.state;
@@ -113,10 +104,7 @@ class DepositETransfer extends PureComponent {
                                                     name="amount"
                                                     placeholder="Enter Deposit Amount"
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "amount"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "amount")}`}
                                                     {...formik.getFieldProps("amount")}
                                                 />
                                                 {formik.touched.amount && formik.errors.amount ? (
@@ -132,10 +120,7 @@ class DepositETransfer extends PureComponent {
                                                     name="email"
                                                     placeholder="Enter Email"
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "email"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "email")}`}
                                                     {...formik.getFieldProps("email")}
                                                 />
                                                 {formik.touched.email && formik.errors.email ? (
@@ -152,10 +137,7 @@ class DepositETransfer extends PureComponent {
                                                     placeholder="Enter Phone Number"
                                                     containerClass="input-group"
                                                     dropdownClass="input-group-append"
-                                                    inputClass={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "phone"
-                                                    )}`}
+                                                    inputClass={`form-control ${getInputClasses(formik, "phone")}`}
                                                     required
                                                     value={formik.values.phone}
                                                     {...formik.getFieldProps("phone")}

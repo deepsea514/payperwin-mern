@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import { searchUsers, searchSports } from "../../customers/redux/services";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 const config = require("../../../../../../config.json");
 const AutoBetStatus = config.AutoBetStatus;
 const AutoBetPeorid = config.AutoBetPeorid;
@@ -81,16 +82,6 @@ export default class AutoBetModal extends React.Component {
         });
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { show, onHide, onSubmit, title, edit } = this.props;
         const { initialValues, autobetSchema, loadingUser, loadingSports } = this.state;
@@ -110,10 +101,7 @@ export default class AutoBetModal extends React.Component {
                                     <div className="form-group">
                                         <label>User<span className="text-danger">*</span></label>
                                         {!edit && <AsyncSelect
-                                            className={`basic-single ${this.getInputClasses(
-                                                formik,
-                                                "user"
-                                            )}`}
+                                            className={`basic-single ${getInputClasses(formik, "user")}`}
                                             classNamePrefix="select"
                                             isSearchable={true}
                                             name="user"
@@ -133,13 +121,10 @@ export default class AutoBetModal extends React.Component {
                                             }}
                                         />}
                                         {edit && <input name="user"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "user"
-                                                )}`}
-                                                readOnly
-                                                value={formik.values.user.label}
-                                            />}
+                                            className={`form-control ${getInputClasses(formik, "user")}`}
+                                            readOnly
+                                            value={formik.values.user.label}
+                                        />}
                                         {formik.touched.user && formik.errors.user ? (
                                             <div className="invalid-feedback">
                                                 {formik.errors.user}
@@ -150,10 +135,7 @@ export default class AutoBetModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Budget<span className="text-danger">*</span></label>
                                             <input name="budget" placeholder="Enter Budget"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "budget"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "budget")}`}
                                                 {...formik.getFieldProps("budget")}
                                             />
                                             {formik.touched.budget && formik.errors.budget ? (
@@ -165,10 +147,7 @@ export default class AutoBetModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Peorid<span className="text-danger">*</span></label>
                                             <select name="peorid" placeholder="Choose Peorid"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "peorid"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "peorid")}`}
                                                 {...formik.getFieldProps("peorid")}
                                             >
                                                 {this.renderPeorid()}
@@ -184,10 +163,7 @@ export default class AutoBetModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Priority<span className="text-danger">*</span></label>
                                             <input name="priority" placeholder="Enter Priority"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "priority"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "priority")}`}
                                                 {...formik.getFieldProps("priority")}
                                             />
                                             {formik.touched.priority && formik.errors.priority ? (
@@ -199,10 +175,7 @@ export default class AutoBetModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Max.Risk<span className="text-danger">*</span></label>
                                             <input name="maxRisk" placeholder="Enter Max.Risk"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "maxRisk"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "maxRisk")}`}
                                                 {...formik.getFieldProps("maxRisk")}
                                             />
                                             {formik.touched.maxRisk && formik.errors.maxRisk ? (
@@ -215,10 +188,7 @@ export default class AutoBetModal extends React.Component {
                                     <div className="form-group">
                                         <label>Sports<span className="text-danger">*</span></label>
                                         <AsyncSelect
-                                            className={`basic-single ${this.getInputClasses(
-                                                formik,
-                                                "sports"
-                                            )}`}
+                                            className={`basic-single ${getInputClasses(formik, "sports")}`}
                                             classNamePrefix="select"
                                             isSearchable={true}
                                             isMulti
@@ -247,10 +217,7 @@ export default class AutoBetModal extends React.Component {
                                     <div className="form-group">
                                         <label>Status<span className="text-danger">*</span></label>
                                         <select name="status" placeholder="Choose status"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "status"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "status")}`}
                                             {...formik.getFieldProps("status")}
                                         >
                                             {this.renderStatus()}

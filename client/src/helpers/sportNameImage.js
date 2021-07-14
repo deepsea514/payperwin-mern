@@ -62,10 +62,10 @@ const sportImages = {
     'NCAA': '/images/icons/athelete.png',
     'UFC': '/images/icons/boxing.png',
     'Other': '/images/icons/other.png'
-  };
-  
-  function sportNameImage(name) {
+};
+
+function sportNameImage(name) {
     return sportImages[name];
-  }
-  
-  module.exports = sportNameImage;
+}
+
+module.exports = sportNameImage;

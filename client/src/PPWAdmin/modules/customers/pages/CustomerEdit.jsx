@@ -8,6 +8,7 @@ import SVG from "react-inlinesvg";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { RegionDropdown } from 'react-country-region-selector';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class CustomerEdit extends React.Component {
     constructor(props) {
@@ -89,16 +90,6 @@ class CustomerEdit extends React.Component {
                 formik.setSubmitting(false)
             });
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { customer, loading, customerSchema, initialValues, isError, isSuccess } = this.state;
@@ -187,10 +178,8 @@ class CustomerEdit extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>First Name<span className="text-danger">*</span></label>
-                                                <input type="text" name="firstname" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "firstname"
-                                                )}`}
+                                                <input type="text" name="firstname"
+                                                    className={`form-control ${getInputClasses(formik, "firstname")}`}
                                                     {...formik.getFieldProps("firstname")}
                                                     placeholder="First Name" />
                                                 {formik.touched.firstname && formik.errors.firstname ? (
@@ -201,10 +190,8 @@ class CustomerEdit extends React.Component {
                                             </div>
                                             <div className="col">
                                                 <label>Last Name<span className="text-danger">*</span></label>
-                                                <input type="text" name="lastname" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "lastname"
-                                                )}`}
+                                                <input type="text" name="lastname"
+                                                    className={`form-control ${getInputClasses(formik, "lastname")}`}
                                                     {...formik.getFieldProps("lastname")}
                                                     placeholder="Last Name" />
                                                 {formik.touched.lastname && formik.errors.lastname ? (
@@ -217,10 +204,8 @@ class CustomerEdit extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Email<span className="text-danger">*</span></label>
-                                                <input type="text" name="email" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "email"
-                                                )}`}
+                                                <input type="text" name="email"
+                                                    className={`form-control ${getInputClasses(formik, "email")}`}
                                                     {...formik.getFieldProps("email")}
                                                     placeholder="Email" />
                                                 {formik.touched.email && formik.errors.email ? (
@@ -231,10 +216,8 @@ class CustomerEdit extends React.Component {
                                             </div>
                                             <div className="col">
                                                 <label>Phone<span className="text-danger">*</span></label>
-                                                <input type="text" name="phone" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "phone"
-                                                )}`}
+                                                <input type="text" name="phone"
+                                                    className={`form-control ${getInputClasses(formik, "phone")}`}
                                                     {...formik.getFieldProps("phone")}
                                                     placeholder="Phone" />
                                                 {formik.touched.phone && formik.errors.phone ? (
@@ -247,19 +230,14 @@ class CustomerEdit extends React.Component {
                                         <div className="form-group form-row">
                                             <div className="col">
                                                 <label>Country<span className="text-danger">*</span></label>
-                                                <input type="text" name="country" readOnly className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "country"
-                                                )}`}
+                                                <input type="text" name="country" readOnly
+                                                    className={`form-control ${getInputClasses(formik, "country")}`}
                                                     {...formik.getFieldProps("country")}
                                                     placeholder="Country" />
                                             </div>
                                             <div className="col">
                                                 <label>Region<span className="text-danger">*</span></label>
-                                                <RegionDropdown className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "region"
-                                                )}`}
+                                                <RegionDropdown className={`form-control ${getInputClasses(formik, "region")}`}
                                                     {...formik.getFieldProps("region")}
                                                     valueType="short"
                                                     country={formik.values.country}
@@ -285,10 +263,8 @@ class CustomerEdit extends React.Component {
                                         </div>
                                         <div className="form-group">
                                             <label>Address<span className="text-danger">*</span></label>
-                                            <input type="text" name="address" className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "address"
-                                            )}`}
+                                            <input type="text" name="address"
+                                                className={`form-control ${getInputClasses(formik, "address")}`}
                                                 {...formik.getFieldProps("address")}
                                                 placeholder="Address" />
                                             {formik.touched.address && formik.errors.address ? (
@@ -300,10 +276,8 @@ class CustomerEdit extends React.Component {
                                         <div className="form-group form-row">
                                             <div className="col">
                                                 <label>Currency<span className="text-danger">*</span></label>
-                                                <input type="text" name="currency" readOnly className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "currency"
-                                                )}`}
+                                                <input type="text" name="currency" readOnly
+                                                    className={`form-control ${getInputClasses(formik, "currency")}`}
                                                     {...formik.getFieldProps("currency")}
                                                     placeholder="Currency" />
                                             </div>

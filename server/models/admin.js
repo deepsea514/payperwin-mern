@@ -7,11 +7,7 @@ const AdminSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     email: { type: String, required: true, index: { unique: true } },
-    registrationOpen: Boolean,
-    feesWallet: Number,
-    betsWallet: Number,
-    totalWallet: Number,
-    userWallet: Number,
+    role: {type: String, default: 'Customer Service'},
     twoFactorAuthenticationCode: String,
     otpauthUrl: String,
 });

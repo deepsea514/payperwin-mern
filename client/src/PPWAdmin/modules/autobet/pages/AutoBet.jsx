@@ -167,16 +167,6 @@ class AutoBet extends React.Component {
         });
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     deleteAutoBet = () => {
         const { deleteId } = this.state;
         const { getAutoBetsAction } = this.props;

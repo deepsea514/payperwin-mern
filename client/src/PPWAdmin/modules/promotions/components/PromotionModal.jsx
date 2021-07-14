@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 const config = require("../../../../../../config.json");
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
@@ -45,16 +46,6 @@ export default class PromotionModal extends React.Component {
         }
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     renderType = () => {
         return Object.keys(PromotionTypes).map(function (key, index) {
             return <option key={key} value={key}>{PromotionTypes[key].name}</option>
@@ -86,10 +77,7 @@ export default class PromotionModal extends React.Component {
                                     <div className="form-group">
                                         <label>Name<span className="text-danger">*</span></label>
                                         <input name="name" placeholder="Enter Promotion Name"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "name"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "name")}`}
                                             {...formik.getFieldProps("name")}
                                         />
                                         {formik.touched.name && formik.errors.name ? (
@@ -101,10 +89,7 @@ export default class PromotionModal extends React.Component {
                                     <div className="form-group">
                                         <label>Description<span className="text-danger">*</span></label>
                                         <textarea name="description" placeholder="Enter Description"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "description"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "description")}`}
                                             rows={2}
                                             {...formik.getFieldProps("description")}
                                         />
@@ -118,10 +103,7 @@ export default class PromotionModal extends React.Component {
                                         <label>Expiration Date<span className="text-danger">*</span></label>
                                         <DatePicker
                                             name="expiration_date"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "expiration_date"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "expiration_date")}`}
                                             wrapperClassName="input-group"
                                             selected={formik.values.expiration_date}
                                             {...formik.getFieldProps("expiration_date")}
@@ -146,10 +128,7 @@ export default class PromotionModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Type<span className="text-danger">*</span></label>
                                             <select name="type" placeholder="Enter Type"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "type"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "type")}`}
                                                 {...formik.getFieldProps("type")}
                                             >
                                                 <option value="">Choose Type...</option>
@@ -164,10 +143,7 @@ export default class PromotionModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Number Of Usage<span className="text-danger">*</span></label>
                                             <input name="number_of_usage" placeholder="Enter Number Of Usage"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "number_of_usage"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "number_of_usage")}`}
                                                 {...formik.getFieldProps("number_of_usage")}
                                             />
                                             {formik.touched.number_of_usage && formik.errors.number_of_usage ? (
@@ -181,10 +157,7 @@ export default class PromotionModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Usage Limit<span className="text-danger">*</span></label>
                                             <input name="usage_limit" placeholder="Enter Usage Limit"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "usage_limit"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "usage_limit")}`}
                                                 {...formik.getFieldProps("usage_limit")}
                                             />
                                             {formik.touched.usage_limit && formik.errors.usage_limit ? (
@@ -196,10 +169,7 @@ export default class PromotionModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Use For<span className="text-danger">*</span></label>
                                             <select name="usage_for"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "usage_for"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "usage_for")}`}
                                                 {...formik.getFieldProps("usage_for")}
                                             >
                                                 <option value="">Use For...</option>
@@ -216,10 +186,10 @@ export default class PromotionModal extends React.Component {
                                 <Modal.Footer>
                                     <Button variant="light-primary" onClick={onHide}>
                                         Cancel
-                                        </Button>
+                                    </Button>
                                     <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
                                         Save
-                                        </Button>
+                                    </Button>
                                 </Modal.Footer>
                             </form>
                         }

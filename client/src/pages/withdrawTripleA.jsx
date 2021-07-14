@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -67,16 +68,6 @@ class WithdrawTripleA extends PureComponent {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { classes, user, method } = this.props;
         const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
@@ -116,10 +107,7 @@ class WithdrawTripleA extends PureComponent {
                                                     name="amount"
                                                     placeholder="Enter Withdraw Amount"
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "amount"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(                                                        formik,                                                        "amount"                                                    )}`}
                                                     {...formik.getFieldProps("amount")}
                                                 />
                                                 {formik.touched.amount && formik.errors.amount ? (
@@ -128,25 +116,6 @@ class WithdrawTripleA extends PureComponent {
                                                     </div>
                                                 ) : null}
                                             </Form.Group>
-                                            {/* <Form.Group>
-                                                <Form.Label>BTC wallet</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="wallet"
-                                                    placeholder="Enter BTC wallet"
-                                                    required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "wallet"
-                                                    )}`}
-                                                    {...formik.getFieldProps("wallet")}
-                                                />
-                                                {formik.touched.wallet && formik.errors.wallet ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.wallet}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group> */}
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox

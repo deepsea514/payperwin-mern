@@ -8,6 +8,7 @@ import JoditEditor from "jodit-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createMessage } from "../redux/services";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 const config = require("../../../../../../config.json");
 const CountryInfo = config.CountryInfo;
@@ -73,16 +74,6 @@ class CreateMessage extends React.Component {
             isSuccess: false,
         }
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     componentDidMount() {
     }
@@ -226,10 +217,8 @@ class CreateMessage extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Title<span className="text-danger">*</span></label>
-                                                <input type="text" name="title" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "title"
-                                                )}`}
+                                                <input type="text" name="title"
+                                                    className={`form-control ${getInputClasses(formik, "title")}`}
                                                     {...formik.getFieldProps("title")}
                                                     placeholder="Title" />
                                                 {formik.touched.title && formik.errors.title ? (
@@ -240,10 +229,8 @@ class CreateMessage extends React.Component {
                                             </div>
                                             <div className="col">
                                                 <label>Type<span className="text-danger">*</span></label>
-                                                <select type="text" name="type" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "type"
-                                                )}`}
+                                                <select type="text" name="type"
+                                                    className={`form-control ${getInputClasses(formik, "type")}`}
                                                     {...formik.getFieldProps("type")}>
                                                     <option value="internal">Internally</option>
                                                     <option value="mail">By Mail</option>
@@ -428,10 +415,8 @@ class CreateMessage extends React.Component {
                                             <div className="col-6">
                                                 <input type="checkbox" id="is_greater_balance" name="is_greater_balance" {...formik.getFieldProps("is_greater_balance")} />
                                                 <label htmlFor="is_greater_balance"> &nbsp;&nbsp;Users with balance is greater than </label>
-                                                <input type="text" name="greater_balance" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "greater_balance"
-                                                )}`}
+                                                <input type="text" name="greater_balance"
+                                                    className={`form-control ${getInputClasses(formik, "greater_balance")}`}
                                                     type="text"
                                                     {...formik.getFieldProps("greater_balance")}
                                                     placeholder="" />
@@ -444,10 +429,8 @@ class CreateMessage extends React.Component {
                                             <div className="col-6">
                                                 <input type="checkbox" id="is_user_from" name="is_user_from" {...formik.getFieldProps("is_user_from")} />
                                                 <label htmlFor="is_user_from"> &nbsp;&nbsp;Or Users from </label>
-                                                <select name="title" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "user_from"
-                                                )}`}
+                                                <select name="title"
+                                                    className={`form-control ${getInputClasses(formik, "user_from")}`}
                                                     {...formik.getFieldProps("user_from")}
                                                 >
                                                     <option value=''>Select Country</option>
@@ -466,10 +449,8 @@ class CreateMessage extends React.Component {
                                             <div className="col-6">
                                                 <input type="checkbox" id="is_wager_more" />
                                                 <label htmlFor="is_wager_more"> &nbsp;&nbsp;Or Users who has wagered more than </label>
-                                                <input type="text" name="wager_more" className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "wager_more"
-                                                )}`}
+                                                <input type="text" name="wager_more"
+                                                    className={`form-control ${getInputClasses(formik, "wager_more")}`}
                                                     {...formik.getFieldProps("wager_more")}
                                                     placeholder="" />
                                                 {formik.touched.wager_more && formik.errors.wager_more ? (

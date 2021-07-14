@@ -11,6 +11,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import JoditEditor from "jodit-react";
 import DocumentMeta from 'react-document-meta';
+import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -89,16 +90,6 @@ class ContactUs extends PureComponent {
             })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { classes } = this.props;
         const { ticketSchema, submitError, submitSuccess, metaData } = this.state;
@@ -146,10 +137,7 @@ class ContactUs extends PureComponent {
                                                     name="email"
                                                     placeholder="Enter Email"
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "email"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "email")}`}
                                                     {...formik.getFieldProps("email")}
                                                 />
                                                 {formik.touched.email && formik.errors.email ? (
@@ -166,10 +154,7 @@ class ContactUs extends PureComponent {
                                                     placeholder="Enter Phone Number"
                                                     containerClass="input-group"
                                                     dropdownClass="input-group-append"
-                                                    inputClass={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "phone"
-                                                    )}`}
+                                                    inputClass={`form-control ${getInputClasses(formik, "phone")}`}
                                                     required
                                                     value={formik.values.phone}
                                                     {...formik.getFieldProps("phone")}
@@ -196,10 +181,7 @@ class ContactUs extends PureComponent {
                                                     name="subject"
                                                     placeholder=""
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "subject"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "subject")}`}
                                                     {...formik.getFieldProps("subject")}
                                                 />
                                                 {formik.touched.subject && formik.errors.subject ? (
@@ -215,10 +197,7 @@ class ContactUs extends PureComponent {
                                                     name="department"
                                                     placeholder=""
                                                     required
-                                                    className={`form-control ${this.getInputClasses(
-                                                        formik,
-                                                        "department"
-                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "department")}`}
                                                     {...formik.getFieldProps("department")}
                                                 >
                                                     <option value="">...</option>

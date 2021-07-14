@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class SendGrid extends React.Component {
     constructor(props) {
@@ -51,16 +52,6 @@ export default class SendGrid extends React.Component {
                 formik.setSubmitting(false);
             })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, initialValues, sendgridSchema, isError, isSuccess } = this.state;
@@ -144,10 +135,7 @@ export default class SendGrid extends React.Component {
 
                             <div className="form-group">
                                 <label>SendGrid Api Key<span className="text-danger">*</span></label>
-                                <input type="text" name="sendgridApiKey" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "sendgridApiKey"
-                                )}`}
+                                <input type="text" name="sendgridApiKey" className={`form-control ${getInputClasses(formik, "sendgridApiKey")}`}
                                     {...formik.getFieldProps("sendgridApiKey")}
                                     placeholder="SendGrid Api Key" />
                                 {formik.touched.sendgridApiKey && formik.errors.sendgridApiKey ? (

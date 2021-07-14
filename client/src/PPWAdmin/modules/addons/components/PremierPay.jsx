@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 export default class PremierPay extends React.Component {
     constructor(props) {
@@ -60,16 +61,6 @@ export default class PremierPay extends React.Component {
                 formik.setSubmitting(false);
             })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
 
     render() {
         const { loading, initialValues, premierSchema, isError, isSuccess } = this.state;
@@ -153,10 +144,7 @@ export default class PremierPay extends React.Component {
 
                             <div className="form-group">
                                 <label>Payment Url<span className="text-danger">*</span></label>
-                                <input type="text" name="paymenturl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "paymenturl"
-                                )}`}
+                                <input type="text" name="paymenturl" className={`form-control ${getInputClasses(formik, "paymenturl")}`}
                                     {...formik.getFieldProps("paymenturl")}
                                     placeholder="Payment Url" />
                                 {formik.touched.paymenturl && formik.errors.paymenturl ? (
@@ -167,10 +155,7 @@ export default class PremierPay extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>Payout Url<span className="text-danger">*</span></label>
-                                <input type="text" name="payouturl" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "payouturl"
-                                )}`}
+                                <input type="text" name="payouturl" className={`form-control ${getInputClasses(formik, "payouturl")}`}
                                     {...formik.getFieldProps("payouturl")}
                                     placeholder="Payout Url" />
                                 {formik.touched.payouturl && formik.errors.payouturl ? (
@@ -181,10 +166,7 @@ export default class PremierPay extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>SID<span className="text-danger">*</span></label>
-                                <input type="text" name="sid" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "sid"
-                                )}`}
+                                <input type="text" name="sid" className={`form-control ${getInputClasses(formik, "sid")}`}
                                     {...formik.getFieldProps("sid")}
                                     placeholder="SID" />
                                 {formik.touched.sid && formik.errors.sid ? (
@@ -195,10 +177,7 @@ export default class PremierPay extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label>R Code<span className="text-danger">*</span></label>
-                                <input type="text" name="rcode" className={`form-control ${this.getInputClasses(
-                                    formik,
-                                    "rcode"
-                                )}`}
+                                <input type="text" name="rcode" className={`form-control ${getInputClasses(formik, "rcode")}`}
                                     {...formik.getFieldProps("rcode")}
                                     placeholder="R Code" />
                                 {formik.touched.rcode && formik.errors.rcode ? (
