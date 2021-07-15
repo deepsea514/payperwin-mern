@@ -22,6 +22,30 @@ class SportsBook extends PureComponent {
             this.setState({ metaData: metaData });
         })
 
+        const { user } = this.props;
+        if (user) {
+            this.pinnacleLogin();
+        }
+
+        const preference = JSON.parse(localStorage.getItem('frontend-preference'));
+        if (!preference || !preference.sportsbookModal) {
+            setTimeout(() => {
+                this.setState({ showModal: true });
+            }, 1500);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.user && this.props.user) {
+            this.pinnacleLogin();
+        }
+
+        if(prevProps.user && !this.props.user) {
+            this.pinnacleLogout();
+        }
+    }
+
+    pinnacleLogin = () => {
         this.setState({ loading: true });
         axios.get(`${serverUrl}/getPinnacleLogin`, { withCredentials: true })
             .then(({ data }) => {
@@ -34,20 +58,18 @@ class SportsBook extends PureComponent {
                 console.log('error');
                 this.setState({ loading: false, loginUrl: null });
             });
-        const preference = JSON.parse(localStorage.getItem('frontend-preference'));
-        if (!preference || !preference.sportsbookModal) {
-            setTimeout(() => {
-                this.setState({ showModal: true });
-            }, 1500);
-        }
+    }
+
+    pinnacleLogout = () => {
+        axios.get(`${serverUrl}/pinnacleLogout`, { withCredentials: true })
+            .then(() => console.log("logout success"))
+            .catch((err) => console.log("logout failed", err))
     }
 
     componentWillUnmount() {
         const { user } = this.props;
         if (user) {
-            axios.get(`${serverUrl}/pinnacleLogout`, { withCredentials: true })
-                .then(() => console.log("logout success"))
-                .catch((err) => console.log("logout failed", err))
+            this.pinnacleLogout();
         }
     }
 

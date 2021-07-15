@@ -525,7 +525,8 @@ expressApp.post(
     }
 )
 
-expressApp.get('/logout', (req, res) => {
+expressApp.get('/logout', async (req, res) => {
+    await pinnacleLogout(req);
     req.logout();
     res.send('logged out');
 });
@@ -1799,39 +1800,43 @@ expressApp.get('/getPinnacleLogin',
     }
 );
 
+async function pinnacleLogout(req) {
+    const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+    if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
+        console.warn("Pinnacel Sandbox Api is not set");
+        return false;
+    }
+    const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
+    let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
+    const token = generatePinnacleToken(agentCode, agentKey, secretKey);
+    if (!pinnacle) {
+        return false;
+    }
+    try {
+        await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {
+            userCode: agentCode,
+            token
+        });
+
+    } catch (error) {
+        console.log('/logout error', error)
+        return false;
+    }
+    return true;
+}
+
 expressApp.get('/pinnacleLogout',
     // bruteforce.prevent,
     isAuthenticated,
     async (req, res) => {
         try {
-            const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
-            if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
-                console.warn("Pinnacel Sandbox Api is not set");
-                return res.status(400).json({
-                    error: "Can't create pinnacle user."
-                });
+            const result = pinnacleLogout(req);
+            if (result) {
+                return res.json({ message: 'succes' });
             }
-            const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
-            let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-            const token = generatePinnacleToken(agentCode, agentKey, secretKey);
-            if (!pinnacle) {
-                return res.status(400).json({
-                    error: "Can't find pinnacle account."
-                });
-            }
-            try {
-                await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {
-                    userCode: agentCode,
-                    token
-                });
-
-            } catch (error) {
-                return res.status(400).json({
-                    error: "Pinnacle logout failed."
-                });
-            }
-
-            return res.json({ message: 'succes' });
+            return res.status(400).json({
+                error: "Pinnacle logout failed."
+            });
         } catch (error) {
             console.log(error);
             return res.status(400).json({ error: "Pinnacle logout failed." });
