@@ -58,12 +58,16 @@ const authenticateJWT = (req, res, next) => {
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        jwt.verify(token, accessTokenSecret, (err, user) => {
+        jwt.verify(token, accessTokenSecret, async (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
-            req.user = user;
-            next();
+            const admin = await Admin.findById(user._id);
+            if (admin) {
+                req.user = admin;
+                return next();
+            }
+            return res.sendStatus(403);
         });
     } else {
         res.sendStatus(401);
@@ -3507,6 +3511,51 @@ adminRouter.post(
     },
 );
 
+adminRouter.get(
+    '/admins/:id',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const admin = await Admin.findById(id);
+            res.status(200).json(admin);
+            return;
+        } catch (error) {
+            res.status(400).json({
+                error,
+                message: "Admin get failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
+
+adminRouter.put(
+    '/admins/:id',
+    authenticateJWT,
+    async (req, res) => {
+        const { id } = req.params;
+        let data = req.body;
+        try {
+            const admin = await Admin.findById(id);
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Can't find admin info."
+                });
+            }
+            if (!data.password) {
+                delete data.password;
+            }
+            await admin.update(data);
+            return res.json({ success: true });
+        } catch (error) {
+            res.status(400).json({
+                message: "Admin update failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
 
 
 module.exports = adminRouter;

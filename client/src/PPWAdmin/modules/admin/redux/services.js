@@ -12,3 +12,11 @@ export function getAdmins(page, filter) {
 export function createAdmin(value) {
     return axios.post(`${serverUrl}/admins`, value);
 }
+
+export function getAdmin(id) {
+    return axios.get(`${serverUrl}/admins/${id}`);
+}
+
+export function updateAdmin(id, data) {
+    return axios.put(`${serverUrl}/admins/${id}`, data);
+}

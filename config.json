@@ -101,7 +101,7 @@
         },
         "Customer Service": {
             "dashboard": true,
-            "admins": true,
+            "admins": false,
             "kyc": true,
             "customers": true,
             "messages": false,
