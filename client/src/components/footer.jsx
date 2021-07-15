@@ -49,6 +49,7 @@ const Footer = (props) => {
                             <ul>
                                 <li><a href="#"><i className="fab fa-facebook"></i>Facebook</a></li>
                                 <li><a href="#"><i className="fab fa-twitter"></i>Twitter</a></li>
+                                <li><a href="#"><i className="fab fa-telegram-plane"></i>Share</a></li>
                             </ul>
                         </div>
                     </div>

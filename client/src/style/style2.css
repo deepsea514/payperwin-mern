@@ -309,12 +309,7 @@ ul.list-s i {
     text-transform: uppercase;
 }
 
-.fab.fa-facebook {
-    margin-right: 7px;
-    font-size: 16px;
-}
-
-.fab.fa-twitter {
+footer ul li a i {
     margin-right: 7px;
     font-size: 16px;
 }
@@ -634,6 +629,10 @@ footer ul li a {
     color: rgba(52, 59, 72, 0.83);
     font-size: 12px;
     font-weight: 500;
+}
+
+footer ul li a:hover {
+    text-decoration: none;
 }
 
 .footer-heading {

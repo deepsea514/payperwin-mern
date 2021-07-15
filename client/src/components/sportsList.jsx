@@ -6,8 +6,6 @@ import sportNameImage from "../helpers/sportNameImage";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 import '../style/all.min.css';
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -37,7 +35,6 @@ class SportsList extends PureComponent {
             headers: {
                 'Content-Type': 'application/json',
             },
-            cancelToken: source.token
         }).then(({ data }) => {
             if (data) {
                 this._isMounted && this.setState({ sports: data })
@@ -49,7 +46,6 @@ class SportsList extends PureComponent {
 
     componentWillUnmount() {
         this._isMounted = false;
-        source.cancel('Operation canceled by the user.');
     }
 
     getLeagues = (evt, name) => {
