@@ -43,6 +43,7 @@ const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const EventStatus = config.EventStatus;
+const AdminRoles = config.AdminRoles;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
@@ -73,6 +74,15 @@ const authenticateJWT = (req, res, next) => {
         res.sendStatus(401);
     }
 };
+
+const limitRoles = (field) => (req, res, next) => {
+    if (!req.user)
+        return res.sendStatus(403);
+    if (AdminRoles[req.user.role] && AdminRoles[req.user.role][field]) {
+        return next();
+    }
+    return res.sendStatus(403);
+}
 
 
 function getTwoFactorAuthenticationCode(email) {
@@ -152,38 +162,42 @@ adminRouter.post(
     }
 );
 
-adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
-    const { email, password } = req.body;
+adminRouter.post(
+    '/login',
+    bruteforce.prevent,
+    async (req, res, next) => {
+        const { email, password } = req.body;
 
-    try {
-        const admin = await Admin.findOne({ email });
-        if (admin) {
-            admin.comparePassword(password, function (error, isMatch) {
-                if (error) {
-                    res.status(404).json({ error: 'Admin doesn\'t exist.' });
-                    return;
-                }
-                if (isMatch) {
-                    const data = admin._doc;
-                    const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
-                    res.json({ accessToken });
-                }
-                else {
-                    res.status(403).json({ error: 'Password doesn\'t match.' });
-                    return;
-                }
-            })
-        }
-        else {
-            res.status(404).json({ error: 'Admin doesn\'t exist.' });
+        try {
+            const admin = await Admin.findOne({ email });
+            if (admin) {
+                admin.comparePassword(password, function (error, isMatch) {
+                    if (error) {
+                        res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                        return;
+                    }
+                    if (isMatch) {
+                        const data = admin._doc;
+                        const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
+                        res.json({ accessToken });
+                    }
+                    else {
+                        res.status(403).json({ error: 'Password doesn\'t match.' });
+                        return;
+                    }
+                })
+            }
+            else {
+                res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                return;
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find admin.' });
             return;
         }
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({ error: 'Can\'t find admin.' });
-        return;
     }
-});
+);
 
 adminRouter.patch(
     '/changePassword',
@@ -212,14 +226,13 @@ adminRouter.patch(
 )
 
 adminRouter.get('/logout', (req, res) => {
-
 });
 
 adminRouter.get(
     '/user',
     authenticateJWT,
     async (req, res) => {
-        let admin = await Admin.findById(req.user._id);
+        let admin = req.user;
         res.json({ username: admin.username, email: admin.email, role: admin.role, _id: admin._id });
     },
 );
@@ -227,6 +240,7 @@ adminRouter.get(
 adminRouter.get(
     '/customers',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         try {
             let { page, perPage, name, email, balancemin, balancemax } = req.query;
@@ -304,6 +318,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -328,6 +343,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-overview',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -403,6 +419,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-loginhistory',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -427,6 +444,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-deposits',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -452,6 +470,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-withdraws',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -477,6 +496,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-bets',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page, src } = req.query;
         if (!perPage) perPage = 15;
@@ -510,6 +530,7 @@ adminRouter.get(
 adminRouter.patch(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id, data } = req.body;
         try {
@@ -528,6 +549,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (id) {
@@ -549,6 +571,7 @@ adminRouter.delete(
 adminRouter.get(
     '/depositreasons',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             const reasons = await DepositReason.find({ deletedAt: null });
@@ -562,6 +585,7 @@ adminRouter.get(
 adminRouter.post(
     '/depositreasons',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             const { title } = req.body;
@@ -588,6 +612,7 @@ adminRouter.post(
 adminRouter.post(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { user, reason, amount, method, status } = req.body;
@@ -649,6 +674,7 @@ adminRouter.post(
 adminRouter.get(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { page, datefrom, dateto, method, status, minamount, maxamount, perPage } = req.query;
@@ -730,6 +756,7 @@ adminRouter.get(
 adminRouter.get(
     '/deposit-csv',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { datefrom, dateto } = req.query;
@@ -782,6 +809,7 @@ adminRouter.get(
 adminRouter.patch(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { id, data } = req.body;
@@ -815,6 +843,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { id } = req.query;
@@ -842,6 +871,7 @@ adminRouter.delete(
 adminRouter.post(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { user, amount, method, status } = req.body;
@@ -888,6 +918,7 @@ adminRouter.post(
 adminRouter.get(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { page, perPage, datefrom, dateto, method, status, minamount, maxamount } = req.query;
@@ -970,6 +1001,7 @@ adminRouter.get(
 adminRouter.get(
     '/withdraw-csv',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { datefrom, dateto } = req.query;
@@ -1110,6 +1142,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
 adminRouter.patch(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     verifyTwoFactorAuthenticationCodeMiddleware,
     async (req, res) => {
         try {
@@ -1167,6 +1200,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { id } = req.query;
@@ -1274,6 +1308,7 @@ adminRouter.get(
 adminRouter.get(
     '/bets',
     authenticateJWT,
+    limitRoles('bet_activities'),
     async (req, res) => {
         try {
             let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage } = req.query;
@@ -1437,6 +1472,7 @@ adminRouter.get(
 adminRouter.get(
     '/bets-csv',
     authenticateJWT,
+    limitRoles('bet_activities'),
     async (req, res) => {
         try {
             const { datefrom, dateto, sport, minamount, maxamount } = req.query;
@@ -1600,6 +1636,7 @@ adminRouter.get(
 adminRouter.get(
     '/bet',
     authenticateJWT,
+    limitRoles('bet_activities'),
     async (req, res) => {
         try {
             let { id } = req.query;
@@ -1776,6 +1813,7 @@ const getTotalFees = async function (datefrom, dateto) {
 adminRouter.get(
     '/dashboard',
     authenticateJWT,
+    limitRoles('dashboard'),
     async (req, res) => {
         try {
             let { range } = req.query;
@@ -1888,6 +1926,7 @@ adminRouter.get(
 adminRouter.get(
     '/email-templates',
     authenticateJWT,
+    limitRoles('email_templates'),
     async function (req, res) {
         const email_templates = await Email.find();
         res.json({
@@ -1899,6 +1938,7 @@ adminRouter.get(
 adminRouter.get(
     '/email-template/:title',
     authenticateJWT,
+    limitRoles('email_templates'),
     async function (req, res) {
         const { title } = req.params;
         try {
@@ -1915,6 +1955,7 @@ adminRouter.get(
 adminRouter.post(
     '/email-template/:title',
     authenticateJWT,
+    limitRoles('email_templates'),
     async function (req, res) {
         const { title } = req.params;
 
@@ -1936,6 +1977,7 @@ adminRouter.post(
 adminRouter.post(
     '/autobet',
     authenticateJWT,
+    limitRoles('autobet'),
     async function (req, res) {
         const data = req.body;
         try {
@@ -1954,6 +1996,7 @@ adminRouter.post(
 adminRouter.get(
     '/autobets',
     authenticateJWT,
+    limitRoles('autobet'),
     async function (req, res) {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
@@ -1981,6 +2024,7 @@ adminRouter.get(
 adminRouter.patch(
     '/autobet/:id',
     authenticateJWT,
+    limitRoles('autobet'),
     async function (req, res) {
         const data = req.body;
         const { id } = req.params;
@@ -2003,6 +2047,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/autobet/:id',
     authenticateJWT,
+    limitRoles('autobet'),
     async function (req, res) {
         const { id } = req.params;
         try {
@@ -2021,6 +2066,7 @@ adminRouter.delete(
 adminRouter.post(
     '/promotion',
     authenticateJWT,
+    limitRoles('promotions'),
     async function (req, res) {
         const data = req.body;
         try {
@@ -2035,6 +2081,7 @@ adminRouter.post(
 adminRouter.get(
     '/promotions',
     authenticateJWT,
+    limitRoles('promotions'),
     async function (req, res) {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
@@ -2064,6 +2111,7 @@ adminRouter.get(
 adminRouter.get(
     '/promotion/:id',
     authenticateJWT,
+    limitRoles('promotions'),
     async function (req, res) {
         const { id } = req.params;
         try {
@@ -2086,6 +2134,7 @@ adminRouter.get(
 adminRouter.get(
     '/verifications',
     authenticateJWT,
+    limitRoles('kyc'),
     async function (req, res) {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
@@ -2135,6 +2184,7 @@ adminRouter.get(
 adminRouter.post(
     '/verification-image',
     authenticateJWT,
+    limitRoles('kyc'),
     async function (req, res) {
         const { user_id, name } = req.body;
         try {
@@ -2162,6 +2212,7 @@ adminRouter.post(
 adminRouter.post(
     '/verification-accept',
     authenticateJWT,
+    limitRoles('kyc'),
     async function (req, res) {
         const { user_id } = req.body;
         try {
@@ -2205,6 +2256,7 @@ adminRouter.post(
 adminRouter.post(
     '/verification-decline',
     authenticateJWT,
+    limitRoles('kyc'),
     async function (req, res) {
         const { user_id } = req.body;
         try {
@@ -2243,6 +2295,7 @@ adminRouter.post(
 adminRouter.get(
     '/tickets',
     authenticateJWT,
+    limitRoles('tickets'),
     async function (req, res) {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
@@ -2284,6 +2337,7 @@ adminRouter.get(
 adminRouter.get(
     '/ticket/:id',
     authenticateJWT,
+    limitRoles('tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2302,6 +2356,7 @@ adminRouter.get(
 adminRouter.post(
     '/replyticket/:id',
     authenticateJWT,
+    limitRoles('tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2344,6 +2399,7 @@ adminRouter.post(
 adminRouter.delete(
     '/ticket/:id',
     authenticateJWT,
+    limitRoles('tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2359,6 +2415,7 @@ adminRouter.delete(
 adminRouter.get(
     '/faq-subjects',
     authenticateJWT,
+    limitRoles('faq'),
     async function (req, res) {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
@@ -2384,6 +2441,7 @@ adminRouter.get(
 adminRouter.get(
     '/faq-subjects/:id',
     authenticateJWT,
+    limitRoles('faq'),
     async function (req, res) {
         const { id } = req.params;
 
@@ -2401,6 +2459,7 @@ adminRouter.get(
 adminRouter.post(
     '/faq-subjects',
     authenticateJWT,
+    limitRoles('faq'),
     // bruteforce.prevent,
     async function (req, res) {
         const { title } = req.body;
@@ -2423,6 +2482,7 @@ adminRouter.post(
 adminRouter.delete(
     '/faq-subjects/:id',
     authenticateJWT,
+    limitRoles('faq'),
     // bruteforce.prevent,
     async function (req, res) {
         const { id } = req.params;
@@ -2439,6 +2499,7 @@ adminRouter.delete(
 adminRouter.post(
     '/faq-subjects/:id/item',
     authenticateJWT,
+    limitRoles('faq'),
     // bruteforce.prevent,
     async function (req, res) {
         const { id } = req.params;
@@ -2471,6 +2532,7 @@ adminRouter.post(
 adminRouter.delete(
     '/faq-subjects/:subjectid/item/:id',
     authenticateJWT,
+    limitRoles('faq'),
     // bruteforce.prevent,
     async function (req, res) {
         const { subjectid, id } = req.params;
@@ -2494,6 +2556,7 @@ adminRouter.delete(
 adminRouter.put(
     '/faq-subjects/item/:id',
     authenticateJWT,
+    limitRoles('faq'),
     // bruteforce.prevent,
     async function (req, res) {
         const { id } = req.params;
@@ -2520,6 +2583,7 @@ adminRouter.put(
 adminRouter.post(
     '/events',
     authenticateJWT,
+    limitRoles('events'),
     bruteforce.prevent,
     async (req, res) => {
         try {
@@ -2549,6 +2613,7 @@ adminRouter.post(
 adminRouter.get(
     '/events/:id',
     authenticateJWT,
+    limitRoles('events'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2567,6 +2632,7 @@ adminRouter.get(
 adminRouter.put(
     '/events/:id',
     authenticateJWT,
+    limitRoles('events'),
     async function (req, res) {
         let { id } = req.params;
         const { name, startDate, teamA, teamB } = req.body;
@@ -2727,6 +2793,7 @@ async function matchResults(eventId, matchResult) {
 adminRouter.post(
     '/events/:id/settle',
     authenticateJWT,
+    limitRoles('events'),
     async function (req, res) {
         let { id } = req.params;
         const { teamAScore, teamBScore } = req.body;
@@ -2759,6 +2826,7 @@ adminRouter.post(
 adminRouter.post(
     '/events/:id/cancel',
     authenticateJWT,
+    limitRoles('events'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2785,6 +2853,7 @@ adminRouter.post(
 adminRouter.get(
     '/events',
     authenticateJWT,
+    limitRoles('events'),
     async function (req, res) {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
@@ -2822,6 +2891,7 @@ adminRouter.get(
 adminRouter.post(
     '/messages',
     authenticateJWT,
+    limitRoles('messages'),
     async (req, res) => {
         const { type, publish, title, content } = req.body;
         if (publish) {
@@ -2920,6 +2990,7 @@ adminRouter.post(
 adminRouter.get(
     '/messages',
     authenticateJWT,
+    limitRoles('messages'),
     async (req, res) => {
         let { perPage, page } = req.query;
 
@@ -2942,6 +3013,7 @@ adminRouter.get(
 adminRouter.get(
     '/messages/:id',
     authenticateJWT,
+    limitRoles('messages'),
     async (req, res) => {
         let { id } = req.params;
 
@@ -2953,6 +3025,7 @@ adminRouter.get(
 adminRouter.delete(
     '/messages/:id',
     authenticateJWT,
+    limitRoles('messages'),
     async (req, res) => {
         let { id } = req.params;
 
@@ -2964,6 +3037,7 @@ adminRouter.delete(
 adminRouter.put(
     '/messages/:id',
     authenticateJWT,
+    limitRoles('messages'),
     async (req, res) => {
         let { id } = req.params;
         const data = req.body;
@@ -3069,6 +3143,7 @@ adminRouter.put(
 adminRouter.get(
     '/active-user',
     authenticateJWT,
+    limitRoles('reports'),
     async (req, res) => {
         let { count } = req.query;
         if (!count) count = 20;
@@ -3125,6 +3200,7 @@ adminRouter.get(
 adminRouter.get(
     '/active-user-csv',
     authenticateJWT,
+    limitRoles('reports'),
     async (req, res) => {
         let { count } = req.query;
         if (!count) count = 20;
@@ -3184,6 +3260,7 @@ adminRouter.get(
 adminRouter.get(
     '/meta/:title',
     authenticateJWT,
+    limitRoles('meta_tags'),
     async (req, res) => {
         const { title } = req.params;
         const meta_tag = await MetaTag.findOne({ pageTitle: title });
@@ -3194,6 +3271,7 @@ adminRouter.get(
 adminRouter.put(
     '/meta/:title',
     authenticateJWT,
+    limitRoles('meta_tags'),
     async (req, res) => {
         const { title } = req.params;
         const data = req.body;
@@ -3218,6 +3296,7 @@ adminRouter.put(
 adminRouter.get(
     '/addons/:name',
     authenticateJWT,
+    limitRoles('addons'),
     async (req, res) => {
         const { name } = req.params;
         const addon = await Addon.findOne({ name });
@@ -3228,6 +3307,7 @@ adminRouter.get(
 adminRouter.put(
     '/addons/:name',
     authenticateJWT,
+    limitRoles('addons'),
     async (req, res) => {
         const { name } = req.params;
         const data = req.body;
@@ -3248,6 +3328,7 @@ adminRouter.put(
 adminRouter.post(
     '/articles',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const data = req.body;
         let articleObj = {
@@ -3268,6 +3349,7 @@ adminRouter.post(
 adminRouter.get(
     '/articles',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         try {
             let { perPage, page, status } = req.query;
@@ -3307,6 +3389,7 @@ adminRouter.get(
 adminRouter.get(
     '/articles/:id',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -3322,6 +3405,7 @@ adminRouter.get(
 adminRouter.put(
     '/articles/:id',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -3343,6 +3427,7 @@ adminRouter.put(
 adminRouter.delete(
     '/articles/:id',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const { id } = req.params;
         try {
@@ -3358,6 +3443,7 @@ adminRouter.delete(
 adminRouter.get(
     '/articles/categories',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const categories = await ArticleCategory.find().sort({ createdAt: -1 });
         res.json(categories);
@@ -3367,6 +3453,7 @@ adminRouter.get(
 adminRouter.post(
     '/articles/categories',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const data = req.body;
         try {
@@ -3381,6 +3468,7 @@ adminRouter.post(
 adminRouter.delete(
     '/articles/categories/:id',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const { id } = req.params;
         try {
@@ -3396,6 +3484,7 @@ adminRouter.delete(
 adminRouter.get(
     '/articles/searchcategories',
     authenticateJWT,
+    limitRoles('articles'),
     async (req, res) => {
         const { name } = req.query;
         const categories = await ArticleCategory.find({ title: { "$regex": name, "$options": "i" } });
@@ -3406,6 +3495,7 @@ adminRouter.get(
 adminRouter.get(
     '/frontend/:name',
     authenticateJWT,
+    limitRoles('frontend'),
     async (req, res) => {
         const { name } = req.params;
         const frontend = await Frontend.findOne({ name: name });
@@ -3416,6 +3506,7 @@ adminRouter.get(
 adminRouter.put(
     '/frontend/:name',
     authenticateJWT,
+    limitRoles('frontend'),
     async (req, res) => {
         const { name } = req.params;
         const value = req.body;
@@ -3456,6 +3547,7 @@ adminRouter.post(
 adminRouter.get(
     '/admins',
     authenticateJWT,
+    limitRoles('admins'),
     async (req, res) => {
         try {
             let { perPage, page, role } = req.query;
@@ -3495,6 +3587,7 @@ adminRouter.get(
 adminRouter.post(
     '/admins',
     authenticateJWT,
+    limitRoles('admins'),
     async (req, res) => {
         const { email, password, username, role } = req.body;
         try {
@@ -3514,6 +3607,7 @@ adminRouter.post(
 adminRouter.get(
     '/admins/:id',
     authenticateJWT,
+    limitRoles('admins'),
     async (req, res) => {
         const { id } = req.params;
         try {
@@ -3533,6 +3627,7 @@ adminRouter.get(
 adminRouter.put(
     '/admins/:id',
     authenticateJWT,
+    limitRoles('admins'),
     async (req, res) => {
         const { id } = req.params;
         let data = req.body;
