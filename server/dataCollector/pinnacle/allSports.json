@@ -1,0 +1,238 @@
+[
+    {
+        "id": 1,
+        "name": "Badminton"
+    },
+    {
+        "id": 2,
+        "name": "Bandy"
+    },
+    {
+        "id": 3,
+        "name": "Baseball"
+    },
+    {
+        "id": 4,
+        "name": "Basketball"
+    },
+    {
+        "id": 5,
+        "name": "Beach Volleyball"
+    },
+    {
+        "id": 6,
+        "name": "Boxing"
+    },
+    {
+        "id": 7,
+        "name": "Chess"
+    },
+    {
+        "id": 8,
+        "name": "Cricket"
+    },
+    {
+        "id": 9,
+        "name": "Curling"
+    },
+    {
+        "id": 10,
+        "name": "Darts"
+    },
+    {
+        "id": 11,
+        "name": "Darts (Legs)"
+    },
+    {
+        "id": 12,
+        "name": "E Sports"
+    },
+    {
+        "id": 13,
+        "name": "Field Hockey"
+    },
+    {
+        "id": 14,
+        "name": "Floorball"
+    },
+    {
+        "id": 15,
+        "name": "Football"
+    },
+    {
+        "id": 16,
+        "name": "Futsal"
+    },
+    {
+        "id": 17,
+        "name": "Golf"
+    },
+    {
+        "id": 18,
+        "name": "Handball"
+    },
+    {
+        "id": 19,
+        "name": "Hockey"
+    },
+    {
+        "id": 20,
+        "name": "Horse Racing"
+    },
+    {
+        "id": 22,
+        "name": "Mixed Martial Arts"
+    },
+    {
+        "id": 23,
+        "name": "Other Sports"
+    },
+    {
+        "id": 24,
+        "name": "Politics"
+    },
+    {
+        "id": 26,
+        "name": "Rugby League"
+    },
+    {
+        "id": 27,
+        "name": "Rugby Union"
+    },
+    {
+        "id": 28,
+        "name": "Snooker"
+    },
+    {
+        "id": 29,
+        "name": "Soccer"
+    },
+    {
+        "id": 30,
+        "name": "Softball"
+    },
+    {
+        "id": 31,
+        "name": "Squash"
+    },
+    {
+        "id": 32,
+        "name": "Table Tennis"
+    },
+    {
+        "id": 33,
+        "name": "Tennis"
+    },
+    {
+        "id": 34,
+        "name": "Volleyball"
+    },
+    {
+        "id": 35,
+        "name": "Volleyball (Points)"
+    },
+    {
+        "id": 36,
+        "name": "Water Polo"
+    },
+    {
+        "id": 39,
+        "name": "Aussie Rules"
+    },
+    {
+        "id": 40,
+        "name": "Alpine Skiing"
+    },
+    {
+        "id": 41,
+        "name": "Biathlon"
+    },
+    {
+        "id": 42,
+        "name": "Ski Jumping"
+    },
+    {
+        "id": 43,
+        "name": "Cross Country"
+    },
+    {
+        "id": 44,
+        "name": "Formula 1"
+    },
+    {
+        "id": 45,
+        "name": "Cycling"
+    },
+    {
+        "id": 46,
+        "name": "Bobsleigh"
+    },
+    {
+        "id": 47,
+        "name": "Figure Skating"
+    },
+    {
+        "id": 48,
+        "name": "Freestyle Skiing"
+    },
+    {
+        "id": 49,
+        "name": "Luge"
+    },
+    {
+        "id": 50,
+        "name": "Nordic Combined"
+    },
+    {
+        "id": 51,
+        "name": "Short Track"
+    },
+    {
+        "id": 52,
+        "name": "Skeleton"
+    },
+    {
+        "id": 53,
+        "name": "Snow Boarding"
+    },
+    {
+        "id": 54,
+        "name": "Speed Skating"
+    },
+    {
+        "id": 55,
+        "name": "Olympics"
+    },
+    {
+        "id": 56,
+        "name": "Athletics"
+    },
+    {
+        "id": 57,
+        "name": "Crossfit"
+    },
+    {
+        "id": 58,
+        "name": "Entertainment"
+    },
+    {
+        "id": 60,
+        "name": "Drone Racing"
+    },
+    {
+        "id": 62,
+        "name": "Poker"
+    },
+    {
+        "id": 63,
+        "name": "Motorsport"
+    },
+    {
+        "id": 64,
+        "name": "Simulated Games"
+    },
+    {
+        "id": 65,
+        "name": "Sumo"
+    }
+]
