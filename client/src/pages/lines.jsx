@@ -8,6 +8,8 @@ import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 import DocumentMeta from 'react-document-meta';
 import calculateNewOdds from '../helpers/calculateNewOdds';
+import { Preloader, ThreeDots } from 'react-preloader-icon';
+import QRCode from "react-qr-code";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -15,11 +17,16 @@ const serverUrl = config.appUrl;
 class Lines extends PureComponent {
     constructor(props) {
         super(props);
+        const { history } = props;
+        const currentUrl = `https://www.payperwin.co${history.location.pathname}`;
         this.state = {
             data: null,
             error: null,
             metaData: null,
             showModal: false,
+            shareModal: false,
+            currentUrl: currentUrl,
+            urlCopied: false,
         };
     }
 
@@ -29,6 +36,13 @@ class Lines extends PureComponent {
             this.setState({ metaData: metaData });
         })
         this.getSport();
+
+    }
+
+    copyUrl = () => {
+        const { currentUrl } = this.state;
+        navigator.clipboard.writeText(currentUrl);
+        this.setState({ urlCopied: true });
     }
 
     componentDidUpdate(prevProps) {
@@ -130,7 +144,7 @@ class Lines extends PureComponent {
     render() {
         const { match, addBet, betSlip, removeBet, timezone } = this.props;
         const { sportName, leagueId, eventId } = match.params;
-        const { data, error, metaData, showModal } = this.state;
+        const { data, error, metaData, showModal, shareModal, currentUrl, urlCopied } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -150,7 +164,7 @@ class Lines extends PureComponent {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                            Unfortunately Payper Win is unable to provide better odds for this particular bet
+                                Unfortunately Payper Win is unable to provide better odds for this particular bet
                             </p>
                             <div className="text-right">
                                 <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>
@@ -159,9 +173,57 @@ class Lines extends PureComponent {
                         </div>
                     </div>
                 </div>}
+                {shareModal && <div className="modal confirmation">
+                    <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
+                    <div className="col-in">
+                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
+                        <div>
+                            <b>Share This Link</b>
+                            <hr />
+                            <div className="row">
+                                <div className="col input-group mb-3">
+                                    <input type="text"
+                                        className="form-control"
+                                        placeholder="Recipient's username"
+                                        value={currentUrl}
+                                        readOnly
+                                    />
+                                    <div className="input-group-append">
+                                        {!urlCopied && <button
+                                            className="btn btn-outline-secondary"
+                                            type="button"
+                                            onClick={this.copyUrl}
+                                        >
+                                            <i className="fas fa-clipboard" /> Copy
+                                        </button>}
+                                        {urlCopied && <button
+                                            className="btn btn-outline-success"
+                                            type="button">
+                                            <i className="fas fa-clipboard-check" /> Copied
+                                        </button>}
+                                    </div>
+                                </div>
+                            </div>
+                            <center>
+                                <div className="mt-2">
+                                    <QRCode value={currentUrl} />
+                                </div>
+                            </center>
+                            <div className="text-right">
+                                <button className="form-button ml-2" onClick={() => this.setState({ shareModal: false })}> Close </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
                 <center>
                     <div>
                         {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
+                        <div className="float-right">
+                            <button className="form-button ml-2"
+                                onClick={() => this.setState({ shareModal: true, urlCopied: false })}>
+                                <i className="fas fa-link" /> Share
+                            </button>
+                        </div>
                     </div>
                     <strong>{teamA} VS {teamB}</strong>
                 </center>
