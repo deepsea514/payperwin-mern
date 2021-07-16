@@ -1,6 +1,6 @@
 const sportImages = {
     // 'E Sports': 'fas fa-headset',
-    // 'Baseball': 'fas fa-baseball-ball',
+    'Baseball': '/images/icons/baseball.png',
     // 'Softball': 'fas fa-baseball-ball',
     'Soccer': '/images/icons/soccer.png',
     // 'Futsal': 'fas fa-futbol',
@@ -32,7 +32,7 @@ const sportImages = {
     // 'Darts (Legs)': 'fap fa-bullseye-arrow',
     // 'Snooker': 'fas fa-circle',
     // 'Squash': 'fap fa-racquet',
-    // 'Tennis': 'fap fa-racquet',
+    'Tennis': '/images/icons/tennis.png',
     // 'Poker': 'fap fa-spade',
     // 'Motorsport': 'fas fa-flag-checkered',
     // 'Formula 1': 'fas fa-flag-checkered',
