@@ -101,13 +101,12 @@ mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
 // const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 const mongooptions = {
+    authSource: "admin",
+    user: config.mongo.username,
+    pass: config.mongo.password,
     useMongoClient: true,
 }
-if (config.mongo && config.mongo.username) {
-    mongooptions.authSource = "admin";
-    mongooptions.user = config.mongo.username;
-    mongooptions.pass = config.mongo.password;
-}
+
 
 mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions).then(async () => {
     console.info('Using database:', databaseName);
