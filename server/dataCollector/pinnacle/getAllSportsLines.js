@@ -11,6 +11,7 @@ const config = require('../../../config.json');
 const mongoose = require('mongoose');
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
+const sportsData = require('./sports.json');
 
 // Database
 mongoose.Promise = global.Promise;
@@ -58,22 +59,26 @@ async function getAllSportsLines() {
         };
         const { data } = await axios.get(url, reqConfig);
         if (data) {
-            const soccer = data.sports.find(sport => sport.name.toLowerCase() == 'soccer');
-            await SportsDir.findOneAndUpdate({ origin: "pinnacle" }, { sports: [soccer] }, { upsert: true });
-            const { hasOfferings, eventCount, name } = soccer;
-            if (hasOfferings && eventCount > 0) {
-                const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
-                // if (
-                //     !sportData
-                //     || new Date() - new Date(sportData.updatedAt) > (1000 * 60 * 60 * 20)
-                // ) {
-                console.log('Getting lines for', name);
-                await getSportLines(name);
-                console.log('sleeping...')
-                await sleep(61 * 1000);
-                // } else {
-                //     console.log(name, 'skipped, already got within 20 hours');
-                // }
+            const sports = data.sports.filter(sport => sportsData.find(sportData => sportData.id == sport.id));
+            await SportsDir.findOneAndUpdate({ origin: "pinnacle" }, { sports: sports }, { upsert: true });
+            for (const sport of sports) {
+                const { hasOfferings, eventCount, name } = sport;
+                if (hasOfferings && eventCount > 0) {
+                    // const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+                    // if (
+                    //     !sportData
+                    //     || new Date() - new Date(sportData.updatedAt) > (1000 * 60 * 60 * 20)
+                    // ) {
+
+                    console.log('Getting lines for', name);
+                    await getSportLines(name);
+                    console.log('sleeping...')
+                    await sleep(61 * 1000);
+
+                    // } else {
+                    //     console.log(name, 'skipped, already got within 20 hours');
+                    // }
+                }
             }
         } else {
             console.log('no data');
