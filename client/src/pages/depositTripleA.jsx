@@ -39,8 +39,8 @@ class DepositTripleA extends PureComponent {
         this.state = {
             depositSchema: Yup.object().shape({
                 amount: Yup.number()
-                    .min(0, "Minimum Deposit Amount is 25 CAD.")
-                    .max(3000, "Maximum Deposit Amount is 3000 CAD."),
+                    .min(5, "Minimum Deposit Amount is 5 CAD.")
+                    .max(50000, "Maximum Deposit Amount is 50,000 CAD."),
                 email: Yup.string()
                     .email("Wrong email format")
                     .required("Email is required"),

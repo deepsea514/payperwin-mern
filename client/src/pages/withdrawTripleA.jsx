@@ -76,12 +76,10 @@ class WithdrawTripleA extends PureComponent {
             // wallet: '',
             method: method
         };
-        const balance = Number(user ? user.balance : 0);
-        const balanceStr = balance.toFixed(2);
         const withdrawSchema = Yup.object().shape({
             amount: Yup.number()
-                .min(0, "Minimum Withdraw Amount is 25 CAD.")
-                .max(balance, `Maximum Withdraw Amount is ${balanceStr} CAD.`),
+                .min(15, "Minimum Withdraw Amount is 15 CAD.")
+                .max(500000, `Maximum Withdraw Amount is 50,000 CAD.`),
             method: Yup.string(),
         });
 

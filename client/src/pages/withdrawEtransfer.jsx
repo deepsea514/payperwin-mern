@@ -74,12 +74,9 @@ class WithdrawETransfer extends PureComponent {
             amount: 0,
             method: 'eTransfer'
         };
-        const balance = Number(user ? user.balance : 0);
-        const balanceStr = balance.toFixed(2);
         const withdrawSchema = Yup.object().shape({
             amount: Yup.number()
-                .min(0, "Minimum Withdraw Amount is 25 CAD.")
-                .max(balance, `Maximum Withdraw Amount is ${balanceStr} CAD.`),
+                .min(25, "Minimum Withdraw Amount is 25 CAD."),
             method: Yup.string(),
         });
         return (
