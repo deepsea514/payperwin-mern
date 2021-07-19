@@ -11,6 +11,7 @@ const BetSportsBook = require("./models/betsportsbook");
 const TransactionSportsBook = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
+const Addon = require("./models/addon");
 //local helpers
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const io = require('./libs/socket');
@@ -35,8 +36,6 @@ const ActionErrorCode = {
     InsufficientFunds: -2,
 }
 
-const { agentCode, agentKey, secretKey } = config;
-
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
 };
@@ -60,6 +59,15 @@ const tokenCheck = (req, res, next) => {
                 "Timestamp": new Date()
             });
         }
+
+        const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+        if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.agentCode) {
+            console.warn("Pinnacel Sandbox Api is not set");
+            return res.status(400).json({
+                error: "Can't create pinnacle user."
+            });
+        }
+        const { agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
 
         const token = generatePinnacleToken(agentCode, agentKey, secretKey, Timestamp);
         if (token != SignatureFromReq) {
@@ -102,6 +110,14 @@ v1Router.post('/:agentcode/wallet/usercode/:usercode/balance',
                 usercode
             }
         });
+        const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+        if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.agentCode) {
+            console.warn("Pinnacel Sandbox Api is not set");
+            return res.status(400).json({
+                error: "Can't create pinnacle user."
+            });
+        }
+        const { agentCode } = pinnacleSandboxAddon.value;
         if (agentcode != agentCode) {
             return res.json({
                 "ErrorCode": ErrorCode.UnknownError,
@@ -151,6 +167,14 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
                 requestid
             }
         });
+        const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
+        if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.agentCode) {
+            console.warn("Pinnacel Sandbox Api is not set");
+            return res.status(400).json({
+                error: "Can't create pinnacle user."
+            });
+        }
+        const { agentCode } = pinnacleSandboxAddon.value;
 
         if (agentcode != agentCode) {
             return res.json({
