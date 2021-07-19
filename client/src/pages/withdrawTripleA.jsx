@@ -105,7 +105,7 @@ class WithdrawTripleA extends PureComponent {
                                                     name="amount"
                                                     placeholder="Enter Withdraw Amount"
                                                     required
-                                                    className={`form-control ${getInputClasses(                                                        formik,                                                        "amount"                                                    )}`}
+                                                    className={`form-control ${getInputClasses(formik, "amount")}`}
                                                     {...formik.getFieldProps("amount")}
                                                 />
                                                 {formik.touched.amount && formik.errors.amount ? (
@@ -127,7 +127,7 @@ class WithdrawTripleA extends PureComponent {
                                                 labelPlacement="end"
                                                 label={
                                                     <span>
-                                                        This is your free withdrawal of the calendar month.
+                                                        This is your free withdrawal of the calendar month.<br />
                                                         You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount.
                                                         All additional withdrawals during the calendar month, for any amount using any withdrawal method, will incur a fee.
                                                         Do you agree?
