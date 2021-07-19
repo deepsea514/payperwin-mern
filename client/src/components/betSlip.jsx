@@ -127,7 +127,7 @@ export default class BetSlip extends PureComponent {
                                         Total Risk
                                     </div>
                                     <div className="total-st-left text-right">
-                                        USD {totalStake.toFixed(2)}
+                                        CAD {totalStake.toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="total-stack d-flex">
@@ -135,7 +135,7 @@ export default class BetSlip extends PureComponent {
                                         Total Win
                                     </div>
                                     <div className="total-st-left text-right">
-                                        USD {totalWin.toFixed(2)}
+                                        CAD {totalWin.toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="form-error">
