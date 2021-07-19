@@ -418,39 +418,42 @@ expressApp.post(
     },
 );
 
-expressApp.post('/login', bruteforce.prevent, (req, res, next) => {
-    const { session } = req;
-    passport.authenticate('local', (err, user/* , info */) => {
-        if (err) { return next(err); }
-        if (!user) { return res.status(403).json({ error: 'Incorrect username or password' }); }
-        req.logIn(user, (err2) => {
-            if (err) { return next(err2); }
-            var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            if (ip_address.substr(0, 7) == "::ffff:") {
-                ip_address = ip_address.substr(7)
-            }
-            let log = new LoginLog({
-                user: user._id,
-                ip_address
-            });
-            log.save(function (error) {
-                if (error) console.log("login Error", error);
-                // else console.log(`User login log - ${user.username}`);
-            });
+expressApp.post('/login',
+    // bruteforce.prevent,
+    (req, res, next) => {
+        const { session } = req;
+        passport.authenticate('local', (err, user/* , info */) => {
+            if (err) { return next(err); }
+            if (!user) { return res.status(403).json({ error: 'Incorrect username or password' }); }
+            req.logIn(user, (err2) => {
+                if (err) { return next(err2); }
+                var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                if (ip_address.substr(0, 7) == "::ffff:") {
+                    ip_address = ip_address.substr(7)
+                }
+                let log = new LoginLog({
+                    user: user._id,
+                    ip_address
+                });
+                log.save(function (error) {
+                    if (error) console.log("login Error", error);
+                    // else console.log(`User login log - ${user.username}`);
+                });
 
-            if (user.roles.enable_2fa) {
-                const _2fa_code = get2FACode();
-                session._2fa_code = {
-                    _2fa_code,
-                    expire: new Date().addMins(10),
-                };
-                send2FAVerifyEmail(user.email, _2fa_code);
-                return res.json({ name: user.username, _2fa_required: true });
-            }
-            return res.json({ name: user.username, _2fa_required: false });
-        });
-    })(req, res, next);
-});
+                if (user.roles.enable_2fa) {
+                    const _2fa_code = get2FACode();
+                    session._2fa_code = {
+                        _2fa_code,
+                        expire: new Date().addMins(10),
+                    };
+                    send2FAVerifyEmail(user.email, _2fa_code);
+                    return res.json({ name: user.username, _2fa_required: true });
+                }
+                return res.json({ name: user.username, _2fa_required: false });
+            });
+        })(req, res, next);
+    }
+);
 
 function send2FAVerifyEmail(email, code) {
     const msg = {
@@ -2098,6 +2101,14 @@ const getMaxWithdraw = async (user) => {
     const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
     return maxwithdraw;
 }
+
+expressApp.get(
+    '/freeWithdraw',
+    isAuthenticated,
+    async (req, res) => {
+
+    }
+)
 
 expressApp.post(
     '/withdraw',
