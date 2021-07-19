@@ -5,6 +5,12 @@ import PaymentOptionTripleA from "../components/PaymentOptionTripleA";
 import DocumentMeta from 'react-document-meta';
 import GoToTop from "../components/gotoTop";
 
+const imageStyle = {
+    width: '90%',
+    height: 'auto',
+    maxHeight: 'none',
+}
+
 class PaymentOptions extends Component {
     constructor(props) {
         super(props);
@@ -51,13 +57,13 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/eTransfer.png" />
+                                        <img src="images/eTransfer.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Interac E-Transfer</li>
-                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Fee : <strong>Free</strong> </li>
                                             <li>Min : <strong>$25</strong></li>
                                             <li>Max : <strong>$3,000&nbsp;Daily</strong></li>
                                         </ul>
@@ -66,13 +72,13 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/bitcoin.png" />
+                                        <img src="images/bitcoin.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Bitcoin</li>
-                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Fee : <strong>Free</strong> </li>
                                             <li>Min : <strong>$5</strong></li>
                                             <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
@@ -81,13 +87,13 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'ethereum' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/Ethereum.png" />
+                                        <img src="images/Ethereum.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Ethereum</li>
-                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Fee : <strong>Free</strong> </li>
                                             <li>Min : <strong>$5</strong></li>
                                             <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
@@ -96,13 +102,13 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'usdt' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/USDT.png" />
+                                        <img src="images/USDT.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> USDT</li>
-                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Fee : <strong>Free</strong> </li>
                                             <li>Min : <strong>$5</strong></li>
                                             <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
@@ -118,7 +124,7 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/eTransfer.png" />
+                                        <img src="images/eTransfer.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
@@ -133,7 +139,7 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/bitcoin.png" />
+                                        <img src="images/bitcoin.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
@@ -148,7 +154,7 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'ethereum' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/Ethereum.png" />
+                                        <img src="images/Ethereum.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">
@@ -163,7 +169,7 @@ class PaymentOptions extends Component {
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'usdt' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
-                                        <img src="images/USDT.png" />
+                                        <img src="images/USDT.png" style={imageStyle} />
                                     </div>
 
                                     <div className="col-sm-8">

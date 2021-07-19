@@ -40,7 +40,7 @@ class SportsBook extends PureComponent {
             this.pinnacleLogin();
         }
 
-        if(prevProps.user && !this.props.user) {
+        if (prevProps.user && !this.props.user) {
             this.pinnacleLogout();
         }
     }
@@ -122,12 +122,14 @@ class SportsBook extends PureComponent {
                             return <div>Loading...</div>;
                         if (loginUrl == null)
                             return <div>Error getting sportsbook.</div>;
+                        console.log('got Url');
                         return <Iframe url={loginUrl}
                             width="100%"
                             height="700px"
                             display="initial"
                             position="relative" />
                     }
+                    console.log('default Url');
                     return <Iframe url="https://fv-e38l1jq.oreo88.com/en/"
                         width="100%"
                         height="700px"
