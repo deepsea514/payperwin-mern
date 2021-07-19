@@ -176,7 +176,7 @@ class WithdrawETransfer extends PureComponent {
                 <fieldset className="depositFieldset">
                     <legend>Interac E-Tranfer Withdraw Limits</legend>
                     <p>Minumum Withdraw: CAD 25.00</p>
-                    <p>Maximum Withdraw: CAD {balanceStr}</p>
+                    <p>Maximum Withdraw: CAD 3,000.00</p>
                 </fieldset>
             </div>
         );
