@@ -107,14 +107,23 @@ async function matchResults(sportName, events) {
                                     awayScore: score_away,
                                 }
                             }
+                            const betFee = Number((payableToWin * 0.03).toFixed(2));
                             await Bet.findByIdAndUpdate(_id, betChanges);
-                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount + payableToWin } });
+                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount + payableToWin - betFee } });
                             await FinancialLog.create({
                                 financialtype: 'betwon',
                                 uniqid: `BW${ID()}`,
                                 user: userId,
                                 amount: betAmount + payableToWin,
                                 method: 'betwon',
+                                status: FinancialStatus.success,
+                            });
+                            await FinancialLog.create({
+                                financialtype: 'betfee',
+                                uniqid: `BF${ID()}`,
+                                user: userId,
+                                amount: betFee,
+                                method: 'betfee',
                                 status: FinancialStatus.success,
                             });
                             // TODO: email winner

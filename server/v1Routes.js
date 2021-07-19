@@ -352,7 +352,23 @@ async function updateAction(action, user) {
                 };
                 sgMail.send(msg);
             }
+        } else if (Name.toUpperCase() == 'SETTLED') {
+            const msg = {
+                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                to: email,
+                subject: 'You won a wager!',
+                text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://payperwin.co/history`,
+                html: simpleresponsive(`
+                    <p>
+                        Congratulations! You won $${Transaction.Amount}. View Result Details:
+                    </p>
+                    `,
+                    { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                ),
+            };
+            sgMail.send(msg);
         }
+
         let returnObj = {
             Id,
             WagerId: WagerInfo.WagerId,
@@ -379,8 +395,26 @@ async function updateAction(action, user) {
                     method: `bet - ${Name}`,
                     status: FinancialStatus.success,
                 });
-                await User.findByIdAndUpdate(new ObjectId(user._id),
-                    { balance: user.balance + Transaction.Amount });
+                if (Name.toUpperCase() == 'SETTLED') {
+                    const betFee = Number((WagerInfo.ProfitAndLoss * 0.03).toFixed(2));
+                    await User.findByIdAndUpdate(
+                        user._id,
+                        { $inc: { balance: Transaction.Amount - betFee } }
+                    );
+                    await FinancialLog.create({
+                        financialtype: 'betfee',
+                        uniqid: `BF${ID()}`,
+                        user: userId,
+                        amount: betFee,
+                        method: 'betfee',
+                        status: FinancialStatus.success,
+                    });
+                } else {
+                    await User.findByIdAndUpdate(
+                        user._id,
+                        { $inc: { balance: Transaction.Amount } }
+                    );
+                }
             }
 
             returnObj = {
