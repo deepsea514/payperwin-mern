@@ -113,7 +113,7 @@ class ContactUs extends PureComponent {
                     The Customer Services email address is the primary contact for all Account, Betting and Payment related questions or issues.
                     Our customer service representatives are available to assist you by email 24 hours a day, 7 days a week.
                     If you are already a member, remember to use the email address registered to your PayperWin account, and to include your Phone Number.
-                    You can also contact us by sending an email to: <a href="mailto:customerservice@payperwin.co">customerservice@payperwin.co</a>
+                    You can also contact us by sending an email to: <a href="mailto:support@payperwin.ca">support@payperwin.ca</a>
                 </p>
                 <hr />
                 <div className="main-cnt">

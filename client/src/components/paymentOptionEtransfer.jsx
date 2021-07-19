@@ -114,7 +114,7 @@ class PaymentOptionEtransfer extends Component {
                             <li>Log in to your PayPer Win account.</li>
                             <li>Go to the Cashier section and click on the Interac e-Transfer icon in the withdrawal section.</li>
                             <li>Enter the amount, ensuring that your email address and phone number are correct and select "Submit".</li>
-                            <li>If the email address and phone number are not correct, please contact customerservice@payperwin.co to update your account information before submitting the request.</li>
+                            <li>If the email address and phone number are not correct, please contact support@payperwin.ca to update your account information before submitting the request.</li>
                             <li>Once the transaction is approved, the funds will be deducted from your PayPer Win player account and you will receive an email with instructions to claim your funds at Interac.</li>
                         </ul>
                     </div>
