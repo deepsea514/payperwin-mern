@@ -63,6 +63,8 @@ class TransactionHistory extends Component {
                 return '-';
             case 'betwon':
                 return '';
+            case 'betfee':
+                return '-';
             case 'bet':
                 switch (method) {
                     case 'bet':
@@ -92,6 +94,8 @@ class TransactionHistory extends Component {
                 return `Withdraw made through ${method}`;
             case 'betwon':
                 return `Won the bet.`;
+            case 'betfee':
+                return 'Bet fee';
             case 'bet':
                 switch (method) {
                     case 'bet':
