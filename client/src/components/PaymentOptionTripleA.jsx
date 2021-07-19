@@ -1,8 +1,30 @@
 import React, { Component } from 'react';
 
-class PaymentOptionBitcoin extends Component {
+class PaymentOptionTripleA extends Component {
+    constructor(props) {
+        super(props);
+        const { option } = props;
+        let currency = '';
+        switch (option) {
+            case 'bitcoin':
+                currency = 'Bitcoin';
+                break;
+            case 'ethereum':
+                currency = 'Ethereum';
+                break;
+            case 'usdt':
+            default:
+                currency = 'USDT';
+                break;
+        }
+        this.state = {
+            currency
+        }
+    }
+
     render() {
-        const { onBack } = this.props;
+        const { onBack, option } = this.props;
+        const { currency } = this.state;
         return (
             <div className="main-cnt mt-5">
                 <a
@@ -10,10 +32,18 @@ class PaymentOptionBitcoin extends Component {
                     onClick={onBack}>
                     <strong><i className="fas fa-chevron-left"></i> Back</strong>
                 </a>
-                <div>
+                {option == 'bitcoin' && <div>
                     <span className="card-name">Bitcoin</span>
                     <img className="right" style={{ border: "none" }} src="images/bitcoin.png" alt="Interac e-Transfer" width="170" height="auto" />
-                </div>
+                </div>}
+                {option == 'ethereum' && <div>
+                    <span className="card-name">Ethereum</span>
+                    <img className="right" style={{ border: "none" }} src="images/Ethereum.png" alt="Interac e-Transfer" width="170" height="auto" />
+                </div>}
+                {option == 'usdt' && <div>
+                    <span className="card-name">USDT</span>
+                    <img className="right" style={{ border: "none" }} src="images/USDT.png" alt="Interac e-Transfer" width="170" height="auto" />
+                </div>}
 
                 <hr />
                 <p>For more information on a specific currency, select from the drop-down box below.</p>
@@ -43,7 +73,7 @@ class PaymentOptionBitcoin extends Component {
                                     <center>Free</center>
                                 </td>
                                 <td className="gray-cell">
-                                    <center>&lrm; $18</center>
+                                    <center>&lrm; $25</center>
                                 </td>
                             </tr>
                             <tr >
@@ -51,10 +81,10 @@ class PaymentOptionBitcoin extends Component {
                                     Minumum
                                 </td>
                                 <td className="gray-cell">
-                                    <center>&lrm; $25</center>
+                                    <center>&lrm; $5</center>
                                 </td>
                                 <td className="gray-cell">
-                                    <center>&lrm; $25</center>
+                                    <center>&lrm; $15</center>
                                 </td>
                             </tr>
                             <tr >
@@ -62,10 +92,10 @@ class PaymentOptionBitcoin extends Component {
                                     Maximum
                                 </td>
                                 <td className="gray-cell">
-                                    <center>24 hours: &lrm; $3,000</center>
+                                    <center>24 hours: &lrm; $50,000</center>
                                 </td>
                                 <td className="gray-cell">
-                                    <center>24 hours: &lrm; $3,000</center>
+                                    <center>24 hours: &lrm; $50,000</center>
                                 </td>
                             </tr>
                         </tbody>
@@ -73,7 +103,7 @@ class PaymentOptionBitcoin extends Component {
                 </div>
 
                 <article className="paymentoption-content mt-5">
-                    <strong>PAYPER Win currently works with third party exchange providers that convert cryptocurrencies into the FIAT currency of your player account. Although we work to ensure that all costs are minimal, there may be fluctuations in the fees charged and conversion rates. We do not offer Bitcoin as an account currency.</strong>
+                    <strong>PAYPER Win currently works with third party exchange providers that convert cryptocurrencies into the FIAT currency of your player account. Although we work to ensure that all costs are minimal, there may be fluctuations in the fees charged and conversion rates. We do not offer {currency} as an account currency.</strong>
                     <br />
                     <br />
                     <strong>Processing Time</strong>
@@ -87,7 +117,7 @@ class PaymentOptionBitcoin extends Component {
                     <br />
                     <strong>Fees</strong>
                     <ul style={{ listStyle: 'circle', marginLeft: '20px' }}>
-                        <li>PayPer Win absorbs all processing fees for deposits into your player account; however, we do not cover any Bitcoin network fees.</li>
+                        <li>PayPer Win absorbs all processing fees for deposits into your player account; however, we do not cover any {currency} network fees.</li>
                         <li>The exchange rate provided by our supplier is locked for 10 minutes. If you broadcast your transaction to the network within this time frame, you will receive the quoted rate.</li>
                         <li>For payouts, there may be fees charged by the exchange service which will not be reimbursed.</li>
                         <li>Each PayPer Win customer receives one free withdrawal per calendar month. Additional withdrawals during that month will incur the fee listed in the table above.</li>
@@ -100,17 +130,17 @@ class PaymentOptionBitcoin extends Component {
                         <li>All customers using this option must submit proof of ID and Address prior to any transactions being processed. If not already done, please log in and go to the Personal Details section of the website to upload your documents.</li>
                         <li>Funds NOT sent from exchanges or commercial wallet applications may require supporting Due Diligence documentation.</li>
                         <li>Transactions using cryptocurrency obtained from Hydra Market (or similar services) are not accepted.</li>
-                        <li>PayPer Win uses an exchange service to convert your Bitcoin into your player account currency. We do not offer Bitcoin as an account currency.</li>
+                        <li>PayPer Win uses an exchange service to convert your {currency} into your player account currency. We do not offer {currency} as an account currency.</li>
                     </ul>
                     <br />
                     <strong>Making a Deposit</strong>
                     <div>
                         <ul style={{ listStyle: 'number', marginLeft: '20px' }}>
                             <li>Log in to your PayPer Win account.</li>
-                            <li>Go to the Cashier section and click on the Bitcoin icon in the deposit section.</li>
+                            <li>Go to the Cashier section and click on the {currency} icon in the deposit section.</li>
                             <li>Enter the deposit amount.</li>
-                            <li>After you click “Submit”, you will be presented with payment information, including a QR code that you can scan and a payment amount and address to send your Bitcoin to.</li>
-                            <li>Please follow the steps in your Bitcoin wallet to confirm the payment.</li>
+                            <li>After you click “Submit”, you will be presented with payment information, including a QR code that you can scan and a payment amount and address to send your {currency} to.</li>
+                            <li>Please follow the steps in your {currency} wallet to confirm the payment.</li>
                             <li>If your deposit is successful, the funds will be added to your Pinnacle account within 30-60 minutes.</li>
                         </ul>
                     </div>
@@ -119,7 +149,7 @@ class PaymentOptionBitcoin extends Component {
                     <div>
                         <ul style={{ listStyle: 'number', marginLeft: '20px' }}>
                             <li>Log in to your PayPer Win account.</li>
-                            <li>Go to the Cashier section and click on the Bitcoin icon in the withdrawal section.</li>
+                            <li>Go to the Cashier section and click on the {currency} icon in the withdrawal section.</li>
                             <li>Enter the withdrawal amount and your cryptocurrency wallet address and submit.</li>
                             <li>Once your request is completed, the transaction will be reviewed for processing.</li>
                             <li>You will receive an email confirmation when your withdrawal request is approved.</li>
@@ -132,4 +162,4 @@ class PaymentOptionBitcoin extends Component {
     }
 }
 
-export default PaymentOptionBitcoin;
+export default PaymentOptionTripleA;

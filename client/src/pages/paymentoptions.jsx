@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { setMeta } from '../libs/documentTitleBuilder';
 import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
-import PaymentOptionBitcoin from "../components/paymentOptionBitcoin";
+import PaymentOptionTripleA from "../components/PaymentOptionTripleA";
 import DocumentMeta from 'react-document-meta';
+import GoToTop from "../components/gotoTop";
 
 class PaymentOptions extends Component {
     constructor(props) {
@@ -56,9 +57,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Interac E-Transfer</li>
-                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Fee : <strong>$0</strong> </li>
                                             <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                            <li>Max : <strong>$3,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -71,13 +72,13 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Bitcoin</li>
-                                            <li>Fee : <strong>$10</strong> </li>
-                                            <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Min : <strong>$5</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'ethereum' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
                                         <img src="images/Ethereum.png" />
@@ -86,13 +87,13 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Ethereum</li>
-                                            <li>Fee : <strong>$10</strong> </li>
-                                            <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Min : <strong>$5</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'usdt' })}>
                                     <div
                                         className="col-sm-4 border-right d-flex justify-content-center align-items-center">
                                         <img src="images/USDT.png" />
@@ -101,9 +102,76 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> USDT</li>
-                                            <li>Fee : <strong>$10</strong> </li>
+                                            <li>Fee : <strong>$0</strong> </li>
+                                            <li>Min : <strong>$5</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="tab-content">
+                            <br />
+                            <h4 className="h4">Withdrawals</h4>
+                            <div className="container">
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/eTransfer.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> Interac E-Transfer</li>
+                                            <li>Fee : <strong>$15</strong> </li>
                                             <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>$2,500&nbsp;Daily</strong></li>
+                                            <li>Max : <strong>-</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'bitcoin' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/bitcoin.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> Bitcoin</li>
+                                            <li>Fee : <strong>$25</strong> </li>
+                                            <li>Min : <strong>$15</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'ethereum' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/Ethereum.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> Ethereum</li>
+                                            <li>Fee : <strong>$25</strong> </li>
+                                            <li>Min : <strong>$15</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'usdt' })}>
+                                    <div
+                                        className="col-sm-4 border-right d-flex justify-content-center align-items-center">
+                                        <img src="images/USDT.png" />
+                                    </div>
+
+                                    <div className="col-sm-8">
+                                        <ul className="paymnt-mdhd">
+                                            <li> USDT</li>
+                                            <li>Fee : <strong>$25</strong> </li>
+                                            <li>Min : <strong>$15</strong></li>
+                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -111,8 +179,14 @@ class PaymentOptions extends Component {
                         </div>
                     </div>
                 </div>}
-                {(option == 'etransfer') && <PaymentOptionEtransfer onBack={() => this.setState({ option: null })} />}
-                {(option == 'bitcoin') && <PaymentOptionBitcoin onBack={() => this.setState({ option: null })} />}
+                {(option == 'etransfer') && <>
+                    <GoToTop />
+                    <PaymentOptionEtransfer onBack={() => this.setState({ option: null })} />
+                </>}
+                {(option == 'bitcoin' || option == 'ethereum' || option == 'usdt') && <>
+                    <GoToTop />
+                    <PaymentOptionTripleA onBack={() => this.setState({ option: null })} option={option} />
+                </>}
             </div>
         );
     }

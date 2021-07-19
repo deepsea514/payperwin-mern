@@ -43,7 +43,7 @@ class PaymentOptionEtransfer extends Component {
                                     <center>Free</center>
                                 </td>
                                 <td className="gray-cell">
-                                    <center>&lrm; $18</center>
+                                    <center>&lrm; $15</center>
                                 </td>
                             </tr>
                             <tr >
@@ -65,7 +65,7 @@ class PaymentOptionEtransfer extends Component {
                                     <center>24 hours: &lrm; $3,000</center>
                                 </td>
                                 <td className="gray-cell">
-                                    <center>24 hours: &lrm; $3,000</center>
+                                    <center>-</center>
                                 </td>
                             </tr>
                         </tbody>
