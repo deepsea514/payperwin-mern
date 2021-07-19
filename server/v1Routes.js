@@ -40,7 +40,7 @@ const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
 };
 
-const tokenCheck = (req, res, next) => {
+const tokenCheck = async (req, res, next) => {
     if (req.body) {
         const SignatureFromReq = req.body.Signature;
         const Timestamp = req.body.Timestamp;
