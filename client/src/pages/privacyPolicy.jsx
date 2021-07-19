@@ -171,7 +171,7 @@ class PrivacyPolicy extends Component {
                                 </ul>
                             </div>
                             <div className="privacy-policy-paragraph">
-                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a>.
+                                Generally we do not rely on consent as a legal basis for processing your personal data. You have the right to withdraw consent to marketing at any time by contacting us at <a href="mailto:support@payperwin.ca">support@payperwin.ca</a>.
                             </div>
                             <div className="privacy-policy-paragraph">
                                 By providing your personal information and registering with us or logging on with us when you enter our Website, you explicitly consent to us processing and disclosing your personal information in the manner set out in this Privacy Policy, or as otherwise provided in accordance with the Terms & Conditions.
@@ -257,7 +257,7 @@ class PrivacyPolicy extends Component {
                                 We have set out below, in a table format, a description of the ways we plan to use your personal data and which of the legal bases we rely on to do so. We have also identified what our legitimate interests are where appropriate. Information on the balancing test at the basis of the legitimate interest can be obtained upon request by contacting the DPO at <a href="mailto:dpo@payperwin.com">dpo@payperwin.com</a>.
                             </div>
                             <div className="privacy-policy-paragraph">
-                                Note that we may process your personal data for more than one lawful ground depending on the specific purpose for which we are using your data. Please <a href="mailto:customerservice@payperwin.com">contact us</a> if you need details about the specific legal ground we are relying on to process your personal data where more than one ground has been set out in the table below.
+                                Note that we may process your personal data for more than one lawful ground depending on the specific purpose for which we are using your data. Please <a href="mailto:support@payperwin.ca">contact us</a> if you need details about the specific legal ground we are relying on to process your personal data where more than one ground has been set out in the table below.
                             </div>
                             <table>
                                 <tbody>
@@ -518,7 +518,7 @@ class PrivacyPolicy extends Component {
 
                         <div className="mobile-container" style={{ display: showMobile == 12 ? 'block' : 'none' }}>
                             <div className="privacy-policy-paragraph">
-                                Subject to certain limitations on certain rights you have the following rights in relation to your information. You can exercise any of these rights by contacting <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a> naming the right you are exercising along with the reason for your request, if applicable.
+                                Subject to certain limitations on certain rights you have the following rights in relation to your information. You can exercise any of these rights by contacting <a href="mailto:support@payperwin.ca">support@payperwin.ca</a> naming the right you are exercising along with the reason for your request, if applicable.
                             </div>
                             <div className="right-moved">
                                 <div className="privacy-policy-paragraph">
@@ -534,10 +534,10 @@ class PrivacyPolicy extends Component {
                                     <strong>Right to Restrict Processing:</strong> this enables you to ask us to suspend the processing of your personal data in the following scenarios: (a) if you want us to establish the data's accuracy; (b) where our use of the data is unlawful (i.e. where it does not fall under a legal reason for processing as outlined under section 3. or your information has otherwise been obtained illegally by a third party) but you do not want us to erase it; (c) where you need us to hold the data even if we no longer require it as you need it to establish, exercise or defend legal claims; or (d) you have objected to our use of your data but we need to verify whether we have overriding legitimate grounds to use it. Please note that this right is not absolute.
                                 </div>
                                 <div className="privacy-policy-paragraph">
-                                    <strong>Right to Data Portability:</strong> you have the right to request the personal data you have provided to us. You may make a data portability request by contacting <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com.</a>
+                                    <strong>Right to Data Portability:</strong> you have the right to request the personal data you have provided to us. You may make a data portability request by contacting <a href="mailto:support@payperwin.ca">support@payperwin.ca.</a>
                                 </div>
                                 <div className="privacy-policy-paragraph">
-                                    <strong>Right to Object:</strong> you have the right to object to our processing of your data. It should be noted that this right is not absolute and may be subject to any reasons we have to maintain that information such as our adherence to legal and regulatory obligations. If you wish to object to direct marketing please contact <a href="mailto:customerservice@payperwin.com">customerservice@payperwin.com</a> requesting that you no longer wish to receive marketing materials.
+                                    <strong>Right to Object:</strong> you have the right to object to our processing of your data. It should be noted that this right is not absolute and may be subject to any reasons we have to maintain that information such as our adherence to legal and regulatory obligations. If you wish to object to direct marketing please contact <a href="mailto:support@payperwin.ca">support@payperwin.ca</a> requesting that you no longer wish to receive marketing materials.
                                 </div>
                             </div>
                             <div className="privacy-policy-paragraph">
