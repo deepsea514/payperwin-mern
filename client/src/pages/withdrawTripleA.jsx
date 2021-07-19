@@ -178,7 +178,7 @@ class WithdrawTripleA extends PureComponent {
                 <fieldset className="depositFieldset">
                     <legend>{method} Withdraw Limits</legend>
                     <p>Minumum Withdraw: CAD 25.00</p>
-                    <p>Maximum Withdraw: CAD {balanceStr}</p>
+                    <p>Maximum Withdraw: CAD 50,000.00</p>
                 </fieldset>
             </div>
         );

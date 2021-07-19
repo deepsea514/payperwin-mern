@@ -201,7 +201,7 @@ class DepositTripleA extends PureComponent {
                 <fieldset className="depositFieldset">
                     <legend>{method} Deposit Limits</legend>
                     <p>Minumum Deposit: CAD 5.00</p>
-                    <p>Maximum Deposit: CAD 5,000.00</p>
+                    <p>Maximum Deposit: CAD 50,000.00</p>
                 </fieldset>
             </div>
         );
