@@ -6,7 +6,7 @@ import {
     CardHeader, FormControl, Stepper, Step, StepLabel,
     RadioGroup, FormControlLabel, Radio, Checkbox, TextField
 } from '@material-ui/core';
-import { Form } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import axios from 'axios';
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
@@ -169,7 +169,8 @@ const initState = {
     },
     activeStep: 0,
     steps: ['', ''],
-    metaData: null
+    metaData: null,
+    showPass: false,
 };
 
 class Registration extends Component {
@@ -316,7 +317,7 @@ class Registration extends Component {
             firstname, lastname, dateofbirth,
             vipcode, agreeTerms, agreePrivacy,
             rcptchVerified,
-            errors,
+            errors, showPass
         } = this.state;
         const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
         const months = [
@@ -380,16 +381,21 @@ class Registration extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            name="password"
-                            value={password}
-                            onChange={this.handleChange}
-                            onBlur={this.handleDirty}
-                            placeholder="Enter Password"
-                            isInvalid={errors.password !== undefined}
-                            required
-                        />
+                        <InputGroup>
+                            <Form.Control
+                                type={showPass ? "text" : "password"}
+                                name="password"
+                                value={password}
+                                onChange={this.handleChange}
+                                onBlur={this.handleDirty}
+                                placeholder="Enter Password"
+                                isInvalid={errors.password !== undefined}
+                                required
+                            />
+                            <Button variant="outline-secondary" onClick={() => this.setState({ showPass: !showPass })}>
+                                <i className={showPass ? "far fa-eye" : "far fa-eye-slash"} />
+                            </Button>
+                        </InputGroup>
                         {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
                     </Form.Group>
                     <Form.Group>
@@ -763,7 +769,7 @@ class Registration extends Component {
                                                     color="default"
                                                     className={classes.button}>
                                                     Back
-                                                    </Button>
+                                                </Button>
                                                 <Button
                                                     disabled={this.checkDisabled()}
                                                     variant="contained"
