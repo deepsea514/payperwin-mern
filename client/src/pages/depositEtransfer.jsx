@@ -184,7 +184,7 @@ class DepositETransfer extends PureComponent {
                         </div>}
                         {depositSuccess && <div>
                             <center><h3>Deposit Pending</h3></center>
-                            <p>Your transaction has been sent for processing. please check your email for further information</p>
+                            <p>Your transaction has been sent for processing. please check <b style={{ borderBottom: '1px solid #000' }}>{user ? user.email : 'your email'}</b> for further information</p>
                         </div>}
                     </div>
                 </div>
