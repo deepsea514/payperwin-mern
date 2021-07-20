@@ -37,6 +37,12 @@ class TransactionHistory extends Component {
         })
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.user && this.props.user) {
+            this.getHistory();
+        }
+    }
+
     getHistory = (page = 0, clear = true) => {
         const { filter, daterange, transactions } = this.state;
         this.setState({ loading: true, });
@@ -61,6 +67,8 @@ class TransactionHistory extends Component {
                 return '';
             case 'withdraw':
                 return '-';
+            case 'withdrawfee':
+                return `-`;
             case 'betwon':
                 return '';
             case 'betfee':
@@ -92,6 +100,8 @@ class TransactionHistory extends Component {
                 return `Deposit made through ${method}`;
             case 'withdraw':
                 return `Withdraw made through ${method}`;
+            case 'withdrawfee':
+                return `Withdraw fee through ${method}`;
             case 'betwon':
                 return `Won the bet.`;
             case 'betfee':

@@ -160,10 +160,10 @@ tripleARouter.post('/withdraw',
         }
         if (status == "done") {
             console.log("triple Payout", 'success withdraw');
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
-            userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
+            // const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            // userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.success }).exec();
-            await userdata.save();
+            // await userdata.save();
 
             const msg = {
                 from: `"${fromEmailName}" <${fromEmailAddress}>`,

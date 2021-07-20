@@ -66,6 +66,7 @@ const v1Router = require('./v1Routes');
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
+const { json } = require('body-parser');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -2102,11 +2103,29 @@ const getMaxWithdraw = async (user) => {
     return maxwithdraw;
 }
 
+async function isFreeWithdrawalUsed(user) {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const freeWithdraw = await FinancialLog.find({
+        fee: 0,
+        createdAt: {
+            $gte: firstDay
+        },
+        user: user._id
+    });
+
+    if (freeWithdraw && freeWithdraw.length) {
+        return true
+    }
+    return false;
+}
+
 expressApp.get(
     '/freeWithdraw',
     isAuthenticated,
     async (req, res) => {
-
+        const { user } = req;
+        return res.json({ used: await isFreeWithdrawalUsed(user) });
     }
 )
 
@@ -2117,17 +2136,19 @@ expressApp.post(
     async (req, res) => {
         const data = req.body;
         const { amount, method } = data;
+        const { user } = req;
+        const freeWithdrawalUsed = await isFreeWithdrawalUsed(user);
         if (method == "eTransfer") {
+            const fee = freeWithdrawalUsed ? 15 : 0;
             if (!amount) {
                 return res.json({ success: 0, message: "Withdraw Amount is required." });
             }
-            const { user } = req;
             if (!user.roles.verified) {
                 return res.json({ success: 0, message: "You should verify your identify to make withdraw." });
             }
 
             try {
-                // const uniqid = `W${ID()}`;
+                const uniqid = `W${ID()}`;
                 // const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
                 // if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
                 //     console.warn("PremierPay Api is not set");
@@ -2191,15 +2212,34 @@ expressApp.post(
                     return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
                 }
 
+                if (amount + fee > user.balance) {
+                    return res.json({ success: 0, message: "Insufficient funds." });
+                }
+
                 const withdraw = new FinancialLog({
                     financialtype: 'withdraw',
-                    uniqid,
+                    uniqid: uniqid,
                     user: user._id,
-                    amount,
-                    method,
-                    status: "Pending"
+                    amount: amount,
+                    method: method,
+                    status: FinancialStatus.pending,
+                    fee: fee
                 });
                 await withdraw.save();
+
+                if (fee > 0) {
+                    const withdrawFee = new FinancialLog({
+                        financialtype: 'withdrawfee',
+                        uniqid: `WF${ID()}`,
+                        user: user._id,
+                        amount: fee,
+                        method: method,
+                        status: FinancialStatus.success,
+                    });
+                    await withdrawFee.save();
+                }
+                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
                 // }
                 // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
@@ -2207,14 +2247,14 @@ expressApp.post(
                 console.log("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
             }
-        } else if (method == "Bitcoin") {
+        } else if (method == "Bitcoin" || method == "Ethereum" || method == "Tether") {
             if (!amount) {
                 return res.json({ success: 0, message: "Withdraw Amount is required." });
             }
-            const { user } = req;
             if (!user.roles.verified) {
                 return res.json({ success: 0, message: "You should verify your identify to make withdraw." });
             }
+            const fee = freeWithdrawalUsed ? 25 : 0;
 
             try {
                 const uniqid = `W${ID()}`;
@@ -2244,22 +2284,41 @@ expressApp.post(
                     return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
                 }
 
+                if (amount + fee > user.balance) {
+                    return res.json({ success: 0, message: "Insufficient funds." });
+                }
+
                 const withdraw = new FinancialLog({
                     financialtype: 'withdraw',
-                    uniqid,
+                    uniqid: uniqid,
                     user: user._id,
-                    amount,
-                    method,
-                    status: "Pending"
+                    amount: amount,
+                    method: method,
+                    status: FinancialStatus.pending
                 });
                 await withdraw.save();
+
+                if (fee > 0) {
+                    const withdrawFee = new FinancialLog({
+                        financialtype: 'withdrawfee',
+                        uniqid: `WF${ID()}`,
+                        user: user._id,
+                        amount: fee,
+                        method: method,
+                        status: FinancialStatus.success,
+                    });
+                    await withdrawFee.save();
+                }
+
+                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
             } catch (error) {
                 console.log("withdraw => ", error);
-                return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
+                return res.json({ success: 0, message: "Failed to create withdraw." });
             }
         } else {
-            return res.status(400).json({ success: 0, message: "Method is not suitable." });
+            return res.json({ success: 0, message: "Method is not suitable." });
         }
     }
 );
@@ -2273,7 +2332,7 @@ expressApp.post(
             const { filter, daterange, page } = req.body;
             let searchObj = {
                 user: req.user._id,
-                status: FinancialStatus.success,
+                // status: FinancialStatus.success,
                 deletedAt: null
             };
             if (daterange) {
@@ -2310,12 +2369,25 @@ expressApp.post(
                     if (filter.withdraw) {
                         orCon.push({
                             financialtype: "withdraw",
-                            status: FinancialStatus.success
+                            // status: FinancialStatus.success
                         });
                     }
                     searchObj = {
                         ...searchObj,
                         $or: orCon
+                    }
+                } else {
+                    searchObj = {
+                        ...searchObj,
+                        $or: [
+                            {
+                                financialtype: { $ne: "withdraw" },
+                                status: FinancialStatus.success
+                            },
+                            {
+                                financialtype: "withdraw",
+                            }
+                        ]
                     }
                 }
             }

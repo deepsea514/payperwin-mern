@@ -30,8 +30,6 @@ const UserSchema = new Schema(
         balance: { type: Number, default: 0 },
         betHistory: [{ type: Schema.Types.ObjectId, ref: "Bet", default: [] }],
         betSportsbookHistory: [{ type: Schema.Types.ObjectId, ref: "BetSportsBook", default: [] }],
-        depositlog: [{ type: Schema.Types.ObjectId, ref: "FinancialLog", default: [] }],
-        withdrawlog: [{ type: Schema.Types.ObjectId, ref: "FinancialLog", default: [] }],
         deletedAt: Date,
         // stats: Schema.Types.Mixed,
     },
