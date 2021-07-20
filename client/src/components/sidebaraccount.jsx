@@ -25,13 +25,7 @@ class SidebarAccount extends Component {
                         <Link to={{ pathname: '/bets' }}><i className="fas fa-hockey-puck"></i>Open bets</Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/bets-sportsbook' }}><i className="fas fa-hockey-puck"></i>Open bets(SportsBook)</Link>
-                    </li>
-                    <li>
                         <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i>Betting History</Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/history-sportsbook' }}><i className="fas fa-history"></i>Betting History(SportsBook)</Link>
                     </li>
                 </ul>
 

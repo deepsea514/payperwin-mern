@@ -32,7 +32,7 @@ class AuthWrap extends Component {
         socket.on("sportsbook-accepted", (id) => {
             const { user } = this.state;
             if (user && user.userId == id) {
-                window.location = '/bets-sportsbook';
+                window.location = '/bets';
             }
         });
     }
