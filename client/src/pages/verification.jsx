@@ -175,7 +175,6 @@ class Verification extends PureComponent {
                                                 type="text"
                                                 name="address2"
                                                 placeholder="Enter 2nd Address"
-                                                required
                                                 className={`form-control ${getInputClasses(formik, "address2")}`}
                                                 {...formik.getFieldProps("address2")}
                                             />
@@ -221,6 +220,7 @@ class Verification extends PureComponent {
                                             <Form.Label>Phone Number</Form.Label>
                                             <PhoneInput
                                                 type="text"
+                                                country="us"
                                                 name="phone"
                                                 placeholder="Enter Phone Number"
                                                 containerClass="input-group"
@@ -279,15 +279,35 @@ class Verification extends PureComponent {
                             &nbsp;{address == 'submitted' && <span className="badge badge-success">SUBMITTED</span>}
                             &nbsp;{address == 'error' && <span className="badge badge-danger">SUBMIT FAILED, PLEASE TRY AGAIN</span>}
                         </p>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={address == 'submitting'}
+                            onClick={() => this.clickUpload('address')}
+                            className={classes.button}
+                        >
+                            Submit Document
+                        </Button>
                         <input ref="address" name="address" onChange={this.handleFileUpload} type="file" style={{ display: "none" }} accept="image/x-png,image/gif,image/jpeg" />
 
-                        <p className="verification-items" onClick={() => this.clickUpload('identification')}>
+                        <p className="verification-items mt-3" onClick={() => this.clickUpload('identification')}>
                             Personal identification verification
                             &nbsp;{identification == 'required' && <span className="badge badge-primary">REQUIRED</span>}
                             &nbsp;{identification == 'submitting' && <img src="/images/loading.gif" className="m-0" width="16" height="16" />}
                             &nbsp;{identification == 'submitted' && <span className="badge badge-success">SUBMITTED</span>}
                             &nbsp;{identification == 'error' && <span className="badge badge-danger">SUBMIT FAILED, PLEASE TRY AGAIN</span>}
                         </p>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={identification == 'submitting'}
+                            onClick={() => this.clickUpload('identification')}
+                            className={classes.button}
+                        >
+                            Submit Document
+                        </Button>
                         <input ref="identification" name="identification" onChange={this.handleFileUpload} type="file" style={{ display: "none" }} accept="image/x-png,image/gif,image/jpeg" />
                     </div>
                 </div>}
