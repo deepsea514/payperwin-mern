@@ -129,10 +129,14 @@ class AutoBet extends React.Component {
         };
         delete autobet.user;
         createAutoBet(autobet)
-            .then(() => {
+            .then(({ data }) => {
                 formik.setSubmitting(false);
-                this.setState({ modal: true, addModal: false, resMessage: "Successfully added!", modalvariant: "success" });
-                getAutoBetsAction();
+                if (data.success) {
+                    this.setState({ modal: true, addModal: false, resMessage: "Successfully added!", modalvariant: "success" });
+                    getAutoBetsAction();
+                } else {
+                    this.setState({ modal: true, addModal: false, resMessage: data.message, modalvariant: "danger" });
+                }
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -146,7 +150,7 @@ class AutoBet extends React.Component {
             sports: values.sports.map(sport => sport.value)
         };
         delete autobet.user;
-        
+
         const { editId: editId } = this.state;
         const { updateAutoBetSuccess } = this.props;
         updateAutoBet(editId, autobet)

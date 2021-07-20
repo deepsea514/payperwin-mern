@@ -248,7 +248,7 @@ adminRouter.get(
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (name) {
                 searchObj = {
                     ...searchObj,
@@ -554,9 +554,7 @@ adminRouter.delete(
         const { id } = req.query;
         if (id) {
             try {
-                const customer = await User.findByIdAndUpdate(id, {
-                    deletedAt: new Date()
-                });
+                const customer = await User.findOneAndDelete({ _id: id });
                 res.status(200).json(customer);
             } catch (erorr) {
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
@@ -1267,13 +1265,13 @@ adminRouter.get(
             if (name) {
                 searchObj = {
                     ...searchObj,
-                    ...{ username: { "$regex": name, "$options": "i" } }
+                    ...{ email: { "$regex": name, "$options": "i" } }
                 }
             }
 
             User.find(searchObj)
                 .sort('createdAt')
-                .select(['username', 'balance', 'currency'])
+                .select(['email', 'balance', 'currency'])
                 .exec(function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
@@ -1282,7 +1280,7 @@ adminRouter.get(
                     const result = data.map(user => {
                         return {
                             value: user._id,
-                            label: user.username,
+                            label: user.email,
                             balance: user.balance,
                         }
                     })
@@ -2015,10 +2013,10 @@ adminRouter.post(
         try {
             const existing = await AutoBet.find({ userId: ObjectId(data.userId), deletedAt: null });
             if (existing && existing.length) {
-                return res.status(400).json({ error: 'He/She is already autobetted user.' });
+                return res.json({success: false, message: "He/She is already autobet user."});
             }
             await AutoBet.create(data);
-            res.json("AutoBet created.");
+            res.json({ success: true });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t create autobet.' });
         }
