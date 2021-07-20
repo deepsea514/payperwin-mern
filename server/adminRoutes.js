@@ -1271,7 +1271,7 @@ adminRouter.get(
 
             User.find(searchObj)
                 .sort('createdAt')
-                .select(['email', 'balance', 'currency'])
+                .select(['email', 'balance', 'currency', 'firstname', 'lastname'])
                 .exec(function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
@@ -1280,7 +1280,7 @@ adminRouter.get(
                     const result = data.map(user => {
                         return {
                             value: user._id,
-                            label: user.email,
+                            label: `${user.email} (${user.firstname} ${user.lastname})`,
                             balance: user.balance,
                         }
                     })
@@ -2040,7 +2040,7 @@ adminRouter.get(
             .sort({ createdAt: -1 })
             .skip(page * perPage)
             .limit(perPage)
-            .populate('userId', ['username', 'balance'])
+            .populate('userId', ['username', 'balance', 'email', 'firstname', 'lastname'])
             .exec(function (error, data) {
                 if (error) {
                     res.status(404).json({ error: 'Can\'t find customers.' });

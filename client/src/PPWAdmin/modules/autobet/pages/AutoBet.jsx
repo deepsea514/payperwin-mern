@@ -48,7 +48,7 @@ class AutoBet extends React.Component {
             initialValues: {
                 user: {
                     value: bet.userId._id,
-                    label: bet.userId.username
+                    label: `${bet.userId.email} (${bet.userId.firstname} ${bet.userId.lastname})`
                 },
                 budget: bet.budget,
                 maxRisk: bet.maxRisk,
