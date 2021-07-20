@@ -13,7 +13,7 @@ const config = require('../../../config.json');
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
 const ID = function () {

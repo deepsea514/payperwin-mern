@@ -47,7 +47,7 @@ const AdminRoles = config.AdminRoles;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
 const ID = function () {
@@ -654,8 +654,8 @@ adminRouter.post(
                 html: simpleresponsive(
                     `Hi <b>${userdata.firstname}</b>.
                     <br><br>
-                    Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
-                    your Payper Win account by logging in now.
+                    Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
+                    your PAYPER WIN account by logging in now.
                     <br><br>`),
             };
             sgMail.send(msg);
@@ -2270,7 +2270,7 @@ adminRouter.post(
                 html: simpleresponsive(
                     `Hi <b>${user.firstname}</b>.
                     <br><br>
-                    Just a quick reminder that your identify was verified. You can withdraw from your Payper Win account by logging in now.
+                    Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.
                     <br><br>`),
             };
             sgMail.send(msg);

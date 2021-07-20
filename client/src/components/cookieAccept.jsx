@@ -8,7 +8,7 @@ class CookieAccept extends Component {
                 <div className="cookieBanner_main cookieBanner_main1">
                     <div className="cookieBanner_content">
                         <span>
-                            Welcome to PayPer Win.
+                            Welcome to PAYPER WIN.
                             We use cookies to provide you with the most relevant experience.
                             To change your cookie settings or for more information on cookies, see our <a href="https://www.payperwin.co/privacy-policy#cookie-policy" target="_blank" rel="noopener noreferrer">cookie policy</a>.
                         </span>

@@ -138,7 +138,7 @@ class SelfExcusion extends Component {
                             By submitting this self-exclusion notice you acknowledge that you have read and understand our self-exclusion method, as described on our Responsible Gaming Page, and agree to the following:
                         </p>
                         <p>
-                            You authorize PAYPER Win to prevent you from undertaking wagering activities on the selected product(s) for the indicated duration effective immediately.
+                            You authorize PAYPER WIN to prevent you from undertaking wagering activities on the selected product(s) for the indicated duration effective immediately.
                         </p>
                         <p>
                             You understand that this exclusion is voluntary and does not place any obligation, duty or responsibility on any other person or body other than yourself.

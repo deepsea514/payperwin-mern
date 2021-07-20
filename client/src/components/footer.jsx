@@ -20,7 +20,7 @@ const Footer = (props) => {
                             </ul>
                         </div>
                         <div className="footer-inner">
-                            <h3 className="footer-heading">About PAYPER Win </h3>
+                            <h3 className="footer-heading">About PAYPER WIN </h3>
                             <ul>
                                 <li><Link to="/privacy-policy">Privacy Policy </Link></li>
                                 <li><Link to="/terms-and-conditions">Terms & Conditions </Link></li>
@@ -58,7 +58,7 @@ const Footer = (props) => {
                     <div className="logo-c">
                         <img src="/images/c-logo.jpg" />
                     </div>
-                    <p>©2021 PAYPER Win</p>
+                    <p>©2021 PAYPER WIN</p>
                     <div className="logo-c">
                         <img src="/images/footer-logo.jpg" />
                     </div>

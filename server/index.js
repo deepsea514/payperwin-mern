@@ -39,7 +39,7 @@ const InsufficientFunds = 8;
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
 //external libraries
@@ -220,7 +220,7 @@ function sendVerificationEmail(email, username, req) {
         const msg = {
             from: `"${fromEmailName}" <${fromEmailAddress}>`,
             to: email,
-            subject: 'Welcome to Payper Win',
+            subject: 'Welcome to PAYPER WIN',
             text: `Verify your email address by following this link: ${emailValidationPath}`,
             html: simpleresponsive(
                 `Hi <b>${email}</b>.
@@ -663,11 +663,11 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 const msg = {
                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
-                    subject: 'Password Reset Request for Payper Win',
+                    subject: 'Password Reset Request for PAYPER WIN',
                     text: `You requested password recovery. You can create a new password here: ${passwordRecoveryPath}`,
                     html: simpleresponsive(`Hi <b>${user.email}</b>.
                             <br><br>
-                            Someone has requested a new password for the following account on Payper Win:
+                            Someone has requested a new password for the following account on PAYPER WIN:
                             <br><br>
                             Username: ${user.username}
                             <br>

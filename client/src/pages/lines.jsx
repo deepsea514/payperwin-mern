@@ -191,7 +191,7 @@ class Lines extends PureComponent {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Unfortunately Payper Win is unable to provide better odds for this particular bet
+                                Unfortunately PAYPER WIN is unable to provide better odds for this particular bet
                             </p>
                             <div className="text-right">
                                 <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>

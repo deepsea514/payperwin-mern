@@ -182,7 +182,7 @@ module.exports = (body, link) => `
                                 <td class="content-block"
                                     style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
                                     <span class="apple-link"
-                                        style="color: #999999; font-size: 12px; text-align: center;">PAYPER Win</span>
+                                        style="color: #999999; font-size: 12px; text-align: center;">PAYPER WIN</span>
                                     <br> 
                                     <p>Help & Support</p>
                                     <a href="hello@payperwin.co">hello@payperwin.co</a>
