@@ -350,6 +350,7 @@ export default class Profile extends Component {
                                             <PhoneInput
                                                 type="text"
                                                 name="phone"
+                                                country="us"
                                                 placeholder="Enter Phone Number"
                                                 containerClass="input-group"
                                                 dropdownClass="input-group-append"
