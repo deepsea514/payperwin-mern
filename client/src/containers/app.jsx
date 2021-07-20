@@ -317,10 +317,10 @@ class App extends PureComponent {
                                                 <Route path="/deposit-bitcoin" render={(props) => <DepositTripleA {...props} user={user} method="Bitcoin" />} />
                                                 <Route path="/deposit-ethereum" render={(props) => <DepositTripleA {...props} user={user} method="Ethereum" />} />
                                                 <Route path="/deposit-tether" render={(props) => <DepositTripleA {...props} user={user} method="Tether" />} />
-                                                <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} />} />
-                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawTripleA {...props} user={user} method="Bitcoin" />} />
-                                                <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} method="Ethereum" />} />
-                                                <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} method="Tether" />} />
+                                                <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} getUser={getUser} />} />
+                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Bitcoin" />} />
+                                                <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Ethereum" />} />
+                                                <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>

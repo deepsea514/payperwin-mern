@@ -38,24 +38,47 @@ class WithdrawTripleA extends PureComponent {
             withdrawError: null,
             agreeWithdraw: false,
             errMsg: '',
-            metaData: null
+            metaData: null,
+            usedFreeWithdraw: false,
         };
     }
 
     componentDidMount() {
-        const { method } = this.props;
+        const { method, user } = this.props;
         const title = `Withdraw with ${method}`;
         setMeta(title, (metaData) => {
             this.setState({ metaData: metaData });
         })
+        if (user) {
+            this.getFreeWithdraw();
+        }
+    }
+
+    getFreeWithdraw = () => {
+        axios.get(`${serverUrl}/freeWithdraw`, { withCredentials: true })
+            .then(({ data }) => {
+                this.setState({ usedFreeWithdraw: data.used });
+            })
+            .catch(() => {
+                console.log('error');
+                this.setState({ usedFreeWithdraw: true });
+            });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.user && this.props.user) {
+            this.getFreeWithdraw();
+        }
     }
 
     onSubmit = (values, formik) => {
+        const { getUser } = this.props;
         axios.post(`${serverUrl}/withdraw`, values, { withCredentials: true })
             .then(({ data }) => {
                 const { success, message } = data;
                 if (success) {
                     this.setState({ withdrawSuccess: true });
+                    getUser();
                 }
                 else {
                     this.setState({ withdrawError: true, errMsg: message });
@@ -70,7 +93,7 @@ class WithdrawTripleA extends PureComponent {
 
     render() {
         const { classes, user, method } = this.props;
-        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData } = this.state;
+        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData, usedFreeWithdraw } = this.state;
         const initialValues = {
             amount: 0,
             // wallet: '',
@@ -127,7 +150,7 @@ class WithdrawTripleA extends PureComponent {
                                                 labelPlacement="end"
                                                 label={
                                                     <span>
-                                                        This is your free withdrawal of the calendar month.<br />
+                                                        {usedFreeWithdraw ? 'We will collect fee from this withdraw.' : 'This is your free withdrawal of the calendar month.'}<br />
                                                         You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount.
                                                         All additional withdrawals during the calendar month, for any amount using any withdrawal method, will incur a fee.
                                                         Do you agree?

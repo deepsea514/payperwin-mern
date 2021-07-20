@@ -643,7 +643,6 @@ adminRouter.post(
             });
             await deposit.save();
 
-            userdata.depositlog = [...userdata.depositlog, ...[deposit._id]];
             if (status == FinancialStatus.success) {
                 userdata.balance = parseInt(userdata.balance) + parseInt(amount);
             }
@@ -858,7 +857,6 @@ adminRouter.delete(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            userdata.depositlog.remove(id);
             await userdata.save();
 
             res.json(deposit);
@@ -867,6 +865,23 @@ adminRouter.delete(
         }
     }
 )
+
+async function isFreeWithdrawalUsed(user) {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const freeWithdraw = await FinancialLog.find({
+        fee: 0,
+        createdAt: {
+            $gte: firstDay
+        },
+        user: user._id
+    });
+
+    if (freeWithdraw && freeWithdraw.length) {
+        return true
+    }
+    return false;
+}
 
 adminRouter.post(
     '/withdraw',
@@ -885,29 +900,47 @@ adminRouter.post(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            const freeWithdrawalUsed = await isFreeWithdrawalUsed(userdata);
+            let fee = 0;
+            if (freeWithdrawalUsed) {
+                switch (method) {
+                    case 'eTransfer':
+                        fee = 15;
+                        break;
+                    case "Bitcoin":
+                    case "Ethereum":
+                    case "Tether":
+                        fee = 25;
+                        break;
+                    default:
+                        return res.status(400).json({ error: 'Invalid withdraw method.' });
+                }
+            }
             const withdraw = new FinancialLog({
                 financialtype: 'withdraw',
                 uniqid: `W${ID()}`,
                 user: userdata._id,
-                amount,
-                method,
-                status,
-                fee,
+                amount: amount,
+                method: method,
+                status: status,
+                fee: fee,
             });
 
-            if (status == FinancialStatus.success) {
-                const prebalance = parseInt(userdata.balance);
-                const withdrawamount = parseInt(amount);
-                if (prebalance < withdrawamount + fee) {
-                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-                    return;
-                }
-                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            const withdrawFee = new FinancialLog({
+                financialtype: 'withdrawfee',
+                uniqid: `WF${ID()}`,
+                user: user._id,
+                amount: fee,
+                method: method,
+                status: FinancialStatus.success,
+            });
+
+            if (userdata.balance < amount + fee) {
+                return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
             }
+            await userdata.update({ $inc: { balance: -(amount + fee) } });
             await withdraw.save();
-            userdata.withdrawlog = [...userdata.withdrawlog, ...[withdraw._id]];
-            await userdata.save();
+            await withdrawFee.save();
             res.json(withdraw);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t save withdraw.', result: error });
@@ -1051,14 +1084,14 @@ adminRouter.get(
     }
 )
 
-const tripleAWithdraw = async (req, res, data, userdata, withdraw, fee) => {
+const tripleAWithdraw = async (req, res, data, userdata, withdraw) => {
     const amount = data.amount ? data.amount : withdraw.amount;
-    const prebalance = parseInt(userdata.balance);
+    // const prebalance = parseInt(userdata.balance);
     const withdrawamount = parseInt(amount);
-    if (prebalance < withdrawamount + fee) {
-        res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-        return false;
-    }
+    // if (prebalance < withdrawamount + fee) {
+    //     res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+    //     return false;
+    // }
 
     const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
     if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
@@ -1166,28 +1199,28 @@ adminRouter.patch(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
-            if (data.status == FinancialStatus.success) {
-                const amount = data.amount ? data.amount : withdraw.amount;
-                const prebalance = parseInt(userdata.balance);
-                const withdrawamount = parseInt(amount);
-                if (prebalance < withdrawamount + fee) {
-                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-                    return;
-                }
-                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
-            }
+            // const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            // if (data.status == FinancialStatus.success) {
+            //     const amount = data.amount ? data.amount : withdraw.amount;
+            //     const prebalance = parseInt(userdata.balance);
+            //     const withdrawamount = parseInt(amount);
+            //     if (prebalance < withdrawamount + fee) {
+            //         res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+            //         return;
+            //     }
+            //     userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            // }
 
             if (data.status == FinancialStatus.inprogress) {
                 if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
-                    const result = tripleAWithdraw(req, res, data, userdata, withdraw, fee)
+                    const result = tripleAWithdraw(req, res, data, userdata, withdraw)
                     if (!result)
                         return;
                 }
             }
 
             await withdraw.update(data, { new: true }).exec();
-            await userdata.save();
+            // await userdata.save();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
@@ -1215,8 +1248,7 @@ adminRouter.delete(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            userdata.withdrawlog.remove(id);
-            await userdata.save();
+            await userdata.update({ $inc: { balance: withdraw.amount + withdraw.fee } });
 
             res.json(withdraw);
         } catch (error) {

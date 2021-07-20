@@ -20,7 +20,7 @@ const FinancialLogSchema = new Schema(
         method: { type: String, required: true },
         note: { type: String, default: null },
         status: { type: String, default: FinancialStatus.pending },
-        fee: Number,
+        fee: { type: Number, default: 0 },
         deletedAt: Date,
     },
     {
