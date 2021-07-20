@@ -90,6 +90,7 @@ class AutoBet extends React.Component {
             <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{bet.userId.username}</td>
+                <td>{bet.sports.join(', ')}</td>
                 <td>{bet.priority}</td>
                 <td>{bet.maxRisk}</td>
                 <td>{bet.budget}</td>
@@ -211,12 +212,13 @@ class AutoBet extends React.Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">User</th>
+                                            <th scope="col">Sports</th>
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Created</th>
+                                            <th scope="col">Created At</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
