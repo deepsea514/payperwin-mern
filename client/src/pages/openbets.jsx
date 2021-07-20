@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { setMeta } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
+import sportNameIcon from "../helpers/sportNameIcon";
 import dayjs from 'dayjs';
 import DocumentMeta from 'react-document-meta';
 const config = require('../../../config.json');
