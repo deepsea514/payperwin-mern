@@ -171,6 +171,7 @@ const initState = {
     steps: ['', ''],
     metaData: null,
     showPass: false,
+    showPassConfirm: false,
 };
 
 class Registration extends Component {
@@ -317,7 +318,7 @@ class Registration extends Component {
             firstname, lastname, dateofbirth,
             vipcode, agreeTerms, agreePrivacy,
             rcptchVerified,
-            errors, showPass
+            errors, showPass, showPassConfirm
         } = this.state;
         const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
         const months = [
@@ -400,16 +401,21 @@ class Registration extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password Confirmation</Form.Label>
-                        <Form.Control
-                            type="password"
-                            name="cPassword"
-                            value={cPassword}
-                            onChange={this.handleChange}
-                            onBlur={this.handleDirty}
-                            placeholder="Confirm Password"
-                            isInvalid={errors.cPassword !== undefined}
-                            required
-                        />
+                        <InputGroup>
+                            <Form.Control
+                                type={showPassConfirm ? "text" : "password"}
+                                name="cPassword"
+                                value={cPassword}
+                                onChange={this.handleChange}
+                                onBlur={this.handleDirty}
+                                placeholder="Confirm Password"
+                                isInvalid={errors.cPassword !== undefined}
+                                required
+                            />
+                            <Button variant="outline-secondary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
+                                <i className={showPassConfirm ? "far fa-eye" : "far fa-eye-slash"} />
+                            </Button>
+                        </InputGroup>
                         {errors.cPassword ? <div className="registration-feedback">{errors.cPassword}</div> : null}
                     </Form.Group>
                 </>;

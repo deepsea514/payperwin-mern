@@ -54,7 +54,7 @@ header {
     max-width: 100px;
     overflow: hidden;
     white-space: nowrap;
-    display: inline-block;
+    /* display: inline-block; */
 }
 
 .table-list li:nth-child(1) {
