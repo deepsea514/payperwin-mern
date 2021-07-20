@@ -104,9 +104,9 @@ class SportsBook extends PureComponent {
                                 The only catch is that the odds are different than PEER 2 PEER.
                                 The bets here are forwarded on to a sportsbook.
                                 We are in no way affiliated with the sportsbooks.
-                                Payper win guarantees you will be paid on all winning bets.
+                                PAYPER WIN guarantees you will be paid on all winning bets.
                                 We have found the best sportsbook odds for you.
-                                Payper win does not profit off of or charge any fees whatsoever on live or instant bets.
+                                PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets.
                                 All live betting or non matching bets are done here such soccer draw bets and parlays.
                             </p>
                             <div className="text-right">

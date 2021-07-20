@@ -37,7 +37,7 @@ class PaymentOptions extends Component {
                 {!option && <div className="main-cnt">
                     <p>
                         There are numerous payment options available to
-                        PayPer Win customers.
+                        PAYPER WIN customers.
                         They are determined by the currency you chose when
                         you open an account.
                     </p>

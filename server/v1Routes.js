@@ -18,7 +18,7 @@ const io = require('./libs/socket');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require("../config.json");
 const InsufficientFunds = 8;
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 

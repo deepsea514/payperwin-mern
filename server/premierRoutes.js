@@ -13,7 +13,7 @@ const FinancialLog = require('./models/financiallog');
 //local helpers
 const { generatePremierNotificationSignature } = require('./libs/generatePremierSignature');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
@@ -75,8 +75,8 @@ premierRouter.post('/etransfer-deposit',
                     html: simpleresponsive(
                         `Hi <b>${user.firstname}</b>.
                         <br><br>
-                        Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
-                        your Payper Win account by logging in now.
+                        Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
+                        your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
                 sgMail.send(msg);
@@ -139,8 +139,8 @@ premierRouter.post('/etransfer-deposit',
 //                     html: simpleresponsive(
 //                         `Hi <b>${user.firstname}</b>.
 //                         <br><br>
-//                         Just a quick reminder that you currently have funds out from your Payper Win account. You can find out how much is out from
-//                         your Payper Win account by logging in now.
+//                         Just a quick reminder that you currently have funds out from your PAYPER WIN account. You can find out how much is out from
+//                         your PAYPER WIN account by logging in now.
 //                         <br><br>`),
 //                 };
 //                 sgMail.send(msg);

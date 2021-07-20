@@ -13,7 +13,7 @@ const FinancialLog = require('./models/financiallog');
 const Addon = require('./models/addon');
 //local helpers
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const fromEmailName = 'PAYPER Win';
+const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
@@ -120,8 +120,8 @@ tripleARouter.post('/deposit',
                 html: simpleresponsive(
                     `Hi <b>${user.email}</b>.
                     <br><br>
-                    Just a quick reminder that you currently have funds in your Payper Win account. You can find out how much is in
-                    your Payper Win account by logging in now.
+                    Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
+                    your PAYPER WIN account by logging in now.
                     <br><br>`),
             };
             sgMail.send(msg);
@@ -173,8 +173,8 @@ tripleARouter.post('/withdraw',
                 html: simpleresponsive(
                     `Hi <b>${userdata.email}</b>.
                     <br><br>
-                    Just a quick reminder that you currently have withdraw from your Payper Win account. You can find out how much is in
-                    your Payper Win account by logging in now.
+                    Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in
+                    your PAYPER WIN account by logging in now.
                     <br><br>`),
             };
             sgMail.send(msg);
@@ -192,7 +192,7 @@ tripleARouter.post('/withdraw',
                     `Hi <b>${userdata.email}</b>.
                     <br><br>
                     Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in
-                    your Payper Win account by logging in now.
+                    your PAYPER WIN account by logging in now.
                     <br><br>`),
             };
             sgMail.send(msg);
