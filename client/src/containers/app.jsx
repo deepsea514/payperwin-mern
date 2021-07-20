@@ -41,7 +41,6 @@ import DepositETransfer from "../pages/depositEtransfer";
 import DepositTripleA from "../pages/depositTripleA";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
 import WithdrawTripleA from "../pages/withdrawTripleA";
-import OpenBetsSportsBook from "../pages/openbetsSportsbook";
 import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
 import VerificationNotify from "../components/verificationNotify";
@@ -172,13 +171,11 @@ class App extends PureComponent {
         const { pathname } = location;
         let sidebarShowAccountLinks = [
             '/bets',
-            '/bets-sportsbook',
             '/deposit',
             '/announcements',
             '/deactivation',
             '/details',
             '/history',
-            '/history-sportsbook',
             '/inbox',
             '/payment-options',
             '/personal-details',
@@ -251,12 +248,6 @@ class App extends PureComponent {
                                                 } />
                                                 <Route path="/history" render={(props) =>
                                                     <OpenBets settledBets={true} {...props} />
-                                                } />
-                                                <Route path="/bets-sportsbook" render={(props) =>
-                                                    <OpenBetsSportsBook openBets={true} {...props} />
-                                                } />
-                                                <Route path="/history-sportsbook" render={(props) =>
-                                                    <OpenBetsSportsBook settledBets={true} {...props} />
                                                 } />
                                                 <Route path="/how-it-works" component={HowTo} />
                                                 <Route path="/sports" component={Sports} />
@@ -347,7 +338,7 @@ class App extends PureComponent {
                                                 />}
                                             {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
                                             {!verified && pathname == '/verification' && <VerificationProof />}
-                                            {['/bets', '/bets-sportsbook', '/history', '/history-sportsbook'].includes(pathname) && <BetStatus />}
+                                            {['/bets', '/history'].includes(pathname) && <BetStatus />}
                                         </div>
                                     </div>
                                 }}

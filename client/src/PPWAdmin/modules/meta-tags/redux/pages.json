@@ -80,14 +80,6 @@
         "path": "/history"
     },
     {
-        "title": "Open Bets(SportsBook)",
-        "path": "/bets-sportsbook"
-    },
-    {
-        "title": "Bet History(SportsBook)",
-        "path": "/history-sportsbook"
-    },
-    {
         "title": "How it works",
         "path": "/how-it-works"
     },
