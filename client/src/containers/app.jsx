@@ -50,6 +50,7 @@ import ContactUs from "../pages/contactUs";
 import GoToTop from "../components/gotoTop";
 import TfaModal from "../components/tfamodal";
 import Others from "../components/others";
+import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
@@ -346,6 +347,7 @@ class App extends PureComponent {
                                                 />}
                                             {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
                                             {!verified && pathname == '/verification' && <VerificationProof />}
+                                            {['/bets', '/bets-sportsbook', '/history', '/history-sportsbook'].includes(pathname) && <BetStatus />}
                                         </div>
                                     </div>
                                 }}
