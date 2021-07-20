@@ -132,9 +132,9 @@ class Header extends PureComponent {
                                                     </Link>
                                                 </li>
                                                 <li>
-                                                    <div href="#" className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
+                                                    <a className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
                                                         <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan">My Account</span>&nbsp;<i className="fa fa-caret-down not-mobile" />
-                                                    </div>
+                                                    </a>
                                                 </li>
                                             </ul>
                                             {userDropDownOpen ? (
