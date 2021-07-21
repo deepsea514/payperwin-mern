@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as currentUser from "../redux/reducers";
 const config = require('../../../../config.json');
 const serverUrl = config.appAdminUrl;
+const AdminRoles = config.AdminRoles;
 import axios from 'axios';
 
 import { Layout } from "../_metronic/layout";
@@ -65,8 +66,18 @@ class App extends Component {
         this._Mounted = false;
     }
 
+    isAvailable = (module) => {
+        const { currentUser } = this.props;
+        if (currentUser) {
+            if (AdminRoles[currentUser.role] && AdminRoles[currentUser.role][module])
+                return true;
+            return false;
+        }
+        return false;
+    }
+
     render() {
-        const { history } = this.props;
+        const { history, currentUser } = this.props;
         return (
             <Layout history={history}>
                 <Switch>
@@ -82,64 +93,58 @@ class App extends Component {
                     <Route path="/dashboard" component={AdminDashboard} />
 
                     {/* Admin */}
-                    <Route path="/admin" component={AdminModule} />
+                    {currentUser && this.isAvailable('admins') && <Route path="/admin" component={AdminModule} />}
 
                     {/* customers */}
-                    <Route path="/customers" component={CustomerModule} />
+                    {currentUser && this.isAvailable('customers') && <Route path="/customers" component={CustomerModule} />}
 
                     {/* bet activities */}
-                    <Route path="/bet-activities" component={BetActivityModule} />
+                    {currentUser && this.isAvailable('bet_activities') && <Route path="/bet-activities" component={BetActivityModule} />}
 
                     {/* withdraw */}
-                    <Route path="/withdraw-log" component={WithdrawLogModule} />
+                    {currentUser && this.isAvailable('withdraw_logs') && <Route path="/withdraw-log" component={WithdrawLogModule} />}
 
                     {/* deposit */}
-                    <Route path="/deposit-log" component={DepositLogModule} />
+                    {currentUser && this.isAvailable('deposit_logs') && <Route path="/deposit-log" component={DepositLogModule} />}
 
                     {/* events */}
-                    <Route path="/events" component={EventModule} />
-
-                    {/* wager feeds */}
-                    <Route path="/wager-feeds" component={WagerFeedsModule} />
+                    {currentUser && this.isAvailable('events') && <Route path="/events" component={EventModule} />}
 
                     {/* autobet */}
-                    <Route path="/autobet" component={AutoBet} />
+                    {currentUser && this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
 
                     {/* email templates */}
-                    <Route path="/email-templates" component={EmailTemplatesModule} />
+                    {currentUser && this.isAvailable('email_templates') && <Route path="/email-templates" component={EmailTemplatesModule} />}
 
                     {/* promotions */}
-                    <Route path="/promotions" component={PromotionModule} />
+                    {currentUser && this.isAvailable('promotions') && <Route path="/promotions" component={PromotionModule} />}
 
                     {/* KYC(Know Your Customers) */}
-                    <Route path="/kyc" component={KYC} />
+                    {currentUser && this.isAvailable('kyc') && <Route path="/kyc" component={KYC} />}
 
                     {/* Support Ticket Module */}
-                    <Route path="/tickets" component={TicketsModule} />
+                    {currentUser && this.isAvailable('tickets') && <Route path="/tickets" component={TicketsModule} />}
 
                     {/* Support FAQ Module */}
-                    <Route path="/faq" component={FAQModule} />
+                    {currentUser && this.isAvailable('faq') && <Route path="/faq" component={FAQModule} />}
 
                     {/* Message Center Module */}
-                    <Route path="/message-center" component={MessageCenterModule} />
-
-                    {/* Active Users */}
-                    <Route path="/active-users" component={ActiveUsersModule} />
+                    {currentUser && this.isAvailable('messages') && <Route path="/message-center" component={MessageCenterModule} />}
 
                     {/* meta tags */}
-                    <Route path="/meta-tags" component={MetaTagsModule} />
+                    {currentUser && this.isAvailable('meta_tags') && <Route path="/meta-tags" component={MetaTagsModule} />}
 
                     {/* Addons */}
-                    <Route path="/addons" component={Addons} />
+                    {currentUser && this.isAvailable('addons') && <Route path="/addons" component={Addons} />}
 
                     {/* Reports */}
-                    <Route path="/reports" component={ReportsModule} />
+                    {currentUser && this.isAvailable('reports') && <Route path="/reports" component={ReportsModule} />}
 
                     {/* Articles */}
-                    <Route path="/articles" component={ArticlesModule} />
+                    {currentUser && this.isAvailable('articles') && <Route path="/articles" component={ArticlesModule} />}
 
                     {/* Frontend */}
-                    <Route path="/frontend" component={FrontendManageModule} />
+                    {currentUser && this.isAvailable('frontend') && <Route path="/frontend" component={FrontendManageModule} />}
 
                     <Redirect exact from="/" to="/dashboard" />
 
@@ -151,4 +156,9 @@ class App extends Component {
     }
 }
 
-export default connect(null, currentUser.actions)(App)
+const mapStateToProps = (state) => ({
+    currentUser: state.currentUser.currentUser,
+});
+
+
+export default connect(mapStateToProps, currentUser.actions)(App)

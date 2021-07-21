@@ -87,7 +87,7 @@ class EditAdmin extends React.Component {
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Create a New Admin</h3>
+                                <h3 className="card-label">Edit Admin</h3>
                             </div>
                         </div>
                         <div className="card-body">
@@ -237,7 +237,7 @@ class EditAdmin extends React.Component {
                                             </div>
                                         </div>
                                         <div className="form-row">
-                                            <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Create Admin</button>
+                                            <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Save</button>
                                             <Link to="/" className="btn btn-secondary">Cancel</Link>
                                         </div>
                                     </form>

@@ -3680,9 +3680,13 @@ adminRouter.put(
             if (!data.password) {
                 delete data.password;
             }
-            await admin.update(data);
+            Object.keys(data).map(key => {
+                admin[key] = data[key];
+            })
+            await admin.save();
             return res.json({ success: true });
         } catch (error) {
+            console.log(error)
             res.status(400).json({
                 message: "Admin update failed. Please try with new credentials."
             });
