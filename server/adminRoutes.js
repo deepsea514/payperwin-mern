@@ -408,7 +408,59 @@ adminRouter.get(
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit });
+            let winlossbetsSportsbook = await BetSportsBook.aggregate({
+                $match: {
+                    Name: "SETTLED",
+                    userId: new ObjectId(id),
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
+                    }
+                }
+            });
+            if (winlossbetsSportsbook.length) winlossbetsSportsbook = winlossbetsSportsbook[0].total;
+            else winlossbetsSportsbook = 0;
+
+            let winbets = await Bet.aggregate({
+                $match: {
+                    status: "Settled - Win",
+                    userId: new ObjectId(id),
+                    deletedAt: null
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: "$payableToWin"
+                    }
+                }
+            });
+            if (winbets.length) winbets = winbets[0].total;
+            else winbets = 0;
+
+            let lossbets = await Bet.aggregate({
+                $match: {
+                    status: "Settled - Lose",
+                    userId: new ObjectId(id),
+                    deletedAt: null
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: "$bet"
+                    }
+                }
+            })
+            if (lossbets.length) lossbets = lossbets[0].total;
+            else lossbets = 0;
+            const winloss = Number((winlossbetsSportsbook + winbets + lossbets).toFixed(2));
+
+
+            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
@@ -2014,7 +2066,7 @@ adminRouter.post(
         try {
             const existing = await AutoBet.find({ userId: ObjectId(data.userId), deletedAt: null });
             if (existing && existing.length) {
-                return res.json({success: false, message: "He/She is already autobet user."});
+                return res.json({ success: false, message: "He/She is already autobet user." });
             }
             await AutoBet.create(data);
             res.json({ success: true });

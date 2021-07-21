@@ -17,6 +17,7 @@ class ProfileOverview extends React.Component {
             totaldeposit: 0,
             balance: customer.balance,
             currency: customer.currency,
+            winloss: 0
         };
     }
 
@@ -24,13 +25,13 @@ class ProfileOverview extends React.Component {
         const { customer } = this.props;
         getCustomerOverview(customer._id)
             .then(({ data }) => {
-                const { lastbets, lastsportsbookbets, totalwagers, totaldeposit } = data;
-                this.setState({ lastbets, totalwagers, totaldeposit, lastsportsbookbets });
+                const { lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss } = data;
+                this.setState({ lastbets, totalwagers, totaldeposit, lastsportsbookbets, winloss });
             })
     }
 
     render() {
-        const { lastbets, lastsportsbookbets, totalwagers, totaldeposit, balance, currency } = this.state;
+        const { lastbets, lastsportsbookbets, totalwagers, totaldeposit, balance, currency, winloss } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-5">
@@ -45,7 +46,7 @@ class ProfileOverview extends React.Component {
                         balance={Number(balance).toFixed(2)}
                         currency={currency}
                         className="" />
-                    <WinLoss className="mt-3" />
+                    <WinLoss className="mt-3" winloss={winloss} />
                     <div className="mt-3">
                         <div className="row">
                             <div className="col-lg-6">
