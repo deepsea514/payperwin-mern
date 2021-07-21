@@ -35,6 +35,7 @@ const io = require("./libs/socket");
 const calculateNewOdds = require('./libs/calculateNewOdds');
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
+const { convertTimeLineDate } = require('./libs/timehelper');
 const InsufficientFunds = 8;
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
@@ -942,6 +943,13 @@ expressApp.post(
                                     try {
                                         const savedBet = await newBet.save();
 
+                                        const preference = await Preference.findOne({ user: user._id });
+                                        let timezone = "00:00";
+                                        if (preference && preference.timezone) {
+                                            timezone = preference.timezone;
+                                        }
+                                        const timeString = convertTimeLineDate(new Date(), timezone);
+
                                         const msg = {
                                             from: `"${fromEmailName}" <${fromEmailAddress}>`,
                                             to: user.email,
@@ -949,9 +957,15 @@ expressApp.post(
                                             text: `Your bet was accepted`,
                                             html: simpleresponsive(
                                                 `Hi <b>${user.email}</b>.
-                                                        <br><br>
-                                                        This email is to advise that your bet for ${name} ${type} for ${betAfterFee} was accepted on ${new Date()}
-                                                        <br><br>`),
+                                                <br><br>
+                                                This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                                                <br><br>
+                                                <ul>
+                                                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                    <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}</li>
+                                                    <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                                </ul>
+                                            `),
                                         };
                                         sgMail.send(msg);
 
@@ -1122,6 +1136,13 @@ expressApp.post(
                                         try {
                                             const savedBet = await newBet.save();
 
+                                            const preference = await Preference.findOne({ user: user._id });
+                                            let timezone = "00:00";
+                                            if (preference && preference.timezone) {
+                                                timezone = preference.timezone;
+                                            }
+                                            const timeString = convertTimeLineDate(new Date(), timezone);
+
                                             const msg = {
                                                 from: `"${fromEmailName}" <${fromEmailAddress}>`,
                                                 to: user.email,
@@ -1129,9 +1150,15 @@ expressApp.post(
                                                 text: `Your bet was accepted`,
                                                 html: simpleresponsive(
                                                     `Hi <b>${user.email}</b>.
-                                                            <br><br>
-                                                            This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
-                                                            <br><br>`),
+                                                    <br><br>
+                                                    This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                                                    <br><br>
+                                                    <ul>
+                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                                                        <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                                    </ul>
+                                                `),
                                             };
                                             sgMail.send(msg);
 
@@ -1382,6 +1409,12 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             amount: betAfterFee
         });
 
+        const preference = await Preference.findOne({ user: selectedauto.userId._id.toString() });
+        let timezone = "00:00";
+        if (preference && preference.timezone) {
+            timezone = preference.timezone;
+        }
+        const timeString = convertTimeLineDate(new Date(), timezone);
         const msg = {
             from: `"${fromEmailName}" <${fromEmailAddress}>`,
             to: selectedauto.userId.email,
@@ -1389,9 +1422,15 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             text: `Your bet was accepted`,
             html: simpleresponsive(
                 `Hi <b>${selectedauto.userId.firstname}</b>.
-                    <br><br>
-                    This email is to advise that your auto bet for ${lineQuery.sportName} ${lineQuery.type} for ${betAfterFee} was accepted on ${new Date()}
-                    <br><br>`),
+                <br><br>
+                This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                <br><br>
+                <ul>
+                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                    <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                    <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
+                </ul>
+                `),
         };
         sgMail.send(msg);
 
