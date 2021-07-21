@@ -1,7 +1,7 @@
 import React from "react";
 import OverviewBet from "../../components/OverviewBet";
 import OverviewBalance from "../../components/OverviewBalance";
-import { LifeTimeValue } from "../../components/LifeTimeValue.jsx";
+import { WinLoss } from "../../components/WinLoss.jsx";
 import OverviewTotalWager from "../../components/OverviewTotalWager";
 import OverviewTotalDeposit from "../../components/OverviewTotalDeposit";
 import { getCustomerOverview } from "../../redux/services";
@@ -45,7 +45,7 @@ class ProfileOverview extends React.Component {
                         balance={Number(balance).toFixed(2)}
                         currency={currency}
                         className="" />
-                    <LifeTimeValue className="mt-3" />
+                    <WinLoss className="mt-3" />
                     <div className="mt-3">
                         <div className="row">
                             <div className="col-lg-6">
