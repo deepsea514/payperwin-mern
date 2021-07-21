@@ -2058,7 +2058,7 @@ expressApp.post('/deposit',
                             user: user._id,
                             amount,
                             method,
-                            status: "Pending"
+                            status: FinancialStatus.pending
                         });
                         await deposit.save();
                         return res.json({ success: 1, message: "Please wait until deposit is finished." });
@@ -2150,7 +2150,8 @@ async function isFreeWithdrawalUsed(user) {
         createdAt: {
             $gte: firstDay
         },
-        user: user._id
+        user: user._id,
+        type: 'withdraw'
     });
 
     if (freeWithdraw && freeWithdraw.length) {
@@ -2404,6 +2405,10 @@ expressApp.post(
                             financialtype: "deposit",
                             status: FinancialStatus.success
                         });
+                        orCon.push({
+                            financialtype: "depositheld",
+                            status: FinancialStatus.success
+                        })
                     }
                     if (filter.withdraw) {
                         orCon.push({

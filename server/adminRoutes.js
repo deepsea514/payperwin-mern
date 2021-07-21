@@ -618,7 +618,7 @@ adminRouter.post(
             if (!reason) res.status(400).json({ error: 'Reason field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
-            if (!status) status = "Pending";
+            if (!status) status = FinancialStatus.pending;
 
             const userdata = await User.findById(user);
             if (!userdata) {
@@ -872,7 +872,8 @@ async function isFreeWithdrawalUsed(user) {
         createdAt: {
             $gte: firstDay
         },
-        user: user._id
+        user: user._id,
+        type: 'withdraw'
     });
 
     if (freeWithdraw && freeWithdraw.length) {
@@ -891,7 +892,7 @@ adminRouter.post(
             if (!user) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
-            if (!status) status = "Pending";
+            if (!status) status = FinancialStatus.pending;
 
             const userdata = await User.findById(user);
             if (!userdata) {
@@ -2907,7 +2908,7 @@ adminRouter.get(
             let findObj = {};
             if (EventStatus[status]) {
                 findObj = { ...findObj, status: EventStatus[status].value };
-                if (status == "pending") {
+                if (status == FinancialStatus.pending) {
                     findObj = { ...findObj, startDate: { $gte: new Date() } };
                 } else if (status == "outdated") {
                     findObj = { ...findObj, startDate: { $lt: new Date() } };
