@@ -65,6 +65,8 @@ class TransactionHistory extends Component {
         switch (type) {
             case "deposit":
                 return '';
+            case "depositheld":
+                return '-';
             case 'withdraw':
                 return '-';
             case 'withdrawfee':
@@ -98,6 +100,8 @@ class TransactionHistory extends Component {
         switch (type) {
             case "deposit":
                 return `Deposit made through ${method}`;
+            case 'depositheld':
+                return `Deposit Held`;
             case 'withdraw':
                 return `Withdraw made through ${method}`;
             case 'withdrawfee':

@@ -41,6 +41,19 @@ const signatureCheck = async (req, res, next) => {
     }
 }
 
+async function isFirstDepositDone(user) {
+    const existingDeposit = await FinancialLog.find({
+        user: user._id,
+        type: 'deposit',
+        status: FinancialStatus.success,
+    });
+
+    if (existingDeposit && existingDeposit.length) {
+        return true
+    }
+    return false;
+}
+
 premierRouter.post('/etransfer-deposit',
     bruteforce.prevent,
     signatureCheck,
@@ -63,9 +76,21 @@ premierRouter.post('/etransfer-deposit',
                 await deposit.update({
                     status: FinancialStatus.success
                 });
-                await user.update({
-                    balance: user.balance + deposit.amount
-                });
+
+                const firstDepositDone = await isFirstDepositDone(user);
+                if (firstDepositDone) {
+                    await user.update({ $inc: { balance: deposit.amount } });
+                } else {
+                    await FinancialLog.create({
+                        financialtype: 'depositheld',
+                        uniqid: `DH${ID()}`,
+                        user: webhook_data.payer_id,
+                        amount: 8,
+                        method: method,
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ $inc: { balance: receive_amount - 8 } });
+                }
 
                 const msg = {
                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
