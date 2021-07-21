@@ -1855,9 +1855,11 @@ async function pinnacleLogout(req) {
         return false;
     }
     try {
-        await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {
-            userCode: agentCode,
-            token
+        await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {}, {
+            headers: {
+                userCode: agentCode,
+                token
+            }
         });
 
     } catch (error) {

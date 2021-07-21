@@ -4,7 +4,7 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
 
-export function LifeTimeValue({ className, chartColor = "info" }) {
+export function WinLoss({ className, chartColor = "info" }) {
     const uiService = useHtmlClassService();
     const layoutProps = useMemo(() => {
         return {
@@ -50,7 +50,7 @@ export function LifeTimeValue({ className, chartColor = "info" }) {
             >
                 <div className="card-header border-0 pt-5">
                     <h3 className="card-title font-weight-bolder text-white">
-                        LifeTime Values
+                        Win/Loss
                     </h3>
                     <div className="card-toolbar">
                     </div>
