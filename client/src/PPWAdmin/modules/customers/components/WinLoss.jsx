@@ -4,7 +4,7 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
 
-export function WinLoss({ className, chartColor = "info" }) {
+export function WinLoss({ className, chartColor = "info", winloss }) {
     const uiService = useHtmlClassService();
     const layoutProps = useMemo(() => {
         return {
@@ -57,9 +57,9 @@ export function WinLoss({ className, chartColor = "info" }) {
                 </div>
 
                 <div className="card-body d-flex flex-column p-0 text-left">
-                    <h1 className="card-title font-weight-bolder text-white ml-10">
-                        $378 USD
-                    </h1>
+                    {winloss && <h1 className="card-title font-weight-bolder text-white ml-10">
+                        {winloss >= 0 ? ('+ $' + winloss) : ('- $' + (-winloss))} CAD
+                    </h1>}
                     <div
                         id="lifetime_chart"
                         data-color={chartColor}
