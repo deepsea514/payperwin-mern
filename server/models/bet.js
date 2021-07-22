@@ -38,6 +38,7 @@ const BetSchema = new Schema(
         // betEndDate: Date,
         transactionID: { type: String, unique: true },
         origin: String,
+        notifySent: Date,
     },
     {
         timestamps: true,

@@ -47,6 +47,7 @@
     "server": "node index.js",
     "resultsDaemon": "node matchResultDaemon.js",
     "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
-    "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js"
+    "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js",
+    "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js"
   }
 }
