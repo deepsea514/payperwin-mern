@@ -18,6 +18,7 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
+const DepositHeld = 8;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -127,11 +128,11 @@ tripleARouter.post('/deposit',
                     financialtype: 'depositheld',
                     uniqid: `DH${ID()}`,
                     user: webhook_data.payer_id,
-                    amount: 8,
+                    amount: DepositHeld,
                     method: method,
                     status: FinancialStatus.success
                 });
-                await user.update({ $inc: { balance: receive_amount - 8 } });
+                await user.update({ $inc: { balance: receive_amount - DepositHeld } });
             }
 
             const msg = {

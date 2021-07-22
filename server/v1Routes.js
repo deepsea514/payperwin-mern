@@ -17,7 +17,6 @@ const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const io = require('./libs/socket');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require("../config.json");
-const InsufficientFunds = 8;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
@@ -236,7 +235,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
-        if (Transaction && user.balance < (Transaction.Amount + InsufficientFunds)) {
+        if (Transaction && user.balance < (Transaction.Amount)) {
             return {
                 Id,
                 TransactionId: Transaction.TransactionId,
@@ -295,7 +294,7 @@ async function updateAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
         if (Transaction && Transaction.TransactionType == "DEBIT") {
-            if (user.balance < (Transaction.Amount + InsufficientFunds)) {
+            if (user.balance < (Transaction.Amount)) {
                 return {
                     Id,
                     TransactionId: Transaction.TransactionId,
