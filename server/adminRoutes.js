@@ -2018,6 +2018,20 @@ adminRouter.get(
     }
 );
 
+adminRouter.post(
+    '/email-templates',
+    authenticateJWT,
+    limitRoles('email_templates'),
+    async function (req, res) {
+        try {
+            const email_template = await Email.create(req.body);
+            res.json({ email_template })
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+);
+
 adminRouter.get(
     '/email-template/:title',
     authenticateJWT,
