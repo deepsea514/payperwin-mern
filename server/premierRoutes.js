@@ -17,6 +17,7 @@ const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
+const DepositHeld = 8;
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -85,11 +86,11 @@ premierRouter.post('/etransfer-deposit',
                         financialtype: 'depositheld',
                         uniqid: `DH${ID()}`,
                         user: webhook_data.payer_id,
-                        amount: 8,
+                        amount: DepositHeld,
                         method: method,
                         status: FinancialStatus.success
                     });
-                    await user.update({ $inc: { balance: receive_amount - 8 } });
+                    await user.update({ $inc: { balance: receive_amount - DepositHeld } });
                 }
 
                 const msg = {

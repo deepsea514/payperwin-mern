@@ -36,7 +36,6 @@ const calculateNewOdds = require('./libs/calculateNewOdds');
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const { convertTimeLineDate } = require('./libs/timehelper');
-const InsufficientFunds = 8;
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
@@ -914,7 +913,7 @@ expressApp.post(
                                 const fee = Number((toBet * BetFee).toFixed(2));
                                 const balanceChange = toBet * -1;
                                 const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
-                                if (newBalance >= InsufficientFunds) {
+                                if (newBalance >= 0) {
                                     // insert bet doc to bets table
                                     const newBetObj = {
                                         userId: user._id,
@@ -1052,7 +1051,7 @@ expressApp.post(
                                     }
 
                                 } else {
-                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $${InsufficientFunds} to place bets.`);
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds.`);
                                 }
                             } else {
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Can't find candidate.`);
@@ -1098,7 +1097,7 @@ expressApp.post(
                                     const fee = Number((toBet * BetFee).toFixed(2));
                                     const balanceChange = toBet * -1;
                                     const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
-                                    if (newBalance >= InsufficientFunds) {
+                                    if (newBalance >= 0) {
                                         // insert bet doc to bets table
                                         const newBetObj = {
                                             userId: user._id,
@@ -1254,7 +1253,7 @@ expressApp.post(
                                         //     },
                                         // }, { upsert: true });
                                     } else {
-                                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds. Balance must not drop below $${InsufficientFunds} to place bets.`);
+                                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds.`);
                                     }
                                 } else {
                                     errors.push(`${pickName} ${odds[pick]} wager could not be placed. Odds have changed.`);
@@ -1307,7 +1306,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         return (
             autobet.userId._id.toString() != user._id.toString() &&     //Not same user
             autobet.status == AutoBetStatus.active &&                   //Check active status
-            autobet.userId.balance >= InsufficientFunds + toBet &&      //Check Balance
+            autobet.userId.balance >= toBet &&                          //Check Balance
             autobet.maxRisk >= toBet &&                                 //Check Max.Risk
             (bettedamount < (autobet.budget - toBet)) &&                //Check Budget
             autobet.sports.find((sport) => sport == lineQuery.sportName)
