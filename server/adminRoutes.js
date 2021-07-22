@@ -457,7 +457,7 @@ adminRouter.get(
             })
             if (lossbets.length) lossbets = lossbets[0].total;
             else lossbets = 0;
-            const winloss = Number((winlossbetsSportsbook + winbets + lossbets).toFixed(2));
+            const winloss = Number((winlossbetsSportsbook + winbets - lossbets).toFixed(2));
 
 
             res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
