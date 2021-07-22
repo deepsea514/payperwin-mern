@@ -63,6 +63,11 @@ class EmailTemplates extends React.Component {
                             <div className="card-title">
                                 <h3 className="card-label">Email Templates</h3>
                             </div>
+                            <div className="card-toolbar">
+                                <Link to="/create" className="btn btn-success font-weight-bolder font-size-sm">
+                                    <i className="far fa-envelope-open"></i>&nbsp; Add New Template
+                                </Link>
+                            </div>
                         </div>
                         <div className="card-body">
                             <div className="">

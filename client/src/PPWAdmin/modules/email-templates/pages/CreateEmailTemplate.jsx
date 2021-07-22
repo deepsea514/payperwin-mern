@@ -5,14 +5,18 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
-import { getEmailTemplateDetail, updateEmailTemplate } from "../redux/services";
+import { createEmailTemplate } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
-class EditEmailTemplates extends React.Component {
+class CreateEmailTemplate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: null,
+            email: {
+                title: '',
+                subject: '',
+                content: '',
+            },
             loading: false,
             emailSchema: Yup.object().shape({
                 title: Yup.string()
@@ -32,28 +36,16 @@ class EditEmailTemplates extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ loading: true });
-        const { match, history } = this.props;
-        getEmailTemplateDetail(match.params.title)
-            .then(({ data }) => {
-                const { email_template } = data;
-                this.setState({ loading: false, email: email_template });
-                history.push("/");
-            })
-            .catch(() => {
-                this.setState({ loading: false, email: null });
-            });
     }
 
     onSubmit = (values, formik) => {
-        formik.setSubmitting(true);
+        const { history } = this.props;
         this.setState({ isSuccess: false, isError: false });
-        const { match } = this.props;
-        updateEmailTemplate(match.params.title, values)
+        createEmailTemplate(values)
             .then(() => {
                 this.setState({ isSuccess: true });
+                history.push("/");
             }).catch((error) => {
-                console.log(error);
                 this.setState({ isError: true });
             }).finally(() => {
                 formik.setSubmitting(false)
@@ -72,7 +64,7 @@ class EditEmailTemplates extends React.Component {
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Edit Email Template</h3>
+                                <h3 className="card-label">Add Email Template</h3>
                             </div>
                         </div>
                         <div className="card-body">
@@ -214,4 +206,4 @@ class EditEmailTemplates extends React.Component {
     }
 }
 
-export default EditEmailTemplates;
+export default CreateEmailTemplate;

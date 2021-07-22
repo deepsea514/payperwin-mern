@@ -13,3 +13,7 @@ export function getEmailTemplateDetail(title) {
 export function updateEmailTemplate(title, body) {
     return axios.post(`${serverUrl}/email-template/${title}`, body, { withCredentials: true });
 }
+
+export function createEmailTemplate(data) {
+    return axios.post(`${serverUrl}/email-template`, data, { withCredentials: true });
+}
