@@ -73,7 +73,7 @@ class App extends Component {
                 return true;
             return false;
         }
-        return false;
+        return true;
     }
 
     render() {
@@ -93,58 +93,58 @@ class App extends Component {
                     <Route path="/dashboard" component={AdminDashboard} />
 
                     {/* Admin */}
-                    {currentUser && this.isAvailable('admins') && <Route path="/admin" component={AdminModule} />}
+                    {this.isAvailable('admins') && <Route path="/admin" component={AdminModule} />}
 
                     {/* customers */}
-                    {currentUser && this.isAvailable('customers') && <Route path="/customers" component={CustomerModule} />}
+                    {this.isAvailable('customers') && <Route path="/customers" component={CustomerModule} />}
 
                     {/* bet activities */}
-                    {currentUser && this.isAvailable('bet_activities') && <Route path="/bet-activities" component={BetActivityModule} />}
+                    {this.isAvailable('bet_activities') && <Route path="/bet-activities" component={BetActivityModule} />}
 
                     {/* withdraw */}
-                    {currentUser && this.isAvailable('withdraw_logs') && <Route path="/withdraw-log" component={WithdrawLogModule} />}
+                    {this.isAvailable('withdraw_logs') && <Route path="/withdraw-log" component={WithdrawLogModule} />}
 
                     {/* deposit */}
-                    {currentUser && this.isAvailable('deposit_logs') && <Route path="/deposit-log" component={DepositLogModule} />}
+                    {this.isAvailable('deposit_logs') && <Route path="/deposit-log" component={DepositLogModule} />}
 
                     {/* events */}
-                    {currentUser && this.isAvailable('events') && <Route path="/events" component={EventModule} />}
+                    {this.isAvailable('events') && <Route path="/events" component={EventModule} />}
 
                     {/* autobet */}
-                    {currentUser && this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
+                    {this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
 
                     {/* email templates */}
-                    {currentUser && this.isAvailable('email_templates') && <Route path="/email-templates" component={EmailTemplatesModule} />}
+                    {this.isAvailable('email_templates') && <Route path="/email-templates" component={EmailTemplatesModule} />}
 
                     {/* promotions */}
-                    {currentUser && this.isAvailable('promotions') && <Route path="/promotions" component={PromotionModule} />}
+                    {this.isAvailable('promotions') && <Route path="/promotions" component={PromotionModule} />}
 
                     {/* KYC(Know Your Customers) */}
-                    {currentUser && this.isAvailable('kyc') && <Route path="/kyc" component={KYC} />}
+                    {this.isAvailable('kyc') && <Route path="/kyc" component={KYC} />}
 
                     {/* Support Ticket Module */}
-                    {currentUser && this.isAvailable('tickets') && <Route path="/tickets" component={TicketsModule} />}
+                    {this.isAvailable('tickets') && <Route path="/tickets" component={TicketsModule} />}
 
                     {/* Support FAQ Module */}
-                    {currentUser && this.isAvailable('faq') && <Route path="/faq" component={FAQModule} />}
+                    {this.isAvailable('faq') && <Route path="/faq" component={FAQModule} />}
 
                     {/* Message Center Module */}
-                    {currentUser && this.isAvailable('messages') && <Route path="/message-center" component={MessageCenterModule} />}
+                    {this.isAvailable('messages') && <Route path="/message-center" component={MessageCenterModule} />}
 
                     {/* meta tags */}
-                    {currentUser && this.isAvailable('meta_tags') && <Route path="/meta-tags" component={MetaTagsModule} />}
+                    {this.isAvailable('meta_tags') && <Route path="/meta-tags" component={MetaTagsModule} />}
 
                     {/* Addons */}
-                    {currentUser && this.isAvailable('addons') && <Route path="/addons" component={Addons} />}
+                    {this.isAvailable('addons') && <Route path="/addons" component={Addons} />}
 
                     {/* Reports */}
-                    {currentUser && this.isAvailable('reports') && <Route path="/reports" component={ReportsModule} />}
+                    {this.isAvailable('reports') && <Route path="/reports" component={ReportsModule} />}
 
                     {/* Articles */}
-                    {currentUser && this.isAvailable('articles') && <Route path="/articles" component={ArticlesModule} />}
+                    {this.isAvailable('articles') && <Route path="/articles" component={ArticlesModule} />}
 
                     {/* Frontend */}
-                    {currentUser && this.isAvailable('frontend') && <Route path="/frontend" component={FrontendManageModule} />}
+                    {this.isAvailable('frontend') && <Route path="/frontend" component={FrontendManageModule} />}
 
                     <Redirect exact from="/" to="/dashboard" />
 
