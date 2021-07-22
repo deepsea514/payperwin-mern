@@ -2019,7 +2019,7 @@ adminRouter.get(
 );
 
 adminRouter.post(
-    '/email-templates',
+    '/email-template',
     authenticateJWT,
     limitRoles('email_templates'),
     async function (req, res) {
