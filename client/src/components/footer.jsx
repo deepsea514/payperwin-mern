@@ -48,7 +48,7 @@ const Footer = (props) => {
                             <h3 className="footer-heading">Social </h3>
                             <ul>
                                 <li><a href="#"><i className="fab fa-facebook"></i>Facebook</a></li>
-                                <li><a href="#"><i className="fab fa-twitter"></i>Twitter</a></li>
+                                {/* <li><a href="#"><i className="fab fa-twitter"></i>Twitter</a></li> */}
                             </ul>
                         </div>
                     </div>
