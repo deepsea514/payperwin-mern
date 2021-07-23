@@ -129,7 +129,7 @@ class Preferences extends Component {
                                                 <option value="-10:00">(GMT -10:00) Hawaii</option>
                                                 <option value="-09:50">(GMT -09:30) Taiohae</option>
                                                 <option value="-09:00">(GMT -09:00) Alaska</option>
-                                                <option value="-08:00">(GMT -08:00) Pacific Time (US &amp; Canada)</option>
+                                                <option value="-08:00">(GMT -08:00) Pacific Standard Time (US &amp; Canada)</option>
                                                 <option value="-07:00">(GMT -07:00) Mountain Time (US &amp; Canada)</option>
                                                 <option value="-06:00">(GMT -06:00) Central Time (US &amp; Canada), Mexico City</option>
                                                 <option value="-05:00">(GMT -05:00) Eastern Time (US &amp; Canada), Bogota, Lima</option>
