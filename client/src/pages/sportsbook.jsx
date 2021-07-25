@@ -17,6 +17,25 @@ class SportsBook extends PureComponent {
     }
 
     componentDidMount() {
+
+        // Allow window to listen for a postMessage
+        var pinnacleOrigin = '.oreo88.com';
+        window.addEventListener("message", (event) => {
+            // check pinnacle origin
+            console.log(event.data);
+            if (event.origin && event.origin.toLowerCase().endsWith(pinnacleOrigin)) {
+                var postData = event.data;
+                switch (postData.action) {
+                    case 'OPEN_WINDOW':
+                        var url = postData.url;
+                        window.open(url);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
         const title = 'Instant/Live Betting';
         setMeta(title, (metaData) => {
             this.setState({ metaData: metaData });
