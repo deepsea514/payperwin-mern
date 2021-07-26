@@ -17,7 +17,6 @@ class SportsBook extends PureComponent {
     }
 
     componentDidMount() {
-
         // Allow window to listen for a postMessage
         var pinnacleOrigin = '.oreo88.com';
         window.addEventListener("message", (event) => {
