@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 const Footer = (props) => {
+    const { user } = props;
     return (
         <footer>
             <div className="container">
@@ -36,7 +37,7 @@ const Footer = (props) => {
                             </ul>
                         </div>
                         <div className="footer-inner">
-                            <h3 className="footer-heading">Help &amp; Support </h3>
+                            <h3 className="footer-heading">Help</h3>
                             <ul>
                                 <li><Link to="/payment-options">Payment Options </Link></li>
                                 <li><Link to="/betting-rules">Betting Rules </Link></li>
@@ -44,11 +45,16 @@ const Footer = (props) => {
                                 <li><Link to="/faq">FAQ </Link></li>
                             </ul>
                         </div>
+                        {user && <div className="footer-inner">
+                            <h3 className="footer-heading">Support </h3>
+                            <ul>
+                                <li><a href="https://wa.me/message/TICMRPXRFQRCN1" target="_blank"><i className="fab fa-whatsapp"></i> WhatsApp </a></li>
+                            </ul>
+                        </div>}
                         <div className="footer-inner">
                             <h3 className="footer-heading">Social </h3>
                             <ul>
-                                <li><a href="#"><i className="fab fa-facebook"></i>Facebook</a></li>
-                                {/* <li><a href="#"><i className="fab fa-twitter"></i>Twitter</a></li> */}
+                                <li><a href="https://www.instagram.com/payperwin/?hl=en"><i className="fab fa-instagram"></i>Instagram</a></li>
                             </ul>
                         </div>
                     </div>

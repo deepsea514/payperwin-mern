@@ -347,7 +347,7 @@ class App extends PureComponent {
                         <GoToTop />
                     </div>
                 </section>
-                <Footer />
+                <Footer user={user} />
             </div>
         );
     }
