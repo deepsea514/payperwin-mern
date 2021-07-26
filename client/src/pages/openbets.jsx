@@ -87,6 +87,10 @@ export default class OpenBets extends PureComponent {
             });
     }
 
+    capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     render() {
         const { bets, metaData, betsSportsBook } = this.state;
         const { openBets, settledBets } = this.props;
@@ -130,7 +134,7 @@ export default class OpenBets extends PureComponent {
                                     <div className="open-bets-col">
                                         <strong>Bet Type</strong>
                                         <div>
-                                            {type}
+                                            {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                         <div>
                                             {pickName}
@@ -142,18 +146,24 @@ export default class OpenBets extends PureComponent {
                                             {bet.toFixed(2)}
                                         </div>
                                     </div>
-                                    <div className="open-bets-col">
+                                    {/* <div className="open-bets-col">
                                         <strong>Odds</strong>
                                         <div>
                                             {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="open-bets-col">
                                         <strong>To win</strong>
-                                        <div>
+                                        {matchingStatus === 'Partial Match' && <div>
                                             {toWin.toFixed(2)}
-                                            {matchingStatus === 'Partial Match' ? ` (${(payableToWin).toFixed(2)} Matched)` : ` (${matchingStatus})`}
-                                        </div>
+                                            <br />
+                                            {payableToWin.toFixed(2)} Matched
+                                            <br />
+                                            {(toWin - payableToWin).toFixed(2)} Pending
+                                        </div>}
+                                        {matchingStatus !== 'Partial Match' && <div>
+                                            {toWin.toFixed(2)} {matchingStatus}
+                                        </div>}
                                     </div>
                                     <div className="open-bets-col status">
                                         <strong>Status</strong>
@@ -188,7 +198,7 @@ export default class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Bet Type</strong>
                                     <div>
-                                        {type}
+                                        {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                     </div>
                                     <div>
                                         {pickName}
@@ -200,18 +210,24 @@ export default class OpenBets extends PureComponent {
                                         {bet.toFixed(2)}
                                     </div>
                                 </div>
-                                <div className="open-bets-col">
+                                {/* <div className="open-bets-col">
                                     <strong>Odds</strong>
                                     <div>
                                         {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="open-bets-col">
                                     <strong>To win</strong>
-                                    <div>
+                                    {matchingStatus === 'Partial Match' && <div>
                                         {toWin.toFixed(2)}
-                                        {matchingStatus === 'Partial Match' ? ` (${(payableToWin).toFixed(2)} Matched)` : ` (${matchingStatus})`}
-                                    </div>
+                                        <br />
+                                        {payableToWin.toFixed(2)} Matched
+                                        <br />
+                                        {(toWin - payableToWin).toFixed(2)} Pending
+                                    </div>}
+                                    {matchingStatus !== 'Partial Match' && <div>
+                                        {toWin.toFixed(2)} {matchingStatus}
+                                    </div>}
                                 </div>
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
@@ -256,7 +272,7 @@ export default class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Bet Type</strong>
                                     <div>
-                                        {WagerInfo.Type}
+                                        {this.capitalizeFirstLetter(WagerInfo.Type)}
                                     </div>
                                     <div>
                                         {WagerInfo.SelectionType}
@@ -280,16 +296,16 @@ export default class OpenBets extends PureComponent {
                                         {Number(WagerInfo.ToWin).toFixed(2)}
                                     </div>
                                 </div>
-                                {settledBets && <div className="open-bets-col">
+                                {/* {settledBets && <div className="open-bets-col">
                                     <strong>Profit And Loss</strong>
                                     <div>
                                         {Number(WagerInfo.ProfitAndLoss).toFixed(2)}
                                     </div>
-                                </div>}
+                                </div>} */}
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
                                     <div>
-                                        {Name}
+                                        {Name == 'SETTLED' ? `${Name} - ${WagerInfo.Outcome}` : Name}
                                     </div>
                                 </div>
                             </div>
