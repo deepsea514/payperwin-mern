@@ -77,6 +77,7 @@ class BetActivities extends React.Component {
                     <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                     <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
                     <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
+                    <td scope="col">{this.getPPWWinLoss(bet)}</td>
                     <td scope="col">{bet.transactionID}</td>
                     <td scope="col">
                         <DropdownButton title="Actions">
@@ -118,7 +119,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">{Number(bet.WagerInfo.ToRisk).toFixed(2)} {bet.userId.currency}</td>
-                    <td scope="col">{Number(bet.WagerInfo.Odds).toFixed(2)}</td>
+                    <td scope="col">{Number(bet.WagerInfo.Odds).toFixed(2)} ({bet.WagerInfo.OddsFormat == 1 ? 'decimal' : 'american'})</td>
                     <td scope="col">{bet.userId.username}</td>
                     <td scope="col">{bet.WagerInfo.Sport}</td>
                     <td scope="col">{
@@ -131,6 +132,7 @@ class BetActivities extends React.Component {
                     <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td>
                     <td scope="col"><span className="label label-lg label-info label-inline font-weight-lighter mr-2">Pinnacle</span></td>
                     <td scope="col">{this.getPInnacleBetStatus(bet.Name)}</td>
+                    <td scope="col">{this.getPinnacleWinLoss(bet)}</td>
                     <td scope="col">{bet.WagerInfo.WagerId}</td>
                     <td scope="col">
                         <DropdownButton title="Actions">
@@ -217,6 +219,38 @@ class BetActivities extends React.Component {
             case "Settled - Win":
             default:
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+        }
+    }
+
+    getPPWWinLoss = (bet) => {
+        switch (bet.status) {
+            case "Settled - Lose":
+                return `- $${bet.bet.toFixed(2)} CAD`;
+            case "Settled - Win":
+                return `+ $${bet.payableToWin.toFixed(2)} CAD`
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+            case "Cancelled":
+            default:
+                return "$0 CAD";
+        }
+    }
+
+    getPinnacleWinLoss = (bet) => {
+        switch (bet.Name) {
+            case "SETTLED":
+                if (bet.WagerInfo.Outcome == "LOSE")
+                    return `- $${(-Number(bet.WagerInfo.ProfitAndLoss)).toFixed(2)} CAD`;
+                return `+ ${Number(bet.WagerInfo.ProfitAndLoss).toFixed(2)} CAD`
+            case "BETTED":
+            case "ACCEPTED":
+            case "CANCELLED":
+            case "REJECTED":
+            case "ROLLBACKED":
+            case "UNSETTLED":
+            default:
+                return "$0 CAD";
         }
     }
 
@@ -398,6 +432,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">House</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
+                                            <th scope="col">Win/Loss Amount</th>
                                             <th scope="col">TransactionID</th>
                                             <th scope="col"></th>
                                         </tr>}
@@ -412,6 +447,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">Type</th>
                                             <th scope="col">House</th>
                                             <th scope="col">Status</th>
+                                            <th scope="col">Win/Loss Amount</th>
                                             <th scope="col">WagerID</th>
                                             <th scope="col"></th>
                                         </tr>}
