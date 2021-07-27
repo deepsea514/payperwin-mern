@@ -302,7 +302,7 @@ export default class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Odds</strong>
                                     <div>
-                                        {WagerInfo.Odds}
+                                        {WagerInfo.Odds} ({WagerInfo.OddsFormat == 1 ? 'decimal' : 'american'})
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
