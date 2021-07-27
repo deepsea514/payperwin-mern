@@ -91,6 +91,21 @@ export default class OpenBets extends PureComponent {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    getPinnacleBetType = (type) => {
+        switch (type) {
+            case 1:
+                return 'Moneyline';
+            case 2:
+                return 'Spread';
+            case 3:
+            case 4:
+            case 5:
+                return 'Total';
+            default:
+                return '';
+        }
+    }
+
     render() {
         const { bets, metaData, betsSportsBook } = this.state;
         const { openBets, settledBets } = this.props;
@@ -247,7 +262,7 @@ export default class OpenBets extends PureComponent {
                                 </div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
-                                {openBets && status != "Matched" && status != 'Partial Match' && <Link to={{ pathname: `/betforward/${_id}` }} className="form-button">Forward To Sportsbook</Link>}
+                                {openBets && status != "Matched" && status != 'Partial Match' && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                             </div>
                         </div>
                     );
@@ -272,10 +287,10 @@ export default class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Bet Type</strong>
                                     <div>
-                                        {this.capitalizeFirstLetter(WagerInfo.Type)}
+                                        {this.getPinnacleBetType(WagerInfo.BetType)}
                                     </div>
                                     <div>
-                                        {WagerInfo.SelectionType}
+                                        {WagerInfo.Selection}
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
