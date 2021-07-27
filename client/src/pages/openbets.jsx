@@ -262,7 +262,7 @@ export default class OpenBets extends PureComponent {
                                 </div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
-                                {openBets && status != "Matched" && status != 'Partial Match' && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
+                                {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                             </div>
                         </div>
                     );
