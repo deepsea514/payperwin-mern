@@ -191,7 +191,7 @@ class Lines extends PureComponent {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Unfortunately PAYPER WIN is unable to provide better odds for this particular bet
+                                Forward your bet to the sportsbook below. The odds may vary.
                             </p>
                             <div className="text-right">
                                 <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>
