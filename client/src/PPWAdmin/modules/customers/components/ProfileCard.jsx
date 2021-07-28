@@ -87,6 +87,23 @@ class ProfileCard extends React.Component {
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
+                                        to="/preference"
+                                        className="navi-link py-4 non-border-bottom"
+                                    >
+                                        <span className="navi-icon mr-2">
+                                            <span className="svg-icon">
+                                                <SVG
+                                                    src="/media/svg/icons/General/Settings-1.svg"
+                                                ></SVG>{" "}
+                                            </span>
+                                        </span>
+                                        <span className="text-left navi-text font-size-lg">
+                                            Preference
+                                        </span>
+                                    </NavLink>
+                                </div>
+                                <div className="navi-item mb-2">
+                                    <NavLink
                                         to="/login-history"
                                         className="navi-link py-4 non-border-bottom"
                                     >
