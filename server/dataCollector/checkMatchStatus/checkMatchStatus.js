@@ -67,7 +67,7 @@ async function checkMatchStatus() {
         const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
         const msg = {
-            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+            from: `${fromEmailName} <${fromEmailAddress}>`,
             to: user.email,
             subject: 'We couldn’t find you a match for your bet',
             text: `We couldn’t find you a match for your bet`,

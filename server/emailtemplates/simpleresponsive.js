@@ -185,7 +185,7 @@ module.exports = (body, link) => `
                                         style="color: #999999; font-size: 12px; text-align: center;">PAYPER WIN</span>
                                     <br> 
                                     <p>Help & Support</p>
-                                    <a href="hello@payperwin.co">hello@payperwin.co</a>
+                                    <a href="mailto:hello@payperwin.co">hello@payperwin.co</a>
                                 </td>
                             </tr>
                         </table>

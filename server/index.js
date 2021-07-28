@@ -218,7 +218,7 @@ function sendVerificationEmail(email, username, req) {
         //   console.log(`Verify your email address by following this link: ${emailValidationPath}`);
         // } else {
         const msg = {
-            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+            from: `${fromEmailName} <${fromEmailAddress}>`,
             to: email,
             subject: 'Welcome to PAYPER WIN',
             text: `Verify your email address by following this link: ${emailValidationPath}`,
@@ -458,7 +458,7 @@ expressApp.post('/login',
 
 function send2FAVerifyEmail(email, code) {
     const msg = {
-        from: `"${fromEmailName}" <${fromEmailAddress}>`,
+        from: `${fromEmailName} <${fromEmailAddress}>`,
         to: email,
         subject: 'Please verify your login',
         text: `Verification code is ${code}`,
@@ -661,7 +661,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 //   console.log(`Hey ${user.username}, you can create a new password here:\n${passwordRecoveryPath}`);
                 // } else {
                 const msg = {
-                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
                     subject: 'Password Reset Request for PAYPER WIN',
                     text: `You requested password recovery. You can create a new password here: ${passwordRecoveryPath}`,
@@ -950,7 +950,7 @@ expressApp.post(
                                         const timeString = convertTimeLineDate(new Date(), timezone);
 
                                         const msg = {
-                                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                            from: `${fromEmailName} <${fromEmailAddress}>`,
                                             to: user.email,
                                             subject: 'Your bet was accepted',
                                             text: `Your bet was accepted`,
@@ -1143,7 +1143,7 @@ expressApp.post(
                                             const timeString = convertTimeLineDate(new Date(), timezone);
 
                                             const msg = {
-                                                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                                from: `${fromEmailName} <${fromEmailAddress}>`,
                                                 to: user.email,
                                                 subject: 'Your bet was accepted',
                                                 text: `Your bet was accepted`,
@@ -1415,7 +1415,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         }
         const timeString = convertTimeLineDate(new Date(), timezone);
         const msg = {
-            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+            from: `${fromEmailName} <${fromEmailAddress}>`,
             to: selectedauto.userId.email,
             subject: 'Your bet was accepted',
             text: `Your bet was accepted`,
@@ -2615,7 +2615,7 @@ expressApp.post(
             }
             const msg = {
                 to: adminEmailAddress,
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 subject: subject,
                 text: `Support Ticket from ${email}`,
                 attachments,
