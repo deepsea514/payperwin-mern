@@ -128,7 +128,7 @@ async function matchResults(sportName, events) {
                             });
                             // TODO: email winner
                             const msg = {
-                                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                                from: `${fromEmailName} <${fromEmailAddress}>`,
                                 to: email,
                                 subject: 'You won a wager!',
                                 text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
@@ -137,7 +137,7 @@ async function matchResults(sportName, events) {
                                         Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                     </p>
                                     `,
-                                    { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                                    { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
                                 ),
                             };
                             sgMail.send(msg);

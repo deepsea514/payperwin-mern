@@ -725,7 +725,7 @@ adminRouter.post(
             }
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: userdata.email,
                 subject: 'You’ve got funds in your account',
                 text: `You’ve got funds in your account`,
@@ -2368,7 +2368,7 @@ adminRouter.post(
             await Verification.deleteMany({ user: user._id });
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: user.email,
                 subject: 'Your identify was verified!',
                 text: `Your identify was verified!`,
@@ -2407,7 +2407,7 @@ adminRouter.post(
             await Verification.deleteMany({ user: user._id });
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: user.email,
                 subject: 'Your identify verification was declined!',
                 text: `Your identify verification was declined!`,
@@ -2510,7 +2510,7 @@ adminRouter.post(
             }
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: ticket.email,
                 subject: subject,
                 text: title,
@@ -2875,7 +2875,7 @@ async function matchResults(eventId, matchResult) {
                         });
                         // TODO: email winner
                         const msg = {
-                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
                             to: email,
                             subject: 'You won a wager!',
                             text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
@@ -2884,7 +2884,7 @@ async function matchResults(eventId, matchResult) {
                                             Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                         </p>
                                         `,
-                                { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                                { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
                             ),
                         };
                         sgMail.send(msg);
@@ -3107,7 +3107,7 @@ adminRouter.post(
                 } else {
                     users.map(user => {
                         const msg = {
-                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
                             to: user.email,
                             subject: title,
                             text: title,
@@ -3260,7 +3260,7 @@ adminRouter.put(
                 } else {
                     users.map(user => {
                         const msg = {
-                            from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
                             to: user.email,
                             subject: title,
                             text: title,

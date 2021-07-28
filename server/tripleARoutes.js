@@ -136,7 +136,7 @@ tripleARouter.post('/deposit',
             }
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: user.email,
                 subject: 'You’ve got funds in your account',
                 text: `You’ve got funds in your account`,
@@ -189,7 +189,7 @@ tripleARouter.post('/withdraw',
             // await userdata.save();
 
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: userdata.email,
                 subject: 'You’ve got withdraw in your account',
                 text: `You’ve got withdraw from your account`,
@@ -207,7 +207,7 @@ tripleARouter.post('/withdraw',
             console.log("triple Payout", 'cancel withdraw');
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: userdata.email,
                 subject: 'Withdraw is canceled',
                 text: `Withdraw is canceled`,

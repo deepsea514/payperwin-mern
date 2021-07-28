@@ -323,7 +323,7 @@ async function updateAction(action, user) {
                     string += `${leg.Sport} ${WagerInfo.Type} <br>`
                 })
                 const msg = {
-                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
                     subject: 'Your bet was accepted',
                     text: `Your bet was accepted`,
@@ -339,7 +339,7 @@ async function updateAction(action, user) {
             }
             else {
                 const msg = {
-                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
                     subject: 'Your bet was accepted',
                     text: `Your bet was accepted`,
@@ -353,7 +353,7 @@ async function updateAction(action, user) {
             }
         } else if (Name.toUpperCase() == 'SETTLED') {
             const msg = {
-                from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: email,
                 subject: 'You won a wager!',
                 text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://payperwin.co/history`,
@@ -362,7 +362,7 @@ async function updateAction(action, user) {
                         Congratulations! You won $${Transaction.Amount}. View Result Details:
                     </p>
                     `,
-                    { href: 'https://payperwin.co/history', name: 'Settled Bets' }
+                    { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
                 ),
             };
             sgMail.send(msg);

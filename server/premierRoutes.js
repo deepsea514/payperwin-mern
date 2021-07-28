@@ -94,7 +94,7 @@ premierRouter.post('/etransfer-deposit',
                 }
 
                 const msg = {
-                    from: `"${fromEmailName}" <${fromEmailAddress}>`,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
                     subject: 'You’ve got funds in your account',
                     text: `You’ve got funds in your account`,
@@ -158,7 +158,7 @@ premierRouter.post('/etransfer-deposit',
 //                 });
 
 //                 const msg = {
-//                     from: `"${fromEmailName}" <${fromEmailAddress}>`,
+//                     from: `${fromEmailName} <${fromEmailAddress}>`,
 //                     to: user.email,
 //                     subject: 'You’ve got funds out from your account',
 //                     text: `You’ve got funds out from your account`,
