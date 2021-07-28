@@ -580,6 +580,41 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/customer-preference/:id',
+    authenticateJWT,
+    limitRoles('customers'),
+    async (req, res) => {
+        const { id } = req.params;
+        const preference = await Preference.findOne({ user: id });
+        return res.json(preference);
+    }
+)
+
+adminRouter.put(
+    '/customer-preference/:id',
+    authenticateJWT,
+    limitRoles('customers'),
+    async (req, res) => {
+        const { id } = req.params;
+        const data = req.body;
+        const preference = await Preference.findOne({ user: id });
+        try {
+            if (preference) {
+                await preference.update(data);
+            } else {
+                await await Preference.create({
+                    user: id,
+                    ...Preferencedata
+                });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            return res.status(500).json({ success: false });
+        }
+    }
+)
+
 adminRouter.patch(
     '/customer',
     authenticateJWT,

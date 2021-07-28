@@ -11,6 +11,7 @@ import LoginHistory from "./profile/LoginHistory";
 import Deposit from "./profile/Deposit";
 import Withdraw from "./profile/Withdraw";
 import Bet from "./profile/Bet";
+import Preference from "./profile/Preference";
 
 class CustomerProfile extends React.Component {
     constructor(props) {
@@ -65,6 +66,10 @@ class CustomerProfile extends React.Component {
                                             <Route
                                                 path="/information"
                                                 component={(props) => <PersonaInformation {...props} customer={customer} />}
+                                            />
+                                            <Route
+                                                path="/preference"
+                                                component={(props) => <Preference {...props} customer={customer} />}
                                             />
                                             <Route
                                                 path="/login-history"
