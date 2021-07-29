@@ -25,6 +25,8 @@ const Addon = require("./models/addon");
 const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
 const Frontend = require("./models/frontend");
+const Ticket = require('./models/ticket');
+const FAQItem = require('./models/faq_item');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -39,14 +41,13 @@ const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const _ = require("lodash");
 //local helpers
+const sendSMS = require("./libs/sendSMS");
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const EventStatus = config.EventStatus;
 const AdminRoles = config.AdminRoles;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const Ticket = require('./models/ticket');
-const FAQItem = require('./models/faq_item');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const DepositHeld = 8;
@@ -714,15 +715,15 @@ adminRouter.post(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            let { user, reason, amount, method, status } = req.body;
-            if (!user) res.status(400).json({ error: 'User field is required.' });
+            let { user: userId, reason, amount, method, status } = req.body;
+            if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!reason) res.status(400).json({ error: 'Reason field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
             if (!status) status = FinancialStatus.pending;
 
-            const userdata = await User.findById(user);
-            if (!userdata) {
+            const user = await User.findById(userId);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
@@ -734,7 +735,7 @@ adminRouter.post(
             const deposit = new FinancialLog({
                 financialtype: 'deposit',
                 uniqid: `D${ID()}`,
-                user: userdata._id,
+                user: user._id,
                 reason: reasonData._id,
                 amount,
                 method,
@@ -745,12 +746,12 @@ adminRouter.post(
             if (status == FinancialStatus.success) {
                 const firstDepositDone = await isFirstDepositDone(user);
                 if (firstDepositDone) {
-                    await userdata.update({ $inc: { balance: amount } });
+                    await user.update({ $inc: { balance: amount } });
                 } else {
                     await FinancialLog.create({
                         financialtype: 'depositheld',
                         uniqid: `DH${ID()}`,
-                        user: userdata._id,
+                        user: user._id,
                         amount: DepositHeld,
                         method: method,
                         status: FinancialStatus.success
@@ -759,19 +760,24 @@ adminRouter.post(
                 }
             }
 
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: userdata.email,
-                subject: 'You’ve got funds in your account',
-                text: `You’ve got funds in your account`,
-                html: simpleresponsive(
-                    `Hi <b>${userdata.firstname}</b>.
-                    <br><br>
-                    Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
-                    your PAYPER WIN account by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'You’ve got funds in your account',
+                    text: `You’ve got funds in your account`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+            }
 
             res.json(deposit);
         } catch (error) {
@@ -932,20 +938,20 @@ adminRouter.patch(
             await deposit.update(data, { new: true }).exec();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
 
-            const userdata = await User.findById(deposit.user);
-            if (!userdata) {
+            const user = await User.findById(deposit.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
             if (data.status == FinancialStatus.success) {
                 const firstDepositDone = await isFirstDepositDone(user);
                 if (firstDepositDone) {
-                    await userdata.update({ $inc: { balance: deposit.amount } });
+                    await user.update({ $inc: { balance: deposit.amount } });
                 } else {
                     await FinancialLog.create({
                         financialtype: 'depositheld',
                         uniqid: `DH${ID()}`,
-                        user: userdata._id,
+                        user: user._id,
                         amount: DepositHeld,
                         method: deposit.method,
                         status: FinancialStatus.success
@@ -975,12 +981,12 @@ adminRouter.delete(
                 return;
             }
             deposit.update({ deletedAt: new Date() }).exec();
-            const userdata = await User.findById(deposit.user);
-            if (!userdata) {
+            const user = await User.findById(deposit.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            await userdata.save();
+            await user.save();
 
             res.json(deposit);
         } catch (error) {
@@ -1013,18 +1019,18 @@ adminRouter.post(
     limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
-            let { user, amount, method, status } = req.body;
-            if (!user) res.status(400).json({ error: 'User field is required.' });
+            let { user: userId, amount, method, status } = req.body;
+            if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
             if (!status) status = FinancialStatus.pending;
 
-            const userdata = await User.findById(user);
-            if (!userdata) {
+            const user = await User.findById(userId);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const freeWithdrawalUsed = await isFreeWithdrawalUsed(userdata);
+            const freeWithdrawalUsed = await isFreeWithdrawalUsed(user);
             let fee = 0;
             if (freeWithdrawalUsed) {
                 switch (method) {
@@ -1043,7 +1049,7 @@ adminRouter.post(
             const withdraw = new FinancialLog({
                 financialtype: 'withdraw',
                 uniqid: `W${ID()}`,
-                user: userdata._id,
+                user: user._id,
                 amount: amount,
                 method: method,
                 status: status,
@@ -1059,10 +1065,10 @@ adminRouter.post(
                 status: FinancialStatus.success,
             });
 
-            if (userdata.balance < amount + fee) {
+            if (user.balance < amount + fee) {
                 return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
             }
-            await userdata.update({ $inc: { balance: -(amount + fee) } });
+            await user.update({ $inc: { balance: -(amount + fee) } });
             await withdraw.save();
             await withdrawFee.save();
             res.json(withdraw);
@@ -1208,9 +1214,9 @@ adminRouter.get(
     }
 )
 
-const tripleAWithdraw = async (req, res, data, userdata, withdraw) => {
+const tripleAWithdraw = async (req, res, data, user, withdraw) => {
     const amount = data.amount ? data.amount : withdraw.amount;
-    // const prebalance = parseInt(userdata.balance);
+    // const prebalance = parseInt(user.balance);
     const withdrawamount = parseInt(amount);
     // if (prebalance < withdrawamount + fee) {
     //     res.status(400).json({ error: 'Withdraw amount overflows balance.' });
@@ -1270,7 +1276,7 @@ const tripleAWithdraw = async (req, res, data, userdata, withdraw) => {
 
     const body = {
         "merchant_key": merchant_key,
-        "email": userdata.email,
+        "email": user.email,
         "withdraw_currency": "CAD",
         "withdraw_amount": withdrawamount,
         "crypto_currency": crypto_currency,
@@ -1318,33 +1324,33 @@ adminRouter.patch(
                 return;
             }
 
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
+            const user = await User.findById(withdraw.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            // const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
             // if (data.status == FinancialStatus.success) {
             //     const amount = data.amount ? data.amount : withdraw.amount;
-            //     const prebalance = parseInt(userdata.balance);
+            //     const prebalance = parseInt(user.balance);
             //     const withdrawamount = parseInt(amount);
             //     if (prebalance < withdrawamount + fee) {
             //         res.status(400).json({ error: 'Withdraw amount overflows balance.' });
             //         return;
             //     }
-            //     userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            //     user.balance = parseInt(user.balance) - parseInt(amount) - fee;
             // }
 
             if (data.status == FinancialStatus.inprogress) {
                 if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
-                    const result = tripleAWithdraw(req, res, data, userdata, withdraw)
+                    const result = tripleAWithdraw(req, res, data, user, withdraw)
                     if (!result)
                         return;
                 }
             }
 
             await withdraw.update(data, { new: true }).exec();
-            // await userdata.save();
+            // await user.save();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
@@ -1367,12 +1373,12 @@ adminRouter.delete(
                 return;
             }
             withdraw.update({ deletedAt: new Date() }).exec();
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
+            const user = await User.findById(withdraw.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            await userdata.update({ $inc: { balance: withdraw.amount + withdraw.fee } });
+            await user.update({ $inc: { balance: withdraw.amount + withdraw.fee } });
 
             res.json(withdraw);
         } catch (error) {
@@ -2402,18 +2408,24 @@ adminRouter.post(
             await user.save();
             await Verification.deleteMany({ user: user._id });
 
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: user.email,
-                subject: 'Your identify was verified!',
-                text: `Your identify was verified!`,
-                html: simpleresponsive(
-                    `Hi <b>${user.firstname}</b>.
-                    <br><br>
-                    Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your identify was verified!',
+                    text: `Your identify was verified!`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.', user.phone);
+            }
 
             res.send("User verified successfully.");
         } catch (error) {
@@ -2441,18 +2453,24 @@ adminRouter.post(
             }
             await Verification.deleteMany({ user: user._id });
 
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: user.email,
-                subject: 'Your identify verification was declined!',
-                text: `Your identify verification was declined!`,
-                html: simpleresponsive(
-                    `Hi <b>${user.firstname}</b>.
-                    <br><br>
-                    Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your identify verification was declined!',
+                    text: `Your identify verification was declined!`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.', user.phone);
+            }
 
             res.send("User declined.");
         } catch (error) {
@@ -2550,7 +2568,7 @@ adminRouter.post(
                 subject: subject,
                 text: title,
                 html: simpleresponsive(
-                    `<h4>Hi <b>${ticket.email}</b>, we carefully check your requirements.</h4>
+                    `<h4>Hi <b>${ticket.email}</b>, we carefully checked your requirements.</h4>
                     <br><br>
                     ${content}
                     <br><br>`),
@@ -2909,20 +2927,29 @@ async function matchResults(eventId, matchResult) {
                             status: FinancialStatus.success,
                         });
                         // TODO: email winner
-                        const msg = {
-                            from: `${fromEmailName} <${fromEmailAddress}>`,
-                            to: email,
-                            subject: 'You won a wager!',
-                            text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
-                            html: simpleresponsive(`
-                                        <p>
-                                            Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                        </p>
-                                        `,
-                                { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
-                            ),
-                        };
-                        sgMail.send(msg);
+
+                        const preference = await Preference.findOne({ user: user._id });
+                        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                            const msg = {
+                                from: `${fromEmailName} <${fromEmailAddress}>`,
+                                to: email,
+                                subject: 'You won a wager!',
+                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
+                                html: simpleresponsive(`
+                                            <p>
+                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                            </p>
+                                            `,
+                                    { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
+                                ),
+                            };
+                            sgMail.send(msg);
+                        }
+                        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                            sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
+                        }
+
+
                     } else if (betWin === false) {
                         const betChanges = {
                             $set: {

@@ -10,11 +10,13 @@ const sgMail = require('@sendgrid/mail');
 const User = require("./models/user");
 const PremierNotification = require('./models/premier-notification');
 const FinancialLog = require('./models/financiallog');
+const Preference = require('./models/preference');
 //local helpers
 const { generatePremierNotificationSignature } = require('./libs/generatePremierSignature');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const DepositHeld = 8;
@@ -93,19 +95,24 @@ premierRouter.post('/etransfer-deposit',
                     await user.update({ $inc: { balance: receive_amount - DepositHeld } });
                 }
 
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'You’ve got funds in your account',
-                    text: `You’ve got funds in your account`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.firstname}</b>.
-                        <br><br>
-                        Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
-                        your PAYPER WIN account by logging in now.
-                        <br><br>`),
-                };
-                sgMail.send(msg);
+                const preference = await Preference.findOne({ user: user._id });
+                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                    const msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'You’ve got funds in your account',
+                        text: `You’ve got funds in your account`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                            <br><br>`),
+                    };
+                    sgMail.send(msg);
+                }
+                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                    sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+                }
 
                 return res.json({
                     success: "Deposit success"

@@ -11,10 +11,12 @@ const User = require("./models/user");
 const TripleANotification = require('./models/tripleA-notification');
 const FinancialLog = require('./models/financiallog');
 const Addon = require('./models/addon');
+const Preference = require('./models/preference');
 //local helpers
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
@@ -135,19 +137,24 @@ tripleARouter.post('/deposit',
                 await user.update({ $inc: { balance: receive_amount - DepositHeld } });
             }
 
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: user.email,
-                subject: 'You’ve got funds in your account',
-                text: `You’ve got funds in your account`,
-                html: simpleresponsive(
-                    `Hi <b>${user.email}</b>.
-                    <br><br>
-                    Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in
-                    your PAYPER WIN account by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'You’ve got funds in your account',
+                    text: `You’ve got funds in your account`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                            <br><br>
+                            Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                            <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+            }
 
             return res.json({
                 success: true,
@@ -176,49 +183,60 @@ tripleARouter.post('/withdraw',
             console.log("triple Payout", 'Can\'t update finished withdraw.');
             return res.json({ success: false, message: 'Can\'t update finished withdraw.' });
         }
-        const userdata = await User.findById(withdraw.user);
-        if (!userdata) {
+        const user = await User.findById(withdraw.user);
+        if (!user) {
             console.log("triple Payout", 'Can\'t find user.');
             return res.json({ success: false, message: 'Can\'t find user.' });
         }
         if (status == "done") {
             console.log("triple Payout", 'success withdraw');
-            // const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
-            // userdata.balance = parseInt(userdata.balance) - parseInt(withdraw.amount) - fee;
+            // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
+            // user.balance = parseInt(user.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.success }).exec();
-            // await userdata.save();
+            // await user.save();
 
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: userdata.email,
-                subject: 'You’ve got withdraw in your account',
-                text: `You’ve got withdraw from your account`,
-                html: simpleresponsive(
-                    `Hi <b>${userdata.email}</b>.
-                    <br><br>
-                    Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in
-                    your PAYPER WIN account by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'You’ve got withdraw in your account',
+                    text: `You’ve got withdraw from your account`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+            }
 
             return res.json({ success: true });
         } else if (status == "cancel") {
             console.log("triple Payout", 'cancel withdraw');
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: userdata.email,
-                subject: 'Withdraw is canceled',
-                text: `Withdraw is canceled`,
-                html: simpleresponsive(
-                    `Hi <b>${userdata.email}</b>.
-                    <br><br>
-                    Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in
-                    your PAYPER WIN account by logging in now.
-                    <br><br>`),
-            };
-            sgMail.send(msg);
+
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Withdraw is canceled',
+                    text: `Withdraw is canceled`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS('Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+            }
             return res.json({ success: true });
         } else {
             return res.json({ success: false, message: 'Waiting approve.' });
