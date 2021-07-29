@@ -51,6 +51,7 @@ import TfaModal from "../components/tfamodal";
 import Others from "../components/others";
 import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
+import PhoneVerification from "../pages/phoneVerification";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -194,6 +195,7 @@ class App extends PureComponent {
             '/withdraw-ethereum',
             '/withdraw-tether',
             '/verification',
+            '/phone-verification',
         ].includes(pathname);
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
@@ -314,6 +316,7 @@ class App extends PureComponent {
                                                 <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Ethereum" />} />
                                                 <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
+                                                <Route path="/phone-verification" render={(props) => <PhoneVerification {...props} user={user} getUser={getUser} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>
                                                     <Dashboard

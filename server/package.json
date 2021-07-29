@@ -40,7 +40,8 @@
     "qrcode": "^1.4.4",
     "seedrandom": "^2.4.3",
     "socket.io": "^4.0.0",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "twilio": "^3.66.1"
   },
   "scripts": {
     "start": "set NODE_ENV=development&&node index.js",

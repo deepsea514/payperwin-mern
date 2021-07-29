@@ -59,6 +59,9 @@ class SidebarAccount extends Component {
                     {user && !user.roles.verified && <li>
                         <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i>Verification</Link>
                     </li>}
+                    {user && !user.roles.phone_verified && <li>
+                        <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i>Phone Verification</Link>
+                    </li>}
                 </ul>
 
                 <h3 className="cat-heading">RESPONSIBLE GAMING</h3>

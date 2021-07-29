@@ -5,6 +5,7 @@ import PremierPay from "../components/PremierPay";
 import TheRundown from "../components/TheRundown";
 import TripleA from "../components/TripleA";
 import SendGrid from "../components/SendGrid";
+import Twilio from "../components/Twilio";
 
 class Addons extends React.Component {
     constructor(props) {
@@ -47,6 +48,8 @@ class Addons extends React.Component {
                                 </div>
                                 <div className="col-md-6 col-12">
                                     <TheRundown />
+                                    <hr />
+                                    <Twilio />
                                     <hr />
                                 </div>
                                 <div className="col-md-6 col-12">

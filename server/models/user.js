@@ -38,6 +38,9 @@ const UserSchema = new Schema(
 
 UserSchema.pre('save', function (next) { // eslint-disable-line func-names
     const user = this;
+    // check if phone changed.
+    if (user.isModified('phone'))
+        user.roles.phone_verified = false;
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
     // generate a salt
