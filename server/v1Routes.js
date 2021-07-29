@@ -417,7 +417,7 @@ async function updateAction(action, user) {
                     status: FinancialStatus.success,
                 });
                 await User.findByIdAndUpdate(new ObjectId(user._id),
-                    { balance: user.balance - Transaction.Amount });
+                    { $inc: { balance: - Transaction.Amount } });
             } else {
                 await FinancialLog.create({
                     financialtype: 'bet',
