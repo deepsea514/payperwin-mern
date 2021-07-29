@@ -9,6 +9,9 @@ const PreferenceSchema = new Schema(
         dateFormat: { type: String, default: 'dd-MM-yyyy' },
         timezone: { type: String },
         lang: { type: String, default: 'en' },
+        display_mode: { type: String, default: 'light' },
+        notify_email: { type: String, default: 'yes' },
+        notify_phone: { type: String, default: 'no' },
     },
     {
         timestamps: true,

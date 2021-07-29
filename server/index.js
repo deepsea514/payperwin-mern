@@ -26,6 +26,7 @@ const Addon = require("./models/addon");
 const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
 const Frontend = require('./models/frontend');
+const Service = require('./models/service');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -61,12 +62,13 @@ const sgMail = require('@sendgrid/mail');
 const { ObjectId } = require('mongodb');
 const axios = require('axios');
 const fileUpload = require('express-fileupload');
+const twilio = require('twilio');
+let twilioClient = null;
 //express routers
 const v1Router = require('./v1Routes');
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
-const { json } = require('body-parser');
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -114,9 +116,16 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions).then(async
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
         console.warn('Send Grid Key is not set');
-        return;
+    } else {
+        sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
     }
-    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
+
+    const twilioAddon = await Addon.findOne({ name: 'twilio' });
+    if (!twilioAddon || !twilioAddon.value || !twilioAddon.value.accountSid) {
+        console.warn('Twilio Key is not set');
+    } else {
+        twilioClient = twilio(twilioAddon.value.accountSid, twilioAddon.value.authToken);
+    }
 });
 // const store = new MongoDBStore(
 //     {
@@ -2649,27 +2658,14 @@ expressApp.post(
     '/preferences',
     isAuthenticated,
     async (req, res) => {
-        const { lang, oddsFormat, dateFormat, timezone } = req.body;
         const { _id } = req.user;
         try {
             let preference = await Preference.findOne({ user: _id });
             if (!preference) {
                 preference = await Preference.create({ user: _id });
             }
-            if (lang) {
-                preference.lang = lang;
-            }
-            if (oddsFormat) {
-                preference.oddsFormat = oddsFormat;
-            }
-            if (dateFormat) {
-                preference.dateFormat = dateFormat;
-            }
-            if (timezone) {
-                preference.timezone = timezone;
-            }
 
-            await preference.save();
+            await preference.update(req.body);
             return res.json({ message: "success" });
         } catch (error) {
             res.status(400).json({ error: "Can't change preference." });
@@ -2872,6 +2868,128 @@ expressApp.get(
         res.json(frontend);
     }
 )
+
+expressApp.post(
+    '/phone-verify',
+    isAuthenticated,
+    async (req, res) => {
+        const { step } = req.query;
+        const { phone, verification_code } = req.body;
+        const user = req.user;
+
+        if (step == 1) { // Send verification code
+            await user.update({ phone });
+            // Check if service is existing
+            let service = await Service.findOne({ name: 'twilio_verify' });
+            if (!service) {
+                // Check twilio is available.
+                if (!twilioClient) {
+                    return res.status(500).json({ success: false, error: "Twilio client didn't configured." });
+                }
+                try {
+                    // Create service and save
+                    const TwilioService = await twilioClient.verify.services.create({ friendlyName: 'PAYPER WIN Phone Verification' });
+                    service = await Service.create({ name: 'twilio_verify', value: JSON.parse(JSON.stringify(TwilioService)) });
+                } catch (error) {
+                    console.log(error);
+                    return res.status(500).json({ success: false, error: "Can't create verification service." });
+                }
+            }
+
+            try {
+                await twilioClient.verify.services(service.value.sid)
+                    .verifications
+                    .create({ to: phone, channel: 'sms' });
+                res.json({ success: true });
+            } catch (error) {
+                console.log(error);
+                return res.status(500).json({ success: false, error: "Can't send verification code." });
+            }
+
+        } else if (step == 2) { // Check verification code
+            // Check twilio is available.
+            if (!twilioClient) {
+                return res.status(500).json({ success: false, error: "Twilio client didn't configured." });
+            }
+            let service = await Service.findOne({ name: 'twilio_verify' });
+            // Check service
+            if (!service) {
+                return res.status(500).json({ success: false, error: "Can't get verification service." });
+            }
+
+            try {
+                await twilioClient.verify.services(service.value.sid)
+                    .verificationChecks
+                    .create({ to: user.phone, code: verification_code });
+                await user.update({
+                    roles: {
+                        ...user.roles,
+                        phone_verified: true,
+                    }
+                })
+                res.json({ success: true });
+            } catch (error) {
+                console.log(error);
+                res.json({ success: false });
+            }
+
+        } else {
+            res.status(404).json({ success: false });
+        }
+    }
+)
+
+// expressApp.get(
+//     '/testSMS',
+//     async (req, res) => {
+//         //////////////// send sms
+//         try {
+//             const message = await twilioClient.messages.create({
+//                 body: 'This is test message from PAYPER WIN.',
+//                 from: '+16475594828',
+//                 // statusCallback: 'http://postb.in/1234abcd',
+//                 to: '+1 (604) 670-3328'
+//             })
+//             console.log("message => ", message);
+//             res.send("SMS sent");
+//         } catch (error) {
+//             console.log("error => ", error);
+//             res.send("SMS error");
+//         }
+
+//         //////////////// verification
+//         try {
+//             // const service = await twilioClient.verify.services.create({ friendlyName: 'PAYPER WIN Phone Verification' });
+//             // console.log("service => ", service);
+
+//             const verification = await twilioClient.verify.services("VA9e8e223530e9dbce7937ce12e694ad65")
+//                 .verifications
+//                 .create({ to: '+12163547758', channel: 'sms' });
+//             console.log("verification => ", verification);
+//             res.json({ verification });
+//         } catch (error) {
+//             console.log(error);
+//             res.send("SMS error");
+//         }
+//     }
+// )
+
+// expressApp.get(
+//     '/verifySMS/:service/:code',
+//     async (req, res) => {
+//         const { code, service } = req.params;
+//         try {
+//             const verification_check = await twilioClient.verify.services(service)
+//                 .verificationChecks
+//                 .create({ to: '+12163547758', code: code });
+//             console.log("verification_check => ", verification_check);
+//             res.send("SMS sent");
+//         } catch (error) {
+//             console.log(error);
+//             res.send("SMS error");
+//         }
+//     }
+// )
 
 // Admin
 expressApp.use('/admin', adminRouter);

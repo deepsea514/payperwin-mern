@@ -143,9 +143,9 @@ class DepositETransfer extends PureComponent {
                                                     value={formik.values.phone}
                                                     {...formik.getFieldProps("phone")}
                                                     {...{
-                                                        onChange: (phone) => {
+                                                        onChange: (value, data, event, formattedValue) => {
                                                             formik.setFieldTouched('phone', true);
-                                                            formik.setFieldValue('phone', phone);
+                                                            formik.setFieldValue('phone', formattedValue);
                                                         },
                                                         onBlur: () => {
                                                             formik.setFieldTouched('phone', true);
