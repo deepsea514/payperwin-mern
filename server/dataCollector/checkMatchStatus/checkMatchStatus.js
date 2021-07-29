@@ -66,20 +66,25 @@ async function checkMatchStatus() {
         }
         const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
-        const msg = {
-            from: `${fromEmailName} <${fromEmailAddress}>`,
-            to: user.email,
-            subject: 'We couldn’t find you a match for your bet',
-            text: `We couldn’t find you a match for your bet`,
-            html: simpleresponsive(
-                `Hi <b>${user.email}</b>.
-                <br><br>
-                Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
-                <br><br>
-                You can forward your bet to our sportsbook for an instant bet.
-            `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
-        };
-        sgMail.send(msg);
+        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            const msg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'We couldn’t find you a match for your bet',
+                text: `We couldn’t find you a match for your bet`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
+                    <br><br>
+                    Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
+                    <br><br>
+                    You can forward your bet to our sportsbook for an instant bet.
+                `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
+            };
+            sgMail.send(msg);
+        }
+        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            sendSMS(`Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. `, user.phone);
+        }
 
         await bet.update({ notifySent: new Date() });
     }

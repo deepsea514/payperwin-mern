@@ -37,6 +37,7 @@ const calculateNewOdds = require('./libs/calculateNewOdds');
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const { convertTimeLineDate } = require('./libs/timehelper');
+const sendSMS = require("./libs/sendSMS");
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
@@ -958,24 +959,32 @@ expressApp.post(
                                         }
                                         const timeString = convertTimeLineDate(new Date(), timezone);
 
-                                        const msg = {
-                                            from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: user.email,
-                                            subject: 'Your bet was accepted',
-                                            text: `Your bet was accepted`,
-                                            html: simpleresponsive(
-                                                `Hi <b>${user.email}</b>.
-                                                <br><br>
-                                                This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
-                                                <br><br>
-                                                <ul>
-                                                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                    <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}</li>
-                                                    <li>Platform: PAYPERWIN Peer-to Peer</li>
-                                                </ul>
-                                            `),
-                                        };
-                                        sgMail.send(msg);
+                                        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                                            const msg = {
+                                                from: `${fromEmailName} <${fromEmailAddress}>`,
+                                                to: user.email,
+                                                subject: 'Your bet was accepted',
+                                                text: `Your bet was accepted`,
+                                                html: simpleresponsive(
+                                                    `Hi <b>${user.email}</b>.
+                                                    <br><br>
+                                                    This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                                                    <br><br>
+                                                    <ul>
+                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                        <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}</li>
+                                                        <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                                    </ul>
+                                                `),
+                                            };
+                                            sgMail.send(msg);
+                                        }
+                                        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                                            sendSMS(`This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                                            Wager: $${betAfterFee.toFixed(2)}\n 
+                                            Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}\n 
+                                            Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                                        }
 
                                         const betId = savedBet.id;
                                         // add betId to betPool
@@ -1151,24 +1160,32 @@ expressApp.post(
                                             }
                                             const timeString = convertTimeLineDate(new Date(), timezone);
 
-                                            const msg = {
-                                                from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                to: user.email,
-                                                subject: 'Your bet was accepted',
-                                                text: `Your bet was accepted`,
-                                                html: simpleresponsive(
-                                                    `Hi <b>${user.email}</b>.
-                                                    <br><br>
-                                                    This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
-                                                    <br><br>
-                                                    <ul>
-                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                                                        <li>Platform: PAYPERWIN Peer-to Peer</li>
-                                                    </ul>
-                                                `),
-                                            };
-                                            sgMail.send(msg);
+                                            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                                                const msg = {
+                                                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                                                    to: user.email,
+                                                    subject: 'Your bet was accepted',
+                                                    text: `Your bet was accepted`,
+                                                    html: simpleresponsive(
+                                                        `Hi <b>${user.email}</b>.
+                                                        <br><br>
+                                                        This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                                                        <br><br>
+                                                        <ul>
+                                                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                                                            <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                                        </ul>
+                                                    `),
+                                                };
+                                                sgMail.send(msg);
+                                            }
+                                            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                                                sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                                                Wager: $${betAfterFee.toFixed(2)}\n 
+                                                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
+                                                Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                                            }
 
                                             const betId = savedBet.id;
                                             // add betId to betPool
@@ -1423,24 +1440,34 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             timezone = preference.timezone;
         }
         const timeString = convertTimeLineDate(new Date(), timezone);
-        const msg = {
-            from: `${fromEmailName} <${fromEmailAddress}>`,
-            to: selectedauto.userId.email,
-            subject: 'Your bet was accepted',
-            text: `Your bet was accepted`,
-            html: simpleresponsive(
-                `Hi <b>${selectedauto.userId.firstname}</b>.
-                <br><br>
-                This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
-                <br><br>
-                <ul>
-                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                    <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                    <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
-                </ul>
-                `),
-        };
-        sgMail.send(msg);
+
+
+        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            const msg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: selectedauto.userId.email,
+                subject: 'Your bet was accepted',
+                text: `Your bet was accepted`,
+                html: simpleresponsive(
+                    `Hi <b>${selectedauto.userId.email}</b>.
+                    <br><br>
+                    This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                    <br><br>
+                    <ul>
+                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                        <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
+                    </ul>
+                    `),
+            };
+            sgMail.send(msg);
+        }
+        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+            Wager: $${betAfterFee.toFixed(2)}\n 
+            Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
+            Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
+        }
 
         const betId = savedBet.id;
         // add betId to betPool

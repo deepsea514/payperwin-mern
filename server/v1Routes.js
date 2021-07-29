@@ -12,8 +12,11 @@ const TransactionSportsBook = require('./models/transactionsportsbook');
 const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
 const Addon = require("./models/addon");
+const Preference = require('./models/preference');
 //local helpers
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
+const { convertTimeLineDate } = require('./libs/timehelper');
+const sendSMS = require("./libs/sendSMS");
 const io = require('./libs/socket');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require("../config.json");
@@ -322,50 +325,80 @@ async function updateAction(action, user) {
                 WagerInfo.Legs.map(leg => {
                     string += `${leg.Sport} ${WagerInfo.Type} <br>`
                 })
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'Your bet was accepted',
-                    text: `Your bet was accepted`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.firstname}</b>.
-                        <br><br>
-                        This email is to advise that your bet for 
-                        ${string}
-                        for ${WagerInfo.ToRisk} was accepted on ${new Date()}
-                        <br><br>`),
-                };
-                sgMail.send(msg);
+
+                const preference = await Preference.findOne({ user: user._id });
+                let timezone = "00:00";
+                if (preference && preference.timezone) {
+                    timezone = preference.timezone;
+                }
+                const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
+
+                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                    const msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'Your bet was accepted',
+                        text: `Your bet was accepted`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            This email is to advise that your bet for 
+                            ${string}
+                            for ${WagerInfo.ToRisk} was accepted on ${timeString}
+                            <br><br>`),
+                    };
+                    sgMail.send(msg);
+                }
+                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                    sendSMS(`This email is to advise that your bet for ${string} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
+                }
             }
             else {
+                const preference = await Preference.findOne({ user: user._id });
+                let timezone = "00:00";
+                if (preference && preference.timezone) {
+                    timezone = preference.timezone;
+                }
+                const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
+                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                    const msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'Your bet was accepted',
+                        text: `Your bet was accepted`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}
+                            <br><br>`),
+                    };
+                    sgMail.send(msg);
+                }
+                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                    sendSMS(`This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
+                }
+            }
+        } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
-                    subject: 'Your bet was accepted',
-                    text: `Your bet was accepted`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.firstname}</b>.
-                        <br><br>
-                        This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${new Date()}
-                        <br><br>`),
+                    subject: 'You won a wager!',
+                    text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://payperwin.co/history`,
+                    html: simpleresponsive(`
+                        <p>
+                            Congratulations! You won $${Transaction.Amount}. View Result Details:
+                        </p>
+                        `,
+                        { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
+                    ),
                 };
                 sgMail.send(msg);
             }
-        } else if (Name.toUpperCase() == 'SETTLED') {
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: email,
-                subject: 'You won a wager!',
-                text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://payperwin.co/history`,
-                html: simpleresponsive(`
-                    <p>
-                        Congratulations! You won $${Transaction.Amount}. View Result Details:
-                    </p>
-                    `,
-                    { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
-                ),
-            };
-            sgMail.send(msg);
+            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                sendSMS(`Congratulations! You won $${Transaction.Amount}.`, user.phone);
+            }
         }
 
         let returnObj = {

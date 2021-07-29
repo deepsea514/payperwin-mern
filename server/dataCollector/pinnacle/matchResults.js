@@ -158,20 +158,26 @@ async function matchResults() {
                                     status: FinancialStatus.success,
                                 });
                                 // TODO: email winner
-                                const msg = {
-                                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                                    to: email,
-                                    subject: 'You won a wager!',
-                                    text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
-                                    html: simpleresponsive(`
-                                        <p>
-                                            Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                        </p>
-                                        `,
-                                        { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
-                                    ),
-                                };
-                                sgMail.send(msg);
+                                const preference = await Preference.findOne({ user: user._id });
+                                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                                    const msg = {
+                                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                                        to: email,
+                                        subject: 'You won a wager!',
+                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://payperwin.co/history`,
+                                        html: simpleresponsive(`
+                                            <p>
+                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                            </p>
+                                            `,
+                                            { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
+                                        ),
+                                    };
+                                    sgMail.send(msg);
+                                }
+                                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                                    sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
+                                }
                             } else if (betWin === false) {
                                 const betChanges = {
                                     $set: {
