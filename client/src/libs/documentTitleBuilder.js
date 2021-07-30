@@ -78,7 +78,7 @@ function setMeta(title, callback) {
                 const meta = {
                     title: title,
                     description: description,
-                    canonical: 'https://payperwin.co',
+                    canonical: 'https://www.payperwin.co',
                     meta: {
                         charset: 'utf-8',
                         name: {

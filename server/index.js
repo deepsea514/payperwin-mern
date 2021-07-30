@@ -666,7 +666,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
-                const passwordRecoveryPath = `https://payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
+                const passwordRecoveryPath = `https://www.payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
                 // if (process.env.NODE_ENV === 'development') {
                 //   console.log(`Hey ${user.username}, you can create a new password here:\n${passwordRecoveryPath}`);
                 // } else {
@@ -1718,12 +1718,20 @@ expressApp.post(
 expressApp.get(
     '/sport',
     async (req, res) => {
-        const { name } = req.query;
+        const { name, leagueId } = req.query;
         const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
         if (sportData) {
-            res.json(sportData);
+            if (leagueId) {
+                const sportLeague = sportData.leagues.find(league => league.originId == leagueId)
+                if (sportLeague)
+                    return res.json({ league: sportLeague, origin: sportData.origin });
+                return res.json(null);
+            }
+            return res.json(sportData);
         } else {
-            res.json([]);
+            if (leagueId)
+                return res.json(null);
+            return res.json([]);
         }
     },
 );
@@ -1735,13 +1743,14 @@ expressApp.get(
         const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
         if (sportData) {
             let data = sportData.leagues.map(league => {
-                const { name, events } = league;
+                const { name, events, originId } = league;
                 let filteredEvents = events.filter(event => {
                     return (new Date(event.startDate)).getTime() > (new Date()).getTime()
                 });
                 return {
                     name,
                     eventCount: filteredEvents.length,
+                    originId
                 }
             })
             data = data.filter(data => data.eventCount)

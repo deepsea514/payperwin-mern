@@ -385,13 +385,13 @@ async function updateAction(action, user) {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
                     subject: 'You won a wager!',
-                    text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://payperwin.co/history`,
+                    text: `Congratulations! You won $${Transaction.Amount}. View Result Details: https://www.payperwin.co/history`,
                     html: simpleresponsive(`
                         <p>
                             Congratulations! You won $${Transaction.Amount}. View Result Details:
                         </p>
                         `,
-                        { href: 'https://payperwin.co/history', name: 'View Settled Bets' }
+                        { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                     ),
                 };
                 sgMail.send(msg);

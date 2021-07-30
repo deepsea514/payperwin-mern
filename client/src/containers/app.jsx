@@ -52,6 +52,7 @@ import Others from "../components/others";
 import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
 import PhoneVerification from "../pages/phoneVerification";
+import SportLeague from "../pages/sportleague";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -253,15 +254,17 @@ class App extends PureComponent {
                                                 } />
                                                 <Route path="/how-it-works" component={HowTo} />
                                                 <Route path="/sports" component={Sports} />
-                                                <Route path="/sport/:name/:league" render={(props) => {
+                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId"
+                                                    render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
+                                                        removeBet={this.removeBet} {...props} />}
+                                                />
+                                                <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
-                                                    console.log(match);
                                                     const name = resObjPath(match, 'params.name');
                                                     const league = resObjPath(match, 'params.league');
                                                     return (
                                                         <React.Fragment>
-                                                            <h1>{name}: {league}</h1>
-                                                            <Sport addBet={this.addBet} betSlip={betSlip}
+                                                            <SportLeague addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet} sportName={name}
                                                                 league={league}
                                                             />
@@ -270,11 +273,10 @@ class App extends PureComponent {
                                                 }} />
                                                 <Route path="/sport/:name" render={(props) => {
                                                     const { match } = props;
-                                                    console.log(match);
                                                     const name = resObjPath(match, 'params.name');
                                                     return (
                                                         <React.Fragment>
-                                                            <h1>{name}</h1>
+                                                            <h3>{name}</h3>
                                                             <Sport addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet} sportName={name}
                                                             />
@@ -291,10 +293,6 @@ class App extends PureComponent {
                                                         </React.Fragment>
                                                     );
                                                 }} />
-                                                <Route path="/lines/:sportName/:leagueId/:eventId"
-                                                    render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} />}
-                                                />
                                                 {/* <Route path="/announcements" component={Announcements} /> */}
                                                 <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
                                                 <Route path="/inbox" render={(props) => <Inbox {...props} getUser={getUser} />} />
