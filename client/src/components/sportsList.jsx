@@ -59,6 +59,7 @@ class SportsList extends PureComponent {
                 'Content-Type': 'application/json',
             },
         }).then(({ data }) => {
+            console.log(data);
             this.setState({ leaguesData: { name, leagues: data } });
         });
 
@@ -120,7 +121,7 @@ class SportsList extends PureComponent {
                                                 {leaguesData.leagues.map(league => (
                                                     <li key={league.name} className="pl-5">
                                                         <Link
-                                                            to={{ pathname: `/sport/${name}/${league.name}` }}
+                                                            to={{ pathname: `/sport/${name}/league/${league.originId}` }}
                                                             style={!league.eventCount ? { opacity: 0.25, pointerEvents: 'none' } : null}
                                                         >
                                                             <span style={sportNameSpanStyle}>{this.ellipsisTitle(league.name)}</span>

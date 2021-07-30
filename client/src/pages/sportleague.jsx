@@ -11,7 +11,7 @@ import calculateNewOdds from '../helpers/calculateNewOdds';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
-class Sport extends PureComponent {
+class SportLeague extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,12 +24,13 @@ class Sport extends PureComponent {
     }
 
     componentDidMount() {
-        const title = 'Betting on Sports';
+        const { league } = this.props;
+        const title = 'Betting on Sports League';
         setMeta(title, (metaData) => {
             this.setState({ metaData: metaData });
         })
-        this.getSport();
-        this.setState({ timer: setInterval(this.getSport, 10 * 60 * 1000) })
+        this.getSportLeague();
+        this.setState({ timer: setInterval(this.getSportLeague, 10 * 60 * 1000) })
     }
 
     componentWillUnmount() {
@@ -38,19 +39,19 @@ class Sport extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName } = this.props;
-        const { sportName: prevSportName } = prevProps;
-        const sportChanged = (sportName !== prevSportName);
+        const { league } = this.props;
+        const { league: prevLeague } = prevProps;
+        const sportChanged = (league !== prevLeague);
         if (sportChanged) {
             this.setState({ error: null });
-            this.getSport();
+            this.getSportLeague();
         }
     }
 
-    getSport() {
-        const { sportName } = this.props;
+    getSportLeague() {
+        const { sportName, league: leagueId } = this.props;
         if (sportName) {
-            const url = `${serverUrl}/sport?name=${sportName}`;
+            const url = `${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`;
             axios({
                 method: 'get',
                 url,
@@ -60,52 +61,52 @@ class Sport extends PureComponent {
             }).then(({ data }) => {
                 if (data) {
                     // Remove moneyline with draw
-                    data.leagues.forEach(league => {
-                        const { events } = league;
-                        events.forEach(event => {
-                            const { lines, startDate } = event;
-                            if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                                event.started = false;
-                            } else {
-                                event.started = true;
-                            }
-                            event.lineCount = 0;
-                            if (lines) {
-                                lines.forEach((line, i) => {
-                                    if (i === 0) {
-                                        const { moneyline, spreads, totals } = line;
-                                        if (moneyline) {
-                                            if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
-                                                event.lineCount++;
-                                            }
-                                            else {
-                                                delete line.moneyline;
-                                            }
+                    const { league } = data;
+                    league.events.forEach(event => {
+                        const { lines, startDate } = event;
+                        if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
+                            event.started = false;
+                        } else {
+                            event.started = true;
+                        }
+                        event.lineCount = 0;
+                        if (lines) {
+                            lines.forEach((line, i) => {
+                                if (i === 0) {
+                                    const { moneyline, spreads, totals } = line;
+                                    if (moneyline) {
+                                        if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
+                                            event.lineCount++;
                                         }
-                                        if (spreads) {
-                                            const filteredSpreads = spreads.filter(spread => {
-                                                if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-                                                    return true;
-                                                return false;
-                                            });
-                                            event.lineCount += filteredSpreads.length;
-                                            line.spreads = filteredSpreads.length ? filteredSpreads : null;
-                                        }
-                                        if (totals) {
-                                            const filteredTotals = totals.filter(total => {
-                                                if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-                                                    return true;
-                                                return false;
-                                            });
-                                            event.lineCount += filteredTotals.length;
-                                            line.totals = filteredTotals.length ? filteredTotals : null;
+                                        else {
+                                            delete line.moneyline;
                                         }
                                     }
-                                });
-                            }
-                        });
+                                    if (spreads) {
+                                        const filteredSpreads = spreads.filter(spread => {
+                                            if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+                                                return true;
+                                            return false;
+                                        });
+                                        event.lineCount += filteredSpreads.length;
+                                        line.spreads = filteredSpreads.length ? filteredSpreads : null;
+                                    }
+                                    if (totals) {
+                                        const filteredTotals = totals.filter(total => {
+                                            if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+                                                return true;
+                                            return false;
+                                        });
+                                        event.lineCount += filteredTotals.length;
+                                        line.totals = filteredTotals.length ? filteredTotals : null;
+                                    }
+                                }
+                            });
+                        }
                     });
                     this.setState({ data })
+                } else {
+                    this.setState({ error: 'League doesn\'t exist.' });
                 }
             }).catch((err) => {
                 this.setState({ error: err });
@@ -150,7 +151,7 @@ class Sport extends PureComponent {
         if (!data) {
             return <div>Loading...</div>;
         }
-        const { leagues, origin } = data;
+        const { league, origin } = data;
         const emptyBoxLine = (
             <li>
                 <span className="box-odds">
@@ -167,6 +168,7 @@ class Sport extends PureComponent {
         );
         return (
             <div className="mt-2">
+                <h3>{sportName}: {league.name}</h3>
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
@@ -187,7 +189,7 @@ class Sport extends PureComponent {
                 {metaData && <DocumentMeta {...metaData} />}
                 <div className="table-title">HIGHLIGHTS</div>
                 <div className="content">
-                    {leagues.map(league => {
+                    {(() => {
                         const { name: leagueName, originId: leagueId } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId, started } = event;
@@ -528,21 +530,22 @@ class Sport extends PureComponent {
                             );
                         });
                         events = events.filter(event => event);
-                        return (events.length ?
-                            <div className="tab-content" id="myTabContent" key={leagueName}>
-                                <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                    <ul className="table-list table-list-top d-flex">
-                                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
-                                        <li>MONEY LINE</li>
-                                        <li>HANDICAP</li>
-                                        <li>OVER UNDER</li>
-                                    </ul>
-                                    {events}
+                        return (
+                            events.length ?
+                                <div className="tab-content" id="myTabContent" key={leagueName}>
+                                    <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                        <ul className="table-list table-list-top d-flex">
+                                            <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
+                                            <li>MONEY LINE</li>
+                                            <li>HANDICAP</li>
+                                            <li>OVER UNDER</li>
+                                        </ul>
+                                        {events}
+                                    </div>
                                 </div>
-                            </div>
-                            : null
+                                : null
                         );
-                    })}
+                    })()}
                 </div>
             </div>
         );
@@ -556,4 +559,4 @@ const mapStateToProps = (state) => ({
     timezone: state.frontend.timezone,
 });
 
-export default connect(mapStateToProps, frontend.actions)(withRouter(Sport))
+export default connect(mapStateToProps, frontend.actions)(withRouter(SportLeague))
