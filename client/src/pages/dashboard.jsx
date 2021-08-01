@@ -64,7 +64,7 @@ class Dashboard extends PureComponent {
                                 The odds are even and better than you will find anywhere else online.
                                 The only catch is you need some patience, you will need wait for a peer to bet the opposite of you to make the bet complete.
                                 PAYPER WIN will take 3% from only the winner for facilitating the transaction and making sure you get paid.
-                                PAYPER WIN gurantees all winning bets will be paid.
+                                PAYPER WIN guarantees all winning bets will be paid.
                                 If patience isn't your virtue, say no more; we suggest doing an Instant bet.
                             </p>
                             <div className="text-right">
