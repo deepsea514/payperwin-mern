@@ -59,7 +59,6 @@ class SportsList extends PureComponent {
                 'Content-Type': 'application/json',
             },
         }).then(({ data }) => {
-            console.log(data);
             this.setState({ leaguesData: { name, leagues: data } });
         });
 

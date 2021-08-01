@@ -95,9 +95,14 @@ class Header extends PureComponent {
         this._isMounted && this.setState({ oddsDropDownOpen: false });
     }
 
+    setDisplayMode = (display_mode) => {
+        const { setDisplayMode } = this.props;
+        setDisplayMode(display_mode);
+    }
+
     render() {
         const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction } = this.props;
+        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction, display_mode } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -257,18 +262,26 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </div>
-                {pathname !== '/sportsbook' && <div className="header-search">
+                {pathname !== '/sportsbook' && <div className={`header-search ${display_mode == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
-                        <div className="row">
-                            <div className="col-sm-4">
+                        <div className="d-flex justify-content-between">
+                            <div className="">
                                 <div className="search-box">
                                     <i className="fa fa-search" aria-hidden="true"></i>
                                     <input className="searh-f" type="search" placeholder="Search" value={search} onChange={(evt) => setSearch(evt.target.value)} />
                                 </div>
                             </div>
-                            <div className="col-sm-8">
+                            <div className="">
                                 <ul className="list-s">
-                                    {/* <li><a href="#"><span className="moon"></span><i className="fas fa-moon"></i></a></li> */}
+                                    <li style={{ padding: '0 15px' }}>
+                                        <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode': 'darkmode'}`} 
+                                        onClick={() => this.setDisplayMode(display_mode == 'light' ? 'dark': 'light')}
+                                        >
+                                            <i className="far fa-sun lightmode_ico"></i>
+                                            <i className="far fa-moon darkmode_ico"></i>
+                                            <div className="lightmode_switch"></div>
+                                        </div>
+                                    </li>
                                     {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
                                         <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
@@ -358,6 +371,7 @@ const mapStateToProps = (state) => ({
     search: state.frontend.search,
     timezone: state.frontend.timezone,
     acceptCookie: state.frontend.acceptCookie,
+    display_mode: state.frontend.display_mode,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)
