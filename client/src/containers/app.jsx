@@ -59,6 +59,7 @@ import * as frontend from "../redux/reducer";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
+import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';

@@ -218,12 +218,19 @@ ul.list-s {
     font-weight: bold;
 }
 
-.fa.fa-search {
+/* .fa.fa-search {
     position: absolute;
     left: 22px;
     top: 5px;
     font-size: 13px;
     color: #777;
+} */
+
+.search-box {
+    padding-left: 8px;
+    background-color: #e1e5e8;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 .searh-f {
@@ -231,25 +238,67 @@ ul.list-s {
     height: 25px;
     -webkit-transition: all .25s var(--global-animation-easing);
     transition: all .25s var(--global-animation-easing);
-    border-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
     background-color: #e1e5e8;
     border: none;
     font-size: 13px;
-    padding-left: 37px;
+    padding-left: 5px;
     color: #000;
 }
 
-.moon {
+.searh-f:focus {
+    outline: none;
+}
+
+.displaymode_container {
+    height: 25px;
+    width: 52px;
+    display: -ms-flexbox;
+    display: flex;
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    color: #0B1422;
+    background: #E1E5E8;
+}
+
+.displaymode_container:hover {
+    background: #d2d6da;
+}
+
+.lightmode_ico {
+    top: 5px !important;
+    left: 8px !important;
+}
+
+.darkmode_ico {
+    top: 5px !important;
+    right: 7px !important;
+}
+
+.darkmode_ico, .lightmode_ico {
+    font-size: 14px;
+    position: absolute !important;
+}
+
+.lightmode .lightmode_switch {
+    left: 2px;
+}
+
+.darkmode .lightmode_switch {
+    transform: translate3d(29px, 0, 0);
+}
+
+.lightmode_switch {
+    position: absolute;
     background: #fff;
     border-radius: 2px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .35);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 35%);
     width: 21px;
     height: 21px;
     top: 2px;
-    -webkit-transition: all .25s;
     transition: all .25s;
-    position: absolute;
-    left: 0;
 }
 
 /* ul.list-s li:first-child i {
@@ -271,7 +320,7 @@ ul.list-s .fa.fa-caret-down {
 
 /* ul.list-s li:first-child{ background:#e1e5e8; position:relative;} */
 
-ul.list-s i {
+ul.list-s li:not(:first-child) i {
     font-size: 14px;
     color: #91949b;
     padding-left: 0;

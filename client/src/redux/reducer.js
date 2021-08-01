@@ -9,6 +9,7 @@ export const actionTypes = {
     setLanguage: "[Set Language Action]",
     setOddsFormat: "[Set Odd Format Action]",
     setDateFormat: "[Set Date Format Action]",
+    setDisplayMode: "[Set Display Mode Action]",
     setTimezone: "[Set Timezone Action]",
     setSearch: "[Set Search Action]",
     acceptCookieAction: "[Accept Cookie Action]",
@@ -20,6 +21,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
+    display_mode: 'light',
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     require_2fa: false,
@@ -42,6 +44,9 @@ export const reducer = persistReducer(
 
             case actionTypes.setDateFormat:
                 return { ...state, dateFormat: action.dateFormat };
+
+            case actionTypes.setDisplayMode:
+                return { ...state, display_mode: action.display_mode };
 
             case actionTypes.setTimezone:
                 return { ...state, timezone: action.timezone };
@@ -67,6 +72,7 @@ export const actions = {
     setLanguage: (lang = 'en') => ({ type: actionTypes.setLanguage, lang }),
     setOddsFormat: (oddsFormat = 'american') => ({ type: actionTypes.setOddsFormat, oddsFormat }),
     setTimezone: (timezone) => ({ type: actionTypes.setTimezone, timezone }),
+    setDisplayMode: (display_mode) => ({ type: actionTypes.setDisplayMode, display_mode }),
     setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
     acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
@@ -78,6 +84,15 @@ export function* saga() {
         try {
             const oddsFormat = yield select((state) => state.frontend.oddsFormat);
             yield setPreferences({ oddsFormat });
+        } catch (error) {
+            console.log('error', error);
+        }
+    });
+
+    yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
+        try {
+            const display_mode = yield select((state) => state.frontend.display_mode);
+            yield setPreferences({ display_mode });
         } catch (error) {
             console.log('error', error);
         }

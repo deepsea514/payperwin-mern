@@ -1,0 +1,21 @@
+.header-search.dark {
+    background: linear-gradient(90deg, #0b1422, #273043);
+    color: white;
+}
+
+.header-search.dark .search-box, .header-search.dark .searh-f, .header-search.dark .displaymode_container {
+    background-color: #182F49;
+    color: white;
+}
+
+.header-search.dark .displaymode_container:hover {
+    background-color: #606468;
+}
+
+.header-search.dark ul.list-s li:not(:first-child) i, .header-search.dark ul.list-s li a, .header-search.dark ul.list-s li {
+    color: white;
+}
+
+.header-search.dark .odds-dropdown ul li, .header-search.dark .odds-dropdown ul li i {
+    color: #0B1422 !important;
+}
