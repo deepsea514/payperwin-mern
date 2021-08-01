@@ -206,6 +206,13 @@ class Header extends PureComponent {
                                                 </Link>
                                             </center>
                                         </li>
+                                        <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                                    <i className="fas fa-futbol"></i>Parlay
+                                                </Link>
+                                            </center>
+                                        </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
@@ -239,6 +246,11 @@ class Header extends PureComponent {
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
                                                 <i className="fas fa-futbol"></i>INSTANT/LIVE&nbsp;BETTING
+                                            </Link>
+                                        </li>
+                                        <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
+                                                <i className="fas fa-futbol"></i>Parlay
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
