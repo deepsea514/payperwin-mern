@@ -9,7 +9,7 @@ import DocumentMeta from 'react-document-meta';
 import calculateNewOdds from '../helpers/calculateNewOdds';
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class Sport extends PureComponent {
     constructor(props) {

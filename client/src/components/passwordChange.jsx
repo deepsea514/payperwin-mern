@@ -10,7 +10,7 @@ import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const Form = ({
     oldPassword, // eslint-disable-line react/prop-types

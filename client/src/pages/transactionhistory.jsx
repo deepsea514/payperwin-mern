@@ -7,7 +7,7 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import DocumentMeta from 'react-document-meta';
 import config from "../../../config.json";
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class TransactionHistory extends Component {
     constructor(props) {

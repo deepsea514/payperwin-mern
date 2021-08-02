@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { Link } from "react-router-dom";
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class InboxDetail extends Component {
     constructor(props) {

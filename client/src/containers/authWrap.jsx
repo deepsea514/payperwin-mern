@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 window.recaptchaSiteKey = config.recaptchaSiteKey;
 

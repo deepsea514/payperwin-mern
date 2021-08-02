@@ -7,7 +7,7 @@ import axios from 'axios';
 import ArticleWrapper from './articlewrapper';
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class ArticleHome extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;

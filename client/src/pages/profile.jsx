@@ -14,7 +14,7 @@ import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 export default class Profile extends Component {
     constructor(props) {

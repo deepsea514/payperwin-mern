@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import config from "../../../config.json";
-const appUrl = config.appUrl;
+const appUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const socket = io(appUrl);
 

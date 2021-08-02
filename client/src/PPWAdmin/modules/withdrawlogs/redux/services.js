@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../../../../../../config.json";
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
 export function getWithdrawLog(page, filter, perPage = null) {
     let url = `${serverUrl}/withdraw?page=${page}`;

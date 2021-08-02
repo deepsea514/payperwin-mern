@@ -11,7 +11,7 @@ import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setMeta } from '../libs/documentTitleBuilder';
 import DocumentMeta from 'react-document-meta';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const Form = ({
     email, // eslint-disable-line react/prop-types

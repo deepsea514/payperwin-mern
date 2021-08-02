@@ -10,7 +10,7 @@ import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

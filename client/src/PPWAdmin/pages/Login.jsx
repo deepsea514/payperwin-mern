@@ -6,7 +6,7 @@ import SVG from "react-inlinesvg";
 import axios from 'axios';
 import { getInputClasses } from "../../helpers/getInputClasses";
 const config = require('../../../../config.json');
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
 
 const initialValues = {
