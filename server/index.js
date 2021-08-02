@@ -103,7 +103,7 @@ const bruteforce = new ExpressBrute(bruteStore);
 // Database
 mongoose.Promise = global.Promise;
 // const databaseName = 'PayPerWinDev'
-console.log(process.env.NODE_ENV, mode);
+console.log(process.env.NODE_ENV, 'mode');
 const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 const mongooptions = {
     authSource: "admin",
