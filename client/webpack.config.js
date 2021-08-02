@@ -3,6 +3,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const config = require('../config.json');
+require('dotenv').config();
 
 const TARGET = process.env.npm_lifecycle_event;
 

@@ -3,6 +3,7 @@ const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
+require('dotenv').config();
 
 const app = express();
 const config = require('../config.json')
