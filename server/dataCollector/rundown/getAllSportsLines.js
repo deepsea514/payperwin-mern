@@ -10,7 +10,7 @@ let call = 0;
 mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
 console.info('Using database:', databaseName);
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
+mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     authSource: "admin",
     user: config.mongo.username,
     pass: config.mongo.password,

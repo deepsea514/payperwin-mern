@@ -112,7 +112,7 @@ const mongooptions = {
 }
 
 
-mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions).then(async () => {
+mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, mongooptions).then(async () => {
     console.info('Using database:', databaseName);
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
@@ -128,18 +128,6 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, mongooptions).then(async
         twilioClient = twilio(twilioAddon.value.accountSid, twilioAddon.value.authToken);
     }
 });
-// const store = new MongoDBStore(
-//     {
-//         uri: `mongodb://localhost/${databaseName}`,
-//         databaseName: databaseName,
-//         collection: 'sessions',
-//         expires: 90 * 24 * 60 * 60 * 1000,
-//         connectionOptions: mongooptions
-//     },
-//     function (error) {
-//         // Should have gotten an error
-//     }
-// );
 
 // Server
 const expressApp = express();

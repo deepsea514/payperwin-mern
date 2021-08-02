@@ -21,7 +21,7 @@ Date.prototype.addHours = function (h) {
 // Database
 mongoose.Promise = global.Promise;
 const databaseName = 'PayPerWinDev'
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
+mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     authSource: "admin",
     user: config.mongo.username,
     pass: config.mongo.password,
