@@ -8,6 +8,7 @@ import dateformat from "dateformat";
 import { Button, Modal } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class CustomerDetail extends React.Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class CustomerDetail extends React.Component {
                         then: Yup.string().oneOf([Yup.ref("password")], "Password and Confirm Password didn't match"),
                     }),
             }),
-            initialvalues: {
+            initialValues: {
                 password: "",
                 confirmpassword: ""
             },
@@ -72,18 +73,8 @@ class CustomerDetail extends React.Component {
         })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
-        const { customer, loading, showHistory, resetPassword, PasswordSchema, initialvalues, isSuccess, isError } = this.state;
+        const { customer, loading, showHistory, resetPassword, PasswordSchema, initialValues, isSuccess, isError } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-11 order-xxl-12 text-center">
@@ -142,7 +133,7 @@ class CustomerDetail extends React.Component {
                                                 <th>Created</th>
                                                 <td>{this.getDate(customer.createdAt)}</td>
                                                 <th>Status</th>
-                                                <td><span className="label label-success label-inline font-weight-lighter mr-2">Active</span></td>
+                                                <td><span className="label label-lg label-success label-inline font-weight-lighter mr-2">Active</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -185,7 +176,7 @@ class CustomerDetail extends React.Component {
                         <Modal.Title>Reset Password</Modal.Title>
                     </Modal.Header>
                     <Formik
-                        initialValues={initialvalues}
+                        initialValues={initialValues}
                         validationSchema={PasswordSchema}
                         onSubmit={this.changePassword}>
                         {
@@ -195,10 +186,7 @@ class CustomerDetail extends React.Component {
                                         <div className="form-group">
                                             <label>New Password<span className="text-danger">*</span></label>
                                             <input type="password" name="password" placeholder="Enter New Password"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "password"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "password")}`}
                                                 {...formik.getFieldProps("password")}
                                             />
                                             {formik.touched.password && formik.errors.password ? (
@@ -210,10 +198,7 @@ class CustomerDetail extends React.Component {
                                         <div className="form-group">
                                             <label>Confirm Password<span className="text-danger">*</span></label>
                                             <input type="password" name="confirmpassword" placeholder="Enter Confirm Password"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "confirmpassword"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "confirmpassword")}`}
                                                 {...formik.getFieldProps("confirmpassword")}
                                             />
                                             {formik.touched.confirmpassword && formik.errors.confirmpassword ? (

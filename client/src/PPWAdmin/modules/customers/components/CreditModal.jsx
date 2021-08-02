@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 const config = require("../../../../../../config.json");
 const PaymentMethod = config.PaymentMethod;
 const FinancialStatus = config.FinancialStatus;
@@ -14,7 +15,7 @@ export default class CreditModal extends React.Component {
 
         if (props.type == "deposit") {
             this.state = {
-                initialvalues: {
+                initialValues: {
                     amount: 0,
                     method: "",
                     reason: "",
@@ -35,7 +36,7 @@ export default class CreditModal extends React.Component {
         }
         else {
             this.state = {
-                initialvalues: {
+                initialValues: {
                     amount: 0,
                     method: "",
                     status: '',
@@ -69,26 +70,16 @@ export default class CreditModal extends React.Component {
         });
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     render() {
         const { show, onHide, onSubmit, title, type } = this.props;
-        const { initialvalues, creditSchema } = this.state;
+        const { initialValues, creditSchema } = this.state;
         return (
             <Modal show={show} onHide={onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 {show && <Formik
-                    initialValues={initialvalues}
+                    initialValues={initialValues}
                     validationSchema={creditSchema}
                     onSubmit={onSubmit}>
                     {
@@ -98,10 +89,7 @@ export default class CreditModal extends React.Component {
                                     <div className="form-group">
                                         <label>Amount<span className="text-danger">*</span></label>
                                         <input name="amount" placeholder="Enter Amount"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "amount"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "amount")}`}
                                             {...formik.getFieldProps("amount")}
                                         />
                                         {formik.touched.amount && formik.errors.amount ? (
@@ -113,10 +101,7 @@ export default class CreditModal extends React.Component {
                                     {type == "deposit" && <div className="form-group">
                                         <label>Reason<span className="text-danger">*</span></label>
                                         <select name="reason" placeholder="Choose Reason"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "reason"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "reason")}`}
                                             {...formik.getFieldProps("reason")}
                                         >
                                             <option value="">Choose reason ...</option>
@@ -131,10 +116,7 @@ export default class CreditModal extends React.Component {
                                     <div className="form-group">
                                         <label>Payment Method<span className="text-danger">*</span></label>
                                         <select name="method" placeholder="Choose payment method"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "method"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "method")}`}
                                             {...formik.getFieldProps("method")}
                                         >
                                             <option value="">Choose method ...</option>
@@ -149,10 +131,7 @@ export default class CreditModal extends React.Component {
                                     <div className="form-group">
                                         <label>Status<span className="text-danger">*</span></label>
                                         <select name="status" placeholder="Choose status"
-                                            className={`form-control ${this.getInputClasses(
-                                                formik,
-                                                "status"
-                                            )}`}
+                                            className={`form-control ${getInputClasses(formik, "status")}`}
                                             {...formik.getFieldProps("status")}
                                         >
                                             <option value="">Choose status ...</option>
@@ -168,10 +147,10 @@ export default class CreditModal extends React.Component {
                                 <Modal.Footer>
                                     <Button variant="light-primary" onClick={onHide}>
                                         Cancel
-                                        </Button>
+                                    </Button>
                                     <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
                                         Save
-                                        </Button>
+                                    </Button>
                                 </Modal.Footer>
                             </form>
                         }

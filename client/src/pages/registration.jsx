@@ -2,17 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import {
-    Grid, Select, Button, Card, CardContent, Input, OutlinedInput, Typography, FormLabel,
-    CardHeader, TextField, MenuItem, InputLabel, FormControl, Stepper, Step, StepLabel,
-    RadioGroup, FormControlLabel, Radio, Checkbox
+    Grid, Button, Card, CardContent, FormLabel,
+    CardHeader, FormControl, Stepper, Step, StepLabel,
+    RadioGroup, FormControlLabel, Radio, Checkbox, TextField
 } from '@material-ui/core';
+import { Form, InputGroup } from "react-bootstrap";
 import axios from 'axios';
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import StepConnector from '@material-ui/core/StepConnector';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import dateformat from "dateformat";
 import clsx from 'clsx';
+import { RegionDropdown } from 'react-country-region-selector';
+import _ from 'lodash';
+import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
@@ -116,18 +123,18 @@ ColorlibStepIcon.propTypes = {
 };
 
 const initState = {
-    country: '',
+    country: 'Canada',
+    region: '',
     email: '',
     password: '',
     cPassword: '',
 
     title: 'Mr',
-    username: '',
     firstname: '',
     lastname: '',
     dateofbirth: '',
 
-    currency: '',
+    currency: 'CAD',
     address: '',
     address2: '',
     city: '',
@@ -143,47 +150,48 @@ const initState = {
 
     errors: {},
     touched: {
-        country: false,
+        country: true,
+        region: false,
         email: false,
         password: false,
         cPassword: false,
 
         title: true,
-        username: false,
         firstname: false,
         lastname: false,
-        dateofbirth: false,
+        dateofbirth: true,
 
-        currency: false,
-        address: false,
-        address2: false,
-        city: false,
-        postalcode: false,
-        phone: false,
+        currency: true,
 
-        securityquiz: false,
-        securityans: false,
+        // securityquiz: false,
+        // securityans: false,
         vipcode: false,
     },
     activeStep: 0,
-    steps: ['', '', '', ''],
+    steps: ['', ''],
+    metaData: null,
+    showPass: false,
+    showPassConfirm: false,
 };
 
 class Registration extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        this.handleChange = this.handleChange.bind(this);
+        // this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDirty = this.handleDirty.bind(this);
         this.recaptchaCallback = this.recaptchaCallback.bind(this);
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'Sign Up' });
+        const title = 'Registration';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const { touched } = this.state;
         switch (e.target.name) {
             case "agreeTerms":
@@ -194,11 +202,17 @@ class Registration extends Component {
                 });
                 break;
             case "country":
-                const currency = CountryInfo.find(country => e.target.value == country.country).currency;
-                this.setState({
-                    currency,
-                    touched: { ...touched, currency: true, }
-                });
+                const country = CountryInfo.find(country => e.target.value == country.country);
+                if (country) {
+                    const currency = country.currency;
+                    this.setState({
+                        country: e.target.value,
+                        currency,
+                        region: '',
+                        touched: { ...touched, country: true, currency: true, region: false }
+                    });
+                }
+                break;
             default:
                 this.setState({
                     [e.target.name]: e.target.value,
@@ -208,6 +222,25 @@ class Registration extends Component {
         this.handleDirty(e);
     }
 
+    handleChangeSpec = async (field, value) => {
+        const { touched } = this.state;
+        await this.setState({
+            [field]: value,
+            touched: { ...touched, [field]: true, }
+        });
+
+        const { errors } = this.state;
+        registrationValidation.validateField(field, this.state, { tags: ['registration'] }).then((result) => {
+            const errorsStateChange = { ...errors, server: undefined };
+            if (result === true) {
+                errorsStateChange[field] = undefined;
+            } else {
+                errorsStateChange[field] = result;
+            }
+            this.setState({ errors: errorsStateChange });
+        });
+    }
+
     handleSubmit() {
         const { getUser, history } = this.props;
         const { rcptchVerified, errors } = this.state;
@@ -215,38 +248,39 @@ class Registration extends Component {
             this.setState({ errors: { ...errors, recaptcha: 'You must complete captcha' } });
             return;
         }
-
         registrationValidation.validateFields(this.state, { tags: ['registration'] })
             .then((result) => {
+
                 if (result === true) {
-                    const { username, email, password, firstname, lastname, country, currency,
-                        title, dateofbirth, address, address2, city, postalcode, phone,
-                        securityquiz, securityans, vipcode } = this.state;
-                    const url = `${serverUrl}/register`;
-                    axios({
-                        method: 'post',
-                        url,
-                        data: {
-                            username, email, password, firstname, lastname,
-                            country, currency, title, dateofbirth,
-                            address, address2, city, postalcode, phone,
-                            securityquiz, securityans, vipcode,
+                    const { email, password, firstname, lastname, country, currency, region,
+                        title, dateofbirth, vipcode } = this.state;
+                    axios.post(`${serverUrl}/register`,
+                        {
+                            email, password, firstname, lastname, region,
+                            country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
+                            vipcode,
                         },
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    }).then((/* { data } */) => {
-                        getUser();
-                        history.replace({ pathname: '/' });
-                    }).catch((err) => {
-                        if (err.response) {
-                            const { data } = err.response;
-                            if (data.error) {
-                                this.setState({ errors: { ...errors, server: data.error } });
-                            }
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            withCredentials: true,
                         }
-                    });
+                    )
+                        .then((/* { data } */) => {
+                            console.log("success");
+                            getUser();
+                            history.replace({ pathname: '/' });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            if (err.response) {
+                                const { data } = err.response;
+                                if (data.error) {
+                                    this.setState({ errors: { ...errors, server: data.error } });
+                                }
+                            }
+                        });
                 } else {
                     this.setState({
                         errors: result,
@@ -280,298 +314,216 @@ class Registration extends Component {
 
     getStepContent = (activeStep) => {
         const {
-            country, email, password, cPassword,
-            title, username, firstname, lastname, dateofbirth,
-            currency, address, address2, city, postalcode, phone,
-            securityquiz, securityans, vipcode, agreeTerms, agreePrivacy,
+            country, email, password, cPassword, region,
+            firstname, lastname, dateofbirth,
+            vipcode, agreeTerms, agreePrivacy,
             rcptchVerified,
-            errors,
+            errors, showPass, showPassConfirm
         } = this.state;
+        const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
+        const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+
         switch (activeStep) {
             case 0:
                 return <>
-                    <FormControl variant="standard" fullWidth margin="normal" required
-                        error={errors.country !== undefined}>
-                        <InputLabel htmlFor="country-select">Country</InputLabel>
-                        <Select
+                    <Form.Group>
+                        <Form.Label>Country</Form.Label>
+                        <Form.Control
+                            as="select"
                             name="country"
                             value={country}
                             onChange={this.handleChange}
                             onBlur={this.handleDirty}
-                            input={
-                                <Input
-                                    label="Country *"
-                                    name="country"
-                                    id="country-select"
-                                />
-                            }
+                            required
+                            isInvalid={errors.country !== undefined}
                         >
-                            {CountryInfo.map((country) => <MenuItem key={country.country} value={country.country}>{country.country}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        label="Email"
-                        name="email"
-                        value={email}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.email !== undefined}
-                        helperText={errors.email}
-                        margin="normal"
-                        type="email"
-                        fullWidth
-                        // variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Password"
-                        name="password"
-                        value={password}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.password !== undefined}
-                        helperText={errors.password}
-                        margin="normal"
-                        type="password"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Password Confirmation"
-                        name="cPassword"
-                        value={cPassword}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.cPassword !== undefined}
-                        helperText={errors.cPassword}
-                        margin="normal"
-                        type="password"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
+                            <option value="">Please Choose Country...</option>
+                            {CountryInfo.map((country) => <option key={country.country} value={country.country}>{country.country}</option>)}
+                        </Form.Control>
+                        {errors.country ? <div className="registration-feedback">{errors.country}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Region</Form.Label>
+                        <RegionDropdown className="form-control"
+                            country={country}
+                            value={region}
+                            name="region"
+                            onChange={(val) => this.handleChangeSpec('region', val)}
+                            valueType="short"
+                        />
+                        {errors.region ? <div className="registration-feedback">{errors.region}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            isInvalid={errors.email !== undefined}
+                            required
+                        />
+                        {errors.email ? <div className="registration-feedback">{errors.email}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password</Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                type={showPass ? "text" : "password"}
+                                name="password"
+                                value={password}
+                                onChange={this.handleChange}
+                                onBlur={this.handleDirty}
+                                placeholder="Enter Password"
+                                isInvalid={errors.password !== undefined}
+                                required
+                            />
+                            <Button variant="outline-secondary" onClick={() => this.setState({ showPass: !showPass })}>
+                                <i className={showPass ? "far fa-eye" : "far fa-eye-slash"} />
+                            </Button>
+                        </InputGroup>
+                        {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password Confirmation</Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                type={showPassConfirm ? "text" : "password"}
+                                name="cPassword"
+                                value={cPassword}
+                                onChange={this.handleChange}
+                                onBlur={this.handleDirty}
+                                placeholder="Confirm Password"
+                                isInvalid={errors.cPassword !== undefined}
+                                required
+                            />
+                            <Button variant="outline-secondary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
+                                <i className={showPassConfirm ? "far fa-eye" : "far fa-eye-slash"} />
+                            </Button>
+                        </InputGroup>
+                        {errors.cPassword ? <div className="registration-feedback">{errors.cPassword}</div> : null}
+                    </Form.Group>
                 </>;
             case 1:
                 return <>
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend">Title</FormLabel>
-                        <RadioGroup row aria-label="gender" name="title" value={title} onChange={this.handleChange}>
-                            <FormControlLabel value="Mr" control={<Radio />} label="Mr" />
-                            <FormControlLabel value="Ms" control={<Radio />} label="Ms" />
-                        </RadioGroup>
-                    </FormControl>
-                    <TextField
-                        label="Username"
-                        name="username"
-                        value={username}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.username !== undefined}
-                        helperText={errors.username}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="First Name"
-                        name="firstname"
-                        value={firstname}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.firstname !== undefined}
-                        helperText={errors.firstname}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Last Name"
-                        name="lastname"
-                        value={lastname}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.lastname !== undefined}
-                        helperText={errors.lastname}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        variant="outlined"
-                        label="Birthday"
-                        type="date"
-                        value={dateofbirth}
-                        name="dateofbirth"
-                        margin="normal"
-                        onBlur={this.handleDirty}
-                        onChange={this.handleChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        fullWidth
-                        required
-                    />
-                </>;
-            case 2:
-                return <>
-                    <TextField
-                        label="Country"
-                        name="country"
-                        value={country}
-                        margin="normal"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        required
-                    />
-                    <TextField
-                        label="Currency"
-                        name="currency"
-                        value={currency}
-                        error={errors.currency !== undefined}
-                        helperText={errors.currency}
-                        margin="normal"
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                        required
-                    />
-                    <TextField
-                        label="Home Address"
-                        name="address"
-                        value={address}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.address !== undefined}
-                        helperText={errors.address}
-                        margin="normal"
-                        type="address"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Home Address line 2 (Optional)"
-                        name="address2"
-                        value={address2}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.address2 !== undefined}
-                        helperText={errors.address2}
-                        margin="normal"
-                        type="address2"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                    />
-                    <TextField
-                        label="City"
-                        name="city"
-                        value={city}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.city !== undefined}
-                        helperText={errors.city}
-                        margin="normal"
-                        type="city"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Postal Code"
-                        name="postalcode"
-                        value={postalcode}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.postalcode !== undefined}
-                        helperText={errors.postalcode}
-                        margin="normal"
-                        type="postalcode"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Contact Number"
-                        name="phone"
-                        value={phone}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.phone !== undefined}
-                        helperText={errors.phone}
-                        margin="normal"
-                        type="phone"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                </>;
-            case 3:
-                return <>
-                    <TextField
-                        label="Security Question"
-                        name="securityquiz"
-                        value={securityquiz}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.securityquiz !== undefined}
-                        helperText={errors.securityquiz}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="Security Answer"
-                        name="securityans"
-                        value={securityans}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.securityans !== undefined}
-                        helperText={errors.securityans}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                        required
-                    />
-                    <TextField
-                        label="How did you know about us? Do you have a VIP code?(optional)"
-                        name="vipcode"
-                        value={vipcode}
-                        onChange={this.handleChange}
-                        onBlur={this.handleDirty}
-                        error={errors.vipcode !== undefined}
-                        helperText={errors.vipcode}
-                        margin="normal"
-                        fullWidth
-                        variant="outlined"
-                        autoComplete="off"
-                    />
+                    <Form.Group>
+                        <Form.Label>First Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="firstname"
+                            value={firstname}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter First Name"
+                            isInvalid={errors.firstname !== undefined}
+                            required
+                        />
+                        {errors.firstname ? <div className="registration-feedback">{errors.firstname}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="lastname"
+                            value={lastname}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Last Name"
+                            isInvalid={errors.lastname !== undefined}
+                            required
+                        />
+                        {errors.lastname ? <div className="registration-feedback">{errors.lastname}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Birthday</Form.Label>
+                        <DatePicker
+                            name="dateofbirth"
+                            className="form-control"
+                            renderCustomHeader={({
+                                date,
+                                changeYear,
+                                changeMonth,
+                                decreaseMonth,
+                                increaseMonth,
+                                prevMonthButtonDisabled,
+                                nextMonthButtonDisabled
+                            }) => (
+                                <div
+                                    style={{
+                                        margin: 10,
+                                        display: "flex",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                                        {"<"}
+                                    </button>
+                                    <select
+                                        value={(new Date(date)).getFullYear()}
+                                        onChange={({ target: { value } }) => changeYear(value)}
+                                    >
+                                        {years.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <select
+                                        value={months[(new Date(date)).getMonth()]}
+                                        onChange={({ target: { value } }) =>
+                                            changeMonth(months.indexOf(value))
+                                        }
+                                    >
+                                        {months.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                                        {">"}
+                                    </button>
+                                </div>
+                            )}
+                            wrapperClassName="input-group"
+                            selected={dateofbirth}
+                            onChange={(val) => this.handleChangeSpec('dateofbirth', val)}
+                            placeholder="Enter Birthday"
+                            isInvalid={errors.dateofbirth !== undefined}
+                            required
+                        />
+                        {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="vipcode"
+                            value={vipcode}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter VIP Code"
+                            isInvalid={errors.vipcode !== undefined}
+                        />
+                        {errors.vipcode ? <div className="registration-feedback">{errors.vipcode}</div> : null}
+                    </Form.Group>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -585,11 +537,8 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>I am at least 18 years of age (or the legal age applicable for my jurisdiction)
-                                and have read and agreed to PayperWin's
-                                    &nbsp;<Link to={'/terms-and-condition'}>Terms And Conditions</Link>&nbsp;
-                                    and
-                                    &nbsp;<Link to={'/betting-rules'}>Betting Rules.</Link>&nbsp;</span>
+                                <span>
+                                    I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's <Link to={'/terms-and-conditions'}>Terms And Conditions</Link> and <Link to={'/betting-rules'}>Betting Rules.</Link></span>
                             </div>
                         }
                     />
@@ -606,9 +555,9 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>I have read and agree to Pinnacle's
-                                    &nbsp;<Link to={'/privacy-policy'}>Privacy Policy</Link>
-                                    .</span>
+                                <span>
+                                    I have read and agree to PayPerWin's <Link to={'/privacy-policy'}>Privacy Policy</Link>.
+                                </span>
                             </div>
                         }
                     />
@@ -622,6 +571,112 @@ class Registration extends Component {
                     }
                     {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null}
                 </>;
+            case 2:
+                return <>
+                    {/* <Form.Group>
+                        <Form.Label>Home Address</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="address"
+                            value={address}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home Address"
+                            isInvalid={errors.address !== undefined}
+                            required
+                        />
+                        {errors.address ? <div className="registration-feedback">{errors.address}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Home Address line 2 (Optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="address2"
+                            value={address2}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home Address 2"
+                            isInvalid={errors.address2 !== undefined}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Home City</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="city"
+                            value={city}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Home City"
+                            isInvalid={errors.city !== undefined}
+                            required
+                        />
+                        {errors.city ? <div className="registration-feedback">{errors.city}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Postal Code</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="postalcode"
+                            value={postalcode}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Postal Code"
+                            isInvalid={errors.postalcode !== undefined}
+                            required
+                        />
+                        {errors.postalcode ? <div className="registration-feedback">{errors.postalcode}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Contact Number</Form.Label>
+                        <PhoneInput
+                            type="text"
+                            name="phone"
+                            containerClass="input-group"
+                            inputClass="form-control"
+                            dropdownClass="input-group-append"
+                            value={phone}
+                            onChange={(phone) => this.setState({ phone })}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Contact Number"
+                            isInvalid={errors.phone !== undefined}
+                            required
+                        />
+                        {errors.phone ? <div className="registration-feedback">{errors.phone}</div> : null}
+                    </Form.Group> */}
+                </>;
+            case 3:
+                return <>
+                    {/* <Form.Group>
+                        <Form.Label>Security Question</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="securityquiz"
+                            value={securityquiz}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Security Question"
+                            isInvalid={errors.securityquiz !== undefined}
+                            required
+                        />
+                        {errors.securityquiz ? <div className="registration-feedback">{errors.securityquiz}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Security Answer</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="securityans"
+                            value={securityans}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Security Answer"
+                            isInvalid={errors.securityans !== undefined}
+                            required
+                        />
+                        {errors.securityans ? <div className="registration-feedback">{errors.securityans}</div> : null}
+                    </Form.Group> */}
+
+                </>;
             default:
                 return 'Unknown step';
         }
@@ -632,6 +687,7 @@ class Registration extends Component {
         switch (activeStep) {
             case 0:
                 if ((errors.country || !touched.country) ||
+                    (errors.region || !touched.region) ||
                     (errors.email || !touched.email) ||
                     (errors.password || !touched.password) ||
                     (errors.cPassword || !touched.cPassword))
@@ -639,23 +695,25 @@ class Registration extends Component {
                 return false;
             case 1:
                 if ((errors.title || !touched.title) ||
-                    (errors.username || !touched.username) ||
                     (errors.firstname || !touched.firstname) ||
                     (errors.lastname || !touched.lastname) ||
-                    (errors.dateofbirth || !touched.dateofbirth))
+                    (errors.dateofbirth || !touched.dateofbirth) ||
+                    !agreeTerms || !agreePrivacy
+                )
                     return true;
                 return false;
             case 2:
-                if ((errors.address || !touched.address) ||
-                    (errors.city || !touched.city) ||
-                    (errors.postalcode || !touched.postalcode) ||
-                    (errors.phone || !touched.phone))
-                    return true;
+                // if ((errors.address || !touched.address) ||
+                //     (errors.city || !touched.city) ||
+                //     (errors.postalcode || !touched.postalcode) ||
+                //     (errors.phone || !touched.phone))
+                // return true;
                 return false;
             case 3:
-                if ((errors.securityquiz || !touched.securityquiz) ||
-                    (errors.securityans || !touched.securityans) ||
-                    !agreeTerms || !agreePrivacy)
+                // if ((errors.securityquiz || !touched.securityquiz) ||
+                //     (errors.securityans || !touched.securityans) ||
+                //     !agreeTerms || !agreePrivacy)
+                if (!agreeTerms || !agreePrivacy)
                     return true;
                 return false;
             default:
@@ -684,16 +742,17 @@ class Registration extends Component {
 
     render() {
         const { classes } = this.props;
-        const { activeStep, steps, errors } = this.state;
+        const { activeStep, steps, errors, metaData } = this.state;
 
         return (
-            <div className="content">
+            <div className="content pb-5">
+                {metaData && <DocumentMeta {...metaData} />}
                 <Grid container justify="center">
-                    <Grid item xs={12} sm={10} md={10} lg={10}>
+                    <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card style={{ backgroundColor: '#ffffff' }}>
                             <CardHeader
                                 style={{ textAlign: 'center' }}
-                                title="Registration"
+                                title="Create Account"
                             />
                             <CardContent>
                                 <div className={classes.root}>
@@ -716,7 +775,7 @@ class Registration extends Component {
                                                     color="default"
                                                     className={classes.button}>
                                                     Back
-                                                    </Button>
+                                                </Button>
                                                 <Button
                                                     disabled={this.checkDisabled()}
                                                     variant="contained"

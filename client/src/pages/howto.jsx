@@ -1,17 +1,23 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
-import { setTitle } from '../libs/documentTitleBuilder'
+import { setMeta } from '../libs/documentTitleBuilder'
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import DocumentMeta from 'react-document-meta';
 
-export default class HowTo extends PureComponent {
+class HowTo extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            metaData: null
+        };
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'How It Works' });
+        const title = 'How it works';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     handleChange(e) {
@@ -19,8 +25,11 @@ export default class HowTo extends PureComponent {
     }
 
     render() {
+        const { intl } = this.props;
+        const { metaData } = this.state;
         return (
             <div className="col-in">
+                {metaData && <DocumentMeta {...metaData} />}
                 <div className="how-it-works">
                     <h2>
                         How
@@ -34,7 +43,8 @@ export default class HowTo extends PureComponent {
                         />Works
                     </h2>
                     <div className="summary">
-                        PAYPER WIN is a Peer-to-Peer betting platform offering better odds by cutting out the bookie. No Juice, No Vig or House – just you vs. other bettors. Place bets on your favorite sports.<br /><strong>RISK less and WIN More<i>!</i></strong>
+                        <p>PAYPER WIN is a Peer-to-Peer betting platform offering better odds by cutting out the bookie. No Juice, No Vig or House – just you vs. other bettors. Place bets on your favorite sports.</p>
+                        <strong>RISK less and WIN More<i>!</i></strong>
                     </div>
                     <div className="how-it-works-steps">
                         <Carousel
@@ -56,7 +66,7 @@ export default class HowTo extends PureComponent {
                             <div className="how-it-works-info">
                                 <p>
                                     Choose from MMA, Soccer, Basketball, Football, Baseball etc.
-                            </p>
+                                </p>
                             </div>
                         </div>
                         <div>
@@ -64,23 +74,13 @@ export default class HowTo extends PureComponent {
                                 <strong>Choose Your Line</strong>
                             </center>
                             <div className="how-it-works-info">
+                                <strong>PEER 2 PEER BETTING</strong>
                                 <p>
-                                    Place your bet! Once you determine which category you may then choose from the over, under, money line or point spread odds.
+                                    Here is where you beat the bookie. The odds are even and better than you will find anywhere else online. The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. PAYPER WIN will take 3% from only the winner for facilitating the transaction and making sure you get paid. PAYPER WIN gurantees all winning bets will be paid. If patience isn't your virtue, say no more; we suggest doing a Instant bet.
                                 </p>
-                                <strong>Peer-to-Peer</strong>
+                                <strong>Instant Bet/ Live bet</strong>
                                 <p>
-                                    All peer-to-peer bets are against another bettor with even odds. Payper win charges 3% transaction fee to the winner. These Bets you are able to WIN MORE and RISK LESS than betting against a bookie or sportsbook.
-                                </p>
-                                <strong>Live Betting</strong>
-                                <p>
-                                    All Live Betting is forwarded to a sportsbook; these odds are provided by the sportsbook. Payper Win will forward for bet for instant acceptance and will not charge any fees for this transaction.
-                                </p>
-                                <strong>Sportsbook Forwarding</strong>
-                                <p>
-                                    Your bet is forwarded to a sportsbook; these odds are provided by the sportsbook. Payper Win will forward for bet for instant acceptance and will not charge any fees for this transaction games.
-                                </p>
-                                <p>
-                                    REMINDER: You may at anytime prior to your bet being matched, change your bet to an INSTANT BET. Once your bet is matched or changes to an instant bet, no future edits may be done to your bet.
+                                    Welcome, here is where you can bet instantly. Your bets do not need to wait for a peer to accept. These bets are instantly accepted. The only catch is that the odds are different than PEER 2 PEER. The bets here are forwarded on to a sportsbook. We are in no way affiliated with the sportsbooks.PAYPER WIN guarantees you will be paid on all winning bets. We have found the best sportsbook odds for you. PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets. All live betting or non matching bets are done here such soccer draw bets and parlays.
                                 </p>
                             </div>
                         </div>
@@ -120,7 +120,7 @@ export default class HowTo extends PureComponent {
                                 <p>
                                     After a bet is placed and awaiting matching you may at anytime prior to a matching, convert your bet to an INSTANT BET.
                                     An INSTANT BET is when we forward your bet to a sportsbook. We find competitive lines for you to accept, if you accept theses odds then your bet is instantly accepted.
-                                    Payper Win does not profit on these transactions or charges fees for won bets. Please keep in mind odds will be different and you are betting against a sportsbook and not peer.
+                                    PAYPER WIN does not profit on these transactions or charges fees for won bets. Please keep in mind odds will be different and you are betting against a sportsbook and not peer.
                                 </p>
                             </div>
                         </div>
@@ -152,3 +152,5 @@ export default class HowTo extends PureComponent {
         );
     }
 }
+
+export default injectIntl(HowTo);

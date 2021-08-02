@@ -64,18 +64,18 @@ class Customers extends React.Component {
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{customer.username}</td>
+                    <td><Link to={`/${customer._id}/profile`}>{customer.username}&nbsp;{customer.roles.verified ? <i className="fas fa-check-circle text-success"></i> : null}&nbsp;{customer.roles.phone_verified ? <i className="fas fa-phone-square text-success"></i> : null}</Link></td>
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td>{customer.email}</td>
                     <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
-                    <td className="text-right">{customer.balance} {customer.currency}</td>
-                    <td className="text-right">{customer.betHistory.length}</td>
-                    <td className="text-right">2</td>
+                    <td className="text-right">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
+                    <td className="">{customer.betHistory.length + customer.betSportsbookHistory.length}</td>
+                    <td className="">{customer.totalWager} {customer.currency}</td>
                     <td className="text-right">
                         <DropdownButton title="Actions">
-                            <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
+                            {/* <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
                                 <i className="fas fa-edit"></i>&nbsp; Edit
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
                             <Dropdown.Item as={Link} to={`/${customer._id}/detail`}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
@@ -144,7 +144,7 @@ class Customers extends React.Component {
 
     render() {
         const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId,
-            initialvalues, creditSchema, addWithdrawId, withdrawmax } = this.state;
+            addWithdrawId, withdrawmax } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -230,10 +230,10 @@ class Customers extends React.Component {
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
                                                 <th scope="col">Date Joined</th>
-                                                <th scope="col">Balance</th>
+                                                <th scope="col" className="text-right">Balance</th>
                                                 <th scope="col"># of Bets</th>
                                                 <th scope="col">Total Wager</th>
-                                                <th scope="col" width="20%"></th>
+                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -271,8 +271,6 @@ class Customers extends React.Component {
                     show={addWithdrawId != null}
                     onHide={() => this.setState({ addWithdrawId: null })}
                     title="Add Withdraw"
-                    initialValues={initialvalues}
-                    validationSchema={creditSchema}
                     onSubmit={this.addWithdraw}
                     reasons={reasons}
                     withdrawmax={withdrawmax}
@@ -283,8 +281,6 @@ class Customers extends React.Component {
                     show={addDepositId != null}
                     onHide={() => this.setState({ addDepositId: null })}
                     title="Add Deposit"
-                    initialValues={initialvalues}
-                    validationSchema={creditSchema}
                     onSubmit={this.addDeposit}
                     reasons={reasons}
                     type="deposit"

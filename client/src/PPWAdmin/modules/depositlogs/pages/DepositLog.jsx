@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createRef } from "react";
 import * as depositlogs from "../redux/reducers";
 import { connect } from "react-redux";
 import dateformat from "dateformat";
@@ -6,11 +6,13 @@ import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import { deleteDeposit, updateDeposit } from "../redux/services";
+import { deleteDeposit, updateDeposit, getDepositLogAsCSV } from "../redux/services";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
+import { CSVLink } from 'react-csv';
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
@@ -31,12 +33,19 @@ class DepositLog extends React.Component {
             initialValues: { status: '' },
             editStatusId: null,
             perPage: 25,
+            depositDownloadData: []
         };
+        this.csvRef = createRef();
     }
 
     componentDidMount() {
-        const { getDepositLog } = this.props;
-        getDepositLog();
+        const { getDepositLog, report, filterDepositChange } = this.props;
+        if (report) {
+            filterDepositChange({ status: FinancialStatus.success });
+        }
+        else {
+            getDepositLog();
+        }
     }
 
     tableBody = () => {
@@ -70,12 +79,10 @@ class DepositLog extends React.Component {
                 <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{log.amount}</td>
-                    <td>{log.user.username}</td>
+                    <td>{log.user ? log.user.username : null}</td>
                     <td>{log.method}</td>
-                    {log.status === FinancialStatus.success && <td><span className="label label-success label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    {log.status === FinancialStatus.pending && <td><span className="label label-danger label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    {log.status === FinancialStatus.onhold && <td><span className="label label-warning label-inline font-weight-lighter mr-2">{log.status}</span></td>}
-                    <td>{log.reason.title}</td>
+                    <td>{this.getFinancialStatus(log.status)}</td>
+                    <td>{log.reason ? log.reason.title : null}</td>
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>
@@ -87,6 +94,21 @@ class DepositLog extends React.Component {
                 </tr>
             )
         })
+    }
+
+    getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+
+        }
     }
 
     deleteLog = () => {
@@ -114,16 +136,6 @@ class DepositLog extends React.Component {
         })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     renderStatus = () => {
         return Object.keys(FinancialStatus).map(function (key, index) {
             return <option key={FinancialStatus[key]} value={FinancialStatus[key]}>{FinancialStatus[key]}</option>
@@ -139,15 +151,24 @@ class DepositLog extends React.Component {
     }
 
     onPageChange = (page) => {
-        const { currentPage } = this.props;
+        const { currentPage, getDepositLog } = this.props;
         if (page != currentPage)
-            this.props.getCustomers(page);
+            getDepositLog(page);
+    }
+
+    downloadCSV = () => {
+        const { filter } = this.props;
+        getDepositLogAsCSV(filter)
+            .then(async ({ data }) => {
+                await this.setState({ depositDownloadData: data });
+                this.csvRef.current.link.click();
+            })
     }
 
     render() {
-        const { modal, resMessage, modalvariant, deleteId, statusSchema,
+        const { modal, resMessage, modalvariant, deleteId, statusSchema, depositDownloadData,
             initialValues, editStatusId, perPage, } = this.state;
-        const { total, currentPage, filter } = this.props;
+        const { total, currentPage, filter, report } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
         return (
@@ -160,9 +181,19 @@ class DepositLog extends React.Component {
                                     <h3 className="card-label">Deposit Log</h3>
                                 </div>
                                 <div className="card-toolbar">
-                                    <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
+                                    <CSVLink
+                                        data={depositDownloadData}
+                                        filename='deposit-report.csv'
+                                        className='hidden'
+                                        ref={this.csvRef}
+                                        target='_blank'
+                                    />
+                                    <button className="btn btn-success font-weight-bolder font-size-sm mr-2" onClick={this.downloadCSV}>
+                                        <i className="fas fa-download"></i>&nbsp; Download as CSV
+                                    </button>
+                                    {report != true && <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
                                         <i className="fas fa-credit-card"></i>&nbsp; Add New Deposit
-                                    </Link>
+                                    </Link>}
                                 </div>
                             </div>
                             <div className="card-body">
@@ -171,7 +202,7 @@ class DepositLog extends React.Component {
                                         <DatePicker
                                             className="form-control"
                                             placeholderText="Search"
-                                            selected={filter.datefrom}
+                                            selected={filter.datefrom ? new Date(filter.datefrom) : null}
                                             onChange={date => {
                                                 this.onFilterChange({ datefrom: date });
                                             }} />
@@ -183,7 +214,7 @@ class DepositLog extends React.Component {
                                         <DatePicker
                                             className="form-control"
                                             placeholderText="Search"
-                                            selected={filter.dateto}
+                                            selected={filter.dateto ? new Date(filter.dateto) : null}
                                             onChange={date => {
                                                 this.onFilterChange({ dateto: date });
                                             }} />
@@ -197,7 +228,9 @@ class DepositLog extends React.Component {
                                             value={filter.status}
                                             onChange={e => {
                                                 this.onFilterChange({ status: e.target.value });
-                                            }} >
+                                            }}
+                                            disabled={report == true}
+                                        >
                                             <option value="">Choose Status...</option>
                                             {this.renderStatus()}
                                         </select>
@@ -312,10 +345,7 @@ class DepositLog extends React.Component {
                                         <div className="form-group">
                                             <label>Status<span className="text-danger">*</span></label>
                                             <select name="status" placeholder="Choose Status"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "status"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "status")}`}
                                                 {...formik.getFieldProps("status")}
                                             >
                                                 <option value="">Choose status ...</option>

@@ -5,11 +5,6 @@ import { Button } from "react-bootstrap";
 import SVG from "react-inlinesvg";
 
 class DashboardCard extends React.Component {
-    goToBack = () => {
-        const { history } = this.props;
-        history.push("/");
-    }
-
     render() {
         return (
             <>

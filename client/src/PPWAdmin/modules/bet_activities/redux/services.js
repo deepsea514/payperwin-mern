@@ -25,3 +25,15 @@ export function getBetDetail(id) {
 export function getSports() {
     return axios.get(`${serverUrl}/sports`, { withCredentials: true });
 }
+
+export function getWagerActivityAsCSV(filter) {
+    let url = `${serverUrl}/bets-csv?format=csv`;
+    const { datefrom, dateto, sport, minamount, maxamount } = filter;
+    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(new Date(datefrom).toISOString())}`;
+    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(new Date(dateto).toISOString())}`;
+    if (sport && sport != '') url += `&sport=${encodeURIComponent(sport)}`;
+    if (minamount && minamount != '') url += `&minamount=${encodeURIComponent(minamount)}`;
+    if (maxamount && maxamount != '') url += `&maxamount=${encodeURIComponent(maxamount)}`;
+
+    return axios.get(url, { withCredentials: true });
+}

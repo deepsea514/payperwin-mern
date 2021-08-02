@@ -32,7 +32,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "customers", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "customers", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getCustomers:

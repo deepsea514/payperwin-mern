@@ -4,6 +4,7 @@ import "../assets/css/pages/login/classic/login-1.css";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import axios from 'axios';
+import { getInputClasses } from "../../helpers/getInputClasses";
 const config = require('../../../../config.json');
 const serverUrl = config.appAdminUrl;
 
@@ -49,18 +50,6 @@ export default class Login extends Component {
             this.props.history.push("/");
         })
     }
-
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-
-        return "";
-    };
 
     onSubmit = (values, formik) => {
         formik.setSubmitting(true);
@@ -127,10 +116,7 @@ export default class Login extends Component {
                                                     </div>
                                                 )}
                                                 <div className="form-group">
-                                                    <input className={`form-control form-control-solid h-auto py-5 px-6 ${this.getInputClasses(
-                                                        formik,
-                                                        "email"
-                                                    )}`}
+                                                    <input className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(formik, "email")}`}
                                                         {...formik.getFieldProps("email")}
                                                         type="text" placeholder="email" name="email" />
                                                     {formik.touched.email && formik.errors.email ? (
@@ -140,10 +126,7 @@ export default class Login extends Component {
                                                     ) : null}
                                                 </div>
                                                 <div className="form-group">
-                                                    <input className={`form-control form-control-solid h-auto py-5 px-6 ${this.getInputClasses(
-                                                        formik,
-                                                        "password"
-                                                    )}`}
+                                                    <input className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(formik, "password")}`}
                                                         {...formik.getFieldProps("password")}
                                                         type="password" placeholder="Password" name="password" autoComplete="off" />
                                                     {formik.touched.password && formik.errors.password ? (

@@ -53,13 +53,25 @@ export function getCustomerLoginHistory(id, page, perPage) {
 }
 
 export function getCustomerDeposits(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-deposits?id=${id}&page=${page}&perPage=${perPage}`);   
+    return axios.get(`${serverUrl}/customer-deposits?id=${id}&page=${page}&perPage=${perPage}`);
 }
 
 export function getCustomerWithdraws(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-withdraws?id=${id}&page=${page}&perPage=${perPage}`);   
+    return axios.get(`${serverUrl}/customer-withdraws?id=${id}&page=${page}&perPage=${perPage}`);
 }
 
-export function getCustomerBets(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}`);   
+export function getCustomerBets(id, page, perPage, src = 'ppw') {
+    return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}&src=${src}`);
+}
+
+export function searchSports(name) {
+    return axios.get(`${serverUrl}/searchsports?name=${name}`);
+}
+
+export function getCustomerPreference(id) {
+    return axios.get(`${serverUrl}/customer-preference/${id}`);
+}
+
+export function updateCustomerPreference(id, data) {
+    return axios.put(`${serverUrl}/customer-preference/${id}`, data);
 }

@@ -29,15 +29,14 @@ function formatFixturesOdds(fixtures, odds) {
     const mergedData = mergeFixturesAndOdds(fixtures, odds);
     if (mergedData) {
         const sportData = {
-            pinnacleSportId: mergedData.sportId,
-            pinnacleFixturesLast: mergedData.last,
-            pinnacleOddsLast: mergedData.oddsLast,
-            pinnacleSportId: mergedData.sportId,
+            originSportId: mergedData.sportId,
+            originFixturesLast: mergedData.last,
+            originOddsLast: mergedData.oddsLast,
             leagues: [],
         };
         mergedData.league.forEach(league => {
             const leagueData = {
-                pinnacleId: league.id,
+                originId: league.id,
                 name: league.name,
                 events: [],
             };
@@ -59,11 +58,11 @@ function formatFixturesOdds(fixtures, odds) {
                     // sportName: ,
                     // leagueName: league.name,
                     // pinnacleLeagueId: league.id,
-                    // pinnacleFixturesLast: mergedData.last,
-                    // pinnacleOddsLast: mergedData.oddsLast,
-                    // pinnacleSportId: mergedData.sportId,
+                    // originFixturesLast: mergedData.last,
+                    // originOddsLast: mergedData.oddsLast,
+                    // originSportId: mergedData.sportId,
                 };
-                if (id) parsedEvent.pinnacleId = id;
+                if (id) parsedEvent.originId = id;
                 if (starts) parsedEvent.startDate = starts;
                 if (home) parsedEvent.teamA = home;
                 if (away) parsedEvent.teamB = away;
@@ -86,7 +85,7 @@ function formatFixturesOdds(fixtures, odds) {
                         } = period;
 
                         const line = {};
-                        if (lineId) line.pinnacleId = lineId;
+                        if (lineId) line.originId = lineId;
                         if (number) line.periodNumber = number;
                         if (cutoff) line.endDate = cutoff;
                         if (maxSpread) line.maxSpread = maxSpread;
@@ -94,19 +93,42 @@ function formatFixturesOdds(fixtures, odds) {
                         if (maxTotal) line.maxTotal = maxTotal;
                         if (maxTeamTotal) line.maxTeamTotal = maxTeamTotal;
                         if (status) line.status = status;
-                        if (spreads) line.spreads = spreads;
-                        if (moneyline) line.moneyline = moneyline;
-                        // console.log('moneyline', moneyline);
-                        // console.log(spreads);
-                        if (totals) line.totals = totals;
+
+
+                        if (moneyline) {
+                            if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
+                                line.moneyline = moneyline;
+                            }
+                        }
+
+                        if (spreads) {
+                            const filteredSpreads = spreads.filter(spread => {
+                                if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+                                    return true;
+                                return false;
+                            });
+                            line.spreads = filteredSpreads.length ? filteredSpreads : null;
+                        }
+
+                        if (totals) {
+                            const filteredTotals = totals.filter(total => {
+                                if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+                                    return true;
+                                return false;
+                            });
+                            line.totals = filteredTotals.length ? filteredTotals : null;
+                        }
+
                         if (teamTotal) line.teamTotal = teamTotal;
-                        parsedEvent.lines.push(line);
+
+                        if (line.moneyline && line.spreads && line.totals)
+                            parsedEvent.lines.push(line);
                     });
                 }
                 // console.log('event:');
                 // console.log(parsedEvent);
                 // Exclude events with no lines
-                if (parsedEvent.lines) {
+                if (parsedEvent.lines && parsedEvent.lines.length) {
                     leagueData.events.push(parsedEvent);
                 }
                 // console.log(event);

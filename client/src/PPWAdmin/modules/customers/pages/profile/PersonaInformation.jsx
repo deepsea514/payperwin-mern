@@ -5,6 +5,7 @@ import { ModalProgressBar } from "../../../../_metronic/_partials/controls";
 import { RegionDropdown } from 'react-country-region-selector';
 import { updateCustomer } from "../../redux/services";
 import SVG from "react-inlinesvg";
+import { getInputClasses } from "../../../../../helpers/getInputClasses";
 
 class PersonaInformation extends React.Component {
     constructor(props) {
@@ -53,18 +54,6 @@ class PersonaInformation extends React.Component {
             formik.setSubmitting(false);
             this.setState({ saving: false, isError: true });
         })
-    };
-    // UI Helpers
-    getInputClasses = (fieldname, formik) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-
-        return "";
     };
 
     render() {
@@ -125,7 +114,7 @@ class PersonaInformation extends React.Component {
                                         </div>
                                         <div className="alert-text font-weight-bold">
                                             Update Failed
-                                                </div>
+                                        </div>
                                         <div className="alert-close" onClick={() => this.setState({ isError: false })}>
                                             <button
                                                 type="button"
@@ -154,7 +143,7 @@ class PersonaInformation extends React.Component {
                                         </div>
                                         <div className="alert-text font-weight-bold">
                                             Successfully Updated.
-                                                </div>
+                                        </div>
                                         <div className="alert-close" onClick={() => this.setState({ isSuccess: false })}>
                                             <button
                                                 type="button"
@@ -169,7 +158,7 @@ class PersonaInformation extends React.Component {
                                         </div>
                                     </div>
                                 )}
-                                <div className="form-group row">
+                                {/* <div className="form-group row">
                                     <label className="text-left col-xl-3 col-lg-3 col-form-label">Avatar</label>
                                     <div className="col-lg-9 col-xl-6">
                                         <div
@@ -184,7 +173,7 @@ class PersonaInformation extends React.Component {
                                             />
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="form-group row">
                                     <label className="text-left col-xl-3 col-lg-3 col-form-label">
@@ -194,11 +183,9 @@ class PersonaInformation extends React.Component {
                                         <input
                                             type="text"
                                             placeholder="First name"
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "username",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "username")}`}
                                             name="username"
+                                            readOnly
                                             {...formik.getFieldProps("username")}
                                         />
                                         {formik.touched.username && formik.errors.username ? (
@@ -217,10 +204,7 @@ class PersonaInformation extends React.Component {
                                         <input
                                             type="text"
                                             placeholder="First name"
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "firstname",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "firstname")}`}
                                             name="firstname"
                                             {...formik.getFieldProps("firstname")}
                                         />
@@ -240,10 +224,7 @@ class PersonaInformation extends React.Component {
                                         <input
                                             type="text"
                                             placeholder="Last name"
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "lastname",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "lastname")}`}
                                             name="lastname"
                                             {...formik.getFieldProps("lastname")}
                                         />
@@ -262,10 +243,7 @@ class PersonaInformation extends React.Component {
                                             type="text"
                                             placeholder="Email"
                                             readOnly
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "email",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "email")}`}
                                             name="email"
                                             {...formik.getFieldProps("email")}
                                         />
@@ -284,10 +262,7 @@ class PersonaInformation extends React.Component {
                                             type="text"
                                             placeholder="Country"
                                             readOnly
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "country",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "country")}`}
                                             name="country"
                                             {...formik.getFieldProps("country")}
                                         />
@@ -305,10 +280,7 @@ class PersonaInformation extends React.Component {
                                         <input
                                             type="text"
                                             placeholder="City, Province/State"
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "address",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "address")}`}
                                             name="address"
                                             {...formik.getFieldProps("address")}
                                         />
@@ -323,11 +295,10 @@ class PersonaInformation extends React.Component {
                                         Region
                                     </label>
                                     <div className="col-lg-9 col-xl-6">
-                                        <RegionDropdown className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                            "region",
-                                            formik
-                                        )}`}
+                                        <RegionDropdown
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "region")}`}
                                             name="region"
+                                            valueType="short"
                                             {...formik.getFieldProps("region")}
                                             country={formik.values.country}
                                             {...{
@@ -357,10 +328,7 @@ class PersonaInformation extends React.Component {
                                         <input
                                             type="text"
                                             placeholder="Phone"
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "phone",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "phone")}`}
                                             name="phone"
                                             {...formik.getFieldProps("phone")}
                                         />
@@ -379,10 +347,7 @@ class PersonaInformation extends React.Component {
                                             type="text"
                                             placeholder="Currency"
                                             readOnly
-                                            className={`form-control form-control-lg form-control-solid ${this.getInputClasses(
-                                                "currency",
-                                                formik
-                                            )}`}
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(formik, "currency")}`}
                                             name="currency"
                                             {...formik.getFieldProps("currency")}
                                         />

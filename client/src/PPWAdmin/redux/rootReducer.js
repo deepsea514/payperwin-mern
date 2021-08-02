@@ -7,7 +7,21 @@ import * as depositlog from "../modules/depositlogs/redux/reducers";
 import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
 import * as wager_feeds from "../modules/wager-feed/redux/reducers";
-import * as autobet from "../modules/autobet/redux/reducers";
+import * as autobets from "../modules/autobet/redux/reducers";
+import * as email_templates from "../modules/email-templates/redux/reducers";
+import * as promotions from "../modules/promotions/redux/reducers";
+import * as kyc from "../modules/kyc/redux/reducers";
+import * as tickets from "../modules/tickets/redux/reducers";
+import * as faq from "../modules/faq/redux/reducers";
+import * as messages from "../modules/message-center/redux/reducers";
+import * as events from "../modules/events/redux/reducers";
+import * as active_users from "../modules/active_users/redux/reducers";
+import * as meta_tags from "../modules/meta-tags/redux/reducers";
+import * as articles from "../modules/articles/redux/reducers";
+import * as admin from "../modules/admin/redux/reducers";
+import * as currentUser from "./reducers";
+
+import * as frontend from "../../redux/reducer";
 
 export const rootReducer = combineReducers({
     customer: customer.reducer,
@@ -16,7 +30,21 @@ export const rootReducer = combineReducers({
     withdrawlog: withdrawlog.reducer,
     dashboard: dashboard.reducer,
     wager_feeds: wager_feeds.reducer,
-    autobet: autobet.reducer,
+    autobets: autobets.reducer,
+    email_templates: email_templates.reducer,
+    promotions: promotions.reducer,
+    kyc: kyc.reducer,
+    tickets: tickets.reducer,
+    faq: faq.reducer,
+    events: events.reducer,
+    messages: messages.reducer,
+    active_users: active_users.reducer,
+    meta_tags: meta_tags.reducer,
+    articles: articles.reducer,
+    admin: admin.reducer,
+    currentUser: currentUser.reducer,
+
+    frontend: frontend.reducer,
 });
 
 export function* rootSaga() {
@@ -27,6 +55,19 @@ export function* rootSaga() {
         withdrawlog.saga(),
         dashboard.saga(),
         wager_feeds.saga(),
-        autobet.saga(),
+        autobets.saga(),
+        email_templates.saga(),
+        promotions.saga(),
+        kyc.saga(),
+        tickets.saga(),
+        faq.saga(),
+        events.saga(),
+        messages.saga(),
+        active_users.saga(),
+        meta_tags.saga(),
+        articles.saga(),
+        admin.saga(),
+
+        frontend.saga(),
     ]);
 }

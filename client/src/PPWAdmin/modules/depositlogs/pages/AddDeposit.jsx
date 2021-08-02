@@ -5,9 +5,10 @@ import { Link } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from 'react-select/async';
 import { getReason, searchUsers } from "../../customers/redux/services";
 import { addDeposit } from "../redux/services";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 const config = require("../../../../../../config.json");
 const PaymentMethod = config.PaymentMethod;
@@ -21,7 +22,7 @@ class AddDeposit extends React.Component {
             isSuccess: false,
             loadingUser: false,
             reasons: [],
-            initialvalues: {
+            initialValues: {
                 user: null,
                 amount: 0,
                 reason: '',
@@ -74,16 +75,6 @@ class AddDeposit extends React.Component {
         })
     }
 
-    getInputClasses = (formik, fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-        return "";
-    };
-
     renderMethods = () => {
         return PaymentMethod.map(method => <option key={method} value={method}>{method}</option>)
     }
@@ -111,13 +102,13 @@ class AddDeposit extends React.Component {
     }
 
     render() {
-        const { initialvalues, depositSchema, isError, isSuccess, loadingUser } = this.state;
+        const { initialValues, depositSchema, isError, isSuccess, loadingUser } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
                     <Formik
                         validationSchema={depositSchema}
-                        initialValues={initialvalues}
+                        initialValues={initialValues}
                         onSubmit={this.onSubmit}
                     >
                         {(formik) => {
@@ -190,10 +181,7 @@ class AddDeposit extends React.Component {
                                         <div className="form-group">
                                             <label>User<span className="text-danger">*</span></label>
                                             <AsyncSelect
-                                                className={`basic-single ${this.getInputClasses(
-                                                    formik,
-                                                    "user"
-                                                )}`}
+                                                className={`basic-single ${getInputClasses(formik, "user")}`}
                                                 classNamePrefix="select"
                                                 // isClearable={true}
                                                 isSearchable={true}
@@ -222,10 +210,7 @@ class AddDeposit extends React.Component {
                                         <div className="form-group">
                                             <label>Amount<span className="text-danger">*</span></label>
                                             <input name="amount" placeholder="Enter Amount"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "amount"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "amount")}`}
                                                 {...formik.getFieldProps("amount")}
                                             />
                                             {formik.touched.amount && formik.errors.amount ? (
@@ -237,10 +222,7 @@ class AddDeposit extends React.Component {
                                         <div className="form-group">
                                             <label>Reason<span className="text-danger">*</span></label>
                                             <select name="reason" placeholder="Choose Reason"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "reason"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "reason")}`}
                                                 {...formik.getFieldProps("reason")}
                                             >
                                                 <option value="">Choose reason ...</option>
@@ -255,10 +237,7 @@ class AddDeposit extends React.Component {
                                         <div className="form-group">
                                             <label>Payment Method<span className="text-danger">*</span></label>
                                             <select name="method" placeholder="Choose payment method"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "method"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "method")}`}
                                                 {...formik.getFieldProps("method")}
                                             >
                                                 <option value="">Choose method ...</option>
@@ -273,10 +252,7 @@ class AddDeposit extends React.Component {
                                         <div className="form-group">
                                             <label>Status<span className="text-danger">*</span></label>
                                             <select name="status" placeholder="Choose status"
-                                                className={`form-control ${this.getInputClasses(
-                                                    formik,
-                                                    "status"
-                                                )}`}
+                                                className={`form-control ${getInputClasses(formik, "status")}`}
                                                 {...formik.getFieldProps("status")}
                                             >
                                                 <option value="">Choose status ...</option>

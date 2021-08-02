@@ -18,9 +18,9 @@ const FinancialLogSchema = new Schema(
         },
         amount: { type: Number, required: true },
         method: { type: String, required: true },
-        note: String,
+        note: { type: String, default: null },
         status: { type: String, default: FinancialStatus.pending },
-        fee: Number,
+        fee: { type: Number, default: 0 },
         deletedAt: Date,
     },
     {

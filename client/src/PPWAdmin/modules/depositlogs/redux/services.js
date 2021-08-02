@@ -27,3 +27,12 @@ export function deleteDeposit(id) {
 export function addDeposit(credit) {
     return axios.post(`${serverUrl}/deposit`, credit, { withCredentials: true });
 }
+
+export function getDepositLogAsCSV(filter) {
+    let url = `${serverUrl}/deposit-csv?format=csv`;
+    const { datefrom, dateto } = filter;
+    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
+    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
+
+    return axios.get(url, { withCredentials: true });
+}

@@ -7,7 +7,6 @@ export const actionTypes = {
     getBetActivities: "Get Bet Activities",
     getBetActivitiesSuccess: "Get Bet Activities Success",
     filterBetActivitiesChange: "Filter Bet Activities Change",
-    changeBetPage: "Change Bet Page Action",
     getSportsSuccess: "Get Sports Success",
 };
 
@@ -23,14 +22,14 @@ const initialState = {
         status: '',
         minamount: '',
         maxamount: '',
-        house: '',
+        house: 'ppw',
         match: '',
     },
     sports: [],
 };
 
 export const reducer = persistReducer(
-    { storage, key: "bet-activities", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "bet-activities", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getBetActivities:

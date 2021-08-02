@@ -17,13 +17,28 @@ export function getWithdrawLog(page, filter, perPage = null) {
 }
 
 export function updateWithdraw(id, data) {
-    return axios.patch(`${serverUrl}/withdraw`, { id, data }, { withCredentials: true });
+    const _2fa_code = data._2fa_code;
+    delete data._2fa_code;
+    let time = (new Date()).getTime();
+    time = Math.floor(time / 1000);
+    return axios.patch(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}&time=${time}`, { id, data }, { withCredentials: true });
 }
 
 export function deleteWithdraw(id) {
     return axios.delete(`${serverUrl}/withdraw?id=${id}`, { withCredentials: true });
 }
 
-export function addWithdraw(credit) {
-    return axios.post(`${serverUrl}/withdraw`, credit, { withCredentials: true });
+export function addWithdraw(data) {
+    let time = (new Date()).getTime();
+    time = Math.floor(time / 1000);
+    return axios.post(`${serverUrl}/withdraw`, data, { withCredentials: true });
+}
+
+export function getWithdrawLogAsCSV(filter) {
+    let url = `${serverUrl}/withdraw-csv?format=csv`;
+    const { datefrom, dateto } = filter;
+    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
+    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
+
+    return axios.get(url, { withCredentials: true });
 }

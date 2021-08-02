@@ -42,17 +42,17 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-bolder d-block font-size-lg">
-                            {deposit.user.username}
+                            {deposit.user ? deposit.user.username : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.amount} {deposit.user.currency}
+                            {deposit.amount} {deposit.user ? deposit.user.currency : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.reason.title}
+                            {deposit.reason ? deposit.reason.title : null}
                         </span>
                     </td>
                     <td className="pl-0">
@@ -60,27 +60,27 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                             {deposit.method}
                         </span>
                     </td>
-                    {deposit.status === FinancialStatus.success &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-success label-inline">
-                                {deposit.status}
-                            </span>
-                        </td>}
-                    {deposit.status === FinancialStatus.pending &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-primary label-inline">
-                                {deposit.status}
-                            </span>
-                        </td>}
-                    {deposit.status === FinancialStatus.onhold &&
-                        <td className="pl-0">
-                            <span className="label label-lg label-light-warning label-inline">
-                                {deposit.status}
-                            </span>
-                        </td>}
+                    <td className="pl-0">
+                        {getFinancialStatus(deposit.status)}
+                    </td>
                 </tr>
             );
         });
+    }
+
+    const getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+
+        }
     }
 
     const gotoDeposit = () => {
