@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import DocumentMeta from 'react-document-meta';
 import QRCode from "react-qr-code";
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 export default class OpenBets extends PureComponent {
     constructor(props) {

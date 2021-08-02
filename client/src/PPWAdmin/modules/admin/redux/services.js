@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../../../../../../config.json";
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
 export function getAdmins(page, filter) {
     let url = `${serverUrl}/admins?page=${page}`;

@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 import '../style/all.min.css';
 
 const sportNameSpanStyle = {

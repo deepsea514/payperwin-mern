@@ -13,7 +13,7 @@ import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
 
 import config from "../../../config.json";
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

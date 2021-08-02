@@ -4,7 +4,7 @@ import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class TfaModal extends Component {
     constructor(props) {

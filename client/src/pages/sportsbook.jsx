@@ -3,7 +3,7 @@ import axios from 'axios';
 import Iframe from 'react-iframe';
 import { setMeta } from '../libs/documentTitleBuilder';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class SportsBook extends PureComponent {
     constructor(props) {

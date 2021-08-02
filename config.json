@@ -4,10 +4,22 @@
     "clientPort": 80,
     "corsHosts": [
         "https://payperwin.co",
-        "https://www.payperwin.co"
+        "https://www.payperwin.co",
+        "http://dev.payperwin.co"
     ],
     "serverHostToClientHost": {
-        "payperwin.co:8080": "payperwin.co"
+        "payperwin.co": {
+            "appUrl": "https://api.payperwin.co",
+            "appAdminUrl": "https://api.payperwin.co"
+        },
+        "dev.payperwin.co": {
+            "appUrl": "http://dev.payperwin.co:8080",
+            "appAdminUrl": "http://dev.payperwin.co:8080/admin"
+        },
+        "localhost:8081": {
+            "appUrl": "http://localhost:8080",
+            "appAdminUrl": "http://localhost:8080/admin"
+        }
     },
     "recaptchaSiteKey": "",
     "mongo": {
@@ -15,10 +27,6 @@
         "password": "PayPerWin777",
         "host": "159.203.4.60"
     },
-    "appUrl": "https://api.payperwin.co",
-    "devAppUrl": "https://api.payperwin.co",
-    "appAdminUrl": "https://api.payperwin.co/admin",
-    "devAppAdminUrl": "https://api.payperwin.co/admin",
     "CountryInfo": [
         {
             "country": "Canada",

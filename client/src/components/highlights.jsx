@@ -6,7 +6,7 @@ import sportNameImage from "../helpers/sportNameImage";
 import axios from "axios";
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 export default class Highlights extends PureComponent {
     constructor(props) {

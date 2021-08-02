@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../../../../../../config.json";
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
 export function getFAQSubjects(page) {
     return axios.get(`${serverUrl}/faq-subjects?page=${page}`, { withCredentials: true });

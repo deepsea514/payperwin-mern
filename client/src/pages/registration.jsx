@@ -22,7 +22,7 @@ import _ from 'lodash';
 import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 const CountryInfo = config.CountryInfo;
 
 const useStyles = (theme) => ({

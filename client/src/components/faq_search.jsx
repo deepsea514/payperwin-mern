@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class FaqSearch extends Component {
     constructor(props) {

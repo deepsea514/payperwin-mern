@@ -8,7 +8,7 @@ import axios from 'axios';
 import update from 'immutability-helper';
 import Favicon from 'react-favicon';
 const config = require('../../../config.json');
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
 import "./assets/css/themes/layout/header/base/light.css";
 import "./assets/css/themes/layout/header/menu/light.css";

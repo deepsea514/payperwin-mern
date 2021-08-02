@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as currentUser from "../redux/reducers";
 const config = require('../../../../config.json');
-const serverUrl = config.appAdminUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 const AdminRoles = config.AdminRoles;
 import axios from 'axios';
 

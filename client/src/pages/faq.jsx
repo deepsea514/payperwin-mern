@@ -11,7 +11,7 @@ import FaqSearch from "../components/faq_search";
 import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 class Faq extends Component {
     constructor(props) {

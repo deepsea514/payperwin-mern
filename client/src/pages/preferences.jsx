@@ -12,7 +12,7 @@ import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@mat
 import { Link } from "react-router-dom";
 
 const config = require('../../../config.json');
-const serverUrl = config.appUrl;
+const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
 const initial_notification_settings = {
     win_confirmation: { email: true, sms: true },
