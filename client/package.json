@@ -5,8 +5,7 @@
   "author": "Calvin Jaramillo",
   "scripts": {
     "build": "npx webpack-cli --config webpack.config.js",
-    "server": "SET NODE_ENV=production&&node server.js",
-    "devServer": "SET NODE_ENV=development&& node ./server.js",
+    "server": "node server.js",
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0"
   },
   "devDependencies": {
@@ -52,6 +51,7 @@
     "compression": "^1.7.2",
     "dateformat": "^4.5.1",
     "dayjs": "^1.8.17",
+    "dotenv": "^10.0.0",
     "express": "^4.16.3",
     "formatjs": "^0.1.1",
     "formik": "^2.2.6",

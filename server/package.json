@@ -45,7 +45,6 @@
   },
   "scripts": {
     "start": "node index.js",
-    "prod": "node index.js",
     "server": "node index.js",
     "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
     "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js",
