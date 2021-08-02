@@ -1,7 +1,7 @@
 {
     "serverHostUrl": "https://payperwin.co",
     "serverPort": 8080,
-    "clientPort": 8081,
+    "clientPort": 80,
     "corsHosts": [
         "https://payperwin.co",
         "https://www.payperwin.co"
