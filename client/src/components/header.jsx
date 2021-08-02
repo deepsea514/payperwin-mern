@@ -209,7 +209,7 @@ class Header extends PureComponent {
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                    <i className="fas fa-futbol"></i>Parlay
+                                                    <i className="fas fa-futbol"></i>PARLAY
                                                 </Link>
                                             </center>
                                         </li>
@@ -250,7 +250,7 @@ class Header extends PureComponent {
                                         </li>
                                         <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                <i className="fas fa-futbol"></i>Parlay
+                                                <i className="fas fa-futbol"></i>PARLAY
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>

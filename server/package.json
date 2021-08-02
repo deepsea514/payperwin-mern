@@ -45,10 +45,10 @@
   },
   "scripts": {
     "start": "set NODE_ENV=development&&node index.js",
+    "prod": "set NODE_ENV=production&&node index.js",
     "server": "node index.js",
-    "resultsDaemon": "node matchResultDaemon.js",
-    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
-    "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js",
-    "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js"
+    "pinnacleUpdateLines": "set NODE_ENV=production&&node ./dataCollector/pinnacle/getAllSportsLines.js",
+    "rundownUpdateLines": "set NODE_ENV=production&&node ./dataCollector/rundown/getAllSportsLines.js",
+    "betNotify": "set NODE_ENV=production&&node ./dataCollector/checkMatchStatus/checkMatchStatus.js"
   }
 }

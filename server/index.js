@@ -92,7 +92,7 @@ Date.prototype.addMins = function (m) {
 let port = config.serverPort;
 // let sslPort = 443;
 if (process.env.NODE_ENV === 'development') {
-    sslPort = null;
+    // sslPort = null;
     // port = port;
 }
 
@@ -102,8 +102,8 @@ const bruteforce = new ExpressBrute(bruteStore);
 
 // Database
 mongoose.Promise = global.Promise;
-const databaseName = 'PayPerWinDev'
-// const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
+// const databaseName = 'PayPerWinDev'
+const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 const mongooptions = {
     authSource: "admin",
     user: config.mongo.username,
