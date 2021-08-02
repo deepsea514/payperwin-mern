@@ -1,4 +1,10 @@
 const mongoose = require('mongoose');
+const User = require('./user');
+const Preference = require('./preference');
+const fromEmailName = 'PAYPER WIN';
+const fromEmailAddress = 'donotreply@payperwin.co';
+const simpleresponsive = require('./emailtemplates/simpleresponsive');
+const { convertTimeLineDate } = require('./libs/timehelper');
 
 const { Schema } = mongoose;
 
@@ -44,6 +50,81 @@ const BetSchema = new Schema(
         timestamps: true,
     },
 );
+
+BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
+    const bet = this;
+    if (bet.isModified('matchingStatus') && bet.matchingStatus == 'Matched') {
+        try {
+            const user = await User.findById(bet.userId);
+            if (!user) return;
+            const preference = await Preference.findOne({ user: bet.userId });
+            let timezone = "00:00";
+            if (preference && preference.timezone) {
+                timezone = preference.timezone;
+            }
+            const timeString = convertTimeLineDate(new Date(), timezone);
+            const { pickOdds, lineQuery, bet: betAmount } = bet;
+
+            if (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.email) {
+                let msg = null;
+                if (bet.origin == 'other') {
+                    msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'Your bet was accepted',
+                        text: `Your bet was accepted`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            This email is to advise that your bet for ${lineQuery.eventName} for $${betAmount.toFixed(2)} was matched on ${timeString}
+                            <br><br>
+                            <ul>
+                                <li>Wager: $${betAmount.toFixed(2)}</li>
+                                <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                            </ul>
+                        `),
+                    };
+                } else {
+                    msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'Your bet was accepted',
+                        text: `Your bet was accepted`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAmount.toFixed(2)} was accepted on ${timeString}
+                            <br><br>
+                            <ul>
+                                <li>Wager: $${betAmount.toFixed(2)}</li>
+                                <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                            </ul>
+                            `),
+                    };
+                }
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
+                if (bet.origin == 'other') {
+                    sendSMS(`This email is to advise that your bet for ${lineQuery.eventName} for $${betAmount.toFixed(2)} was matched on ${timeString}\n
+                    Wager: $${betAmount.toFixed(2)}\n 
+                    Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                    Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                } else {
+                    sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAmount.toFixed(2)} was accepted on ${timeString}\n
+                    Wager: $${betAmount.toFixed(2)}\n 
+                    Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                    Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+});
 
 const Bet = mongoose.model('Bet', BetSchema);
 
