@@ -3,8 +3,8 @@ const User = require('./user');
 const Preference = require('./preference');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
-const simpleresponsive = require('./emailtemplates/simpleresponsive');
-const { convertTimeLineDate } = require('./libs/timehelper');
+const simpleresponsive = require('../emailtemplates/simpleresponsive');
+const { convertTimeLineDate } = require('../libs/timehelper');
 
 const { Schema } = mongoose;
 
