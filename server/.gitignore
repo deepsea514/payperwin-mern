@@ -8,3 +8,4 @@ npm-debug.log
 *.iml
 /.idea
 sendgrid.env
+.env
