@@ -34,6 +34,7 @@ if (process.env.NODE_ENV === 'development2') {
         cert,
     }, app).listen(port, () => console.log(`API Server listening on port ${port}`));
 } else {
+    console.log(process.env.NODE_ENV, 'mode');
     const port = process.env.NODE_ENV == 'production' ? 8081 : config.clientPort;
     app.listen(port, () => console.log(`Server listening on port ${port}!`)); // eslint-disable-line
 }
