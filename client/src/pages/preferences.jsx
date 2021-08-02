@@ -233,9 +233,9 @@ class Preferences extends Component {
                                         <br />
 
                                         <div className="preference-group p-3">
-                                            <h3> MARKETING PREFERENCES</h3>
+                                            <h3> COMMUNICATION PREFERENCES</h3>
                                             <br />
-                                            <p>Choose how you would prefer to be informed about our promotions and our latest news.</p>
+                                            <p>Choose how you would prefer to receive important notifications</p>
 
                                             <Form.Group>
                                                 <Form.Label>Email</Form.Label>
@@ -252,7 +252,7 @@ class Preferences extends Component {
                                             </Form.Group>
 
                                             <Form.Group>
-                                                <Form.Label>Phone</Form.Label>
+                                                <Form.Label>SMS</Form.Label>
                                                 <FormControl component="fieldset">
                                                     <RadioGroup
                                                         name="notify_phone"
@@ -263,7 +263,7 @@ class Preferences extends Component {
                                                         <FormControlLabel value="no" control={<Radio />} label="No" />
                                                     </RadioGroup>
                                                 </FormControl>
-                                                {!user.roles.phone_verified && <p>You should verify your phone number to get message with SMS. <Link to="/phone-verification"><b>Click here to verify your phone number.</b></Link></p>}
+                                                {!user.roles.phone_verified && <p>Your phone number needs to be verified before you can opt into SMS notifications. <Link to="/phone-verification"><b>Click here to verify your phone number.</b></Link></p>}
                                             </Form.Group>
                                         </div>
 
