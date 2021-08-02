@@ -333,7 +333,7 @@ async function updateAction(action, user) {
                 }
                 const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
-                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                     const msg = {
                         from: `${fromEmailName} <${fromEmailAddress}>`,
                         to: user.email,
@@ -349,7 +349,7 @@ async function updateAction(action, user) {
                     };
                     sgMail.send(msg);
                 }
-                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                     sendSMS(`This email is to advise that your bet for ${string} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
                 }
             }
@@ -360,7 +360,7 @@ async function updateAction(action, user) {
                     timezone = preference.timezone;
                 }
                 const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
-                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                     const msg = {
                         from: `${fromEmailName} <${fromEmailAddress}>`,
                         to: user.email,
@@ -374,13 +374,13 @@ async function updateAction(action, user) {
                     };
                     sgMail.send(msg);
                 }
-                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                     sendSMS(`This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
                 }
             }
         } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -396,7 +396,7 @@ async function updateAction(action, user) {
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
                 sendSMS(`Congratulations! You won $${Transaction.Amount}.`, user.phone);
             }
         }

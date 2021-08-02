@@ -761,7 +761,7 @@ adminRouter.post(
             }
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -775,7 +775,7 @@ adminRouter.post(
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
             }
 
@@ -2409,7 +2409,7 @@ adminRouter.post(
             await Verification.deleteMany({ user: user._id });
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -2423,7 +2423,7 @@ adminRouter.post(
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                 sendSMS('Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.', user.phone);
             }
 
@@ -2454,7 +2454,7 @@ adminRouter.post(
             await Verification.deleteMany({ user: user._id });
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -2468,7 +2468,7 @@ adminRouter.post(
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                 sendSMS('Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.', user.phone);
             }
 
@@ -2929,7 +2929,7 @@ async function matchResults(eventId, matchResult) {
                         // TODO: email winner
 
                         const preference = await Preference.findOne({ user: user._id });
-                        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                        if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
                             const msg = {
                                 from: `${fromEmailName} <${fromEmailAddress}>`,
                                 to: email,
@@ -2945,7 +2945,7 @@ async function matchResults(eventId, matchResult) {
                             };
                             sgMail.send(msg);
                         }
-                        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                             sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
                         }
 

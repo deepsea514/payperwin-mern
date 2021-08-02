@@ -138,7 +138,7 @@ tripleARouter.post('/deposit',
             }
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -152,7 +152,7 @@ tripleARouter.post('/deposit',
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
             }
 
@@ -196,7 +196,7 @@ tripleARouter.post('/withdraw',
             // await user.save();
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -210,7 +210,7 @@ tripleARouter.post('/withdraw',
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
             }
 
@@ -220,7 +220,7 @@ tripleARouter.post('/withdraw',
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
 
             const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+            if (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -234,7 +234,7 @@ tripleARouter.post('/withdraw',
                 };
                 sgMail.send(msg);
             }
-            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.sms)) {
                 sendSMS('Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
             }
             return res.json({ success: true });

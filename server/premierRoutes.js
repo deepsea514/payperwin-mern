@@ -96,7 +96,7 @@ premierRouter.post('/etransfer-deposit',
                 }
 
                 const preference = await Preference.findOne({ user: user._id });
-                if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
                     const msg = {
                         from: `${fromEmailName} <${fromEmailAddress}>`,
                         to: user.email,
@@ -110,7 +110,7 @@ premierRouter.post('/etransfer-deposit',
                     };
                     sgMail.send(msg);
                 }
-                if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                     sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
                 }
 
