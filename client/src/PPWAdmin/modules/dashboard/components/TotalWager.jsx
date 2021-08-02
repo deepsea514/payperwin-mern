@@ -182,7 +182,7 @@ export function TotalWager({ className, categories, dashboardwager }) {
         <div className={`card card-custom bg-gray-100 ${className}`}>
             {/* Header */}
             <div className="card-header border-0 bg-primary py-5">
-                <h3 className="card-title font-weight-bolder text-white">Total Wager</h3>
+                <h3 className="card-title font-weight-bolder text-white">Total Wager(PPW)</h3>
             </div>
             {/* Body */}
             <div className="card-body p-0 position-relative bg-primary overflow-hidden pb-4">

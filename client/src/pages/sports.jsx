@@ -1,23 +1,30 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
-import { Link, withRouter } from 'react-router-dom';
-import { setTitle } from '../libs/documentTitleBuilder'
-import sportsData from '../../public/data/sports.json';
+import { setMeta } from '../libs/documentTitleBuilder'
 import SportsList from '../components/sportsList';
+import DocumentMeta from 'react-document-meta';
 
 export default class Sports extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            metaData: null,
+        };
+    }
 
-  componentDidMount() {
-    setTitle({ pageTitle: 'Sports' });
-  }
+    componentDidMount() {
+        const title = 'Sports List';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
+    }
 
-  render() {
-    return (
-      <SportsList />
-    );
-  }
+    render() {
+        const { metaData } = this.state;
+        return (
+            <>
+                {metaData && <DocumentMeta {...metaData} />}
+                <SportsList />
+            </>
+        );
+    }
 }

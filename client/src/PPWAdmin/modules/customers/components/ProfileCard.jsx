@@ -26,12 +26,12 @@ class ProfileCard extends React.Component {
                             </div>
                             {/* begin::User */}
                             <div className="d-flex align-items-center mt-4">
-                                <div className="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
+                                {/* <div className="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
                                     <div
                                         className="symbol-label"
                                         style={{ backgroundImage: `url(/media/users/300_10.jpg)` }}
                                     ></div>
-                                </div>
+                                </div> */}
                                 <div>
                                     <span style={{ textTransform: "uppercase" }} className="font-weight-bolder font-size-h2 text-dark-75 text-hover-primary">
                                         {customer.username}
@@ -83,6 +83,23 @@ class ProfileCard extends React.Component {
                                         <span className="text-left navi-text font-size-lg">
                                             Personal Information
                                             </span>
+                                    </NavLink>
+                                </div>
+                                <div className="navi-item mb-2">
+                                    <NavLink
+                                        to="/preference"
+                                        className="navi-link py-4 non-border-bottom"
+                                    >
+                                        <span className="navi-icon mr-2">
+                                            <span className="svg-icon">
+                                                <SVG
+                                                    src="/media/svg/icons/General/Settings-1.svg"
+                                                ></SVG>{" "}
+                                            </span>
+                                        </span>
+                                        <span className="text-left navi-text font-size-lg">
+                                            Preference
+                                        </span>
                                     </NavLink>
                                 </div>
                                 <div className="navi-item mb-2">

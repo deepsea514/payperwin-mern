@@ -20,7 +20,6 @@ class Withdraw extends React.Component {
     }
 
     componentDidMount() {
-        console.log('asdfsdf')
         this.getData();
     }
 
@@ -79,7 +78,7 @@ class Withdraw extends React.Component {
                 </tr>
             );
         }
-        return withdraws.map((deposit, index) => (
+        return withdraws.map((withdraw, index) => (
             <tr key={index}>
                 <td className="pl-0">
                     <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
@@ -88,32 +87,39 @@ class Withdraw extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
-                        {this.getDate(deposit.createdAt)}
+                        {this.getDate(withdraw.createdAt)}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        ${deposit.amount} {customer.currency}
+                        ${withdraw.amount} {customer.currency}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {deposit.method}
+                        {withdraw.method}
                     </span>
                 </td>
                 <td className="pl-0">
-                    {deposit.status == FinancialStatus.pending && <span className="label label-lg label-light-primary label-inline">
-                        {deposit.status}
-                    </span>}
-                    {deposit.status == FinancialStatus.success && <span className="label label-lg label-light-success label-inline">
-                        {deposit.status}
-                    </span>}
-                    {deposit.status == FinancialStatus.onhold && <span className="label label-lg label-light-warning label-inline">
-                        {deposit.status}
-                    </span>}
+                    {this.getFinancialStatus(withdraw.status)}
                 </td>
             </tr>
         ));
+    }
+
+    getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+
+        }
     }
 
     getDate = (date) => {

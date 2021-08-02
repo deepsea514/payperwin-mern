@@ -97,7 +97,7 @@ class Deposit extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {deposit.reason.title}
+                        {deposit.reason ? deposit.reason.title : null}
                     </span>
                 </td>
                 <td className="pl-0">
@@ -106,18 +106,25 @@ class Deposit extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
-                    {deposit.status == FinancialStatus.pending && <span className="label label-lg label-light-primary label-inline">
-                        {deposit.status}
-                    </span>}
-                    {deposit.status == FinancialStatus.success && <span className="label label-lg label-light-success label-inline">
-                        {deposit.status}
-                    </span>}
-                    {deposit.status == FinancialStatus.onhold && <span className="label label-lg label-light-warning label-inline">
-                        {deposit.status}
-                    </span>}
+                    {this.getFinancialStatus(deposit.status)}
                 </td>
             </tr>
         ));
+    }
+
+    getFinancialStatus = (status) => {
+        switch (status) {
+            case FinancialStatus.pending:
+                return <span className="label label-lg label-light-primary label-inline">{status}</span>
+            case FinancialStatus.success:
+                return <span className="label label-lg label-light-success label-inline">{status}</span>
+            case FinancialStatus.onhold:
+                return <span className="label label-lg label-light-warning label-inline">{status}</span>
+            case FinancialStatus.inprogress:
+            default:
+                return <span className="label label-lg label-light-info label-inline">{status}</span>
+
+        }
     }
 
     getDate = (date) => {

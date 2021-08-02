@@ -27,7 +27,7 @@ export function Brand() {
                 id="kt_brand"
             >
                 {/* begin::Logo */}
-                <Link to="" className="brand-logo">
+                <Link to="" className="brand-logo" style={{ display: 'block' }}>
                     <img alt="logo" src={layoutProps.headerLogo} />
                 </Link>
                 {/* end::Logo */}

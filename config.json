@@ -1,15 +1,10 @@
 {
-    "serverHostUrl": "http://payperwin.co",
+    "serverHostUrl": "https://payperwin.co",
     "serverPort": 8080,
-    "clientPort": 80,
-    "pinnacleApiHost": "http://api.pinnacle.com",
-    "pinnacleAuthorizationHeader": "Basic SkIxMDUyNzIyOlF3ZXJ0eTg4OA==",
-    "sandboxUrl": "https://paapistg.oreo88.com/b2b",
-    "agentCode": "PXW02",
-    "agentKey": "0606d87a-4941-4a05-a6c1-b94cc12dc1b2",
-    "secretKey": "IFcHXjqnGe7o2ruh",
+    "clientPort": 8000,
     "corsHosts": [
-        "http://payperwin.co"
+        "https://payperwin.co",
+        "https://www.payperwin.co"
     ],
     "serverHostToClientHost": {
         "payperwin.co:8080": "payperwin.co"
@@ -19,30 +14,111 @@
         "username": "admin",
         "password": "PayPerWin777"
     },
-    "appUrl": "http://payperwin.co:8080",
-    "appAdminUrl": "http://payperwin.co:8080/admin",
+    "appUrl": "https://api.payperwin.co",
+    "appAdminUrl": "https://api.payperwin.co/admin",
     "CountryInfo": [
         {
             "country": "Canada",
             "currency": "CAD",
             "symbol": "$",
             "fee": 5
-        },
-        {
-            "country": "United States",
-            "currency": "USD",
-            "symbol": "$",
-            "fee": 4
         }
     ],
     "FinancialStatus": {
         "success": "Successful",
         "pending": "Pending",
-        "onhold": "On-hold"
+        "onhold": "On-hold",
+        "inprogress": "In Progress"
     },
     "PaymentMethod": [
         "eTransfer",
         "Credit Card",
-        "Bitcoin"
-    ]
+        "Bitcoin",
+        "Ethereum",
+        "Tether"
+    ],
+    "AutoBetStatus": {
+        "active": "Active",
+        "inActive": "Inactive"
+    },
+    "AutoBetPeorid": {
+        "daily": "Daily",
+        "weekly": "Weekly"
+    },
+    "PromotionTypes": {
+        "straightCredit": {
+            "name": "Straight Credit",
+            "description": "Get $50 free credit"
+        },
+        "creditWithCondition": {
+            "name": "Credit With Condition",
+            "description": "Get $50 free credit when you deposit a minimum of $200"
+        }
+    },
+    "PromotionFor": {
+        "new": "New Clients",
+        "existing": "Existing Clients"
+    },
+    "EventStatus": {
+        "pending": {
+            "label": "Pending",
+            "value": 0
+        },
+        "outdated": {
+            "label": "Outdated",
+            "value": 0
+        },
+        "settled": {
+            "label": "Settled",
+            "value": 2
+        },
+        "canceled": {
+            "label": "Canceled",
+            "value": 3
+        }
+    },
+    "AdminRoles": {
+        "Super Admin": {
+            "dashboard": true,
+            "admins": true,
+            "kyc": true,
+            "customers": true,
+            "messages": true,
+            "addons": true,
+            "bet_activities": true,
+            "withdraw_logs": true,
+            "deposit_logs": true,
+            "autobet": true,
+            "events": true,
+            "frontend": true,
+            "email_templates": true,
+            "meta_tags": true,
+            "promotions": true,
+            "tickets": true,
+            "faq": true,
+            "articles": true,
+            "reports": true
+        },
+        "Customer Service": {
+            "dashboard": true,
+            "admins": false,
+            "kyc": true,
+            "customers": true,
+            "messages": false,
+            "addons": false,
+            "bet_activities": true,
+            "withdraw_logs": true,
+            "deposit_logs": true,
+            "autobet": false,
+            "events": true,
+            "frontend": false,
+            "email_templates": false,
+            "meta_tags": false,
+            "promotions": true,
+            "tickets": true,
+            "faq": false,
+            "articles": true,
+            "reports": true
+        }
+    }
 }

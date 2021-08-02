@@ -1,107 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
-import sportNameIcon from '../helpers/sportNameIcon';
 import axios from 'axios';
+import Bet from "./bet";
+
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
-
-class Bet extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            stake: '',
-            win: '',
-        };
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(e) {
-        const { target: { name, value } } = e
-        const stateChange = {};
-        const { bet, updateBet } = this.props
-        const { odds, pick, lineId } = bet;
-        if (name === 'stake') {
-            const stake = Math.abs(Number(Number(value).toFixed(2)));
-            stateChange[name] = stake;
-            // calc win
-            const americanOdds = odds[pick];
-            const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
-            const calculateWin = (stake * 1) * decimalOdds;
-            const roundToPennies = Number((calculateWin).toFixed(2));
-            const win = roundToPennies
-            stateChange.win = win;
-            updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
-            );
-        } else if (name === 'win') {
-            const win = Math.abs(Number(Number(value).toFixed(2)), 20);
-            stateChange[name] = win;
-            // calc stake
-            const americanOdds = odds[pick];
-            const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : - (100 / americanOdds);
-            const calculateStake = (win / 1) / decimalOdds;
-            const roundToPennies = Number((calculateStake).toFixed(2));
-            const stake = roundToPennies;
-            stateChange.stake = stake;
-            updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
-            );
-        } else {
-            stateChange[name] = value;
-        }
-        this.setState(stateChange);
-    }
-
-    render() {
-        const { stake, win } = this.state;
-        const { bet, removeBet } = this.props;
-        const { name, type, league, odds, pick, home, away, sportName, lineId, pickName } = bet;
-        return (
-            <div className="bet">
-                <div>
-                    <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} />
-                    {` ${name}`}
-                    <i className="fal fa-times" onClick={() => removeBet(lineId, pick)} />
-                </div>
-                <div className="bet-type-league">{type} - {league}</div>
-                <span className="bet-pick">{pickName}</span>
-                <span className="bet-pick-odds">{odds[pick] > 0 ? '+' : ''}{odds[pick]}</span>
-                <div>
-                    <input
-                        className="bet-stake"
-                        placeholder="Risk"
-                        name="stake"
-                        type="number"
-                        value={stake === 0 ? '' : stake}
-                        onChange={this.handleChange}
-                        min={0}
-                        step={20}
-                    />
-                    <input
-                        className="bet-win"
-                        placeholder="Win"
-                        name="win"
-                        type="number"
-                        value={win === 0 ? '' : win}
-                        onChange={this.handleChange}
-                        min={0}
-                        step={20}
-                    />
-                </div>
-            </div>
-        )
-    }
-}
 
 export default class BetSlip extends PureComponent {
     constructor(props) {
@@ -144,7 +47,7 @@ export default class BetSlip extends PureComponent {
             const stateChanges = {};
             if (successCount) {
                 updateUser('balance', balance);
-                removeBet(null, null, true);
+                removeBet(null, null, null, null, true);
                 stateChanges.confirmationOpen = true;
             }
             if (errors) stateChanges.errors = errors;
@@ -152,7 +55,6 @@ export default class BetSlip extends PureComponent {
                 this.setState(stateChanges);
             }
         }).catch((err) => {
-            console.log(1);
             if (err.response && err.response.data) {
                 const { error } = err.response.data;
                 this.setState({ formError: error });
@@ -180,7 +82,7 @@ export default class BetSlip extends PureComponent {
                                 <div>
                                     <center>
                                         Your bet has been submitted.
-                    <br />
+                                        <br />
                                         <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
                                     </center>
                                 </div>
@@ -193,7 +95,7 @@ export default class BetSlip extends PureComponent {
                     onClick={() => toggleField('openBetSlipMenu')}
                 >
                     BET SLIP
-          {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
+                    {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
                     <i className="fas fa-minus" />
                 </div>
                 <div className="bet-slip-content">
@@ -203,9 +105,12 @@ export default class BetSlip extends PureComponent {
                                 {
                                     betSlip.length > 0 ? (
                                         <React.Fragment>
-                                            {
-                                                betSlip.map(bet => <Bet bet={bet} removeBet={removeBet} updateBet={updateBet} key={`${bet.lineId}${bet.pick}${bet.type}`} />)
-                                            }
+                                            {betSlip.map(bet => <Bet
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
+                                            />)}
                                         </React.Fragment>
                                     ) :
                                         (
@@ -220,17 +125,17 @@ export default class BetSlip extends PureComponent {
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         Total Risk
-                  </div>
+                                    </div>
                                     <div className="total-st-left text-right">
-                                        USD {totalStake.toFixed(2)}
+                                        CAD {totalStake.toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         Total Win
-                  </div>
+                                    </div>
                                     <div className="total-st-left text-right">
-                                        USD {totalWin.toFixed(2)}
+                                        CAD {totalWin.toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="form-error">
@@ -242,7 +147,10 @@ export default class BetSlip extends PureComponent {
                                     onClick={
                                         user
                                             ? this.placeBets
-                                            : () => history.replace({ pathname: '/login' })
+                                            : () => {
+                                                history.replace({ pathname: '/login' });
+                                                toggleField('openBetSlipMenu');
+                                            }
                                     }
                                 >
                                     {user ? 'Place All Bets' : 'Log in and Place Bets'}

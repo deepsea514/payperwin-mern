@@ -49,11 +49,19 @@ header {
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
 
+.emailspan {
+    text-overflow: ellipsis;
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    /* display: inline-block; */
+}
+
 .table-list li:nth-child(1) {
     width: 180px;
 }
 
-.box-mony-line {
+.box-odds {
     width: 60px;
     height: 74px;
     padding: 0 11px;
@@ -62,11 +70,16 @@ header {
     font-size: 12px;
 }
 
-.box-mony-line:not(:first-child) {
+.box-odds:not(:first-child) {
     margin-left: 4px;
 }
 
-.box-mony-line i {
+.box-odds.line-full {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.box-odds i {
     font-size: 20px;
     color: #c7c7c7;
     margin-top: 0 !important;
@@ -82,7 +95,7 @@ header {
     padding: 0 10px;
 }
 
-.box-mony-line:hover {
+.box-odds:hover {
     border-color: #ED254E;
     box-shadow: inset 0px -13px 15px -5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, .2);
     cursor: pointer;
@@ -280,6 +293,7 @@ a.log-in-btn {
 
 .login-nav .username {
     cursor: pointer;
+    text-transform: none !important;
 }
 
 .deposit {
@@ -344,9 +358,13 @@ a.log-in-btn {
 
 .login-dropdown li.username {
     border-bottom: solid 1px #d3d3d3;
-    text-transform: uppercase;
+    text-transform: none !important;
     font-size: 14px;
     font-weight: 700;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .login-dropdown li {
@@ -555,6 +573,12 @@ a.log-in-btn {
     display: block;
 }
 
+@media (max-width: 500px) {
+    .modal.confirmation .col-in {
+        margin: 50vh 10px !important;
+    }
+}
+
 .modal.confirmation .col-in {
     position: relative;
     z-index: 2;
@@ -573,6 +597,10 @@ a.log-in-btn {
 
 .modal.confirmation .col-in .fa-times {
     float: right;
+}
+
+.form-button:disabled {
+    background-color: gray;
 }
 
 .form-button {
@@ -600,7 +628,7 @@ a.log-in-btn {
 }
 
 .mobile-menu {
-    background: linear-gradient(90deg, #0b1422, #042d56);
+    background: linear-gradient(90deg, #0b1422, #273043);
     height: 100%;
     display: flex !important;
     flex-direction: column;
@@ -624,7 +652,7 @@ a.log-in-btn {
 }
 
 .mobile-menu .logo {
-    max-width: 41.666667%;
+    max-width: 45%;
     padding: 9px 0;
 }
 
@@ -675,7 +703,15 @@ a.log-in-btn {
     margin-bottom: 5px;
 }
 
-.detailed-lines .box-mony-line {
+.line-type-header-moneyline {
+    border-bottom: #ED254E 3px solid;
+}
+
+.box-moneyline {
+    /* height: 40px !important; */
+}
+
+.detailed-lines .box-odds {
     width: 50%;
     text-align: left;
     height: 30px;
@@ -685,13 +721,17 @@ a.log-in-btn {
     margin-right: 10px;
 }
 
-.detailed-lines .points, .detailed-lines .old-odds, .detailed-lines .new-odds {
+.detailed-lines .points, .detailed-lines .old-odds, .detailed-lines .new-odds, .detailed-lines .origin-odds {
     display: inline-block;
     font-size: 12px;
 }
 
-.detailed-lines .old-odds, .detailed-lines .new-odds {
+.detailed-lines .old-odds, .detailed-lines .new-odds, .detailed-lines .origin-odds {
     min-width: 38px;
+}
+
+.origin-odds {
+    color: #d35b5b;
 }
 
 .detailed-lines .odds {
@@ -830,6 +870,9 @@ a.log-in-btn {
     .main-section {
         padding-top: 150px;
     }
+    .BrainhubCarousel {
+        margin-bottom: 5px;
+    }
 }
 
 @media (max-width: 767px) {
@@ -862,4 +905,106 @@ a.log-in-btn {
     .main-section {
         padding-top: 128px;
     }
+    .filter-dropdown {
+        width: 100% !important;
+        left: 0;
+    }
+    .filter-dropdown::before {
+        display: none;
+    }
+}
+
+.filter-dropdown {
+    color: #333;
+    background: white;
+    position: absolute;
+    border-radius: 3px;
+    width: 200px;
+    z-index: 1;
+    box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
+    -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    margin-top: 20px;
+    padding: 10px 10px 10px 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.filter-dropdown::before {
+    content: "-";
+    background: white;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -5px;
+    left: 13px;
+    font-size: 0;
+    transform: rotateZ(45deg);
+}
+
+.filter-dropdown ul {
+    z-index: 1;
+}
+
+.filter-dropdown li {
+    padding: 5px 10px;
+}
+
+.filter-dropdown a {
+    color: #333;
+    text-decoration: none;
+}
+
+.filter-dropdown a:hover {
+    color: black;
+}
+
+.odds-dropdown {
+    color: #333;
+    background: white;
+    position: absolute;
+    border-radius: 3px;
+    z-index: 1;
+    box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
+    -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
+    margin-top: 20px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.odds-dropdown::before {
+    content: "-";
+    background: white;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -5px;
+    left: 13px;
+    font-size: 0;
+    transform: rotateZ(45deg);
+}
+
+.odds-dropdown ul {
+    z-index: 1;
+}
+
+.odds-dropdown li {
+    float: none !important;
+    border-right: none !important;
+    padding: 15px 15px 10px 15px !important;
+    cursor: pointer;
+}
+
+.odds-dropdown li:hover {
+    background: #EEE;
+}
+
+/* .odds-dropdown a {
+    color: #333;
+    text-decoration: none;
+} */
+
+.odds-dropdown a:hover {
+    color: black;
 }

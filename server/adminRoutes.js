@@ -1,21 +1,56 @@
+// Define Router
 const adminRouter = require('express').Router();
-const ExpressBrute = require('express-brute');
-const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
-const bruteforce = new ExpressBrute(store);
+// Models
 const Admin = require('./models/admin');
 const User = require("./models/user");
 const DepositReason = require("./models/depositreason");
 const FinancialLog = require("./models/financiallog");
 const Bet = require("./models/bet");
 const Sport = require("./models/sport");
+const SportsDir = require("./models/sportsDir");
 const LoginLog = require('./models/loginlog');
+const Email = require("./models/email");
+const AutoBet = require("./models/autobet");
+const Promotion = require("./models/promotion");
+const PromotionLog = require("./models/promotionlog");
+const BetSportsBook = require("./models/betsportsbook");
+const EventBetPool = require("./models/eventbetpool");
+const Verification = require("./models/verification");
+const Preference = require("./models/preference");
+const FAQSubject = require("./models/faq_subject");
+const Event = require("./models/event");
+const Message = require("./models/message");
+const MetaTag = require("./models/meta-tag");
+const Addon = require("./models/addon");
+const Article = require("./models/article");
+const ArticleCategory = require("./models/article_category");
+const Frontend = require("./models/frontend");
+const Ticket = require('./models/ticket');
+const FAQItem = require('./models/faq_item');
+//external Libraries
+const ExpressBrute = require('express-brute');
+const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
+const bruteforce = new ExpressBrute(store);
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAdminSecretKey';
+const dateformat = require("dateformat");
+const { ObjectId } = require('mongodb');
+const sgMail = require('@sendgrid/mail');
+const axios = require('axios');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
+const _ = require("lodash");
+//local helpers
+const sendSMS = require("./libs/sendSMS");
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
-const dateformat = require("dateformat");
-const { ObjectId } = require('mongodb');
+const EventStatus = config.EventStatus;
+const AdminRoles = config.AdminRoles;
+const simpleresponsive = require('./emailtemplates/simpleresponsive');
+const fromEmailName = 'PAYPER WIN';
+const fromEmailAddress = 'donotreply@payperwin.co';
+const DepositHeld = 8;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -26,69 +61,144 @@ const authenticateJWT = (req, res, next) => {
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        jwt.verify(token, accessTokenSecret, (err, user) => {
+        jwt.verify(token, accessTokenSecret, async (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
-            req.user = user;
-            next();
+            const admin = await Admin.findById(user._id);
+            if (admin) {
+                req.user = admin;
+                return next();
+            }
+            return res.sendStatus(403);
         });
     } else {
         res.sendStatus(401);
     }
 };
 
-adminRouter.post('/login', bruteforce.prevent, async (req, res, next) => {
-    const { email, password } = req.body;
-
-    try {
-        const admin = await Admin.findOne({ email });
-        if (admin) {
-            admin.comparePassword(password, function (error, isMatch) {
-                if (error) {
-                    res.status(404).json({ error: 'Admin doesn\'t exist.' });
-                    return;
-                }
-                if (isMatch) {
-                    const data = admin._doc;
-                    const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
-                    res.json({ accessToken });
-                }
-                else {
-                    res.status(403).json({ error: 'Password doesn\'t match.' });
-                    return;
-                }
-            })
-        }
-        else {
-            res.status(404).json({ error: 'Admin doesn\'t exist.' });
-            return;
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({ error: 'Can\'t find admin.' });
-        return;
+const limitRoles = (field) => (req, res, next) => {
+    if (!req.user)
+        return res.sendStatus(403);
+    if (AdminRoles[req.user.role] && AdminRoles[req.user.role][field]) {
+        return next();
     }
+    return res.sendStatus(403);
+}
 
-});
+
+function getTwoFactorAuthenticationCode(email) {
+    const secretCode = speakeasy.generateSecret({
+        name: `${email}(PPW)`
+    });
+    return {
+        otpauthUrl: secretCode.otpauth_url,
+        base32: secretCode.base32,
+    }
+}
+
+function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, token, time) {
+    const token1 = speakeasy.time({ secret: twoFactorAuthenticationCode, encoding: 'base32' });
+    console.log(token1, token);
+    return speakeasy.totp.verify({
+        secret: twoFactorAuthenticationCode,
+        encoding: 'base32',
+        token: token,
+        time: time
+    });
+}
+
+const verifyTwoFactorAuthenticationCodeMiddleware = async (req, res, next) => {
+    const admin = await Admin.findById(req.user._id);
+    let { _2fa_code, time } = req.query;
+    if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
+    if (!time) {
+        time = (new Date()).getTime();
+        time = Math.floor(time / 1000);
+    }
+    const isCodeValid = await verifyTwoFactorAuthenticationCode(admin.twoFactorAuthenticationCode, _2fa_code, time);
+    if (!isCodeValid) {
+        return res.status(403).json({ error: 'Invalid Code.' });
+    }
+    next();
+}
 
 adminRouter.post(
-    '/createnew',
+    '/generateAuthCode',
+    bruteforce.prevent,
     authenticateJWT,
-    async (req, res) => {
-        const { email, password, username } = req.body;
-        try {
-            await Admin.create({ email, password, username });
-            res.status(200).json("Admin created");
-            return;
-        } catch (error) {
-            res.status(400).json({
-                error,
-                message: "Admin creation failed. Please try with new credentials."
+    async (req, res, next) => {
+        const { user, body } = req;
+        const { password } = body;
+        const admin = await Admin.findById(user._id);
+        if (admin)
+            admin.comparePassword(password, async (error, isMatch) => {
+                if (error) {
+                    return res.status(400).json({ error: "Can't generate qrcode" });
+                }
+                if (isMatch) {
+                    if (admin.otpauthUrl && admin.twoFactorAuthenticationCode) {
+                        QRCode.toDataURL(admin.otpauthUrl, {}, (error, url) => {
+                            if (error) return res.status(400).json({ error: "Can't get qrcode" });
+                            return res.json({ qrcode: url });
+                        });
+                    } else {
+                        const { otpauthUrl, base32 } = getTwoFactorAuthenticationCode(user.email);
+                        await Admin.findByIdAndUpdate(user._id, {
+                            twoFactorAuthenticationCode: base32,
+                            otpauthUrl: otpauthUrl,
+                        });
+                        QRCode.toDataURL(otpauthUrl, {}, (error, url) => {
+                            if (error) return res.status(400).json({ error: "Can't generate qrcode" });
+                            return res.json({ qrcode: url });
+                        });
+                    }
+                }
+                else {
+                    return res.json({ qrcode: null, error: "Password doesn't not match." });
+                }
             });
+        else {
+            return res.status(400).json({ error: "Can't generate qrcode" });
+        }
+    }
+);
+
+adminRouter.post(
+    '/login',
+    bruteforce.prevent,
+    async (req, res, next) => {
+        const { email, password } = req.body;
+
+        try {
+            const admin = await Admin.findOne({ email });
+            if (admin) {
+                admin.comparePassword(password, function (error, isMatch) {
+                    if (error) {
+                        res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                        return;
+                    }
+                    if (isMatch) {
+                        const data = admin._doc;
+                        const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
+                        res.json({ accessToken });
+                    }
+                    else {
+                        res.status(403).json({ error: 'Password doesn\'t match.' });
+                        return;
+                    }
+                })
+            }
+            else {
+                res.status(404).json({ error: 'Admin doesn\'t exist.' });
+                return;
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find admin.' });
             return;
         }
-    },
+    }
 );
 
 adminRouter.patch(
@@ -118,21 +228,21 @@ adminRouter.patch(
 )
 
 adminRouter.get('/logout', (req, res) => {
-
 });
 
 adminRouter.get(
     '/user',
     authenticateJWT,
-    (req, res) => {
-        delete req.user.password;
-        res.status(200).json(req.user);
+    async (req, res) => {
+        let admin = req.user;
+        res.json({ username: admin.username, email: admin.email, role: admin.role, _id: admin._id });
     },
 );
 
 adminRouter.get(
     '/customers',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         try {
             let { page, perPage, name, email, balancemin, balancemax } = req.query;
@@ -140,7 +250,7 @@ adminRouter.get(
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (name) {
                 searchObj = {
                     ...searchObj,
@@ -178,10 +288,25 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .exec(function (error, data) {
+                .exec(async function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
+                    }
+                    data = JSON.parse(JSON.stringify(data));
+                    for (let i = 0; i < data.length; i++) {
+                        let totalWager = 0;
+                        const betHistory = await Bet.find({ userId: data[i]._id });
+                        const betSportsbookHistory = await BetSportsBook.find({ userId: data[i]._id });
+                        for (const bet of betHistory) {
+                            totalWager += bet.bet;
+                        }
+                        for (const bet of betSportsbookHistory) {
+                            totalWager += Number(bet.WagerInfo.ToRisk);
+                        }
+                        data[i].totalWager = totalWager;
+                        data[i].betHistory = betHistory;
+                        data[i].betSportsbookHistory = betSportsbookHistory;
                     }
                     res.status(200).json({ total, perPage, page: page + 1, data });
                 })
@@ -195,6 +320,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -202,7 +328,12 @@ adminRouter.get(
             return;
         }
         try {
-            const customer = await User.findById(id);
+            let customer = await User.findById(id);
+            let preference = await Preference.findOne({ user: id });
+            if (!preference)
+                preference = await Preference.create({ user: id });
+            customer = JSON.parse(JSON.stringify(customer));
+            customer.preference = preference;
             res.status(200).json(customer);
         }
         catch (error) {
@@ -214,6 +345,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-overview',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -239,6 +371,18 @@ adminRouter.get(
                     }
                 }
             );
+            const lastsportsbookbets = await BetSportsBook.find({ userId: id, deletedAt: null })
+                .sort({ createdAt: -1 }).limit(8);
+
+            const betSportsbookHistory = await BetSportsBook.find({
+                userId: new ObjectId(id),
+                deletedAt: null,
+            });
+            let totalsportsbookwagers = 0;
+            for (const bet of betSportsbookHistory) {
+                totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
+            }
+
             let totaldeposit = await FinancialLog.aggregate(
                 {
                     $match: {
@@ -261,10 +405,64 @@ adminRouter.get(
             if (totalwagers.length) totalwagers = totalwagers[0].total;
             else totalwagers = 0;
 
+            totalwagers += totalsportsbookwagers;
+
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            res.status(200).json({ lastbets, totalwagers, totaldeposit });
+            let winlossbetsSportsbook = await BetSportsBook.aggregate({
+                $match: {
+                    Name: "SETTLED",
+                    userId: new ObjectId(id),
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
+                    }
+                }
+            });
+            if (winlossbetsSportsbook.length) winlossbetsSportsbook = winlossbetsSportsbook[0].total;
+            else winlossbetsSportsbook = 0;
+
+            let winbets = await Bet.aggregate({
+                $match: {
+                    status: "Settled - Win",
+                    userId: new ObjectId(id),
+                    deletedAt: null
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: "$payableToWin"
+                    }
+                }
+            });
+            if (winbets.length) winbets = winbets[0].total;
+            else winbets = 0;
+
+            let lossbets = await Bet.aggregate({
+                $match: {
+                    status: "Settled - Lose",
+                    userId: new ObjectId(id),
+                    deletedAt: null
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: "$bet"
+                    }
+                }
+            })
+            if (lossbets.length) lossbets = lossbets[0].total;
+            else lossbets = 0;
+            const winloss = Number((winlossbetsSportsbook + winbets - lossbets).toFixed(2));
+
+
+            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
@@ -275,6 +473,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-loginhistory',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -299,6 +498,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-deposits',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -324,6 +524,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-withdraws',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -349,8 +550,9 @@ adminRouter.get(
 adminRouter.get(
     '/customer-bets',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
-        let { id, perPage, page } = req.query;
+        let { id, perPage, page, src } = req.query;
         if (!perPage) perPage = 15;
         else perPage = parseInt(perPage);
         if (!page) page = 1;
@@ -360,10 +562,18 @@ adminRouter.get(
             return;
         }
         try {
-            const searchObj = { userId: id, deletedAt: null };
-            const total = await Bet.find(searchObj).count();
-            const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
-            res.json({ total, page, perPage, bets });
+            if (src == 'sportsbook') {
+                const searchObj = { userId: id, deletedAt: null };
+                const total = await BetSportsBook.find(searchObj).count();
+                const bets = await BetSportsBook.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+                res.json({ total, page, perPage, bets });
+            }
+            else {
+                const searchObj = { userId: id, deletedAt: null };
+                const total = await Bet.find(searchObj).count();
+                const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+                res.json({ total, page, perPage, bets });
+            }
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find bets.', result: error });
@@ -371,9 +581,45 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/customer-preference/:id',
+    authenticateJWT,
+    limitRoles('customers'),
+    async (req, res) => {
+        const { id } = req.params;
+        const preference = await Preference.findOne({ user: id });
+        return res.json(preference);
+    }
+)
+
+adminRouter.put(
+    '/customer-preference/:id',
+    authenticateJWT,
+    limitRoles('customers'),
+    async (req, res) => {
+        const { id } = req.params;
+        const data = req.body;
+        const preference = await Preference.findOne({ user: id });
+        try {
+            if (preference) {
+                await preference.update(data);
+            } else {
+                await await Preference.create({
+                    user: id,
+                    ...Preferencedata
+                });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            return res.status(500).json({ success: false });
+        }
+    }
+)
+
 adminRouter.patch(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id, data } = req.body;
         try {
@@ -392,13 +638,12 @@ adminRouter.patch(
 adminRouter.delete(
     '/customer',
     authenticateJWT,
+    limitRoles('customers'),
     async (req, res) => {
         const { id } = req.query;
         if (id) {
             try {
-                const customer = await User.findByIdAndUpdate(id, {
-                    deletedAt: new Date()
-                });
+                const customer = await User.findOneAndDelete({ _id: id });
                 res.status(200).json(customer);
             } catch (erorr) {
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
@@ -413,6 +658,7 @@ adminRouter.delete(
 adminRouter.get(
     '/depositreasons',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             const reasons = await DepositReason.find({ deletedAt: null });
@@ -426,6 +672,7 @@ adminRouter.get(
 adminRouter.post(
     '/depositreasons',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             const { title } = req.body;
@@ -449,20 +696,34 @@ adminRouter.post(
     }
 )
 
+async function isFirstDepositDone(user) {
+    const existingDeposit = await FinancialLog.find({
+        user: user._id,
+        type: 'deposit',
+        status: FinancialStatus.success,
+    });
+
+    if (existingDeposit && existingDeposit.length) {
+        return true
+    }
+    return false;
+}
+
 adminRouter.post(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            let { user, reason, amount, method, status } = req.body;
-            if (!user) res.status(400).json({ error: 'User field is required.' });
+            let { user: userId, reason, amount, method, status } = req.body;
+            if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!reason) res.status(400).json({ error: 'Reason field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
-            if (!status) status = "Pending";
+            if (!status) status = FinancialStatus.pending;
 
-            const userdata = await User.findById(user);
-            if (!userdata) {
+            const user = await User.findById(userId);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
@@ -474,7 +735,7 @@ adminRouter.post(
             const deposit = new FinancialLog({
                 financialtype: 'deposit',
                 uniqid: `D${ID()}`,
-                user: userdata._id,
+                user: user._id,
                 reason: reasonData._id,
                 amount,
                 method,
@@ -482,13 +743,45 @@ adminRouter.post(
             });
             await deposit.save();
 
-            userdata.depositlog = [...userdata.depositlog, ...[deposit._id]];
             if (status == FinancialStatus.success) {
-                userdata.balance = parseInt(userdata.balance) + parseInt(amount);
+                const firstDepositDone = await isFirstDepositDone(user);
+                if (firstDepositDone) {
+                    await user.update({ $inc: { balance: amount } });
+                } else {
+                    await FinancialLog.create({
+                        financialtype: 'depositheld',
+                        uniqid: `DH${ID()}`,
+                        user: user._id,
+                        amount: DepositHeld,
+                        method: method,
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ $inc: { balance: amount - DepositHeld } });
+                }
             }
-            await userdata.save();
+
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'You’ve got funds in your account',
+                    text: `You’ve got funds in your account`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
+                sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+            }
+
             res.json(deposit);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ error: 'Can\'t save deposit.', result: error });
         }
     }
@@ -497,6 +790,7 @@ adminRouter.post(
 adminRouter.get(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { page, datefrom, dateto, method, status, minamount, maxamount, perPage } = req.query;
@@ -575,9 +869,63 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/deposit-csv',
+    authenticateJWT,
+    limitRoles('deposit_logs'),
+    async (req, res) => {
+        try {
+            let { datefrom, dateto } = req.query;
+            let searchObj = { financialtype: 'deposit', deletedAt: null, status: FinancialStatus.success };
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const withdraws = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('user', ['username', 'currency', 'email']);
+            let csvbody = [['Date', 'Name', 'Email', 'Amount', 'Method']];
+            withdraws.forEach(withdraw => {
+                csvbody.push([
+                    dateformat(withdraw.updatedAt, "default"),
+                    withdraw.user.username,
+                    withdraw.user.email,
+                    `$${Number(withdraw.amount).toFixed(2)}`,
+                    withdraw.method]);
+            })
+            res.send(csvbody);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
+        }
+    }
+)
+
 adminRouter.patch(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { id, data } = req.body;
@@ -590,15 +938,27 @@ adminRouter.patch(
             await deposit.update(data, { new: true }).exec();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
 
-            const userdata = await User.findById(deposit.user);
-            if (!userdata) {
+            const user = await User.findById(deposit.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
             if (data.status == FinancialStatus.success) {
-                userdata.balance = parseInt(userdata.balance) + parseInt(deposit.amount);
+                const firstDepositDone = await isFirstDepositDone(user);
+                if (firstDepositDone) {
+                    await user.update({ $inc: { balance: deposit.amount } });
+                } else {
+                    await FinancialLog.create({
+                        financialtype: 'depositheld',
+                        uniqid: `DH${ID()}`,
+                        user: user._id,
+                        amount: DepositHeld,
+                        method: deposit.method,
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ $inc: { balance: deposit.amount - DepositHeld } });
+                }
             }
-            await userdata.save();
 
             res.json(result);
         } catch (error) {
@@ -611,6 +971,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/deposit',
     authenticateJWT,
+    limitRoles('deposit_logs'),
     async (req, res) => {
         try {
             let { id } = req.query;
@@ -620,13 +981,12 @@ adminRouter.delete(
                 return;
             }
             deposit.update({ deletedAt: new Date() }).exec();
-            const userdata = await User.findById(deposit.user);
-            if (!userdata) {
+            const user = await User.findById(deposit.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            userdata.depositlog.remove(id);
-            await userdata.save();
+            await user.save();
 
             res.json(deposit);
         } catch (error) {
@@ -635,45 +995,82 @@ adminRouter.delete(
     }
 )
 
+async function isFreeWithdrawalUsed(user) {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const freeWithdraw = await FinancialLog.find({
+        fee: 0,
+        createdAt: {
+            $gte: firstDay
+        },
+        user: user._id,
+        type: 'withdraw'
+    });
+
+    if (freeWithdraw && freeWithdraw.length) {
+        return true
+    }
+    return false;
+}
+
 adminRouter.post(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
-            let { user, amount, method, status } = req.body;
-            if (!user) res.status(400).json({ error: 'User field is required.' });
+            let { user: userId, amount, method, status } = req.body;
+            if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
-            if (!status) status = "Pending";
+            if (!status) status = FinancialStatus.pending;
 
-            const userdata = await User.findById(user);
-            if (!userdata) {
+            const user = await User.findById(userId);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
+            const freeWithdrawalUsed = await isFreeWithdrawalUsed(user);
+            let fee = 0;
+            if (freeWithdrawalUsed) {
+                switch (method) {
+                    case 'eTransfer':
+                        fee = 15;
+                        break;
+                    case "Bitcoin":
+                    case "Ethereum":
+                    case "Tether":
+                        fee = 25;
+                        break;
+                    default:
+                        return res.status(400).json({ error: 'Invalid withdraw method.' });
+                }
+            }
             const withdraw = new FinancialLog({
                 financialtype: 'withdraw',
                 uniqid: `W${ID()}`,
-                user: userdata._id,
-                amount,
-                method,
-                status,
-                fee,
+                user: user._id,
+                amount: amount,
+                method: method,
+                status: status,
+                fee: fee,
             });
 
-            if (status == FinancialStatus.success) {
-                const prebalance = parseInt(userdata.balance);
-                const withdrawamount = parseInt(amount);
-                if (prebalance < withdrawamount + fee) {
-                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-                    return;
-                }
-                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
+            const withdrawFee = new FinancialLog({
+                financialtype: 'withdrawfee',
+                uniqid: `WF${ID()}`,
+                user: user._id,
+                amount: fee,
+                method: method,
+                status: FinancialStatus.success,
+            });
+
+            if (user.balance < amount + fee) {
+                return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
             }
+            await user.update({ $inc: { balance: -(amount + fee) } });
             await withdraw.save();
-            userdata.withdrawlog = [...userdata.withdrawlog, ...[withdraw._id]];
-            await userdata.save();
+            await withdrawFee.save();
             res.json(withdraw);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t save withdraw.', result: error });
@@ -684,6 +1081,7 @@ adminRouter.post(
 adminRouter.get(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { page, perPage, datefrom, dateto, method, status, minamount, maxamount } = req.query;
@@ -754,7 +1152,8 @@ adminRouter.get(
                 .skip(page * perPage)
                 .limit(perPage)
                 .populate('user', ['username', 'currency']).populate('reason', ['title']);
-            res.json({ perPage, total, page: page + 1, data: withdraws });
+            const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.pending });
+            res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
@@ -762,12 +1161,162 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/withdraw-csv',
+    authenticateJWT,
+    limitRoles('withdraw_logs'),
+    async (req, res) => {
+        try {
+            let { datefrom, dateto } = req.query;
+            let searchObj = { financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.success };
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+            const withdraws = await FinancialLog.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('user', ['username', 'currency', 'email']);
+            let csvbody = [['Date', 'Name', 'Email', 'Amount', 'Method']];
+            withdraws.forEach(withdraw => {
+                csvbody.push([
+                    dateformat(withdraw.updatedAt, "default"),
+                    withdraw.user.username,
+                    withdraw.user.email,
+                    `$${Number(withdraw.amount).toFixed(2)}`,
+                    withdraw.method]);
+            })
+            res.send(csvbody);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
+        }
+    }
+)
+
+const tripleAWithdraw = async (req, res, data, user, withdraw) => {
+    const amount = data.amount ? data.amount : withdraw.amount;
+    // const prebalance = parseInt(user.balance);
+    const withdrawamount = parseInt(amount);
+    // if (prebalance < withdrawamount + fee) {
+    //     res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+    //     return false;
+    // }
+
+    const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
+    if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
+        console.warn("TripleA Api is not set");
+        return false;
+    }
+    const {
+        tokenurl,
+        paymenturl,
+        payouturl,
+        client_id,
+        client_secret,
+        notify_secret,
+        btc_api_id,
+        test_btc_api_id,
+        eth_api_id,
+        usdt_api_id,
+        merchant_key,
+        testMode,
+    } = tripleAAddon.value;
+
+    let access_token = null;
+    try {
+        const params = new URLSearchParams();
+        params.append('client_id', client_id);
+        params.append('client_secret', client_secret);
+        params.append('grant_type', 'client_credentials');
+        const { data } = await axios.post(tokenurl, params);
+        access_token = data.access_token;
+    } catch (error) {
+        res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        return false;
+    }
+    if (!access_token) {
+        res.status(500).json({ success: 0, message: "Can't get Access Token." });
+        return false
+    }
+
+    let crypto_currency = "testBTC";
+    switch (withdraw.method) {
+        case "Ethereum":
+            crypto_currency = "ETH";
+            break;
+        case "Tether":
+            crypto_currency = "USDT";
+            break;
+        case "Bitcoin":
+        default:
+            crypto_currency = "BTC";
+    }
+    crypto_currency = testMode ? "testBTC" : crypto_currency
+
+    const body = {
+        "merchant_key": merchant_key,
+        "email": user.email,
+        "withdraw_currency": "CAD",
+        "withdraw_amount": withdrawamount,
+        "crypto_currency": crypto_currency,
+        "remarks": "Bitcoin Withdraw |" + withdraw._id,
+        "notify_url": "https://api.payperwin.co/triplea/withdraw",
+        "notify_secret": notify_secret
+    };
+    let payout_reference = null;
+    try {
+        const { data } = await axios.post(payouturl, body, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+        payout_reference = data.payout_reference;
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: 0, message: "Can't make withdraw." });
+        return false;
+    }
+    withdraw.note = payout_reference;
+    await withdraw.save();
+    return true;
+}
+
 adminRouter.patch(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
+    verifyTwoFactorAuthenticationCodeMiddleware,
     async (req, res) => {
         try {
+            // const admin = await Admin.findById(req.user._id);
             let { id, data } = req.body;
+            // const { _2fa_code } = data;
+            // if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
+            // const isCodeValid = await verifyTwoFactorAuthenticationCode(admin.twoFactorAuthenticationCode, _2fa_code);
+            // if (!isCodeValid) {
+            //     return res.status(403).json({ error: 'Invalid Code.' });
+            // }
 
             const withdraw = await FinancialLog.findById(id);
             if (withdraw.status == FinancialStatus.success) {
@@ -775,24 +1324,33 @@ adminRouter.patch(
                 return;
             }
 
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
+            const user = await User.findById(withdraw.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const fee = CountryInfo.find(info => info.currency == userdata.currency).fee;
-            if (data.status == FinancialStatus.success) {
-                const amount = data.amount ? data.amount : withdraw.amount;
-                const prebalance = parseInt(userdata.balance);
-                const withdrawamount = parseInt(amount);
-                if (prebalance < withdrawamount + fee) {
-                    res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-                    return;
+            // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
+            // if (data.status == FinancialStatus.success) {
+            //     const amount = data.amount ? data.amount : withdraw.amount;
+            //     const prebalance = parseInt(user.balance);
+            //     const withdrawamount = parseInt(amount);
+            //     if (prebalance < withdrawamount + fee) {
+            //         res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+            //         return;
+            //     }
+            //     user.balance = parseInt(user.balance) - parseInt(amount) - fee;
+            // }
+
+            if (data.status == FinancialStatus.inprogress) {
+                if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
+                    const result = tripleAWithdraw(req, res, data, user, withdraw)
+                    if (!result)
+                        return;
                 }
-                userdata.balance = parseInt(userdata.balance) - parseInt(amount) - fee;
             }
+
             await withdraw.update(data, { new: true }).exec();
-            await userdata.save();
+            // await user.save();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
@@ -800,11 +1358,12 @@ adminRouter.patch(
             res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
         }
     }
-)
+);
 
 adminRouter.delete(
     '/withdraw',
     authenticateJWT,
+    limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
             let { id } = req.query;
@@ -814,13 +1373,12 @@ adminRouter.delete(
                 return;
             }
             withdraw.update({ deletedAt: new Date() }).exec();
-            const userdata = await User.findById(withdraw.user);
-            if (!userdata) {
+            const user = await User.findById(withdraw.user);
+            if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            userdata.withdrawlog.remove(id);
-            await userdata.save();
+            await user.update({ $inc: { balance: withdraw.amount + withdraw.fee } });
 
             res.json(withdraw);
         } catch (error) {
@@ -839,13 +1397,13 @@ adminRouter.get(
             if (name) {
                 searchObj = {
                     ...searchObj,
-                    ...{ username: { "$regex": name, "$options": "i" } }
+                    ...{ email: { "$regex": name, "$options": "i" } }
                 }
             }
 
             User.find(searchObj)
                 .sort('createdAt')
-                .select(['username', 'balance', 'currency'])
+                .select(['email', 'balance', 'currency', 'firstname', 'lastname'])
                 .exec(function (error, data) {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
@@ -854,7 +1412,7 @@ adminRouter.get(
                     const result = data.map(user => {
                         return {
                             value: user._id,
-                            label: user.username,
+                            label: `${user.email} (${user.firstname} ${user.lastname})`,
                             balance: user.balance,
                         }
                     })
@@ -868,8 +1426,51 @@ adminRouter.get(
 )
 
 adminRouter.get(
+    '/searchsports',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = { deletedAt: null };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ name: { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            Sport.find(searchObj)
+                .sort('createdAt')
+                .select(['name'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    const result = data.map(sport => {
+                        return {
+                            value: sport.name,
+                            label: sport.name,
+                        }
+                    })
+                    if ("Other".search(new RegExp(name, 'i')) != -1)
+                        result.push({
+                            value: "Other",
+                            label: "Other",
+                        })
+                    res.status(200).json(result);
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
     '/bets',
     authenticateJWT,
+    limitRoles('bet_activities'),
     async (req, res) => {
         try {
             let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage } = req.query;
@@ -878,32 +1479,166 @@ adminRouter.get(
             if (!page) page = 1;
             page--;
             let searchObj = { deletedAt: null };
+            if (!house || house == 'ppw') {
+                if (status && status == 'open') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
+                    };
+                } else if (status && status == 'settled') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
+                    };
+                }
 
-            if (status && status == 'open') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
-                };
-            } else if (status && status == 'settled') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
-                };
+                if (match && match == 'pending') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
+                    };
+                }
+                else if (match && match == 'matched') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ matchingStatus: 'Matched' }
+                    };
+                }
+
+                if (datefrom || dateto) {
+                    let dateObj = {};
+                    if (datefrom) {
+                        datefrom = new Date(datefrom);
+                        if (!isNaN(datefrom.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $gte: datefrom }
+                            }
+                        }
+                    }
+                    if (dateto) {
+                        dateto = new Date(dateto);
+                        if (!isNaN(dateto.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $lte: dateto }
+                            }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ createdAt: dateObj }
+                    }
+                }
+
+                if (sport) {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ "lineQuery.sportId": parseInt(sport) }
+                    }
+                }
+
+                if (minamount || maxamount) {
+                    let amountObj = {}
+                    if (minamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $gte: parseInt(minamount) }
+                        }
+                    }
+                    if (maxamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $lte: parseInt(maxamount) }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ bet: amountObj }
+                    }
+                }
+
+                const total = await Bet.find(searchObj).count();
+                const data = await Bet.find(searchObj)
+                    .sort({ createdAt: -1 })
+                    .skip(page * perPage)
+                    .limit(perPage)
+                    .populate('userId', ['username', 'currency'])
+                page++;
+                return res.json({ total, perPage, page, data, });
+            } else if (house == 'pinnacle') {
+                if (datefrom || dateto) {
+                    let dateObj = {};
+                    if (datefrom) {
+                        datefrom = new Date(datefrom);
+                        if (!isNaN(datefrom.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $gte: datefrom }
+                            }
+                        }
+                    }
+                    if (dateto) {
+                        dateto = new Date(dateto);
+                        if (!isNaN(dateto.getTime())) {
+                            dateObj = {
+                                ...dateObj,
+                                ...{ $lte: dateto }
+                            }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ createdAt: dateObj }
+                    }
+                }
+
+                if (minamount || maxamount) {
+                    let amountObj = {}
+                    if (minamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
+                        }
+                    }
+                    if (maxamount) {
+                        amountObj = {
+                            ...amountObj,
+                            ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
+                        }
+                    }
+                    searchObj = {
+                        ...searchObj,
+                        ...{ $expr: amountObj }
+                    }
+                }
+
+                const total = await BetSportsBook.find(searchObj).count();
+                const data = await BetSportsBook.find(searchObj)
+                    .sort({ createdAt: -1 })
+                    .skip(page * perPage)
+                    .limit(perPage)
+                    .populate('userId', ['username', 'currency']);
+                return res.json({ total, perPage, page, data, });
+            } else {
+                return res.status(404).json({ error: 'Can\'t find bets on house.' });
             }
 
-            if (match && match == 'pending') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
-                };
-            }
-            else if (match && match == 'matched') {
-                searchObj = {
-                    ...searchObj,
-                    ...{ matchingStatus: 'Matched' }
-                };
-            }
 
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t find bets.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/bets-csv',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        try {
+            const { datefrom, dateto, sport, minamount, maxamount } = req.query;
+            let searchObj = { deletedAt: null };
             if (datefrom || dateto) {
                 let dateObj = {};
                 if (datefrom) {
@@ -957,16 +1692,105 @@ adminRouter.get(
                 }
             }
 
-            const total = await Bet.find(searchObj).count();
-            const data = await Bet.find(searchObj)
+            const bets = await Bet.find(searchObj)
                 .sort({ createdAt: -1 })
-                .skip(page * perPage)
-                .limit(perPage)
-                .populate('userId', ['username', 'currency'])
-            page++;
-            res.json({ total, perPage, page, data, });
+                .populate('userId', ['username', 'currency', 'email']);
+
+            searchObj = {};
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $gte: datefrom }
+                        }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = {
+                            ...dateObj,
+                            ...{ $lte: dateto }
+                        }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ createdAt: dateObj }
+                }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
+                    }
+                }
+                if (maxamount) {
+                    amountObj = {
+                        ...amountObj,
+                        ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
+                    }
+                }
+                searchObj = {
+                    ...searchObj,
+                    ...{ $expr: amountObj }
+                }
+            }
+
+            const betSportsBook = await BetSportsBook.find(searchObj)
+                .sort({ createdAt: -1 })
+                .populate('userId', ['username', 'email', 'currency']);
+
+            let data = [
+                ['House', 'Name', 'Email', 'Sport', 'Game', 'Wager', 'Odds', 'Results', 'Win/Loss', 'Time']
+            ];
+            bets.forEach(bet => {
+                let results = '-';
+                let winLoss = '-';
+                if (bet.status == 'Settled - Win') {
+                    results = 'WIN';
+                    winLoss = '+ $' + Number(bet.credited).toFixed(2);
+                }
+                if (bet.status == 'Settled - Lose') {
+                    results = 'LOSE'
+                    winLoss = '+ $' + Number(bet.bet).toFixed(2);
+                }
+                data.push([
+                    'PPW',
+                    bet.userId.username,
+                    bet.userId.email,
+                    bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
+                    bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`,
+                    `$ ${bet.bet}`,
+                    Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
+                    results,
+                    winLoss,
+                    dateformat(bet.updatedAt, 'default')
+                ]);
+            })
+            betSportsBook.forEach(bet => {
+                data.push([
+                    'Pinnacle',
+                    bet.userId.username,
+                    bet.userId.email,
+                    bet.WagerInfo.Sport,
+                    bet.WagerInfo.EventName,
+                    `$ ${Number(bet.WagerInfo.ToRisk)}`,
+                    Number(bet.WagerInfo.Odds) > 0 ? `+${Number(bet.WagerInfo.Odds).toFixed(2)}` : `${Number(bet.WagerInfo.Odds).toFixed(2)}`,
+                    bet.WagerInfo.Outcome ? bet.WagerInfo.Outcome : '-',
+                    bet.WagerInfo.ProfitAndLoss ? (Number(bet.WagerInfo.ProfitAndLoss) > 0 ? `+ $${Number(bet.WagerInfo.ProfitAndLoss).toFixed(2)}` : `- $${Number(-bet.WagerInfo.ProfitAndLoss).toFixed(2)}`) : '-',
+                    dateformat(bet.updatedAt, 'default')
+                ]);
+            })
+            res.json(data);
         } catch (error) {
-            res.status(500).json({ error: 'Can\'t find bets.', message: error });
+            return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
     }
 )
@@ -974,11 +1798,22 @@ adminRouter.get(
 adminRouter.get(
     '/bet',
     authenticateJWT,
+    limitRoles('bet_activities'),
     async (req, res) => {
         try {
             let { id } = req.query;
-            const bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
-            res.json(bet);
+            let bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
+            if (bet) {
+                bet = JSON.parse(JSON.stringify(bet));
+                bet.house = 'ppw';
+                return res.json(bet);
+            }
+            bet = await BetSportsBook.findById(id).populate('userId', ['username', 'currency']);
+            if (bet) {
+                bet = JSON.parse(JSON.stringify(bet));
+                bet.house = 'pinnacle';
+            }
+            return res.json(bet);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find bet.', message: error });
         }
@@ -990,7 +1825,7 @@ adminRouter.get(
     authenticateJWT,
     async (req, res) => {
         try {
-            const sports = await Sport.find().select(['name', 'pinnacleSportId']);
+            const sports = await Sport.find().select(['name', 'originSportId']);
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports.', message: error });
@@ -1045,6 +1880,21 @@ const getTotalWager = async function (datefrom, dateto) {
     );
     if (total.length) return total[0].total;
     return 0;
+}
+
+const getTotalWagerSportsBook = async function (datefrom, dateto) {
+    const betSportsbookHistory = await BetSportsBook.find({
+        deletedAt: null,
+        createdAt: {
+            $gte: datefrom,
+            $lte: dateto
+        }
+    });
+    let total = 0;
+    for (const bet of betSportsbookHistory) {
+        total += Number(bet.WagerInfo.ToRisk);
+    }
+    return total;
 }
 
 const getTotalPlayer = async function (datefrom, dateto) {
@@ -1125,6 +1975,7 @@ const getTotalFees = async function (datefrom, dateto) {
 adminRouter.get(
     '/dashboard',
     authenticateJWT,
+    limitRoles('dashboard'),
     async (req, res) => {
         try {
             let { range } = req.query;
@@ -1193,11 +2044,13 @@ adminRouter.get(
 
             const totaldeposit = await getTotalDeposit(dateranges[0], dateranges[dateranges.length - 1]);
             const totalwager = await getTotalWager(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalwagersportsbook = await getTotalWagerSportsBook(dateranges[0], dateranges[dateranges.length - 1]);
             const totalplayer = await getTotalPlayer(new Date(0), new Date());
             const totalactiveplayer = await getTotalActivePlayer(dateranges[0], dateranges[dateranges.length - 1]);
             const totalfees = await getTotalFees(dateranges[0], dateranges[dateranges.length - 1]);
             let deposits = [];
             let wagers = [];
+            let wagerssportsbook = [];
             let players = [];
             let activeplayers = [];
             let fees = [];
@@ -1206,6 +2059,8 @@ adminRouter.get(
                 deposits.push(deposit);
                 const wager = await getTotalWager(dateranges[i - 1], dateranges[i]);
                 wagers.push(wager);
+                const wagersportsbook = await getTotalWagerSportsBook(dateranges[i - 1], dateranges[i]);
+                wagerssportsbook.push(wagersportsbook);
                 const player = await getTotalPlayer(dateranges[i - 1], dateranges[i]);
                 players.push(player);
                 const activeplayer = await getTotalActivePlayer(dateranges[i - 1], dateranges[i]);
@@ -1217,6 +2072,7 @@ adminRouter.get(
             res.json({
                 totaldeposit, deposits,
                 totalwager, wagers,
+                totalwagersportsbook, wagerssportsbook,
                 totalplayer, players,
                 totalactiveplayer, activeplayers,
                 totalfees, fees,
@@ -1228,6 +2084,1783 @@ adminRouter.get(
         }
     }
 )
+
+adminRouter.get(
+    '/email-templates',
+    authenticateJWT,
+    limitRoles('email_templates'),
+    async function (req, res) {
+        const email_templates = await Email.find();
+        res.json({
+            email_templates
+        })
+    }
+);
+
+adminRouter.post(
+    '/email-template',
+    authenticateJWT,
+    limitRoles('email_templates'),
+    async function (req, res) {
+        try {
+            const email_template = await Email.create(req.body);
+            res.json({ email_template })
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+);
+
+adminRouter.get(
+    '/email-template/:title',
+    authenticateJWT,
+    limitRoles('email_templates'),
+    async function (req, res) {
+        const { title } = req.params;
+        try {
+            const email_template = await Email.findOne({ title });
+            return res.json({
+                email_template
+            });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find email template.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/email-template/:title',
+    authenticateJWT,
+    limitRoles('email_templates'),
+    async function (req, res) {
+        const { title } = req.params;
+
+        try {
+            const email_template = await Email.findOne({ title });
+            try {
+                await email_template.update(req.body);
+                return res.json({ message: 'Successfully updated.' });
+            } catch (error) {
+                return res.status(500).json({ error: 'Can\'t update email template.' });
+            }
+
+        } catch (error) {
+            return res.status(404).json({ error: 'Can\'t find email template.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/autobet',
+    authenticateJWT,
+    limitRoles('autobet'),
+    async function (req, res) {
+        const data = req.body;
+        try {
+            const existing = await AutoBet.find({ userId: ObjectId(data.userId), deletedAt: null });
+            if (existing && existing.length) {
+                return res.json({ success: false, message: "He/She is already autobet user." });
+            }
+            await AutoBet.create(data);
+            res.json({ success: true });
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t create autobet.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/autobets',
+    authenticateJWT,
+    limitRoles('autobet'),
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        const total = await AutoBet.find({ deletedAt: null }).count();
+        AutoBet.find({ deletedAt: null })
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage)
+            .populate('userId', ['username', 'balance', 'email', 'firstname', 'lastname'])
+            .exec(function (error, data) {
+                if (error) {
+                    res.status(404).json({ error: 'Can\'t find customers.' });
+                    return;
+                }
+                res.status(200).json({ total, perPage, page: page + 1, data });
+            });
+    }
+)
+
+adminRouter.patch(
+    '/autobet/:id',
+    authenticateJWT,
+    limitRoles('autobet'),
+    async function (req, res) {
+        const data = req.body;
+        const { id } = req.params;
+        try {
+            const autobet = await AutoBet.findById(new ObjectId(id))
+            if (!autobet) {
+                return res.status(404).json({ error: 'Can\'t find autobet data.' });
+            }
+            await autobet.update(data);
+            const result = await AutoBet
+                .findById(new ObjectId(id))
+                .populate('userId', ['username', 'balance']);
+            res.json(result);
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t updated autobet.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/autobet/:id',
+    authenticateJWT,
+    limitRoles('autobet'),
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            const autobet = await AutoBet.findById(new ObjectId(id));
+            if (!autobet) {
+                return res.status(404).json({ error: 'Can\'t find autobet data.' });
+            }
+            await autobet.update({ deletedAt: new Date() });
+            res.json("Deleted");
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t delete autobet.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/promotion',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async function (req, res) {
+        const data = req.body;
+        try {
+            await Promotion.create(data);
+            res.json("Promotion created.");
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t create promotion.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/promotions',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+        try {
+            const total = await Promotion.find({ deletedAt: null }).count();
+            Promotion.find({ deletedAt: null })
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find promotions.' });
+                        return;
+                    }
+                    res.status(200).json({ total, perPage, page: page + 1, data });
+                });
+        } catch {
+            res.status(500).json({ error: 'Can\'t find promotions.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/promotion/:id',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            const promotion = await Promotion.findById(id);
+            if (!promotion) {
+                return res.status(404).json({ error: 'Can\'t find promotion.' });
+            }
+            const promotionlogs = await PromotionLog
+                .find({ promotion: ObjectId(id) })
+                .populate('user');
+            const result = JSON.parse(JSON.stringify(promotion));
+            result.promotionlogs = JSON.parse(JSON.stringify(promotionlogs));
+            res.json(result);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find promotion.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/verifications',
+    authenticateJWT,
+    limitRoles('kyc'),
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        try {
+            const total = await Verification.find().count();
+            Verification.find()
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['username', 'address', 'address2', 'city', 'postalcode', 'phone'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    data = data.filter(veri => veri.user).map(verification => {
+                        return {
+                            user_id: verification.user._id,
+                            username: verification.user.username,
+                            addressStr: verification.user.address,
+                            city: verification.user.city,
+                            postalcode: verification.user.postalcode,
+                            phone: verification.user.phone,
+                            address: verification.address ? {
+                                name: verification.address.name,
+                                submitted_at: verification.address.submitted_at
+                            } : null,
+                            identification: verification.identification ? {
+                                name: verification.identification.name,
+                                submitted_at: verification.identification.submitted_at
+                            } : null,
+                        }
+                    });
+                    res.status(200).json({ total, perPage, page: page + 1, data });
+                });
+        } catch {
+            res.status(404).json({ error: 'Can\'t find verifications.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/verification-image',
+    authenticateJWT,
+    limitRoles('kyc'),
+    async function (req, res) {
+        const { user_id, name } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            let verification = await Verification.findOne({ user: user_id });
+            if (!verification || !verification[name]) {
+                return res.status(404).json({ success: 0, message: "Image not found" });
+            }
+
+            res.json(verification[name]);
+        } catch {
+            return res.status(400).send('Can\'t find image.');
+        }
+    }
+)
+
+adminRouter.post(
+    '/verification-accept',
+    authenticateJWT,
+    limitRoles('kyc'),
+    async function (req, res) {
+        const { user_id } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            user.roles = {
+                ...user.roles,
+                verified: true
+            }
+            await user.save();
+            await Verification.deleteMany({ user: user._id });
+
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your identify was verified!',
+                    text: `Your identify was verified!`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
+                sendSMS('Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.', user.phone);
+            }
+
+            res.send("User verified successfully.");
+        } catch (error) {
+            console.log("accept Error => ", error);
+            res.status(400).send("Can't verify user.");
+        }
+    }
+)
+
+adminRouter.post(
+    '/verification-decline',
+    authenticateJWT,
+    limitRoles('kyc'),
+    async function (req, res) {
+        const { user_id } = req.body;
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(404).send('User does not exist.');
+            }
+            if (user.roles.verified) {
+                await Verification.deleteMany({ user: user._id });
+                return res.status(400).send('User alread verified.');
+            }
+            await Verification.deleteMany({ user: user._id });
+
+            const preference = await Preference.findOne({ user: user._id });
+            if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your identify verification was declined!',
+                    text: `Your identify verification was declined!`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.
+                        <br><br>`),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
+                sendSMS('Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.', user.phone);
+            }
+
+            res.send("User declined.");
+        } catch (error) {
+            console.log("declined Error => ", error);
+            res.status(400).send("Can't decline user.");
+        }
+    }
+)
+
+adminRouter.get(
+    '/tickets',
+    authenticateJWT,
+    limitRoles('tickets'),
+    async function (req, res) {
+        let { page, perPage, status } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        if (!status) status = 'all';
+
+        try {
+            let findObj = {};
+            switch (status) {
+                case 'new':
+                    findObj = { repliedAt: null };
+                    break;
+                case 'replied':
+                    findObj = { repliedAt: { "$ne": null } };
+                    break;
+                case 'all':
+                default:
+                    break;
+            }
+            const total = await Ticket.find(findObj).count();
+            const tickets = await Ticket.find(findObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .select(['email', 'subject', 'department', 'createdAt', 'repliedAt']);
+
+            res.status(200).json({ total, perPage, page: page + 1, data: tickets });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find verifications.' });
+        }
+    }
+);
+
+adminRouter.get(
+    '/ticket/:id',
+    authenticateJWT,
+    limitRoles('tickets'),
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const ticket = await Ticket.findById(id);
+            if (!ticket) {
+                return res.status(404).json({ error: 'ticket not found' });
+            }
+
+            res.status(200).json(ticket);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find ticket.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/replyticket/:id',
+    authenticateJWT,
+    limitRoles('tickets'),
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const ticket = await Ticket.findById(id);
+            if (!ticket) {
+                return res.status(404).json({ error: 'Ticket not found.' });
+            }
+
+            if (ticket.repliedAt) {
+                return res.status(400).json({ error: 'Already Replied.' });
+            }
+
+            const { title, subject, content } = req.body;
+            if (!title || !subject || !content) {
+                return res.status(400).json({ error: 'Please fill all the fields.' });
+            }
+
+            const msg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: ticket.email,
+                subject: subject,
+                text: title,
+                html: simpleresponsive(
+                    `<h4>Hi <b>${ticket.email}</b>, we carefully checked your requirements.</h4>
+                    <br><br>
+                    ${content}
+                    <br><br>`),
+            };
+            sgMail.send(msg);
+
+            ticket.repliedAt = new Date();
+            await ticket.save();
+            res.send({ message: 'success' });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find ticket.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/ticket/:id',
+    authenticateJWT,
+    limitRoles('tickets'),
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            await Ticket.deleteMany({ _id: id });
+            res.json({ message: 'success' });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({ error: 'Can\'t delete ticket.' });
+        }
+    }
+);
+
+adminRouter.get(
+    '/faq-subjects',
+    authenticateJWT,
+    limitRoles('faq'),
+    async function (req, res) {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        try {
+            const total = await FAQSubject.find().count();
+            const faq_subjects = await FAQSubject.find()
+                .sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
+
+            res.json({ total, perPage, page: page + 1, data: faq_subjects });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subjects.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/faq-subjects/:id',
+    authenticateJWT,
+    limitRoles('faq'),
+    async function (req, res) {
+        const { id } = req.params;
+
+        try {
+            const faq_subject = await FAQSubject.findById(id)
+                .populate('items');
+
+            res.json(faq_subject);
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find subjects.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/faq-subjects',
+    authenticateJWT,
+    limitRoles('faq'),
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { title } = req.body;
+        if (!title) {
+            return res.json({ error: 'Title is required.' });
+        }
+        try {
+            const exist = await FAQSubject.findOne({ title });
+            if (exist) {
+                return res.json({ error: 'Same title is already exists.' });
+            }
+            await FAQSubject.create({ title });
+            res.json({ success: true });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t create subject.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/faq-subjects/:id',
+    authenticateJWT,
+    limitRoles('faq'),
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        try {
+            await FAQSubject.deleteOne({ _id: id });
+            await FAQItem.deleteMany({ subject: id });
+            res.json({ success: true });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t delete subject.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/faq-subjects/:id/item',
+    authenticateJWT,
+    limitRoles('faq'),
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        const { title, content } = req.body;
+        try {
+            const faq_subject = await FAQSubject.findById(id);
+            if (!faq_subject) {
+                return res.json({ error: 'Can\'t find Subject.' })
+            }
+            if (!title || !content) {
+                return res.json({ error: 'Title and content fields are required.' })
+            }
+            const faq_item = await FAQItem.create({
+                subject: id,
+                title, content
+            });
+
+            await faq_subject.update({
+                $push: {
+                    items: faq_item._id,
+                }
+            });
+            res.json({ success: true, faq_item });
+        } catch {
+            return res.status(400).json({ error: 'Can\'t add item.' });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/faq-subjects/:subjectid/item/:id',
+    authenticateJWT,
+    limitRoles('faq'),
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { subjectid, id } = req.params;
+        try {
+            const faq_subject = await FAQSubject.findById(subjectid);
+            if (!faq_subject) {
+                return res.json({ error: 'Can\'t find item.' })
+            }
+            const items = faq_subject.items.filter(item => item.toString() == id);
+            faq_subject.items = items;
+            await faq_subject.save();
+            await FAQItem.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json({ error: 'Can\'t delete item.' });
+        }
+    }
+)
+
+adminRouter.put(
+    '/faq-subjects/item/:id',
+    authenticateJWT,
+    limitRoles('faq'),
+    // bruteforce.prevent,
+    async function (req, res) {
+        const { id } = req.params;
+        const { title, content } = req.body;
+        try {
+            const faq_item = await FAQItem.findById(id);
+            if (!faq_item) {
+                return res.json({ error: 'Can\'t find Item.' })
+            }
+            if (!title || !content) {
+                return res.json({ error: 'Title and Content fields are required.' });
+            }
+            faq_item.title = title;
+            faq_item.content = content;
+            await faq_item.save();
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ error: 'Can\'t update item.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/events',
+    authenticateJWT,
+    limitRoles('events'),
+    bruteforce.prevent,
+    async (req, res) => {
+        try {
+            let { name, startDate, teamA, teamB } = req.body;
+            if (!name || !startDate || !teamA || !teamB) {
+                return res.status(400).json({ error: 'Please enter all required fields.' });
+            }
+            teamA = {
+                name: teamA.name,
+                currentOdds: teamA.odds,
+                odds: [teamA.odds]
+            }
+            teamB = {
+                name: teamB.name,
+                currentOdds: teamB.odds,
+                odds: [teamB.odds]
+            }
+            await Event.create({ name, startDate, teamA, teamB });
+            res.json({ success: "Event created." });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ error: 'Can\'t create Event.' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/events/:id',
+    authenticateJWT,
+    limitRoles('events'),
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            res.status(200).json(event);
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find events.' });
+        }
+    }
+);
+
+adminRouter.put(
+    '/events/:id',
+    authenticateJWT,
+    limitRoles('events'),
+    async function (req, res) {
+        let { id } = req.params;
+        const { name, startDate, teamA, teamB } = req.body;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            if (name) {
+                event.name = name;
+            }
+            if (startDate) {
+                event.startDate = startDate;
+            }
+            if (teamA) {
+                event.teamA = {
+                    name: teamA.name,
+                    currentOdds: teamA.odds,
+                    odds: [...event.teamA.odds, teamA.odds]
+                }
+            }
+            if (teamB) {
+                event.teamB = {
+                    name: teamB.name,
+                    currentOdds: teamB.odds,
+                    odds: [...event.teamB.odds, teamB.odds]
+                }
+            }
+            await event.save();
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+async function matchResults(eventId, matchResult) {
+    const betpool = await EventBetPool.findOne({
+        eventId: eventId,
+        // matchStartDate: { $lt: new Date() },
+        result: { $exists: false }
+    });
+
+    if (!betpool) {
+        console.log('no eligible betpool');
+        return false;
+    }
+
+    const { homeBets, awayBets } = betpool;
+    let matchCancelled = false;
+    if (homeBets.length > 0 && awayBets.length > 0) {
+        try {
+            const { homeScore, awayScore, cancellationReason } = matchResult;
+            if (cancellationReason) {
+                matchCancelled = true;
+            }
+            if (!cancellationReason) {
+                let moneyLineWinner = null;
+                if (homeScore > awayScore) moneyLineWinner = 'home';
+                else if (awayScore > homeScore) moneyLineWinner = 'away';
+                const bets = await Bet.find({
+                    _id:
+                    {
+                        $in: [
+                            ...homeBets,
+                            ...awayBets,
+                        ]
+                    }
+                });
+                for (const bet of bets) {
+                    const { _id, userId, bet: betAmount, toWin, pick, payableToWin } = bet;
+                    let betWin = pick === moneyLineWinner;
+
+                    if (betWin === true) {
+                        const user = await User.findById(userId);
+                        const { balance, email } = user;
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Win',
+                                walletBeforeCredited: balance,
+                                credited: betAmount + payableToWin,
+                                homeScore,
+                                awayScore,
+                            }
+                        }
+                        const betFee = Number((payableToWin * 0.03).toFixed(2));
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
+                        await FinancialLog.create({
+                            financialtype: 'betwon',
+                            uniqid: `BW${ID()}`,
+                            user: userId,
+                            amount: betAmount + payableToWin,
+                            method: 'betwon',
+                            status: FinancialStatus.success,
+                        });
+                        await FinancialLog.create({
+                            financialtype: 'betfee',
+                            uniqid: `BF${ID()}`,
+                            user: userId,
+                            amount: betFee,
+                            method: 'betfee',
+                            status: FinancialStatus.success,
+                        });
+                        // TODO: email winner
+
+                        const preference = await Preference.findOne({ user: user._id });
+                        if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
+                            const msg = {
+                                from: `${fromEmailName} <${fromEmailAddress}>`,
+                                to: email,
+                                subject: 'You won a wager!',
+                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                html: simpleresponsive(`
+                                            <p>
+                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                            </p>
+                                            `,
+                                    { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                ),
+                            };
+                            sgMail.send(msg);
+                        }
+                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
+                            sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
+                        }
+
+
+                    } else if (betWin === false) {
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Lose',
+                                homeScore,
+                                awayScore,
+                            }
+                        }
+                        const unplayableBet = payableToWin < toWin
+                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                        if (unplayableBet) {
+                            betChanges.$set.credited = unplayableBet;
+                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                        }
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                    } else {
+                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                    }
+                    await betpool.update({ $set: { result: 'Settled' } });
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    } else {
+        matchCancelled = true;
+    }
+    if (matchCancelled) {
+        for (const betId of homeBets) {
+            const bet = await Bet.findOne({ _id: betId });
+            const { _id, userId, bet: betAmount } = bet;
+            // refund user
+            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+        }
+        for (const betId of awayBets) {
+            const bet = await Bet.findOne({ _id: betId });
+            const { _id, userId, bet: betAmount } = bet;
+            // refund user
+            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+        }
+        await betpool.update({ $set: { result: 'Cancelled' } });
+    }
+}
+
+adminRouter.post(
+    '/events/:id/settle',
+    authenticateJWT,
+    limitRoles('events'),
+    async function (req, res) {
+        let { id } = req.params;
+        const { teamAScore, teamBScore } = req.body;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
+                return res.status(404).json({ error: 'Event is not started yet.' });
+            }
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+                return res.status(404).json({ error: 'Event is already finished.' });
+            }
+            event.status = EventStatus.settled.value;
+            event.teamAScore = teamAScore;
+            event.teamBScore = teamBScore;
+            await event.save();
+
+            await matchResults(id, { homeScore: teamAScore, awayScore: teamBScore });
+
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/events/:id/cancel',
+    authenticateJWT,
+    limitRoles('events'),
+    async function (req, res) {
+        let { id } = req.params;
+        try {
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.status(404).json({ error: 'Can\'t find events.' });
+            }
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+                return res.status(404).json({ error: 'Event is already finished.' });
+            }
+            event.status = EventStatus.canceled.value;
+            await event.save();
+
+            await matchResults(id, { homeScore: null, awayScore: null, cancellationReason: true });
+
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t save events.' });
+        }
+    }
+);
+
+adminRouter.get(
+    '/events',
+    authenticateJWT,
+    limitRoles('events'),
+    async function (req, res) {
+        let { page, perPage, status } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        if (!status) status = 'all';
+
+        try {
+            let findObj = {};
+            if (EventStatus[status]) {
+                findObj = { ...findObj, status: EventStatus[status].value };
+                if (status == FinancialStatus.pending) {
+                    findObj = { ...findObj, startDate: { $gte: new Date() } };
+                } else if (status == "outdated") {
+                    findObj = { ...findObj, startDate: { $lt: new Date() } };
+                }
+            }
+            const total = await Event.find(findObj).count();
+            const events = await Event.find(findObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage);
+
+            res.status(200).json({ total, perPage, page: page + 1, data: events });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ error: 'Can\'t find events.' });
+        }
+    }
+);
+
+adminRouter.post(
+    '/messages',
+    authenticateJWT,
+    limitRoles('messages'),
+    async (req, res) => {
+        const { type, publish, title, content } = req.body;
+        if (publish) {
+            const { is_greater_balance, greater_balance,
+                is_last_online_before, last_online_before,
+                is_last_online_after, last_online_after,
+                is_wager_more, wager_more,
+                is_user_from, user_from, } = req.body;
+            let users = [];
+            try {
+                if (is_greater_balance) {
+                    const users_balance = await User.find({ balance: { $gte: greater_balance } });
+                    users = [...users_balance];
+                }
+                if (is_wager_more) {
+                    const users_wager = await User.find();
+                    users_wager.forEach(user => {
+                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                if (is_user_from) {
+                    const users_from = await User.find({ country: user_from });
+                    users_from.forEach(user => {
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                // if (is_last_online_before) {
+                //     const online_before_login_log = await LoginLog
+                //         .aggregate([
+                //             {
+                //                 $group: {
+                //                     "_id": "$user",
+                //                     createdAt: {
+                //                         $max: '$createdAt',
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $match: {
+                //                     createdAt: {
+                //                         $lte: new Date(last_online_before)
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $lookup: {
+                //                     from: "User",
+                //                     localField: "user",
+                //                     foreignField: "_id",
+                //                     as: "user"
+                //                 }
+                //             }
+                //         ])
+                //     .find({ createdAt: { $lte: new Date(last_online_before) } })
+                //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
+
+                // }
+
+                if (type == 'internal') {
+                    await Message.create({
+                        ...req.body,
+                        published_at: new Date(),
+                        userFor: users.map(user => user._id),
+                    });
+                } else {
+                    users.map(user => {
+                        const msg = {
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
+                            to: user.email,
+                            subject: title,
+                            text: title,
+                            html: simpleresponsive(content),
+                        };
+                        sgMail.send(msg);
+                    })
+                }
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        } else {
+            try {
+                await Message.create(req.body);
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        }
+    }
+)
+
+adminRouter.get(
+    '/messages',
+    authenticateJWT,
+    limitRoles('messages'),
+    async (req, res) => {
+        let { perPage, page } = req.query;
+
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+
+        const total = await Message.find({ published_at: null }).count();
+        const messages = await Message.find({ published_at: null })
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage);
+
+        res.json({ total, perPage, page: page + 1, data: messages });
+    }
+)
+
+adminRouter.get(
+    '/messages/:id',
+    authenticateJWT,
+    limitRoles('messages'),
+    async (req, res) => {
+        let { id } = req.params;
+
+        const message = await Message.findOne({ _id: id, published_at: null })
+        res.json(message);
+    }
+)
+
+adminRouter.delete(
+    '/messages/:id',
+    authenticateJWT,
+    limitRoles('messages'),
+    async (req, res) => {
+        let { id } = req.params;
+
+        await Message.deleteMany({ _id: id, published_at: null })
+        res.json({ success: true });
+    }
+)
+
+adminRouter.put(
+    '/messages/:id',
+    authenticateJWT,
+    limitRoles('messages'),
+    async (req, res) => {
+        let { id } = req.params;
+        const data = req.body;
+
+        const message = await Message.findOne({ _id: id, published_at: null })
+        if (!message) {
+            return res, status(404).json({ success: false });
+        }
+        const { type, publish, title, content } = req.body;
+        if (publish) {
+            const { is_greater_balance, greater_balance,
+                is_last_online_before, last_online_before,
+                is_last_online_after, last_online_after,
+                is_wager_more, wager_more,
+                is_user_from, user_from, } = req.body;
+            let users = [];
+            try {
+                if (is_greater_balance) {
+                    const users_balance = await User.find({ balance: { $gte: greater_balance } });
+                    users = [...users_balance];
+                }
+                if (is_wager_more) {
+                    const users_wager = await User.find();
+                    users_wager.forEach(user => {
+                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                if (is_user_from) {
+                    const users_from = await User.find({ country: user_from });
+                    users_from.forEach(user => {
+                        if (users.find(e_user => e_user._id == user._id)) return;
+                        users.push(user);
+                    })
+                }
+                // if (is_last_online_before) {
+                //     const online_before_login_log = await LoginLog
+                //         .aggregate([
+                //             {
+                //                 $group: {
+                //                     "_id": "$user",
+                //                     createdAt: {
+                //                         $max: '$createdAt',
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $match: {
+                //                     createdAt: {
+                //                         $lte: new Date(last_online_before)
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 $lookup: {
+                //                     from: "User",
+                //                     localField: "user",
+                //                     foreignField: "_id",
+                //                     as: "user"
+                //                 }
+                //             }
+                //         ])
+                //     .find({ createdAt: { $lte: new Date(last_online_before) } })
+                //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
+
+                // }
+
+                if (type == 'internal') {
+                    await message.update({
+                        ...req.body,
+                        published_at: new Date(),
+                        userFor: users.map(user => user._id),
+                    });
+                } else {
+                    users.map(user => {
+                        const msg = {
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
+                            to: user.email,
+                            subject: title,
+                            text: title,
+                            html: simpleresponsive(content),
+                        };
+                        sgMail.send(msg);
+                    })
+                }
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        } else {
+            try {
+                await message.update(req.body);
+                res.json({ success: true });
+            } catch (error) {
+                res.status(400).json({ success: false, error: error.toString() });
+            }
+        }
+    }
+)
+
+adminRouter.get(
+    '/active-user',
+    authenticateJWT,
+    limitRoles('reports'),
+    async (req, res) => {
+        let { count } = req.query;
+        if (!count) count = 20;
+        count = parseInt(count);
+        let data = await User.aggregate([
+            {
+                "$project": {
+                    "username": 1,
+                    "email": 1,
+                    "betHistory": 1,
+                    "betSportsbookHistory": 1,
+                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                }
+            },
+            { "$sort": { "total_bets": -1 } },
+            { "$limit": count },
+        ])
+        data = await Bet.populate(data, { path: "betHistory" });
+        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
+        data = data.map(data => {
+            let win = 0, loss = 0;
+            data.betHistory.forEach(bet => {
+                if (bet.status == 'Settled - Lose') {
+                    loss += bet.bet;
+                    return;
+                } else if (bet.status == 'Settled - Win') {
+                    win += bet.payableToWin;
+                    return;
+                }
+            });
+            data.betSportsbookHistory.forEach(bet => {
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
+                    loss += Number(bet.WagerInfo.ToRisk);
+                    return;
+                }
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
+                    win += Number(bet.WagerInfo.ProfitAndLoss);
+                    return;
+                }
+            })
+            return {
+                username: data.username,
+                email: data.email,
+                total_bets: data.total_bets,
+                win: '$' + Number(win).toFixed(2),
+                loss: '$' + Number(loss).toFixed(2),
+                res: win >= loss ? ('$' + Number(win - loss).toFixed(2)) : ('- $' + Number(loss - win).toFixed(2))
+            }
+        })
+        res.json(data);
+    }
+)
+
+adminRouter.get(
+    '/active-user-csv',
+    authenticateJWT,
+    limitRoles('reports'),
+    async (req, res) => {
+        let { count } = req.query;
+        if (!count) count = 20;
+        count = parseInt(count);
+        let data = await User.aggregate([
+            {
+                "$project": {
+                    "username": 1,
+                    "email": 1,
+                    "betHistory": 1,
+                    "betSportsbookHistory": 1,
+                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                }
+            },
+            { "$sort": { "total_bets": -1 } },
+            { "$limit": count },
+        ])
+        data = await Bet.populate(data, { path: "betHistory" });
+        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
+        let csvData = [
+            ['Name', 'Email', '# of Bets', 'Win', 'Loss', 'Net']
+        ]
+        data = data.map(data => {
+            let win = 0, loss = 0;
+            data.betHistory.forEach(bet => {
+                if (bet.status == 'Settled - Lose') {
+                    loss += bet.bet;
+                    return;
+                } else if (bet.status == 'Settled - Win') {
+                    win += bet.payableToWin;
+                    return;
+                }
+            });
+            data.betSportsbookHistory.forEach(bet => {
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
+                    loss += Number(bet.WagerInfo.ToRisk);
+                    return;
+                }
+                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
+                    win += Number(bet.WagerInfo.ProfitAndLoss);
+                    return;
+                }
+            })
+            csvData.push([
+                data.username,
+                data.email,
+                data.total_bets,
+                '$' + Number(win).toFixed(2),
+                '$' + Number(loss).toFixed(2),
+                win >= loss ? ('$' + Number(win - loss).toFixed(2)) : ('- $' + Number(loss - win).toFixed(2))
+            ])
+        })
+        res.json(csvData);
+    }
+)
+
+adminRouter.get(
+    '/meta/:title',
+    authenticateJWT,
+    limitRoles('meta_tags'),
+    async (req, res) => {
+        const { title } = req.params;
+        const meta_tag = await MetaTag.findOne({ pageTitle: title });
+        res.json(meta_tag);
+    }
+);
+
+adminRouter.put(
+    '/meta/:title',
+    authenticateJWT,
+    limitRoles('meta_tags'),
+    async (req, res) => {
+        const { title } = req.params;
+        const data = req.body;
+        const meta_tag = await MetaTag.findOne({ pageTitle: title });
+        try {
+            if (meta_tag) {
+                await meta_tag.update(data);
+            } else {
+                await MetaTag.create({
+                    pageTitle: title,
+                    ...data
+                });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json("Can't save meta data.");
+        }
+    }
+);
+
+adminRouter.get(
+    '/addons/:name',
+    authenticateJWT,
+    limitRoles('addons'),
+    async (req, res) => {
+        const { name } = req.params;
+        const addon = await Addon.findOne({ name });
+        res.json(addon);
+    }
+)
+
+adminRouter.put(
+    '/addons/:name',
+    authenticateJWT,
+    limitRoles('addons'),
+    async (req, res) => {
+        const { name } = req.params;
+        const data = req.body;
+        const addon = await Addon.findOne({ name });
+        try {
+            if (addon) {
+                await addon.update({ value: data });
+            } else {
+                await Addon.create({ name, value: data });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false, });
+        }
+    }
+)
+
+adminRouter.post(
+    '/articles',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const data = req.body;
+        let articleObj = {
+            ...data,
+            published_at: data.publish ? new Date() : null
+        };
+        delete articleObj.publish;
+        try {
+            await Article.create(articleObj);
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        try {
+            let { perPage, page, status } = req.query;
+
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+
+            if (!status) status = 'all';
+
+            let searchObj = {};
+            switch (status) {
+                case 'draft':
+                    searchObj = { published_at: null };
+                    break;
+                case 'published':
+                    searchObj = { published_at: { $ne: null } };
+                    break;
+                case 'all':
+                default:
+            }
+
+            const total = await Article.find(searchObj).count();
+            const articles = await Article.find(searchObj).sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
+            res.json({ total, perPage, page: page + 1, data: articles });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const article = await Article.findById(id);
+            res.json(article);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.put(
+    '/articles/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            let articleObj = {
+                ...data,
+                published_at: data.publish ? new Date() : null
+            };
+            delete articleObj.publish;
+            await Article.findByIdAndUpdate(id, articleObj);
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await Article.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/categories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const categories = await ArticleCategory.find().sort({ createdAt: -1 });
+        res.json(categories);
+    }
+)
+
+adminRouter.post(
+    '/articles/categories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const data = req.body;
+        try {
+            await ArticleCategory.create(data);
+            res.json({ success: true });
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/categories/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await ArticleCategory.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/searchcategories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { name } = req.query;
+        const categories = await ArticleCategory.find({ title: { "$regex": name, "$options": "i" } });
+        res.json(categories.map(category => ({ label: category.title, value: category.title })));
+    }
+)
+
+adminRouter.get(
+    '/frontend/:name',
+    authenticateJWT,
+    limitRoles('frontend'),
+    async (req, res) => {
+        const { name } = req.params;
+        const frontend = await Frontend.findOne({ name: name });
+        res.json(frontend);
+    }
+)
+
+adminRouter.put(
+    '/frontend/:name',
+    authenticateJWT,
+    limitRoles('frontend'),
+    async (req, res) => {
+        const { name } = req.params;
+        const value = req.body;
+        try {
+            const frontend = await Frontend.findOne({ name: name });
+            if (!frontend) {
+                await Frontend.create({ name: name, value: value });
+            } else {
+                await frontend.update({ value: value });
+            }
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false })
+        }
+    }
+)
+
+adminRouter.post(
+    '/change-password',
+    authenticateJWT,
+    async (req, res) => {
+        const { oldPassword, password } = req.body;
+        const admin = await Admin.findById(req.user._id);
+        if (!admin) {
+            return res.status(403).json({ error: 'Can\'t find user.' });
+        }
+        const validPassword = await admin.validPassword(oldPassword);
+        if (validPassword) {
+            admin.password = password;
+            await admin.save();
+            return res.json({ success: true });
+        } else {
+            return res.json({ error: 'Password doesn\'t match' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/admins',
+    authenticateJWT,
+    limitRoles('admins'),
+    async (req, res) => {
+        try {
+            let { perPage, page, role } = req.query;
+
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+
+            if (!role) role = 'all';
+
+            let searchObj = {};
+            switch (role) {
+                case 'super_admin':
+                    searchObj = { role: 'Super Admin' };
+                    break;
+                case 'customer_service':
+                    searchObj = { role: 'Customer Service' };
+                    break;
+                case 'all':
+                default:
+            }
+
+            const total = await Admin.find(searchObj).count();
+            const admins = await Admin.find(searchObj).sort({ createdAt: 1 })
+                .skip(page * perPage)
+                .limit(perPage);
+            res.json({ total, perPage, page: page + 1, data: admins });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.post(
+    '/admins',
+    authenticateJWT,
+    limitRoles('admins'),
+    async (req, res) => {
+        const { email, password, username, role } = req.body;
+        try {
+            await Admin.create({ email, password, username, role });
+            res.status(200).json("Admin created");
+            return;
+        } catch (error) {
+            res.status(400).json({
+                error,
+                message: "Admin creation failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
+
+adminRouter.get(
+    '/admins/:id',
+    authenticateJWT,
+    limitRoles('admins'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const admin = await Admin.findById(id);
+            res.status(200).json(admin);
+            return;
+        } catch (error) {
+            res.status(400).json({
+                error,
+                message: "Admin get failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
+
+adminRouter.put(
+    '/admins/:id',
+    authenticateJWT,
+    limitRoles('admins'),
+    async (req, res) => {
+        const { id } = req.params;
+        let data = req.body;
+        try {
+            const admin = await Admin.findById(id);
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Can't find admin info."
+                });
+            }
+            if (!data.password) {
+                delete data.password;
+            }
+            Object.keys(data).map(key => {
+                admin[key] = data[key];
+            })
+            await admin.save();
+            return res.json({ success: true });
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                message: "Admin update failed. Please try with new credentials."
+            });
+            return;
+        }
+    },
+);
 
 
 module.exports = adminRouter;

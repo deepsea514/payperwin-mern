@@ -10,6 +10,8 @@ export const actionTypes = {
     getDashboardData: "Get Dashboard Data Action",
     getLastBets: "Get Last Bets Action",
     getLastBetsSuccess: "Get Last Bets Success",
+    getLastSportsBookBets: "Get Last SportsBook Bets Action",
+    getLastSportsBookBetsSuccess: "Get Last SportsBook Bets Success",
     getLastWithdraws: "Get Last Withdraws Action",
     getLastWithdrawsSuccess: "Get Last Withdraw Success",
     getLastDeposits: "Get Last Deposits Action",
@@ -22,6 +24,8 @@ export const actionTypes = {
 const initialState = {
     lastbets: [],
     loadingbets: false,
+    lastsportsbookbets: [],
+    loadingportsbookbets: [],
     lastwithdraws: [],
     loadingwithdraws: false,
     lastdeposits: [],
@@ -34,6 +38,10 @@ const initialState = {
         deposits: []
     },
     dashboardwager: {
+        totalwager: 0,
+        wagers: []
+    },
+    dashboardwagersportsbook: {
         totalwager: 0,
         wagers: []
     },
@@ -60,6 +68,12 @@ export const reducer = persistReducer(
 
             case actionTypes.getLastBetsSuccess:
                 return { ...state, ...{ loadingbets: false, lastbets: action.data } };
+
+            case actionTypes.getLastSportsBookBets:
+                return { ...state, ...{ loadingportsbookbets: true } };
+
+            case actionTypes.getLastSportsBookBetsSuccess:
+                return { ...state, ...{ loadingportsbookbets: false, lastsportsbookbets: action.data } };
 
             case actionTypes.getLastWithdraws:
                 return { ...state, ...{ loadingwithdraws: true } };
@@ -92,6 +106,8 @@ export const actions = {
     getDashboardData: () => ({ type: actionTypes.getDashboardData }),
     getLastBets: () => ({ type: actionTypes.getLastBets }),
     getLastBetsSuccess: (data) => ({ type: actionTypes.getLastBetsSuccess, data }),
+    getLastSportsBookBets: () => ({ type: actionTypes.getLastSportsBookBets }),
+    getLastSportsBookBetsSuccess: (data) => ({ type: actionTypes.getLastSportsBookBetsSuccess, data }),
     getLastWithdraws: () => ({ type: actionTypes.getLastWithdraws }),
     getLastWithdrawsSuccess: (data) => ({ type: actionTypes.getLastWithdrawsSuccess, data }),
     getLastDeposits: () => ({ type: actionTypes.getLastDeposits }),
@@ -104,6 +120,7 @@ export const actions = {
 export function* saga() {
     yield takeLatest(actionTypes.getDashboardData, function* getDashboardDataSaga() {
         yield put(actions.getLastBets());
+        yield put(actions.getLastSportsBookBets());
         yield put(actions.getLastWithdraws());
         yield put(actions.getLastDeposits());
         yield put(actions.getDashboardDataDetails());
@@ -115,6 +132,15 @@ export function* saga() {
             yield put(actions.getLastBetsSuccess(data.data));
         } catch (error) {
             yield put(actions.getLastBetsSuccess([]));
+        }
+    });
+
+    yield takeLatest(actionTypes.getLastBets, function* getLastBetsSaga() {
+        try {
+            const { data } = yield getBetActivities(1, { house: 'pinnacle' }, 10);
+            yield put(actions.getLastSportsBookBetsSuccess(data.data));
+        } catch (error) {
+            yield put(actions.getLastSportsBookBetsSuccess([]));
         }
     });
 
@@ -143,6 +169,7 @@ export function* saga() {
             const {
                 totaldeposit, deposits,
                 totalwager, wagers,
+                totalwagersportsbook, wagerssportsbook,
                 totalplayer, players,
                 totalactiveplayer, activeplayers,
                 totalfees, fees,
@@ -151,6 +178,7 @@ export function* saga() {
             yield put(actions.getDashboardDataDetailsSuccess({
                 dashboarddeposit: { totaldeposit, deposits },
                 dashboardwager: { totalwager, wagers },
+                dashboardwagersportsbook: { totalwager: totalwagersportsbook, wagers: wagerssportsbook },
                 dashboardplayer: { totalplayer, players, },
                 dashboardactiveplayer: { totalactiveplayer, activeplayers, },
                 dashboardfees: { totalfees, fees },
@@ -160,6 +188,7 @@ export function* saga() {
             yield put(actions.getDashboardDataDetailsSuccess({
                 dashboarddeposit: { totaldeposit: 0, deposits: [] },
                 dashboardwager: { totalwager: 0, wagers: [] },
+                dashboardwagersportsbook: { totalwager: 0, wagers: [] },
                 dashboardplayer: { totalplayer: 0, players: [], },
                 dashboardactiveplayer: { totalactiveplayer: 0, activeplayers: [], },
                 dashboardfees: { totalfees: 0, fees: [], },

@@ -9,7 +9,8 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import { setTitle } from '../libs/documentTitleBuilder';
+import { setMeta } from '../libs/documentTitleBuilder';
+import DocumentMeta from 'react-document-meta';
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
@@ -81,6 +82,7 @@ const initState = {
     cPassword: '',
     errors: {},
     message: '',
+    metaData: null
 };
 
 class NewPasswordFromToken extends Component {
@@ -93,7 +95,10 @@ class NewPasswordFromToken extends Component {
     }
 
     componentDidMount() {
-        setTitle({ pageTitle: 'New Password' });
+        const title = 'New Password';
+        setMeta(title, (metaData) => {
+            this.setState({ metaData: metaData });
+        })
     }
 
     handleChange(e) {
@@ -159,8 +164,10 @@ class NewPasswordFromToken extends Component {
     }
 
     render() {
+        const { metaData } = this.state;
         return (
             <div className="content">
+                {metaData && <DocumentMeta {...metaData} />}
                 <Form
                     {...this.state}
                     handleChange={this.handleChange}

@@ -88,6 +88,55 @@ async function emailNotTaken(options) {
     }
 }
 
+async function ageCanBet(options) {
+    const { obj, value } = options;
+    const now = (new Date()).getTime();
+    const birthday = (new Date(value)).getTime();
+    switch (obj.country) {
+        case 'Canada':
+            if ((now - birthday) < 19 * 365 * 24 * 3600 * 1000)
+                return 'You should be 19 years old to bet.';
+            return true;
+        case 'United States':
+            if ((now - birthday) < 21 * 365 * 24 * 3600 * 1000)
+                return 'You should be 21 years old to bet.';
+            return true;
+        default: break;
+    }
+    return 'Date is invalid';
+}
+
+async function vipCodeExist(options) {
+    const vipcode = options.value;
+    if (!vipcode || vipcode == '')
+        return true;
+    const url = `${serverUrl}/vipCodeExist?vipcode=${vipcode}`;
+    const { data } = await axios({
+        method: 'get',
+        url,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!data) {
+        throw Error('Username validation server error.');
+    } else if (data && data.success === 1) {
+        return true;
+    } else if (data && data.success === 0) {
+        return options.message || data.message;
+    } else {
+        throw Error('Username validation client error.');
+    }
+}
+
+async function involveLetterAndNumberAndSpecialCharacter(options) {
+    const { value } = options;
+    var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$");
+    if (pattern.test(value))
+        return true;
+    return "Password should include at least 1 uppercase, 1 lowercase, 1 special character, and 1 number."
+}
+
 const schema = {
     username: [
         { validator: isString },
@@ -119,10 +168,15 @@ const schema = {
         { validator: isString },
         { validator: required },
     ],
+    region: [
+        { validator: isString },
+        { validator: required },
+    ],
     password: [
         { validator: isString },
-        { validator: min, options: { number: 6 } },
-        { validator: max, options: { number: 128 } },
+        { validator: involveLetterAndNumberAndSpecialCharacter, hasTag: 'registration' },
+        { validator: min, options: { number: 8 }, hasTag: 'registration' },
+        { validator: max, options: { number: 128 }, hasTag: 'registration' },
         { validator: required },
     ],
     cPassword: [
@@ -135,8 +189,8 @@ const schema = {
         { validator: required },
     ],
     dateofbirth: [
-        { validator: isString },
         { validator: required },
+        { validator: ageCanBet },
     ],
     address: [
         { validator: isString },
@@ -167,6 +221,7 @@ const schema = {
     ],
     vipcode: [
         { validator: isString },
+        { validator: vipCodeExist, hasTag: 'registration' }
     ],
 };
 

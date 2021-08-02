@@ -15,6 +15,7 @@ const initialState = {
     total: 0,
     currentPage: 1,
     loading: false,
+    pending_total: 0,
     filter: {
         datefrom: '',
         dateto: '',
@@ -27,7 +28,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "withdrawlogs", whitelist: ['filter', 'currentPage'] },
+    { storage, key: "withdrawlogs", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getWithdrawLog:
@@ -65,9 +66,9 @@ export function* saga() {
         try {
             const state = yield select((state) => state.withdrawlog);
             const { data } = yield getWithdrawLog(state.currentPage, state.filter);
-            yield put(actions.getWithdrawLogSuccess({ withdrawlogs: data.data, total: data.total }));
+            yield put(actions.getWithdrawLogSuccess({ withdrawlogs: data.data, total: data.total, pending_total: data.pending_total }));
         } catch (error) {
-            yield put(actions.getWithdrawLogSuccess({ withdrawlogs: [], total: 0 }));
+            yield put(actions.getWithdrawLogSuccess({ withdrawlogs: [], total: 0, pending_total: 0 }));
         }
     });
 

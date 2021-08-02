@@ -4,27 +4,29 @@ import { Link, withRouter } from 'react-router-dom';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import UserContext from '../contexts/userContext';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
 
 const Form = ({
-    username, // eslint-disable-line react/prop-types
+    email, // eslint-disable-line react/prop-types
     password, // eslint-disable-line react/prop-types
     errors, // eslint-disable-line react/prop-types
     handleChange, // eslint-disable-line react/prop-types
     handleSubmit, // eslint-disable-line react/prop-types
     handleDirty, // eslint-disable-line react/prop-types
     pathNameLoginOrChat,
-    closeModal,
 }) => (
     <React.Fragment>
         <div className="form-group email-d">
             <input
-                label="Username"
-                name="username"
-                value={username}
-                className="form-control"
-                placeholder="Username"
+                label="Email"
+                name="email"
+                type="email"
+                value={email}
+                className="form-control form-control-sm"
+                placeholder="Email"
                 onChange={handleChange}
                 onBlur={handleDirty}
             />
@@ -34,7 +36,7 @@ const Form = ({
                 label="Password"
                 name="password"
                 value={password}
-                className="form-control"
+                className="form-control form-control-sm"
                 placeholder="Password"
                 onChange={handleChange}
                 onBlur={handleDirty}
@@ -57,7 +59,7 @@ const Form = ({
 );
 
 const initState = {
-    username: '',
+    email: '',
     password: '',
     errors: {},
 };
@@ -76,33 +78,34 @@ class Login extends Component {
     }
 
     handleSubmit(userContextValue) {
-        const { history, location: { pathname }, closeModal } = this.props;
+        const { history, location: { pathname }, require2FAAction } = this.props;
         const { getUser } = userContextValue;
         const { errors } = this.state;
 
         registrationValidation.validateFields(this.state)
             .then((result) => {
                 if (result === true) {
-                    const { username, password } = this.state;
+                    const { email, password } = this.state;
                     const url = `${serverUrl}/login`;
                     axios({
                         method: 'post',
                         url,
                         data: {
-                            username,
+                            email,
                             password,
                         },
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         withCredentials: true,
-                    }).then((/* { data } */) => {
-                        getUser();
-                        if (pathname === '/login') {
-                            history.replace({ pathname: '/' });
-                        }
-                        if (closeModal) {
-                            closeModal();
+                    }).then(({ data }) => {
+                        if (data._2fa_required == false) {
+                            getUser();
+                            if (pathname === '/login') {
+                                history.replace({ pathname: '/' });
+                            }
+                        } else {
+                            require2FAAction();
                         }
                     }).catch((err) => {
                         if (err.response) {
@@ -113,7 +116,6 @@ class Login extends Component {
                         }
                     });
                 } else {
-                    console.log(result);
                     this.setState({
                         errors: result,
                     });
@@ -139,7 +141,7 @@ class Login extends Component {
     }
 
     render() {
-        const { location: { pathname }, closeModal } = this.props;
+        const { location: { pathname } } = this.props;
         const { errors } = this.state;
         return (
             <UserContext.Consumer>
@@ -153,17 +155,16 @@ class Login extends Component {
                                     handleSubmit={() => this.handleSubmit(userContextValue)}
                                     handleDirty={this.handleDirty}
                                     pathNameLoginOrChat={pathname === '/login' || pathname === '/chat/'}
-                                    closeModal={closeModal}
                                 />
                             </div>
                             <div>
                                 {
                                     errors.server ? <div className="form-error">{errors.server}</div>
-                                        : errors.username ? <div className="form-error">{errors.username}</div>
+                                        : errors.email ? <div className="form-error">{errors.email}</div>
                                             : errors.password ? <div className="form-error">{errors.password}</div> : null
                                 }
                             </div>
-                            <div className="frgt-pswrd"> Forgot <Link to="/usernameRecovery">username</Link> or <Link to="/passwordRecovery">password?</Link></div>
+                            <div className="frgt-pswrd"> Forgot <Link to="/passwordRecovery">password?</Link></div>
                         </div>
                     )
                 }
@@ -172,4 +173,4 @@ class Login extends Component {
     }
 }
 
-export default withRouter(Login);
+export default connect(null, frontend.actions)(withRouter(Login));

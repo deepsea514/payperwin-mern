@@ -5,6 +5,8 @@
   "author": "Calvin Jaramillo",
   "dependencies": {
     "@sendgrid/mail": "^7.1.1",
+    "@types/qrcode": "^1.4.0",
+    "@types/speakeasy": "^2.0.5",
     "aes-js": "^3.1.2",
     "aesjs": "^1.0.0",
     "apicache": "^1.2.1",
@@ -14,6 +16,7 @@
     "cacheman": "^2.2.1",
     "cachios": "^2.2.2",
     "compression": "^1.7.2",
+    "connect-mongodb-session": "^2.4.1",
     "cookie-parser": "^1.4.4",
     "cookie-session": "^1.3.3",
     "cors": "^2.8.5",
@@ -23,6 +26,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "express-brute": "^1.0.1",
+    "express-fileupload": "^1.2.1",
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^2.2.31",
@@ -33,12 +37,18 @@
     "passport-email": "0.0.3",
     "passport-local": "^1.0.0",
     "pkcs7": "^1.0.4",
-    "seedrandom": "^2.4.3"
+    "qrcode": "^1.4.4",
+    "seedrandom": "^2.4.3",
+    "socket.io": "^4.0.0",
+    "speakeasy": "^2.0.0",
+    "twilio": "^3.66.1"
   },
   "scripts": {
     "start": "set NODE_ENV=development&&node index.js",
     "server": "node index.js",
     "resultsDaemon": "node matchResultDaemon.js",
-    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js"
+    "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
+    "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js",
+    "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js"
   }
 }

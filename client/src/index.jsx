@@ -9,7 +9,6 @@ function handleVisibilityChange() {
         setTitle({ notificationCount: 0, flashNotification: false });
     }
 }
-
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
 ReactDOM.render(

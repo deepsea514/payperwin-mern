@@ -28,11 +28,8 @@ const UserSchema = new Schema(
         roles: Object,
         settings: Object,
         balance: { type: Number, default: 0 },
-        betHistory: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
-        depositlog: [{ type: Schema.Types.ObjectId, ref: "FinancialLog" }],
-        withdrawlog: [{ type: Schema.Types.ObjectId, ref: "FinancialLog" }],
-        deletedAt: Date,
-        // stats: Schema.Types.Mixed,
+        betHistory: [{ type: Schema.Types.ObjectId, ref: "Bet", default: [] }],
+        betSportsbookHistory: [{ type: Schema.Types.ObjectId, ref: "BetSportsBook", default: [] }],
     },
     {
         timestamps: true,
@@ -41,6 +38,9 @@ const UserSchema = new Schema(
 
 UserSchema.pre('save', function (next) { // eslint-disable-line func-names
     const user = this;
+    // check if phone changed.
+    if (user.isModified('phone'))
+        user.roles.phone_verified = false;
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
     // generate a salt
