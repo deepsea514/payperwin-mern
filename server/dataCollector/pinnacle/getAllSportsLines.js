@@ -15,8 +15,8 @@ const sportsData = require('./sports.json');
 
 // Database
 mongoose.Promise = global.Promise;
-const databaseName = 'PayPerWinDev'
-// const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
+// const databaseName = 'PayPerWinDev'
+const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     authSource: "admin",
     user: config.mongo.username,
