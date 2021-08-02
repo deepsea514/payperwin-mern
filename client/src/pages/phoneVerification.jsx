@@ -111,13 +111,18 @@ class PhoneVerification extends PureComponent {
                 <h3>Phone Verification</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
+                        <Link
+                            style={{ cursor: 'pointer', fontSize: 16 }}
+                            to="/preferences">
+                            <strong><i className="fas fa-chevron-left"></i> Back To Preferences</strong>
+                        </Link>
                         {(() => {
                             if (!user)
                                 return <></>;
                             if (user.roles.phone_verified)
-                                return (<h4>You already verified your phone number</h4>)
+                                return (<h4 className="mt-2">Your phone number has been verified</h4>)
                             return (
-                                <div className={classes.formContent}>
+                                <div className={`mt-2 ${classes.formContent}`}>
                                     <p className="dpsit">Please confirm the information below is correct.</p>
                                     {status == 'codeSentError' && <p className="text-danger">Can't send verification code. Please try again later</p>}
                                     {user && <Formik
