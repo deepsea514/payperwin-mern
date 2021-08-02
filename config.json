@@ -12,7 +12,8 @@
     "recaptchaSiteKey": "",
     "mongo": {
         "username": "admin",
-        "password": "PayPerWin777"
+        "password": "PayPerWin777",
+        "host": "159.203.4.60"
     },
     "appUrl": "https://api.payperwin.co",
     "appAdminUrl": "https://api.payperwin.co/admin",
