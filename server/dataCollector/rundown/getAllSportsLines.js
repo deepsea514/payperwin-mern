@@ -4,6 +4,7 @@ const sports = require("./sports.json");
 const mongoose = require('mongoose');
 const config = require('../../../config.json');
 const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
 let call = 0;
 
 // Database

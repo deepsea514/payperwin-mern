@@ -58,6 +58,7 @@ const cookieParser = require('cookie-parser');
 // const cookieSession = require('cookie-session');
 const expressSession = require('express-session');
 const dateformat = require("dateformat");
+require('dotenv').config();
 // const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const sgMail = require('@sendgrid/mail');
 const { ObjectId } = require('mongodb');
@@ -103,7 +104,7 @@ const bruteforce = new ExpressBrute(bruteStore);
 // Database
 mongoose.Promise = global.Promise;
 // const databaseName = 'PayPerWinDev'
-console.log(process.env, 'mode');
+console.log(process.env.NODE_ENV, 'mode');
 const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 const mongooptions = {
     authSource: "admin",

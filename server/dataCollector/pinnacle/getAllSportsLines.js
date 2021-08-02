@@ -7,11 +7,12 @@ const getSportLines = require('./getSportLines');
 const sleep = require('../../libs/sleep');
 const matchResults = require('./matchResults');
 const config = require('../../../config.json');
+const sportsData = require('./sports.json');
 //external libraries
 const mongoose = require('mongoose');
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
-const sportsData = require('./sports.json');
+require('dotenv').config();
 
 // Database
 mongoose.Promise = global.Promise;

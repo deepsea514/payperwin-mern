@@ -12,6 +12,7 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 //external libraries
 const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
