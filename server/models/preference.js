@@ -10,8 +10,40 @@ const PreferenceSchema = new Schema(
         timezone: { type: String },
         lang: { type: String, default: 'en' },
         display_mode: { type: String, default: 'light' },
-        notify_email: { type: String, default: 'yes' },
-        notify_phone: { type: String, default: 'no' },
+        notification_settings: {
+            win_confirmation: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            wager_matched: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            bet_accepted: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            no_match_found: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            bet_forward_reminder: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            deposit_confirmation: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            withdraw_confirmation: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+            other: {
+                email: { type: Boolean, default: true },
+                sms: { type: Boolean, default: true },
+            },
+        }
     },
     {
         timestamps: true,

@@ -8,11 +8,22 @@ import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
 import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
-import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
+import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const config = require('../../../config.json');
 const serverUrl = config.appUrl;
+
+const initial_notification_settings = {
+    win_confirmation: { email: true, sms: true },
+    wager_matched: { email: true, sms: true },
+    bet_accepted: { email: true, sms: true },
+    no_match_found: { email: true, sms: true },
+    bet_forward_reminder: { email: true, sms: true },
+    deposit_confirmation: { email: true, sms: true },
+    withdraw_confirmation: { email: true, sms: true },
+    other: { email: true, sms: true },
+}
 
 class Preferences extends Component {
     constructor(props) {
@@ -53,8 +64,7 @@ class Preferences extends Component {
             dateFormat,
             timezone,
             display_mode,
-            notify_email,
-            notify_phone,
+            notification_settings,
             user
         } = this.props;
 
@@ -64,8 +74,7 @@ class Preferences extends Component {
             dateFormat,
             timezone,
             display_mode: display_mode ? display_mode : 'light',
-            notify_email: notify_email ? notify_email : 'yes',
-            notify_phone: notify_phone ? notify_phone : 'no',
+            notification_settings: notification_settings ? notification_settings : initial_notification_settings
         };
         const { metaData } = this.state;
 
@@ -79,8 +88,40 @@ class Preferences extends Component {
             lang: Yup.string()
                 .required("You shuld select Language."),
             display_mode: Yup.string(),
-            notify_email: Yup.string(),
-            notify_phone: Yup.string(),
+            notification_settings: Yup.object().shape({
+                win_confirmation: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                wager_matched: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                bet_accepted: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                no_match_found: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                bet_forward_reminder: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                deposit_confirmation: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                withdraw_confirmation: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+                other: Yup.object().shape({
+                    email: Yup.bool().default(true),
+                    sms: Yup.bool().default(true),
+                }),
+            })
         });
 
         return (
@@ -236,35 +277,250 @@ class Preferences extends Component {
                                             <h3> COMMUNICATION PREFERENCES</h3>
                                             <br />
                                             <p>Choose how you would prefer to receive important notifications</p>
-
-                                            <Form.Group>
-                                                <Form.Label>Email</Form.Label>
-                                                <FormControl component="fieldset">
-                                                    <RadioGroup
-                                                        name="notify_email"
-                                                        row
-                                                        {...formik.getFieldProps("notify_email")}
-                                                    >
-                                                        <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                                                        <FormControlLabel value="no" control={<Radio />} label="No" />
-                                                    </RadioGroup>
-                                                </FormControl>
-                                            </Form.Group>
-
-                                            <Form.Group>
-                                                <Form.Label>SMS</Form.Label>
-                                                <FormControl component="fieldset">
-                                                    <RadioGroup
-                                                        name="notify_phone"
-                                                        row
-                                                        {...formik.getFieldProps("notify_phone")}
-                                                    >
-                                                        <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                                                        <FormControlLabel value="no" control={<Radio />} label="No" />
-                                                    </RadioGroup>
-                                                </FormControl>
-                                                {!user.roles.phone_verified && <p>Your phone number needs to be verified before you can opt into SMS notifications. <Link to="/phone-verification"><b>Click here to verify your phone number.</b></Link></p>}
-                                            </Form.Group>
+                                            {!user.roles.phone_verified && <p>Your phone number needs to be verified before you can opt into SMS notifications. <Link to="/phone-verification"><b>Click here to verify your phone number.</b></Link></p>}
+                                            <table className="deposit-withdraw-table">
+                                                <thead>
+                                                    <tr className="titles" style={{ display: "table-row" }}>
+                                                        <th></th>
+                                                        <th><center>Email</center></th>
+                                                        <th><center>SMS</center></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="gray-cell">
+                                                            Win Confirmation
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.win_confirmation.email}
+                                                                    {...formik.getFieldProps("notification_settings.win_confirmation.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.win_confirmation.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.win_confirmation.sms}
+                                                                    {...formik.getFieldProps("notification_settings.win_confirmation.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.win_confirmation.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Wager Matched
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.wager_matched.email}
+                                                                    {...formik.getFieldProps("notification_settings.wager_matched.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.wager_matched.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.wager_matched.sms}
+                                                                    {...formik.getFieldProps("notification_settings.wager_matched.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.wager_matched.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Bet Accepted
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.bet_accepted.email}
+                                                                    {...formik.getFieldProps("notification_settings.bet_accepted.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.bet_accepted.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.bet_accepted.sms}
+                                                                    {...formik.getFieldProps("notification_settings.bet_accepted.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.bet_accepted.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            No Match Found
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.no_match_found.email}
+                                                                    {...formik.getFieldProps("notification_settings.no_match_found.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.no_match_found.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.no_match_found.sms}
+                                                                    {...formik.getFieldProps("notification_settings.no_match_found.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.no_match_found.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Bet Forward Reminder
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.bet_forward_reminder.email}
+                                                                    {...formik.getFieldProps("notification_settings.bet_forward_reminder.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.bet_forward_reminder.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.bet_forward_reminder.sms}
+                                                                    {...formik.getFieldProps("notification_settings.bet_forward_reminder.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.bet_forward_reminder.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Deposit Confirmation
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.deposit_confirmation.email}
+                                                                    {...formik.getFieldProps("notification_settings.deposit_confirmation.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.deposit_confirmation.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.deposit_confirmation.sms}
+                                                                    {...formik.getFieldProps("notification_settings.deposit_confirmation.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.deposit_confirmation.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Withdraw Confirmation
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.withdraw_confirmation.email}
+                                                                    {...formik.getFieldProps("notification_settings.withdraw_confirmation.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.withdraw_confirmation.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.withdraw_confirmation.sms}
+                                                                    {...formik.getFieldProps("notification_settings.withdraw_confirmation.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.withdraw_confirmation.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td className="gray-cell">
+                                                            Others
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.other.email}
+                                                                    {...formik.getFieldProps("notification_settings.other.email")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.other.email", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                        <td className="gray-cell">
+                                                            <center>
+                                                                <Checkbox
+                                                                    checked={formik.values.notification_settings.other.sms}
+                                                                    {...formik.getFieldProps("notification_settings.other.sms")}
+                                                                    onChange={(e) => {
+                                                                        formik.setFieldValue("notification_settings.other.sms", e.target.checked);
+                                                                    }}
+                                                                    color="primary"
+                                                                />
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
 
                                         <button type="submit" className="clr-blue btn-smt">Save </button>
@@ -273,8 +529,8 @@ class Preferences extends Component {
                             }
                         </Formik>}
                     </div>
-                </div>
-            </React.Fragment>
+                </div >
+            </React.Fragment >
         );
     }
 }
@@ -285,8 +541,7 @@ const mapStateToProps = (state) => ({
     dateFormat: state.frontend.dateFormat,
     timezone: state.frontend.timezone,
     display_mode: state.frontend.display_mode,
-    notify_email: state.frontend.notify_email,
-    notify_phone: state.frontend.notify_phone,
+    notification_settings: state.frontend.notification_settings
 });
 
 export default connect(mapStateToProps, frontend.actions)(Preferences)

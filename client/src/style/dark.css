@@ -1,10 +1,14 @@
+.header-search.dark, .header-search.dark * {
+    transition: all 0.5s ease;
+}
+
 .header-search.dark {
     background: linear-gradient(90deg, #0b1422, #273043);
     color: white;
 }
 
 .header-search.dark .search-box, .header-search.dark .searh-f, .header-search.dark .displaymode_container {
-    background-color: #182F49;
+    background-color: #29496e;
     color: white;
 }
 

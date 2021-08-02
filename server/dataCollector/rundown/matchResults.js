@@ -129,7 +129,7 @@ async function matchResults(sportName, events) {
                             // TODO: email winner
 
                             const preference = await Preference.findOne({ user: user._id });
-                            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                            if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
                                 const msg = {
                                     from: `${fromEmailName} <${fromEmailAddress}>`,
                                     to: email,
@@ -145,7 +145,7 @@ async function matchResults(sportName, events) {
                                 };
                                 sgMail.send(msg);
                             }
-                            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
                                 sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
                             }
                         } else if (betWin === false) {

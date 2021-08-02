@@ -25,6 +25,16 @@ const initialState = {
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     require_2fa: false,
+    notification_settings: {
+        win_confirmation: { email: true, sms: true },
+        wager_matched: { email: true, sms: true },
+        bet_accepted: { email: true, sms: true },
+        no_match_found: { email: true, sms: true },
+        bet_forward_reminder: { email: true, sms: true },
+        deposit_confirmation: { email: true, sms: true },
+        withdraw_confirmation: { email: true, sms: true },
+        other: { email: true, sms: true },
+    }
 };
 
 export const reducer = persistReducer(

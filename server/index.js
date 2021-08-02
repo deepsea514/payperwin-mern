@@ -959,7 +959,7 @@ expressApp.post(
                                         }
                                         const timeString = convertTimeLineDate(new Date(), timezone);
 
-                                        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                                        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                                             const msg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
                                                 to: user.email,
@@ -979,7 +979,7 @@ expressApp.post(
                                             };
                                             sgMail.send(msg);
                                         }
-                                        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                             sendSMS(`This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
                                             Wager: $${betAfterFee.toFixed(2)}\n 
                                             Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}\n 
@@ -1160,7 +1160,7 @@ expressApp.post(
                                             }
                                             const timeString = convertTimeLineDate(new Date(), timezone);
 
-                                            if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+                                            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                                                 const msg = {
                                                     from: `${fromEmailName} <${fromEmailAddress}>`,
                                                     to: user.email,
@@ -1180,7 +1180,7 @@ expressApp.post(
                                                 };
                                                 sgMail.send(msg);
                                             }
-                                            if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+                                            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                                 sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
                                                 Wager: $${betAfterFee.toFixed(2)}\n 
                                                 Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
@@ -1441,8 +1441,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         }
         const timeString = convertTimeLineDate(new Date(), timezone);
 
-
-        if (!preference || !preference.notify_email || preference.notify_email == 'yes') {
+        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
             const msg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: selectedauto.userId.email,
@@ -1462,7 +1461,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             };
             sgMail.send(msg);
         }
-        if (user.roles.phone_verified && preference && preference.notify_phone == 'yes') {
+        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
             sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
             Wager: $${betAfterFee.toFixed(2)}\n 
             Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
