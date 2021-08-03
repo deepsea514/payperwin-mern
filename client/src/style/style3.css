@@ -435,6 +435,31 @@ a.log-in-btn {
 
 .status {
     text-transform: uppercase;
+    color: white;
+}
+
+.status .matched {
+    background-color: #53b657;
+}
+
+.status .partialmatched {
+    background-color: #f9ec77;
+}
+
+.status .cancelled {
+    background-color: #8538a3;
+}
+
+.status .pending {
+    background-color: #dc6c44;
+}
+
+.status .win {
+    background-color: #579187;
+}
+
+.status .loss {
+    background-color: #6a7b88;
 }
 
 /* .col-in {

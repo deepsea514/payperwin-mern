@@ -140,6 +140,40 @@ export default class OpenBets extends PureComponent {
         this.setState({ urlCopied: true });
     }
 
+    getStatusClass = (status, outcome) => {
+        switch (status) {
+            // p2p
+            case 'Pending':
+                return 'pending';
+            case 'Matched':
+                return 'matched';
+            case 'Partial Match':
+                return 'partialmatched';
+            case 'Cancelled':
+                return 'cancelled'
+            case 'Settled - Lose':
+                return 'loss';
+            case 'Settled - Win':
+                return 'win';
+            // sportsbook
+            case 'BETTED':
+                return 'pending';
+            case 'ACCEPTED':
+                return 'matched';
+            case 'REJECTED':
+                return 'cancelled';
+            case 'CANCELLED':
+                return 'cancelled';
+            case 'ROLLBACKED':
+                return 'cancelled';
+            case 'UNSETTLED':
+                return 'cancelled';
+            case 'SETTLED':
+                if (outcome == 'WIN') return 'win';
+                return 'loss';
+        }
+    }
+
     render() {
         const { bets, metaData, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
         const { openBets, settledBets } = this.props;
@@ -268,7 +302,7 @@ export default class OpenBets extends PureComponent {
                                     </div>
                                     <div className="open-bets-col status">
                                         <strong>Status</strong>
-                                        <div>
+                                        <div className={this.getStatusClass(status)}>
                                             {status ? status : 'Accepted'}
                                         </div>
                                     </div>
@@ -333,7 +367,7 @@ export default class OpenBets extends PureComponent {
                                 </div>
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
-                                    <div>
+                                    <div className={this.getStatusClass(status)}>
                                         {status ? status : 'Accepted'}
                                     </div>
                                 </div>
@@ -408,7 +442,7 @@ export default class OpenBets extends PureComponent {
                                 </div>} */}
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
-                                    <div>
+                                    <div className={this.getStatusClass(Name, WagerInfo.Outcome)}>
                                         {Name == 'SETTLED' ? `${Name} - ${WagerInfo.Outcome}` : Name}
                                     </div>
                                 </div>
