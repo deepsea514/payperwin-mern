@@ -35,6 +35,8 @@ class Lines extends PureComponent {
             type: type,
             index: index,
             uniqueId: uniqueId,
+            ogTitle: '',
+            ogDescription: '',
         };
     }
 
@@ -145,7 +147,11 @@ class Lines extends PureComponent {
                                             }
                                         }
                                     };
-                                    this.setState({ metaData: meta });
+                                    this.setState({
+                                        metaData: meta,
+                                        ogTitle: `Bet with or against ${firstname}`,
+                                        ogDescription: `Bet with or against ${firstname} on the ${teamA} vs ${teamB} game on ${timeHelper.convertTimeLineDate(new Date(eventDate), timezone)}`
+                                    });
                                 }
                             })
                     }
@@ -205,7 +211,7 @@ class Lines extends PureComponent {
     render() {
         const { match, addBet, betSlip, removeBet, timezone } = this.props;
         const { sportName, leagueId, eventId } = match.params;
-        const { data, error, metaData, showModal, shareModal, currentUrl, urlCopied, type, index } = this.state;
+        const { data, error, metaData, showModal, shareModal, currentUrl, urlCopied, type, index, ogTitle, ogDescription } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -217,6 +223,9 @@ class Lines extends PureComponent {
         return (
             <div className="content detailed-lines">
                 {metaData && <DocumentMeta {...metaData} />}
+                {ogTitle && <meta property="og:type" content="article" />}
+                {ogTitle && <meta property="og:title" content={ogTitle} />}
+                {ogDescription && <meta property="og:description" content={ogDescription} />}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">

@@ -149,17 +149,17 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                     </Link>
                 </li>}
 
-                {/* <li
-                    className={`menu-item ${getMenuItemActive("/wager-feeds", false)}`}
+                <li
+                    className={`menu-item ${getMenuItemActive("/cashback", false)}`}
                     aria-haspopup="true"
                 >
-                    <Link className="menu-link" to="/wager-feeds/">
+                    <Link className="menu-link" to="/cashback/">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Devices/Gamepad2.svg"} />
+                            <SVG src={"/media/svg/icons/Shopping/Dollar.svg"} />
                         </span>
-                        <span className="menu-text">Wager Feeds</span>
+                        <span className="menu-text">Cashback</span>
                     </Link>
-                </li> */}
+                </li>
 
                 {currentUser && isAvailable('autobet') && <li
                     className={`menu-item ${getMenuItemActive("/autobet", false)}`}
