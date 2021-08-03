@@ -31,6 +31,7 @@ import ArticlesModule from "../modules/articles/pages";
 import FrontendManageModule from "../modules/frontend/pages";
 import ChangePassword from './ChangePassword';
 import AdminModule from "../modules/admin/pages";
+import CashbackModule from "../modules/cashback/pages";
 
 class App extends Component {
     constructor(props) {
@@ -145,6 +146,9 @@ class App extends Component {
 
                     {/* Frontend */}
                     {this.isAvailable('frontend') && <Route path="/frontend" component={FrontendManageModule} />}
+
+                    {/* Cashback */}
+                    {this.isAvailable('cashback') && <Route path="/cashback" component={CashbackModule} />}
 
                     <Redirect exact from="/" to="/dashboard" />
 

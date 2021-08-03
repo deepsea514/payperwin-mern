@@ -3862,5 +3862,75 @@ adminRouter.put(
     },
 );
 
+adminRouter.get(
+    '/cashback',
+    authenticateJWT,
+    limitRoles('cashback'),
+    async (req, res) => {
+        try {
+            let { page, year, month, perPage } = req.query;
+
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+            const today = new Date();
+            const thisYear = today.getFullYear();
+            const thisMonth = today.getMonth();
+            if (!year) year = thisYear;
+            if (!month) month = thisMonth;
+            if (year == thisYear && month == thisMonth) {
+                res.json({ total: 0, perPage, page: 1, data: [] })
+            } else {
+                let searchObj = {
+                    financialtype: 'cashback',
+                    note: `${year}:${parseInt(month) + 1}`,
+                };
+
+                const total = await FinancialLog.find(searchObj).count();
+                const cashback = await FinancialLog.find(searchObj).sort({ createdAt: 1 })
+                    .skip(page * perPage)
+                    .limit(perPage)
+                    .populate('user', ['username', 'email']);
+                res.json({ total, perPage, page: page + 1, data: cashback });
+            }
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/cashback/:user_id/:year/:month',
+    authenticateJWT,
+    limitRoles('cashback'),
+    async (req, res) => {
+        try {
+            const { user_id, year, month } = req.params;
+
+            const lossbetsSportsbook = await BetSportsBook.find({
+                Name: "SETTLED",
+                userId: user_id,
+                "WagerInfo.Outcome": "LOSE",
+                createdAt: {
+                    $gte: new Date(year, month - 1, 0),
+                    $lte: new Date(year, month, 0),
+                }
+            });
+
+            const user = await User.findById(user_id);
+
+            res.json({ history: lossbetsSportsbook, user });
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
 
 module.exports = adminRouter;
