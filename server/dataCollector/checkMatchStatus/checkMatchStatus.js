@@ -3,6 +3,7 @@ const Addon = require("../../models/addon");
 const Preference = require('../../models/preference');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
+const SharedLine = require('../../models/sharedline');
 //local helpers
 const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
@@ -44,6 +45,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 });
 
 async function checkMatchStatus() {
+    // Check Match Status
     const bets = await Bet.find(
         {
             matchStartDate: { $lt: new Date().addHours(5) },
@@ -91,4 +93,11 @@ async function checkMatchStatus() {
         await bet.update({ notifySent: new Date() });
     }
     console.log("Sent mails.")
+
+    // Delete Shared Lines
+    await SharedLine.deleteMany({
+        eventDate: {
+            $lte: new Date()
+        }
+    });
 }

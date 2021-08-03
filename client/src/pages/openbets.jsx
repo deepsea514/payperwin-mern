@@ -7,6 +7,7 @@ import sportNameIcon from "../helpers/sportNameIcon";
 import dayjs from 'dayjs';
 import DocumentMeta from 'react-document-meta';
 import QRCode from "react-qr-code";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
 
@@ -19,6 +20,7 @@ export default class OpenBets extends PureComponent {
             error: null,
             metaData: null,
             shareModal: false,
+            loadingUrl: false,
             lineUrl: '',
             urlCopied: false,
         };
@@ -116,6 +118,22 @@ export default class OpenBets extends PureComponent {
         return false;
     }
 
+    shareLink = (lineQuery, matchStartDate) => () => {
+        const { type, sportName, leagueId, eventId, index } = lineQuery;
+        const generatedLineUrl = `${window.location.origin}/sport/${sportName}/league/${leagueId}/event/${eventId}`;
+        this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
+        axios.put(
+            `${serverUrl}/share-line`,
+            { url: generatedLineUrl, eventDate: matchStartDate, type, index },
+            { withCredentials: true }
+        ).then(({ data }) => {
+            const { url, index, type, uniqueId } = data;
+            this.setState({ loadingUrl: false, lineUrl: `${url}?type=${type}${isNaN(index) ? '' : `&index=${index}`}&uniqueId=${uniqueId}` });
+        }).catch(() => {
+            this.setState({ loadingUrl: false, lineUrl: '' });
+        })
+    }
+
     copyUrl = () => {
         const { lineUrl } = this.state;
         navigator.clipboard.writeText(lineUrl);
@@ -123,7 +141,7 @@ export default class OpenBets extends PureComponent {
     }
 
     render() {
-        const { bets, metaData, betsSportsBook, shareModal, lineUrl, urlCopied } = this.state;
+        const { bets, metaData, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
         const { openBets, settledBets } = this.props;
         return (
             <div className="col-in">
@@ -135,35 +153,45 @@ export default class OpenBets extends PureComponent {
                         <div>
                             <b>Share This Link</b>
                             <hr />
-                            <div className="row">
-                                <div className="col input-group mb-3">
-                                    <input type="text"
-                                        className="form-control"
-                                        placeholder="Line's URL"
-                                        value={lineUrl}
-                                        readOnly
-                                    />
-                                    <div className="input-group-append">
-                                        {!urlCopied && <button
-                                            className="btn btn-outline-secondary"
-                                            type="button"
-                                            onClick={this.copyUrl}
-                                        >
-                                            <i className="fas fa-clipboard" /> Copy
-                                        </button>}
-                                        {urlCopied && <button
-                                            className="btn btn-outline-success"
-                                            type="button">
-                                            <i className="fas fa-clipboard-check" /> Copied
-                                        </button>}
+                            {loadingUrl && <center>
+                                <Preloader use={ThreeDots}
+                                    size={100}
+                                    strokeWidth={10}
+                                    strokeColor="#F0AD4E"
+                                    duration={800} />
+                            </center>}
+                            {!loadingUrl && !lineUrl && <h4>Can't generate URL. </h4>}
+                            {!loadingUrl && lineUrl && <>
+                                <div className="row">
+                                    <div className="col input-group mb-3">
+                                        <input type="text"
+                                            className="form-control"
+                                            placeholder="Line's URL"
+                                            value={lineUrl}
+                                            readOnly
+                                        />
+                                        <div className="input-group-append">
+                                            {!urlCopied && <button
+                                                className="btn btn-outline-secondary"
+                                                type="button"
+                                                onClick={this.copyUrl}
+                                            >
+                                                <i className="fas fa-clipboard" /> Copy
+                                            </button>}
+                                            {urlCopied && <button
+                                                className="btn btn-outline-success"
+                                                type="button">
+                                                <i className="fas fa-clipboard-check" /> Copied
+                                            </button>}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <center>
-                                <div className="mt-2">
-                                    <QRCode value={lineUrl} />
-                                </div>
-                            </center>
+                                <center>
+                                    <div className="mt-2">
+                                        <QRCode value={lineUrl} />
+                                    </div>
+                                </center>
+                            </>}
                             <div className="text-right">
                                 <button className="form-button ml-2" onClick={() => this.setState({ shareModal: false })}> Close </button>
                             </div>
@@ -259,7 +287,7 @@ export default class OpenBets extends PureComponent {
                     }
 
                     const { type, sportName, leagueId, eventId, index } = lineQuery;
-                    const generatedLineUrl = `${window.location.origin}/sport/${sportName}/league/${leagueId}/event/${eventId}?type=${type}${isNaN(index) ? '' : `&index=${index}`}`;
+
                     return (
                         <div className="open-bets" key={_id}>
                             <div className="open-bets-flex">
@@ -323,7 +351,7 @@ export default class OpenBets extends PureComponent {
                                 {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
                                 {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                                 {openBets && !this.checkEventStarted(matchStartDate) &&
-                                    <button className="form-button ml-3" onClick={() => this.setState({ shareModal: true, urlCopied: false, lineUrl: generatedLineUrl })}><i className="fas fa-link" /> Share This Line</button>}
+                                    <button className="form-button ml-3" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
                             </div>
                         </div>
                     );

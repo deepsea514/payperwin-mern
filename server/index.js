@@ -27,6 +27,7 @@ const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
 const Frontend = require('./models/frontend');
 const Service = require('./models/service');
+const SharedLine = require('./models/sharedline');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -2964,57 +2965,34 @@ expressApp.post(
     }
 )
 
-// expressApp.get(
-//     '/testSMS',
-//     async (req, res) => {
-//         //////////////// send sms
-//         try {
-//             const message = await twilioClient.messages.create({
-//                 body: 'This is test message from PAYPER WIN.',
-//                 from: '+16475594828',
-//                 // statusCallback: 'http://postb.in/1234abcd',
-//                 to: '+1 (604) 670-3328'
-//             })
-//             console.log("message => ", message);
-//             res.send("SMS sent");
-//         } catch (error) {
-//             console.log("error => ", error);
-//             res.send("SMS error");
-//         }
+expressApp.put(
+    '/share-line',
+    isAuthenticated,
+    async (req, res) => {
+        const { url, eventDate, type, index } = req.body;
+        const sharedLine = await SharedLine.findOne({ user: req.user._id, url, type, index });
+        if (sharedLine) {
+            return res.json(sharedLine);
+        }
+        const newSharedLine = await SharedLine.create({
+            user: req.user._id,
+            url: url,
+            uniqueId: ID(),
+            eventDate, type, index
+        });
+        res.json(newSharedLine);
+    }
+)
 
-//         //////////////// verification
-//         try {
-//             // const service = await twilioClient.verify.services.create({ friendlyName: 'PAYPER WIN Phone Verification' });
-//             // console.log("service => ", service);
+expressApp.get(
+    '/share-line',
+    async (req, res) => {
+        const { uniqueId } = req.query;
+        const sharedLine = await SharedLine.findOne({ uniqueId: uniqueId }).populate('user', ['firstname']);
+        return res.json(sharedLine);
+    }
+)
 
-//             const verification = await twilioClient.verify.services("VA9e8e223530e9dbce7937ce12e694ad65")
-//                 .verifications
-//                 .create({ to: '+12163547758', channel: 'sms' });
-//             console.log("verification => ", verification);
-//             res.json({ verification });
-//         } catch (error) {
-//             console.log(error);
-//             res.send("SMS error");
-//         }
-//     }
-// )
-
-// expressApp.get(
-//     '/verifySMS/:service/:code',
-//     async (req, res) => {
-//         const { code, service } = req.params;
-//         try {
-//             const verification_check = await twilioClient.verify.services(service)
-//                 .verificationChecks
-//                 .create({ to: '+12163547758', code: code });
-//             console.log("verification_check => ", verification_check);
-//             res.send("SMS sent");
-//         } catch (error) {
-//             console.log(error);
-//             res.send("SMS error");
-//         }
-//     }
-// )
 
 // Admin
 expressApp.use('/admin', adminRouter);

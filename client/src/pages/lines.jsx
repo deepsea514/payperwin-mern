@@ -22,6 +22,7 @@ class Lines extends PureComponent {
         const params = new URLSearchParams(search);
         const type = params.get('type');
         const index = params.get('index');
+        const uniqueId = params.get('uniqueId');
         this.state = {
             data: null,
             error: null,
@@ -33,6 +34,7 @@ class Lines extends PureComponent {
             timer: null,
             type: type,
             index: index,
+            uniqueId: uniqueId,
         };
     }
 
@@ -71,8 +73,8 @@ class Lines extends PureComponent {
     }
 
     getSportLine() {
-        const { match } = this.props;
-        const { sportName, leagueId, eventId, lineId } = match.params;
+        const { match: { params: { sportName, leagueId, eventId, lineId } }, timezone } = this.props;
+        const { uniqueId } = this.state;
         if (sportName) {
             const url = `${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`;
             axios({
@@ -126,17 +128,27 @@ class Lines extends PureComponent {
                     });
                     const lineData = getLinesFromSportData(data, leagueId, eventId, lineId);
 
-                    const meta = {
-                        title: 'Bet with or against <First name of PPW Account Holder>',
-                        description: 'Bet with or against <First name of PPW Account Holder> on the <name of game> game on <date of game.>',
-                        canonical: 'https://www.payperwin.co',
-                        meta: {
-                            charset: 'utf-8',
-                            name: {
-                                keywords: []
-                            }
-                        }
-                    };
+                    if (uniqueId) {
+                        const { teamA, teamB } = lineData;
+                        axios.get(`${serverUrl}/share-line?uniqueId=${uniqueId}`, { withCredentials: true })
+                            .then(({ data }) => {
+                                if (data) {
+                                    const { user: { firstname }, eventDate } = data;
+                                    const meta = {
+                                        title: `Bet with or against ${firstname}`,
+                                        description: `Bet with or against ${firstname} on the ${teamA} vs ${teamB} game on ${timeHelper.convertTimeLineDate(new Date(eventDate), timezone)}`,
+                                        canonical: 'https://www.payperwin.co',
+                                        meta: {
+                                            charset: 'utf-8',
+                                            name: {
+                                                keywords: []
+                                            }
+                                        }
+                                    };
+                                    this.setState({ metaData: meta });
+                                }
+                            })
+                    }
 
                     this.setState({
                         data: lineData,
@@ -153,7 +165,6 @@ class Lines extends PureComponent {
                                 });
                             }
                         }, 10 * 60 * 1000),
-                        metaData: meta
                     })
                 }
             }).catch((err) => {
