@@ -1,3 +1,5 @@
+/* //Header */
+
 .header-search.dark, .header-search.dark * {
     transition: all 0.5s ease;
 }
@@ -22,4 +24,172 @@
 
 .header-search.dark .odds-dropdown ul li, .header-search.dark .odds-dropdown ul li i {
     color: #0B1422 !important;
+}
+
+@media (max-width: 767px) {
+    .header-bottom.dark .navbar-mobile, .header-bottom.dark .navbar-mobile * {
+        color: white !important;
+    }
+    .header-bottom.dark {
+        background: linear-gradient(90deg, #0b1422, #273043);
+    }
+    .header-bottom.dark .responsive-cat .navbar-toggler-icon {
+        background: white !important;
+    }
+}
+
+/* Content/ */
+
+.main-section.dark, .main-section.dark * {
+    transition: all 0.3s ease;
+}
+
+.main-section.dark {
+    background-color: #05162b !important;
+}
+
+.main-section.dark .cat-heading {
+    color: white !important;
+}
+
+.main-section.dark .left-cat li div {
+    color: white !important;
+}
+
+.main-section.dark .left-cat li a {
+    color: white !important;
+}
+
+.main-section.dark .left-cat li:not(.sports-dropdown):hover {
+    background: #25364b;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.main-section.dark .left-cat li.sports-dropdown:hover div {
+    background: #25364b;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.main-section.dark .bet-slip-list {
+    background: #082242;
+}
+
+.main-section.dark .no-bets {
+    background: #082242;
+    color: white;
+}
+
+.main-section.dark .bet-slip-header, .main-section.dark .bet-slip {
+    background: #182f49;
+}
+
+.main-section.dark .total {
+    background: #182f49;
+}
+
+.main-section.dark .table-title {
+    background: #182f49;
+}
+
+.main-section.dark .highlights .nav-link {
+    color: white;
+}
+
+.main-section.dark .table-list-top {
+    background: #082242;
+    color: white;
+}
+
+.main-section.dark .table-list-top li, .main-section.dark .table-list-top li a {
+    color: white;
+}
+
+.main-section.dark .table-bottom {
+    background: #082242;
+}
+
+.main-section.dark .table-list li:first-child a {
+    color: white;
+}
+
+.main-section.dark .box-odds {
+    background: #182f49;
+    border: 1px solid #182f49;
+    color: white;
+}
+
+.main-section.dark .box-odds:hover {
+    border-color: #ED254E;
+    box-shadow: inset 0px -13px 15px -5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, .2);
+    cursor: pointer;
+}
+
+.main-section.dark .origin-odds, .main-section.dark .old-odds, .main-section.dark .points {
+    color: white;
+}
+
+.main-section.dark .old-odds::before {
+    background: white;
+}
+
+.main-section.dark .table-list li.detailed-lines-link a {
+    color: white;
+}
+
+.main-section.dark .bet {
+    background: #182f49;
+    color: white;
+}
+
+.main-section.dark .bet-type-league {
+    color: #DDDDDD;
+}
+
+.main-section.dark .bet i {
+    color: white;
+}
+
+.main-section.dark .bet-stake, .main-section.dark .bet-win {
+    border: 1px solid #082242;
+    background: #082242;
+    color: white;
+}
+
+.main-section.dark h3 {
+    color: white;
+}
+
+/* Footer */
+
+footer.dark, footer.dark * {
+    transition: all 0.3s ease;
+}
+
+footer.dark {
+    background: #05162b !important;
+}
+
+footer.dark .footer-heading {
+    color: white;
+}
+
+footer.dark ul li a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+footer.dark ul li a:hover {
+    color: white;
+}
+
+footer.dark .glambing {
+    background: #13273E;
+    color: white;
+}
+
+footer.dark p {
+    color: white;
 }

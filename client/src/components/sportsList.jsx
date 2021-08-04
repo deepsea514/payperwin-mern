@@ -91,7 +91,7 @@ class SportsList extends PureComponent {
                                     <li key={name}>
                                         <Link
                                             to={{ pathname: `/others` }}
-                                            style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                            style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                         >
                                             <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
                                             <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>
@@ -104,7 +104,7 @@ class SportsList extends PureComponent {
                                         <li key={name} className="sports-dropdown">
                                             <div
                                                 onClick={() => { history.push(`/sport/${name}`) }}
-                                                style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                                style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                             >
                                                 <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
                                                 <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>
@@ -121,7 +121,7 @@ class SportsList extends PureComponent {
                                                     <li key={league.name} className="pl-5">
                                                         <Link
                                                             to={{ pathname: `/sport/${name}/league/${league.originId}` }}
-                                                            style={!league.eventCount ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                                            style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                                         >
                                                             <span style={sportNameSpanStyle}>{this.ellipsisTitle(league.name)}</span>
                                                             <span>{league.eventCount}</span>
@@ -141,7 +141,7 @@ class SportsList extends PureComponent {
                                         <li key={name}>
                                             <Link
                                                 to={{ pathname: `/sport/${name}` }}
-                                                style={!hasEvents ? { opacity: 0.25, pointerEvents: 'none' } : null}
+                                                style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                             >
                                                 <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
                                                 <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>

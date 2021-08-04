@@ -171,7 +171,7 @@ class App extends PureComponent {
             openBetSlipMenu,
             scrolledTop,
         } = this.state;
-        const { user, getUser, history, updateUser, location, require_2fa } = this.props;
+        const { user, getUser, history, updateUser, location, require_2fa, display_mode } = this.props;
         const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
         const { pathname } = location;
         let sidebarShowAccountLinks = [
@@ -217,7 +217,7 @@ class App extends PureComponent {
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 {require_2fa && <TfaModal getUser={getUser} />}
-                <section className="main-section">
+                <section className={`main-section ${display_mode == 'dark' ? 'dark' : ''}`}>
                     <div className="container">
                         <Switch>
                             <Route path="/sportsbook" render={(props) =>
@@ -354,7 +354,7 @@ class App extends PureComponent {
                         <GoToTop />
                     </div>
                 </section>
-                <Footer user={user} />
+                <Footer user={user} display_mode={display_mode} />
             </div>
         );
     }
@@ -364,6 +364,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
+    display_mode: state.frontend.display_mode,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

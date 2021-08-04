@@ -218,19 +218,19 @@ export default class Cashback extends PureComponent {
                                     <td>1</td>
                                     <td>0.5%</td>
                                     <td>$0</td>
-                                    <td>Journalist</td>
+                                    <td>Beginner</td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td>1.0%</td>
                                     <td>$500</td>
-                                    <td>Fan</td>
+                                    <td>Journalist</td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td>2.0%</td>
                                     <td>$3000</td>
-                                    <td>Beginner</td>
+                                    <td>Fan</td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
