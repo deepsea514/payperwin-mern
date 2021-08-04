@@ -332,7 +332,8 @@ ul.list-s li:not(:first-child) i {
     -webkit-box-shadow: 0px 10px 13px -7px rgba(0, 0, 0, 0.25), 5px 5px 15px 5px rgba(0, 0, 0, 0);
     box-shadow: 0px 10px 13px -7px rgba(0, 0, 0, 0.25), 5px 5px 15px 5px rgba(0, 0, 0, 0);
     padding: 5px 0;
-    background-color: white;
+    transition: all 0.5s ease;
+    background: white;
 }
 
 .logo {
@@ -346,6 +347,7 @@ ul.list-s li:not(:first-child) i {
 }
 
 .main-section {
+    transition: background-color 0.5s ease;
     background-color: #f1f3f7;
     /* padding-top: 15px; */
 }
@@ -3370,4 +3372,34 @@ input.special {
 
 .font-weight-bold {
     font-weight: 500!important;
+}
+
+.payment_container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding-bottom: 3em;
+}
+
+.payment_container span {
+    margin: .3em .5em;
+}
+
+.payment_container img {
+    width: auto;
+    height: 24px;
+    max-width: none;
+    max-height: none;
+    opacity: 1;
+}
+
+.sport-container {
+    min-width: 600px;
 }

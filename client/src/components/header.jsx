@@ -180,7 +180,7 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </div>
-                <div className="header-bottom">
+                <div className={`header-bottom ${display_mode == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-12">

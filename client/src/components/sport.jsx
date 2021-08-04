@@ -529,7 +529,7 @@ class Sport extends PureComponent {
                         });
                         events = events.filter(event => event);
                         return (events.length ?
-                            <div className="tab-content" id="myTabContent" key={leagueName}>
+                            <div className="tab-content sport-container" id="myTabContent" key={leagueName}>
                                 <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>

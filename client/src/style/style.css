@@ -11,8 +11,7 @@ body {
   background: url(/images/footer_lodyas.png) 1200px 1200px repeat;
 }
 
-.header-1,
-.header-2 {
+.header-1, .header-2 {
   /* background-color: #63ff50; */
   /* background-color: #50b6ff; */
   /* background-color: #589957; */
@@ -21,10 +20,11 @@ body {
   background-color: white;
   color: #cdfd02;
   min-height: 54px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
 }
 
 /* TODO: use a css processor */
+
 .MuiButton-containedPrimary {
   /* background-color: #63ff50 !important; */
   /* background-color: #50b6ff !important; */
@@ -56,14 +56,14 @@ header {
 }
 
 .logo {
-    float: left;
-    margin: 7px;
-    background-image: url(/images/logo-new.png);
-    background-position: 7px center;
-    height: 40px;
-    width: 205px;
-    background-repeat: no-repeat;
-    background-size: contain;
+  float: left;
+  margin: 7px;
+  background-image: url(/images/logo-new.png);
+  background-position: 7px center;
+  height: 40px;
+  width: 205px;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .profile-pic {
@@ -92,33 +92,11 @@ header {
 } */
 
 /* To disable form background and shadowing */
-.MuiPaper-elevation1,
-.MuiCardContent-root {
+
+.MuiPaper-elevation1, .MuiCardContent-root {
   background-color: transparent !important;
   box-shadow: none !important;
 }
-/* dark theme */
-.background.dark-theme {
-  background-color: #222;
-}
-.dark-theme .MuiOutlinedInput-input,
-.dark-theme .MuiFormLabel-root,
-.dark-theme .MuiTypography-displayBlock {
-  color: white !important;
-}
-.dark-theme .MuiOutlinedInput-notchedOutline {
-  border-color: white !important;
-}
-.dark-theme .login-recovery {
-  color: #ddd !important;
-}
-.dark-theme .placeholder-cover {
-    background-color: rgba(33, 33, 33, 0.3) !important;
-}
-.dark-theme article {
-  color: white;
-}
-/* End dark theme */
 
 .login-recovery {
   padding: 8px;
@@ -141,7 +119,7 @@ a {
   padding: 9px;
   margin: 8px;
   border-radius: 5px;
-  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   text-transform: uppercase;
 }
 
@@ -150,7 +128,7 @@ a {
 }
 
 .login-recovery .sign-up-button:hover {
-  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 }
 
 nav {
@@ -159,7 +137,8 @@ nav {
 }
 
 article {
-  padding-bottom: 80px; /* at least footer height */
+  padding-bottom: 80px;
+  /* at least footer height */
 }
 
 .section-container {
@@ -194,7 +173,7 @@ article {
 h1 {
   color: #fff;
   font-size: 30px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
   margin: 0;
   padding: 0.83em 0;
 }
@@ -215,19 +194,20 @@ h1 {
 }
 
 /* .logo:hover, */
+
 a.nav-item:hover {
   background-color: rgba(0, 0, 0, 0.07);
 }
 
 .float-right {
-    float: right;
+  float: right;
 }
 
 .placeholder-block {
   position: relative;
   color: #fff;
   font-size: 30px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
   margin-bottom: 25px;
   text-align: center;
   width: 100%;
@@ -236,7 +216,7 @@ a.nav-item:hover {
   box-sizing: border-box;
   line-height: 200%;
   overflow: hidden;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
 }
 
@@ -286,7 +266,6 @@ footer {
   color: white;
   padding: 20px;
   box-sizing: border-box;
-  
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -305,19 +284,18 @@ footer {
 }
 
 .sport-icon {
-    height: 50px;
-    width: 50px;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.75;
-    margin: 0 auto;
-    margin-bottom: 5px;
+  height: 50px;
+  width: 50px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.75;
+  margin: 0 auto;
+  margin-bottom: 5px;
 }
 
-.sport-select.selected,
-.match-select.selected {
-  background:  #27e230;
+.sport-select.selected, .match-select.selected {
+  background: #27e230;
 }
 
 .match-select.selected .match-date {
@@ -335,8 +313,7 @@ footer {
   max-width: 100%;
 }
 
-.match-select, 
-.sport-select {
+.match-select, .sport-select {
   width: 100px;
   height: 100px;
   background: #fff;
@@ -346,7 +323,7 @@ footer {
   display: inline-block;
   margin: 1px;
   border-radius: 5px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
 }
 
 .sport-select {
@@ -371,8 +348,7 @@ footer {
   font-size: 12px;
 }
 
-.mock-button,
-.mock-input {
+.mock-button, .mock-input {
   display: inline-block;
   background: white;
   color: black;
@@ -394,12 +370,12 @@ footer {
 }
 
 .mock-button {
-  background:  #27e230;
+  background: #27e230;
   color: white;
   text-transform: uppercase;
   max-width: 300px;
   width: 100%;
-  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
 .league {
@@ -419,6 +395,7 @@ footer {
   background: #555;
   margin: 5px 0;
 }
+
 .event-date {
   width: 170px;
   display: inline-block;
@@ -427,8 +404,8 @@ footer {
 
 .line {
   background-color: #666;
-    margin: 5px 0;
-    padding: 5px;
+  margin: 5px 0;
+  padding: 5px;
   position: relative;
 }
 
@@ -446,26 +423,24 @@ footer {
 
 .bet-history {
   background: grey;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 /* mobile layout */
-@media only screen and (max-width: 720px) {
 
+@media only screen and (max-width: 720px) {
   .profile-pic {
     width: 80px;
     height: 80px;
     margin: 0 auto;
     float: none;
   }
-
   .username {
     font-size: 16px;
     text-align: center;
   }
-
   .logo {
     margin: 4px auto;
     position: absolute;
@@ -475,12 +450,10 @@ footer {
     max-width: 56vw;
     max-height: 10.7vw;
   }
-
   header {
     position: fixed;
     width: 100%;
   }
-
   .popover-closer {
     position: fixed;
     top: 0px;
@@ -490,7 +463,6 @@ footer {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
   }
-
   .header-2 {
     display: none;
     height: 100%;
@@ -499,16 +471,13 @@ footer {
     right: 0;
     max-width: 100%;
   }
-
   .header-2 .header-body {
     display: flex;
     flex-direction: column;
   }
-
   .header-2 .float-right {
     float: none;
   }
-
   .header-2 .nav-item {
     display: block;
     order: 2;
@@ -516,26 +485,21 @@ footer {
     font-size: 16px;
     border-bottom: 1px solid #363636;
   }
-
   .wallet {
     order: 1 !important;
   }
-
   .nav-2 {
     order: 2;
     float: none;
     display: flex;
     flex-direction: column;
   }
-
   .menu-open.header-2 {
     display: block;
   }
-
   .hamburger {
     display: inline-block;
   }
-
   .hamburger-text {
     color: black;
     font-size: 14px;
@@ -544,55 +508,44 @@ footer {
     margin-top: 2px;
     margin-right: 5px;
   }
-
   article {
-    padding-top: 54px; /* same size as top header */
-    padding-bottom: 100px; /* increase with footer height */
+    padding-top: 54px;
+    /* same size as top header */
+    padding-bottom: 100px;
+    /* increase with footer height */
   }
-
   .howto-contain {
     padding-bottom: 80px;
   }
-
   .section-container {
     height: 360px;
   }
-
   .svg-icon {
     width: 20px;
     height: 20px;
   }
-
-  .svg-icon path,
-  .svg-icon polygon,
-  .svg-icon rect {
+  .svg-icon path, .svg-icon polygon, .svg-icon rect {
     fill: #444;
   }
-
   .svg-icon circle {
     stroke: #4691f6;
     stroke-width: 1;
   }
-
   footer {
     height: 100px;
   }
 }
 
 @media only screen and (max-width: 360px) {
-
   .logo {
     margin: 8px auto;
   }
-
   .content {
     padding: 10px;
   }
-
   h1 {
     font-size: 24px;
   }
-
   .match-select {
     font-size: 80%;
   }
