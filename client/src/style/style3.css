@@ -438,6 +438,11 @@ a.log-in-btn {
     color: white;
 }
 
+.status div {
+    padding: 2px 10px;
+    border-radius: 30px;
+}
+
 .status .matched {
     background-color: #53b657;
 }
