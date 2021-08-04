@@ -237,6 +237,13 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
+    if (WagerInfo.Type != 'single')
+        return {
+            Id,
+            TransactionId: Transaction.TransactionId,
+            WagerId: WagerInfo.WagerId,
+            ErrorCode: ActionErrorCode.UnknownError
+        };
     try {
         if (Transaction && user.balance < (Transaction.Amount)) {
             return {

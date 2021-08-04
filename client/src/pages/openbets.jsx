@@ -36,11 +36,11 @@ export default class OpenBets extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { openBets } = this.props;
-        const { openBets: prevOpenBets } = prevProps;
+        const { openBets, user } = this.props;
+        const { openBets: prevOpenBets, user: prevUser } = prevProps;
         const betPageChanged = openBets !== prevOpenBets;
 
-        if (betPageChanged) {
+        if (betPageChanged || (!prevUser && user)) {
             this.setState({ error: null });
             this.getBetHistory();
         }

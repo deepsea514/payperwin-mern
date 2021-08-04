@@ -10,6 +10,7 @@ import Favicon from 'react-favicon';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
 
+// import "./assets/css/style.bundle.css";
 import "./assets/css/themes/layout/header/base/light.css";
 import "./assets/css/themes/layout/header/menu/light.css";
 import "./assets/css/themes/layout/brand/dark.css";
