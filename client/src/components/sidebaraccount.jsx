@@ -38,11 +38,13 @@ class SidebarAccount extends Component {
                         <Link to={{ pathname: '/withdraw' }}><i className="fas fa-baseball-ball"></i>Withdraw </Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/transaction-history' }}><i
-                            className="fas fa-money-bill"></i>Transactions history </Link>
+                        <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i>Transactions history </Link>
                     </li>
                     <li>
                         <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i>Payment methods </Link>
+                    </li>
+                    <li>
+                        <Link to={{ pathname: '/cashback' }}><i className="fas fa-dollar-sign"></i>Cashback </Link>
                     </li>
                 </ul>
                 <h3 className="cat-heading">MY ACCOUNT</h3>
@@ -73,7 +75,7 @@ class SidebarAccount extends Component {
                         <Link to={{ pathname: '/deactivation' }}><i className="far fa-user-circle"></i>Account deactivation</Link>
                     </li> */}
                 </ul>
-            </div>
+            </div >
         );
     }
 }

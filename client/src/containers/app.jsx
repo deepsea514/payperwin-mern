@@ -53,6 +53,8 @@ import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
 import PhoneVerification from "../pages/phoneVerification";
 import SportLeague from "../pages/sportleague";
+import Cashback from "../pages/cashback";
+import CashbackNames from "../components/cashbackNames";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -198,6 +200,7 @@ class App extends PureComponent {
             '/withdraw-tether',
             '/verification',
             '/phone-verification',
+            '/cashback',
         ].includes(pathname);
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
@@ -316,6 +319,7 @@ class App extends PureComponent {
                                                 <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" />} />
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/phone-verification" render={(props) => <PhoneVerification {...props} user={user} getUser={getUser} />} />
+                                                <Route path="/cashback" render={(props) => <Cashback {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>
                                                     <Dashboard
@@ -341,6 +345,7 @@ class App extends PureComponent {
                                             {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
                                             {!verified && pathname == '/verification' && <VerificationProof />}
                                             {['/bets', '/history'].includes(pathname) && <BetStatus />}
+                                            {pathname == '/cashback' && <CashbackNames />}
                                         </div>
                                     </div>
                                 }}

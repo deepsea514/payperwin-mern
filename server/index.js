@@ -2993,6 +2993,66 @@ expressApp.get(
     }
 )
 
+expressApp.get(
+    '/cashback',
+    isAuthenticated,
+    async (req, res) => {
+        const user = req.user;
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+
+        try {
+            let lossbetsSportsbook = await BetSportsBook.aggregate({
+                $match: {
+                    Name: "SETTLED",
+                    "WagerInfo.Outcome": "LOSE",
+                    createdAt: {
+                        $gte: new Date(year, month, 0),
+                        $lte: new Date(),
+                    },
+                    userId: user._id
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
+                    }
+                }
+            });
+
+            const lossBetHistory = await BetSportsBook.find({
+                Name: "SETTLED",
+                "WagerInfo.Outcome": "LOSE",
+                createdAt: {
+                    $gte: new Date(year, month, 0),
+                    $lte: new Date(),
+                },
+                userId: user._id
+            })
+
+            if (lossbetsSportsbook.length) lossbetsSportsbook = lossbetsSportsbook[0].total;
+            else lossbetsSportsbook = 0;
+
+            const cashbackHistory = await FinancialLog.find({
+                financialtype: 'cashback',
+                user: user._id
+            }).sort({ createdAt: -1 });
+
+            res.json({
+                lossThisMonth: Math.abs(lossbetsSportsbook),
+                lossBetHistory,
+                cashbackHistory
+            });
+        } catch (error) {
+            console.log(error);
+            res.json(null);
+        }
+
+    }
+)
+
 
 // Admin
 expressApp.use('/admin', adminRouter);

@@ -3307,3 +3307,67 @@ input.special {
 .preference-group {
     background-color: #f7f8fA;
 }
+
+.symbol {
+    display: inline-block;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: .42rem;
+}
+
+.symbol.symbol-40 .symbol-label {
+    width: 40px;
+    height: 40px;
+}
+
+.symbol.symbol-light-success .symbol-label {
+    background-color: #e6e6e6;
+    color: #f0f7f6;
+}
+
+@media (min-width: 992px) {
+    .symbol .symbol-label {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (min-width: 768px) {
+    .symbol .symbol-label {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (min-width: 576px) {
+    .symbol .symbol-label {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.symbol .symbol-label {
+    width: 50px;
+    height: 50px;
+}
+
+.symbol .symbol-label {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #3f4254;
+    background-color: #f3f6f9;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: cover;
+    border-radius: .42rem;
+}
+
+.font-weight-bold {
+    font-weight: 500!important;
+}
