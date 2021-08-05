@@ -67,6 +67,9 @@ const axios = require('axios');
 const fileUpload = require('express-fileupload');
 const twilio = require('twilio');
 let twilioClient = null;
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client(config.googleClientID);
+
 //express routers
 const v1Router = require('./v1Routes');
 const premierRouter = require('./premierRoutes');
@@ -426,7 +429,7 @@ expressApp.post('/login',
         const { session } = req;
         passport.authenticate('local', (err, user/* , info */) => {
             if (err) { return next(err); }
-            if (!user) { return res.status(403).json({ error: 'Incorrect username or password' }); }
+            if (!user) { return res.status(403).json({ error: 'Incorrect email or password' }); }
             req.logIn(user, (err2) => {
                 if (err) { return next(err2); }
                 var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -454,6 +457,41 @@ expressApp.post('/login',
                 return res.json({ name: user.username, _2fa_required: false });
             });
         })(req, res, next);
+    }
+);
+
+expressApp.post('/googleLogin',
+    async (req, res) => {
+        const { token } = req.body;
+        const ticket = await googleClient.verifyIdToken({
+            idToken: token,
+            audience: config.googleClientID
+        });
+        const googlePayload = ticket.getPayload();
+        const { email } = googlePayload;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(403).json({ error: "Account not found." });
+        }
+
+        req.logIn(user, (err2) => {
+            if (err2) { 
+                res.status(403).json({ error: "Can't login to PPW." });
+             }
+            var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            if (ip_address.substr(0, 7) == "::ffff:") {
+                ip_address = ip_address.substr(7)
+            }
+            let log = new LoginLog({
+                user: user._id,
+                ip_address
+            });
+            log.save(function (error) {
+                if (error) console.log("login Error", error);
+            });
+
+            return res.json({ name: user.username, _2fa_required: false });
+        });
     }
 );
 
