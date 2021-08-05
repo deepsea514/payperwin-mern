@@ -503,38 +503,41 @@ expressApp.post('/googleRegister',
         });
         const googlePayload = ticket.getPayload();
         console.log(googlePayload);
-        const { email } = googlePayload;
-        res.status(403).json({ error: 'Error' });
-
-        // const { firstname, lastname } = req.body;
-        // const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
-        // req.body.username = username;
-        // passport.authenticate('local-signup', (err, user, info) => {
-        //     if (err) {
-        //         console.error('/register err:', err);
-        //         return next(err);
-        //     }
-        //     if (!user && info) {
-        //         return res.status(403).json({ error: info });
-        //     } else if (user) {
-        //         req.logIn(user, (err2) => {
-        //             if (err) { return next(err2); }
-        //             var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        //             if (ip_address.substr(0, 7) == "::ffff:") {
-        //                 ip_address = ip_address.substr(7)
-        //             }
-        //             let log = new LoginLog({
-        //                 user: user._id,
-        //                 ip_address
-        //             });
-        //             log.save(function (error) {
-        //                 if (error) console.log("register => ", error);
-        //                 else console.log(`User register log - ${user.username}`);
-        //             });
-        //             return res.send(`registered ${user.username}`);
-        //         });
-        //     }
-        // })(req, res, next);
+        const { email, given_name: firstname, family_name: lastname } = googlePayload;
+        const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
+        req.body.email = email;
+        req.body.username = username;
+        req.body.firstname = firstname;
+        req.body.lastname = lastname;
+        req.body.country = 'Canada';
+        req.body.currency = 'CAD';
+        req.body.title = 'Mr';
+        passport.authenticate('local-signup', (err, user, info) => {
+            if (err) {
+                console.error('/register err:', err);
+                return next(err);
+            }
+            if (!user && info) {
+                return res.status(403).json({ error: info });
+            } else if (user) {
+                req.logIn(user, (err2) => {
+                    if (err) { return next(err2); }
+                    var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                    if (ip_address.substr(0, 7) == "::ffff:") {
+                        ip_address = ip_address.substr(7)
+                    }
+                    let log = new LoginLog({
+                        user: user._id,
+                        ip_address
+                    });
+                    log.save(function (error) {
+                        if (error) console.log("register => ", error);
+                        else console.log(`User register log - ${user.username}`);
+                    });
+                    return res.send(`registered ${user.username}`);
+                });
+            }
+        })(req, res, next);
     }
 );
 
