@@ -28,7 +28,7 @@ class LoginModal extends React.Component {
         }
     }
 
-    handleGoogleLoginFaile = (googleData) => {
+    handleGoogleLoginFail = (googleData) => {
         this.setState({ errors: { ...errors, server: googleData.error } });
     }
 
@@ -177,7 +177,7 @@ class LoginModal extends React.Component {
                                                             clientId={config.googleClientID}
                                                             buttonText="Log in with Google"
                                                             onSuccess={this.handleGoogleLogin}
-                                                            onFailure={this.handleGoogleLoginFaile}
+                                                            onFailure={this.handleGoogleLoginFail}
                                                             cookiePolicy={'single_host_origin'}
                                                             className="fullWidthButton ellipsis mediumButton dead-center mt-2"
                                                         />

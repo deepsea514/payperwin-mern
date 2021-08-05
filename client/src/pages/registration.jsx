@@ -20,6 +20,7 @@ import clsx from 'clsx';
 import { RegionDropdown } from 'react-country-region-selector';
 import _ from 'lodash';
 import DocumentMeta from 'react-document-meta';
+import GoogleLogin from "react-google-login";
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -740,6 +741,35 @@ class Registration extends Component {
         this.setState({ activeStep: 0 });
     };
 
+    handleGoogleSignupFail = (googleData) => {
+        this.setState({ errors: { ...errors, server: googleData.error } });
+    }
+
+    handleGoogleSignup = (googleData) => {
+        axios.post(`${serverUrl}/googleRegister`,
+            { token: googleData.tokenId },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+            }
+        )
+            .then((/* { data } */) => {
+                getUser();
+                history.replace({ pathname: '/' });
+            })
+            .catch((err) => {
+                console.log(err);
+                if (err.response) {
+                    const { data } = err.response;
+                    if (data.error) {
+                        this.setState({ errors: { ...errors, server: data.error } });
+                    }
+                }
+            });
+    }
+
     render() {
         const { classes } = this.props;
         const { activeStep, steps, errors, metaData } = this.state;
@@ -787,6 +817,14 @@ class Registration extends Component {
                                                 </Button>
                                             </div>
                                         </div>
+                                        <GoogleLogin
+                                            clientId={config.googleClientID}
+                                            buttonText="Sign up with Google"
+                                            onSuccess={this.handleGoogleSignup}
+                                            onFailure={this.handleGoogleSignupFail}
+                                            cookiePolicy={'single_host_origin'}
+                                            className="fullWidthButton ellipsis mediumButton dead-center mt-4"
+                                        />
                                     </div>
                                 </div>
                             </CardContent>
