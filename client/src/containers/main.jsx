@@ -10,7 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import axios from "axios";
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 export default class Main extends Component {
     constructor(props) {

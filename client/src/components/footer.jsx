@@ -61,7 +61,7 @@ const Footer = (props) => {
                     <div className="glambing">
                         <a href="#" className="min-age">18+</a>Gambling can be addictive. Please know your limits and gamble responsibly.
                     </div>
-                    <div class="payment_container">
+                    <div className="payment_container">
                         <span><img alt="Visa, Master Card" title="Visa, Master Card" src="/images/credit-card-gray.png" /></span>
                         <span><img alt="Etransfer" title="Etransfer" src="/images/eTransfer-gray.png" /></span>
                         <span><img alt="Bitcoin" title="Bitcoin" src="/images/bitcoin-gray.png" /></span>

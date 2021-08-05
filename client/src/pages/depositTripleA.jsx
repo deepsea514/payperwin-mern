@@ -14,7 +14,7 @@ import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

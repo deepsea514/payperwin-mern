@@ -6,7 +6,7 @@ import dateformat from "dateformat";
 import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class SelfExcusion extends Component {
     constructor(props) {

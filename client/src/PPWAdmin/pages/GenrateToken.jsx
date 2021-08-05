@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import axios from "axios";
 import config from "../../../../config.json";
 import { getInputClasses } from "../../helpers/getInputClasses";
-const serverUrl = config.serverHostToClientHost[window.location.host].appAdminUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
 
 class GenerateToken extends React.Component {
     constructor(props) {

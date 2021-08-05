@@ -6,7 +6,7 @@ import dateformat from "dateformat";
 import axios from 'axios';
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class ArticleSidebar extends Component {
     constructor(props) {

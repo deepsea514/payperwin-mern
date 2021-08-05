@@ -1,6 +1,6 @@
 const axios = require("axios");
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 let titleProperties = {
     notificationCount: 0,
