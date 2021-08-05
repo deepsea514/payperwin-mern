@@ -494,7 +494,7 @@ expressApp.post('/googleLogin',
     }
 );
 
-expressApp.post('/googleSignup',
+expressApp.post('/googleRegister',
     async (req, res) => {
         const { token } = req.body;
         const ticket = await googleClient.verifyIdToken({
