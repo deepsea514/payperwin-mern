@@ -511,6 +511,7 @@ expressApp.post('/googleRegister',
         req.body.country = 'Canada';
         req.body.currency = 'CAD';
         req.body.title = 'Mr';
+        req.body.password = 'password';
         passport.authenticate('local-signup', (err, user, info) => {
             if (err) {
                 console.error('/register err:', err);
