@@ -7,6 +7,7 @@ import CookieAccept from "./cookieAccept";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
+import LoginModal from './loginModal';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -34,6 +35,7 @@ class Header extends PureComponent {
             oddsDropDownOpen: false,
             langDropDownOpen: false,
             timerInterval: null,
+            showLoginModal: false,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
         this.toggleField = this.toggleField.bind(this);
@@ -101,8 +103,8 @@ class Header extends PureComponent {
     }
 
     render() {
-        const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString } = this.state;
-        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction, display_mode } = this.props;
+        const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString, showLoginModal } = this.state;
+        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction, display_mode, getUser } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -174,7 +176,7 @@ class Header extends PureComponent {
                                             ) : null}
                                         </div>
                                     )
-                                    : <SimpleLogin />
+                                    : <SimpleLogin showLoginModal={() => this.setState({ showLoginModal: true })} />
                                 }
                             </div>
                         </div>
@@ -286,8 +288,8 @@ class Header extends PureComponent {
                             <div className="">
                                 <ul className="list-s">
                                     <li style={{ padding: '0 15px' }}>
-                                        <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode': 'darkmode'}`} 
-                                        onClick={() => this.setDisplayMode(display_mode == 'light' ? 'dark': 'light')}
+                                        <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode' : 'darkmode'}`}
+                                            onClick={() => this.setDisplayMode(display_mode == 'light' ? 'dark' : 'light')}
                                         >
                                             <i className="far fa-sun lightmode_ico"></i>
                                             <i className="far fa-moon darkmode_ico"></i>
@@ -373,6 +375,11 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </div>
+                {!user && showLoginModal && <LoginModal closeModal={() => {
+                    this.setState({ showLoginModal: false });
+                    console.log('closeModal')
+                }
+                } getUser={getUser} />}
             </header>
         );
     }

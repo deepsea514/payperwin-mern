@@ -89,7 +89,7 @@ header {
     margin-bottom: 7px;
     top: 9px;
     left: 7px;
-    color: #de5e1d;
+    color: #ED254E;
 }
 
 .join-mobile {
@@ -97,8 +97,8 @@ header {
 }
 
 header form {
-    max-width: 516px;
-    float: right;
+    /* max-width: 516px;
+    float: right; */
 }
 
 .modal-body form {
