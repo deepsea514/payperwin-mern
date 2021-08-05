@@ -392,7 +392,6 @@ expressApp.post(
     async (req, res, next) => {
         const { firstname, lastname } = req.body;
         const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
-        console.log(username);
         req.body.username = username;
         passport.authenticate('local-signup', (err, user, info) => {
             if (err) {
@@ -475,9 +474,9 @@ expressApp.post('/googleLogin',
         }
 
         req.logIn(user, (err2) => {
-            if (err2) { 
+            if (err2) {
                 res.status(403).json({ error: "Can't login to PPW." });
-             }
+            }
             var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
             if (ip_address.substr(0, 7) == "::ffff:") {
                 ip_address = ip_address.substr(7)
@@ -492,6 +491,50 @@ expressApp.post('/googleLogin',
 
             return res.json({ name: user.username, _2fa_required: false });
         });
+    }
+);
+
+expressApp.post('/googleSignup',
+    async (req, res) => {
+        const { token } = req.body;
+        const ticket = await googleClient.verifyIdToken({
+            idToken: token,
+            audience: config.googleClientID
+        });
+        const googlePayload = ticket.getPayload();
+        console.log(googlePayload);
+        const { email } = googlePayload;
+        res.status(403).json({ error: 'Error' });
+
+        // const { firstname, lastname } = req.body;
+        // const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
+        // req.body.username = username;
+        // passport.authenticate('local-signup', (err, user, info) => {
+        //     if (err) {
+        //         console.error('/register err:', err);
+        //         return next(err);
+        //     }
+        //     if (!user && info) {
+        //         return res.status(403).json({ error: info });
+        //     } else if (user) {
+        //         req.logIn(user, (err2) => {
+        //             if (err) { return next(err2); }
+        //             var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        //             if (ip_address.substr(0, 7) == "::ffff:") {
+        //                 ip_address = ip_address.substr(7)
+        //             }
+        //             let log = new LoginLog({
+        //                 user: user._id,
+        //                 ip_address
+        //             });
+        //             log.save(function (error) {
+        //                 if (error) console.log("register => ", error);
+        //                 else console.log(`User register log - ${user.username}`);
+        //             });
+        //             return res.send(`registered ${user.username}`);
+        //         });
+        //     }
+        // })(req, res, next);
     }
 );
 
