@@ -742,10 +742,12 @@ class Registration extends Component {
     };
 
     handleGoogleSignupFail = (googleData) => {
+        const { errors } = this.state;
         this.setState({ errors: { ...errors, server: googleData.error } });
     }
 
     handleGoogleSignup = (googleData) => {
+        const { errors, history } = this.state;
         axios.post(`${serverUrl}/googleRegister`,
             { token: googleData.tokenId },
             {
