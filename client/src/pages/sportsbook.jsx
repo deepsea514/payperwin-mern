@@ -159,6 +159,9 @@ class SportsBook extends PureComponent {
                         display="initial"
                         position="relative" />
                 })()}
+                {comingSoon && <div className="coming-soon">
+                    <h2>Coming soon.</h2>
+                </div>}
             </div>
         );
     }

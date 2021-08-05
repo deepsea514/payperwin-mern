@@ -1342,3 +1342,20 @@ button.loginButton span {
     text-align: center;
     margin-top: 15px;
 }
+
+.coming-soon {
+    width: 100%;
+    height: 50vh;
+    background: url(/images/bg-login.jpg) no-repeat;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.coming-soon h2 {
+    color: white;
+}
