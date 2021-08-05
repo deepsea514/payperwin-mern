@@ -29,7 +29,8 @@ class LoginModal extends React.Component {
     }
 
     handleGoogleLoginFail = (googleData) => {
-        this.setState({ errors: { ...errors, server: googleData.error } });
+        // const { errors } = this.state;
+        // this.setState({ errors: { ...errors, server: googleData.error } });
     }
 
     handleGoogleLogin = (googleData) => {
