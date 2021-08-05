@@ -747,7 +747,8 @@ class Registration extends Component {
     }
 
     handleGoogleSignup = (googleData) => {
-        const { errors, history } = this.state;
+        const { errors } = this.state;
+        const { getUser, history } = this.props;
         axios.post(`${serverUrl}/googleRegister`,
             { token: googleData.tokenId },
             {
