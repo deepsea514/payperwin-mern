@@ -12,7 +12,8 @@ class SportsBook extends PureComponent {
             loginUrl: null,
             loading: false,
             showModal: false,
-            metaData: null
+            metaData: null,
+            comingSoon: true,
         };
     }
 
@@ -64,6 +65,8 @@ class SportsBook extends PureComponent {
     }
 
     pinnacleLogin = () => {
+        const { comingSoon } = this.state;
+        if (comingSoon) return;
         this.setState({ loading: true });
         axios.get(`${serverUrl}/getPinnacleLogin`, { withCredentials: true })
             .then(({ data }) => {
@@ -79,6 +82,8 @@ class SportsBook extends PureComponent {
     }
 
     pinnacleLogout = () => {
+        const { comingSoon } = this.state;
+        if (comingSoon) return;
         axios.get(`${serverUrl}/pinnacleLogout`, { withCredentials: true })
             .then(() => console.log("logout success"))
             .catch((err) => console.log("logout failed", err))
@@ -102,7 +107,7 @@ class SportsBook extends PureComponent {
     }
 
     render() {
-        const { loginUrl, loading, showModal, metaData } = this.state;
+        const { loginUrl, loading, showModal, metaData, comingSoon } = this.state;
         const { user } = this.props;
 
         return (
@@ -134,7 +139,7 @@ class SportsBook extends PureComponent {
                         </div>
                     </div>
                 </div>}
-                {(() => {
+                {!comingSoon && (() => {
                     if (user) {
                         if (loading)
                             return <div>Loading...</div>;
