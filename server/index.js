@@ -495,14 +495,13 @@ expressApp.post('/googleLogin',
 );
 
 expressApp.post('/googleRegister',
-    async (req, res) => {
+    async (req, res, next) => {
         const { token } = req.body;
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
             audience: config.googleClientID
         });
         const googlePayload = ticket.getPayload();
-        console.log(googlePayload);
         const { email, given_name: firstname, family_name: lastname } = googlePayload;
         const username = firstname.substr(0, 1).toUpperCase() + lastname.substr(0, 1).toUpperCase() + ID();
         req.body.email = email;
