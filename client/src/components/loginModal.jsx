@@ -94,13 +94,19 @@ class LoginModal extends React.Component {
             });
     }
 
+    goTo = (pathname) => {
+        const { closeModal, history } = this.props;
+        closeModal();
+        history.push(pathname);
+    }
+
     render() {
         const { closeModal, } = this.props;
         const { initialValues, loginSchema, errors } = this.state;
 
         return (
             <div className="modal confirmation">
-                <div className="background-closer" onClick={closeModal} />
+                <div className="background-closer bg-modal" onClick={closeModal} />
                 <div className="dead-center login_modal_container">
                     <div className="contentBlock overflow-hidden dead-center login_modal_content">
                         <div className="login_modal_main">
@@ -158,7 +164,7 @@ class LoginModal extends React.Component {
                                                         </div>
                                                     </div>
                                                     <p className="loginForgotPasswordWrapper">
-                                                        <span>Forgot <Link to="/passwordRecovery"><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>password</span></span></Link>?</span>
+                                                        <span>Forgot <a onClick={() => this.goTo('/passwordRecovery')} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>password</span></span></a>?</span>
                                                     </p>
                                                     {errors.server ? <div className="form-error">{errors.server}</div>
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
@@ -183,7 +189,7 @@ class LoginModal extends React.Component {
                                                         />
                                                     </div>
                                                     <p className="registerParaWrapper">
-                                                        <span>Not a member yet? <Link to="/signup"><span>Join PAYPER WIN</span></Link>.</span>
+                                                        <span>Not a member yet? <a onClick={() => this.goTo('/signup')} style={{ cursor: 'pointer', color: '#ED254E' }}><span>Join PAYPER WIN</span></a>.</span>
                                                     </p>
                                                 </div>
                                             </form>
@@ -202,4 +208,4 @@ class LoginModal extends React.Component {
     }
 }
 
-export default connect(null, frontend.actions)(LoginModal);
+export default connect(null, frontend.actions)(withRouter(LoginModal));

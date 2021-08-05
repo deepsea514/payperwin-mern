@@ -181,7 +181,7 @@ export default class OpenBets extends PureComponent {
             <div className="col-in">
                 {metaData && <DocumentMeta {...metaData} />}
                 {shareModal && <div className="modal confirmation">
-                    <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                         <div>

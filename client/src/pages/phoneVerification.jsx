@@ -176,7 +176,7 @@ class PhoneVerification extends PureComponent {
                                     </Formik>}
 
                                     {status != 'initial' && status != 'codeSentError' && <div className="modal confirmation">
-                                        <div className="background-closer" onClick={() => this.setState({ status: 'initial' })} />
+                                        <div className="background-closer bg-modal" onClick={() => this.setState({ status: 'initial' })} />
                                         <div className="col-in">
                                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ status: 'initial' })} />
                                             <div>

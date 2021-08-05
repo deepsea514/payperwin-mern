@@ -394,6 +394,9 @@ a.log-in-btn {
     bottom: 0;
     left: 0;
     z-index: 1;
+}
+
+.bg-modal {
     background-color: rgba(0, 0, 0, .3);
 }
 
@@ -1119,7 +1122,7 @@ a.log-in-btn {
 }
 
 .login_modal_rightbar {
-    background: #ccc url(/images/bg-login.jpg) no-repeat 50%;
+    background: #ccc url(/images/login-right-panel.jpg) no-repeat 50%;
     background-size: cover;
     -ms-flex-negative: 1;
     flex-shrink: 1;
