@@ -168,7 +168,7 @@ class Sport extends PureComponent {
         return (
             <div className="mt-2">
                 {showModal && <div className="modal confirmation">
-                    <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
                         <div>

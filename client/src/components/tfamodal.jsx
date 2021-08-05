@@ -60,7 +60,7 @@ class TfaModal extends Component {
 
         return (
             <div className="modal confirmation">
-                <div className="background-closer" onClick={() => require2FAAction(false)} />
+                <div className="background-closer bg-modal" onClick={() => require2FAAction(false)} />
                 <div className="col-in">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => require2FAAction(false)} />
                     <div>

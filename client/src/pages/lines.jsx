@@ -227,7 +227,7 @@ class Lines extends PureComponent {
                 {ogTitle && <meta property="og:title" content={ogTitle} />}
                 {ogDescription && <meta property="og:description" content={ogDescription} />}
                 {showModal && <div className="modal confirmation">
-                    <div className="background-closer" onClick={() => this.setState({ showModal: false })} />
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
                         <div>
@@ -244,7 +244,7 @@ class Lines extends PureComponent {
                     </div>
                 </div>}
                 {shareModal && <div className="modal confirmation">
-                    <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                         <div>

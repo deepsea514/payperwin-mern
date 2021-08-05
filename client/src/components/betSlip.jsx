@@ -76,7 +76,7 @@ export default class BetSlip extends PureComponent {
                 {
                     confirmationOpen ? (
                         <div className="modal confirmation">
-                            <div className="background-closer" onClick={() => this.toggleField('confirmationOpen')} />
+                            <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
                             <div className="col-in">
                                 <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
                                 <div>
