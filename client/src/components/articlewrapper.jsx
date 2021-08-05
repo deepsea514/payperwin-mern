@@ -7,7 +7,7 @@ import axios from 'axios';
 import ArticleSidebar from "./articlesidebar";
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class ArticleWrapper extends Component {
     constructor(props) {

@@ -22,7 +22,7 @@ import _ from 'lodash';
 import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 const CountryInfo = config.CountryInfo;
 
 const useStyles = (theme) => ({
@@ -393,7 +393,7 @@ class Registration extends Component {
                                 isInvalid={errors.password !== undefined}
                                 required
                             />
-                            <Button variant="outline-secondary" onClick={() => this.setState({ showPass: !showPass })}>
+                            <Button variant="text" color="primary" onClick={() => this.setState({ showPass: !showPass })}>
                                 <i className={showPass ? "far fa-eye" : "far fa-eye-slash"} />
                             </Button>
                         </InputGroup>
@@ -412,7 +412,7 @@ class Registration extends Component {
                                 isInvalid={errors.cPassword !== undefined}
                                 required
                             />
-                            <Button variant="outline-secondary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
+                            <Button variant="text" color="primary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
                                 <i className={showPassConfirm ? "far fa-eye" : "far fa-eye-slash"} />
                             </Button>
                         </InputGroup>

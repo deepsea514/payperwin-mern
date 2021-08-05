@@ -76,6 +76,7 @@
     "react-document-meta": "^3.0.0-beta.2",
     "react-dom": "^16.8.4",
     "react-favicon": "0.0.14",
+    "react-google-login": "^5.2.2",
     "react-iframe": "^1.8.0",
     "react-image-file-resizer": "^0.4.7",
     "react-inlinesvg": "^2.2.2",

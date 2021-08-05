@@ -9,7 +9,7 @@ import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;

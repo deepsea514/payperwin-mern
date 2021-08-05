@@ -8,6 +8,14 @@
         "http://dev.payperwin.co"
     ],
     "serverHostToClientHost": {
+        "production": {
+            "appUrl": "https://api.payperwin.co",
+            "appAdminUrl": "https://api.payperwin.co"
+        },
+        "development": {
+            "appUrl": "http://localhost:8080",
+            "appAdminUrl": "http://localhost:8080/admin"
+        },
         "payperwin.co": {
             "appUrl": "https://api.payperwin.co",
             "appAdminUrl": "https://api.payperwin.co"

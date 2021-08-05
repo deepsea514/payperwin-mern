@@ -12,7 +12,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import QRCode from "react-qr-code";
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class Lines extends PureComponent {
     constructor(props) {

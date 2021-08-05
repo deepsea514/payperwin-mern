@@ -1846,7 +1846,7 @@ expressApp.get('/getPinnacleLogin',
 
             loginInfo = data;
         } catch (error) {
-            console.log("getPinnacleLogin1 => ", error);
+            // console.log("getPinnacleLogin1 => ", error);
             return res.status(400).json({
                 error: "Pinnacle login failed."
             });
@@ -1863,7 +1863,7 @@ expressApp.get('/getPinnacleLogin',
 
             userInfo = data;
         } catch (error) {
-            console.log("getPinnacleLogin2 => ", error);
+            // console.log("getPinnacleLogin2 => ", error);
             return res.status(400).json({
                 error: "Pinnacle login failed."
             });
@@ -1897,7 +1897,7 @@ async function pinnacleLogout(req) {
         });
 
     } catch (error) {
-        console.log('/logout error', error)
+        // console.log('/logout error', error)
         return false;
     }
     return true;

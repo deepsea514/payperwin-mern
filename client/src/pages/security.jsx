@@ -5,7 +5,7 @@ import axios from 'axios';
 import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[window.location.host].appUrl;
+const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class Security extends Component {
     constructor(props) {
