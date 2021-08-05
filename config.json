@@ -112,7 +112,8 @@
             "tickets": true,
             "faq": true,
             "articles": true,
-            "reports": true
+            "reports": true,
+            "cashback": true
         },
         "Customer Service": {
             "dashboard": true,
@@ -133,7 +134,8 @@
             "tickets": true,
             "faq": false,
             "articles": true,
-            "reports": true
+            "reports": true,
+            "cashback": true
         }
     }
 }
