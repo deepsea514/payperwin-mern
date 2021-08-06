@@ -240,6 +240,7 @@ class App extends PureComponent {
             '/verification',
             '/phone-verification',
             '/cashback',
+            '/support',
         ].filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
