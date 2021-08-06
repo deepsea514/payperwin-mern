@@ -22,7 +22,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: 'light',
+    display_mode: 'dark',
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
@@ -75,7 +75,7 @@ export const reducer = persistReducer(
                 return { ...state, require_2fa: action.require_2fa };
 
             case actionTypes.hideTourAction:
-                Cookie.set('acceptCookie', state.showedTourTimes + 1);
+                Cookie.set('showedTourTimes', state.showedTourTimes + 1);
                 return { ...state, showedTourTimes: state.showedTourTimes + 1, showTour: false };
 
             default:

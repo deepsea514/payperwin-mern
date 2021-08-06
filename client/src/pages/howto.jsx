@@ -4,6 +4,7 @@ import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import DocumentMeta from 'react-document-meta';
+import { connect } from "react-redux";
 
 class HowTo extends PureComponent {
     constructor(props) {
@@ -25,7 +26,7 @@ class HowTo extends PureComponent {
     }
 
     render() {
-        const { intl } = this.props;
+        const { intl, display_mode } = this.props;
         const { metaData } = this.state;
         return (
             <div className="col-in">
@@ -33,13 +34,7 @@ class HowTo extends PureComponent {
                 <div className="how-it-works">
                     <h2>
                         How
-                        <img src="/images/payperwin logo blue.png" style={
-                            {
-                                width: 200,
-                                height: 49,
-                                margin: '0 15px',
-                            }
-                        }
+                        <img src={display_mode == 'light' ? "/images/payperwin logo blue.png": '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
                         />Works
                     </h2>
                     <div className="summary">
@@ -153,4 +148,8 @@ class HowTo extends PureComponent {
     }
 }
 
-export default injectIntl(HowTo);
+const mapStateToProps = (state) => ({
+    display_mode: state.frontend.display_mode,
+});
+
+export default connect(mapStateToProps, null)(injectIntl(HowTo))
