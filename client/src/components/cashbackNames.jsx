@@ -5,20 +5,13 @@ export default class CashbackNames extends PureComponent {
     render() {
         return (
             <div className="verification-proof-container shadow">
-                <h6>Cashback Tiers</h6>
+                <h6>FAQ</h6>
                 <div className="verification-proof-list">
-                    <ul>
-                        <li>
-                            <b>Matched:</b> Your entire bet was matched and you wager is in play.
-                        </li>
-                        <li>
-                            <b>Partially Match:</b> Only a portion of your wager was matched with another user.
-                            The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
-                        </li>
-                        <li>
-                            <b>Settled:</b> The game is over and the winner has been paid.
-                        </li>
-                    </ul>
+                    <p>
+                        Payper Win offer a tiered based cashback program based on sportsbook bets (not applicable for P2P bets).
+                        The program is based on the user’s monthly play on the sportsbook and resets on the first day of the calendar month.
+                        The credit back will is calculated based on your loss on sportsbook bets.
+                    </p>
                 </div>
             </div>
         );
