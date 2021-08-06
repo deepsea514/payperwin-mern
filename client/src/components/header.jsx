@@ -37,7 +37,7 @@ class Header extends PureComponent {
             langDropDownOpen: false,
             timerInterval: null,
             showLoginModal: false,
-            showForgotPasswordModal: true,
+            showForgotPasswordModal: false,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
         this.toggleField = this.toggleField.bind(this);
