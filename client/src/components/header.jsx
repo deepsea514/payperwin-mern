@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
+import ForgotPasswordModal from './forgotPasswordModal';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -36,6 +37,7 @@ class Header extends PureComponent {
             langDropDownOpen: false,
             timerInterval: null,
             showLoginModal: false,
+            showForgotPasswordModal: true,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
         this.toggleField = this.toggleField.bind(this);
@@ -103,8 +105,23 @@ class Header extends PureComponent {
     }
 
     render() {
-        const { userDropDownOpen, oddsDropDownOpen, langDropDownOpen, timeString, showLoginModal } = this.state;
-        const { toggleField, user, location, search, setSearch, acceptCookie, acceptCookieAction, display_mode, getUser } = this.props;
+        const { userDropDownOpen,
+            oddsDropDownOpen,
+            langDropDownOpen,
+            timeString,
+            showLoginModal,
+            showForgotPasswordModal,
+        } = this.state;
+        const { toggleField,
+            user,
+            location,
+            search,
+            setSearch,
+            acceptCookie,
+            acceptCookieAction,
+            display_mode,
+            getUser
+        } = this.props;
         const { pathname } = location;
         return (
             <header className="header">
@@ -375,11 +392,12 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </div>
-                {!user && showLoginModal && <LoginModal closeModal={() => {
-                    this.setState({ showLoginModal: false });
-                    console.log('closeModal')
-                }
-                } getUser={getUser} />}
+                {!user && showLoginModal && <LoginModal
+                    closeModal={() => this.setState({ showLoginModal: false })}
+                    forgotPassword={() => this.setState({ showLoginModal: false, showForgotPasswordModal: true })}
+                    getUser={getUser} />}
+                {!user && showForgotPasswordModal && <ForgotPasswordModal
+                    closeModal={() => this.setState({ showForgotPasswordModal: false })} />}
             </header>
         );
     }

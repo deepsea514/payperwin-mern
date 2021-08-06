@@ -102,7 +102,7 @@ class LoginModal extends React.Component {
     }
 
     render() {
-        const { closeModal, } = this.props;
+        const { closeModal, forgotPassword } = this.props;
         const { initialValues, loginSchema, errors } = this.state;
 
         return (
@@ -165,7 +165,7 @@ class LoginModal extends React.Component {
                                                         </div>
                                                     </div>
                                                     <p className="loginForgotPasswordWrapper">
-                                                        <span>Forgot <a onClick={() => this.goTo('/passwordRecovery')} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>password</span></span></a>?</span>
+                                                        <span>Forgot <a onClick={forgotPassword} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>password</span></span></a>?</span>
                                                     </p>
                                                     {errors.server ? <div className="form-error">{errors.server}</div>
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
