@@ -199,7 +199,7 @@ class LoginModal extends React.Component {
                                 </div>
                             </div>
                             <div className="login_modal_rightbar">
-                                <img className="login_modal_rightbar_logo" src="images/logo200.png" alt="Pinnacle" />
+                                <img className="login_modal_rightbar_logo" src="/images/logo200.png" alt="PAYPERWIN" />
                             </div>
                         </div>
                     </div>
