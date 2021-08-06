@@ -211,6 +211,39 @@ class App extends PureComponent {
             '/phone-verification',
             '/cashback',
         ].includes(pathname);
+        const exceptDark = [
+            '/articles',
+            '/signup',
+            '/bets',
+            '/deposit',
+            '/announcements',
+            '/deactivation',
+            '/details',
+            '/history',
+            '/inbox',
+            '/payment-options',
+            '/personal-details',
+            '/preferences',
+            '/security',
+            '/self-exclusion',
+            '/transaction-history',
+            '/withdraw',
+            '/account',
+            '/deposit-etransfer',
+            '/withdraw-etransfer',
+            '/deposit-bitcoin',
+            '/deposit-ethereum',
+            '/deposit-tether',
+            '/withdraw-bitcoin',
+            '/withdraw-ethereum',
+            '/withdraw-tether',
+            '/verification',
+            '/phone-verification',
+            '/cashback',
+        ].filter(path => {
+            if (pathname.startsWith(path)) return true;
+            else return false;
+        }).length;
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
 
@@ -224,10 +257,10 @@ class App extends PureComponent {
                     history={history}
                     location={location}
                 />
-                {showedTourTimes < 3 && showTour && <TourModal />}
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
-                {require_2fa && <TfaModal getUser={getUser} />}
-                <section className={`main-section ${display_mode == 'dark' ? 'dark' : ''}`}>
+                <section className={`main-section ${display_mode == 'dark' && !exceptDark ? 'dark' : ''}`}>
+                    {showedTourTimes < 3 && showTour && <TourModal />}
+                    {require_2fa && <TfaModal getUser={getUser} />}
                     <div className="container">
                         <Switch>
                             <Route path="/sportsbook" render={(props) =>
@@ -255,7 +288,7 @@ class App extends PureComponent {
                                                 <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
                                                 {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}
                                                 <Route path="/passwordRecovery" component={PasswordRecovery} />
-                                                <Route path="/login" component={Login} />
+                                                {/* <Route path="/login" component={Login} /> */}
                                                 <Route path="/deposit" render={(props) =>
                                                     <Deposit updateUser={updateUser} {...props} />} />
                                                 <Route path="/withdraw" render={(props) =>

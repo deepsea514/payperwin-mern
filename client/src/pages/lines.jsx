@@ -278,7 +278,7 @@ class Lines extends PureComponent {
                                 </div>
                             </div>
                             <center>
-                                <div className="mt-2">
+                                <div className="mt-2 bg-white py-3">
                                     <QRCode value={currentUrl} />
                                 </div>
                             </center>

@@ -159,8 +159,100 @@
     color: white;
 }
 
+.main-section.dark .bet-stake, .main-section.dark .bet-win:focus {
+    outline: none;
+}
+
 .main-section.dark h3 {
     color: white;
+}
+
+.main-section.dark .col-in {
+    background: #082242;
+    border-color: #0a294e;
+}
+
+.main-section.dark .help-center {
+    background: #05162b;
+    border-color: #0a294e;
+}
+
+.main-section.dark h2 {
+    color: white;
+}
+
+.main-section.dark .help-center .hc-search-input input {
+    background: #082242;
+    border-color: #0a294e;
+    color: white;
+}
+
+.main-section.dark .help-center .hc-search-input input:focus {
+    outline: none;
+}
+
+.main-section.dark .cs-g, .main-section.dark .fc-article-inner {
+    background: #05162b;
+    border-color: #0a294e;
+}
+
+.main-section.dark .cs-g .list-lead, .main-section.dark .cs-g .list-desc, .main-section.dark .link-help-home, .main-section.dark p, .main-section.dark li {
+    color: white;
+}
+
+.main-section.dark .how-it-works-info {
+    background: #071d38;
+}
+
+.main-section.dark .how-it-works-steps {
+    color: white;
+}
+
+.main-section.dark .content-container {
+    background: #071d38;
+    color: white;
+}
+
+.main-section.dark .content-container .privacy-policy-header-text {
+    background: #0a294e;
+}
+
+.main-section.dark .content-container .gray {
+    background: #0a294e;
+}
+
+.main-section.dark .content-container .privacy-policy-section-title {
+    background: #0a294e;
+}
+
+.main-section.dark .content-container .privacy-policy-paragraph {
+    background: #0a294e;
+}
+
+.main-section.dark .content-container .terms-and-conditions table {
+    background: #071d38;
+}
+
+.main-section.dark .content-container .terms-and-conditions .list-alike p span {
+    color: white;
+}
+
+.main-section.dark .content-container .title-bar, .main-section.dark .content-container .privacy-policy-container .privacy-policy-page-title {
+    background: #071d38 !important;
+}
+
+.main-section.dark .modal.confirmation {
+    color: white;
+}
+
+.main-section.dark .form-control {
+    color: white;
+    background: #0a294e;
+    border-color: #154785;
+}
+
+.main-section.dark .form-control:focus {
+    outline: none;
 }
 
 /* Footer */
