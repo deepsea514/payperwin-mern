@@ -82,6 +82,7 @@
     "react-inlinesvg": "^2.2.2",
     "react-intl": "^5.11.0",
     "react-loading": "^2.0.3",
+    "react-meta-tags": "^1.0.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-phone-input-2": "^2.13.9",
     "react-portal": "^4.2.1",

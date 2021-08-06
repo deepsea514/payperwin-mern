@@ -9,6 +9,7 @@ import timeHelper from "../helpers/timehelper";
 import DocumentMeta from 'react-document-meta';
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 
 const config = require('../../../config.json');
@@ -223,9 +224,11 @@ class Lines extends PureComponent {
         return (
             <div className="content detailed-lines">
                 {metaData && <DocumentMeta {...metaData} />}
-                {ogTitle && <meta property="og:type" content="article" />}
-                {ogTitle && <meta property="og:title" content={ogTitle} />}
-                {ogDescription && <meta property="og:description" content={ogDescription} />}
+                {ogTitle && <MetaTags>
+                    <meta property="og:type" content="article" />
+                    <meta property="og:title" content={ogTitle} />
+                    <meta property="og:description" content={ogDescription} />
+                </MetaTags>}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
