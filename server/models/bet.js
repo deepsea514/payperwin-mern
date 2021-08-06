@@ -124,6 +124,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
             console.log(error)
         }
     }
+    next();
 });
 
 const Bet = mongoose.model('Bet', BetSchema);

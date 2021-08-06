@@ -2513,6 +2513,10 @@ expressApp.post(
                             financialtype: "betwon",
                             status: FinancialStatus.success
                         });
+                        orCon.push({
+                            financialtype: "betfee",
+                            status: FinancialStatus.success
+                        });
                     }
                     if (filter.placebet) {
                         orCon.push({
