@@ -13,9 +13,10 @@ export const actionTypes = {
     setTimezone: "[Set Timezone Action]",
     setSearch: "[Set Search Action]",
     acceptCookieAction: "[Accept Cookie Action]",
+    hideTourAction: "[Hide Tour Action]",
     require2FAAction: "[Require 2FA Action]",
 };
-
+const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
     lang: 'en',
     oddsFormat: 'american',
@@ -24,6 +25,8 @@ const initialState = {
     display_mode: 'light',
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
+    showedTourTimes: showedTourTimes ? showedTourTimes : 0,
+    showTour: true,
     require_2fa: false,
     notification_settings: {
         win_confirmation: { email: true, sms: true },
@@ -38,7 +41,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone'] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -71,6 +74,10 @@ export const reducer = persistReducer(
             case actionTypes.require2FAAction:
                 return { ...state, require_2fa: action.require_2fa };
 
+            case actionTypes.hideTourAction:
+                Cookie.set('acceptCookie', state.showedTourTimes + 1);
+                return { ...state, showedTourTimes: state.showedTourTimes + 1, showTour: false };
+
             default:
                 return state;
         }
@@ -87,6 +94,7 @@ export const actions = {
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
     acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
     require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
+    hideTourAction: () => ({ type: actionTypes.hideTourAction }),
 };
 
 export function* saga() {

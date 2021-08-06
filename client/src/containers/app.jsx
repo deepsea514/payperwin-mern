@@ -65,6 +65,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import TourModal from '../components/tourModal';
 
 class App extends PureComponent {
     constructor(props) {
@@ -171,8 +172,16 @@ class App extends PureComponent {
             openBetSlipMenu,
             scrolledTop,
         } = this.state;
-        const { user, getUser, history, updateUser, location, require_2fa, display_mode } = this.props;
-        const wallet = resObjPath(user, 'balance') ? resObjPath(user, 'balance').toFixed(2) : '0.00';
+        const { user,
+            getUser,
+            history,
+            updateUser,
+            location,
+            require_2fa,
+            display_mode,
+            showedTourTimes,
+            showTour
+        } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = [
             '/bets',
@@ -215,6 +224,7 @@ class App extends PureComponent {
                     history={history}
                     location={location}
                 />
+                {showedTourTimes < 3 && showTour && <TourModal />}
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 {require_2fa && <TfaModal getUser={getUser} />}
                 <section className={`main-section ${display_mode == 'dark' ? 'dark' : ''}`}>
@@ -365,6 +375,8 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     display_mode: state.frontend.display_mode,
+    showedTourTimes: state.frontend.showedTourTimes,
+    showTour: state.frontend.showTour,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))
