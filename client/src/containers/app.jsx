@@ -179,8 +179,6 @@ class App extends PureComponent {
             location,
             require_2fa,
             display_mode,
-            showedTourTimes,
-            showTour
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = [
@@ -260,7 +258,6 @@ class App extends PureComponent {
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 <section className={`main-section ${display_mode == 'dark' && !exceptDark ? 'dark' : ''}`}>
-                    {showedTourTimes < 3 && showTour && <TourModal />}
                     {require_2fa && <TfaModal getUser={getUser} />}
                     <div className="container">
                         <Switch>
@@ -409,8 +406,6 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     display_mode: state.frontend.display_mode,
-    showedTourTimes: state.frontend.showedTourTimes,
-    showTour: state.frontend.showTour,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

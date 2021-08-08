@@ -8,10 +8,11 @@ import dayjs from 'dayjs';
 import DocumentMeta from 'react-document-meta';
 import QRCode from "react-qr-code";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { connect } from "react-redux";
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-export default class OpenBets extends PureComponent {
+class OpenBets extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -176,10 +177,11 @@ export default class OpenBets extends PureComponent {
 
     render() {
         const { bets, metaData, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
-        const { openBets, settledBets } = this.props;
+        const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
                 {metaData && <DocumentMeta {...metaData} />}
+                {openBets && showedTourTimes < 3 && showTour && <TourModal />}
                 {shareModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
                     <div className="col-in">
@@ -477,3 +479,10 @@ export default class OpenBets extends PureComponent {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    showedTourTimes: state.frontend.showedTourTimes,
+    showTour: state.frontend.showTour,
+});
+
+export default connect(mapStateToProps, null)(OpenBets)
