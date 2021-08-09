@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-import DocumentMeta from 'react-document-meta';
+
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -16,15 +16,12 @@ class Others extends PureComponent {
         this.state = {
             data: null,
             error: null,
-            metaData: null
         };
     }
 
     componentDidMount() {
         const title = 'Betting on Custom Events';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title });
         this.getSport();
     }
 
@@ -67,7 +64,7 @@ class Others extends PureComponent {
 
     render() {
         const { addBet, betSlip, removeBet, timezone, search } = this.props;
-        const { data, error, metaData } = this.state;
+        const { data, error } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -77,7 +74,6 @@ class Others extends PureComponent {
 
         return (
             <div className="content mt-2 detailed-lines">
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="tab-content" >
                     {
                         data.map((event, index) => {

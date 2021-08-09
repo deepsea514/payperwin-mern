@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Form } from "react-bootstrap";
 import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
-import DocumentMeta from 'react-document-meta';
+
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
@@ -38,7 +38,6 @@ class WithdrawTripleA extends PureComponent {
             withdrawError: null,
             agreeWithdraw: false,
             errMsg: '',
-            metaData: null,
             usedFreeWithdraw: false,
         };
     }
@@ -46,9 +45,7 @@ class WithdrawTripleA extends PureComponent {
     componentDidMount() {
         const { method, user } = this.props;
         const title = `Withdraw with ${method}`;
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
         if (user) {
             this.getFreeWithdraw();
         }
@@ -93,7 +90,7 @@ class WithdrawTripleA extends PureComponent {
 
     render() {
         const { classes, user, method } = this.props;
-        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, metaData, usedFreeWithdraw } = this.state;
+        const { withdrawError, withdrawSuccess, agreeWithdraw, errMsg, usedFreeWithdraw } = this.state;
         const initialValues = {
             amount: 0,
             // wallet: '',
@@ -108,7 +105,6 @@ class WithdrawTripleA extends PureComponent {
 
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>{method} Withdraw</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">

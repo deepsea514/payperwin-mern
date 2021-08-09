@@ -8,8 +8,8 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import { setMeta } from '../libs/documentTitleBuilder';
-import DocumentMeta from 'react-document-meta';
+import { setTitle } from '../libs/documentTitleBuilder';
+
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
@@ -64,7 +64,6 @@ const Form = ({
 const initState = {
     email: '',
     errors: {},
-    metaData: null
 };
 
 export default class Login extends Component {
@@ -78,9 +77,7 @@ export default class Login extends Component {
 
     componentDidMount() {
         const title = 'Recover Password';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     handleChange(e) {
@@ -139,10 +136,8 @@ export default class Login extends Component {
     }
 
     render() {
-        const { metaData } = this.state;
         return (
             <div className="content">
-                {metaData && <DocumentMeta {...metaData} />}
                 <Form
                     {...this.state}
                     handleChange={this.handleChange}

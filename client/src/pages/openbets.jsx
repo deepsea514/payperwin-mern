@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
 import sportNameIcon from "../helpers/sportNameIcon";
 import dayjs from 'dayjs';
-import DocumentMeta from 'react-document-meta';
+
 import QRCode from "react-qr-code";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { connect } from "react-redux";
@@ -21,7 +21,6 @@ class OpenBets extends PureComponent {
             bets: [],
             betsSportsBook: [],
             error: null,
-            metaData: null,
             shareModal: false,
             loadingUrl: false,
             lineUrl: '',
@@ -32,9 +31,7 @@ class OpenBets extends PureComponent {
     componentDidMount() {
         const { settledBets } = this.props;
         const title = settledBets ? 'Bet History' : 'Open Bets';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
         this.getBetHistory();
     }
 
@@ -178,11 +175,10 @@ class OpenBets extends PureComponent {
     }
 
     render() {
-        const { bets, metaData, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
+        const { bets, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 {openBets && showedTourTimes < 3 && showTour && <TourModal />}
                 {shareModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />

@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-import DocumentMeta from 'react-document-meta';
+
 import calculateNewOdds from '../helpers/calculateNewOdds';
 
 const config = require('../../../config.json');
@@ -17,18 +17,14 @@ class SportLeague extends PureComponent {
         this.state = {
             data: null,
             error: null,
-            metaData: null,
             showModal: false,
             timer: null,
         };
     }
 
     componentDidMount() {
-        const { league } = this.props;
         const title = 'Betting on Sports League';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
         this.getSportLeague();
         this.setState({ timer: setInterval(this.getSportLeague, 10 * 60 * 1000) })
     }
@@ -144,7 +140,7 @@ class SportLeague extends PureComponent {
 
     render() {
         const { betSlip, removeBet, sportName, timezone, search, } = this.props;
-        const { data, error, metaData, showModal } = this.state;
+        const { data, error, showModal } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -186,7 +182,6 @@ class SportLeague extends PureComponent {
                         </div>
                     </div>
                 </div>}
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="table-title">HIGHLIGHTS</div>
                 <div className="content">
                     {(() => {

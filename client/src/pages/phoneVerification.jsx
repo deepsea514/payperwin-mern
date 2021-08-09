@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 import { Form } from "react-bootstrap";
@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import DocumentMeta from 'react-document-meta';
+
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
@@ -45,15 +45,12 @@ class PhoneVerification extends PureComponent {
             verification_code: '',
             msg: '',
             veryfing: false,
-            metaData: null
         };
     }
 
     componentDidMount() {
         const title = 'Phone Verification';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     onSubmit = (values, formik) => {
@@ -101,13 +98,12 @@ class PhoneVerification extends PureComponent {
 
     render() {
         const { classes, user } = this.props;
-        const { phoneVerificationSchema, status, metaData, verification_code, msg, veryfing } = this.state;
+        const { phoneVerificationSchema, status, verification_code, msg, veryfing } = this.state;
         const initialValues = {
             phone: (user ? user.phone : ''),
         };
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Phone Verification</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">

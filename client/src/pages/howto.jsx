@@ -1,24 +1,21 @@
 import React, { PureComponent } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder'
+import { setTitle } from '../libs/documentTitleBuilder'
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import DocumentMeta from 'react-document-meta';
+
 import { connect } from "react-redux";
 
 class HowTo extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            metaData: null
         };
     }
 
     componentDidMount() {
         const title = 'How it works';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     handleChange(e) {
@@ -27,14 +24,12 @@ class HowTo extends PureComponent {
 
     render() {
         const { intl, display_mode } = this.props;
-        const { metaData } = this.state;
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="how-it-works">
                     <h2>
                         How
-                        <img src={display_mode == 'light' ? "/images/payperwin logo blue.png": '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
+                        <img src={display_mode == 'light' ? "/images/payperwin logo blue.png" : '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
                         />Works
                     </h2>
                     <div className="summary">

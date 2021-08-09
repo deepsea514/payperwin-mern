@@ -69,36 +69,9 @@ function flashNotification(message) {
     }, intervalTime * 2);
 }
 
-function setMeta(title, callback) {
-    axios.get(`${serverUrl}/meta/${encodeURIComponent(title)}`, { withCredentials: true })
-        .then(({ data }) => {
-            if (data) {
-                const { title, description, keywords } = data;
-                setTitle({ pageTitle: title });
-                const meta = {
-                    title: title,
-                    description: description,
-                    canonical: 'https://www.payperwin.co',
-                    meta: {
-                        charset: 'utf-8',
-                        name: {
-                            keywords: keywords
-                        }
-                    }
-                };
-                callback(meta);
-            }
-            setTitle({ pageTitle: title });
-        })
-        .catch(() => {
-            console.log('error')
-            setTitle({ pageTitle: title });
-        })
-}
 
 module.exports = {
     setTitle,
-    setMeta,
     flashNotification,
     titleProperties,
 };

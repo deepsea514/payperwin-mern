@@ -10,7 +10,7 @@ import { Form, InputGroup } from "react-bootstrap";
 import axios from 'axios';
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import StepConnector from '@material-ui/core/StepConnector';
 import DatePicker from "react-datepicker";
@@ -19,7 +19,7 @@ import dateformat from "dateformat";
 import clsx from 'clsx';
 import { RegionDropdown } from 'react-country-region-selector';
 import _ from 'lodash';
-import DocumentMeta from 'react-document-meta';
+
 import GoogleLogin from "react-google-login";
 
 const config = require('../../../config.json');
@@ -170,7 +170,6 @@ const initState = {
     },
     activeStep: 0,
     steps: ['', ''],
-    metaData: null,
     showPass: false,
     showPassConfirm: false,
 };
@@ -187,9 +186,7 @@ class Registration extends Component {
 
     componentDidMount() {
         const title = 'Registration';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     handleChange = (e) => {
@@ -775,11 +772,10 @@ class Registration extends Component {
 
     render() {
         const { classes } = this.props;
-        const { activeStep, steps, errors, metaData } = this.state;
+        const { activeStep, steps, errors } = this.state;
 
         return (
             <div className="content pb-5">
-                {metaData && <DocumentMeta {...metaData} />}
                 <Grid container justify="center">
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card style={{ backgroundColor: '#ffffff' }}>

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Button } from "@material-ui/core";
 import axios from 'axios';
-import DocumentMeta from 'react-document-meta';
+
 import { Form, InputGroup } from "react-bootstrap";
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 
@@ -14,7 +14,6 @@ class Security extends Component {
         super(props);
         this.state = {
             enable_2fa: 'false',
-            metaData: null,
             errors: {},
             touched: {
                 oldPassword: false,
@@ -33,9 +32,7 @@ class Security extends Component {
 
     componentDidMount() {
         const title = 'Account Security';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     getSnapshotBeforeUpdate(prevProps) {
@@ -132,7 +129,6 @@ class Security extends Component {
     render() {
         const {
             enable_2fa,
-            metaData,
             showOldPass,
             showPass,
             showPassConfirm,
@@ -144,7 +140,6 @@ class Security extends Component {
         } = this.state;
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Password and security</h1>
                 <div className="main-cnt">
                     <div className="row">

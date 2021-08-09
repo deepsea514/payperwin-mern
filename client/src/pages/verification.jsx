@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -9,7 +9,7 @@ import { Button } from '@material-ui/core';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { withStyles } from "@material-ui/core/styles";
-import DocumentMeta from 'react-document-meta';
+
 import { getInputClasses } from "../helpers/getInputClasses";
 
 import config from "../../../config.json";
@@ -52,15 +52,12 @@ class Verification extends PureComponent {
             addressInfo: null,
             submitError: false,
             submitSuccess: false,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Customer Verification';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
 
         axios.get(`${serverUrl}/checkverified`, { withCredentials: true })
             .then(({ data }) => {
@@ -124,7 +121,7 @@ class Verification extends PureComponent {
 
     render() {
         const { user, classes } = this.props;
-        const { address, identification, addressInfo, verifyFormSchema, submitSuccess, submitError, metaData } = this.state;
+        const { address, identification, addressInfo, verifyFormSchema, submitSuccess, submitError } = this.state;
         const initialValues = {
             address: (addressInfo ? addressInfo.address : ''),
             address2: (addressInfo ? addressInfo.address2 : ''),
@@ -134,7 +131,6 @@ class Verification extends PureComponent {
         };
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Verification</h3>
                 {user && user.roles.verified && <p>You already verified your identify.</p>}
                 {user && !user.roles.verified && <div className="main-cnt">

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import axios from 'axios';
@@ -8,7 +8,6 @@ import FaqSubject from "../components/faq_subject";
 import FaqHome from "../components/faq_home";
 import FaqArticle from "../components/faq_article";
 import FaqSearch from "../components/faq_search";
-import DocumentMeta from 'react-document-meta';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -20,15 +19,12 @@ class Faq extends Component {
         this.state = {
             loading: false,
             faq_subjects: null,
-            metaData: null
         }
     }
 
     componentDidMount() {
         const title = 'FAQ';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
 
         this.setState({ loading: true });
         axios.get(`${serverUrl}/faqs`, { withCredentials: true })
@@ -42,11 +38,10 @@ class Faq extends Component {
 
     render() {
         const { intl } = this.props;
-        const { loading, faq_subjects, metaData } = this.state;
+        const { loading, faq_subjects } = this.state;
 
         return (
             <div className="col-in faq">
-                {metaData && <DocumentMeta {...metaData} />}
                 <section className="help-center">
                     <div className="hc-search">
                         <div className="hc-search-c">

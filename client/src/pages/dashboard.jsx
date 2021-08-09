@@ -1,17 +1,16 @@
 import React, { PureComponent } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { Link } from 'react-router-dom';
 import Highlights from '../components/highlights';
-import DocumentMeta from 'react-document-meta';
+
 
 class Dashboard extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             showModal: false,
-            metaData: null
         };
         this._isMounted = false;
     }
@@ -23,9 +22,7 @@ class Dashboard extends PureComponent {
     componentDidMount() {
         this._isMounted = true;
         const title = 'Peer to Peer Betting';
-        this._isMounted && setMeta(title, (metaData) => {
-            this._isMounted && this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title });
 
         const preference = JSON.parse(localStorage.getItem('frontend-preference'));
         if (!preference || !preference.p2pModal) {
@@ -46,12 +43,11 @@ class Dashboard extends PureComponent {
     }
 
     render() {
-        const { showModal, metaData } = this.state;
+        const { showModal } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
 
         return (
             <React.Fragment>
-                {metaData && <DocumentMeta {...metaData} />}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">

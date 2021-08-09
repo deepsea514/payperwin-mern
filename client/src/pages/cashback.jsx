@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
-import DocumentMeta from 'react-document-meta';
+import { setTitle } from '../libs/documentTitleBuilder';
 import ReactApexChart from "react-apexcharts";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, } from 'react-bootstrap';
@@ -17,7 +16,6 @@ export default class Cashback extends PureComponent {
         super(props);
         this.state = {
             error: null,
-            metaData: null,
             loading: false,
             data: null,
             chartOptions: {
@@ -99,9 +97,7 @@ export default class Cashback extends PureComponent {
 
     componentDidMount() {
         const title = 'Cashback Program';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title });
         this.getCashBackHistory();
     }
 
@@ -187,11 +183,10 @@ export default class Cashback extends PureComponent {
     }
 
     render() {
-        const { metaData, loading, error, chartOptions, data } = this.state;
+        const { loading, error, chartOptions, data } = this.state;
 
         return (
             <div className="col-in px-3">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Cashback Program</h3>
                 {loading && <center><Preloader use={ThreeDots}
                     size={100}
