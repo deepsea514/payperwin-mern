@@ -1075,10 +1075,6 @@ a.log-in-btn {
     box-shadow: 0 8px 45px rgba(0, 0, 0, .45);
 }
 
-.forgotPassword_modal_container .login_modal_content {
-    min-height: 300px !important;
-}
-
 .overflow-hidden {
     overflow: hidden !important;
 }
@@ -1093,9 +1089,6 @@ a.log-in-btn {
 @media (min-width: 768px) {
     .login_modal_main {
         min-height: 500px;
-    }
-    .forgotPassword_modal_container .login_modal_main {
-        min-height: 300px !important;
     }
     .login_modal_leftbar {
         max-width: 275px;
