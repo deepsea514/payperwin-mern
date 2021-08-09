@@ -204,7 +204,7 @@ class Lines extends PureComponent {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Forward your bet to the sportsbook below. The odds may vary.
+                                Peer-to-Peer betting is unavailable for this particular bet, please bet with the Sportsbook.
                             </p>
                             <div className="text-right">
                                 <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>
