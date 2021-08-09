@@ -23,7 +23,6 @@ class Lines extends PureComponent {
         const params = new URLSearchParams(search);
         const type = params.get('type');
         const index = params.get('index');
-        const uniqueId = params.get('uniqueId');
         this.state = {
             data: null,
             error: null,
@@ -34,7 +33,6 @@ class Lines extends PureComponent {
             timer: null,
             type: type,
             index: index,
-            uniqueId: uniqueId,
             ogTitle: '',
             ogDescription: '',
         };
@@ -74,7 +72,6 @@ class Lines extends PureComponent {
 
     getSportLine() {
         const { match: { params: { sportName, leagueId, eventId, lineId } }, timezone } = this.props;
-        const { uniqueId } = this.state;
         if (sportName) {
             const url = `${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`;
             axios({
