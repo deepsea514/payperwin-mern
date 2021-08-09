@@ -397,7 +397,7 @@ class Header extends PureComponent {
                     forgotPassword={() => this.setState({ showLoginModal: false, showForgotPasswordModal: true })}
                     getUser={getUser} />}
                 {!user && showForgotPasswordModal && <ForgotPasswordModal
-                    closeModal={() => this.setState({ showForgotPasswordModal: false })} />}
+                    closeModal={() => this.setState({ showForgotPasswordModal: false })} backToLogin={() => this.setState({ showForgotPasswordModal: false, showLoginModal: true, })} />}
             </header>
         );
     }

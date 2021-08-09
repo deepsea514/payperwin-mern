@@ -52,13 +52,13 @@ class ForgotPasswordModal extends React.Component {
             });
     }
     render() {
-        const { closeModal, } = this.props;
+        const { closeModal, backToLogin } = this.props;
         const { initialValues, forgotSchema, errors, message } = this.state;
 
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={closeModal} />
-                <div className="dead-center login_modal_container forgotPassword_modal_container">
+                <div className="dead-center login_modal_container">
                     <div className="contentBlock overflow-hidden dead-center login_modal_content">
                         <div className="login_modal_main">
                             <div className="login_modal_context">
@@ -93,6 +93,9 @@ class ForgotPasswordModal extends React.Component {
                                                             />
                                                         </div>
                                                     </div>
+                                                    <p className="loginForgotPasswordWrapper">
+                                                        <span>Back to <a onClick={backToLogin} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>Login</span></span></a></span>
+                                                    </p>
                                                     {errors.server ? <div className="form-error">{errors.server}</div>
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
                                                             : null
