@@ -172,11 +172,18 @@ const schema = {
         { validator: isString },
         { validator: required },
     ],
+    oldPassword: [
+        { validator: isString },
+        { validator: required },
+    ],
     password: [
         { validator: isString },
         { validator: involveLetterAndNumberAndSpecialCharacter, hasTag: 'registration' },
         { validator: min, options: { number: 8 }, hasTag: 'registration' },
         { validator: max, options: { number: 128 }, hasTag: 'registration' },
+        { validator: involveLetterAndNumberAndSpecialCharacter, hasTag: 'changePassword' },
+        { validator: min, options: { number: 8 }, hasTag: 'changePassword' },
+        { validator: max, options: { number: 128 }, hasTag: 'changePassword' },
         { validator: required },
     ],
     cPassword: [
