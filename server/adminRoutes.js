@@ -217,7 +217,7 @@ adminRouter.patch(
             if (isMatch) {
                 admin.password = newpassword;
                 await admin.save();
-                res.status(404).json("Password changed.");
+                res.json("Password changed.");
             }
             else {
                 res.status(403).json({ error: 'Password doesn\'t match.' });

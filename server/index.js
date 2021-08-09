@@ -724,6 +724,32 @@ expressApp.post('/passwordChange', bruteforce.prevent, isAuthenticated, async (r
     );
 });
 
+expressApp.patch(
+    '/changePassword',
+    isAuthenticated,
+    async (req, res) => {
+        const { oldPassword, password } = req.body;
+        const { email } = req.user;
+        const user = await User.findOne({ email });
+
+        user.comparePassword(oldPassword, async function (error, isMatch) {
+            if (error) {
+                res.status(404).json({ error: 'User doesn\'t exist.' });
+                return;
+            }
+            if (isMatch) {
+                user.password = password;
+                await user.save();
+                res.json("Password changed.");
+            }
+            else {
+                res.status(403).json({ error: 'Password doesn\'t match.' });
+                return;
+            }
+        })
+    }
+)
+
 // Helps keep the domain consistent when having multiple domains point to same app
 
 expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => {

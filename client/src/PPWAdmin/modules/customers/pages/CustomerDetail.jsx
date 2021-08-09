@@ -112,25 +112,13 @@ class CustomerDetail extends React.Component {
                                                 <td>${customer.balance}</td>
                                             </tr>
                                             <tr>
-                                                <th>Timestamp</th>
-                                                <td>1611328452</td>
-                                                <th>IP</th>
-                                                <td>106.207.64.242</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Event</th>
-                                                <td>Test Event</td>
-                                                <th>Amount</th>
-                                                <td>$100.00</td>
-                                            </tr>
-                                            <tr>
                                                 <th>Deposit Log</th>
                                                 <td>-</td>
                                                 <th>Withdraw Log</th>
                                                 <td>-</td>
                                             </tr>
                                             <tr>
-                                                <th>Created</th>
+                                                <th>Joined At</th>
                                                 <td>{this.getDate(customer.createdAt)}</td>
                                                 <th>Status</th>
                                                 <td><span className="label label-lg label-success label-inline font-weight-lighter mr-2">Active</span></td>
