@@ -64,7 +64,6 @@ app.get("/*", (req, res) => {
                             const { league: { name: leagueName, events } } = data;
                             if (eventId) {  // Has Event
                                 const { uniqueId } = req.query;
-                                console.log(uniqueId);
                                 const event = events.find((event) => event.originId == eventId);
                                 if (event) { // Event is valid
                                     if (uniqueId) {
@@ -110,16 +109,16 @@ app.get("/*", (req, res) => {
 
         <meta itemprop="name" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta itemprop="description" content="${description}">
-        <meta itemprop="image" content="https://www.payperwin.co/images/Banner 1.jpg">
+        <meta itemprop="image" content="https://www.payperwin.co/images/meta_image.jpeg">
 
         <meta property="og:type" content="website">
         <meta property="og:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta property="og:description" content="${description}">
-        <meta property="og:image" content="https://www.payperwin.co/images/Banner 1.jpg">
+        <meta property="og:image" content="https://www.payperwin.co/images/meta_image.jpeg">
 
         <meta name="twitter:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta name="twitter:description" content="${description}">
-        <meta name="twitter:image" content="https://www.payperwin.co/images/Banner 1.jpg">
+        <meta name="twitter:image" content="https://www.payperwin.co/images/meta_image.jpeg">
         `;
 
         // TODO inject meta tags
