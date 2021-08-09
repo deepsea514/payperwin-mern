@@ -65,7 +65,6 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
-import TourModal from '../components/tourModal';
 
 class App extends PureComponent {
     constructor(props) {
