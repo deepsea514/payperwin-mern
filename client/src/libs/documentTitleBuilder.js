@@ -70,7 +70,7 @@ function flashNotification(message) {
 }
 
 function setMeta(title, callback) {
-    axios.get(`${serverUrl}/meta/${title}`, { withCredentials: true })
+    axios.get(`${serverUrl}/meta/${encodeURIComponent(title)}`, { withCredentials: true })
         .then(({ data }) => {
             if (data) {
                 const { title, description, keywords } = data;
