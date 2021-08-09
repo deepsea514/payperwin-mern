@@ -89,12 +89,12 @@ class AutoBet extends React.Component {
         return autobets.map((bet, index) => (
             <tr key={index}>
                 <td>{index + 1}</td>
-                <td>{bet.userId.username}</td>
+                <td>{bet.userId ? <Link to={`/customers/${bet.userId._id}/profile/overview`}>{bet.userId.email}</Link> : null}</td>
                 <td>{bet.sports.join(', ')}</td>
                 <td>{bet.priority}</td>
                 <td>{bet.maxRisk}</td>
                 <td>{bet.budget}</td>
-                <td>{bet.userId.balance}</td>
+                <td>{bet.userId ? bet.userId.balance : null}</td>
 
                 <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>

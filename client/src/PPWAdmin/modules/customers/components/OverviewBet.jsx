@@ -17,7 +17,8 @@ class OverviewBet extends React.Component {
                             href="#"
                             className="text-dark text-hover-primary mb-1 font-size-lg"
                         >
-                            {bet.teamA.name} vs {bet.teamB.name} ({bet.lineQuery.sportName})
+                            {bet.origin == 'other' && bet.lineQuery.eventName}
+                            {bet.teamA ? bet.teamA.name : null} vs {bet.teamB ? bet.teamB.name : null} ({bet.lineQuery.sportName})
                         </a>
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
                     </div>

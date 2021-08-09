@@ -860,7 +860,7 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .populate('user', ['username', 'currency']).populate('reason', ['title']);
+                .populate('user', ['email', 'currency']).populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
             console.log(error);
@@ -1151,7 +1151,7 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .populate('user', ['username', 'currency']).populate('reason', ['title']);
+                .populate('user', ['email', 'currency']).populate('reason', ['title']);
             const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {

@@ -108,7 +108,7 @@ class NewPasswordFromToken extends Component {
     handleSubmit() {
         const { location: { search: queryParams }, history } = this.props;
         const { errors } = this.state;
-        registrationValidation.validateFields(this.state)
+        registrationValidation.validateFields(this.state, { tags: ['changePassword'] })
             .then((result) => {
                 if (result === true) {
                     const { password } = this.state;
@@ -152,7 +152,7 @@ class NewPasswordFromToken extends Component {
     handleDirty(e) {
         const { errors } = this.state;
         const { name } = e.target;
-        registrationValidation.validateField(name, this.state).then((result) => {
+        registrationValidation.validateField(name, this.state, { tags: ['changePassword'] }).then((result) => {
             const errorsStateChange = { ...errors, server: undefined };
             if (result === true) {
                 errorsStateChange[name] = undefined;
