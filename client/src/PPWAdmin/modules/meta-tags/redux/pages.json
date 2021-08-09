@@ -45,7 +45,7 @@
     },
     {
         "title": "Deposit with Tether",
-        "path": "/deposit-ethereum"
+        "path": "/deposit-tether"
     },
     {
         "title": "Withdraw",
@@ -86,10 +86,6 @@
     {
         "title": "Betting on Custom Events",
         "path": "/others"
-    },
-    {
-        "title": "Betting on Detailed sports line",
-        "path": "/lines/:sportName/:leagueId/:eventId"
     },
     {
         "title": "Preferences",
@@ -149,6 +145,6 @@
     },
     {
         "title": "Cashback Program",
-        "path": "cashback"
+        "path": "/cashback"
     }
 ]
