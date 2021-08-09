@@ -24,10 +24,6 @@
         "path": "/newPasswordFromToken"
     },
     {
-        "title": "Login",
-        "path": "/login"
-    },
-    {
         "title": "Payment Methods",
         "path": "/payment-options"
     },
@@ -88,14 +84,6 @@
         "path": "/sports"
     },
     {
-        "title": "Betting on Sports League",
-        "path": "/sport/:name/:league"
-    },
-    {
-        "title": "Betting on Sports",
-        "path": "/sport/:name"
-    },
-    {
         "title": "Betting on Custom Events",
         "path": "/others"
     },
@@ -150,5 +138,17 @@
     {
         "title": "Customer Support",
         "path": "/support"
+    },
+    {
+        "title": "Articles",
+        "path": "/articles"
+    },
+    {
+        "title": "Phone Verification",
+        "path": "/phone-verification"
+    },
+    {
+        "title": "Cashback Program",
+        "path": "cashback"
     }
 ]
