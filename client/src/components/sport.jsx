@@ -5,7 +5,6 @@ import { setMeta } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-import DocumentMeta from 'react-document-meta';
 import calculateNewOdds from '../helpers/calculateNewOdds';
 
 const config = require('../../../config.json');
@@ -24,10 +23,6 @@ class Sport extends PureComponent {
     }
 
     componentDidMount() {
-        const title = 'Betting on Sports';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
         this.getSport();
         this.setState({ timer: setInterval(this.getSport, 10 * 60 * 1000) })
     }
@@ -143,7 +138,7 @@ class Sport extends PureComponent {
 
     render() {
         const { betSlip, removeBet, sportName, timezone, search, } = this.props;
-        const { data, error, metaData, showModal } = this.state;
+        const { data, error, showModal } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -184,7 +179,6 @@ class Sport extends PureComponent {
                         </div>
                     </div>
                 </div>}
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="table-title">HIGHLIGHTS</div>
                 <div className="content">
                     {leagues.map(league => {
