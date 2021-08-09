@@ -70,7 +70,7 @@ premierRouter.post('/etransfer-deposit',
                 });
             }
             if (tx_action == "PAYMENT" && status == "APPROVED") {
-                const user = await User.findById(ObjectId(user_id));
+                const user = await User.findById(user_id);
                 if (!user) {
                     return res.json({
                         error: "Doesn't make changes"
@@ -87,9 +87,9 @@ premierRouter.post('/etransfer-deposit',
                     await FinancialLog.create({
                         financialtype: 'depositheld',
                         uniqid: `DH${ID()}`,
-                        user: webhook_data.payer_id,
+                        user: user._id,
                         amount: DepositHeld,
-                        method: method,
+                        method: 'eTransfer',
                         status: FinancialStatus.success
                     });
                     await user.update({ $inc: { balance: receive_amount - DepositHeld } });

@@ -780,8 +780,6 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                             <br><br>
                             Someone has requested a new password for the following account on PAYPER WIN:
                             <br><br>
-                            Username: ${user.username}
-                            <br>
                             If you didn't make this request, just ignore this email. If you'd like to proceed:
                             <br><br>`,
                         { href: passwordRecoveryPath, name: 'Click Here to reset your password' }
@@ -1029,8 +1027,8 @@ expressApp.post(
                                     const newBetObj = {
                                         userId: user._id,
                                         transactionID: `B${ID()}`,
-                                        teamA: teamA.name,
-                                        teamB: teamB.name,
+                                        teamA: { name: teamA.name, odds: teamA.currentOdds },
+                                        teamB: { name: teamB.name, odds: teamB.currentOdds },
                                         pick: pick,
                                         pickOdds: pickedCandidate.currentOdds,
                                         oldOdds: null,

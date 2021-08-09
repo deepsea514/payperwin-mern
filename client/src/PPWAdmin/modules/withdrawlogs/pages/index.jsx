@@ -5,10 +5,11 @@ import AddWithdraw from "./AddWithdraw";
 
 export default class WithdrawLogModule extends Component {
     render() {
+        const { history } = this.props;
         return (
             <BrowserRouter basename="/PPWAdmin/withdraw-log">
                 <Switch>
-                    <Route exact path="/" component={WithdrawLog} />
+                    <Route exact path="/" render={(props) => <WithdrawLog {...props} topHistory={history} />} />
                     <Route path="/add" component={AddWithdraw} />
                 </Switch>
             </BrowserRouter>
