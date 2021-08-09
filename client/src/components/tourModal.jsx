@@ -28,17 +28,17 @@ const useStyles = {
 const tourSteps = [
     {
         title: 'Open Bets',
-        description: 'On this page you will find all open bet for peer-to-peer and Sportsbook. Here you can check the status of your bet.',
+        description: 'On this page you will find all open bets for Peer-to-Peer and Sportsbook. Here you can check the status of all your bets.',
         imgPath: '/images/slides/slide1.jpg',
     },
     {
         title: 'Bet Forward',
-        description: 'Peer-to-peer bets will offers better odds, but you have the option to forward your bet to the Sportsbook to an instant bet.',
+        description: 'Peer-to-Peer bets offer better odds. You will have to wait for a peer to bet against you, or you have the option to forward your bet to the Sportsbook for an instant accepted bet. The odds will be different here. Sportsbook odds will greater than the Peer-to-Peer odds.',
         imgPath: '/images/slides/slide2.jpg',
     },
     {
         title: 'Bet Your Friends',
-        description: 'Share your bet with your friends to have the bet with or against you.',
+        description: 'Share your bet with your friends to have them bet with or against you.',
         imgPath: '/images/slides/slide3.jpg',
     },
 ];
