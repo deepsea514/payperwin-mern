@@ -22,7 +22,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: 'dark',
+    display_mode: 'light',
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
