@@ -63,7 +63,8 @@ app.get("/*", (req, res) => {
                         if (data) {
                             const { league: { name: leagueName, events } } = data;
                             if (eventId) {  // Has Event
-                                const { uniqueId } = req.params;
+                                const { uniqueId } = req.query;
+                                console.log(uniqueId);
                                 const event = events.find((event) => event.originId == eventId);
                                 if (event) { // Event is valid
                                     if (uniqueId) {
