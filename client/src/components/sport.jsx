@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
@@ -16,7 +16,6 @@ class Sport extends PureComponent {
         this.state = {
             data: null,
             error: null,
-            metaData: null,
             showModal: false,
             timer: null,
         };

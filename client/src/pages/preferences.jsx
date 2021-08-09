@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
-import DocumentMeta from 'react-document-meta';
+
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -32,15 +32,12 @@ class Preferences extends Component {
         this.state = {
             submitSuccess: false,
             submitError: false,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Preferences';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     onSubmit = (values, formik) => {
@@ -76,7 +73,6 @@ class Preferences extends Component {
             display_mode: display_mode ? display_mode : 'light',
             notification_settings: notification_settings ? notification_settings : initial_notification_settings
         };
-        const { metaData } = this.state;
 
         const preferenceSchema = Yup.object().shape({
             oddsFormat: Yup.string()
@@ -126,7 +122,6 @@ class Preferences extends Component {
 
         return (
             <React.Fragment>
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="col-in prfnce">
                     <h1 className="main-heading-in">Preferences</h1>
                     <div className="main-cnt mx-2">

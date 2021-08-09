@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 import { Form } from "react-bootstrap";
@@ -9,7 +9,6 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import DocumentMeta from 'react-document-meta';
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
@@ -49,15 +48,12 @@ class DepositETransfer extends PureComponent {
             }),
             depositSuccess: false,
             depositError: null,
-            metaData: null
         };
     }
 
     componentDidMount() {
         const title = 'Deposit with eTransfer';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     onSubmit = (values, formik) => {
@@ -74,7 +70,7 @@ class DepositETransfer extends PureComponent {
 
     render() {
         const { classes, user } = this.props;
-        const { depositSchema, depositError, depositSuccess, metaData } = this.state;
+        const { depositSchema, depositError, depositSuccess } = this.state;
         const initialValues = {
             amount: 0,
             email: (user ? user.email : ''),
@@ -83,7 +79,6 @@ class DepositETransfer extends PureComponent {
         };
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Interac e-Transfer Deposit</h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">

@@ -55,6 +55,7 @@ import PhoneVerification from "../pages/phoneVerification";
 import SportLeague from "../pages/sportleague";
 import Cashback from "../pages/cashback";
 import CashbackNames from "../components/cashbackNames";
+import SportName from "../pages/sportName";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -319,12 +320,8 @@ class App extends PureComponent {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
                                                     return (
-                                                        <React.Fragment>
-                                                            <h3>{name}</h3>
-                                                            <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet} sportName={name}
-                                                            />
-                                                        </React.Fragment>
+                                                        <SportName addBet={this.addBet} betSlip={betSlip}
+                                                            removeBet={this.removeBet} sportName={name} />
                                                     );
                                                 }} />
                                                 <Route path="/others" render={(props) => {

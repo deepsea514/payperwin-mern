@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
-import DocumentMeta from 'react-document-meta';
+import { setTitle } from '../libs/documentTitleBuilder';
+
 
 class BettingRules extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showMobile: null,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Betting Rules';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     setVisible = (value) => {
@@ -27,10 +24,9 @@ class BettingRules extends Component {
     }
 
     render() {
-        const { showMobile, metaData } = this.state;
+        const { showMobile } = this.state;
         return (
             <React.Fragment>
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="content-container">
                     <h1 className="title-bar background darkblue">Betting Rules</h1>
                     <div className="block box">

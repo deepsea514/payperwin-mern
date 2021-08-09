@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
 import PaymentOptionTripleA from "../components/PaymentOptionTripleA";
-import DocumentMeta from 'react-document-meta';
+
 import GoToTop from "../components/gotoTop";
 
 const imageStyle = {
@@ -17,22 +17,18 @@ class PaymentOptions extends Component {
 
         this.state = {
             option: null,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Payment Methods';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     render() {
-        const { option, metaData } = this.state;
+        const { option } = this.state;
         return (
             <div className="col-in px-5">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Payment methods</h1>
                 {!option && <div className="main-cnt">
                     <p>

@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
-import DocumentMeta from 'react-document-meta';
+import { setTitle } from '../libs/documentTitleBuilder';
+
 
 class PrivacyPolicy extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showMobile: null,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Privacy Policy';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     setVisible = (value) => {
@@ -27,10 +24,9 @@ class PrivacyPolicy extends Component {
     }
 
     render() {
-        const { showMobile, metaData } = this.state;
+        const { showMobile } = this.state;
         return (
             <React.Fragment>
-                {metaData && <DocumentMeta {...metaData} />}
                 <div className="content-container">
                     <div className="privacy-policy-container">
                         <div className="privacy-policy-page-title">Privacy Policy v.4</div>

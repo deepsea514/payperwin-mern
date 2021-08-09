@@ -1,29 +1,23 @@
 import React, { PureComponent } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder'
+import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
-import DocumentMeta from 'react-document-meta';
 
 class Deposit extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            metaData: null
         };
     }
 
     componentDidMount() {
         const title = 'Deposit';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     render() {
-        const { metaData } = this.state;
 
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h3>Deposit</h3>
                 <div className="main-cnt">
                     <p className="dpsit">Select a deposit method. To find out more about our different Payment Methods, please check our payment methods page.</p>

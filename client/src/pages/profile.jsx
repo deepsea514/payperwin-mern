@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { RegionDropdown } from 'react-country-region-selector';
@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import DocumentMeta from 'react-document-meta';
+
 import { getInputClasses } from "../helpers/getInputClasses";
 
 const config = require('../../../config.json');
@@ -24,7 +24,6 @@ export default class Profile extends Component {
             profileData: null,
             isSuccess: false,
             isError: false,
-            metaData: null,
             profileSchema: Yup.object().shape({
                 username: Yup.string()
                     .required("Username is required"),
@@ -70,9 +69,7 @@ export default class Profile extends Component {
 
     componentDidMount() {
         const title = 'Account Detail';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
 
         const url = `${serverUrl}/profile`;
         this.setState({ loading: true });
@@ -131,7 +128,7 @@ export default class Profile extends Component {
     // }
 
     render() {
-        const { loading, profileData, profileSchema, initialValues, isSuccess, isError, metaData } = this.state;
+        const { loading, profileData, profileSchema, initialValues } = this.state;
         if (loading)
             return (<div>Loading...</div>);
         if (profileData == null) {
@@ -139,7 +136,6 @@ export default class Profile extends Component {
         }
         return (
             <div className="col-in bg-color-box pad10">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Personal details</h1>
                 <div className="main-cnt">
                     <Formik

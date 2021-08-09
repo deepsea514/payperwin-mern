@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { withRouter, Link } from 'react-router-dom';
-import { setMeta, setTitle } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import getLinesFromSportData from '../libs/getLinesFromSportData';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
-import DocumentMeta from 'react-document-meta';
+
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import MetaTags from "react-meta-tags";
@@ -27,7 +27,6 @@ class Lines extends PureComponent {
         this.state = {
             data: null,
             error: null,
-            metaData: null,
             showModal: false,
             shareModal: false,
             currentUrl: currentUrl,
@@ -43,11 +42,9 @@ class Lines extends PureComponent {
 
     componentDidMount() {
         const { type, index } = this.state;
-        const title = 'Betting on Detailed sports line';
+        const title = 'Betting on Detailed Sports line';
         if (!type || !index) {
-            setMeta(title, (metaData) => {
-                this.setState({ metaData: metaData });
-            })
+            setTitle({ pageTitle: title })
         } else {
             setTitle({ pageTitle: title });
         }
@@ -131,32 +128,6 @@ class Lines extends PureComponent {
                     });
                     const lineData = getLinesFromSportData(data, leagueId, eventId, lineId);
 
-                    if (uniqueId) {
-                        const { teamA, teamB } = lineData;
-                        axios.get(`${serverUrl}/share-line?uniqueId=${uniqueId}`, { withCredentials: true })
-                            .then(({ data }) => {
-                                if (data) {
-                                    const { user: { firstname }, eventDate } = data;
-                                    const meta = {
-                                        title: `Bet with or against ${firstname}`,
-                                        description: `Bet with or against ${firstname} on the ${teamA} vs ${teamB} game on ${timeHelper.convertTimeLineDate(new Date(eventDate), timezone)}`,
-                                        canonical: 'https://www.payperwin.co',
-                                        meta: {
-                                            charset: 'utf-8',
-                                            name: {
-                                                keywords: []
-                                            }
-                                        }
-                                    };
-                                    this.setState({
-                                        metaData: meta,
-                                        ogTitle: `Bet with or against ${firstname}`,
-                                        ogDescription: `Bet with or against ${firstname} on the ${teamA} vs ${teamB} game on ${timeHelper.convertTimeLineDate(new Date(eventDate), timezone)}`
-                                    });
-                                }
-                            })
-                    }
-
                     this.setState({
                         data: lineData,
                         timer: setInterval(() => {
@@ -212,7 +183,7 @@ class Lines extends PureComponent {
     render() {
         const { match, addBet, betSlip, removeBet, timezone } = this.props;
         const { sportName, leagueId, eventId } = match.params;
-        const { data, error, metaData, showModal, shareModal, currentUrl, urlCopied, type, index, ogTitle, ogDescription } = this.state;
+        const { data, error, showModal, shareModal, currentUrl, urlCopied, type, index, ogTitle, ogDescription } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -223,7 +194,6 @@ class Lines extends PureComponent {
         const { teamA, teamB, startDate, leagueName, lines, origin, started } = data;
         return (
             <div className="content detailed-lines">
-                {metaData && <DocumentMeta {...metaData} />}
                 {ogTitle && <MetaTags>
                     <meta property="og:type" content="article" />
                     <meta property="og:title" content={ogTitle} />

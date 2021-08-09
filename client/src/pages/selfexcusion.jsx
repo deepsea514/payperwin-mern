@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 import { Button } from '@material-ui/core';
 import axios from 'axios';
 import dateformat from "dateformat";
-import DocumentMeta from 'react-document-meta';
+
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -16,15 +16,12 @@ class SelfExcusion extends Component {
             readMore: false,
             peorid: null,
             step: 1,
-            metaData: null,
         }
     }
 
     componentDidMount() {
         const title = 'Self Exclusion';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
     }
 
     onChoosePeorid = (evt, peorid) => {
@@ -48,7 +45,7 @@ class SelfExcusion extends Component {
     }
 
     render() {
-        const { readMore, step, metaData } = this.state;
+        const { readMore, step } = this.state;
         const { user } = this.props;
         let selfExcluded = null;
         if (user &&
@@ -60,7 +57,6 @@ class SelfExcusion extends Component {
 
         return (
             <div className="col-in">
-                {metaData && <DocumentMeta {...metaData} />}
                 <h1 className="main-heading-in">Self exclusion</h1>
                 {user && selfExcluded && <p className="text-t"><i className="fa fa-info-circle"
                     aria-hidden={true}></i> Your account is

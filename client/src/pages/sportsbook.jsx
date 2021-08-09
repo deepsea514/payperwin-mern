@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
 import Iframe from 'react-iframe';
-import { setMeta } from '../libs/documentTitleBuilder';
+import { setTitle } from '../libs/documentTitleBuilder';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
@@ -12,7 +12,6 @@ class SportsBook extends PureComponent {
             loginUrl: null,
             loading: false,
             showModal: false,
-            metaData: null,
             comingSoon: true,
         };
     }
@@ -37,9 +36,7 @@ class SportsBook extends PureComponent {
         });
 
         const title = 'Instant/Live Betting';
-        setMeta(title, (metaData) => {
-            this.setState({ metaData: metaData });
-        })
+        setTitle({ pageTitle: title })
 
         const { user } = this.props;
         if (user) {
@@ -107,12 +104,11 @@ class SportsBook extends PureComponent {
     }
 
     render() {
-        const { loginUrl, loading, showModal, metaData, comingSoon } = this.state;
+        const { loginUrl, loading, showModal, comingSoon } = this.state;
         const { user } = this.props;
 
         return (
             <div className="row">
-                {metaData && <DocumentMeta {...metaData} />}
                 {showModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
