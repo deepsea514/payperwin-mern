@@ -645,7 +645,7 @@ adminRouter.delete(
             try {
                 const customer = await User.findOneAndDelete({ _id: id });
                 res.status(200).json(customer);
-            } catch (erorr) {
+            } catch (error) {
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
             }
         }
