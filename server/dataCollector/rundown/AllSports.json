@@ -1,5 +1,13 @@
 [
     {
+        "id": 2,
+        "name": "NFL"
+    },
+    {
+        "id": 3,
+        "name": "MLB"
+    },
+    {
         "id": 4,
         "name": "NBA"
     },
