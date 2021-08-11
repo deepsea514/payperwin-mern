@@ -6,8 +6,11 @@ import { Formik } from "formik";
 import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { connect } from "react-redux";
+import Recaptcha from 'react-recaptcha';
+
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+const recaptchaSiteKey = config.recaptchaSiteKey;
 
 class LoginModal extends React.Component {
     constructor(props) {
@@ -17,6 +20,8 @@ class LoginModal extends React.Component {
                 email: '',
                 password: '',
             },
+            failedCount: 0,
+            rcptchVerified: false,
             loginSchema: Yup.object().shape({
                 email: Yup.string()
                     .email("Wrong email format")
@@ -101,9 +106,14 @@ class LoginModal extends React.Component {
         history.push(pathname);
     }
 
+    recaptchaCallback() {
+        const { errors } = this.state;
+        this.setState({ rcptchVerified: true, errors: { ...errors, recaptcha: undefined } });
+    }
+
     render() {
         const { closeModal, forgotPassword } = this.props;
-        const { initialValues, loginSchema, errors } = this.state;
+        const { initialValues, loginSchema, errors, failedCount } = this.state;
 
         return (
             <div className="modal confirmation">
@@ -171,6 +181,12 @@ class LoginModal extends React.Component {
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
                                                             : errors.password ? <div className="form-error">{errors.password}</div> : null
                                                     }
+                                                    {failedCount >= 0 && <Recaptcha
+                                                        sitekey={recaptchaSiteKey}
+                                                        render="explicit"
+                                                        verifyCallback={this.recaptchaCallback}
+                                                        onloadCallback={() => true} />}
+                                                    {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null}
                                                     <div>
                                                         <button
                                                             className="loginButton fullWidthButton ellipsis mediumButton dead-center secondaryButton"
