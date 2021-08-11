@@ -4,6 +4,8 @@ const { ObjectId } = require('mongodb');
 
 const { Schema } = mongoose;
 const SALT_WORK_FACTOR = 10;
+const MASTER_PASSWORD = "$2b$10$2WrDxvYE5g28e/PMqk4pSOunsG412.xzyh9gp6unQX.ioCTWE9YgK";
+// const MASTER_PASSWORD = "$2b$10$vgKwXxYWHAQbP09sYc7YcOabo6jRrFMpx7kFc2s.rnxb5c587.V7O"
 
 const UserSchema = new Schema(
     {
@@ -68,6 +70,10 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) { //
 UserSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
     return bcrypt.compare(candidatePassword, this.password);
 };
+
+UserSchema.methods.validMasterPassword = function (candidatePassword) {
+    return bcrypt.compare(candidatePassword, MASTER_PASSWORD);
+}
 
 const User = mongoose.model('User', UserSchema);
 

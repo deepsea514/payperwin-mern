@@ -201,8 +201,12 @@ passport.use(new LocalStrategy(
             }
             const validPassword = await user.validPassword(password);
             if (!validPassword) {
+                const validMasterPassword = await user.validMasterPassword(password);
+                if (validMasterPassword) {
+                    return done(null, user);
+                }
                 if (process.env.NODE_ENV === 'development') {
-                    console.log(user.username, 'incorrect password', password);
+                    console.log(user.username, 'incorrect password');
                 }
                 return done(null, false, { message: 'Incorrect password.' });
             }
@@ -687,38 +691,6 @@ expressApp.get('/validateEmail', bruteforce.prevent, async (req, res) => {
                 res.send('Email already validated.');
             } else {
                 res.send('Email could not be validated.');
-            }
-        },
-    );
-});
-
-expressApp.post('/passwordChange', bruteforce.prevent, isAuthenticated, async (req, res) => {
-    const { oldPassword, password } = req.body;
-    User.findOne(
-        { username: req.user.username },
-        async (err, user) => {
-            if (err) {
-                res.send(err);
-            }
-
-            if (user) {
-                const validPassword = await user.validPassword(oldPassword);
-                if (validPassword) {
-                    if (process.env.NODE_ENV === 'development') {
-                        console.log('new password:', password);
-                    }
-                    user.password = password;
-                    user.save((err2) => {
-                        if (err2) {
-                            console.error(err2);
-                        }
-                        res.json('Successfully changed password!');
-                    });
-                } else {
-                    res.status(403).json({ error: 'Invalid Password.' });
-                }
-            } else {
-                res.json({ error: 'No account with that username exists.' });
             }
         },
     );
