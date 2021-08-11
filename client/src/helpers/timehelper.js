@@ -1,4 +1,7 @@
-import dateformat from "dateformat";
+const dateformat = require("dateformat");
+const config = require("../../../config.json");
+const TimeZones = config.TimeZones;
+const isDstObserved = config.isDstObserved;
 
 const offset = - (new Date()).getTimezoneOffset();
 const absOffset = offset > 0 ? offset : -offset;
@@ -20,25 +23,63 @@ function getChangedTime(date, timezone) {
 }
 
 function convertTimeClock(date, timezone) {
+    timezone = TimeZones.find(time => time.value == timezone);
     if (!timezone) timezone = defaultTimezone;
+    else {
+        if (isDstObserved && timezone.dst) {
+            timezone = getDSTTimeOffset(timezone.time);
+        } else {
+            timezone = timezone.time;
+        }
+    }
     const time = getChangedTime(date, timezone);
     return dateformat(new Date(time), "HH:MM:ss ") + `GMT ${timezone}`;
 }
 
 function convertTimeEventDate(date, timezone) {
+    timezone = TimeZones.find(time => time.value == timezone);
     if (!timezone) timezone = defaultTimezone;
+    else {
+        if (isDstObserved && timezone.dst) {
+            timezone = getDSTTimeOffset(timezone.time);
+        } else {
+            timezone = timezone.time;
+        }
+    }
+
     const time = getChangedTime(date, timezone);
     return dateformat(new Date(time), "mm/dd/yyyy h:MM tt ") + `GMT ${timezone}`;
 }
 
 function convertTimeLineDate(date, timezone) {
+    timezone = TimeZones.find(time => time.value == timezone);
     if (!timezone) timezone = defaultTimezone;
+    else {
+        if (isDstObserved && timezone.dst) {
+            timezone = getDSTTimeOffset(timezone.time);
+        } else {
+            timezone = timezone.time;
+        }
+    }
+
     const time = getChangedTime(date, timezone);
     return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;
+}
+
+
+function getDSTTimeOffset(offset) {
+    const timezoneArr = offset.split(':');
+    const min = Number(timezoneArr[1]);
+    let hour = Number(timezoneArr[0]);
+    hour += 1;
+    let absHour = Math.abs(hour);
+    return (hour >= 0 ? "+" : "-") + (absHour > 10 ? absHour : '0' + absHour) + ':' + (min == 0 ? "00" : min);
 }
 
 export default {
     convertTimeClock,
     convertTimeEventDate,
     convertTimeLineDate,
+    isDstObserved,
+    getDSTTimeOffset
 };

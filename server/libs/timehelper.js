@@ -1,4 +1,7 @@
 const dateformat = require("dateformat");
+const config = require("../../config.json");
+const TimeZones = config.TimeZones;
+const isDstObserved = config.isDstObserved;
 
 const offset = - (new Date()).getTimezoneOffset();
 const absOffset = offset > 0 ? offset : -offset;
@@ -20,6 +23,16 @@ function getChangedTime(date, timezone) {
 }
 
 function convertTimeLineDate(date, timezone) {
+    timezone = TimeZones.find(time => time.value == timezone);
+    if (!timezone) timezone = defaultTimezone;
+    else {
+        if (isDstObserved && timezone.dst) {
+            timezone = getDSTTimeOffset(timezone.time);
+        } else {
+            timezone = timezone.time;
+        }
+    }
+
     if (!timezone) timezone = defaultTimezone;
     const time = getChangedTime(date, timezone);
     return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;

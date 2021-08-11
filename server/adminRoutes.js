@@ -643,9 +643,10 @@ adminRouter.delete(
         const { id } = req.query;
         if (id) {
             try {
-                const customer = await User.findOneAndDelete({ _id: id });
+                const customer = await User.deleteMany({ _id: id });
                 res.status(200).json(customer);
             } catch (error) {
+                console.log(error);
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
             }
         }
