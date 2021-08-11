@@ -15,6 +15,7 @@ export const actionTypes = {
     acceptCookieAction: "[Accept Cookie Action]",
     hideTourAction: "[Hide Tour Action]",
     require2FAAction: "[Require 2FA Action]",
+    setLoginFailedAction: "[Set Login Failed Action]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
     showTour: true,
+    loginFailed: 0,
     require_2fa: false,
     notification_settings: {
         win_confirmation: { email: true, sms: true },
@@ -41,7 +43,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes'] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -78,6 +80,9 @@ export const reducer = persistReducer(
                 Cookie.set('showedTourTimes', state.showedTourTimes + 1);
                 return { ...state, showedTourTimes: state.showedTourTimes + 1, showTour: false };
 
+            case actionTypes.setLoginFailedAction:
+                return { ...state, loginFailed: action.times };
+
             default:
                 return state;
         }
@@ -95,6 +100,7 @@ export const actions = {
     acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
     require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
     hideTourAction: () => ({ type: actionTypes.hideTourAction }),
+    setLoginFailedAction: (times) => ({ type: actionTypes.setLoginFailedAction, times }),
 };
 
 export function* saga() {

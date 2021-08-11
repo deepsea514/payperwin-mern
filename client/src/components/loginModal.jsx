@@ -20,7 +20,6 @@ class LoginModal extends React.Component {
                 email: '',
                 password: '',
             },
-            failedCount: 0,
             rcptchVerified: false,
             loginSchema: Yup.object().shape({
                 email: Yup.string()
@@ -39,10 +38,10 @@ class LoginModal extends React.Component {
     }
 
     handleGoogleLogin = (googleData) => {
-        const { closeModal, require2FAAction, getUser } = this.props;
-        const { errors, failedCount, rcptchVerified } = this.state;
+        const { closeModal, require2FAAction, getUser, loginFailed, setLoginFailedAction } = this.props;
+        const { errors, rcptchVerified } = this.state;
 
-        if (failedCount >= 5 && !rcptchVerified) {
+        if (loginFailed >= 5 && !rcptchVerified) {
             this.setState({ errors: { ...errors, recaptcha: "You should complete Recaptcha." } });
             return;
         }
@@ -62,6 +61,7 @@ class LoginModal extends React.Component {
                 } else {
                     require2FAAction();
                 }
+                setLoginFailedAction(0);
                 closeModal();
             }).catch((err) => {
                 if (err.response) {
@@ -70,15 +70,15 @@ class LoginModal extends React.Component {
                         this.setState({ errors: { ...errors, server: data.error } });
                     }
                 }
-                this.setState({ failedCount: failedCount + 1 });
+                setLoginFailedAction(loginFailed + 1);
             });
     }
 
     handleLogin = (values, formik) => {
-        const { closeModal, require2FAAction, getUser } = this.props;
-        const { errors, failedCount, rcptchVerified } = this.state;
+        const { closeModal, require2FAAction, getUser, loginFailed, setLoginFailedAction } = this.props;
+        const { errors, rcptchVerified } = this.state;
 
-        if (failedCount >= 5 && !rcptchVerified) {
+        if (loginFailed >= 5 && !rcptchVerified) {
             this.setState({ errors: { ...errors, recaptcha: "You should complete Recaptcha." } });
             formik.setSubmitting(false);
             return;
@@ -100,6 +100,7 @@ class LoginModal extends React.Component {
                     require2FAAction();
                 }
                 formik.setSubmitting(false);
+                setLoginFailedAction(0);
                 closeModal();
             }).catch((err) => {
                 if (err.response) {
@@ -109,7 +110,7 @@ class LoginModal extends React.Component {
                     }
                 }
                 formik.setSubmitting(false);
-                this.setState({ failedCount: failedCount + 1 });
+                setLoginFailedAction(loginFailed + 1)
             });
     }
 
@@ -126,8 +127,8 @@ class LoginModal extends React.Component {
     }
 
     render() {
-        const { closeModal, forgotPassword } = this.props;
-        const { initialValues, loginSchema, errors, failedCount } = this.state;
+        const { closeModal, forgotPassword, loginFailed } = this.props;
+        const { initialValues, loginSchema, errors } = this.state;
 
         return (
             <div className="modal confirmation">
@@ -195,7 +196,7 @@ class LoginModal extends React.Component {
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
                                                             : errors.password ? <div className="form-error">{errors.password}</div> : null
                                                     }
-                                                    {failedCount >= 5 && <Recaptcha
+                                                    {loginFailed >= 5 && <Recaptcha
                                                         className="fullWidthButton"
                                                         sitekey={recaptchaSiteKey}
                                                         render="explicit"
@@ -240,4 +241,9 @@ class LoginModal extends React.Component {
     }
 }
 
-export default connect(null, frontend.actions)(withRouter(LoginModal));
+const mapStateToProps = (state) => ({
+    loginFailed: state.frontend.loginFailed,
+});
+
+
+export default connect(mapStateToProps, frontend.actions)(withRouter(LoginModal));
