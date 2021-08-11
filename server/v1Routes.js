@@ -237,7 +237,8 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
-    if (WagerInfo.Type != 'single')
+    console.log(WagerInfo.Type);
+    if (WagerInfo.Type.toUpperCase() != 'SINGLE')
         return {
             Id,
             TransactionId: Transaction.TransactionId,
