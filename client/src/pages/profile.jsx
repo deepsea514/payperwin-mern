@@ -46,7 +46,7 @@ export default class Profile extends Component {
                     .min(1, "Address is required.")
                     .required("Address is required."),
                 region: Yup.string()
-                    .required("Region is required."),
+                    .required("Province is required."),
                 phone: Yup.string()
                     .min(7, "Minimum 7 symbols")
                     .required("Phone is required."),
@@ -161,25 +161,11 @@ export default class Profile extends Component {
                                                 </RadioGroup>
                                             </FormControl>
                                         </div>
-                                        <div className="form-group col-md-6 col-sm-12 col-12">
-                                            <label>User Name <span className="text-danger">*</span></label>
-                                            <input type="text" placeholder="User Name"
-                                                name="username"
-                                                className={`form-control ${getInputClasses(formik, "username")}`}
-                                                {...formik.getFieldProps("username")}
-                                                readOnly
-                                            />
-                                            {formik.touched.username && formik.errors.username ? (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.username}
-                                                </div>
-                                            ) : null}
-                                        </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>First Name <span className="text-danger">*</span></label>
-                                            <input type="text" placeholder="First Name"
+                                            <input type="text" placeholder=""
                                                 name="firstname"
                                                 className={`form-control ${getInputClasses(formik, "firstname")}`}
                                                 {...formik.getFieldProps("firstname")}
@@ -193,7 +179,7 @@ export default class Profile extends Component {
                                         </div>
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Last Name <span className="text-danger">*</span></label>
-                                            <input type="text" placeholder="Last Name"
+                                            <input type="text" placeholder=""
                                                 name="lastname"
                                                 className={`form-control ${getInputClasses(formik, "lastname")}`}
                                                 {...formik.getFieldProps("lastname")}
@@ -209,7 +195,7 @@ export default class Profile extends Component {
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Email <span className="text-danger">*</span></label>
-                                            <input type="email" placeholder="Email"
+                                            <input type="email" placeholder=""
                                                 name="email"
                                                 className={`form-control ${getInputClasses(formik, "email")}`}
                                                 {...formik.getFieldProps("email")}
@@ -235,7 +221,7 @@ export default class Profile extends Component {
                                                         formik.setFieldValue("dateofbirth", dateofbirth);
                                                     },
                                                 }}
-                                                placeholder="Enter Birthday"
+                                                placeholder=""
                                                 isInvalid={formik.errors.dateofbirth !== undefined}
                                                 required
                                                 readOnly
@@ -250,7 +236,7 @@ export default class Profile extends Component {
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Country <span className="text-danger">*</span></label>
-                                            <input type="country" placeholder="Country" readOnly
+                                            <input type="country" placeholder="" readOnly
                                                 name="country"
                                                 className={`form-control ${getInputClasses(formik, "country")}`}
                                                 {...formik.getFieldProps("country")}
@@ -258,7 +244,7 @@ export default class Profile extends Component {
                                         </div>
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Currency <span className="text-danger">*</span></label>
-                                            <input type="currency" placeholder="Currency" readOnly
+                                            <input type="currency" placeholder="" readOnly
                                                 name="currency"
                                                 className={`form-control ${getInputClasses(formik, "currency")}`}
                                                 {...formik.getFieldProps("currency")}
@@ -267,7 +253,7 @@ export default class Profile extends Component {
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group col-md-6 col-sm-12 col-12">
-                                            <label>Region <span className="text-danger">*</span></label>
+                                            <label>Province <span className="text-danger">*</span></label>
                                             <RegionDropdown className={`form-control ${getInputClasses(formik, "region")}`}
                                                 valueType="short"
                                                 {...formik.getFieldProps("region")}
@@ -293,7 +279,7 @@ export default class Profile extends Component {
                                         </div>
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>City <span className="text-danger">*</span></label>
-                                            <input type="city" placeholder="City"
+                                            <input type="city" placeholder=""
                                                 name="city"
                                                 className={`form-control ${getInputClasses(formik, "city")}`}
                                                 {...formik.getFieldProps("city")}
@@ -310,7 +296,7 @@ export default class Profile extends Component {
                                             <label>Address <span className="text-danger">*</span></label>
                                             <input type="text" name="address" className={`form-control ${getInputClasses(formik, "address")}`}
                                                 {...formik.getFieldProps("address")}
-                                                placeholder="Address" />
+                                                placeholder="" />
                                             {formik.touched.address && formik.errors.address ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.address}
@@ -321,7 +307,7 @@ export default class Profile extends Component {
                                             <label>Address 2</label>
                                             <input type="text" name="address2" className={`form-control ${getInputClasses(formik, "address2")}`}
                                                 {...formik.getFieldProps("address2")}
-                                                placeholder="Address 2" />
+                                                placeholder="" />
                                             {formik.touched.address2 && formik.errors.address2 ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.address2}
@@ -334,7 +320,7 @@ export default class Profile extends Component {
                                             <label>Postal Code <span className="text-danger">*</span></label>
                                             <input type="text" name="postalcode" className={`form-control ${getInputClasses(formik, "postalcode")}`}
                                                 {...formik.getFieldProps("postalcode")}
-                                                placeholder="Postal Code" />
+                                                placeholder="" />
                                             {formik.touched.postalcode && formik.errors.postalcode ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.postalcode}
@@ -347,7 +333,7 @@ export default class Profile extends Component {
                                                 type="text"
                                                 name="phone"
                                                 country="us"
-                                                placeholder="Enter Phone Number"
+                                                placeholder=""
                                                 containerClass="input-group"
                                                 dropdownClass="input-group-append"
                                                 inputClass={`form-control ${getInputClasses(formik, "phone")}`}
