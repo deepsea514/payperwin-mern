@@ -130,5 +130,204 @@
             "reports": true,
             "cashback": true
         }
-    }
+    },
+    "isDstObserved": true,
+    "TimeZones": [
+        {
+            "name": "Eniwetok, Kwajalein",
+            "value": "eniwetok",
+            "time": "-12:00"
+        },
+        {
+            "name": "Midway Island, Samoa",
+            "value": "midway_island",
+            "time": "-11:00"
+        },
+        {
+            "name": "Hawaii",
+            "value": "hawaii",
+            "time": "-10:00"
+        },
+        {
+            "name": "Taiohae",
+            "value": "haiohae",
+            "time": "-09:30"
+        },
+        {
+            "name": "Alaska",
+            "value": "alaska",
+            "time": "-09:00"
+        },
+        {
+            "name": "Pacific Time (US & Canada)",
+            "value": "pacific_time",
+            "time": "-08:00",
+            "dst": true
+        },
+        {
+            "name": "Mountain Time (US & Canada)",
+            "value": "mountain_time",
+            "time": "-07:00",
+            "dst": true
+        },
+        {
+            "name": "Central Time (US & Canada), Mexico City",
+            "value": "central_time",
+            "time": "-06:00",
+            "dst": true
+        },
+        {
+            "name": "Eastern Time (US & Canada), Bogota, Lima",
+            "value": "eastern_time",
+            "time": "-05:00",
+            "dst": true
+        },
+        {
+            "name": "Atlantic Time (Canada), Caracas, La Paz",
+            "value": "atlantic_time",
+            "time": "-04:00",
+            "dst": true
+        },
+        {
+            "name": "Newfoundland",
+            "value": "newfoundland",
+            "time": "-03:30",
+            "dst": true
+        },
+        {
+            "name": "Brazil, Buenos Aires, Georgetown",
+            "value": "brazil",
+            "time": "-03:00"
+        },
+        {
+            "name": "Mid-Atlantic",
+            "value": "mid-atlantic",
+            "time": "-02:00"
+        },
+        {
+            "name": "Western Europe Time, London, Lisbon, Casablanca",
+            "value": "western_europe_time",
+            "time": "+00:00"
+        },
+        {
+            "name": "Brussels, Copenhagen, Madrid, Paris",
+            "value": "brussels",
+            "time": "+01:00"
+        },
+        {
+            "name": "Kaliningrad, South Africa",
+            "value": "kaliningrad",
+            "time": "+02:00"
+        },
+        {
+            "name": "Baghdad, Riyadh, Moscow, St. Petersburg",
+            "value": "baghdad",
+            "time": "+03:00"
+        },
+        {
+            "name": "Tehran",
+            "value": "tehran",
+            "time": "+03:30"
+        },
+        {
+            "name": "Abu Dhabi, Muscat, Baku, Tbilisi",
+            "value": "abudhabi",
+            "time": "+04:00"
+        },
+        {
+            "name": "Kabul",
+            "value": "kabul",
+            "time": "+04:30"
+        },
+        {
+            "name": "Ekaterinburg, Islamabad, Karachi, Tashkent",
+            "value": "ekaterinburg",
+            "time": "+05:00"
+        },
+        {
+            "name": "Bombay, Calcutta, Madras, New Delhi",
+            "value": "bombay",
+            "time": "+05:30"
+        },
+        {
+            "name": "Kathmandu, Pokhara",
+            "value": "kathmandu",
+            "time": "+05:45"
+        },
+        {
+            "name": "Almaty, Dhaka, Colombo",
+            "value": "almaty",
+            "time": "+06:00"
+        },
+        {
+            "name": "Yangon, Mandalay",
+            "value": "yangon",
+            "time": "+06:30"
+        },
+        {
+            "name": "Bangkok, Hanoi, Jakarta",
+            "value": "bangkok",
+            "time": "+07:00"
+        },
+        {
+            "name": "Beijing, Perth, Singapore, Hong Kong",
+            "value": "beijing",
+            "time": "+08:00"
+        },
+        {
+            "name": "Eucla",
+            "value": "eucla",
+            "time": "+08:45"
+        },
+        {
+            "name": "Tokyo, Seoul, Osaka, Sapporo, Yakutsk",
+            "value": "tokyo",
+            "time": "+09:00"
+        },
+        {
+            "name": "Adelaide, Darwin",
+            "value": "adelaide",
+            "time": "+09:30"
+        },
+        {
+            "name": "Eastern Australia, Guam, Vladivostok",
+            "value": "eastern_australia",
+            "time": "+10:00"
+        },
+        {
+            "name": "Lord Howe Island",
+            "value": "lord_howe_island",
+            "time": "+10:30"
+        },
+        {
+            "name": "Magadan, Solomon Islands, New Caledonia",
+            "value": "magadan",
+            "time": "+11:00"
+        },
+        {
+            "name": "Norfolk Island",
+            "value": "norfolk",
+            "time": "+11:30"
+        },
+        {
+            "name": "Auckland, Wellington, Fiji, Kamchatka",
+            "value": "auckland",
+            "time": "+12:00"
+        },
+        {
+            "name": "Chatham Islands",
+            "value": "chatham",
+            "time": "+12:45"
+        },
+        {
+            "name": "Apia, Nukualofa",
+            "value": "apia",
+            "time": "+13:00"
+        },
+        {
+            "name": "Line Islands, Tokelau",
+            "value": "line_islands",
+            "time": "+14:00"
+        }
+    ]
 }

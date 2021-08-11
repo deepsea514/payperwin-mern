@@ -7,7 +7,7 @@ const PreferenceSchema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: "User" },
         oddsFormat: { type: String, default: 'american' },
         dateFormat: { type: String, default: 'dd-MM-yyyy' },
-        timezone: { type: String },
+        timezone: { type: String, default: 'pacific_time' },
         lang: { type: String, default: 'en' },
         display_mode: { type: String, default: 'light' },
         notification_settings: {
