@@ -18,7 +18,7 @@
             "appAdminUrl": "http://dev.payperwin.co:8080/admin"
         }
     },
-    "recaptchaSiteKey": "",
+    "recaptchaSiteKey": "6LeYk_EbAAAAAFROXkm4z96Bnp9Gvr6ZNUvkTwLk",
     "mongo": {
         "username": "admin",
         "password": "PayPerWin777",
