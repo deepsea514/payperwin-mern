@@ -245,7 +245,9 @@ async function bettedAction(action, user) {
             ErrorCode: ActionErrorCode.UnknownError
         };
     try {
-        if (Transaction && user.balance < (Transaction.Amount)) {
+        console.log("user.balance", user.balance);
+        console.log("Transaction.Amount", Transaction.Amount);
+        if (Transaction && (user.balance < Transaction.Amount)) {
             return {
                 Id,
                 TransactionId: Transaction.TransactionId,
