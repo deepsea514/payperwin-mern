@@ -40,7 +40,12 @@ class LoginModal extends React.Component {
 
     handleGoogleLogin = (googleData) => {
         const { closeModal, require2FAAction, getUser } = this.props;
-        const { errors } = this.state;
+        const { errors, failedCount, rcptchVerified } = this.state;
+
+        if (failedCount >= 5 && !rcptchVerified) {
+            this.setState({ errors: { ...errors, recaptcha: "You should complete Recaptcha." } });
+            return;
+        }
 
         const url = `${serverUrl}/googleLogin`;
         axios.post(
@@ -65,12 +70,19 @@ class LoginModal extends React.Component {
                         this.setState({ errors: { ...errors, server: data.error } });
                     }
                 }
+                this.setState({ failedCount: failedCount + 1 });
             });
     }
 
     handleLogin = (values, formik) => {
         const { closeModal, require2FAAction, getUser } = this.props;
-        const { errors } = this.state;
+        const { errors, failedCount, rcptchVerified } = this.state;
+
+        if (failedCount >= 5 && !rcptchVerified) {
+            this.setState({ errors: { ...errors, recaptcha: "You should complete Recaptcha." } });
+            formik.setSubmitting(false);
+            return;
+        }
 
         const url = `${serverUrl}/login`;
         axios.post(
@@ -97,6 +109,7 @@ class LoginModal extends React.Component {
                     }
                 }
                 formik.setSubmitting(false);
+                this.setState({ failedCount: failedCount + 1 });
             });
     }
 
@@ -106,8 +119,9 @@ class LoginModal extends React.Component {
         history.push(pathname);
     }
 
-    recaptchaCallback() {
+    recaptchaCallback = (response) => {
         const { errors } = this.state;
+        console.log('completed');
         this.setState({ rcptchVerified: true, errors: { ...errors, recaptcha: undefined } });
     }
 
@@ -181,7 +195,8 @@ class LoginModal extends React.Component {
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
                                                             : errors.password ? <div className="form-error">{errors.password}</div> : null
                                                     }
-                                                    {failedCount >= 0 && <Recaptcha
+                                                    {failedCount >= 5 && <Recaptcha
+                                                        className="fullWidthButton"
                                                         sitekey={recaptchaSiteKey}
                                                         render="explicit"
                                                         verifyCallback={this.recaptchaCallback}
