@@ -38,6 +38,16 @@ function convertTimeLineDate(date, timezone) {
     return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;
 }
 
+function getDSTTimeOffset(offset) {
+    const timezoneArr = offset.split(':');
+    const min = Number(timezoneArr[1]);
+    let hour = Number(timezoneArr[0]);
+    hour += 1;
+    let absHour = Math.abs(hour);
+    return (hour >= 0 ? "+" : "-") + (absHour > 10 ? absHour : '0' + absHour) + ':' + (min == 0 ? "00" : min);
+}
+
 module.exports = {
     convertTimeLineDate,
+    getDSTTimeOffset,
 };
