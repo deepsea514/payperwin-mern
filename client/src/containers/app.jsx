@@ -66,6 +66,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import SportsBookTest from '../pages/sportsbooktest';
 
 class App extends PureComponent {
     constructor(props) {
@@ -263,6 +264,8 @@ class App extends PureComponent {
                         <Switch>
                             <Route path="/sportsbook" render={(props) =>
                                 <SportsBook {...props} user={user} />} />
+                            <Route path="/sportsbook" render={(props) =>
+                                <SportsBookTest {...props} user={user} />} />
                             <Route path="/signup" render={(props) =>
                                 <Registration getUser={getUser} {...props} />} />
                             <Route path="/faq" component={Faq} />
