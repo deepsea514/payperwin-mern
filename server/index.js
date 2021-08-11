@@ -1394,18 +1394,41 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         const logs = await AutoBetLog
             // .find({ user: autobet.userId._id, createdAt: fromTime })
             .aggregate([
-                { $match: { user: autobet.userId._id, createdAt: { $gte: fromTime } } },
+                {
+                    $match: {
+                        user: autobet.userId._id,
+                        createdAt: { $gte: fromTime }
+                    }
+                },
                 { $group: { _id: null, amount: { $sum: "$amount" } } }
             ]);
         let bettedamount = 0;
         if (logs && logs.length)
             bettedamount = logs[0].amount;
+
+        let budget = autobet.budget;
+        if (autobet.rollOver) { // If Roll Over
+            // Add win amount.
+            const logs = await FinancialLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: autobet.userId._id,
+                            financialtype: 'betwon',
+                            createdAt: { $gte: fromTime }
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            if (logs && logs.length)
+                budget += logs[0].amount;
+        }
         return (
             autobet.userId._id.toString() != user._id.toString() &&     //Not same user
             autobet.status == AutoBetStatus.active &&                   //Check active status
             autobet.userId.balance >= toBet &&                          //Check Balance
             autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            (bettedamount < (autobet.budget - toBet)) &&                //Check Budget
+            (bettedamount < (budget - toBet)) &&                //Check Budget
             autobet.sports.find((sport) => sport == lineQuery.sportName)
         );
     });

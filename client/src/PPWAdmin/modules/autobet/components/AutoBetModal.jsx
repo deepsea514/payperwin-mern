@@ -17,6 +17,7 @@ export default class AutoBetModal extends React.Component {
         this.state = {
             initialValues: props.initialValues ? props.initialValues : {
                 user: null,
+                rollOver: false,
                 budget: 0,
                 maxRisk: 0,
                 peorid: AutoBetPeorid.daily,
@@ -28,6 +29,7 @@ export default class AutoBetModal extends React.Component {
                 user: Yup.object()
                     .nullable()
                     .required("User field is required."),
+                rollOver: Yup.boolean().default(false),
                 budget: Yup.number()
                     .moreThan(0, "Budget should be more than 0")
                     .required("Budget field is required"),
@@ -130,6 +132,17 @@ export default class AutoBetModal extends React.Component {
                                                 {formik.errors.user}
                                             </div>
                                         ) : null}
+                                    </div>
+                                    <div className="form-row form-group">
+                                        <div className="col-md-12">
+                                            <input type="checkbox" id="rollOver" name="rollOver" {...formik.getFieldProps("rollOver")} />
+                                            <label htmlFor="rollOver"> &nbsp;&nbsp;Roll over wins into the daily budget</label>
+                                            {formik.touched.rollOver && formik.errors.rollOver ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.rollOver}
+                                                </div>
+                                            ) : null}
+                                        </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
