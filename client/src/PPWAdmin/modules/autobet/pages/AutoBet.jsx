@@ -91,6 +91,7 @@ class AutoBet extends React.Component {
                 <td>{index + 1}</td>
                 <td>{bet.userId ? <Link to={`/customers/${bet.userId._id}/profile/overview`}>{bet.userId.email}</Link> : null}</td>
                 <td>{bet.sports.join(', ')}</td>
+                <td>{this.getRollOver(bet.rollOver)}</td>
                 <td>{bet.priority}</td>
                 <td>{bet.maxRisk}</td>
                 <td>{bet.budget}</td>
@@ -112,7 +113,12 @@ class AutoBet extends React.Component {
         if (status === AutoBetStatus.active)
             return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">{status}</span>
         return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">{status}</span>
+    }
 
+    getRollOver = (rollOver) => {
+        if (rollOver)
+            return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Yes</span>
+        return <span className="label label-lg label-outline-danger label-inline font-weight-lighter mr-2">No</span>
     }
 
     onPageChange = (page) => {
@@ -213,6 +219,7 @@ class AutoBet extends React.Component {
                                             <th scope="col">#</th>
                                             <th scope="col">User</th>
                                             <th scope="col">Sports</th>
+                                            <th scope="col">Roll Over</th>
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>

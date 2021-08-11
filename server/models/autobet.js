@@ -6,6 +6,7 @@ const AutoBetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         priority: Number,
+        rollOver: { type: Boolean, default: 'false' },
         maxRisk: Number,
         budget: Number,
         peorid: String,
