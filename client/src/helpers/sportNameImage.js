@@ -54,6 +54,7 @@ const sportImages = {
     // 'Olympics': 'fas fa-trophy',
     // 'Athletics': 'fas fa-running',
     // 'Badminton': 'fap fa-racquet',
+    'Football': '/images/icons/football.png',
     'NFL': '/images/icons/football.png',
     'NHL': '/images/icons/hockey.png',
     'MLB': '/images/icons/baseball.png',
