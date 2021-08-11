@@ -237,7 +237,6 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
 
 async function bettedAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
-    console.log(WagerInfo.Type);
     if (WagerInfo.Type.toUpperCase() != 'SINGLE')
         return {
             Id,
@@ -246,8 +245,6 @@ async function bettedAction(action, user) {
             ErrorCode: ActionErrorCode.UnknownError
         };
     try {
-        console.log("user.balance", user.balance);
-        console.log("Transaction.Amount", Transaction.Amount);
         if (Transaction && (user.balance < Transaction.Amount)) {
             return {
                 Id,
