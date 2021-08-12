@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-import ReactApexChart from "react-apexcharts";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import { Tabs, Tab, } from 'react-bootstrap';
-import dateformat from "dateformat";
-import SVG from "react-inlinesvg";
+import dayjs from 'dayjs';
+import sportNameImage from "../helpers/sportNameImage";
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
