@@ -55,6 +55,28 @@ export default class CustomBets extends PureComponent {
             });
     }
 
+    capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    getStatusClass = (status, outcome) => {
+        switch (status) {
+            // p2p
+            case 'Pending':
+                return 'pending';
+            case 'Matched':
+                return 'matched';
+            case 'Partial Match':
+                return 'partialmatched';
+            case 'Cancelled':
+                return 'cancelled'
+            case 'Settled - Lose':
+                return 'loss';
+            case 'Settled - Win':
+                return 'win';
+        }
+    }
+
     render() {
         const { loading, error, bets } = this.state;
 
