@@ -1631,26 +1631,45 @@ expressApp.get(
 
 expressApp.get(
     '/bets',
+    isAuthenticated,
     async (req, res) => {
-        if (req.user && req.user.username) {
-            const { betHistory } = req.user;
-            if (betHistory && betHistory.length > 0) {
-                const { openBets, settledBets } = req.query;
-                let bets;
-                if (openBets) {
-                    // TODO: query for bets with specific status
-                    bets = await Bet.find({ _id: { $in: betHistory }, status: { $in: ['Pending', 'Partial Match', 'Matched'] } }).sort({ createdAt: -1 });
-                } else if (settledBets) {
-                    bets = await Bet.find({ _id: { $in: betHistory }, status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }).sort({ createdAt: -1 });
-                } else {
-                    bets = await Bet.find({ _id: { $in: betHistory } }).sort({ createdAt: -1 });
-                }
-                res.json(bets);
-            } else {
-                res.json([]);
+        const { betHistory } = req.user;
+        if (betHistory && betHistory.length > 0) {
+            const { openBets, settledBets, custom } = req.query;
+            let bets;
+            if (openBets) {
+                bets = await Bet
+                    .find({
+                        _id: { $in: betHistory },
+                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+                    })
+                    .sort({ createdAt: -1 });
+            } else if (settledBets) {
+                bets = await Bet
+                    .find({
+                        _id: { $in: betHistory },
+                        status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] }
+                    })
+                    .sort({ createdAt: -1 });
+            } else if (custom) {
+                bets = await Bet
+                    .find({
+                        _id: { $in: betHistory },
+                        origin: 'other',
+                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+                    })
+                    .sort({ createdAt: -1 });
             }
+            else {
+                bets = await Bet
+                    .find({
+                        _id: { $in: betHistory }
+                    })
+                    .sort({ createdAt: -1 });
+            }
+            res.json(bets);
         } else {
-            res.status(404).end();
+            res.json([]);
         }
     },
 );
