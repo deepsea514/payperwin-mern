@@ -13,14 +13,12 @@ import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import StepConnector from '@material-ui/core/StepConnector';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import dateformat from "dateformat";
 import clsx from 'clsx';
 import { RegionDropdown } from 'react-country-region-selector';
 import _ from 'lodash';
-
 import GoogleLogin from "react-google-login";
+import CustomDatePicker from '../components/customDatePicker';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -449,57 +447,9 @@ class Registration extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Birthday</Form.Label>
-                        <DatePicker
+                        <CustomDatePicker
                             name="dateofbirth"
                             className="form-control"
-                            renderCustomHeader={({
-                                date,
-                                changeYear,
-                                changeMonth,
-                                decreaseMonth,
-                                increaseMonth,
-                                prevMonthButtonDisabled,
-                                nextMonthButtonDisabled
-                            }) => (
-                                <div
-                                    style={{
-                                        margin: 10,
-                                        display: "flex",
-                                        justifyContent: "center"
-                                    }}
-                                >
-                                    <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                                        {"<"}
-                                    </button>
-                                    <select
-                                        value={(new Date(date)).getFullYear()}
-                                        onChange={({ target: { value } }) => changeYear(value)}
-                                    >
-                                        {years.map(option => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-
-                                    <select
-                                        value={months[(new Date(date)).getMonth()]}
-                                        onChange={({ target: { value } }) =>
-                                            changeMonth(months.indexOf(value))
-                                        }
-                                    >
-                                        {months.map(option => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-
-                                    <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                                        {">"}
-                                    </button>
-                                </div>
-                            )}
                             wrapperClassName="input-group"
                             selected={dateofbirth}
                             onChange={(val) => this.handleChangeSpec('dateofbirth', val)}

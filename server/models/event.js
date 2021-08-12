@@ -10,7 +10,11 @@ const EventSchema = new Schema(
         teamAScore: Number,
         teamBScore: Number,
         startDate: { type: Date, required: true },
+        approved: { type: Boolean, default: false },
+        public: { type: Boolean, default: true },
         status: { type: Number, default: 0 },
+        creator: { type: String, default: 'Admin' },
+        user: { type: Schema.Types.ObjectId, default: null },
     },
     {
         timestamps: true,

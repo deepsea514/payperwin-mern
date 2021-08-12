@@ -4,6 +4,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dayjs from 'dayjs';
 import sportNameImage from "../helpers/sportNameImage";
+import CreateCustomBetModal from '../components/createCustomBetModal';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -15,6 +16,7 @@ export default class CustomBets extends PureComponent {
             error: null,
             loading: false,
             bets: [],
+            createModal: false,
         };
     }
 
@@ -34,7 +36,7 @@ export default class CustomBets extends PureComponent {
         }
     }
 
-    getCustomBetsHistory() {
+    getCustomBetsHistory = () => {
         this.setState({ loading: true });
 
         let url1 = `${serverUrl}/bets?custom=true`;
@@ -78,17 +80,18 @@ export default class CustomBets extends PureComponent {
     }
 
     render() {
-        const { loading, error, bets } = this.state;
+        const { loading, error, bets, createModal } = this.state;
 
         return (
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
                     <h3>Custom Bets</h3>
                     <button className="form-button"
-                        onClick={() => { }}>
+                        onClick={() => this.setState({ createModal: true })}>
                         <i className="fas fa-plus-square" /> Create a Bet
                     </button>
                 </div>
+                {createModal && <CreateCustomBetModal closeModal={() => this.setState({ createModal: false })} />}
                 <br />
                 <div>
                     {loading && <center><Preloader use={ThreeDots}

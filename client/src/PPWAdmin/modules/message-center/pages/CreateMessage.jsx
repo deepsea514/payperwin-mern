@@ -5,29 +5,12 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { createMessage } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 const config = require("../../../../../../config.json");
 const CountryInfo = config.CountryInfo;
 
-const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
-const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-];
 
 class CreateMessage extends React.Component {
     constructor(props) {
@@ -271,57 +254,9 @@ class CreateMessage extends React.Component {
                                             <div className="col-6">
                                                 <input type="checkbox" id="is_last_online_before" name="is_last_online_before" {...formik.getFieldProps("is_last_online_before")} />
                                                 <label htmlFor="is_last_online_before"> &nbsp;&nbsp;Users last online date is before </label>
-                                                <DatePicker
+                                                <CustomDatePicker
                                                     name="last_online_before"
                                                     className="form-control"
-                                                    renderCustomHeader={({
-                                                        date,
-                                                        changeYear,
-                                                        changeMonth,
-                                                        decreaseMonth,
-                                                        increaseMonth,
-                                                        prevMonthButtonDisabled,
-                                                        nextMonthButtonDisabled
-                                                    }) => (
-                                                        <div
-                                                            style={{
-                                                                margin: 10,
-                                                                display: "flex",
-                                                                justifyContent: "center"
-                                                            }}
-                                                        >
-                                                            <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                                                                {"<"}
-                                                            </button>
-                                                            <select
-                                                                value={(new Date(date)).getFullYear()}
-                                                                onChange={({ target: { value } }) => changeYear(value)}
-                                                            >
-                                                                {years.map(option => (
-                                                                    <option key={option} value={option}>
-                                                                        {option}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-
-                                                            <select
-                                                                value={months[(new Date(date)).getMonth()]}
-                                                                onChange={({ target: { value } }) =>
-                                                                    changeMonth(months.indexOf(value))
-                                                                }
-                                                            >
-                                                                {months.map(option => (
-                                                                    <option key={option} value={option}>
-                                                                        {option}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-
-                                                            <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                                                                {">"}
-                                                            </button>
-                                                        </div>
-                                                    )}
                                                     wrapperClassName="input-group"
                                                     selected={formik.values.last_online_before}
                                                     onChange={(val) => {
@@ -342,57 +277,9 @@ class CreateMessage extends React.Component {
                                             <div className="col-6">
                                                 <input type="checkbox" id="is_last_online_after" name="is_last_online_after" {...formik.getFieldProps("is_last_online_after")} />
                                                 <label htmlFor="is_last_online_after"> &nbsp;&nbsp;Or Users last online date is after </label>
-                                                <DatePicker
+                                                <CustomDatePicker
                                                     name="last_online_after"
                                                     className="form-control"
-                                                    renderCustomHeader={({
-                                                        date,
-                                                        changeYear,
-                                                        changeMonth,
-                                                        decreaseMonth,
-                                                        increaseMonth,
-                                                        prevMonthButtonDisabled,
-                                                        nextMonthButtonDisabled
-                                                    }) => (
-                                                        <div
-                                                            style={{
-                                                                margin: 10,
-                                                                display: "flex",
-                                                                justifyContent: "center"
-                                                            }}
-                                                        >
-                                                            <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                                                                {"<"}
-                                                            </button>
-                                                            <select
-                                                                value={(new Date(date)).getFullYear()}
-                                                                onChange={({ target: { value } }) => changeYear(value)}
-                                                            >
-                                                                {years.map(option => (
-                                                                    <option key={option} value={option}>
-                                                                        {option}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-
-                                                            <select
-                                                                value={months[(new Date(date)).getMonth()]}
-                                                                onChange={({ target: { value } }) =>
-                                                                    changeMonth(months.indexOf(value))
-                                                                }
-                                                            >
-                                                                {months.map(option => (
-                                                                    <option key={option} value={option}>
-                                                                        {option}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-
-                                                            <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                                                                {">"}
-                                                            </button>
-                                                        </div>
-                                                    )}
                                                     wrapperClassName="input-group"
                                                     selected={formik.values.last_online_after}
                                                     onChange={(val) => {

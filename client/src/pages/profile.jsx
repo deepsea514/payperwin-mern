@@ -6,12 +6,11 @@ import { Formik } from "formik";
 import { RegionDropdown } from 'react-country-region-selector';
 // import SVG from "react-inlinesvg";
 import { Button, FormControl, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-
 import { getInputClasses } from "../helpers/getInputClasses";
+import CustomDatePicker from '../components/customDatePicker';
+
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -208,7 +207,7 @@ export default class Profile extends Component {
                                         </div>
                                         <div className="form-group col-md-6 col-sm-12 col-12">
                                             <label>Birthday <span className="text-danger">*</span></label>
-                                            <DatePicker
+                                            <CustomDatePicker
                                                 name="dateofbirth"
                                                 className="form-control"
                                                 wrapperClassName="input-group"
@@ -221,7 +220,6 @@ export default class Profile extends Component {
                                                         formik.setFieldValue("dateofbirth", dateofbirth);
                                                     },
                                                 }}
-                                                placeholder=""
                                                 isInvalid={formik.errors.dateofbirth !== undefined}
                                                 required
                                                 readOnly

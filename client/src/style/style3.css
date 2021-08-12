@@ -1051,8 +1051,20 @@ a.log-in-btn {
     font-family: Roboto, sans-serif;
 }
 
+.create_bet_modal_container {
+    height: calc(100vh - 100px);
+    margin: 10vh auto;
+    padding: 0 15px;
+    color: white;
+    font-family: Roboto, sans-serif;
+}
+
 @media (max-width: 768px) {
     .login_modal_container {
+        margin: 10vh 10px !important;
+        padding: 0 !important;
+    }
+    .create_bet_modal_container {
         margin: 10vh 10px !important;
         padding: 0 !important;
     }
@@ -1075,6 +1087,13 @@ a.log-in-btn {
     box-shadow: 0 8px 45px rgba(0, 0, 0, .45);
 }
 
+.create_bet_modal_content {
+    z-index: 2;
+    min-width: 760px;
+    min-height: 560px;
+    box-shadow: 0 8px 45px rgba(0, 0, 0, .45);
+}
+
 .overflow-hidden {
     overflow: hidden !important;
 }
@@ -1090,6 +1109,9 @@ a.log-in-btn {
     .login_modal_main {
         min-height: 560px;
     }
+    .create_bet_modal_main {
+        min-height: 560px;
+    }
     .login_modal_leftbar {
         max-width: 275px;
     }
@@ -1100,13 +1122,23 @@ a.log-in-btn {
         min-width: 0 !important;
         width: 100% !important;
     }
+    .create_bet_modal_content {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
     .login_modal_rightbar {
         display: none;
     }
     .login_modal_main {
         width: 100% !important;
     }
+    .create_bet_modal_main {
+        width: 100% !important;
+    }
     .login_modal_context {
+        padding: 0 2rem !important;
+    }
+    .create_bet_context {
         padding: 0 2rem !important;
     }
 }
@@ -1121,8 +1153,18 @@ a.log-in-btn {
     overflow: hidden;
 }
 
+.create_bet_modal_main {
+    width: 760px;
+    max-width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    overflow: hidden;
+}
+
 .login_modal_rightbar {
-    background: #ccc url(/images/login-right-panel.jpg) no-repeat 50%;
+    background: #ccc url(/images/login-right-panel.jpg) no-repeat;
     background-size: cover;
     -ms-flex-negative: 1;
     flex-shrink: 1;
@@ -1140,6 +1182,20 @@ a.log-in-btn {
     vertical-align: middle;
     -ms-flex-align: center;
     align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -ms-flex-preferred-size: 50%;
+    flex-basis: 50%;
+}
+
+.create_bet_context {
+    margin-top: 30px;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: center;
