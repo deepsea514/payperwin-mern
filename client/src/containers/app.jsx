@@ -66,6 +66,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import CustomBets from '../pages/custombets';
 
 class App extends PureComponent {
     constructor(props) {
@@ -208,6 +209,7 @@ class App extends PureComponent {
             '/verification',
             '/phone-verification',
             '/cashback',
+            '/custom-bets',
         ].includes(pathname);
         const exceptDark = [
             '/articles',
@@ -239,6 +241,7 @@ class App extends PureComponent {
             '/phone-verification',
             '/cashback',
             '/support',
+            '/custom-bets',
         ].filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
@@ -357,6 +360,7 @@ class App extends PureComponent {
                                                 <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
                                                 <Route path="/phone-verification" render={(props) => <PhoneVerification {...props} user={user} getUser={getUser} />} />
                                                 <Route path="/cashback" render={(props) => <Cashback {...props} user={user} />} />
+                                                <Route path="/custom-bets" render={(props) => <CustomBets {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/" render={(props) =>
                                                     <Dashboard
