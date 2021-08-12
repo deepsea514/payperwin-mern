@@ -5,11 +5,10 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import dateformat from "dateformat";
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import { getSports, getWagerActivityAsCSV } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
+import CustomDatePicker from "../../../../components/customDatePicker";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -303,7 +302,7 @@ class BetActivities extends React.Component {
                         <div className="card-body">
                             <div className="form-group row">
                                 <div className="col-lg-2 col-md-3">
-                                    <DatePicker
+                                    <CustomDatePicker
                                         className="form-control"
                                         placeholderText="Search"
                                         selected={filter.datefrom ? new Date(filter.datefrom) : null}
@@ -315,7 +314,7 @@ class BetActivities extends React.Component {
                                     </small>
                                 </div>
                                 <div className="col-lg-2 col-md-3">
-                                    <DatePicker
+                                    <CustomDatePicker
                                         className="form-control"
                                         placeholderText="Search"
                                         selected={filter.dateto ? new Date(filter.dateto) : null}

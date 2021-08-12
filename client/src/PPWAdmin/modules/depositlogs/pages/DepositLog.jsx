@@ -8,11 +8,10 @@ import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { deleteDeposit, updateDeposit, getDepositLogAsCSV } from "../redux/services";
 import { Link } from "react-router-dom";
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import CustomDatePicker from "../../../../components/customDatePicker";
 
 const config = require("../../../../../../config.json");
 const FinancialStatus = config.FinancialStatus;
@@ -199,7 +198,7 @@ class DepositLog extends React.Component {
                             <div className="card-body">
                                 <div className="form-group row">
                                     <div className="col-lg-2 col-md-3">
-                                        <DatePicker
+                                        <CustomDatePicker
                                             className="form-control"
                                             placeholderText="Search"
                                             selected={filter.datefrom ? new Date(filter.datefrom) : null}
@@ -211,7 +210,7 @@ class DepositLog extends React.Component {
                                         </small>
                                     </div>
                                     <div className="col-lg-2 col-md-3">
-                                        <DatePicker
+                                        <CustomDatePicker
                                             className="form-control"
                                             placeholderText="Search"
                                             selected={filter.dateto ? new Date(filter.dateto) : null}

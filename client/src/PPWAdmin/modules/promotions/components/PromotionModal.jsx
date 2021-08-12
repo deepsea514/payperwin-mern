@@ -2,9 +2,8 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import CustomDatePicker from "../../../../components/customDatePicker";
 const config = require("../../../../../../config.json");
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
@@ -101,7 +100,7 @@ export default class PromotionModal extends React.Component {
                                     </div>
                                     <div className="form-group">
                                         <label>Expiration Date<span className="text-danger">*</span></label>
-                                        <DatePicker
+                                        <CustomDatePicker
                                             name="expiration_date"
                                             className={`form-control ${getInputClasses(formik, "expiration_date")}`}
                                             wrapperClassName="input-group"

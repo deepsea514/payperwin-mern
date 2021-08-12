@@ -1919,12 +1919,16 @@ expressApp.get(
 expressApp.get(
     '/others',
     async (req, res) => {
-        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventStatus.pending.value })
+        const customBets = await Event.find({
+            startDate: { $gte: new Date() },
+            status: EventStatus.pending.value,
+            approved: true,
+            public: true,
+        })
             .sort({ createdAt: -1 });
         res.json(customBets);
     },
 )
-
 
 expressApp.get('/getPinnacleLogin',
     // bruteforce.prevent,
