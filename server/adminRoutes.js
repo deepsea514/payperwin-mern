@@ -3084,6 +3084,7 @@ adminRouter.get(
                     findObj = { ...findObj, startDate: { $lt: new Date() } };
                 }
             }
+            const pending_total = await Event.find({ approved: false }).count();
             const total = await Event.find(findObj).count();
             const events = await Event.find(findObj)
                 .sort({ createdAt: -1 })
@@ -3091,7 +3092,7 @@ adminRouter.get(
                 .limit(perPage)
                 .populate('user');
 
-            res.status(200).json({ total, perPage, page: page + 1, data: events });
+            res.status(200).json({ total, perPage, page: page + 1, data: events, pending_total });
         } catch (error) {
             console.log(error);
             res.status(404).json({ error: 'Can\'t find events.' });

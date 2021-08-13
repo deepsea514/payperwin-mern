@@ -1314,7 +1314,7 @@ expressApp.post(
                                                 try {
                                                     await newBetPool.save();
 
-                                                    await checkAutoBet(bet, newBetPool, user, sportData, line, type);
+                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
                                                 } catch (err) {
                                                     console.log('can\'t save newBetPool => ' + err);
                                                 }
@@ -1371,7 +1371,7 @@ expressApp.post(
     }
 );
 
-async function checkAutoBet(bet, betpool, user, sportData, line, type) {
+async function checkAutoBet(bet, betpool, user, sportData, line) {
     const { AutoBetStatus, AutoBetPeorid } = config;
     let { pick, win: toBet, lineQuery } = bet;
     pick = pick == 'home' ? "away" : "home";
