@@ -1314,7 +1314,7 @@ expressApp.post(
                                                 try {
                                                     await newBetPool.save();
 
-                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
+                                                    await checkAutoBet(bet, newBetPool, user, sportData, line, type);
                                                 } catch (err) {
                                                     console.log('can\'t save newBetPool => ' + err);
                                                 }
@@ -1371,11 +1371,50 @@ expressApp.post(
     }
 );
 
-async function checkAutoBet(bet, betpool, user, sportData, line) {
+async function checkAutoBet(bet, betpool, user, sportData, line, type) {
     const { AutoBetStatus, AutoBetPeorid } = config;
     let { pick, win: toBet, lineQuery } = bet;
+    pick = pick == 'home' ? "away" : "home";
+
+    const { type, altLineId, } = lineQuery;
+
+    const { originSportId } = sportData;
+    lineQuery.sportId = originSportId;
+
+    const { teamA, teamB, startDate, line: { home, away, periodNumber, hdp, points } } = line;
+    lineQuery.periodNumber = periodNumber;
+
+    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+    const lineOdds = line.line[pickWithOverUnder];
+    const oddsA = type === 'total' ? line.line.over : line.line.home;
+    const oddsB = type === 'total' ? line.line.under : line.line.away;
+    const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
+    const newLineOdds = lineOdds + oddsDifference;
+
+    let side = 'Underdog';
+    if((oddsA > oddsB) && pick == 'home' || (oddsA < oddsB) && pick == 'away') {
+        side = 'Favorite';
+    }
+
+    switch (type) {
+        case 'moneyline':
+            type = 'Moneyline';
+            break;
+        case 'spread':
+            type = 'Spreads';
+            break;
+        case 'total':
+        default:
+            type = 'Over/Under';
+            break;
+    }
+
     let autobets = await AutoBet
-        .find({ deletedAt: null })
+        .find({
+            deletedAt: null,
+            side: side,
+            betType: type,
+        })
         .populate('userId');
 
     const asyncFilter = async (arr, predicate) => {
@@ -1440,22 +1479,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     });
 
     const selectedauto = autobetusers[0];
-    pick = pick == 'home' ? "away" : "home";
-
-    const { type, altLineId, } = lineQuery;
-
-    const { originSportId } = sportData;
-    lineQuery.sportId = originSportId;
-
-    const { teamA, teamB, startDate, line: { home, away, periodNumber, hdp, points } } = line;
-    lineQuery.periodNumber = periodNumber;
-
-    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
-    const lineOdds = line.line[pickWithOverUnder];
-    const oddsA = type === 'total' ? line.line.over : line.line.home;
-    const oddsB = type === 'total' ? line.line.under : line.line.away;
-    const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
-    const newLineOdds = lineOdds + oddsDifference;
 
     let pickName = '';
     switch (type) {
@@ -1925,7 +1948,7 @@ expressApp.get(
     '/others',
     async (req, res) => {
         const { id } = req.query;
-        if(id) {
+        if (id) {
             try {
                 const customBet = await Event.findOne({
                     _id: id,

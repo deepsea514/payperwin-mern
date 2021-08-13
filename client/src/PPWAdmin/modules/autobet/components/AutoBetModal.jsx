@@ -3,12 +3,23 @@ import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import { searchUsers, searchSports } from "../../customers/redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 const config = require("../../../../../../config.json");
 const AutoBetStatus = config.AutoBetStatus;
 const AutoBetPeorid = config.AutoBetPeorid;
 
+const sideOptions = [
+    { value: 'Underdog', label: 'Underdog' },
+    { value: 'Favorite', label: 'Favorite' },
+]
+
+const betTypeOptions= [
+    { value: 'Moneyline', label: 'Moneyline' },
+    { value: 'Spreads', label: 'Spreads' },
+    { value: 'Over/Under', label: 'Over/Under' },
+]
 
 export default class AutoBetModal extends React.Component {
     constructor(props) {
@@ -23,6 +34,8 @@ export default class AutoBetModal extends React.Component {
                 peorid: AutoBetPeorid.daily,
                 priority: 0,
                 sports: [],
+                side: [],
+                betType: [],
                 status: AutoBetStatus.active
             },
             autobetSchema: Yup.object().shape({
@@ -42,6 +55,10 @@ export default class AutoBetModal extends React.Component {
                     .required("Pririty field is required."),
                 sports: Yup.array().of(Yup.object())
                     .min(1, "Please choose at least a sport."),
+                side: Yup.array().of(Yup.object())
+                    .min(1, "Please choose at least a Side."),
+                betType: Yup.array().of(Yup.object())
+                    .min(1, "Please choose at least a Bet Type."),
                 status: Yup.string()
                     .required("Status field is required."),
             }),
@@ -224,6 +241,58 @@ export default class AutoBetModal extends React.Component {
                                         {formik.touched.sports && formik.errors.sports ? (
                                             <div className="invalid-feedback">
                                                 {formik.errors.sports}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Side<span className="text-danger">*</span></label>
+                                        <Select
+                                            className={`basic-single ${getInputClasses(formik, "side")}`}
+                                            classNamePrefix="select"
+                                            isMulti
+                                            name="side"
+                                            options={sideOptions}
+                                            value={formik.values.side}
+                                            {...formik.getFieldProps("side")}
+                                            {...{
+                                                onChange: (side) => {
+                                                    if (!side) return;
+                                                    formik.setFieldValue("side", side);
+                                                    formik.setFieldTouched("side", true);
+                                                    formik.setFieldError("side", false);
+                                                },
+
+                                            }}
+                                        />
+                                        {formik.touched.side && formik.errors.side ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.side}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Bet Type<span className="text-danger">*</span></label>
+                                        <Select
+                                            className={`basic-single ${getInputClasses(formik, "betType")}`}
+                                            classNamePrefix="select"
+                                            isMulti
+                                            name="betType"
+                                            options={betTypeOptions}
+                                            value={formik.values.betType}
+                                            {...formik.getFieldProps("betType")}
+                                            {...{
+                                                onChange: (betType) => {
+                                                    if (!betType) return;
+                                                    formik.setFieldValue("betType", betType);
+                                                    formik.setFieldTouched("betType", true);
+                                                    formik.setFieldError("betType", false);
+                                                },
+
+                                            }}
+                                        />
+                                        {formik.touched.betType && formik.errors.betType ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.betType}
                                             </div>
                                         ) : null}
                                     </div>

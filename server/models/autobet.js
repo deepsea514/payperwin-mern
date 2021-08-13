@@ -12,6 +12,8 @@ const AutoBetSchema = new Schema(
         peorid: String,
         status: String,
         sports: { type: Array, default: [] },
+        side: { type: Array, default: [] },
+        betType: { type: Array, default: [] },
         deletedAt: Date,
     },
     {
