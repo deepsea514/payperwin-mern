@@ -55,6 +55,8 @@ class AutoBet extends React.Component {
                 peorid: bet.peorid,
                 priority: bet.priority,
                 sports: bet.sports.map(sport => ({ value: sport, label: sport })),
+                side: bet.side.map(side => ({ value: side, label: side })),
+                betType: bet.betType.map(betType => ({ value: betType, label: betType })),
                 status: bet.status
             }
         })
@@ -91,6 +93,8 @@ class AutoBet extends React.Component {
                 <td>{index + 1}</td>
                 <td>{bet.userId ? <Link to={`/customers/${bet.userId._id}/profile/overview`}>{bet.userId.email}</Link> : null}</td>
                 <td>{bet.sports.join(', ')}</td>
+                <td>{bet.side.join(', ')}</td>
+                <td>{bet.betType.join(', ')}</td>
                 <td>{this.getRollOver(bet.rollOver)}</td>
                 <td>{bet.priority}</td>
                 <td>{bet.maxRisk}</td>
@@ -132,7 +136,9 @@ class AutoBet extends React.Component {
         const autobet = {
             ...values,
             userId: values.user.value,
-            sports: values.sports.map(sport => sport.value)
+            sports: values.sports.map(sport => sport.value),
+            side: values.side.map(side => side.value),
+            betType: values.betType.map(betType => betType.value),
         };
         delete autobet.user;
         createAutoBet(autobet)
@@ -154,7 +160,9 @@ class AutoBet extends React.Component {
     editAutoBetUser = (values, formik) => {
         const autobet = {
             ...values,
-            sports: values.sports.map(sport => sport.value)
+            sports: values.sports.map(sport => sport.value),
+            side: values.side.map(side => side.value),
+            betType: values.betType.map(betType => betType.value),
         };
         delete autobet.user;
 
@@ -219,6 +227,8 @@ class AutoBet extends React.Component {
                                             <th scope="col">#</th>
                                             <th scope="col">User</th>
                                             <th scope="col">Sports</th>
+                                            <th scope="col">Side</th>
+                                            <th scope="col">Bet Type</th>
                                             <th scope="col">Roll Over</th>
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
