@@ -46,7 +46,11 @@ class CreateCustomBetModal extends React.Component {
             visiblity,
             errors
         } = this.state;
+        const { closeModal } = this.props;
         switch (activeStep) {
+            case 5:
+                closeModal();
+                return;
             case 1:
                 registrationValidation.validateFields({ name, option_1, option_2, startDate }, { tags: ['customBets'] })
                     .then((result) => {
@@ -220,7 +224,7 @@ class CreateCustomBetModal extends React.Component {
                                                         maxLength="200"
                                                         type="text"
                                                         name="name"
-                                                        placeholder="Name of Bet"
+                                                        placeholder=""
                                                         className="formElement"
                                                         autoComplete="off"
                                                         value={name}
@@ -239,7 +243,7 @@ class CreateCustomBetModal extends React.Component {
                                                                 maxLength="200"
                                                                 type="text"
                                                                 name="option_1"
-                                                                placeholder="Bet Option 1"
+                                                                placeholder=""
                                                                 className="formElement"
                                                                 autoComplete="off"
                                                                 value={option_1}
@@ -256,7 +260,7 @@ class CreateCustomBetModal extends React.Component {
                                                                 maxLength="200"
                                                                 type="text"
                                                                 name="option_2"
-                                                                placeholder="Bet Option 2"
+                                                                placeholder=""
                                                                 className="formElement"
                                                                 autoComplete="off"
                                                                 value={option_2}
@@ -334,7 +338,7 @@ class CreateCustomBetModal extends React.Component {
                                                         step="0.01"
                                                         name="odds"
                                                         min="100"
-                                                        placeholder="Odds for Option 1"
+                                                        placeholder=""
                                                         className="formElement"
                                                         autoComplete="off"
                                                         value={odds}
@@ -355,7 +359,7 @@ class CreateCustomBetModal extends React.Component {
                                                         step="0.01"
                                                         name="odds"
                                                         min="100"
-                                                        placeholder="Odds for Option 2"
+                                                        placeholder=""
                                                         className="formElement"
                                                         autoComplete="off"
                                                         value={odds}
@@ -376,7 +380,7 @@ class CreateCustomBetModal extends React.Component {
                                                         step="0.01"
                                                         name="wagerAmount"
                                                         min="5"
-                                                        placeholder="Wager Amount"
+                                                        placeholder=""
                                                         className="formElement"
                                                         autoComplete="off"
                                                         value={wagerAmount}
@@ -394,19 +398,20 @@ class CreateCustomBetModal extends React.Component {
                                         </div>
                                     </SwipeableViews>
                                     <div className="d-flex justify-content-between">
-                                        <button
+                                        {activeStep < 5 && <button
                                             className="loginButton ellipsis mediumButton dead-center"
                                             onClick={this.handleBack}
-                                            disabled={activeStep == 0 || activeStep == 6}
+                                            disabled={activeStep == 0 || activeStep == 5}
                                             type="button"
                                         >
                                             <span>Back</span>
-                                        </button>
+                                        </button>}
+                                        {activeStep >= 5 && <div></div>}
                                         <button
                                             className="loginButton ellipsis mediumButton dead-center"
                                             onClick={this.handleNext}
                                         >
-                                            <span>{activeStep >= 5 ? 'Finish' : 'Next'}</span>
+                                            <span>{activeStep == 5 ? 'Finish' : 'Next'}</span>
                                         </button>
                                     </div>
                                 </div>
