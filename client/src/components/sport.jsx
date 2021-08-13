@@ -23,7 +23,7 @@ class Sport extends PureComponent {
 
     componentDidMount() {
         this.getSport();
-        this.setState({ timer: setInterval(this.getSport, 10 * 60 * 1000) })
+        this.setState({ timer: setInterval(this.getSport.bind(this), 10 * 60 * 1000) })
     }
 
     componentWillUnmount() {

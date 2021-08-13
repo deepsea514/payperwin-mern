@@ -81,15 +81,16 @@ export default class CustomBets extends PureComponent {
 
     render() {
         const { loading, error, bets, createModal } = this.state;
+        const { user } = this.props;
 
         return (
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
                     <h3>Custom Bets</h3>
-                    <button className="form-button"
+                    {user && user.balance > 10 && <button className="form-button"
                         onClick={() => this.setState({ createModal: true })}>
                         <i className="fas fa-plus-square" /> Create a Bet
-                    </button>
+                    </button>}
                 </div>
                 {createModal && <CreateCustomBetModal closeModal={() => this.setState({ createModal: false })} />}
                 <br />

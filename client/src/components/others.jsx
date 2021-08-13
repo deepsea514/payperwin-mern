@@ -26,24 +26,19 @@ class Others extends PureComponent {
     }
 
     getSport() {
-        const sportName = "Other";
-        if (sportName) {
-            const url = `${serverUrl}/others`;
-            axios({
-                method: 'get',
-                url,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(({ data }) => {
+        const { id } = this.props;
+        const url = `${serverUrl}/others`;
+        axios.get(url, { params: { id } })
+            .then(({ data }) => {
                 if (data) {
+                    console.log(data);
                     this.setState({ data })
                 }
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 console.log(err)
                 this.setState({ error: err });
             });
-        }
     }
 
     convertOdds = (odd) => {

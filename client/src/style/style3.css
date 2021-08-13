@@ -1090,7 +1090,7 @@ a.log-in-btn {
 .create_bet_modal_content {
     z-index: 2;
     min-width: 760px;
-    min-height: 560px;
+    min-height: 500px;
     box-shadow: 0 8px 45px rgba(0, 0, 0, .45);
 }
 
@@ -1110,7 +1110,7 @@ a.log-in-btn {
         min-height: 560px;
     }
     .create_bet_modal_main {
-        min-height: 560px;
+        min-height: 500px;
     }
     .login_modal_leftbar {
         max-width: 275px;

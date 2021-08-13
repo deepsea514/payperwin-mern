@@ -327,10 +327,22 @@ class App extends PureComponent {
                                                             removeBet={this.removeBet} sportName={name} />
                                                     );
                                                 }} />
+                                                <Route path="/others/:id" render={(props) => {
+                                                    const { match } = props;
+                                                    const id = resObjPath(match, 'params.id');
+                                                    return (
+                                                        <React.Fragment>
+                                                            <h1>Custom Event</h1>
+                                                            <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                removeBet={this.removeBet} id={id}
+                                                            />
+                                                        </React.Fragment>
+                                                    );
+                                                }} />
                                                 <Route path="/others" render={(props) => {
                                                     return (
                                                         <React.Fragment>
-                                                            <h1>Others</h1>
+                                                            <h1>Custom Events</h1>
                                                             <Others {...props} addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet}
                                                             />

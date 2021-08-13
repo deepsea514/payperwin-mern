@@ -8,6 +8,19 @@ function isString(options) {
         || `${options.fieldName} must be a string`;
 }
 
+function isNumber(options) {
+    return typeof options.value === 'number'
+        || options.message
+        || `${options.fieldName} must be a number`;
+}
+
+function required2(options) {
+    if (!options.value)
+        return options.message
+            || `${options.fieldName} is required.`;
+    return true;
+}
+
 function isEmail(options) {
     return /.+@.+/.test(options.value)
         || options.message
@@ -19,6 +32,13 @@ function min(options) {
     return options.value.length >= number
         || options.message
         || `${options.fieldName} must be at least ${number} characters`;
+}
+
+function minNum(options) {
+    const number = options.number || 3;
+    return options.value >= number
+        || options.message
+        || `${options.fieldName} must be greater than ${number}.`;
 }
 
 function max(options) {
@@ -230,6 +250,33 @@ const schema = {
         { validator: isString },
         { validator: vipCodeExist, hasTag: 'registration' }
     ],
+
+    name: [
+        { validator: isString, hasTag: 'customBets' },
+        { validator: min, options: { number: 10, message: "Name of Event should be longer than 10 characters." }, hasTag: 'customBets' },
+        { validator: required, hasTag: 'customBets', options: { message: "Name of Event is required" } },
+    ],
+    option_1: [
+        { validator: isString, hasTag: 'customBets' },
+        { validator: min, options: { number: 3, message: "Bet Option should be longer than 3 characters." }, hasTag: 'customBets' },
+        { validator: required, hasTag: 'customBets', options: { message: "Bet Option is required" } },
+    ],
+    option_2: [
+        { validator: isString, hasTag: 'customBets' },
+        { validator: min, options: { number: 3, message: "Bet Option should be longer than 3 characters." }, hasTag: 'customBets' },
+        { validator: required, hasTag: 'customBets', options: { message: "Bet Option is required" } },
+    ],
+    startDate: [
+        { validator: required2, hasTag: 'customBets', options: { message: "Match Date is required" } },
+    ],
+    odds: [
+        // { validator: isNumber, hasTag: 'customBets' },
+        { validator: minNum, hasTag: 'customBets', options: { number: 100, message: "American odds must be greater than 100 or less than -100." } },
+    ],
+    wagerAmount: [
+        // { validator: isNumber, hasTag: 'customBets' },
+        { validator: minNum, hasTag: 'customBets', options: { number: 5, message: "You should bet at least $5." } },
+    ]
 };
 
 async function validateField(fieldName, obj, options) {

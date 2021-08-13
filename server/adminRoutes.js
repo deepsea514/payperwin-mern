@@ -2824,7 +2824,7 @@ adminRouter.put(
     limitRoles('events'),
     async function (req, res) {
         let { id } = req.params;
-        const { name, startDate, teamA, teamB } = req.body;
+        const { name, startDate, teamA, teamB, approved } = req.body;
         try {
             const event = await Event.findById(id);
             if (!event) {
@@ -2849,6 +2849,9 @@ adminRouter.put(
                     currentOdds: teamB.odds,
                     odds: [...event.teamB.odds, teamB.odds]
                 }
+            }
+            if (approved != null || approved != undefined) {
+                event.approved = approved;
             }
             await event.save();
             res.status(200).json({ success: true });
@@ -3085,7 +3088,8 @@ adminRouter.get(
             const events = await Event.find(findObj)
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
-                .limit(perPage);
+                .limit(perPage)
+                .populate('user');
 
             res.status(200).json({ total, perPage, page: page + 1, data: events });
         } catch (error) {

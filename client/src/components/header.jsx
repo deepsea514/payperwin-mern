@@ -47,7 +47,7 @@ class Header extends PureComponent {
 
     componentDidMount() {
         this._isMounted = true;
-        const timerInterval = setInterval(this.headerTimer, 1000);
+        const timerInterval = setInterval(this.headerTimer.bind(this), 1000);
         this._isMounted && this.setState({ timerInterval })
     }
 
