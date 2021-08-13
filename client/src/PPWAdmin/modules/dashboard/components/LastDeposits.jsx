@@ -42,7 +42,7 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-bolder d-block font-size-lg">
-                            {deposit.user ? deposit.user.username : null}
+                            {deposit.user ? deposit.user.email : null}
                         </span>
                     </td>
                     <td className="pl-0">
