@@ -8,10 +8,21 @@ import { checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
 import * as kyc from "../../../../../modules/kyc/redux/reducers";
 import * as withdrawlog from "../../../../../modules/withdrawlogs/redux/reducers";
+import * as events from "../../../../../modules/events/redux/reducers";
 import config from "../../../../../../../../config.json";
 const AdminRoles = config.AdminRoles;
 
-function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLog, pending_total, currentUser }) {
+function AsideMenuList({
+    layoutProps,
+    getVerifications,
+    kyc_total,
+    getWithdrawLog,
+    pending_withdraw_total,
+    currentUser,
+    getEvents,
+    pending_event_total
+}) {
+
     const location = useLocation();
     const getMenuItemActive = (url, hasSubmenu = false) => {
         return checkIsActive(location, url)
@@ -23,6 +34,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
     useEffect(() => {
         getVerifications();
         getWithdrawLog();
+        getEvents();
     })
 
     const isAvailable = (module) => {
@@ -133,7 +145,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/Shopping/Money.svg"} />
                         </span>
                         <span className="menu-text">Withdraw Logs</span>
-                        {pending_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_total}&nbsp;</span>}
+                        {pending_withdraw_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_withdraw_total}&nbsp;</span>}
                     </Link>
                 </li>}
 
@@ -170,6 +182,7 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
                             <SVG src={"/media/svg/icons/Devices/Laptop-macbook.svg"} />
                         </span>
                         <span className="menu-text">AutoBet</span>
+                        {pending_event_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_event_total}&nbsp;</span>}
                     </Link>
                 </li>}
 
@@ -354,13 +367,15 @@ function AsideMenuList({ layoutProps, getVerifications, kyc_total, getWithdrawLo
 
 const mapStateToProps = (state) => ({
     kyc_total: state.kyc.total,
-    pending_total: state.withdrawlog.pending_total,
+    pending_withdraw_total: state.withdrawlog.pending_total,
+    pending_event_total: state.events.pending_total,
     currentUser: state.currentUser.currentUser,
 });
 
 const mapActionsToProps = {
     getVerifications: kyc.actions.getVerifications,
     getWithdrawLog: withdrawlog.actions.getWithdrawLog,
+    getEvents: events.actions.getEvents,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(AsideMenuList);

@@ -16,6 +16,7 @@ const initialState = {
     total: 0,
     currentPage: 1,
     loading: false,
+    pending_total: 0,
     filter: {
         status: EventStatus['pending'].value,
     },
@@ -51,10 +52,10 @@ export function* saga() {
         try {
             const state = yield select((state) => state.events);
             const { data } = yield getEvents(state.currentPage, state.filter);
-            yield put(actions.getEventsSuccess({ events: data.data, total: data.total }));
+            yield put(actions.getEventsSuccess({ events: data.data, total: data.total, pending_total: data.pending_total }));
         } catch (error) {
             console.log(error);
-            yield put(actions.getEventsSuccess({ events: [], total: 0 }));
+            yield put(actions.getEventsSuccess({ events: [], total: 0, pending_total: 0 }));
         }
     });
 
