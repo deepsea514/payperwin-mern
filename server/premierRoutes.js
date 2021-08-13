@@ -92,7 +92,7 @@ premierRouter.post('/etransfer-deposit',
                         method: 'eTransfer',
                         status: FinancialStatus.success
                     });
-                    await user.update({ $inc: { balance: receive_amount - DepositHeld } });
+                    await user.update({ $inc: { balance: deposit.amount - DepositHeld } });
                 }
 
                 const preference = await Preference.findOne({ user: user._id });
