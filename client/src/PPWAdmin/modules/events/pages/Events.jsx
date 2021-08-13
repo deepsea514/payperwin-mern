@@ -195,8 +195,8 @@ class Events extends React.Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">Name Of Event</th>
-                                            <th scope="col">Start Date/Time</th>
                                             <th scope="col">Creator</th>
+                                            <th scope="col">Start Date/Time</th>
                                             <th scope="col">Bet Options</th>
                                             <th scope="col">Visiblity</th>
                                             <th scope="col">Approved</th>
