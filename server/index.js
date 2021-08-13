@@ -1879,7 +1879,12 @@ expressApp.get(
     '/sportsdir',
     async (req, res) => {
         const sportsData = await SportsDir.find({});
-        const customBets = await Event.find({ startDate: { $gte: new Date() }, status: EventStatus.pending.value }).count();
+        const customBets = await Event.find({
+            startDate: { $gte: new Date() },
+            status: EventStatus.pending.value,
+            approved: true,
+            public: true,
+        }).count();
         if (sportsData) {
             let sports = [];
             for (const sport of sportsData) {
@@ -1919,14 +1924,30 @@ expressApp.get(
 expressApp.get(
     '/others',
     async (req, res) => {
-        const customBets = await Event.find({
-            startDate: { $gte: new Date() },
-            status: EventStatus.pending.value,
-            approved: true,
-            public: true,
-        })
-            .sort({ createdAt: -1 });
-        res.json(customBets);
+        const { id } = req.query;
+        if(id) {
+            try {
+                const customBet = await Event.findOne({
+                    _id: id,
+                    startDate: { $gte: new Date() },
+                    status: EventStatus.pending.value,
+                    approved: true,
+                })
+                    .sort({ createdAt: -1 });
+                res.json([customBet]);
+            } catch (error) {
+                res.json([]);
+            }
+        } else {
+            const customBets = await Event.find({
+                startDate: { $gte: new Date() },
+                status: EventStatus.pending.value,
+                approved: true,
+                public: true,
+            })
+                .sort({ createdAt: -1 });
+            res.json(customBets);
+        }
     },
 )
 
@@ -3180,6 +3201,57 @@ expressApp.get(
             res.json(null);
         }
 
+    }
+)
+
+expressApp.post(
+    '/customBet',
+    isAuthenticated,
+    async (req, res) => {
+        const {
+            name,
+            option_1,
+            option_2,
+            startDate,
+            favorite,
+            odds,
+            visiblity,
+            wagerAmount,
+        } = req.body;
+        const user = req.user;
+        if (user.balance < wagerAmount || user.balance < 10 || wagerAmount < 5) {
+            return res.status(400).json({ error: "Can't create a bet." });
+        }
+        try {
+            const teamAOdds = favorite == 'teamA' ? odds : -odds;
+            const teamBOdds = -teamAOdds;
+            await Event.create({
+                name: name,
+                teamA: {
+                    name: option_1,
+                    odds: [teamAOdds],
+                    currentOdds: teamAOdds
+                },
+                teamB: {
+                    name: option_2,
+                    odds: [teamBOdds],
+                    currentOdds: teamBOdds
+                },
+                startDate: startDate,
+                approved: false,
+                public: visiblity == 'public' ? true : false,
+                status: config.EventStatus.pending.value,
+                creator: 'User',
+                user: user._id,
+                initialWager: {
+                    wagerAmount: wagerAmount,
+                    favorite: favorite
+                }
+            });
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ error: "Can't create a bet." });
+        }
     }
 )
 

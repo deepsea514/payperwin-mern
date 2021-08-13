@@ -1,4 +1,75 @@
 const mongoose = require('mongoose');
+const Preference = require('./preference');
+const User = require('./user');
+const { convertTimeLineDate } = require('../libs/timehelper');
+const EventBetPool = require('./eventbetpool');
+const FinancialLog = require('./financiallog');
+const Bet = require('./bet');
+const simpleresponsive = require('../emailtemplates/simpleresponsive');
+const sendSMS = require("../libs/sendSMS");
+const sgMail = require('@sendgrid/mail');
+const config = require('../../config.json');
+const fromEmailName = 'PAYPER WIN';
+const fromEmailAddress = 'donotreply@payperwin.co';
+const FinancialStatus = config.FinancialStatus;
+
+const ID = function () {
+    return '' + Math.random().toString(10).substr(2, 9);
+};
+
+function calculateToWinFromBet(bet, americanOdds) {
+    const stake = Math.abs(Number(Number(bet).toFixed(2)));
+    const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
+    const calculateWin = (stake * 1) * decimalOdds;
+    const roundToPennies = Number((calculateWin).toFixed(2));
+    return roundToPennies;
+}
+
+async function calculateCustomBetsStatus(eventId) {
+    const betpool = await EventBetPool.findOne({ eventId: eventId });
+    const { homeBets, awayBets, teamA, teamB } = betpool;
+
+    const bets = await Bet.find({
+        _id:
+        {
+            $in: [
+                ...homeBets,
+                ...awayBets,
+            ]
+        }
+    });
+
+    const payPool = {
+        home: teamB.betTotal,
+        away: teamA.betTotal,
+    }
+
+    for (const bet of bets) {
+        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+        let payableToWin = 0;
+        if (payPool[pick]) {
+            if (payPool[pick] > 0) {
+                payableToWin += toWin;
+                payPool[pick] -= toWin;
+                if (payPool[pick] < 0) payableToWin += payPool[pick];
+            }
+        }
+        let matchingStatus;
+        if (payableToWin === toWin) matchingStatus = 'Matched';
+        else if (payableToWin === 0) matchingStatus = 'Pending';
+        else matchingStatus = 'Partial Match'
+        const betChanges = {
+            $set: {
+                payableToWin,
+                matchingStatus,
+                status: matchingStatus,
+            }
+        };
+        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
+            await Bet.findOneAndUpdate({ _id }, betChanges);
+        }
+    }
+}
 
 const { Schema } = mongoose;
 
@@ -10,16 +81,196 @@ const EventSchema = new Schema(
         teamAScore: Number,
         teamBScore: Number,
         startDate: { type: Date, required: true },
-        approved: { type: Boolean, default: false },
+        approved: { type: Boolean, default: true },
         public: { type: Boolean, default: true },
         status: { type: Number, default: 0 },
         creator: { type: String, default: 'Admin' },
-        user: { type: Schema.Types.ObjectId, default: null },
+        user: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+        initialWager: { type: Object, default: null },
     },
     {
         timestamps: true,
     },
 );
+
+
+EventSchema.pre('save', async function (next) { // eslint-disable-line func-names
+    const event = this;
+    const BetFee = 0.03;
+    // check if approved.
+    if (event.isModified('approved') && event.approved && event.creator == 'User' && event.user) {
+        const { name, teamA, teamB, startDate, initialWager: { wagerAmount, favorite } } = event;
+        const betAfterFee = Number(wagerAmount);
+        const user = await User.findById(event.user);
+        if (!user)
+            return next();
+
+        const preference = await Preference.findOne({ user: user._id });
+        let timezone = "00:00";
+        if (preference && preference.timezone) {
+            timezone = preference.timezone;
+        }
+        const timeString = convertTimeLineDate(new Date(), timezone);
+        // Approve notification
+        const betLink = `https://www.payperwin.co/others/${event._id}`;
+        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+            const msg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'Your custom bet is approved',
+                text: `Your custom bet is approved`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
+                        <br><br>
+                        Your custom bet for ${name} has been approved. You can invite your pals to bet with or against you by sharing this link ${betLink}.
+                        <br><br>
+                        Good luck!
+                    `,
+                    { href: betLink, name: 'View Custom Bet' }
+                ),
+            };
+            sgMail.send(msg);
+        }
+
+        // Place initial Bet
+        const fee = Number((betAfterFee * BetFee).toFixed(2));
+        const balanceChange = wagerAmount * -1;
+        const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
+        const pick = favorite == 'teamA' ? 'home' : 'away';
+        const pickOdds = favorite == 'teamA' ? teamA.currentOdds : teamB.currentOdds;
+        const toWin = calculateToWinFromBet(betAfterFee, pickOdds);
+        if (newBalance >= 0) {
+            // insert bet doc to bets table
+            const newBetObj = {
+                userId: user._id,
+                transactionID: `B${ID()}`,
+                teamA: { name: teamA.name, odds: teamA.currentOdds },
+                teamB: { name: teamB.name, odds: teamB.currentOdds },
+                pick: pick,
+                pickOdds: pickOdds,
+                oldOdds: null,
+                pickName: favorite == 'teamA' ? teamA.name : teamB.name,
+                bet: betAfterFee,
+                toWin: toWin,
+                fee: fee,
+                matchStartDate: startDate,
+                status: 'Pending',
+                lineQuery: {
+                    lineId: event._id,
+                    eventName: name,
+                    sportName: 'other',
+                },
+                lineId: event._id,
+                origin: 'other'
+            };
+            const newBet = new Bet(newBetObj);
+            console.info(`created new bet`);
+            const savedBet = await newBet.save();
+
+            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your bet was accepted',
+                    text: `Your bet was accepted`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                            <br><br>
+                            This email is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                            <br><br>
+                            <ul>
+                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                            </ul>
+                        `),
+                };
+                sgMail.send(msg);
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+                sendSMS(`This email is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                            Wager: $${betAfterFee.toFixed(2)}\n 
+                            Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                            Platform: PAYPERWIN Peer-to Peer`, user.phone);
+            }
+
+            const betId = savedBet.id;
+            // add betId to betPool
+            const exists = await EventBetPool.findOne({ eventId: event._id });
+            if (exists) {
+                console.log('update existing betpool');
+                if (pick == 'home') {
+                    const teamA = {
+                        name: exists.teamA.name,
+                        odds: exists.teamA.currentOdds,
+                        betTotal: exists.teamA.betTotal + betAfterFee,
+                        toWinTotal: exists.teamA.toWinTotal + toWin,
+                    }
+                    const homeBets = [...exists.homeBets, betId];
+                    await exists.update({ teamA: teamA, homeBets: homeBets });
+                } else {
+                    const teamB = {
+                        name: exists.teamB.name,
+                        odds: exists.teamB.currentOdds,
+                        betTotal: exists.teamB.betTotal + betAfterFee,
+                        toWinTotal: exists.teamB.toWinTotal + toWin,
+                    }
+                    const awayBets = [...exists.awayBets, betId];
+                    await exists.update({ teamB: teamB, awayBets: awayBets });
+                }
+            } else {
+                // Create new bet pool
+                const newTeamA = {
+                    name: teamA.name,
+                    odds: teamA.currentOdds,
+                    betTotal: pick === 'home' ? betAfterFee : 0,
+                    toWinTotal: pick === 'home' ? toWin : 0,
+                }
+                const homeBets = pick === 'home' ? [betId] : [];
+                const newTeamB = {
+                    name: teamB.name,
+                    odds: teamB.currentOdds,
+                    betTotal: pick === 'away' ? betAfterFee : 0,
+                    toWinTotal: pick === 'away' ? toWin : 0,
+                }
+                const awayBets = pick === 'away' ? [betId] : []
+                console.log('creating betpool');
+                const newBetPool = new EventBetPool(
+                    {
+                        eventId: event._id,
+                        teamA: newTeamA,
+                        teamB: newTeamB,
+                        homeBets: homeBets,
+                        awayBets: awayBets,
+                        matchStartDate: startDate,
+                        lineType: 'moneyline',
+                    }
+                );
+
+                try {
+                    await newBetPool.save();
+                } catch (err) {
+                    console.log('can\'t save newBetPool => ' + err);
+                }
+            }
+
+            await calculateCustomBetsStatus(event._id);
+
+            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
+            user.balance = newBalance;
+            await FinancialLog.create({
+                financialtype: 'bet',
+                uniqid: `BP${ID()}`,
+                user: user._id,
+                amount: betAfterFee,
+                method: 'bet',
+                status: FinancialStatus.success,
+            });
+            await user.save();
+        }
+    }
+    next();
+});
 
 const Event = mongoose.model('Event', EventSchema);
 

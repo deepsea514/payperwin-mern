@@ -26,7 +26,7 @@ class SportLeague extends PureComponent {
         const title = 'Betting on Sports League';
         setTitle({ pageTitle: title })
         this.getSportLeague();
-        this.setState({ timer: setInterval(this.getSportLeague, 10 * 60 * 1000) })
+        this.setState({ timer: setInterval(this.getSportLeague.bind(this), 10 * 60 * 1000) })
     }
 
     componentWillUnmount() {

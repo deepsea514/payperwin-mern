@@ -6,7 +6,7 @@ import CustomPagination from "../../../components/CustomPagination.jsx";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
 import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
-import { cancelEvent } from "../redux/services";
+import { cancelEvent, editEvent } from "../redux/services";
 
 const config = require("../../../../../../config.json");
 const EventStatus = config.EventStatus;
@@ -18,6 +18,7 @@ class Events extends React.Component {
         this.state = {
             perPage: 25,
             cancelId: null,
+            approveId: null,
             modal: false,
             resMessage: '',
             modalvariant: ''
@@ -58,18 +59,21 @@ class Events extends React.Component {
         return events.map((event, index) => (
             <tr key={index}>
                 <td>{event.name}</td>
+                <td>{event.creator == 'User' ? (event.user ? event.user.email : '') : 'Admin'}</td>
                 <td>{dateformat(new Date(event.startDate), "default")}</td>
                 <td>
                     <p>{event.teamA.name}: {event.teamA.currentOdds}</p>
                     <p>{event.teamB.name}: {event.teamB.currentOdds}</p>
                 </td>
-                <td></td>
+                <td>{this.getVisible(event.public)}</td>
+                <td>{this.getApproved(event.approved)}</td>
                 <td>{this.getStatus(event)}</td>
                 <td>
                     {this.isSettleEnabled(event) &&
                         <DropdownButton title="Actions">
                             <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item>
                             <Dropdown.Item as={Link} to={`/settle/${event._id}`}><i className="fas fa-check"></i>&nbsp; Settle </Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
                         </DropdownButton>
                     }
@@ -94,7 +98,18 @@ class Events extends React.Component {
         if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
             return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">{EventStatus['pending'].label}</span>
         return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">{EventStatus['outdated'].label}</span>
+    }
 
+    getVisible = (visiblity) => {
+        if (visiblity)
+            return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Publiuc</span>
+        return <span className="label label-lg label-primary label-inline font-weight-lighter mr-2">Private</span>
+    }
+
+    getApproved = (approved) => {
+        if (approved)
+            return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Approved</span>
+        return <span className="label label-lg label-outline-primary label-inline font-weight-lighter mr-2">Pending</span>
     }
 
     onFilterChange = (filter) => {
@@ -126,8 +141,21 @@ class Events extends React.Component {
             })
     }
 
+    approveEvent = () => {
+        const { getEvents } = this.props;
+        const { approveId } = this.state;
+        editEvent(approveId, { approved: true })
+            .then(() => {
+                getEvents();
+                this.setState({ modal: true, approveId: null, resMessage: "Successfully approved!", modalvariant: "success" });
+            })
+            .catch(() => {
+                this.setState({ modal: true, approveId: null, resMessage: "Cancel Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { perPage, cancelId, modal, resMessage, modalvariant } = this.state;
+        const { perPage, cancelId, approveId, modal, resMessage, modalvariant } = this.state;
         const { total, currentPage, filter } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -168,8 +196,10 @@ class Events extends React.Component {
                                         <tr>
                                             <th scope="col">Name Of Event</th>
                                             <th scope="col">Start Date/Time</th>
+                                            <th scope="col">Creator</th>
                                             <th scope="col">Bet Options</th>
-                                            <th scope="col">Total Money Bet</th>
+                                            <th scope="col">Visiblity</th>
+                                            <th scope="col">Approved</th>
                                             <th scope="col">Status</th>
                                             <th scope="col"></th>
                                         </tr>
@@ -196,6 +226,19 @@ class Events extends React.Component {
                                     Cancel
                                 </Button>
                                 <Button variant="primary" onClick={this.cancelEvent}>
+                                    Confirm
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={approveId != null} onHide={() => this.setState({ approveId: null })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Do you want to approve this event?</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => this.setState({ approveId: null })}>
+                                    Cancel
+                                </Button>
+                                <Button variant="primary" onClick={this.approveEvent}>
                                     Confirm
                                 </Button>
                             </Modal.Footer>
