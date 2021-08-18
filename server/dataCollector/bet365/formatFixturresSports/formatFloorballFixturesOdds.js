@@ -1,7 +1,6 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 const TestEvent = require('../../../models/testEvent');
 function formatFloorballFixturesOdds(event) {
-    TestEvent.create({ event, name: 'floorball' });
     const { main, schedule } = event.odds;
     let line = {
         originId: event.id,
@@ -12,30 +11,30 @@ function formatFloorballFixturesOdds(event) {
         totals: [],
     }
 
-    // if (main && main.sp.game_betting_2_way) {
-    //     const { game_betting_2_way } = main.sp;
-    //     const line_count = game_betting_2_way.length / 3;
-    //     for (let i = 0; i < line_count; i++) {
-    //         if (game_betting_2_way[i].name == "To Win") {
-    //             line.moneyline = {
-    //                 home: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count].odds)),
-    //                 away: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count * 2].odds))
-    //             }
-    //         } else if (game_betting_2_way[i].name == "Handicap") {
-    //             line.spreads.push({
-    //                 hdp: -Number(game_betting_2_way[i + line_count].handicap),
-    //                 home: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count].odds)),
-    //                 away: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count * 2].odds)),
-    //             })
-    //         } else if (game_betting_2_way[i].name == "Total") {
-    //             line.totals.push({
-    //                 points: Number(game_betting_2_way[i + line_count].handicap),
-    //                 over: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count].odds)),
-    //                 under: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count * 2].odds)),
-    //             })
-    //         }
-    //     }
-    // }
+    if (main && main.sp['3_way_betting']) {
+        const _3_way_betting = main.sp['3_way_betting'];
+        const line_count = _3_way_betting.length / 4;
+        for (let i = 0; i < line_count; i++) {
+            if (_3_way_betting[i].name == "Money Line") {
+                line.moneyline = {
+                    home: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count].odds)),
+                    away: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count * 3].odds))
+                }
+            } else if (_3_way_betting[i].name == "Handicap") {
+                line.spreads.push({
+                    hdp: -Number(_3_way_betting[i + line_count].handicap),
+                    home: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count].odds)),
+                    away: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count * 3].odds)),
+                })
+            } else if (_3_way_betting[i].name == "Total") {
+                line.totals.push({
+                    points: Number(_3_way_betting[i + line_count].handicap),
+                    over: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count].odds)),
+                    under: convertDecimalToAmericanOdds(Number(_3_way_betting[i + line_count * 3].odds)),
+                })
+            }
+        }
+    }
 
     // if (!line.moneyline && schedule) {
     //     line.moneyline = {
@@ -44,23 +43,23 @@ function formatFloorballFixturesOdds(event) {
     //     };
     // }
 
-    // if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
-    //     line.moneyline = null;
-    // }
+    if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
+        line.moneyline = null;
+    }
 
-    // const filteredSpreads = line.spreads.filter(spread => {
-    //     if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-    //         return true;
-    //     return false;
-    // });
-    // line.spreads = filteredSpreads;
+    const filteredSpreads = line.spreads.filter(spread => {
+        if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+            return true;
+        return false;
+    });
+    line.spreads = filteredSpreads.length ? filteredSpreads : null;
 
-    // const filteredTotals = line.totals.filter(total => {
-    //     if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-    //         return true;
-    //     return false;
-    // });
-    // line.totals = filteredTotals;
+    const filteredTotals = line.totals.filter(total => {
+        if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+            return true;
+        return false;
+    });
+    line.totals = filteredTotals.length ? filteredTotals : null;
 
     if (line.moneyline)
         return line;
