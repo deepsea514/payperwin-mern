@@ -196,7 +196,7 @@ class SportLeague extends PureComponent {
 
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
-                            if (!moneyline || !spreads || !totals)
+                            if (!moneyline)
                                 return null;
 
                             return (

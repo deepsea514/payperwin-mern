@@ -1,0 +1,42 @@
+[
+    {
+        "value": 0,
+        "name": "Not Started"
+    },
+    {
+        "value": 1,
+        "name": "InPlay"
+    },
+    {
+        "value": 2,
+        "name": "TO BE FIXED"
+    },
+    {
+        "value": 3,
+        "name": "Ended"
+    },
+    {
+        "value": 4,
+        "name": "Postponed"
+    },
+    {
+        "value": 5,
+        "name": "Cancelled"
+    },
+    {
+        "value": 6,
+        "name": "Walkover"
+    },
+    {
+        "value": 7,
+        "name": "Interrupted"
+    },
+    {
+        "value": 8,
+        "name": "Abandoned"
+    },
+    {
+        "value": 9,
+        "name": "Retired"
+    }
+]

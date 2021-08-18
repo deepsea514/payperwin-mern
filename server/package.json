@@ -49,6 +49,7 @@
     "server": "node index.js",
     "pinnacleUpdateLines": "node ./dataCollector/pinnacle/getAllSportsLines.js",
     "rundownUpdateLines": "node ./dataCollector/rundown/getAllSportsLines.js",
+    "bet365UpdateLines": "node ./dataCollector/bet365/getAllSportsLines.js",
     "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js"
   }
 }
