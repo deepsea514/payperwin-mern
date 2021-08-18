@@ -1180,9 +1180,6 @@ expressApp.post(
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Invalid Bet Type.`);
                             } else {
                                 const newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
-                                console.log('odds => ', odds);
-                                console.log(oddsA, oddsB, pick);
-                                console.log('newLineOdds => ', newLineOdds);
                                 const oddsMatch = odds[pick] === newLineOdds;
                                 if (oddsMatch) {
                                     const betAfterFee = toBet /* * 0.98 */;
