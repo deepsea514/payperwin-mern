@@ -2616,10 +2616,6 @@ expressApp.post(
                             financialtype: "deposit",
                             status: FinancialStatus.success
                         });
-                        orCon.push({
-                            financialtype: "depositheld",
-                            status: FinancialStatus.success
-                        })
                     }
                     if (filter.withdraw) {
                         orCon.push({
