@@ -1,4 +1,4 @@
-function calculateNewOdds(home, away, pick) {
+function calculateNewOdds(home, away) {
     const moneylineDifference = Math.abs(Math.abs(home) - Math.abs(away)) / 2;
     let bigHome = 1;
     if (home > 0) {
@@ -9,18 +9,18 @@ function calculateNewOdds(home, away, pick) {
         if (Math.abs(away) > Math.abs(home)) bigHome = -1;
         else bigHome = 1;
     }
-    let newHome = home + moneylineDifference * bigHome;
-    let newAway = away + moneylineDifference * bigHome;
+    const newHome = home + moneylineDifference * bigHome;
+    const newAway = away + moneylineDifference * bigHome;
     if (newHome < home) {
-        // newHome = home;
-        // newAway = away;
-        newHome = 0;
-        newAway = 0;
+        return {
+            newHome: Number(home.toFixed(2)),
+            newAway: Number(away.toFixed(2)),
+        }
     }
-    if (pick == 'home' || pick == 'over') {
-        return newHome;
+    return {
+        newHome: Number(newHome.toFixed(2)),
+        newAway: Number(newAway.toFixed(2)),
     }
-    return newAway;
 
 }
 
