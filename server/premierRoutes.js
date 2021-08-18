@@ -19,7 +19,6 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
-const DepositHeld = 8;
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -42,19 +41,6 @@ const signatureCheck = async (req, res, next) => {
             error: "Signature mismatch"
         });
     }
-}
-
-async function isFirstDepositDone(user) {
-    const existingDeposit = await FinancialLog.find({
-        user: user._id,
-        type: 'deposit',
-        status: FinancialStatus.success,
-    });
-
-    if (existingDeposit && existingDeposit.length) {
-        return true
-    }
-    return false;
 }
 
 premierRouter.post('/etransfer-deposit',
@@ -80,20 +66,7 @@ premierRouter.post('/etransfer-deposit',
                     status: FinancialStatus.success
                 });
 
-                const firstDepositDone = await isFirstDepositDone(user);
-                if (firstDepositDone) {
-                    await user.update({ $inc: { balance: deposit.amount } });
-                } else {
-                    await FinancialLog.create({
-                        financialtype: 'depositheld',
-                        uniqid: `DH${ID()}`,
-                        user: user._id,
-                        amount: DepositHeld,
-                        method: 'eTransfer',
-                        status: FinancialStatus.success
-                    });
-                    await user.update({ $inc: { balance: deposit.amount - DepositHeld } });
-                }
+                await user.update({ $inc: { balance: deposit.amount } });
 
                 const preference = await Preference.findOne({ user: user._id });
                 if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {

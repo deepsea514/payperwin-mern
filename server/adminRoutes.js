@@ -50,7 +50,6 @@ const AdminRoles = config.AdminRoles;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
-const DepositHeld = 8;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -697,19 +696,6 @@ adminRouter.post(
     }
 )
 
-async function isFirstDepositDone(user) {
-    const existingDeposit = await FinancialLog.find({
-        user: user._id,
-        type: 'deposit',
-        status: FinancialStatus.success,
-    });
-
-    if (existingDeposit && existingDeposit.length) {
-        return true
-    }
-    return false;
-}
-
 adminRouter.post(
     '/deposit',
     authenticateJWT,
@@ -745,20 +731,7 @@ adminRouter.post(
             await deposit.save();
 
             if (status == FinancialStatus.success) {
-                const firstDepositDone = await isFirstDepositDone(user);
-                if (firstDepositDone) {
-                    await user.update({ $inc: { balance: amount } });
-                } else {
-                    await FinancialLog.create({
-                        financialtype: 'depositheld',
-                        uniqid: `DH${ID()}`,
-                        user: user._id,
-                        amount: DepositHeld,
-                        method: method,
-                        status: FinancialStatus.success
-                    });
-                    await user.update({ $inc: { balance: amount - DepositHeld } });
-                }
+                await user.update({ $inc: { balance: amount } });
             }
 
             const preference = await Preference.findOne({ user: user._id });
@@ -945,20 +918,7 @@ adminRouter.patch(
                 return;
             }
             if (data.status == FinancialStatus.success) {
-                const firstDepositDone = await isFirstDepositDone(user);
-                if (firstDepositDone) {
-                    await user.update({ $inc: { balance: deposit.amount } });
-                } else {
-                    await FinancialLog.create({
-                        financialtype: 'depositheld',
-                        uniqid: `DH${ID()}`,
-                        user: user._id,
-                        amount: DepositHeld,
-                        method: deposit.method,
-                        status: FinancialStatus.success
-                    });
-                    await user.update({ $inc: { balance: deposit.amount - DepositHeld } });
-                }
+                await user.update({ $inc: { balance: deposit.amount } });
             }
 
             res.json(result);

@@ -20,7 +20,6 @@ const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
-const DepositHeld = 8;
 
 const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
@@ -76,19 +75,6 @@ const signatureCheck = async (req, res, next) => {
     }
 }
 
-async function isFirstDepositDone(user) {
-    const existingDeposit = await FinancialLog.find({
-        user: user._id,
-        type: 'deposit',
-        status: FinancialStatus.success,
-    });
-
-    if (existingDeposit && existingDeposit.length) {
-        return true
-    }
-    return false;
-}
-
 tripleARouter.post('/deposit',
     bruteforce.prevent,
     signatureCheck,
@@ -122,20 +108,7 @@ tripleARouter.post('/deposit',
                 method: method,
                 status: FinancialStatus.success
             });
-            const firstDepositDone = await isFirstDepositDone(user);
-            if (firstDepositDone) {
-                await user.update({ $inc: { balance: receive_amount } });
-            } else {
-                await FinancialLog.create({
-                    financialtype: 'depositheld',
-                    uniqid: `DH${ID()}`,
-                    user: webhook_data.payer_id,
-                    amount: DepositHeld,
-                    method: method,
-                    status: FinancialStatus.success
-                });
-                await user.update({ $inc: { balance: receive_amount - DepositHeld } });
-            }
+            await user.update({ $inc: { balance: receive_amount } });
 
             const preference = await Preference.findOne({ user: user._id });
             if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
