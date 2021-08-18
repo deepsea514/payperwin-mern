@@ -1166,6 +1166,7 @@ expressApp.post(
                         lineQuery.sportId = originSportId;
                         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                         if (line) {
+                            console.log(line);
                             const { teamA, teamB, startDate, line: { home, away, draw, hdp, points, periodNumber } } = line;
                             lineQuery.periodNumber = periodNumber;
                             // if (draw) {
@@ -1179,6 +1180,9 @@ expressApp.post(
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Invalid Bet Type.`);
                             } else {
                                 const newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
+                                console.log('odds => ', odds);
+                                console.log(oddsA, oddsB, pick);
+                                console.log('newLineOdds => ', newLineOdds);
                                 const oddsMatch = odds[pick] === newLineOdds;
                                 if (oddsMatch) {
                                     const betAfterFee = toBet /* * 0.98 */;
@@ -1392,7 +1396,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     const newLineOdds = lineOdds + oddsDifference;
 
     let side = 'Underdog';
-    if((oddsA > oddsB) && pick == 'home' || (oddsA < oddsB) && pick == 'away') {
+    if ((oddsA > oddsB) && pick == 'home' || (oddsA < oddsB) && pick == 'away') {
         side = 'Favorite';
     }
 

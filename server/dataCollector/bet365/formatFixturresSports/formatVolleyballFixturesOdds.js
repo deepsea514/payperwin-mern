@@ -21,12 +21,14 @@ function formatVolleyballFixturesOdds(event) {
                 }
             } else if (game_lines[i].name == "Handicap - Sets") {
                 line.spreads.push({
+                    altLineId: game_lines[i + line_count].id,
                     hdp: -Number(game_lines[i + line_count].handicap),
                     home: convertDecimalToAmericanOdds(Number(game_lines[i + line_count].odds)),
                     away: convertDecimalToAmericanOdds(Number(game_lines[i + line_count * 2].odds)),
                 })
             } else if (game_lines[i].name == "Total Points") {
                 line.totals.push({
+                    altLineId: game_lines[i + line_count].id,
                     points: Number(game_lines[i + line_count].handicap),
                     over: convertDecimalToAmericanOdds(Number(game_lines[i + line_count].odds)),
                     under: convertDecimalToAmericanOdds(Number(game_lines[i + line_count * 2].odds)),

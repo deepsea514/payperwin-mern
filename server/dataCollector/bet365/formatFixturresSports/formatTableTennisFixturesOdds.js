@@ -21,12 +21,14 @@ function formatTableTennisFixturesOdds(event) {
                 }
             } else if (match_lines[i].name == "Handicap") {
                 line.spreads.push({
+                    altLineId: match_lines[i + line_count].id,
                     hdp: -Number(match_lines[i + line_count].handicap),
                     home: convertDecimalToAmericanOdds(Number(match_lines[i + line_count].odds)),
                     away: convertDecimalToAmericanOdds(Number(match_lines[i + line_count * 2].odds)),
                 })
             } else if (match_lines[i].name == "Total") {
                 line.totals.push({
+                    altLineId: match_lines[i + line_count].id,
                     points: Number(match_lines[i + line_count].handicap),
                     over: convertDecimalToAmericanOdds(Number(match_lines[i + line_count].odds)),
                     under: convertDecimalToAmericanOdds(Number(match_lines[i + line_count * 2].odds)),
