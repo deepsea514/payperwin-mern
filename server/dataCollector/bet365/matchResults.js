@@ -3,12 +3,13 @@ const BetPool = require('../../models/betpool');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
-const ApiCache = require('../../models/apiCache');
+const Preference = require('../../models/preference');
 const Addon = require('../../models/addon');
 //Local helpers
 const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
+const sendSMS = require('../../libs/sendSMS');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
