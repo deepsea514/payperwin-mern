@@ -1422,3 +1422,45 @@ button.loginButton span {
 .coming-soon h2 {
     color: white;
 }
+
+.leagues-list li {
+    padding: 5px 20px;
+    position: relative;
+    background-color: white;
+    border-bottom: #ccc solid 1px;
+    cursor: pointer;
+}
+
+.leagues-list li a {
+    font-size: 12px;
+    color: #72777f;
+    text-decoration: none;
+    display: block;
+}
+
+.leagues-list li a span {
+    float: right;
+}
+
+.leagues-list li.active, .leagues-list li:hover {
+    background: #DDD;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.leagues-list li:last-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.leagues-list li.league-list-letter {
+    font-size: 12px;
+    color: white;
+    cursor: initial;
+    background-color: #273043;
+}
+
+.leagues-list li.league-list-letter:hover {
+    background-color: #273043;
+}

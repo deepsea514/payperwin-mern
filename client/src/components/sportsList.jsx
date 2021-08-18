@@ -59,7 +59,7 @@ class SportsList extends PureComponent {
                 'Content-Type': 'application/json',
             },
         }).then(({ data }) => {
-            this.setState({ leaguesData: { name, leagues: data } });
+            this.setState({ leaguesData: { name, leagues: data.slice(0, 6) } });
         });
 
     }
@@ -130,7 +130,7 @@ class SportsList extends PureComponent {
                                                 ))}
                                                 <li className="pl-5">
                                                     <Link
-                                                        to={{ pathname: `/sport/${name}` }}
+                                                        to={{ pathname: `/sport/${name}/league` }}
                                                     >
                                                         <span style={sportNameSpanStyle}>{this.ellipsisTitle('All Leagues')}</span>
                                                     </Link>

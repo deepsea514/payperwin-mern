@@ -56,6 +56,8 @@ import SportLeague from "../pages/sportleague";
 import Cashback from "../pages/cashback";
 import CashbackNames from "../components/cashbackNames";
 import SportName from "../pages/sportName";
+import CustomBets from '../pages/custombets';
+import SportsLeagues from '../pages/sportleagues';
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -66,7 +68,6 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
-import CustomBets from '../pages/custombets';
 
 class App extends PureComponent {
     constructor(props) {
@@ -316,6 +317,15 @@ class App extends PureComponent {
                                                                 removeBet={this.removeBet} sportName={name}
                                                                 league={league}
                                                             />
+                                                        </React.Fragment>
+                                                    );
+                                                }} />
+                                                <Route path="/sport/:name/league" render={(props) => {
+                                                    const { match } = props;
+                                                    const name = resObjPath(match, 'params.name');
+                                                    return (
+                                                        <React.Fragment>
+                                                            <SportsLeagues sportName={name} />
                                                         </React.Fragment>
                                                     );
                                                 }} />
