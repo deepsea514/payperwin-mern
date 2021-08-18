@@ -9,8 +9,9 @@ function calculateNewOdds(home, away, pick) {
         if (Math.abs(away) > Math.abs(home)) bigHome = -1;
         else bigHome = 1;
     }
-    let newHome = home + moneylineDifference * bigHome;
-    let newAway = away + moneylineDifference * bigHome;
+    let newHome = Number((home + moneylineDifference * bigHome).toFixed(2));
+    let newAway = Number((away + moneylineDifference * bigHome).toFixed(2));
+
     if (newHome < home) {
         newHome = 0;
         newAway = 0;
