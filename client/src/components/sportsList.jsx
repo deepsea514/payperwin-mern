@@ -103,7 +103,7 @@ class SportsList extends PureComponent {
                                     showleagues ?
                                         <li key={name} className="sports-dropdown">
                                             <div
-                                                onClick={() => { history.push(`/sport/${name}`) }}
+                                                onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name}`) }}
                                                 style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                             >
                                                 <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
