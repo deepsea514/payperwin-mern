@@ -1,0 +1,46 @@
+[
+    {
+        "value": "1_1",
+        "name": "1X2"
+    },
+    {
+        "value": "1_2",
+        "name": "Asian Handicap"
+    },
+    {
+        "value": "1_3",
+        "name": "O/U, Goal Line"
+    },
+    {
+        "value": "1_4",
+        "name": "Asian Corners"
+    },
+    {
+        "value": "1_5",
+        "name": "1st Half Asian Handicap"
+    },
+    {
+        "value": "1_6",
+        "name": "1st Half Goal Line"
+    },
+    {
+        "value": "1_7",
+        "name": "1st Half Asian Corners"
+    },
+    {
+        "value": "1_8",
+        "name": "Half Time Result"
+    },
+    {
+        "value": "18_1",
+        "name": "Money Line"
+    },
+    {
+        "value": "18_2",
+        "name": "Spread"
+    },
+    {
+        "value": "18_3",
+        "name": "Total Points"
+    }
+]

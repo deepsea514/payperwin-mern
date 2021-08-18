@@ -45,7 +45,7 @@ async function getSportLines(sportName, call) {
                     eventSportData = [...eventSportData, ...eventsData.events];
                 }
             }
-            const sport = await Sport.findOne({ originSportId: id });
+            const sport = await Sport.findOne({ originSportId: id, origin: 'rundown' });
             const existingEvents = sport ? sport.leagues[0].events : [];
 
             const formattedSportData = formatFixturesOdds(eventSportData, sportData, existingEvents);

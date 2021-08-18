@@ -99,7 +99,7 @@ class Sport extends PureComponent {
                             }
                         });
                     });
-                    this.setState({ data })
+                    this.setState({ data });
                 }
             }).catch((err) => {
                 this.setState({ error: err });
@@ -192,7 +192,7 @@ class Sport extends PureComponent {
 
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
-                            if (!moneyline || !spreads || !totals)
+                            if (!moneyline)
                                 return null;
 
                             return (
