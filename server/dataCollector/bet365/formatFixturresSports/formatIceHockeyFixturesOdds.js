@@ -25,6 +25,7 @@ function formatIceHockeyFixturesOdds(event) {
             for (let i = 0; i < count; i++) {
                 if (game_lines[i].name == 'Line') {
                     line.spreads.push({
+                        altLineId: game_lines[i + count].id,
                         hdp: -Number(game_lines[i + count].handicap),
                         home: convertDecimalToAmericanOdds(Number(game_lines[i + count].odds)),
                         away: convertDecimalToAmericanOdds(Number(game_lines[i + count * 2].odds)),
@@ -32,6 +33,7 @@ function formatIceHockeyFixturesOdds(event) {
                 }
                 if (game_lines[i].name == 'Total') {
                     line.totals.push({
+                        altLineId: game_lines[i + count].id,
                         points: Number(game_lines[i + count].handicap),
                         over: convertDecimalToAmericanOdds(Number(game_lines[i + count].odds)),
                         under: convertDecimalToAmericanOdds(Number(game_lines[i + count * 2].odds)),

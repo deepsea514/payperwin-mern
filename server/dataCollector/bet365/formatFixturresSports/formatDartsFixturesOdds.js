@@ -20,6 +20,7 @@ function formatDartsFixturesOdds(event) {
             const handicap_count = match_handicap.length / 2;
             for (let i = 0; i < handicap_count; i++)
                 line.spreads.push({
+                    altLineId: match_handicap[i].id,
                     hdp: -Number(match_handicap[i].name),
                     home: convertDecimalToAmericanOdds(Number(match_handicap[i].odds)),
                     away: convertDecimalToAmericanOdds(Number(match_handicap[i + handicap_count].odds)),
@@ -31,6 +32,7 @@ function formatDartsFixturesOdds(event) {
             const total_count = total_180s.length / 3;
             for (let i = 0; i < total_count; i++)
                 line.totals.push({
+                    altLineId: total_180s[i].id,
                     points: Number(total_180s[i].name),
                     over: convertDecimalToAmericanOdds(Number(total_180s[i + total_count].odds)),
                     under: convertDecimalToAmericanOdds(Number(total_180s[i + 2 * total_count].odds)),

@@ -21,12 +21,14 @@ function formatRugbyLeagueFixturesOdds(event) {
                 }
             } else if (game_betting_2_way[i].name == "Handicap") {
                 line.spreads.push({
+                    altLineId: game_betting_2_way[i + line_count].id,
                     hdp: -Number(game_betting_2_way[i + line_count].handicap),
                     home: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count].odds)),
                     away: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count * 2].odds)),
                 })
             } else if (game_betting_2_way[i].name == "Total") {
                 line.totals.push({
+                    altLineId: game_betting_2_way[i + line_count].id,
                     points: Number(game_betting_2_way[i + line_count].handicap),
                     over: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count].odds)),
                     under: convertDecimalToAmericanOdds(Number(game_betting_2_way[i + line_count * 2].odds)),

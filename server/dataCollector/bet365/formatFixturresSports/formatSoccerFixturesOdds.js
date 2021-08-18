@@ -20,9 +20,10 @@ function formatSoccerFixturesOdds(event) {
             let handicap_count = alternative_handicap_result.length / 3;
             for (let i = 0; i < handicap_count; i++) {
                 line.spreads.push({
-                    hdp: -Number(alternative_handicap_result[i * 3 + handicap_count].opp),
-                    home: convertDecimalToAmericanOdds(Number(alternative_handicap_result[i * 3 + handicap_count].odds)),
-                    away: convertDecimalToAmericanOdds(Number(alternative_handicap_result[i * 3 + 2 + handicap_count].odds)),
+                    altLineId: alternative_handicap_result[i * 3].id,
+                    hdp: -Number(alternative_handicap_result[i * 3].opp),
+                    home: convertDecimalToAmericanOdds(Number(alternative_handicap_result[i * 3].odds)),
+                    away: convertDecimalToAmericanOdds(Number(alternative_handicap_result[i * 3 + 2].odds)),
                 })
             }
         }
@@ -31,9 +32,10 @@ function formatSoccerFixturesOdds(event) {
 
             for (let i = 0; i < total_count; i++) {
                 line.totals.push({
+                    altLineId: alternative_total_goals[i + total_count].id,
                     points: Number(alternative_total_goals[i].name),
                     over: convertDecimalToAmericanOdds(Number(alternative_total_goals[i + total_count].odds)),
-                    under: convertDecimalToAmericanOdds(Number(alternative_total_goals[i + total_count * 2].odds)),
+                    under: convertDecimalToAmericanOdds(Number(alternative_total_goals[i + 2 * total_count].odds)),
                 })
             }
         }

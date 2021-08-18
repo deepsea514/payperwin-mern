@@ -19,6 +19,7 @@ function formatTennisFixturesOdds(event) {
             const handicap_count = match_handicap.length / 2;
             for (let i = 0; i < handicap_count; i++)
                 line.spreads.push({
+                    altLineId: match_handicap[i].id,
                     hdp: -Number(match_handicap[i].name),
                     home: convertDecimalToAmericanOdds(Number(match_handicap[i].odds)),
                     away: convertDecimalToAmericanOdds(Number(match_handicap[i + handicap_count].odds)),
@@ -30,11 +31,11 @@ function formatTennisFixturesOdds(event) {
             const total_count = match_result_and_total_games.length / 2 - 1;
             for (let i = 0; i < total_count; i++)
                 line.totals.push({
+                    altLineId: match_result_and_total_games[i + 2].id,
                     points: Number(match_result_and_total_games[i + 2].handicap),
                     over: convertDecimalToAmericanOdds(Number(match_result_and_total_games[i + 2].odds)),
                     under: convertDecimalToAmericanOdds(Number(match_result_and_total_games[i + 2 + total_count].odds)),
                 })
-
         }
     }
 
