@@ -18,10 +18,11 @@ class SportsLeagues extends PureComponent {
             error: null,
             leagues: [],
             letters: [
+                '[0-9]',
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                'Y', 'Z'
+                'Y', 'Z',
             ],
         };
         this._isMounted = false;
@@ -83,11 +84,14 @@ class SportsLeagues extends PureComponent {
                         </ul>}
                         <br />
                         {letters.map(letter => {
-                            const filteredLeagues = leagues.filter(league => league.name.startsWith(letter));
+                            const filteredLeagues = leagues.filter(league => {
+                                const searchPattern = new RegExp('^' + letter, 'i');
+                                return searchPattern.test(league.name);
+                            });
                             if (!filteredLeagues.length) return null;
                             return (
                                 <ul className="leagues-list" key={letter}>
-                                    <li className="league-list-letter">{letter}</li>
+                                    <li className="league-list-letter">{letter == '[0-9]' ? '#' : letter}</li>
                                     {filteredLeagues.map(league => (
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
