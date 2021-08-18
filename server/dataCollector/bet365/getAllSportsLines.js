@@ -6,6 +6,7 @@ const Addon = require("../../models/addon");
 const config = require('../../../config.json');
 const sportsData = require('./sports.json');
 const formatFixturesOdds = require('./formatFixturesOdds');
+const matchResults = require('./matchResults');
 //external libraries
 const mongoose = require('mongoose');
 const axios = require('axios');
@@ -28,16 +29,20 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 }).then(async () => {
     console.info('Using database:', databaseName);
 
-    const lineInterval = 1000 * 60 * 10;
-    getAllSportsLines();
-    setInterval(getAllSportsLines, lineInterval);
-
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
         console.warn('Send Grid Key is not set');
         return;
     }
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
+
+    const lineInterval = 1000 * 60 * 10;
+    getAllSportsLines();
+    setInterval(getAllSportsLines, lineInterval);
+
+    const resultInterval = 6 * 60 * 60 * 1000;
+    matchResults();
+    setInterval(matchResults, resultInterval);
 });
 
 Date.prototype.addHours = function (h) {
