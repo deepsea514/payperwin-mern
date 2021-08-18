@@ -1890,7 +1890,7 @@ expressApp.get(
             })
             data = data.filter(data => data.eventCount)
             data.sort((a, b) => b.eventCount - a.eventCount);
-            data = data.slice(0, 5);
+            // data = data.slice(0, 5);
             res.json(data);
         } else {
             res.json([]);

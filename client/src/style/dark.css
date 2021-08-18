@@ -255,6 +255,23 @@
     outline: none;
 }
 
+.main-section.dark .leagues-list li {
+    background-color: #082242;
+    color: white;
+}
+
+.main-section.dark .leagues-list li a {
+    color: white;
+}
+
+.main-section.dark .leagues-list li.active, .main-section.dark .leagues-list li:hover {
+    background-color: #182f49;
+}
+
+.main-section.dark .leagues-list li.league-list-letter, .main-section.dark .leagues-list li.league-list-letter:hover {
+    background-color: #1e3857;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {
