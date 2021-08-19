@@ -13,8 +13,8 @@ function formatIceHockeyFixturesOdds(event) {
     if (schedule) {
         const moneyline = schedule.sp.main;
         line.moneyline = {
-            home: convertDecimalToAmericanOdds(Number(moneyline[0].odds)),
-            away: convertDecimalToAmericanOdds(Number(moneyline[1].odds))
+            home: convertDecimalToAmericanOdds(parseInt(moneyline[0].odds)),
+            away: convertDecimalToAmericanOdds(parseInt(moneyline[1].odds))
         };
     }
 
@@ -27,22 +27,22 @@ function formatIceHockeyFixturesOdds(event) {
                     line.spreads.push({
                         altLineId: game_lines[i + count].id,
                         hdp: -Number(game_lines[i + count].handicap),
-                        home: convertDecimalToAmericanOdds(Number(game_lines[i + count].odds)),
-                        away: convertDecimalToAmericanOdds(Number(game_lines[i + count * 2].odds)),
+                        home: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
+                        away: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds)),
                     });
                 }
                 if (game_lines[i].name == 'Total') {
                     line.totals.push({
                         altLineId: game_lines[i + count].id,
                         points: Number(game_lines[i + count].handicap),
-                        over: convertDecimalToAmericanOdds(Number(game_lines[i + count].odds)),
-                        under: convertDecimalToAmericanOdds(Number(game_lines[i + count * 2].odds)),
+                        over: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
+                        under: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds)),
                     })
                 }
                 if (game_lines[i].name == 'Money Line' && line.moneyline == null) {
                     line.moneyline = {
-                        home: convertDecimalToAmericanOdds(Number(game_lines[i + count].odds)),
-                        away: convertDecimalToAmericanOdds(Number(game_lines[i + count * 2].odds))
+                        home: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
+                        away: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds))
                     };
                 }
             }
