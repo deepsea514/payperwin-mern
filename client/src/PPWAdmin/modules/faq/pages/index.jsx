@@ -6,7 +6,7 @@ import FAQItems from "./FAQItems";
 export default class FAQModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/faq">
+            <BrowserRouter basename="/RP1021/faq">
                 <Switch>
                     <Route path="/:id/items" component={FAQItems} />
                     <Route path="/" component={FAQ} />

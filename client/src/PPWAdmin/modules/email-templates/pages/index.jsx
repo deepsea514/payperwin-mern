@@ -7,7 +7,7 @@ import CreateEmailTemplate from "./CreateEmailTemplate";
 export default class EmailTemplatesModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/email-templates">
+            <BrowserRouter basename="/RP1021/email-templates">
                 <Switch>
                     <Route path="/edit/:title" component={EditEmailTemplate} />
                     <Route path="/create" component={CreateEmailTemplate} />

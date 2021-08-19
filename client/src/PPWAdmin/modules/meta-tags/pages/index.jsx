@@ -6,7 +6,7 @@ import EditMetaTags from "./EditMetaTags";
 export default class MetaTagsModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/meta-tags">
+            <BrowserRouter basename="/RP1021/meta-tags">
                 <Switch>
                     <Route path="/edit/:title" component={EditMetaTags} />
                     <Route exact path="/" component={MetaTags} />

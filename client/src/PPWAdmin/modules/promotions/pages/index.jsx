@@ -6,7 +6,7 @@ import PromotionDetail from "./PromotionDetail";
 export default class PromotionModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/promotions">
+            <BrowserRouter basename="/RP1021/promotions">
                 <Switch>
                     <Route path="/:id/detail" component={PromotionDetail} />
                     <Route exact path="/" component={Promotions} />

@@ -7,7 +7,7 @@ import EditAdmin from './EditAdmin';
 export default class AdminModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/admin">
+            <BrowserRouter basename="/RP1021/admin">
                 <Switch>
                     <Route path="/create" component={CreateAdmin} />
                     <Route path="/edit/:id" component={EditAdmin} />
