@@ -97,7 +97,7 @@ class App extends Component {
                     {this.isAvailable('admins') && <Route path="/admin" component={AdminModule} />}
 
                     {/* customers */}
-                    {this.isAvailable('customers') && <Route path="/customers" component={CustomerModule} />}
+                    {this.isAvailable('users') && <Route path="/users" component={CustomerModule} />}
 
                     {/* bet activities */}
                     {this.isAvailable('bet_activities') && <Route path="/bet-activities" component={BetActivityModule} />}
@@ -109,7 +109,7 @@ class App extends Component {
                     {this.isAvailable('deposit_logs') && <Route path="/deposit-log" component={DepositLogModule} />}
 
                     {/* events */}
-                    {this.isAvailable('events') && <Route path="/events" component={EventModule} />}
+                    {this.isAvailable('custom-events') && <Route path="/custom-events" component={EventModule} />}
 
                     {/* autobet */}
                     {this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
@@ -124,7 +124,7 @@ class App extends Component {
                     {this.isAvailable('kyc') && <Route path="/kyc" component={KYC} />}
 
                     {/* Support Ticket Module */}
-                    {this.isAvailable('tickets') && <Route path="/tickets" component={TicketsModule} />}
+                    {this.isAvailable('support-tickets') && <Route path="/support-tickets" component={TicketsModule} />}
 
                     {/* Support FAQ Module */}
                     {this.isAvailable('faq') && <Route path="/faq" component={FAQModule} />}
@@ -133,10 +133,10 @@ class App extends Component {
                     {this.isAvailable('messages') && <Route path="/message-center" component={MessageCenterModule} />}
 
                     {/* meta tags */}
-                    {this.isAvailable('meta_tags') && <Route path="/meta-tags" component={MetaTagsModule} />}
+                    {this.isAvailable('page-metas') && <Route path="/page-metas" component={MetaTagsModule} />}
 
                     {/* Addons */}
-                    {this.isAvailable('addons') && <Route path="/addons" component={Addons} />}
+                    {this.isAvailable('api-settings') && <Route path="/api-settings" component={Addons} />}
 
                     {/* Reports */}
                     {this.isAvailable('reports') && <Route path="/reports" component={ReportsModule} />}

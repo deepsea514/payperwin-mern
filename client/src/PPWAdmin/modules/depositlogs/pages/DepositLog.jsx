@@ -78,7 +78,7 @@ class DepositLog extends React.Component {
                 <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{log.amount}</td>
-                    <td>{log.user ? <a style={{ cursor: 'pointer' }} className="text-primary" onClick={() => topHistory.push(`/customers/${log.user._id}/profile/overview`)}>{log.user.email}</a> : null}</td>
+                    <td>{log.user ? <a style={{ cursor: 'pointer' }} className="text-primary" onClick={() => topHistory.push(`/users/${log.user._id}/profile/overview`)}>{log.user.email}</a> : null}</td>
                     <td>{log.method}</td>
                     <td>{this.getFinancialStatus(log.status)}</td>
                     <td>{log.reason ? log.reason.title : null}</td>

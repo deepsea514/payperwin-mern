@@ -63,17 +63,109 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('admins') && <li
-                    className={`menu-item ${getMenuItemActive("/admin", false)}`}
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/reports",
+                        true
+                    )}`}
                     aria-haspopup="true"
+                    data-menu-toggle="hover"
                 >
-                    <Link className="menu-link" to="/admin/">
+                    <NavLink className="menu-link menu-toggle border-0" to="/reports">
                         <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Files/User-folder.svg"} />
+                            <SVG src={"/media/svg/icons/General/Settings-2.svg"} />
                         </span>
-                        <span className="menu-text">Admins</span>
-                    </Link>
-                </li>}
+                        <span className="menu-text">Settings</span>
+                        <i className="menu-arrow" />
+                    </NavLink>
+                    <div className="menu-submenu">
+                        <ul className="menu-subnav">
+                            {currentUser && isAvailable('admins') && <li
+                                className={`menu-item ${getMenuItemActive("/admin", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/admin">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Files/User-folder.svg"} />
+                                    </span>
+                                    <span className="menu-text">Admins</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('api-settings') && <li
+                                className={`menu-item ${getMenuItemActive("/api-settings", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/api-settings/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Code/Puzzle.svg"} />
+                                    </span>
+                                    <span className="menu-text">API Settings</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('frontend') && <li
+                                className={`menu-item ${getMenuItemActive("/frontend", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/frontend/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Devices/Display3.svg"} />
+                                    </span>
+                                    <span className="menu-text">Frontend Management</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('email_templates') && <li
+                                className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/email-templates/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Communication/Mail-opened.svg"} />
+                                    </span>
+                                    <span className="menu-text">Email Templates</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('page-metas') && <li
+                                className={`menu-item ${getMenuItemActive("/page-metas", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/page-metas/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/General/Search.svg"} />
+                                    </span>
+                                    <span className="menu-text">Page Metas</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('faq') && <li
+                                className={`menu-item ${getMenuItemActive("/faq", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/faq/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Code/Question-circle.svg"} />
+                                    </span>
+                                    <span className="menu-text">FAQ</span>
+                                </NavLink>
+                            </li>}
+
+                            {currentUser && isAvailable('articles') && <li
+                                className={`menu-item ${getMenuItemActive("/articles", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/articles/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Code/Option.svg"} />
+                                    </span>
+                                    <span className="menu-text">Articles</span>
+                                </NavLink>
+                            </li>}
+                        </ul>
+                    </div>
+                </li>
 
                 {currentUser && isAvailable('kyc') && <li
                     className={`menu-item ${getMenuItemActive("/kyc", false)}`}
@@ -88,15 +180,15 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('customers') && <li
-                    className={`menu-item ${getMenuItemActive("/customers", false)}`}
+                {currentUser && isAvailable('users') && <li
+                    className={`menu-item ${getMenuItemActive("/users", false)}`}
                     aria-haspopup="true"
                 >
-                    <Link className="menu-link" to="/customers/">
+                    <Link className="menu-link" to="/users/">
                         <span className="svg-icon menu-icon">
                             <SVG src={"/media/svg/icons/General/User.svg"} />
                         </span>
-                        <span className="menu-text">Customers</span>
+                        <span className="menu-text">Users</span>
                     </Link>
                 </li>}
 
@@ -109,18 +201,6 @@ function AsideMenuList({
                             <SVG src={"/media/svg/icons/Communication/Mail-box.svg"} />
                         </span>
                         <span className="menu-text">Messages</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('addons') && <li
-                    className={`menu-item ${getMenuItemActive("/addons", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/addons/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Code/Puzzle.svg"} />
-                        </span>
-                        <span className="menu-text">Addons</span>
                     </Link>
                 </li>}
 
@@ -186,51 +266,15 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('events') && <li
-                    className={`menu-item ${getMenuItemActive("/events", false)}`}
+                {currentUser && isAvailable('custom-events') && <li
+                    className={`menu-item ${getMenuItemActive("/custom-events", false)}`}
                     aria-haspopup="true"
                 >
-                    <Link className="menu-link" to="/events/">
+                    <Link className="menu-link" to="/custom-events/">
                         <span className="svg-icon menu-icon">
                             <SVG src={"/media/svg/icons/General/Thunder-move.svg"} />
                         </span>
-                        <span className="menu-text">Events</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('frontend') && <li
-                    className={`menu-item ${getMenuItemActive("/frontend", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/frontend/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Devices/Display3.svg"} />
-                        </span>
-                        <span className="menu-text">Frontend Management</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('email_templates') && <li
-                    className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/email-templates/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Communication/Mail-opened.svg"} />
-                        </span>
-                        <span className="menu-text">Email Templates</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('meta_tags') && <li
-                    className={`menu-item ${getMenuItemActive("/meta-tags", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/meta-tags/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/General/Search.svg"} />
-                        </span>
-                        <span className="menu-text">Meta Tags</span>
+                        <span className="menu-text">Custom Events</span>
                     </Link>
                 </li>}
 
@@ -246,39 +290,15 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('tickets') && <li
-                    className={`menu-item ${getMenuItemActive("/tickets", false)}`}
+                {currentUser && isAvailable('support-tickets') && <li
+                    className={`menu-item ${getMenuItemActive("/support-tickets", false)}`}
                     aria-haspopup="true"
                 >
-                    <Link className="menu-link" to="/tickets/">
+                    <Link className="menu-link" to="/support-tickets/">
                         <span className="svg-icon menu-icon">
                             <SVG src={"/media/svg/icons/General/Bookmark.svg"} />
                         </span>
-                        <span className="menu-text">Tickets</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('faq') && <li
-                    className={`menu-item ${getMenuItemActive("/faq", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/faq/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Code/Question-circle.svg"} />
-                        </span>
-                        <span className="menu-text">FAQ</span>
-                    </Link>
-                </li>}
-
-                {currentUser && isAvailable('articles') && <li
-                    className={`menu-item ${getMenuItemActive("/articles", false)}`}
-                    aria-haspopup="true"
-                >
-                    <Link className="menu-link" to="/articles/">
-                        <span className="svg-icon menu-icon">
-                            <SVG src={"/media/svg/icons/Code/Option.svg"} />
-                        </span>
-                        <span className="menu-text">Articles</span>
+                        <span className="menu-text">Support Tickets</span>
                     </Link>
                 </li>}
 
@@ -295,15 +315,11 @@ function AsideMenuList({
                             <SVG src={"/media/svg/icons/Design/Pencil.svg"} />
                         </span>
                         <span className="menu-text">Reports</span>
+                        <i className="menu-arrow" />
                     </NavLink>
                     <div className="menu-submenu">
                         <i className="menu-arrow" />
                         <ul className="menu-subnav">
-                            <li className="menu-item menu-item-parent" aria-haspopup="true">
-                                <span className="menu-link">
-                                    <span className="menu-text">Reports</span>
-                                </span>
-                            </li>
                             <li
                                 className={`menu-item ${getMenuItemActive(
                                     "/reports/wager"

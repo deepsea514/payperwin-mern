@@ -8,7 +8,7 @@ import CUstomerProfile from "./CustomerProfile";
 export default class CustomerModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/RP1021/customers">
+            <BrowserRouter basename="/RP1021/users">
                 <Switch>
                     <Route exact path="/" component={Customers} />
                     {/* <Route path="/:id/edit" component={CustomerEdit} /> */}
