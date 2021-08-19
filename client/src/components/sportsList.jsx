@@ -9,6 +9,7 @@ import '../style/all.min.css';
 
 const sportNameSpanStyle = {
     float: 'initial',
+    textOverflow: 'no-wrap'
 };
 
 class SportsList extends PureComponent {
@@ -17,7 +18,7 @@ class SportsList extends PureComponent {
         this.state = {
             sports: null,
             error: null,
-            leaguesData: null,
+            leaguesData: [],
         };
         this._isMounted = false;
     }
@@ -50,7 +51,8 @@ class SportsList extends PureComponent {
 
     getLeagues = (evt, name) => {
         evt.stopPropagation();
-        this.setState({ leaguesData: { name, leagues: [] } });
+        const { leaguesData } = this.state;
+        const newLeaguesData = leaguesData.filter(league => league.name != name);
         const url = `${serverUrl}/sportleague?name=${name}`;
         axios({
             method: 'get',
@@ -59,18 +61,22 @@ class SportsList extends PureComponent {
                 'Content-Type': 'application/json',
             },
         }).then(({ data }) => {
-            this.setState({ leaguesData: { name, leagues: data.slice(0, 6) } });
+            newLeaguesData.push({ name, leagues: data.slice(0, 6) })
+            this.setState({ leaguesData: newLeaguesData });
         });
 
     }
 
-    removeLeagues = (evt) => {
+    removeLeagues = (evt, name) => {
         evt.stopPropagation();
         this.setState({ leaguesData: null });
+        const { leaguesData } = this.state;
+        const newLeaguesData = leaguesData.filter(league => league.name != name);
+        this.setState({ leaguesData: newLeaguesData });
     }
 
     ellipsisTitle = (name) => {
-        return (name.length > 15) ? name.substr(0, 10 - 1) + '...' : name;
+        return (name.length > 18) ? name.substr(0, 18 - 1) + '...' : name;
     }
 
     render() {
@@ -80,81 +86,84 @@ class SportsList extends PureComponent {
             return null;
         }
         return (
-            <ul className="left-cat top-cls-sport">
-                {
-                    sports.sort((a, b) => b.eventCount - a.eventCount).map(sport => {
-                        const { name, eventCount } = sport;
-                        const hasEvents = eventCount > 0;
-                        return hasEvents || showNoEvents ? (
-                            name == "Other" ?
-                                (
-                                    <li key={name}>
-                                        <Link
-                                            to={{ pathname: `/others` }}
+            <ul className="sport-list sport-desktop-list sport-list-compact">
+                {sports.sort((a, b) => b.eventCount - a.eventCount).map(sport => {
+                    const { name, eventCount } = sport;
+                    const hasEvents = eventCount > 0;
+                    return hasEvents || showNoEvents ? (
+                        name == "Other" ?
+                            (
+                                <li className="sport-list-item sport-sublist-item" key={name}>
+                                    <Link
+                                        to={{ pathname: `/others` }}
+                                        className="sport-list-compact"
+                                        style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
+                                    >
+                                        <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                        <label><span><span>{name}</span></span></label>
+                                        <span className="sport-list-count">{eventCount}</span>
+                                    </Link>
+                                </li>
+                            )
+                            : (
+                                showleagues ? (
+                                    <li className="sport-list-item sport-sublist-item" key={name}>
+                                        <a
+                                            onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name}`) }}
                                             style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
+                                            className="sport-list-compact"
                                         >
-                                            <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                            <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>
-                                            <span>{eventCount}</span>
-                                        </Link>
-                                    </li >
-                                ) :
-                                (
-                                    showleagues ?
-                                        <li key={name} className="sports-dropdown">
-                                            <div
-                                                onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name}`) }}
-                                                style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                            >
-                                                <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                                <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>
-                                                <span>{eventCount}</span>
-                                                {(!leaguesData || leaguesData.name != name) && <span onClick={(evt) => this.getLeagues(evt, name)}>
-                                                    <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-down mr-0 pl-2"></i>
-                                                </span>}
-                                                {(leaguesData && leaguesData.name == name) && <span onClick={(evt) => this.removeLeagues(evt)}>
-                                                    <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-up mr-0 pl-2"></i>
-                                                </span>}
-                                            </div>
-                                            {(leaguesData && leaguesData.name == name) && <ul className="top-cls-sport">
-                                                {leaguesData.leagues.map(league => (
-                                                    <li key={league.name} className="pl-5">
-                                                        <Link
-                                                            to={{ pathname: `/sport/${name}/league/${league.originId}` }}
-                                                            style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                                        >
-                                                            <span style={sportNameSpanStyle}>{this.ellipsisTitle(league.name)}</span>
-                                                            <span>{league.eventCount}</span>
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                                <li className="pl-5">
+                                            <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                            <label><span><span>{name}</span></span></label>
+                                            <span className="sport-list-count">{eventCount}</span>
+                                            {(leaguesData.length == 0 || !leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.getLeagues(evt, name)}>
+                                                <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-down mr-0 pl-2"></i>
+                                            </span>}
+                                            {(leaguesData.length != 0 && leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.removeLeagues(evt, name)}>
+                                                <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-up mr-0 pl-2"></i>
+                                            </span>}
+                                        </a>
+                                        {(leaguesData && leaguesData.find(league => league.name == name)) && <ul className="sport-league-list sport-list-compact">
+                                            {leaguesData.find(league => league.name == name).leagues.map(league => (
+                                                <li key={league.name} className="sport-list-item sport-league-item sport-hide-league">
                                                     <Link
-                                                        to={{ pathname: `/sport/${name}/league` }}
+                                                        className="sport-list-compact"
+                                                        to={{ pathname: `/sport/${name}/league/${league.originId}` }}
+                                                        style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                                     >
-                                                        <span style={sportNameSpanStyle}>{this.ellipsisTitle('All Leagues')}</span>
+                                                        <label><span>{league.name}</span></label>
+                                                        <span className="sport-list-count">{league.eventCount}</span>
                                                     </Link>
                                                 </li>
-                                            </ul>}
-                                        </li>
-                                        :
-                                        <li key={name}>
-                                            <Link
-                                                to={{ pathname: `/sport/${name}` }}
-                                                style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                            >
-                                                <img src={sportNameImage(name)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                                <span style={sportNameSpanStyle}>{this.ellipsisTitle(name)}</span>
-                                                <span>{eventCount}</span>
-                                            </Link>
-                                        </li>
+                                            ))}
+                                            <li className="sport-list-item sport-league-item">
+                                                <Link
+                                                    className="sport-list-compact"
+                                                    to={{ pathname: `/sport/${name}/league` }}
+                                                >
+                                                    <label><span>All Leagues</span></label>
+                                                </Link>
+                                            </li>
+                                        </ul>}
+                                    </li>
+                                ) : (
+                                    <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
+                                        <a
+                                            onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name}`) }}
+                                            style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
+                                            className="sport-list-compact"
+                                        >
+                                            <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                            <label><span><span>{name}</span></span></label>
+                                            <span className="sport-list-count">{eventCount}</span>
+                                        </a>
+                                    </li>
                                 )
-                        ) : null;
-                    }
-                    )
-                }
-            </ul >
-        );
+                            )
+                    ) : null
+                })}
+            </ul>
+        )
     }
 }
 

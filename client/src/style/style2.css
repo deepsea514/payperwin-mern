@@ -106,7 +106,6 @@ header form {
 }
 
 .left-cat li i {
-    /* font-family: 'Font Awesome 5 Free'; */
     font-weight: 900;
     left: 0;
     top: 6px;
@@ -515,6 +514,126 @@ footer ul li a i {
 
 .left-cat>li.sports-dropdown div:hover span:nth-child(4) {
     display: initial;
+}
+
+.sport-desktop-list {
+    border-top: 1px solid #ccc;
+    margin-bottom: 30px;
+    padding-top: 10px;
+}
+
+.sport-list.sport-list-compact .sport-list-item {
+    font-size: 12px;
+}
+
+.sport-desktop-list li {
+    margin: 2px 0;
+    border-bottom: none;
+    transition: color .25s ease-in-out, background-color 50ms ease-in-out;
+}
+
+.sport-sublist-item {
+    box-shadow: none !important;
+}
+
+.sport-list-item {
+    position: relative;
+}
+
+.sport-list-item a {
+    padding: 4px 0 4px 6px;
+}
+
+.sport-list-item * {
+    cursor: pointer;
+}
+
+.sport-list-item>div, .sport-list-item img {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    transition: all .1s;
+}
+
+.sport-list.sport-list-compact label {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: calc(100% - 10px);
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+}
+
+.sport-list-item label {
+    width: 90%;
+    max-width: calc(100% - 10px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sport-list-count {
+    float: right;
+    color: #808080;
+    font-weight: 300;
+    padding: 0 10px;
+}
+
+.sport-desktop-list li.active>a, .sport-desktop-list li:hover>a {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.sport-desktop-list li.active i, .sport-desktop-list li:hover i {
+    color: #ED254E;
+    text-shadow: 0 0 1px black;
+}
+
+.sport-list-dropdown-league {
+    padding: 0 10px;
+    display: none;
+}
+
+.sport-desktop-list li.active .sport-list-dropdown-league, .sport-desktop-list li:hover .sport-list-dropdown-league {
+    display: block;
+}
+
+.sport-hide-league .sport-list-count {
+    display: block !important;
+}
+
+.sport-desktop-list li.active .sport-list-count, .sport-desktop-list li:hover .sport-list-count {
+    display: none;
+}
+
+.sport-list-item>a {
+    text-align: start;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    vertical-align: middle;
+    transition: none;
+    color: #72777f;
+}
+
+.sport-list-item>a:hover {
+    text-decoration: none;
+}
+
+.sport-league-item label {
+    padding-left: 2rem;
 }
 
 .fabrte {
