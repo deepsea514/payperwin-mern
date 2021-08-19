@@ -55,7 +55,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className="font-weight-bolder d-block font-size-lg">
-                            {bet.userId ? bet.userId.username : null}
+                            {bet.userId ? bet.userId.email : null}
                         </span>
                     </td>
                     <td className="pl-0">
@@ -114,7 +114,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className="font-weight-bolder d-block font-size-lg">
-                            {bet.userId.username}
+                            {bet.userId.email}
                         </span>
                     </td>
                     <td className="pl-0">

@@ -69,7 +69,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">{bet.bet} {bet.userId ? bet.userId.currency : null}</td>
                     <td scope="col">{Number(bet.pickOdds).toFixed(2)}</td>
-                    <td scope="col">{bet.userId ? bet.userId.username : null}</td>
+                    <td scope="col">{bet.userId ? bet.userId.email : null}</td>
                     <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
                     <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                     <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}</td>
@@ -119,7 +119,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">{Number(bet.WagerInfo.ToRisk).toFixed(2)} {bet.userId.currency}</td>
                     <td scope="col">{Number(bet.WagerInfo.Odds).toFixed(2)} ({bet.WagerInfo.OddsFormat == 1 ? 'decimal' : 'american'})</td>
-                    <td scope="col">{bet.userId.username}</td>
+                    <td scope="col">{bet.userId.email}</td>
                     <td scope="col">{bet.WagerInfo.Sport}</td>
                     <td scope="col">{
                         bet.WagerInfo.Legs ?
