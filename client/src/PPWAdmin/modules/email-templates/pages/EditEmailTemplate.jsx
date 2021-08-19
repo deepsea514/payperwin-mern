@@ -38,7 +38,6 @@ class EditEmailTemplates extends React.Component {
             .then(({ data }) => {
                 const { email_template } = data;
                 this.setState({ loading: false, email: email_template });
-                history.push("/");
             })
             .catch(() => {
                 this.setState({ loading: false, email: null });
