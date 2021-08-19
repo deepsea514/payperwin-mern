@@ -85,7 +85,7 @@ async function matchResults() {
                 if (time_status == 3) { //Ended
                     const matchScores = ss.split(',');
                     for (let match = 0; match < matchScores.length; match++) {
-                        const scores = ss.split('-');
+                        const scores = matchScores[match].split('-');
                         if (lineType == 'moneyline') {
                             if (Number(scores[0]) > Number(scores[1]))
                                 matchResult.homeScore++;
@@ -109,7 +109,7 @@ async function matchResults() {
                     time_status == 6) { // Cancelled, Interrupted, Abandoned, Retired, Walkover
                     matchResult.cancellationReason = true;
                 }
-
+                console.log(matchResult);
                 const { homeScore, awayScore, cancellationReason } = matchResult;
                 if (cancellationReason) {
                     matchCancelled = true;
