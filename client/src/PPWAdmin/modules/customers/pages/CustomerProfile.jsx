@@ -50,7 +50,7 @@ class CustomerProfile extends React.Component {
                     {!loading && customer &&
                         <>
                             <div className="d-flex flex-row">
-                                <BrowserRouter basename={`/RP1021/customers/${id}/profile`}>
+                                <BrowserRouter basename={`/RP1021/users/${id}/profile`}>
                                     <ProfileCard customer={customer} history={history}></ProfileCard>
                                     <div className="flex-row-fluid ml-lg-8">
                                         <Switch>

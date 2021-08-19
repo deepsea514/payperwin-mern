@@ -25,7 +25,7 @@ class Addons extends React.Component {
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Addons</h3>
+                                <h3 className="card-label">API Settings</h3>
                             </div>
                         </div>
                         <div className="card-body">
