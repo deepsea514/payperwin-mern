@@ -161,8 +161,8 @@ class Lines extends PureComponent {
                 return Number(1 - 100 / odd).toFixed(2);
             case 'american':
                 if (odd > 0)
-                    return '+' + odd.toFixed(2);
-                return odd.toFixed(2);
+                    return '+' + odd;
+                return odd;
             default:
                 return odd;
         }

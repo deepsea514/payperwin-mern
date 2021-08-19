@@ -69,7 +69,7 @@ class Bet extends PureComponent {
                     return Number(1 + odd / 100).toFixed(2);
                 }
                 else {
-                    return Number(1 - 100 / odd).toFixed(2);
+                    return Number(1 - 100 / odd);
                 }
             case 'american':
             default:

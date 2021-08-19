@@ -83,14 +83,25 @@ async function matchResults() {
                     cancellationReason: false
                 };
                 if (time_status == 3) { //Ended
-                    const scores = ss.split('-');
-                    matchResult.homeScore = Number(scores[0]);
-                    matchResult.awayScore = Number(scores[1]);
+                    const matchScores = ss.split(',');
+                    for (let match = 0; match < matchScores.length; match++) {
+                        const scores = ss.split('-');
+                        if (lineType == 'moneyline') {
+                            if (Number(scores[0]) > Number(scores[1]))
+                                matchResult.homeScore++;
+                            if (Number(scores[1]) > Number(scores[0]))
+                                matchResult.awayScore++;
+                        } else {
+                            matchResult.homeScore += Number(scores[0]);
+                            matchResult.awayScore += Number(scores[1]);
+                        }
+                    }
                 } else if (time_status == 4 ||
                     time_status == 0 ||
                     time_status == 1 ||
                     time_status == 2) { // Postponed, Not Started, InPlay
                     await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
+                    continue;
                 } else if (time_status == 5 ||
                     time_status == 7 ||
                     time_status == 8 ||
