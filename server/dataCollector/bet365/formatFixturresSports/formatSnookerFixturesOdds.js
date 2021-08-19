@@ -10,8 +10,8 @@ function formatSnookerFixturesOdds(event) {
         totals: [],
     }
 
-    line.moneyline.home = convertDecimalToAmericanOdds(parseInt(moneyline[0].odds));
-    line.moneyline.away = convertDecimalToAmericanOdds(parseInt(moneyline[1].odds));
+    line.moneyline.home = parseInt(convertDecimalToAmericanOdds(moneyline[0].odds));
+    line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[1].odds));
 
     if (main && Object.keys(main.sp).length > 0) {
         const match_handicap = main.sp.match_handicap;
@@ -21,8 +21,8 @@ function formatSnookerFixturesOdds(event) {
                 line.spreads.push({
                     altLineId: match_handicap[i].id,
                     hdp: -Number(match_handicap[i].name),
-                    home: convertDecimalToAmericanOdds(parseInt(match_handicap[i].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(match_handicap[i + handicap_count].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(match_handicap[i].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(match_handicap[i + handicap_count].odds)),
                 });
         }
 
@@ -33,8 +33,8 @@ function formatSnookerFixturesOdds(event) {
                 line.totals.push({
                     altLineId: total_frames_2_way[i + total_count].id,
                     points: Number(total_frames_2_way[i].name),
-                    over: convertDecimalToAmericanOdds(parseInt(total_frames_2_way[i + total_count].odds)),
-                    under: convertDecimalToAmericanOdds(parseInt(total_frames_2_way[i + 2 * total_count].odds)),
+                    over: parseInt(convertDecimalToAmericanOdds(total_frames_2_way[i + total_count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(total_frames_2_way[i + 2 * total_count].odds)),
                 });
             console.log(total_frames_2_way);
             console.log(line.totals);

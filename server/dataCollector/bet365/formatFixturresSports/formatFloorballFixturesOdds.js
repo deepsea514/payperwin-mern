@@ -17,20 +17,20 @@ function formatFloorballFixturesOdds(event) {
         for (let i = 0; i < line_count; i++) {
             if (_3_way_betting[i].name == "Money Line") {
                 line.moneyline = {
-                    home: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count * 3].odds))
+                    home: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count * 3].odds))
                 }
             } else if (_3_way_betting[i].name == "Handicap") {
                 line.spreads.push({
                     hdp: -Number(_3_way_betting[i + line_count].handicap),
-                    home: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count * 3].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count * 3].odds)),
                 })
             } else if (_3_way_betting[i].name == "Total") {
                 line.totals.push({
                     points: Number(_3_way_betting[i + line_count].handicap),
-                    over: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count].odds)),
-                    under: convertDecimalToAmericanOdds(parseInt(_3_way_betting[i + line_count * 3].odds)),
+                    over: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count * 3].odds)),
                 })
             }
         }
@@ -38,8 +38,8 @@ function formatFloorballFixturesOdds(event) {
 
     // if (!line.moneyline && schedule) {
     //     line.moneyline = {
-    //         home: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[0].odds)),
-    //         away: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[1].odds))
+    //         home: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[0].odds)),
+    //         away: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[1].odds))
     //     };
     // }
 
