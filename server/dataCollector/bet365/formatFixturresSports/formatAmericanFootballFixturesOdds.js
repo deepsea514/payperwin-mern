@@ -21,22 +21,22 @@ function formatAmericanFootballFixturesOdds(event) {
                 line.spreads.push({
                     altLineId: game_lines[i + count].id,
                     hdp: -Number(game_lines[i + count].handicap),
-                    home: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds)),
                 });
             }
             if (game_lines[i].name == 'Total') {
                 line.totals.push({
                     altLineId: game_lines[i + count].id,
                     points: Number(game_lines[i + count].handicap),
-                    over: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
-                    under: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds)),
+                    over: parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds)),
                 })
             }
             if (game_lines[i].name == 'Money Line') {
                 line.moneyline = {
-                    home: convertDecimalToAmericanOdds(parseInt(game_lines[i + count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(game_lines[i + count * 2].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds)),
                 }
             }
         }
@@ -45,8 +45,8 @@ function formatAmericanFootballFixturesOdds(event) {
     if (!line.moneyline && schedule && schedule.sp.main) {
         const moneyline = schedule.sp.main;
         line.moneyline = {
-            home: convertDecimalToAmericanOdds(parseInt(moneyline[0].odds)),
-            away: convertDecimalToAmericanOdds(parseInt(moneyline[1].odds))
+            home: parseInt(convertDecimalToAmericanOdds(moneyline[0].odds)),
+            away: parseInt(convertDecimalToAmericanOdds(moneyline[1].odds))
         }
     }
 

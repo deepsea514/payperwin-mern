@@ -16,22 +16,22 @@ function formatTableTennisFixturesOdds(event) {
         for (let i = 0; i < line_count; i++) {
             if (match_lines[i].name == "To Win") {
                 line.moneyline = {
-                    home: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count * 2].odds))
+                    home: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count * 2].odds))
                 }
             } else if (match_lines[i].name == "Handicap") {
                 line.spreads.push({
                     altLineId: match_lines[i + line_count].id,
                     hdp: -Number(match_lines[i + line_count].handicap),
-                    home: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count * 2].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count * 2].odds)),
                 })
             } else if (match_lines[i].name == "Total") {
                 line.totals.push({
                     altLineId: match_lines[i + line_count].id,
                     points: Number(match_lines[i + line_count].handicap),
-                    over: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count].odds)),
-                    under: convertDecimalToAmericanOdds(parseInt(match_lines[i + line_count * 2].odds)),
+                    over: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count * 2].odds)),
                 })
             }
         }
@@ -39,8 +39,8 @@ function formatTableTennisFixturesOdds(event) {
 
     if (!line.moneyline && schedule) {
         line.moneyline = {
-            home: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[0].odds)),
-            away: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[1].odds))
+            home: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[0].odds)),
+            away: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[1].odds))
         };
     }
 

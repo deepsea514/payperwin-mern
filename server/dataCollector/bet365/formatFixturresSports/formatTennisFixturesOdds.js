@@ -10,8 +10,8 @@ function formatTennisFixturesOdds(event) {
         totals: [],
     }
 
-    line.moneyline.home = convertDecimalToAmericanOdds(parseInt(moneyline[0].odds));
-    line.moneyline.away = convertDecimalToAmericanOdds(parseInt(moneyline[1].odds));
+    line.moneyline.home = parseInt(convertDecimalToAmericanOdds(moneyline[0].odds));
+    line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[1].odds));
 
     if (main && Object.keys(main.sp).length > 0) {
         const match_handicap = main.sp['match_handicap_(games)'];
@@ -21,8 +21,8 @@ function formatTennisFixturesOdds(event) {
                 line.spreads.push({
                     altLineId: match_handicap[i].id,
                     hdp: -Number(match_handicap[i].name),
-                    home: convertDecimalToAmericanOdds(parseInt(match_handicap[i].odds)),
-                    away: convertDecimalToAmericanOdds(parseInt(match_handicap[i + handicap_count].odds)),
+                    home: parseInt(convertDecimalToAmericanOdds(match_handicap[i].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(match_handicap[i + handicap_count].odds)),
                 });
         }
 
@@ -33,8 +33,8 @@ function formatTennisFixturesOdds(event) {
                 line.totals.push({
                     altLineId: match_result_and_total_games[i + 2].id,
                     points: Number(match_result_and_total_games[i + 2].handicap),
-                    over: convertDecimalToAmericanOdds(parseInt(match_result_and_total_games[i + 2].odds)),
-                    under: convertDecimalToAmericanOdds(parseInt(match_result_and_total_games[i + 2 + total_count].odds)),
+                    over: parseInt(convertDecimalToAmericanOdds(match_result_and_total_games[i + 2].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(match_result_and_total_games[i + 2 + total_count].odds)),
                 })
         }
     }
