@@ -1524,7 +1524,7 @@ adminRouter.get(
                     .sort({ createdAt: -1 })
                     .skip(page * perPage)
                     .limit(perPage)
-                    .populate('userId', ['username', 'currency'])
+                    .populate('userId', ['email', 'currency'])
                 page++;
                 return res.json({ total, perPage, page, data, });
             } else if (house == 'pinnacle') {
@@ -1579,7 +1579,7 @@ adminRouter.get(
                     .sort({ createdAt: -1 })
                     .skip(page * perPage)
                     .limit(perPage)
-                    .populate('userId', ['username', 'currency']);
+                    .populate('userId', ['email', 'currency']);
                 return res.json({ total, perPage, page, data, });
             } else {
                 return res.status(404).json({ error: 'Can\'t find bets on house.' });
@@ -1763,13 +1763,13 @@ adminRouter.get(
     async (req, res) => {
         try {
             let { id } = req.query;
-            let bet = await Bet.findById(id).populate('userId', ['username', 'currency']);
+            let bet = await Bet.findById(id).populate('userId', ['email', 'currency']);
             if (bet) {
                 bet = JSON.parse(JSON.stringify(bet));
                 bet.house = 'ppw';
                 return res.json(bet);
             }
-            bet = await BetSportsBook.findById(id).populate('userId', ['username', 'currency']);
+            bet = await BetSportsBook.findById(id).populate('userId', ['email', 'currency']);
             if (bet) {
                 bet = JSON.parse(JSON.stringify(bet));
                 bet.house = 'pinnacle';
