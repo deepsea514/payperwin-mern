@@ -12,8 +12,8 @@ function formatSquashFixturesOdds(event) {
 
     if (schedule) {
         line.moneyline = {
-            home: convertDecimalToAmericanOdds(Number(schedule.sp.main[0].odds)),
-            away: convertDecimalToAmericanOdds(Number(schedule.sp.main[1].odds))
+            home: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[0].odds)),
+            away: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[1].odds))
         };
     }
 

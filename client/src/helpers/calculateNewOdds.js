@@ -13,13 +13,13 @@ function calculateNewOdds(home, away) {
     const newAway = away + moneylineDifference * bigHome;
     if (newHome < home) {
         return {
-            newHome: Number(home.toFixed(2)),
-            newAway: Number(away.toFixed(2)),
+            newHome: parseInt(home),
+            newAway: parseInt(away),
         }
     }
     return {
-        newHome: Number(newHome.toFixed(2)),
-        newAway: Number(newAway.toFixed(2)),
+        newHome: parseInt(newHome),
+        newAway: parseInt(newAway),
     }
 
 }

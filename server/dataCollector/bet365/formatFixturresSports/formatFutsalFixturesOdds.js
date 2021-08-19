@@ -17,20 +17,20 @@ function formatFutsalFixturesOdds(event) {
         for (let i = 0; i < line_count; i++) {
             if (game_lines[i].name == "To Win") {
                 line.moneyline = {
-                    home: convertDecimalToAmericanOdds(Number(game_lines[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(Number(game_lines[i + line_count * 2].odds))
+                    home: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count].odds)),
+                    away: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count * 2].odds))
                 }
             } else if (game_lines[i].name == "Handicap") {
                 line.spreads.push({
                     hdp: -Number(game_lines[i + line_count].handicap),
-                    home: convertDecimalToAmericanOdds(Number(game_lines[i + line_count].odds)),
-                    away: convertDecimalToAmericanOdds(Number(game_lines[i + line_count * 2].odds)),
+                    home: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count].odds)),
+                    away: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count * 2].odds)),
                 })
             } else if (game_lines[i].name == "Total") {
                 line.totals.push({
                     points: Number(game_lines[i + line_count].handicap),
-                    over: convertDecimalToAmericanOdds(Number(game_lines[i + line_count].odds)),
-                    under: convertDecimalToAmericanOdds(Number(game_lines[i + line_count * 2].odds)),
+                    over: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count].odds)),
+                    under: convertDecimalToAmericanOdds(parseInt(game_lines[i + line_count * 2].odds)),
                 })
             }
         }
@@ -38,8 +38,8 @@ function formatFutsalFixturesOdds(event) {
 
     if (!line.moneyline && schedule) {
         line.moneyline = {
-            home: convertDecimalToAmericanOdds(Number(schedule.sp.main[0].odds)),
-            away: convertDecimalToAmericanOdds(Number(schedule.sp.main[2].odds))
+            home: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[0].odds)),
+            away: convertDecimalToAmericanOdds(parseInt(schedule.sp.main[2].odds))
         };
     }
 
