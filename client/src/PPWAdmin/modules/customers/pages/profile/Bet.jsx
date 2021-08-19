@@ -264,8 +264,8 @@ class Bet extends React.Component {
                 return Number(1 - 100 / odd).toFixed(2) + '(Decimal Odds)';
             case 'american':
                 if (odd > 0)
-                    return '+' + odd.toFixed(2) + '(American Odds)';
-                return odd.toFixed(2) + '(American Odds)';
+                    return '+' + odd + '(American Odds)';
+                return odd + '(American Odds)';
             default:
                 return odd;
         }
