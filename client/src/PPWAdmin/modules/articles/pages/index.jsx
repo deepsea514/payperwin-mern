@@ -8,7 +8,7 @@ import EditArticle from "./EditArticle";
 export default class ArticlesModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/articles">
+            <BrowserRouter basename="/RP1021/articles">
                 <Switch>
                     <Route path="/create" component={CreateArticle} />
                     <Route path="/edit/:id" component={EditArticle} />

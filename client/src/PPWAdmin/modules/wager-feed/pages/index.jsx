@@ -6,7 +6,7 @@ import WagerFeedDetail from "./WagerFeedDetail";
 export default class WagerFeedsModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/wager-feeds">
+            <BrowserRouter basename="/RP1021/wager-feeds">
                 <Switch>
                     <Route exact path="/" component={WagerFeeds} />
                     <Route path="/:id/detail" component={WagerFeedDetail} />

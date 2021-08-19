@@ -48,7 +48,7 @@ export default class AdminWrap extends Component {
                                     <Favicon url={'/images/favicon-2.ico'} />
                                     <MTheme />
                                     <MaterialThemeProvider>
-                                            <BrowserRouter basename={"PPWAdmin"}>
+                                            <BrowserRouter basename={"RP1021"}>
                                                 <Switch>
                                                     <Route path={`/login`} component={Login} />
                                                     <Route path="/" component={App} />

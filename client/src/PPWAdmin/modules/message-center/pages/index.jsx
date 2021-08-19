@@ -7,7 +7,7 @@ import EditMessage from "./EditMessage";
 export default class MessageCenterModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/message-center">
+            <BrowserRouter basename="/RP1021/message-center">
                 <Switch>
                     <Route path="/edit/:id" component={EditMessage} />
                     <Route path="/create" component={CreateMessage} />

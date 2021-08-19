@@ -8,7 +8,7 @@ import EditEvent from "./EditEvent";
 export default class EventModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/events">
+            <BrowserRouter basename="/RP1021/events">
                 <Switch>
                     <Route path="/add" component={CreateEvent} />
                     <Route path="/edit/:id" component={EditEvent} />

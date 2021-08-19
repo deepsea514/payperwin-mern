@@ -6,7 +6,7 @@ import CashbackDetail from "./CashbackDetail";
 export default class CashbackModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/cashback">
+            <BrowserRouter basename="/RP1021/cashback">
                 <Switch>
                     <Route exact path="/" component={Cashback} />
                     <Route path="/:user/history/:year/:month" component={CashbackDetail} />

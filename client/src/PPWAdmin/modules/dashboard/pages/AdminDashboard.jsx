@@ -86,7 +86,7 @@ class AdminDashboard extends React.Component {
                     </div>
                     <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
                         <div className="d-flex flex-row">
-                            <BrowserRouter basename={`/PPWAdmin/dashboard`}>
+                            <BrowserRouter basename={`/RP1021/dashboard`}>
                                 <DashboardCard />
                                 <div className="flex-row-fluid ml-lg-8">
                                     <Switch>

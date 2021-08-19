@@ -7,7 +7,7 @@ export default class DepositLogModule extends Component {
     render() {
         const { history } = this.props;
         return (
-            <BrowserRouter basename="/PPWAdmin/deposit-log">
+            <BrowserRouter basename="/RP1021/deposit-log">
                 <Switch>
                     <Route exact path="/" render={(props) => <DepositLog {...props} topHistory={history} />} />
                     <Route path="/add" component={AddDeposit} />

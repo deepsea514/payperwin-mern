@@ -64,9 +64,8 @@ class Customers extends React.Component {
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
-                    <td><Link to={`/${customer._id}/profile`}>{customer.username}&nbsp;{customer.roles.verified ? <i className="fas fa-check-circle text-success"></i> : null}&nbsp;{customer.roles.phone_verified ? <i className="fas fa-phone-square text-success"></i> : null}</Link></td>
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
-                    <td>{customer.email}</td>
+                    <td><Link to={`/${customer._id}/profile`}>{customer.email}</Link></td>
                     <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
                     <td className="text-right">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
                     <td className="">{customer.betHistory.length + customer.betSportsbookHistory.length}</td>
@@ -163,21 +162,6 @@ class Customers extends React.Component {
                                     <div className="col-lg-2 col-md-3">
                                         <input
                                             type="text"
-                                            value={filter.name}
-                                            className="form-control"
-                                            name="searchName"
-                                            placeholder="Search"
-                                            onChange={(e) => {
-                                                this.onFilterChange({ name: e.target.value });
-                                            }}
-                                        />
-                                        <small className="form-text text-muted">
-                                            <b>Search</b> by Name
-                                        </small>
-                                    </div>
-                                    <div className="col-lg-2 col-md-3">
-                                        <input
-                                            type="text"
                                             value={filter.email}
                                             className="form-control"
                                             name="searchEmail"
@@ -226,7 +210,6 @@ class Customers extends React.Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Username</th>
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
                                                 <th scope="col">Date Joined</th>

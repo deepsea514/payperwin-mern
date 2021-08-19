@@ -82,7 +82,7 @@ class App extends Component {
         return (
             <Layout history={history}>
                 <Switch>
-                    {/* <BrowserRouter basename="PPWAdmin"> */}
+                    {/* <BrowserRouter basename="RP1021"> */}
 
                     {/* change password */}
                     <Route path="/change-password" component={ChangePassword} />

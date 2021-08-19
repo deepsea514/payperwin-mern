@@ -6,7 +6,7 @@ import TicketDetail from "./TicketDetail";
 export default class TicketsModule extends Component {
     render() {
         return (
-            <BrowserRouter basename="/PPWAdmin/tickets">
+            <BrowserRouter basename="/RP1021/tickets">
                 <Switch>
                     <Route path="/:id/detail" component={TicketDetail} />
                     <Route exact path="/" component={Tickets} />
