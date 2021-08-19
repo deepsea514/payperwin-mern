@@ -146,7 +146,7 @@ export function* saga() {
 
     yield takeLatest(actionTypes.getLastWithdraws, function* getLastWithdrawsSaga() {
         try {
-            const { data } = yield getWithdrawLog(1, {}, 10);
+            const { data } = yield getWithdrawLog(1, { status: 'Successful' }, 10);
             yield put(actions.getLastWithdrawsSuccess(data.data));
         } catch (error) {
             yield put(actions.getLastWithdrawsSuccess([]));
@@ -155,7 +155,7 @@ export function* saga() {
 
     yield takeLatest(actionTypes.getLastDeposits, function* getLastDepositsSaga() {
         try {
-            const { data } = yield getDepositLog(1, {}, 10);
+            const { data } = yield getDepositLog(1, { status: 'Successful' }, 10);
             yield put(actions.getLastDepositsSuccess(data.data));
         } catch (error) {
             yield put(actions.getLastDepositsSuccess([]));

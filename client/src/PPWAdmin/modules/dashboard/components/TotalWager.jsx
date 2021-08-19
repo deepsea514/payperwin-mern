@@ -186,7 +186,7 @@ export function TotalWager({ className, categories, dashboardwager }) {
             </div>
             {/* Body */}
             <div className="card-body p-0 position-relative bg-primary overflow-hidden pb-4">
-                <h1 className="font-weight-bolder text-white bg-primary p-0 m-0 pl-10"> ${dashboardwager.totalwager}</h1>
+                <h1 className="font-weight-bolder text-white bg-primary p-0 m-0 pl-10"> ${new Intl.NumberFormat().format(Number(dashboardwager.totalwager).toFixed(2))}</h1>
                 {/* Chart */}
                 <div
                     id="total_wager_chart"

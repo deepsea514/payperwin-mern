@@ -186,7 +186,7 @@ export function TotalDeposit({ className, loadingdashboarddata, categories, dash
             </div>
             {/* Body */}
             <div className="card-body p-0 position-relative overflow-hidden bg-danger pb-4">
-                <h1 className="font-weight-bolder text-white bg-danger p-0 m-0 pl-10"> ${dashboarddeposit.totaldeposit}</h1>
+                <h1 className="font-weight-bolder text-white bg-danger p-0 m-0 pl-10"> ${new Intl.NumberFormat().format(Number(dashboarddeposit.totaldeposit).toFixed(2))}</h1>
 
                 {/* Chart */}
                 <div
