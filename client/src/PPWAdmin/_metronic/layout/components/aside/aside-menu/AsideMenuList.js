@@ -360,6 +360,14 @@ function AsideMenuList({
                     </div>
                 </li>}
 
+                <li
+                    className={`menu-item`}
+                    aria-haspopup="true"
+                >
+                    <br />
+                    <br />
+                </li>
+
             </ul>
         </>
     );

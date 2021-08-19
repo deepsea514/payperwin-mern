@@ -52,6 +52,14 @@
     color: white !important;
 }
 
+.main-section.dark .sport-list-count, .main-section.dark .sport-list-item>a {
+    color: white;
+}
+
+.main-section.dark .sport-desktop-list li.active>a, .main-section.dark .sport-desktop-list li:hover>a {
+    background: #25364b;
+}
+
 .main-section.dark .left-cat li div {
     color: white !important;
 }
