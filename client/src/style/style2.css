@@ -628,6 +628,13 @@ footer ul li a i {
     color: #72777f;
 }
 
+/* .sport-list-item:hover>a label span {
+    white-space: nowrap;
+    position: absolute;
+    transform: translateX(calc(10px - 100%));
+    transition: 1s;
+} */
+
 .sport-list-item>a:hover {
     text-decoration: none;
 }
@@ -3521,4 +3528,11 @@ input.special {
 
 .sport-container {
     min-width: 600px;
+}
+
+.sort-header {
+    cursor: pointer;
+}
+.sort-header:hover {
+    color: #2196F3;
 }

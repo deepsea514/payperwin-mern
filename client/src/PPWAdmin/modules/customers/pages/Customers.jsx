@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import { deleteCustomer } from "../redux/services";
 import { addWithdraw } from "../../withdrawlogs/redux/services";
 import { addDeposit } from "../../depositlogs/redux/services";
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import dateformat from "dateformat";
 import CreditModal from "../components/CreditModal";
@@ -66,9 +65,9 @@ class Customers extends React.Component {
                     <td>{index + 1}</td>
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td><Link to={`/${customer._id}/profile`}>{customer.email}</Link></td>
-                    <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
-                    <td className="text-right">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
-                    <td className="">{customer.betHistory.length + customer.betSportsbookHistory.length}</td>
+                    <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
+                    <td className="">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
+                    <td className="">{customer.totalBetCount}</td>
                     <td className="">{Number(customer.totalWager).toFixed(2)} {customer.currency}</td>
                     <td className="text-right">
                         <DropdownButton title="Actions">
@@ -146,6 +145,7 @@ class Customers extends React.Component {
             addWithdrawId, withdrawmax } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
+        console.log(filter)
 
         return (
             <>
@@ -212,10 +212,34 @@ class Customers extends React.Component {
                                                 <th scope="col">#</th>
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
-                                                <th scope="col">Date Joined</th>
-                                                <th scope="col" className="text-right">Balance</th>
-                                                <th scope="col"># of Bets</th>
-                                                <th scope="col">Total Wager</th>
+                                                <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'joined_date' })}>
+                                                    Date Joined&nbsp;
+                                                    {filter.sortby == 'joined_date' && <>
+                                                        {filter.sort == 'asc' && <i className="fas fa-sort-amount-up-alt" />}
+                                                        {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
+                                                    </>}
+                                                </th>
+                                                <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'balance' })}>
+                                                    Balance&nbsp;
+                                                    {filter.sortby == 'balance' && <>
+                                                        {filter.sort == 'asc' && <i className="fas fa-sort-amount-up-alt" />}
+                                                        {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
+                                                    </>}
+                                                </th>
+                                                <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'num_bets' })}>
+                                                    # of Bets&nbsp;
+                                                    {filter.sortby == 'num_bets' && <>
+                                                        {filter.sort == 'asc' && <i className="fas fa-sort-amount-up-alt" />}
+                                                        {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
+                                                    </>}
+                                                </th>
+                                                <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'total_wager' })}>
+                                                    Total Wager&nbsp;
+                                                    {filter.sortby == 'total_wager' && <>
+                                                        {filter.sort == 'asc' && <i className="fas fa-sort-amount-up-alt" />}
+                                                        {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
+                                                    </>}
+                                                </th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -260,7 +284,7 @@ class Customers extends React.Component {
                     type="withdraw"
                 />}
 
-                { addDepositId && <CreditModal
+                {addDepositId && <CreditModal
                     show={addDepositId != null}
                     onHide={() => this.setState({ addDepositId: null })}
                     title="Add Deposit"

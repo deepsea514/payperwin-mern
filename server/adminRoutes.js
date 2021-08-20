@@ -241,21 +241,15 @@ adminRouter.get(
 adminRouter.get(
     '/customers',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         try {
-            let { page, perPage, name, email, balancemin, balancemax } = req.query;
+            let { page, perPage, email, balancemin, balancemax, sortby, sort } = req.query;
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
             let searchObj = {};
-            if (name) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ username: { "$regex": name, "$options": "i" } }
-                }
-            }
             if (email) {
                 searchObj = {
                     ...searchObj,
@@ -283,32 +277,83 @@ adminRouter.get(
                 }
             }
             const total = await User.find(searchObj).count();
-            User.find(searchObj)
-                .sort({ createdAt: -1 })
-                .skip(page * perPage)
-                .limit(perPage)
-                .exec(async function (error, data) {
+            let sortObj = {
+                createdAt: -1,
+            }
+            switch (sortby) {
+                case 'joined_date':
+                    sortObj = {
+                        createdAt: sort == 'asc' ? 1 : -1
+                    }
+                    break;
+                case 'balance':
+                    sortObj = {
+                        balance: sort == 'asc' ? 1 : -1
+                    }
+                    break;
+                case 'num_bets':
+                    sortObj = {
+                        totalBetCount: sort == 'asc' ? 1 : -1
+                    }
+                    break;
+                case 'total_wager':
+                    sortObj = {
+                        totalWager: sort == 'asc' ? 1 : -1
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            User.aggregate(
+                [
+                    {
+                        $match: searchObj
+                    },
+                    {
+                        $lookup: {
+                            from: 'bets',
+                            localField: 'betHistory',
+                            foreignField: '_id',
+                            as: 'betHistory'
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: 'betsportsbooks',
+                            let: { betSportsbookHistory: "$betSportsbookHistory" },
+                            pipeline: [
+                                { $match: { $expr: { '$in': ['$_id', '$$betSportsbookHistory'] } } },
+                                { $project: { _id: '$_id', bet: { $toDouble: '$WagerInfo.ToRisk' } } }
+                            ],
+                            as: 'betSportsbookHistory'
+                        }
+                    },
+                    {
+                        $project: {
+                            username: 1,
+                            email: 1,
+                            firstname: 1,
+                            lastname: 1,
+                            currency: 1,
+                            balance: 1,
+                            totalBetCount: { '$add': [{ '$size': '$betHistory' }, { '$size': '$betSportsbookHistory' }] },
+                            totalWager: { $sum: [{ $sum: '$betHistory.bet' }, { $sum: '$betSportsbookHistory.bet' }] },
+                            createdAt: 1
+                        }
+                    },
+                    { $sort: sortObj },
+                    { $skip: page * perPage },
+                    { $limit: perPage },
+                ],
+                (error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
                     }
-                    data = JSON.parse(JSON.stringify(data));
-                    for (let i = 0; i < data.length; i++) {
-                        let totalWager = 0;
-                        const betHistory = await Bet.find({ userId: data[i]._id });
-                        const betSportsbookHistory = await BetSportsBook.find({ userId: data[i]._id });
-                        for (const bet of betHistory) {
-                            totalWager += bet.bet;
-                        }
-                        for (const bet of betSportsbookHistory) {
-                            totalWager += Number(bet.WagerInfo.ToRisk);
-                        }
-                        data[i].totalWager = totalWager;
-                        data[i].betHistory = betHistory;
-                        data[i].betSportsbookHistory = betSportsbookHistory;
-                    }
                     res.status(200).json({ total, perPage, page: page + 1, data });
-                })
+                }
+            )
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
@@ -319,7 +364,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -344,7 +389,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-overview',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id } = req.query;
         if (!id) {
@@ -472,7 +517,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-loginhistory',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -497,7 +542,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-deposits',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -523,7 +568,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-withdraws',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         let { id, perPage, page } = req.query;
         if (!perPage) perPage = 15;
@@ -549,7 +594,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-bets',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         let { id, perPage, page, src } = req.query;
         if (!perPage) perPage = 15;
@@ -583,7 +628,7 @@ adminRouter.get(
 adminRouter.get(
     '/customer-preference/:id',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id } = req.params;
         const preference = await Preference.findOne({ user: id });
@@ -594,7 +639,7 @@ adminRouter.get(
 adminRouter.put(
     '/customer-preference/:id',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id } = req.params;
         const data = req.body;
@@ -618,7 +663,7 @@ adminRouter.put(
 adminRouter.patch(
     '/customer',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id, data } = req.body;
         try {
@@ -637,7 +682,7 @@ adminRouter.patch(
 adminRouter.delete(
     '/customer',
     authenticateJWT,
-    limitRoles('customers'),
+    limitRoles('users'),
     async (req, res) => {
         const { id } = req.query;
         if (id) {
@@ -2444,7 +2489,7 @@ adminRouter.post(
 adminRouter.get(
     '/tickets',
     authenticateJWT,
-    limitRoles('tickets'),
+    limitRoles('support-tickets'),
     async function (req, res) {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
@@ -2486,7 +2531,7 @@ adminRouter.get(
 adminRouter.get(
     '/ticket/:id',
     authenticateJWT,
-    limitRoles('tickets'),
+    limitRoles('support-tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2505,7 +2550,7 @@ adminRouter.get(
 adminRouter.post(
     '/replyticket/:id',
     authenticateJWT,
-    limitRoles('tickets'),
+    limitRoles('support-tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2548,7 +2593,7 @@ adminRouter.post(
 adminRouter.delete(
     '/ticket/:id',
     authenticateJWT,
-    limitRoles('tickets'),
+    limitRoles('support-tickets'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2732,7 +2777,7 @@ adminRouter.put(
 adminRouter.post(
     '/events',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     bruteforce.prevent,
     async (req, res) => {
         try {
@@ -2762,7 +2807,7 @@ adminRouter.post(
 adminRouter.get(
     '/events/:id',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -2781,7 +2826,7 @@ adminRouter.get(
 adminRouter.put(
     '/events/:id',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     async function (req, res) {
         let { id } = req.params;
         const { name, startDate, teamA, teamB, approved } = req.body;
@@ -2963,7 +3008,7 @@ async function matchResults(eventId, matchResult) {
 adminRouter.post(
     '/events/:id/settle',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     async function (req, res) {
         let { id } = req.params;
         const { teamAScore, teamBScore } = req.body;
@@ -2996,7 +3041,7 @@ adminRouter.post(
 adminRouter.post(
     '/events/:id/cancel',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     async function (req, res) {
         let { id } = req.params;
         try {
@@ -3023,7 +3068,7 @@ adminRouter.post(
 adminRouter.get(
     '/events',
     authenticateJWT,
-    limitRoles('events'),
+    limitRoles('custom-events'),
     async function (req, res) {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
@@ -3432,7 +3477,7 @@ adminRouter.get(
 adminRouter.get(
     '/meta/:title',
     authenticateJWT,
-    limitRoles('meta_tags'),
+    limitRoles('page-metas'),
     async (req, res) => {
         const { title } = req.params;
         const meta_tag = await MetaTag.findOne({ pageTitle: title });
@@ -3443,7 +3488,7 @@ adminRouter.get(
 adminRouter.put(
     '/meta/:title',
     authenticateJWT,
-    limitRoles('meta_tags'),
+    limitRoles('page-metas'),
     async (req, res) => {
         const { title } = req.params;
         const data = req.body;
@@ -3468,7 +3513,7 @@ adminRouter.put(
 adminRouter.get(
     '/addons/:name',
     authenticateJWT,
-    limitRoles('addons'),
+    limitRoles('api-settings'),
     async (req, res) => {
         const { name } = req.params;
         const addon = await Addon.findOne({ name });
@@ -3479,7 +3524,7 @@ adminRouter.get(
 adminRouter.put(
     '/addons/:name',
     authenticateJWT,
-    limitRoles('addons'),
+    limitRoles('api-settings'),
     async (req, res) => {
         const { name } = req.params;
         const data = req.body;
@@ -3897,6 +3942,5 @@ adminRouter.get(
         }
     }
 )
-
 
 module.exports = adminRouter;
