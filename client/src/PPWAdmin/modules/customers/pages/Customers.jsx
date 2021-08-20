@@ -69,7 +69,7 @@ class Customers extends React.Component {
                     <td className="text-right">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
                     <td className="text-right">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
                     <td className="">{customer.betHistory.length + customer.betSportsbookHistory.length}</td>
-                    <td className="">{customer.totalWager} {customer.currency}</td>
+                    <td className="">{Number(customer.totalWager).toFixed(2)} {customer.currency}</td>
                     <td className="text-right">
                         <DropdownButton title="Actions">
                             {/* <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
