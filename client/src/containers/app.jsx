@@ -397,6 +397,7 @@ class App extends PureComponent {
                                             {!sidebarShowAccountLinks &&
                                                 <BetSlip
                                                     betSlip={betSlip}
+                                                    className="hide-mobile"
                                                     openBetSlipMenu={openBetSlipMenu}
                                                     toggleField={this.toggleField}
                                                     removeBet={this.removeBet}
@@ -418,6 +419,18 @@ class App extends PureComponent {
                     </div>
                 </section>
                 <Footer user={user} display_mode={display_mode} />
+                {!sidebarShowAccountLinks &&
+                    <BetSlip
+                        betSlip={betSlip}
+                        className="show-mobile"
+                        openBetSlipMenu={openBetSlipMenu}
+                        toggleField={this.toggleField}
+                        removeBet={this.removeBet}
+                        updateBet={this.updateBet}
+                        user={user}
+                        updateUser={updateUser}
+                        history={history}
+                    />}
             </div>
         );
     }

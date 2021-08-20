@@ -64,7 +64,7 @@ export default class BetSlip extends PureComponent {
 
     render() {
         const { errors, confirmationOpen } = this.state;
-        const { betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user, history } = this.props;
+        const { betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user, history, className } = this.props;
         let totalStake = 0;
         let totalWin = 0;
         betSlip.forEach(b => {
@@ -72,7 +72,7 @@ export default class BetSlip extends PureComponent {
             totalWin += b.win;
         });
         return (
-            <div className={`bet-slip-contain ${openBetSlipMenu ? 'full-fixed' : ''}`}>
+            <div className={`bet-slip-contain ${className} ${openBetSlipMenu ? 'full-fixed' : ''}`}>
                 {
                     confirmationOpen ? (
                         <div className="modal confirmation">
