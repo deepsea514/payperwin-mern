@@ -796,9 +796,19 @@ a.log-in-btn {
     top: 8rem;
 }
 
+.show-mobile.bet-slip-contain {
+    display: none !important;
+}
+
 @media (max-width: 1000px) {
     .highlights .nav-tabs .nav-item:nth-child(n+5) {
         display: none;
+    }
+    .hide-mobile.bet-slip-contain {
+        display: none !important;
+    }
+    .show-mobile.bet-slip-contain {
+        display: flex !important;
     }
     .bet-slip.empty {
         display: none;
