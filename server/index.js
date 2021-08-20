@@ -1166,7 +1166,6 @@ expressApp.post(
                         lineQuery.sportId = originSportId;
                         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                         if (line) {
-                            console.log(line);
                             const { teamA, teamB, startDate, line: { home, away, draw, hdp, points, periodNumber } } = line;
                             lineQuery.periodNumber = periodNumber;
                             // if (draw) {
@@ -1374,8 +1373,8 @@ expressApp.post(
 
 async function checkAutoBet(bet, betpool, user, sportData, line) {
     const { AutoBetStatus, AutoBetPeorid } = config;
-    let { pick, win: toBet, lineQuery } = bet;
-    pick = pick == 'home' ? "away" : "home";
+    let { pick: originPick, win: toBet, lineQuery } = bet;
+    pick = originPick == 'home' ? "away" : "home";
 
     const { type, altLineId, } = lineQuery;
 
@@ -1393,20 +1392,20 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     const newLineOdds = lineOdds + oddsDifference;
 
     let side = 'Underdog';
-    if ((oddsA > oddsB) && pick == 'home' || (oddsA < oddsB) && pick == 'away') {
+    if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
         side = 'Favorite';
     }
-
+    let betType = 'Moneyline';
     switch (type) {
         case 'moneyline':
-            type = 'Moneyline';
+            betType = 'Moneyline';
             break;
         case 'spread':
-            type = 'Spreads';
+            betType = 'Spreads';
             break;
         case 'total':
         default:
-            type = 'Over/Under';
+            betType = 'Over/Under';
             break;
     }
 
@@ -1414,7 +1413,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         .find({
             deletedAt: null,
             side: side,
-            betType: type,
+            betType: betType,
         })
         .populate('userId');
 
