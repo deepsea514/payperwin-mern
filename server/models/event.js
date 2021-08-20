@@ -11,6 +11,7 @@ const sgMail = require('@sendgrid/mail');
 const config = require('../../config.json');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const adminEmailAddress = 'hello@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 
 const ID = function () {
@@ -186,13 +187,31 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                         `),
                 };
                 sgMail.send(msg);
+
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This email is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
-                            Wager: $${betAfterFee.toFixed(2)}\n 
-                            Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}\n 
-                            Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                sendSMS(`This is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                Wager: $${betAfterFee.toFixed(2)}\n 
+                Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                Platform: PAYPERWIN Peer-to Peer`, user.phone);
             }
+
+            const adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: adminEmailAddress,
+                subject: 'New Bet',
+                text: `New Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                        <li>Event: ${name}</li>
+                        <li>Bet: Moneyline</li>
+                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                        <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}(American)</li>
+                        <li>Win: $${toWin.toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg);
 
             const betId = savedBet.id;
             // add betId to betPool

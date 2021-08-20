@@ -45,6 +45,7 @@ const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
+const adminEmailAddress1 = 'hello@payperwin.co';
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -1051,11 +1052,28 @@ expressApp.post(
                                             sgMail.send(msg);
                                         }
                                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                                            sendSMS(`This email is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                                            sendSMS(`This is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
                                             Wager: $${betAfterFee.toFixed(2)}\n 
                                             Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}\n 
                                             Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
+
+                                        const adminMsg = {
+                                            from: `${fromEmailName} <${fromEmailAddress}>`,
+                                            to: adminEmailAddress1,
+                                            subject: 'New Bet',
+                                            text: `New Bet`,
+                                            html: simpleresponsive(
+                                                `<ul>
+                                                    <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                                                    <li>Event: ${name}</li>
+                                                    <li>Bet: ${type}</li>
+                                                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                    <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}(American)</li>
+                                                    <li>Win: $${toWin.toFixed(2)}</li>
+                                                </ul>`),
+                                        }
+                                        sgMail.send(adminMsg);
 
                                         const betId = savedBet.id;
                                         // add betId to betPool
@@ -1252,11 +1270,28 @@ expressApp.post(
                                                 sgMail.send(msg);
                                             }
                                             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                                                sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                                                sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
                                                 Wager: $${betAfterFee.toFixed(2)}\n 
                                                 Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
                                                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                             }
+
+                                            const adminMsg = {
+                                                from: `${fromEmailName} <${fromEmailAddress}>`,
+                                                to: adminEmailAddress1,
+                                                subject: 'New Bet',
+                                                text: `New Bet`,
+                                                html: simpleresponsive(
+                                                    `<ul>
+                                                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                                                        <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
+                                                        <li>Bet: ${lineQuery.type}</li>
+                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
+                                                        <li>Win: $${toWin.toFixed(2)}</li>
+                                                    </ul>`),
+                                            }
+                                            sgMail.send(adminMsg);
 
                                             const betId = savedBet.id;
                                             // add betId to betPool
@@ -1577,12 +1612,29 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             };
             sgMail.send(msg);
         }
-        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-            sendSMS(`This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+        if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+            sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
             Wager: $${betAfterFee.toFixed(2)}\n 
             Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
             Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
         }
+
+        const adminMsg = {
+            from: `${fromEmailName} <${fromEmailAddress}>`,
+            to: adminEmailAddress1,
+            subject: 'New Bet',
+            text: `New Bet`,
+            html: simpleresponsive(
+                `<ul>
+                    <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
+                    <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
+                    <li>Bet: ${lineQuery.type}</li>
+                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                    <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
+                    <li>Win: $${toWin.toFixed(2)}</li>
+                </ul>`),
+        }
+        sgMail.send(adminMsg);
 
         const betId = savedBet.id;
         // add betId to betPool
