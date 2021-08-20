@@ -1388,8 +1388,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     const lineOdds = line.line[pickWithOverUnder];
     const oddsA = type === 'total' ? line.line.over : line.line.home;
     const oddsB = type === 'total' ? line.line.under : line.line.away;
-    const oddsDifference = Math.abs(Math.abs(oddsA) - Math.abs(oddsB)) / 2;
-    const newLineOdds = lineOdds + oddsDifference;
+    const newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
 
     let side = 'Underdog';
     if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
