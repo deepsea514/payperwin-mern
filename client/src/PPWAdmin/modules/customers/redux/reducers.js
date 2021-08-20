@@ -23,10 +23,11 @@ const initialState = {
     currentPage: 1,
     loading: false,
     filter: {
-        name: '',
         email: '',
         balancemin: '',
         balancemax: '',
+        sortby: 'joined_date',
+        sort: 'asc'
     },
     reasons: []
 };
@@ -46,6 +47,13 @@ export const reducer = persistReducer(
                 return { ...state, ...{ customers: customers } };
 
             case actionTypes.filterCustomerChange:
+                if (action.filter.sortby) {
+                    if (action.filter.sortby == state.filter.sortby) {
+                        action.filter.sort = state.filter.sort == 'asc' ? 'desc' : 'asc';
+                    } else {
+                        action.filter.sort = 'asc';
+                    }
+                }
                 return { ...state, ...{ filter: { ...state.filter, ...action.filter } } };
 
             case actionTypes.getReasonSuccess:
@@ -67,7 +75,6 @@ export const reducer = persistReducer(
 
                 const withdrawCustomers = state.customers.map(customer => {
                     if (customer._id == action.withdraw.user) {
-                        console.log(action.withdraw);
                         return { ...customer, ...{ balance: parseInt(customer.balance) - parseInt(action.withdraw.amount) - parseInt(action.withdraw.fee) } };
                     }
                     else return customer;

@@ -4,13 +4,9 @@ const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'product
 
 export function getCustomers(page, filter) {
     let url = `${serverUrl}/customers?page=${page}`;
-    const { name, email, balancemin, balancemax } = filter;
-    if (name && name != '') url += `&name=${name}`;
-    if (email && email != '') url += `&email=${email}`;
-    if (balancemin && balancemin != '') url += `&balancemin=${balancemin}`;
-    if (balancemax && balancemax != '') url += `&balancemax=${balancemax}`;
     return axios.get(url, {
-        withCredentials: true
+        withCredentials: true,
+        params: filter
     });
 }
 
