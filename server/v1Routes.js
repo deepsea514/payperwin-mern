@@ -22,6 +22,7 @@ const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require("../config.json");
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const adminEmailAddress = 'hello@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 
 const ErrorCode = {
@@ -300,6 +301,21 @@ async function bettedAction(action, user) {
     }
 }
 
+const getPinnacleBetType = (type) => {
+    switch (type) {
+        case 1:
+            return 'Moneyline';
+        case 2:
+            return 'Spread';
+        case 3:
+        case 4:
+        case 5:
+            return 'Total';
+        default:
+            return '';
+    }
+}
+
 async function updateAction(action, user) {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
@@ -327,64 +343,47 @@ async function updateAction(action, user) {
         });
 
         if (Name.toUpperCase() == "ACCEPTED") {
-            if (WagerInfo.Legs) {
-                let string = "";
-                WagerInfo.Legs.map(leg => {
-                    string += `${leg.Sport} ${WagerInfo.Type} <br>`
-                })
-
-                const preference = await Preference.findOne({ user: user._id });
-                let timezone = "00:00";
-                if (preference && preference.timezone) {
-                    timezone = preference.timezone;
-                }
-                const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
-
-                if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                    const msg = {
-                        from: `${fromEmailName} <${fromEmailAddress}>`,
-                        to: user.email,
-                        subject: 'Your bet was accepted',
-                        text: `Your bet was accepted`,
-                        html: simpleresponsive(
-                            `Hi <b>${user.email}</b>.
-                            <br><br>
-                            This email is to advise that your bet for 
-                            ${string}
-                            for ${WagerInfo.ToRisk} was accepted on ${timeString}
-                            <br><br>`),
-                    };
-                    sgMail.send(msg);
-                }
-                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                    sendSMS(`This email is to advise that your bet for ${string} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
-                }
+            const preference = await Preference.findOne({ user: user._id });
+            let timezone = "00:00";
+            if (preference && preference.timezone) {
+                timezone = preference.timezone;
             }
-            else {
-                const preference = await Preference.findOne({ user: user._id });
-                let timezone = "00:00";
-                if (preference && preference.timezone) {
-                    timezone = preference.timezone;
-                }
-                const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
-                if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                    const msg = {
-                        from: `${fromEmailName} <${fromEmailAddress}>`,
-                        to: user.email,
-                        subject: 'Your bet was accepted',
-                        text: `Your bet was accepted`,
-                        html: simpleresponsive(
-                            `Hi <b>${user.email}</b>.
+            const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
+            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your bet was accepted',
+                    text: `Your bet was accepted`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
                             <br><br>
                             This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}
                             <br><br>`),
-                    };
-                    sgMail.send(msg);
-                }
-                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                    sendSMS(`This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
-                }
+                };
+                sgMail.send(msg);
             }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+                sendSMS(`This is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
+            }
+
+            const adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: adminEmailAddress,
+                subject: 'New Bet',
+                text: `New Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                        <li>Event: ${WagerInfo.EventName}</li>
+                        <li>Bet: ${getPinnacleBetType(WagerInfo.BetType)}</li>
+                        <li>Wager: $${Number(WagerInfo.ToRisk).toFixed(2)}</li>
+                        <li>Odds: ${WagerInfo.Odds}(${WagerInfo.OddsFormat == 1 ? 'Decimal' : 'American'})</li>
+                        <li>Win: $${Number(WagerInfo.ToWin).toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg);
+
         } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
             const preference = await Preference.findOne({ user: user._id });
             if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
