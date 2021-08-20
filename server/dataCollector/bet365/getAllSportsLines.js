@@ -40,7 +40,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     getAllSportsLines();
     setInterval(getAllSportsLines, lineInterval);
 
-    const resultInterval = 6 * 60 * 60 * 1000;
+    const resultInterval = 30 * 60 * 1000;
     matchResults();
     setInterval(matchResults, resultInterval);
 });
