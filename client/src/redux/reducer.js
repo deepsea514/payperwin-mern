@@ -16,6 +16,8 @@ export const actionTypes = {
     hideTourAction: "[Hide Tour Action]",
     require2FAAction: "[Require 2FA Action]",
     setLoginFailedAction: "[Set Login Failed Action]",
+    showLoginModalAction: "[Show Login Modal Action]",
+    showForgotPasswordModalAction: "[Show Forgot Password Modal Action]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -39,7 +41,9 @@ const initialState = {
         deposit_confirmation: { email: true, sms: true },
         withdraw_confirmation: { email: true, sms: true },
         other: { email: true, sms: true },
-    }
+    },
+    showLoginModal: false,
+    showForgotPasswordModal: false,
 };
 
 export const reducer = persistReducer(
@@ -83,6 +87,12 @@ export const reducer = persistReducer(
             case actionTypes.setLoginFailedAction:
                 return { ...state, loginFailed: action.times };
 
+            case actionTypes.showLoginModalAction:
+                return { ...state, showLoginModal: action.showLoginModal };
+
+            case actionTypes.showForgotPasswordModalAction:
+                return { ...state, showForgotPasswordModal: action.showForgotPasswordModal };
+
             default:
                 return state;
         }
@@ -101,6 +111,8 @@ export const actions = {
     require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
     hideTourAction: () => ({ type: actionTypes.hideTourAction }),
     setLoginFailedAction: (times) => ({ type: actionTypes.setLoginFailedAction, times }),
+    showLoginModalAction: (showLoginModal) => ({type: actionTypes.showLoginModalAction, showLoginModal}),
+    showForgotPasswordModalAction: (showForgotPasswordModal) => ({type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal}),
 };
 
 export function* saga() {

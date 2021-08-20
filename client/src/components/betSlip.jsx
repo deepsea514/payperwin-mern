@@ -2,11 +2,13 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Bet from "./bet";
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-export default class BetSlip extends PureComponent {
+class BetSlip extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -64,7 +66,17 @@ export default class BetSlip extends PureComponent {
 
     render() {
         const { errors, confirmationOpen } = this.state;
-        const { betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user, history, className } = this.props;
+        const {
+            betSlip,
+            openBetSlipMenu,
+            toggleField,
+            removeBet,
+            updateBet,
+            user,
+            history,
+            className,
+            showLoginModalAction
+        } = this.props;
         let totalStake = 0;
         let totalWin = 0;
         betSlip.forEach(b => {
@@ -148,7 +160,7 @@ export default class BetSlip extends PureComponent {
                                         user
                                             ? this.placeBets
                                             : () => {
-                                                history.replace({ pathname: '/login' });
+                                                showLoginModalAction(true);
                                                 toggleField('openBetSlipMenu');
                                             }
                                     }
@@ -175,3 +187,5 @@ export default class BetSlip extends PureComponent {
         );
     }
 }
+
+export default connect(null, frontend.actions)(BetSlip);
