@@ -36,8 +36,6 @@ class Header extends PureComponent {
             oddsDropDownOpen: false,
             langDropDownOpen: false,
             timerInterval: null,
-            showLoginModal: false,
-            showForgotPasswordModal: false,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
         this.toggleField = this.toggleField.bind(this);
@@ -109,8 +107,6 @@ class Header extends PureComponent {
             oddsDropDownOpen,
             langDropDownOpen,
             timeString,
-            showLoginModal,
-            showForgotPasswordModal,
         } = this.state;
         const { toggleField,
             user,
@@ -120,7 +116,11 @@ class Header extends PureComponent {
             acceptCookie,
             acceptCookieAction,
             display_mode,
-            getUser
+            getUser,
+            showLoginModal,
+            showForgotPasswordModal,
+            showLoginModalAction,
+            showForgotPasswordModalAction
         } = this.props;
         const { pathname } = location;
         return (
@@ -193,7 +193,7 @@ class Header extends PureComponent {
                                             ) : null}
                                         </div>
                                     )
-                                    : <SimpleLogin showLoginModal={() => this.setState({ showLoginModal: true })} />
+                                    : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />
                                 }
                             </div>
                         </div>
@@ -381,11 +381,22 @@ class Header extends PureComponent {
                     </div>
                 </div>
                 {!user && showLoginModal && <LoginModal
-                    closeModal={() => this.setState({ showLoginModal: false })}
-                    forgotPassword={() => this.setState({ showLoginModal: false, showForgotPasswordModal: true })}
+                    closeModal={() => {
+                        showLoginModalAction(false)
+                    }}
+                    forgotPassword={() => {
+                        showForgotPasswordModalAction(true);
+                        showLoginModalAction(false)
+                    }}
                     getUser={getUser} />}
                 {!user && showForgotPasswordModal && <ForgotPasswordModal
-                    closeModal={() => this.setState({ showForgotPasswordModal: false })} backToLogin={() => this.setState({ showForgotPasswordModal: false, showLoginModal: true, })} />}
+                    closeModal={() => {
+                        showForgotPasswordModalAction(false);
+                    }}
+                    backToLogin={() => {
+                        showForgotPasswordModalAction(false);
+                        showLoginModalAction(true);
+                    }} />}
             </header>
         );
     }
@@ -397,6 +408,8 @@ const mapStateToProps = (state) => ({
     timezone: state.frontend.timezone,
     acceptCookie: state.frontend.acceptCookie,
     display_mode: state.frontend.display_mode,
+    showLoginModal: state.frontend.showLoginModal,
+    showForgotPasswordModal: state.frontend.showForgotPasswordModal,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)
