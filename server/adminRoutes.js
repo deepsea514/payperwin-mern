@@ -1399,7 +1399,7 @@ adminRouter.get(
     async (req, res) => {
         const { name } = req.query;
         try {
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (name) {
                 searchObj = {
                     ...searchObj,
