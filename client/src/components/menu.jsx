@@ -37,8 +37,8 @@ class Menu extends Component {
                                 <i className="fas fa-question"></i>FAQ
                             </Link>
                         </li>
-                        <li className={`nav-item ${pathname === '/help' ? 'active' : ''}`}>
-                            <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                        <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
+                            <Link to={{ pathname: '/faq' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                 <i className="fa fa-question-circle" aria-hidden="true"></i>Help
                             </Link>
                         </li>
@@ -54,13 +54,7 @@ class Menu extends Component {
                             Odds Format
                             <select>
                                 <option>American Odds</option>
-                                {/* <option>Decimal Odds</option> */}
-                            </select>
-                        </li>
-                        <li>
-                            Odds Type
-                            <select>
-                                <option>Single Odds</option>
+                                <option>Decimal Odds</option>
                             </select>
                         </li>
                     </ul>

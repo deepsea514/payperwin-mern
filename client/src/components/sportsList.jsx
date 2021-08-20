@@ -136,12 +136,13 @@ class SportsList extends PureComponent {
                                                     </Link>
                                                 </li>
                                             ))}
-                                            <li className="sport-list-item sport-league-item">
+                                            <li className="sport-list-item sport-league-item sport-hide-league">
                                                 <Link
                                                     className="sport-list-compact"
                                                     to={{ pathname: `/sport/${name}/league` }}
                                                 >
                                                     <label><span>All Leagues</span></label>
+                                                    <span className="sport-list-count">&nbsp;</span>
                                                 </Link>
                                             </li>
                                         </ul>}
