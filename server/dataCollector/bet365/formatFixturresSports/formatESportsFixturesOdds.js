@@ -22,7 +22,7 @@ function formatESportsFixturesOdds(event) {
             } else if (match_lines[i].name == "Match Handicap") {
                 line.spreads.push({
                     altLineId: match_lines[i + line_count].id,
-                    hdp: -Number(match_lines[i + line_count].handicap),
+                    hdp: Number(match_lines[i + line_count].handicap),
                     home: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(match_lines[i + line_count * 2].odds)),
                 })

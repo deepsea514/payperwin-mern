@@ -22,7 +22,7 @@ function formatFutsalFixturesOdds(event) {
                 }
             } else if (game_lines[i].name == "Handicap") {
                 line.spreads.push({
-                    hdp: -Number(game_lines[i + line_count].handicap),
+                    hdp: Number(game_lines[i + line_count].handicap),
                     home: parseInt(convertDecimalToAmericanOdds(game_lines[i + line_count].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(game_lines[i + line_count * 2].odds)),
                 })

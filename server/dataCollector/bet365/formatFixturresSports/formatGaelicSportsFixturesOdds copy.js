@@ -22,7 +22,7 @@ function formatGaelicSportsFixturesOdds(event) {
             } else if (game_betting_2_way[i].name == "Handicap") {
                 line.spreads.push({
                     altLineId: game_betting_2_way[i + line_count].id,
-                    hdp: -Number(game_betting_2_way[i + line_count].handicap),
+                    hdp: Number(game_betting_2_way[i + line_count].handicap),
                     home: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds)),
                 })

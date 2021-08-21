@@ -20,7 +20,7 @@ function formatTennisFixturesOdds(event) {
             for (let i = 0; i < handicap_count; i++)
                 line.spreads.push({
                     altLineId: match_handicap[i].id,
-                    hdp: -Number(match_handicap[i].name),
+                    hdp: Number(match_handicap[i].name),
                     home: parseInt(convertDecimalToAmericanOdds(match_handicap[i].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(match_handicap[i + handicap_count].odds)),
                 });

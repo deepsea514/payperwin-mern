@@ -22,7 +22,7 @@ function formatFloorballFixturesOdds(event) {
                 }
             } else if (_3_way_betting[i].name == "Handicap") {
                 line.spreads.push({
-                    hdp: -Number(_3_way_betting[i + line_count].handicap),
+                    hdp: Number(_3_way_betting[i + line_count].handicap),
                     home: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(_3_way_betting[i + line_count * 3].odds)),
                 })
