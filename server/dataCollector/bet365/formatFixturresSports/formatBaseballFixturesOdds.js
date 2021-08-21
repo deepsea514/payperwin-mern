@@ -24,7 +24,7 @@ function formatBaseballFixturesOdds(event) {
                 if (game_lines[i].name == 'Run Line') {
                     line.spreads.push({
                         altLineId: game_lines[i + count].id,
-                        hdp: -Number(game_lines[i + count].handicap),
+                        hdp: Number(game_lines[i + count].handicap),
                         home: parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds)),
                         away: parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds)),
                     });

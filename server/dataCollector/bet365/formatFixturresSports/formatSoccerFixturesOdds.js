@@ -21,7 +21,7 @@ function formatSoccerFixturesOdds(event) {
             for (let i = 0; i < handicap_count; i++) {
                 line.spreads.push({
                     altLineId: alternative_handicap_result[i * 3].id,
-                    hdp: -Number(alternative_handicap_result[i * 3].opp),
+                    hdp: Number(alternative_handicap_result[i * 3].opp),
                     home: parseInt(convertDecimalToAmericanOdds(alternative_handicap_result[i * 3].odds)),
                     away: parseInt(convertDecimalToAmericanOdds(alternative_handicap_result[i * 3 + 2].odds)),
                 })
