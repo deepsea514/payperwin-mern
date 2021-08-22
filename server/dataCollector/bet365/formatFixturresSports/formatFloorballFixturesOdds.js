@@ -43,23 +43,23 @@ function formatFloorballFixturesOdds(event) {
     //     };
     // }
 
-    if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
-        line.moneyline = null;
-    }
+    // if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
+    //     line.moneyline = null;
+    // }
 
-    const filteredSpreads = line.spreads.filter(spread => {
-        if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-            return true;
-        return false;
-    });
-    line.spreads = filteredSpreads.length ? filteredSpreads : null;
+    // const filteredSpreads = line.spreads.filter(spread => {
+    //     if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+    //         return true;
+    //     return false;
+    // });
+    // line.spreads = filteredSpreads.length ? filteredSpreads : null;
 
-    const filteredTotals = line.totals.filter(total => {
-        if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-            return true;
-        return false;
-    });
-    line.totals = filteredTotals.length ? filteredTotals : null;
+    // const filteredTotals = line.totals.filter(total => {
+    //     if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+    //         return true;
+    //     return false;
+    // });
+    // line.totals = filteredTotals.length ? filteredTotals : null;
 
     if (line.moneyline)
         return line;

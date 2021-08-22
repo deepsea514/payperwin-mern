@@ -49,23 +49,23 @@ function formatIceHockeyFixturesOdds(event) {
         }
     }
 
-    if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
-        line.moneyline = null;
-    }
+    // if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
+    //     line.moneyline = null;
+    // }
 
-    const filteredSpreads = line.spreads.filter(spread => {
-        if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-            return true;
-        return false;
-    });
-    line.spreads = filteredSpreads;
+    // const filteredSpreads = line.spreads.filter(spread => {
+    //     if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
+    //         return true;
+    //     return false;
+    // });
+    // line.spreads = filteredSpreads;
 
-    const filteredTotals = line.totals.filter(total => {
-        if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-            return true;
-        return false;
-    });
-    line.totals = filteredTotals;
+    // const filteredTotals = line.totals.filter(total => {
+    //     if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
+    //         return true;
+    //     return false;
+    // });
+    // line.totals = filteredTotals;
 
     if (line.moneyline)
         return line;
