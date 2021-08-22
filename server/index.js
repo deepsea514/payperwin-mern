@@ -46,6 +46,7 @@ const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
 const adminEmailAddress1 = 'hello@payperwin.co';
+const supportEmailAddress = 'support@payperwin.co';
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -1058,7 +1059,7 @@ expressApp.post(
                                             Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
 
-                                        const adminMsg = {
+                                        let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
                                             to: adminEmailAddress1,
                                             subject: 'New Bet',
@@ -1073,6 +1074,8 @@ expressApp.post(
                                                     <li>Win: $${toWin.toFixed(2)}</li>
                                                 </ul>`),
                                         }
+                                        sgMail.send(adminMsg);
+                                        adminMsg.to = supportEmailAddress;
                                         sgMail.send(adminMsg);
 
                                         const betId = savedBet.id;
@@ -1276,7 +1279,7 @@ expressApp.post(
                                                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                             }
 
-                                            const adminMsg = {
+                                            let adminMsg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
                                                 to: adminEmailAddress1,
                                                 subject: 'New Bet',
@@ -1291,6 +1294,8 @@ expressApp.post(
                                                         <li>Win: $${toWin.toFixed(2)}</li>
                                                     </ul>`),
                                             }
+                                            sgMail.send(adminMsg);
+                                            adminMsg.to = supportEmailAddress;
                                             sgMail.send(adminMsg);
 
                                             const betId = savedBet.id;
@@ -1619,7 +1624,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
         }
 
-        const adminMsg = {
+        let adminMsg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: adminEmailAddress1,
             subject: 'New Bet',
@@ -1634,6 +1639,8 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
                     <li>Win: $${toWin.toFixed(2)}</li>
                 </ul>`),
         }
+        sgMail.send(adminMsg);
+        adminMsg.to = supportEmailAddress;
         sgMail.send(adminMsg);
 
         const betId = savedBet.id;

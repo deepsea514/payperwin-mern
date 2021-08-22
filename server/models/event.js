@@ -12,6 +12,7 @@ const config = require('../../config.json');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'hello@payperwin.co';
+const supportEmailAddress = 'support@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 
 const ID = function () {
@@ -196,7 +197,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
             }
 
-            const adminMsg = {
+            let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: adminEmailAddress,
                 subject: 'New Bet',
@@ -211,6 +212,8 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                         <li>Win: $${toWin.toFixed(2)}</li>
                     </ul>`),
             }
+            sgMail.send(adminMsg);
+            adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg);
 
             const betId = savedBet.id;
