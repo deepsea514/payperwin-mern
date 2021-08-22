@@ -23,6 +23,7 @@ const config = require("../config.json");
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'hello@payperwin.co';
+const supportEmailAddress = 'support@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 
 const ErrorCode = {
@@ -367,7 +368,7 @@ async function updateAction(action, user) {
                 sendSMS(`This is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
             }
 
-            const adminMsg = {
+            let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: adminEmailAddress,
                 subject: 'New Bet',
@@ -382,6 +383,8 @@ async function updateAction(action, user) {
                         <li>Win: $${Number(WagerInfo.ToWin).toFixed(2)}</li>
                     </ul>`),
             }
+            sgMail.send(adminMsg);
+            adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg);
 
         } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
