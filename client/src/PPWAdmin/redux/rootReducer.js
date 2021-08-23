@@ -20,6 +20,7 @@ import * as meta_tags from "../modules/meta-tags/redux/reducers";
 import * as articles from "../modules/articles/redux/reducers";
 import * as admin from "../modules/admin/redux/reducers";
 import * as cashback from "../modules/cashback/redux/reducers";
+import * as reports from "../modules/reports/redux/reducers";
 import * as currentUser from "./reducers";
 
 import * as frontend from "../../redux/reducer";
@@ -44,6 +45,7 @@ export const rootReducer = combineReducers({
     articles: articles.reducer,
     admin: admin.reducer,
     cashback: cashback.reducer,
+    reports: reports.reducer,
     currentUser: currentUser.reducer,
 
     frontend: frontend.reducer,
@@ -70,6 +72,7 @@ export function* rootSaga() {
         articles.saga(),
         admin.saga(),
         cashback.saga(),
+        reports.saga(),
 
         frontend.saga(),
     ]);

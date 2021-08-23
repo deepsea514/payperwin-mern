@@ -3943,4 +3943,121 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/profits',
+    authenticateJWT,
+    limitRoles('reports'),
+    async (req, res) => {
+        let { datefrom, dateto, type, page, perPage } = req.query;
+        try {
+            if (!perPage) perPage = 25;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page = parseInt(page);
+            page--;
+
+            let searchObj = {
+                status: FinancialStatus.success
+            };
+            if (datefrom) {
+                searchObj.createdAt = {
+                    $gte: new Date(datefrom)
+                }
+            }
+            if (dateto) {
+                if (datefrom) {
+                    searchObj.createdAt = {
+                        ...searchObj.createdAt,
+                        $lte: new Date(dateto),
+                    }
+                }
+            }
+            switch (type) {
+                case 'betfee':
+                    searchObj.financialtype = 'betfee';
+                    break;
+                case 'withdrawfee':
+                    searchObj.financialtype = 'withdrawfee';
+                    break;
+                case 'all':
+                default:
+                    searchObj.financialtype = {
+                        $in: ['betfee', 'withdrawfee']
+                    };
+                    break;
+            }
+
+            const total = await FinancialLog.find(searchObj).count();
+            const profits = await FinancialLog.find(searchObj).sort({ updatedAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['email']);
+            res.json({ total, perPage, page: page + 1, data: profits });
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/profits-csv',
+    authenticateJWT,
+    limitRoles('reports'),
+    async (req, res) => {
+        let { datefrom, dateto, type } = req.query;
+        try {
+            let searchObj = {
+                status: FinancialStatus.success
+            };
+            if (datefrom) {
+                searchObj.createdAt = {
+                    $gte: new Date(datefrom)
+                }
+            }
+            if (dateto) {
+                if (datefrom) {
+                    searchObj.createdAt = {
+                        ...searchObj.createdAt,
+                        $lte: new Date(dateto),
+                    }
+                }
+            }
+            switch (type) {
+                case 'betfee':
+                    searchObj.financialtype = 'betfee';
+                    break;
+                case 'withdrawfee':
+                    searchObj.financialtype = 'withdrawfee';
+                    break;
+                case 'all':
+                default:
+                    searchObj.financialtype = {
+                        $in: ['betfee', 'withdrawfee']
+                    };
+                    break;
+            }
+
+            const profits = await FinancialLog.find(searchObj).sort({ updatedAt: -1 })
+                .populate('user', ['email']);
+            let csvbody = [['#', 'Date', 'User', 'Event', 'TransactionID', 'Fee']];
+            profits.forEach((record, index) => {
+                csvbody.push([
+                    index + 1,
+                    dateformat(record.updatedAt, "default"),
+                    record.user.email,
+                    record.financialtype == 'betfee' ? 'Winning Bet Fee' : 'Withdrawal Fee',
+                    record.uniqid,
+                    `$${Number(record.amount).toFixed(2)}`,
+                ]);
+            })
+            res.send(csvbody);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
 module.exports = adminRouter;
