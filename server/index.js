@@ -963,6 +963,19 @@ expressApp.post(
                 errors,
             });
         }
+
+        let autobet = await AutoBet
+            .findOne({
+                deletedAt: null,
+                userId: user._id
+            });
+        if(autobet) {
+            errors.push(`Autobet user can't place bet.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
         for (const bet of betSlip) {
             const {
                 odds,
