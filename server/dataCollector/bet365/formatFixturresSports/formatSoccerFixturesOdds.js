@@ -15,27 +15,27 @@ function formatSoccerFixturesOdds(event) {
     line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[2].odds));
 
     if (goals) {
-        const { alternative_handicap_result, alternative_total_goals } = goals.sp;
-        if (alternative_handicap_result && alternative_handicap_result.length) {
-            let handicap_count = alternative_handicap_result.length / 3;
+        const { handicap_result, goals_over_under } = goals.sp;
+        if (handicap_result && handicap_result.length) {
+            let handicap_count = handicap_result.length / 3;
             for (let i = 0; i < handicap_count; i++) {
                 line.spreads.push({
-                    altLineId: alternative_handicap_result[i * 3].id,
-                    hdp: Number(alternative_handicap_result[i * 3].opp),
-                    home: parseInt(convertDecimalToAmericanOdds(alternative_handicap_result[i * 3].odds)),
-                    away: parseInt(convertDecimalToAmericanOdds(alternative_handicap_result[i * 3 + 2].odds)),
+                    altLineId: handicap_result[i * 3].id,
+                    hdp: Number(handicap_result[i * 3].opp),
+                    home: parseInt(convertDecimalToAmericanOdds(handicap_result[i * 3].odds)),
+                    away: parseInt(convertDecimalToAmericanOdds(handicap_result[i * 3 + 2].odds)),
                 })
             }
         }
-        if (alternative_total_goals && alternative_total_goals.length) {
-            let total_count = alternative_total_goals.length / 3;
+        if (goals_over_under && goals_over_under.length) {
+            let total_count = goals_over_under.length / 3;
 
             for (let i = 0; i < total_count; i++) {
                 line.totals.push({
-                    altLineId: alternative_total_goals[i + total_count].id,
-                    points: Number(alternative_total_goals[i].name),
-                    over: parseInt(convertDecimalToAmericanOdds(alternative_total_goals[i + total_count].odds)),
-                    under: parseInt(convertDecimalToAmericanOdds(alternative_total_goals[i + 2 * total_count].odds)),
+                    altLineId: goals_over_under[i + total_count].id,
+                    points: Number(goals_over_under[i].name),
+                    over: parseInt(convertDecimalToAmericanOdds(goals_over_under[i + total_count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(goals_over_under[i + 2 * total_count].odds)),
                 })
             }
         }

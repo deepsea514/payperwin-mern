@@ -95,30 +95,12 @@ class Lines extends PureComponent {
                         if (lines) {
                             lines.forEach(line => {
                                 const { moneyline, spreads, totals } = line;
-                                if (moneyline) {
-                                    if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
-                                    }
-                                    else {
-                                        delete line.moneyline;
-                                    }
-                                }
-
                                 if (spreads) {
-                                    const filteredSpreads = spreads.filter(spread => {
-                                        if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-                                            return true;
-                                        return false;
-                                    });
-                                    line.spreads = filteredSpreads.length ? filteredSpreads : null;
+                                    line.spreads = spreads.length ? spreads : null;
                                 }
 
                                 if (totals) {
-                                    const filteredTotals = totals.filter(total => {
-                                        if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-                                            return true;
-                                        return false;
-                                    });
-                                    line.totals = filteredTotals.length ? filteredTotals : null;
+                                    line.totals = totals.length ? totals : null;
                                 }
                             });
                         }

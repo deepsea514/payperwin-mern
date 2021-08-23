@@ -1,6 +1,15 @@
 function calculateNewOdds(home, away) {
     const moneylineDifference = Math.abs(Math.abs(home) - Math.abs(away)) / 2;
     let bigHome = 1;
+    if (home > 0 && away > 0 || home < 0 && away < 0) {
+        const newHome = (home + away) / 2;
+        const newAway = (home + away) / 2;
+        return {
+            newHome: parseInt(newHome),
+            newAway: parseInt(newAway),
+        }
+    }
+
     if (home > 0) {
         if (Math.abs(away) > Math.abs(home)) bigHome = 1;
         else bigHome = -1;
@@ -21,7 +30,6 @@ function calculateNewOdds(home, away) {
         newHome: parseInt(newHome),
         newAway: parseInt(newAway),
     }
-
 }
 
 module.exports = calculateNewOdds;
