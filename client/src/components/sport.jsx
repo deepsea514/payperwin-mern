@@ -69,30 +69,15 @@ class Sport extends PureComponent {
                                     if (i === 0) {
                                         const { moneyline, spreads, totals } = line;
                                         if (moneyline) {
-                                            if ((moneyline.home > 0 && moneyline.away < 0) || (moneyline.home < 0 && moneyline.away > 0)) {
-                                                event.lineCount++;
-                                            }
-                                            else {
-                                                delete line.moneyline;
-                                            }
+                                            event.lineCount++;
                                         }
                                         if (spreads) {
-                                            const filteredSpreads = spreads.filter(spread => {
-                                                if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-                                                    return true;
-                                                return false;
-                                            });
-                                            event.lineCount += filteredSpreads.length;
-                                            line.spreads = filteredSpreads.length ? filteredSpreads : null;
+                                            event.lineCount += spreads.length;
+                                            line.spreads = spreads.length ? spreads : null;
                                         }
                                         if (totals) {
-                                            const filteredTotals = totals.filter(total => {
-                                                if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-                                                    return true;
-                                                return false;
-                                            });
-                                            event.lineCount += filteredTotals.length;
-                                            line.totals = filteredTotals.length ? filteredTotals : null;
+                                            event.lineCount += totals.length;
+                                            line.totals = totals.length ? totals : null;
                                         }
                                     }
                                 });
