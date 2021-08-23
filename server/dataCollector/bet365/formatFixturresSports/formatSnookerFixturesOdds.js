@@ -36,8 +36,6 @@ function formatSnookerFixturesOdds(event) {
                     over: parseInt(convertDecimalToAmericanOdds(total_frames_2_way[i + total_count].odds)),
                     under: parseInt(convertDecimalToAmericanOdds(total_frames_2_way[i + 2 * total_count].odds)),
                 });
-            console.log(total_frames_2_way);
-            console.log(line.totals);
         }
     }
 

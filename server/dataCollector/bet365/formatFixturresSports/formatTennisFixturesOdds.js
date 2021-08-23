@@ -26,15 +26,15 @@ function formatTennisFixturesOdds(event) {
                 });
         }
 
-        const match_result_and_total_games = main.sp.match_result_and_total_games;
-        if (match_result_and_total_games) {
-            const total_count = match_result_and_total_games.length / 2 - 1;
+        const total_games_2_way = main.sp.total_games_2_way;
+        if (total_games_2_way) {
+            const total_count = total_games_2_way.length / 3;
             for (let i = 0; i < total_count; i++)
                 line.totals.push({
-                    altLineId: match_result_and_total_games[i + 2].id,
-                    points: Number(match_result_and_total_games[i + 2].handicap),
-                    over: parseInt(convertDecimalToAmericanOdds(match_result_and_total_games[i + 2].odds)),
-                    under: parseInt(convertDecimalToAmericanOdds(match_result_and_total_games[i + 2 + total_count].odds)),
+                    altLineId: total_games_2_way[i + total_count].id,
+                    points: Number(total_games_2_way[i].name),
+                    over: parseInt(convertDecimalToAmericanOdds(total_games_2_way[i + total_count].odds)),
+                    under: parseInt(convertDecimalToAmericanOdds(total_games_2_way[i + 2 * total_count].odds)),
                 })
         }
     }
