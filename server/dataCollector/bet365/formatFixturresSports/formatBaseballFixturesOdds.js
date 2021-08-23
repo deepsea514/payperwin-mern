@@ -5,15 +5,17 @@ function formatBaseballFixturesOdds(event) {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
         status: 1,
-        moneyline: {},
+        moneyline: null,
         spreads: [],
         totals: [],
     }
 
     if (schedule && schedule.sp.main) {
         const moneyline = schedule.sp.main;
-        line.moneyline.home = parseInt(convertDecimalToAmericanOdds(moneyline[0].odds));
-        line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[1].odds));
+        line.moneyline = {
+            home: parseInt(convertDecimalToAmericanOdds(moneyline[0].odds)),
+            away: parseInt(convertDecimalToAmericanOdds(moneyline[1].odds))
+        }
     }
 
     if (main && Object.keys(main.sp).length > 0) {
@@ -38,8 +40,10 @@ function formatBaseballFixturesOdds(event) {
                     })
                 }
                 if (game_lines[i].name == 'Money Line' && !line.moneyline) {
-                    line.moneyline.home = parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds));
-                    line.moneyline.away = parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds));
+                    line.moneyline = {
+                        home: parseInt(convertDecimalToAmericanOdds(game_lines[i + count].odds)),
+                        away: parseInt(convertDecimalToAmericanOdds(game_lines[i + count * 2].odds))
+                    }
                 }
             }
         }

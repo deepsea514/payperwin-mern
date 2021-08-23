@@ -43,6 +43,9 @@ function formatVolleyballFixturesOdds(event) {
             away: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[1].odds))
         };
     }
+    if(!line.moneyline.home || !line.moneyline.away) {
+        line.moneyline = null;
+    }
 
     // if (line.moneyline && !(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
     //     line.moneyline = null;
