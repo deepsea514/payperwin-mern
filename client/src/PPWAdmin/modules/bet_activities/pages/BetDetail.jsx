@@ -29,6 +29,16 @@ class BetDetail extends React.Component {
         return dateformat(new Date(date), "mediumDate");
     }
 
+    getPPWBetDogFav = (bet, pick) => {
+        const { teamA, teamB, pick: betPick } = bet;
+        if (!pick) pick = betPick;
+        if (!teamA) return;
+        if ((Number(teamA.odds) < Number(teamB.odds)) && pick == 'home' || (Number(teamA.odds) > Number(teamB.odds)) && pick == 'away') {
+            return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+        }
+        return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
+    }
+
     getPPWBetType = (type) => {
         switch (type) {
             case "moneyline":
@@ -135,7 +145,7 @@ class BetDetail extends React.Component {
                                         </tr>
                                         <tr>
                                             <th>Pick Name</th>
-                                            <td>{bet.pickName}</td>
+                                            <td>{bet.pickName} {this.getPPWBetDogFav(bet)}</td>
                                             <th>Sport</th>
                                             <td><i className={`${sportNameIcon(bet.lineQuery.sportName) || 'fas fa-trophy'}`} />&nbsp;{bet.lineQuery.sportName}</td>
                                         </tr>
@@ -147,13 +157,13 @@ class BetDetail extends React.Component {
                                         </tr>
                                         <tr>
                                             <th>Team A</th>
-                                            <td>{bet.teamA.name}</td>
+                                            <td>{bet.teamA.name} {this.getPPWBetDogFav(bet, 'home')}</td>
                                             <th>Odd</th>
                                             <td>{bet.teamA.odds}</td>
                                         </tr>
                                         <tr>
                                             <th>Team B</th>
-                                            <td>{bet.teamB.name}</td>
+                                            <td>{bet.teamB.name} {this.getPPWBetDogFav(bet, 'away')}</td>
                                             <th>Odd</th>
                                             <td>{bet.teamB.odds}</td>
                                         </tr>

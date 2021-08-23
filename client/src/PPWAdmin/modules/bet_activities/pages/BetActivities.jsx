@@ -72,6 +72,7 @@ class BetActivities extends React.Component {
                     <td scope="col">{bet.userId ? bet.userId.email : null}</td>
                     <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
                     <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                    <td scope="col">{this.getPPWBetDogFav(bet)}</td>
                     <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}</td>
                     <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                     <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
@@ -143,6 +144,15 @@ class BetActivities extends React.Component {
                 </tr>
             ));
         }
+    }
+
+    getPPWBetDogFav = (bet) => {
+        const { teamA, teamB, pick } = bet;
+        if (!teamA) return;
+        if ((Number(teamA.odds) < Number(teamB.odds)) && pick == 'home' || (Number(teamA.odds) > Number(teamB.odds)) && pick == 'away') {
+            return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+        }
+        return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }
 
     getPinnacleBetType = (type) => {
@@ -427,6 +437,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">User</th>
                                             <th scope="col">Sport</th>
                                             <th scope="col">Event</th>
+                                            <th scope="col">Dog/Fav</th>
                                             <th scope="col">Line</th>
                                             <th scope="col">House</th>
                                             <th scope="col">Status</th>
