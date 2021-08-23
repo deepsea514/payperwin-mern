@@ -372,6 +372,19 @@ function AsideMenuList({
                                     <span className="menu-text">Withdraw</span>
                                 </NavLink>
                             </li>
+                            <li
+                                className={`menu-item ${getMenuItemActive(
+                                    "/reports/profit"
+                                )}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/reports/profit">
+                                    <i className="menu-bullet menu-bullet-dot">
+                                        <span />
+                                    </i>
+                                    <span className="menu-text">Profit</span>
+                                </NavLink>
+                            </li>
                         </ul>
                     </div>
                 </li>}
