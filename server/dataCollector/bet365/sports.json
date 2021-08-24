@@ -2,5 +2,9 @@
     {
         "id": 1,
         "name": "Soccer"
+    },
+    {
+        "id": 3,
+        "name": "Cricket"
     }
 ]
