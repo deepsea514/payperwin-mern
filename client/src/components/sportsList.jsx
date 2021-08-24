@@ -93,7 +93,7 @@ class SportsList extends PureComponent {
                     return hasEvents || showNoEvents ? (
                         name == "Other" ?
                             (
-                                <li className="sport-list-item sport-sublist-item" key={name}>
+                                <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
                                     <Link
                                         to={{ pathname: `/others` }}
                                         className="sport-list-compact"
