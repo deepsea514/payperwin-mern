@@ -18,20 +18,20 @@ function formatBowlsFixturesOdds(event) {
     //     for (let i = 0; i < line_count; i++) {
     //         if (game_betting_2_way[i].name == "To Win") {
     //             line.moneyline = {
-    //                 home: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds)),
-    //                 away: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds))
+    //                 home: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds),
+    //                 away: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds)
     //             }
     //         } else if (game_betting_2_way[i].name == "Handicap") {
     //             line.spreads.push({
     //                 hdp: Number(game_betting_2_way[i + line_count].handicap),
-    //                 home: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds)),
-    //                 away: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds)),
+    //                 home: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds),
+    //                 away: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds),
     //             })
     //         } else if (game_betting_2_way[i].name == "Total") {
     //             line.totals.push({
     //                 points: Number(game_betting_2_way[i + line_count].handicap),
-    //                 over: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds)),
-    //                 under: parseInt(convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds)),
+    //                 over: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count].odds),
+    //                 under: convertDecimalToAmericanOdds(game_betting_2_way[i + line_count * 2].odds),
     //             })
     //         }
     //     }
@@ -39,8 +39,8 @@ function formatBowlsFixturesOdds(event) {
 
     // if (!line.moneyline && schedule) {
     //     line.moneyline = {
-    //         home: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[0].odds)),
-    //         away: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[1].odds))
+    //         home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
+    //         away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
     //     };
     // }
 

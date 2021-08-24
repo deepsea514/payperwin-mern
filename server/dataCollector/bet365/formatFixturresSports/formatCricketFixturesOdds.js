@@ -10,8 +10,8 @@ function formatCricketFixturesOdds(event) {
         totals: null,
     }
 
-    line.moneyline.home = parseInt(convertDecimalToAmericanOdds(moneyline[0].odds));
-    line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[1].odds));
+    line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
+    line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
 
     if (!(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
         line.moneyline = null;

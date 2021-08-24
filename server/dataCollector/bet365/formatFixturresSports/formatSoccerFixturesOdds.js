@@ -10,9 +10,9 @@ function formatSoccerFixturesOdds(event) {
         totals: [],
     }
 
-    line.moneyline.home = parseInt(convertDecimalToAmericanOdds(moneyline[0].odds));
-    line.moneyline.draw = parseInt(convertDecimalToAmericanOdds(moneyline[1].odds));
-    line.moneyline.away = parseInt(convertDecimalToAmericanOdds(moneyline[2].odds));
+    line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
+    line.moneyline.draw = convertDecimalToAmericanOdds(moneyline[1].odds);
+    line.moneyline.away = convertDecimalToAmericanOdds(moneyline[2].odds);
 
     if (goals) {
         const { handicap_result, goals_over_under } = goals.sp;
@@ -22,8 +22,8 @@ function formatSoccerFixturesOdds(event) {
                 line.spreads.push({
                     altLineId: handicap_result[i * 3].id,
                     hdp: Number(handicap_result[i * 3].opp),
-                    home: parseInt(convertDecimalToAmericanOdds(handicap_result[i * 3].odds)),
-                    away: parseInt(convertDecimalToAmericanOdds(handicap_result[i * 3 + 2].odds)),
+                    home: convertDecimalToAmericanOdds(handicap_result[i * 3].odds),
+                    away: convertDecimalToAmericanOdds(handicap_result[i * 3 + 2].odds),
                 })
             }
         }
@@ -34,8 +34,8 @@ function formatSoccerFixturesOdds(event) {
                 line.totals.push({
                     altLineId: goals_over_under[i + total_count].id,
                     points: Number(goals_over_under[i].name),
-                    over: parseInt(convertDecimalToAmericanOdds(goals_over_under[i + total_count].odds)),
-                    under: parseInt(convertDecimalToAmericanOdds(goals_over_under[i + 2 * total_count].odds)),
+                    over: convertDecimalToAmericanOdds(goals_over_under[i + total_count].odds),
+                    under: convertDecimalToAmericanOdds(goals_over_under[i + 2 * total_count].odds),
                 })
             }
         }
