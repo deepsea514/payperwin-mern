@@ -969,7 +969,7 @@ expressApp.post(
                 deletedAt: null,
                 userId: user._id
             });
-        if(autobet) {
+        if (autobet) {
             errors.push(`Autobet user can't place bet.`)
             return res.json({
                 balance: user.balance,
@@ -1428,8 +1428,12 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     const newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
 
     let side = 'Underdog';
-    if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
-        side = 'Favorite';
+    if (oddsA == oddsB) {
+        if (pick == 'away') side = 'Favorite';
+    } else {
+        if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
+            side = 'Favorite';
+        }
     }
     let betType = 'Moneyline';
     switch (type) {

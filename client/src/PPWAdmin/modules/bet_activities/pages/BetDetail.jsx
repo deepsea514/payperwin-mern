@@ -33,8 +33,17 @@ class BetDetail extends React.Component {
         const { teamA, teamB, pick: betPick } = bet;
         if (!pick) pick = betPick;
         if (!teamA) return;
-        if ((Number(teamA.odds) < Number(teamB.odds)) && pick == 'home' || (Number(teamA.odds) > Number(teamB.odds)) && pick == 'away') {
-            return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+        const oddsA = Number(teamA.odds);
+        const oddsB = Number(teamB.odds);
+
+        if (oddsA == oddsB) {
+            if (pick == 'away') {
+                return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+            }
+        } else {
+            if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
+                return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+            }
         }
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }

@@ -69,7 +69,7 @@ class SportsLeagues extends PureComponent {
                 <div className="highlights">
                     <div className="bet-slip-header">TOP LEAGUES</div>
                     <div className="content">
-                        {leagues && leagues.length && <ul className="leagues-list">
+                        {leagues && leagues.length != 0 && <ul className="leagues-list">
                             {leagues.slice(0, 6).map(league => (
                                 <li key={league.name}
                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
