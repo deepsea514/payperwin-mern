@@ -12,8 +12,10 @@ function formatDartsFixturesOdds(event) {
 
     if (schedule && schedule.sp.main) {
         const moneyline = schedule.sp.main;
-        line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
-        line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
+        line.moneyline = {
+            home: convertDecimalToAmericanOdds(moneyline[0].odds),
+            away: convertDecimalToAmericanOdds(moneyline[1].odds)
+        }
     }
 
 
