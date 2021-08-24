@@ -302,7 +302,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{teamA}</div>
                                                                     {!started && <div className="odds">
-                                                                        {moneyline.home != newHome && <>
+                                                                        {(moneyline.home != newHome || moneyline.home == newHome && moneyline.home == moneyline.away) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(moneyline.home)}
                                                                             </div>
@@ -311,9 +311,6 @@ class Lines extends PureComponent {
                                                                             </div>
                                                                         </>}
                                                                         {moneyline.home == newHome && moneyline.home != moneyline.away && <div className="origin-odds">
-                                                                            {this.convertOdds(newHome)}
-                                                                        </div>}
-                                                                        {moneyline.home == newHome && moneyline.home == moneyline.away && <div className="new-odds">
                                                                             {this.convertOdds(newHome)}
                                                                         </div>}
                                                                     </div>}
@@ -348,7 +345,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{teamB}</div>
                                                                     {!started && <div className="odds">
-                                                                        {moneyline.away != newAway && <>
+                                                                        {(moneyline.away != newAway || moneyline.away == newAway && moneyline.home == moneyline.away) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(moneyline.away)}
                                                                             </div>
@@ -358,9 +355,6 @@ class Lines extends PureComponent {
                                                                         </>}
                                                                         {moneyline.away == newAway && moneyline.home != moneyline.away && <div className="origin-odds">
                                                                             {this.convertOdds(newAway)}
-                                                                        </div>}
-                                                                        {moneyline.away == newAway && moneyline.home == moneyline.away && <div className="new-odds">
-                                                                            {this.convertOdds(newHome)}
                                                                         </div>}
                                                                     </div>}
                                                                     {started && <div className="odds">
@@ -422,7 +416,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{`${spread.hdp > 0 ? '+' : ''}${spread.hdp}`}</div>
                                                                     {!started && <div className="odds">
-                                                                        {spread.home != newHome && <>
+                                                                        {(spread.home != newHome || spread.home == newHome && spread.home == spread.away) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(spread.home)}
                                                                             </div>
@@ -431,9 +425,6 @@ class Lines extends PureComponent {
                                                                             </div>
                                                                         </>}
                                                                         {spread.home == newHome && spread.home != spread.away && <div className="origin-odds">
-                                                                            {this.convertOdds(newHome)}
-                                                                        </div>}
-                                                                        {spread.home == newHome && spread.home == spread.away && <div className="new-odds">
                                                                             {this.convertOdds(newHome)}
                                                                         </div>}
                                                                     </div>}
@@ -469,7 +460,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
                                                                     {!started && <div className="odds">
-                                                                        {spread.away != newAway && <>
+                                                                        {(spread.away != newAway || spread.away == newAway && spread.home == spread.away) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(spread.away)}
                                                                             </div>
@@ -478,9 +469,6 @@ class Lines extends PureComponent {
                                                                             </div>
                                                                         </>}
                                                                         {spread.away == newAway && spread.home != spread.away && <div className="origin-odds">
-                                                                            {this.convertOdds(newAway)}
-                                                                        </div>}
-                                                                        {spread.away == newAway && spread.home == spread.away && <div className="new-odds">
                                                                             {this.convertOdds(newAway)}
                                                                         </div>}
                                                                     </div>}
@@ -541,7 +529,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{`${total.points}`}</div>
                                                                     {!started && <div className="odds">
-                                                                        {total.over != newHome && <>
+                                                                        {(total.over != newHome || total.over == newHome && total.over == total.under) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(total.over)}
                                                                             </div>
@@ -550,9 +538,6 @@ class Lines extends PureComponent {
                                                                             </div>
                                                                         </>}
                                                                         {total.over == newHome && total.over != total.under && <div className="origin-odds">
-                                                                            {this.convertOdds(newHome)}
-                                                                        </div>}
-                                                                        {total.over == newHome && total.over == total.under && <div className="new-odds">
                                                                             {this.convertOdds(newHome)}
                                                                         </div>}
                                                                     </div>}
@@ -590,7 +575,7 @@ class Lines extends PureComponent {
                                                                 <div className="vertical-align">
                                                                     <div className="points">{`${total.points}`}</div>
                                                                     {!started && <div className="odds">
-                                                                        {total.under != newAway && <>
+                                                                        {(total.under != newAway || total.under == newAway && total.over == total.under) && <>
                                                                             <div className="old-odds">
                                                                                 {this.convertOdds(total.under)}
                                                                             </div>
@@ -599,9 +584,6 @@ class Lines extends PureComponent {
                                                                             </div>
                                                                         </>}
                                                                         {total.under == newAway && total.over != total.under && <div className="origin-odds">
-                                                                            {this.convertOdds(newAway)}
-                                                                        </div>}
-                                                                        {total.under == newAway && total.over == total.under && <div className="new-odds">
                                                                             {this.convertOdds(newAway)}
                                                                         </div>}
                                                                     </div>}
