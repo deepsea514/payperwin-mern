@@ -1,23 +1,28 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 function formatBoxingUFCFixturesOdds(event) {
-    const { goals, schedule: { sp: { main: moneyline } } } = event.odds;
+    const { schedule } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
         status: 1,
-        moneyline: {},
-        spreads: null,
-        totals: null,
+        moneyline: null,
+        spreads: [],
+        totals: [],
     }
 
-    line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
-    line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
-
-    if (!(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
-        line.moneyline = null;
+    if (schedule && schedule.sp.main) {
+        const moneyline = schedule.sp.main;
+        line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
+        line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
     }
 
-    if (line.moneyline)
+    if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
+        line.moneyline = null
+    }
+    line.spreads = line.spreads.length ? line.spreads : null;
+    line.totals = line.totals.length ? line.totals : null;
+
+    if (line.moneyline || line.spreads || line.totals)
         return line;
     return null;
 }
