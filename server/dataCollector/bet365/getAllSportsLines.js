@@ -80,7 +80,7 @@ async function getAllSportsLines() {
             let page = 1;
             while (true) {
                 const { data: { success, results, pager: { total } } } = await axios
-                    .get(`https://api.betsapi.com/v1/bet365/upcoming`, {
+                    .get(`https://api.b365api.com/v1/bet365/upcoming`, {
                         params: {
                             sport_id: sport.id,
                             token: bet365ApiKey,
@@ -98,7 +98,7 @@ async function getAllSportsLines() {
                         ids.push(results[ei + i].id);
                     }
                     const { data: { success, results: oddsResult } } = await axios
-                        .get(`https://api.betsapi.com/v1/bet365/start_sp`, {
+                        .get(`https://api.b365api.com/v3/bet365/prematch`, {
                             params: {
                                 FI: ids.join(','),
                                 token: bet365ApiKey,
@@ -131,7 +131,7 @@ async function getAllSportsLines() {
                             teamA: result.home.name,
                             teamB: result.away.name,
                             lines: [line],
-                            // odds: result,
+                            // odds: result.odds,
                         });
                     }
 
