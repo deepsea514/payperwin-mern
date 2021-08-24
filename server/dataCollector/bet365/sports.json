@@ -14,5 +14,13 @@
     {
         "id": 12,
         "name": "American Football"
+    },
+    {
+        "id": 13,
+        "name": "Tennis"
+    },
+    {
+        "id": 14,
+        "name": "Snooker"
     }
 ]
