@@ -28,7 +28,7 @@ function formatAmericanFootballFixturesOdds(event) {
             if (game_lines[i].name == 'Total') {
                 line.totals.push({
                     altLineId: game_lines[i].id,
-                    points: Number(game_lines[i].handicap),
+                    points: Number(game_lines[i].handicap.slice(2, game_lines[i].handicap.length)),
                     over: convertDecimalToAmericanOdds(game_lines[i].odds),
                     under: convertDecimalToAmericanOdds(game_lines[i + count].odds),
                 })
