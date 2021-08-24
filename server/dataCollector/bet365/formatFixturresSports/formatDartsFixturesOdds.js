@@ -1,17 +1,20 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 function formatDartsFixturesOdds(event) {
-    const { main, schedule: { sp: { main: moneyline } } } = event.odds;
+    const { main, schedule } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
         status: 1,
-        moneyline: {},
+        moneyline: null,
         spreads: [],
         totals: [],
     }
 
-    line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
-    line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
+    if (schedule && schedule.sp.main) {
+        const moneyline = schedule.sp.main;
+        line.moneyline.home = convertDecimalToAmericanOdds(moneyline[0].odds);
+        line.moneyline.away = convertDecimalToAmericanOdds(moneyline[1].odds);
+    }
 
 
     if (main && Object.keys(main.sp).length > 0) {
@@ -40,25 +43,13 @@ function formatDartsFixturesOdds(event) {
         }
     }
 
-    // if (!(line.moneyline.home > 0 && line.moneyline.away < 0) && !(line.moneyline.home < 0 && line.moneyline.away > 0)) {
-    //     line.moneyline = null;
-    // }
+    if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
+        line.moneyline = null
+    }
+    line.spreads = line.spreads.length ? line.spreads : null;
+    line.totals = line.totals.length ? line.totals : null;
 
-    // const filteredSpreads = line.spreads.filter(spread => {
-    //     if (spread && (spread.home > 0 && spread.away < 0) || (spread.home < 0 && spread.away > 0))
-    //         return true;
-    //     return false;
-    // });
-    // line.spreads = filteredSpreads.length ? filteredSpreads : null;
-
-    // const filteredTotals = line.totals.filter(total => {
-    //     if (total && (total.over > 0 && total.under < 0) || (total.over < 0 && total.under > 0))
-    //         return true;
-    //     return false;
-    // });
-    // line.totals = filteredTotals.length ? filteredTotals : null;
-
-    if (line.moneyline)
+    if (line.moneyline || line.spreads || line.totals)
         return line;
     return null;
 }
