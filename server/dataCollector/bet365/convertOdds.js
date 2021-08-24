@@ -1,8 +1,8 @@
 function convertDecimalToAmericanOdds(decimal) {
     if (decimal >= 2.0) {
-        return Number(((decimal - 1) * 100).toFixed(2));
+        return (decimal - 1) * 100;
     }
-    return Number(((-100) / (decimal - 1)).toFixed(2));
+    return -100 / (decimal - 1);
 }
 
 module.exports = {
