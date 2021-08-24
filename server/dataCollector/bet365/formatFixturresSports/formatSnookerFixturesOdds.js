@@ -10,16 +10,19 @@ function formatSnookerFixturesOdds(event) {
         totals: [],
     }
 
-    if (schedule && schedule.sp.main) {
-        line.moneyline = {
-            home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
-            away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
-        };
-    }
 
-    if (main && Object.keys(main.sp).length > 0) {
-        const match_handicap = main.sp.match_handicap;
-        if (match_handicap) {
+
+    if (main) {
+        if (main.sp.to_win_match) {
+            const moneyline = main.sp.to_win_match.odds
+            line.moneyline = {
+                home: convertDecimalToAmericanOdds(moneyline[0].odds),
+                away: convertDecimalToAmericanOdds(moneyline[1].odds)
+            };
+        }
+
+        if (main.sp.match_handicap) {
+            const match_handicap = main.sp.match_handicap.odds;
             const handicap_count = match_handicap.length / 2;
             for (let i = 0; i < handicap_count; i++)
                 line.spreads.push({
@@ -30,15 +33,15 @@ function formatSnookerFixturesOdds(event) {
                 });
         }
 
-        const total_frames_2_way = main.sp.total_frames_2_way;
-        if (total_frames_2_way) {
-            const total_count = total_frames_2_way.length / 3;
+        if (main.sp.total_frames_2_way) {
+            const total_frames_2_way = main.sp.total_frames_2_way.odds;
+            const total_count = total_frames_2_way.length / 2;
             for (let i = 0; i < total_count; i++)
                 line.totals.push({
-                    altLineId: total_frames_2_way[i + total_count].id,
+                    altLineId: total_frames_2_way[i].id,
                     points: Number(total_frames_2_way[i].name),
-                    over: convertDecimalToAmericanOdds(total_frames_2_way[i + total_count].odds),
-                    under: convertDecimalToAmericanOdds(total_frames_2_way[i + 2 * total_count].odds),
+                    over: convertDecimalToAmericanOdds(total_frames_2_way[i].odds),
+                    under: convertDecimalToAmericanOdds(total_frames_2_way[i + total_count].odds),
                 });
         }
     }
