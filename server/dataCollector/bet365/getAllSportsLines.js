@@ -75,70 +75,73 @@ async function getAllSportsLines() {
                 leagues: [],
             };
 
-            for (let day = 0; day < 7; day++) {
-                const date = new Date().addHours(24 * day);
-                let page = 1;
-                while (true) {
-                    const { data: { success, results, pager: { total } } } = await axios
-                        .get(`https://api.betsapi.com/v1/bet365/upcoming`, {
+            // for (let day = 0; day < 7; day++) {
+            // const date = new Date().addHours(24 * day);
+            let page = 1;
+            while (true) {
+                const { data: { success, results, pager: { total } } } = await axios
+                    .get(`https://api.betsapi.com/v1/bet365/upcoming`, {
+                        params: {
+                            sport_id: sport.id,
+                            token: bet365ApiKey,
+                            page: page,
+                            per_page: per_page,
+                            // day: dateformat(date, "yyyymmdd"),
+                        }
+                    });
+                console.log("total =>", total);
+                console.log("page =>", page);
+                if (!success) continue;
+                for (let ei = 0; ei < results.length; ei += 10) {
+                    let ids = [];
+                    for (let i = 0; i < 10 && results[ei + i]; i++) {
+                        ids.push(results[ei + i].id);
+                    }
+                    const { data: { success, results: oddsResult } } = await axios
+                        .get(`https://api.betsapi.com/v1/bet365/start_sp`, {
                             params: {
-                                sport_id: sport.id,
+                                FI: ids.join(','),
                                 token: bet365ApiKey,
-                                page: page,
-                                per_page: per_page,
-                                day: dateformat(date, "yyyymmdd"),
                             }
                         });
-                    console.log("total =>", total);
-                    console.log("page =>", page);
-                    if (!success) continue;
-                    for (let ei = 0; ei < results.length; ei += 10) {
-                        let ids = [];
-                        for (let i = 0; i < 10 && results[ei + i]; i++) {
-                            ids.push(results[ei + i].id);
-                        }
-                        const { data: { success, results: oddsResult } } = await axios
-                            .get(`https://api.betsapi.com/v1/bet365/start_sp`, {
-                                params: {
-                                    FI: ids.join(','),
-                                    token: bet365ApiKey,
-                                }
-                            });
-                        if (!success) {
-                            continue;
-                        }
-                        for (let i = 0; i < 10 && results[ei + i]; i++) {
-                            results[ei + i].odds = oddsResult[i];
-                        }
+                    if (!success) {
+                        continue;
                     }
-                    results.map(result => {
-                        if (result.time_status != 0) return;
-                        let league = sportEvents.leagues.find(league => league.originId == result.league.id);
-                        if (!league) {
-                            league = {
-                                name: result.league.name,
-                                originId: result.league.id,
-                                events: [],
-                            }
-                            sportEvents.leagues.push(league);
-                        }
-
-                        let line = formatFixturesOdds(result, sport.name);
-                        if (line) {
-                            league.events.push({
-                                originId: result.id,
-                                startDate: new Date(parseInt(result.time) * 1000),
-                                teamA: result.home.name,
-                                teamB: result.away.name,
-                                lines: [line],
-                            });
-                        }
-
-                    });
-                    if (total == 0 || Math.ceil(total / per_page) == page) break;
-                    page++;
+                    for (let i = 0; i < 10 && results[ei + i]; i++) {
+                        results[ei + i].odds = oddsResult[i];
+                    }
                 }
+                results.map(result => {
+                    if (result.time_status != 0) return;
+                    let league = sportEvents.leagues.find(league => league.originId == result.league.id);
+                    if (!league) {
+                        league = {
+                            name: result.league.name,
+                            originId: result.league.id,
+                            events: [],
+                        }
+                        sportEvents.leagues.push(league);
+                    }
+
+                    let line = formatFixturesOdds(result, sport.name);
+                    if (line) {
+                        league.events.push({
+                            originId: result.id,
+                            startDate: new Date(parseInt(result.time) * 1000),
+                            teamA: result.home.name,
+                            teamB: result.away.name,
+                            lines: [line],
+                            // odds: result,
+                        });
+                    }
+
+                });
+                if (total == 0 || Math.ceil(total / per_page) == page) break;
+                page++;
             }
+            // }
+
+            // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
 
             const savedSport = await Sport.findOne({ originSportId: sportEvents.originSportId, origin: 'bet365' });
             if (savedSport) {
