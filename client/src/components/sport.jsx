@@ -114,7 +114,7 @@ class Sport extends PureComponent {
 
     addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, started) => {
         if (started) return;
-        if (odds[pick] != originOdds[pick]) {
+        if (originOdds.home == originOdds.away || odds[pick] != originOdds[pick]) {
             return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin);
         }
         this.setState({ showModal: true });
@@ -236,7 +236,10 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newHome)}
                                                                     </div>
                                                                 </>}
-                                                                {moneyline.home == newHome && <div className="origin-odds">
+                                                                {moneyline.home == newHome && moneyline.home != moneyline.away && <div className="origin-odds">
+                                                                    {this.convertOdds(newHome)}
+                                                                </div>}
+                                                                {moneyline.home == newHome && moneyline.home == moneyline.away && <div className="new-odds">
                                                                     {this.convertOdds(newHome)}
                                                                 </div>}
                                                             </div>}
@@ -275,8 +278,11 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newAway)}
                                                                     </div>
                                                                 </>}
-                                                                {moneyline.away == newAway && <div className="origin-odds">
+                                                                {moneyline.away == newAway && moneyline.home != moneyline.away && <div className="origin-odds">
                                                                     {this.convertOdds(newAway)}
+                                                                </div>}
+                                                                {moneyline.away == newAway && moneyline.home == moneyline.away && <div className="new-odds">
+                                                                    {this.convertOdds(newHome)}
                                                                 </div>}
                                                             </div>}
                                                             {started && <div className="vertical-align">
@@ -337,7 +343,10 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newHome)}
                                                                     </div>
                                                                 </>}
-                                                                {spreads[0].home == newHome && <div className="origin-odds">
+                                                                {spreads[0].home == newHome && spreads[0].home != spreads[0].away && <div className="origin-odds">
+                                                                    {this.convertOdds(newHome)}
+                                                                </div>}
+                                                                {spreads[0].home == newHome && spreads[0].home == spreads[0].away && <div className="new-odds">
                                                                     {this.convertOdds(newHome)}
                                                                 </div>}
                                                             </div>}
@@ -378,7 +387,10 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newAway)}
                                                                     </div>
                                                                 </>}
-                                                                {spreads[0].away == newAway && <div className="origin-odds">
+                                                                {spreads[0].away == newAway && spreads[0].home != spreads[0].away && <div className="origin-odds">
+                                                                    {this.convertOdds(newAway)}
+                                                                </div>}
+                                                                {spreads[0].away == newAway && spreads[0].home == spreads[0].away && <div className="new-odds">
                                                                     {this.convertOdds(newAway)}
                                                                 </div>}
                                                             </div>}
@@ -440,7 +452,10 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newHome)}
                                                                     </div>
                                                                 </>}
-                                                                {totals[0].over == newHome && <div className="origin-odds">
+                                                                {totals[0].over == newHome && totals[0].over != totals[0].under && <div className="origin-odds">
+                                                                    {this.convertOdds(newHome)}
+                                                                </div>}
+                                                                {totals[0].over == newHome && totals[0].over == totals[0].under && <div className="new-odds">
                                                                     {this.convertOdds(newHome)}
                                                                 </div>}
                                                             </div>}
@@ -482,7 +497,10 @@ class Sport extends PureComponent {
                                                                         {this.convertOdds(newAway)}
                                                                     </div>
                                                                 </>}
-                                                                {totals[0].under == newAway && <div className="origin-odds">
+                                                                {totals[0].under == newAway && totals[0].over != totals[0].under && <div className="origin-odds">
+                                                                    {this.convertOdds(newAway)}
+                                                                </div>}
+                                                                {totals[0].under == newAway && totals[0].over == totals[0].under && <div className="new-odds">
                                                                     {this.convertOdds(newAway)}
                                                                 </div>}
                                                             </div>}
