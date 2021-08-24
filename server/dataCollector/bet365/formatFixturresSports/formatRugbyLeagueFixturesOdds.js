@@ -11,7 +11,7 @@ function formatRugbyLeagueFixturesOdds(event) {
     }
 
     if (main && main.sp.game_betting_2_way) {
-        const { game_betting_2_way } = main.sp;
+        const { game_betting_2_way: { odds: game_betting_2_way } } = main.sp;
         const line_count = game_betting_2_way.length / 3;
         for (let i = 0; i < line_count; i++) {
             if (game_betting_2_way[i].name == "To Win") {
@@ -35,13 +35,6 @@ function formatRugbyLeagueFixturesOdds(event) {
                 })
             }
         }
-    }
-
-    if (!line.moneyline && schedule && schedule.sp.main) {
-        line.moneyline = {
-            home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
-            away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
-        };
     }
 
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {

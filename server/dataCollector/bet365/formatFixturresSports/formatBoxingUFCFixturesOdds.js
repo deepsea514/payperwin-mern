@@ -1,6 +1,6 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 function formatBoxingUFCFixturesOdds(event) {
-    const { schedule } = event.odds;
+    const { schedule, main } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
@@ -10,8 +10,8 @@ function formatBoxingUFCFixturesOdds(event) {
         totals: [],
     }
 
-    if (schedule && schedule.sp.main) {
-        const moneyline = schedule.sp.main;
+    if(main && main.sp && main.sp.to_win_fight) {
+        const moneyline = main.sp.to_win_fight.odds;
         line.moneyline = {
             home: convertDecimalToAmericanOdds(moneyline[0].odds),
             away: convertDecimalToAmericanOdds(moneyline[1].odds)
