@@ -13,8 +13,8 @@ function formatBeachVolleyballFixturesOdds(event) {
 
     if (schedule && schedule.sp.main) {
         line.moneyline = {
-            home: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[0].odds)),
-            away: parseInt(convertDecimalToAmericanOdds(schedule.sp.main[1].odds))
+            home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
+            away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
         };
     }
 
