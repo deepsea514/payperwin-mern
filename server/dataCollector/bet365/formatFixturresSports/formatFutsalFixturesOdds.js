@@ -1,7 +1,6 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
-const TestEvent = require('../../../models/testEvent');
 function formatFutsalFixturesOdds(event) {
-    const { main, schedule } = event.odds;
+    const { main } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
@@ -12,35 +11,30 @@ function formatFutsalFixturesOdds(event) {
     }
 
     if (main && main.sp.game_lines) {
-        const { game_lines } = main.sp;
-        const line_count = game_lines.length / 3;
+        const { game_lines: { odds: game_lines } } = main.sp;
+        const line_count = game_lines.length / 2;
         for (let i = 0; i < line_count; i++) {
             if (game_lines[i].name == "To Win") {
                 line.moneyline = {
-                    home: convertDecimalToAmericanOdds(game_lines[i + line_count].odds),
-                    away: convertDecimalToAmericanOdds(game_lines[i + line_count * 2].odds)
+                    home: convertDecimalToAmericanOdds(game_lines[i].odds),
+                    away: convertDecimalToAmericanOdds(game_lines[i + line_count].odds)
                 }
             } else if (game_lines[i].name == "Handicap") {
                 line.spreads.push({
-                    hdp: Number(game_lines[i + line_count].handicap),
-                    home: convertDecimalToAmericanOdds(game_lines[i + line_count].odds),
-                    away: convertDecimalToAmericanOdds(game_lines[i + line_count * 2].odds),
+                    altLineId: game_lines[i].id,
+                    hdp: Number(game_lines[i].handicap),
+                    home: convertDecimalToAmericanOdds(game_lines[i].odds),
+                    away: convertDecimalToAmericanOdds(game_lines[i + line_count].odds),
                 })
             } else if (game_lines[i].name == "Total") {
                 line.totals.push({
-                    points: Number(game_lines[i + line_count].handicap),
-                    over: convertDecimalToAmericanOdds(game_lines[i + line_count].odds),
-                    under: convertDecimalToAmericanOdds(game_lines[i + line_count * 2].odds),
+                    altLineId: game_lines[i].id,
+                    points: Number(game_lines[i].handicap.slice(2, game_lines[i].handicap.length)),
+                    over: convertDecimalToAmericanOdds(game_lines[i].odds),
+                    under: convertDecimalToAmericanOdds(game_lines[i + line_count].odds),
                 })
             }
         }
-    }
-
-    if (!line.moneyline && schedule) {
-        line.moneyline = {
-            home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
-            away: convertDecimalToAmericanOdds(schedule.sp.main[2].odds)
-        };
     }
 
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {

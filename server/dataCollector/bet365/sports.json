@@ -50,5 +50,17 @@
     {
         "id": 36,
         "name": "Australian Rules"
+    },
+    {
+        "id": 75,
+        "name": "Gaelic Sports"
+    },
+    {
+        "id": 78,
+        "name": "Handball"
+    },
+    {
+        "id": 83,
+        "name": "Futsal"
     }
 ]
