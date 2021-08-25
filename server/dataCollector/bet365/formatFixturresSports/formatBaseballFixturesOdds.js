@@ -10,14 +10,6 @@ function formatBaseballFixturesOdds(event) {
         totals: [],
     }
 
-    // if (schedule && schedule.sp.main) {
-    //     const moneyline = schedule.sp.main;
-    //     line.moneyline = {
-    //         home: convertDecimalToAmericanOdds(moneyline[0].odds),
-    //         away: convertDecimalToAmericanOdds(moneyline[1].odds)
-    //     }
-    // }
-
     if (main) {
         if (main.sp.game_lines) {
             const game_lines = main.sp.game_lines.odds;
