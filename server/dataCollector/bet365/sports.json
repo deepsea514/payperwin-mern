@@ -30,5 +30,9 @@
     {
         "id": 16,
         "name": "Baseball"
+    },
+    {
+        "id": 17,
+        "name": "Ice Hockey"
     }
 ]
