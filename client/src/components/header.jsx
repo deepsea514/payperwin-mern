@@ -102,6 +102,11 @@ class Header extends PureComponent {
         setDisplayMode(display_mode);
     }
 
+    balanceString = (balance) => {
+        balance = parseInt(balance * 100);
+        return balance / 100;
+    }
+
     render() {
         const { userDropDownOpen,
             oddsDropDownOpen,
@@ -147,7 +152,7 @@ class Header extends PureComponent {
                                                 <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
                                                 <li>
                                                     <Link to={{ pathname: '/deposit' }}>
-                                                        <span className="blue-icon">CAD {user.currency} {user.balance ? user.balance.toFixed(2) : 0}</span>
+                                                        <span className="blue-icon">CAD {user.currency} {user.balance ? this.balanceString(user.balance) : 0}</span>
                                                     </Link>
                                                 </li>
                                                 <li>

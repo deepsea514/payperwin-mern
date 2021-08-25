@@ -145,7 +145,6 @@ class Customers extends React.Component {
             addWithdrawId, withdrawmax } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
-        console.log(filter)
 
         return (
             <>
