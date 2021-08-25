@@ -8,6 +8,10 @@
         "name": "Cricket"
     },
     {
+        "id": 8,
+        "name": "Rugby Union"
+    },
+    {
         "id": 9,
         "name": "Boxing-UFC"
     },
@@ -38,5 +42,9 @@
     {
         "id": 18,
         "name": "Basketball"
+    },
+    {
+        "id": 19,
+        "name": "Rugby League"
     }
 ]
