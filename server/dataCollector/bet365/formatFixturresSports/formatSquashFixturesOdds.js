@@ -1,5 +1,6 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 function formatSquashFixturesOdds(event) {
+    TestEvent.create({ event, name: 'squash' });
     const { schedule } = event.odds;
     let line = {
         originId: event.id,
@@ -10,12 +11,12 @@ function formatSquashFixturesOdds(event) {
         totals: [],
     }
 
-    if (schedule && schedule.sp.main) {
-        line.moneyline = {
-            home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
-            away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
-        };
-    }
+    // if (schedule && schedule.sp.main) {
+    //     line.moneyline = {
+    //         home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
+    //         away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
+    //     };
+    // }
 
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
         line.moneyline = null
