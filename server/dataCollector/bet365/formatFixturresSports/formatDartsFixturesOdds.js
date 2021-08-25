@@ -10,18 +10,17 @@ function formatDartsFixturesOdds(event) {
         totals: [],
     }
 
-    if (schedule && schedule.sp.main) {
-        const moneyline = schedule.sp.main;
-        line.moneyline = {
-            home: convertDecimalToAmericanOdds(moneyline[0].odds),
-            away: convertDecimalToAmericanOdds(moneyline[1].odds)
+    if (main) {
+        if (main.sp.match_winner) {
+            const moneyline = main.sp.match_winner.odds;
+            line.moneyline = {
+                home: convertDecimalToAmericanOdds(moneyline[0].odds),
+                away: convertDecimalToAmericanOdds(moneyline[1].odds)
+            }
         }
-    }
 
-
-    if (main && Object.keys(main.sp).length > 0) {
-        const match_handicap = main.sp.alternative_handicaps;
-        if (match_handicap) {
+        if (main.sp.handicap_2_way) {
+            const match_handicap = main.sp.handicap_2_way.odds;
             const handicap_count = match_handicap.length / 2;
             for (let i = 0; i < handicap_count; i++)
                 line.spreads.push({
@@ -32,15 +31,15 @@ function formatDartsFixturesOdds(event) {
                 });
         }
 
-        const total_180s = main.sp.total_180s;
-        if (total_180s) {
-            const total_count = total_180s.length / 3;
+        if (main.sp.total_180s) {
+            const total_180s = main.sp.total_180s.odds;
+            const total_count = total_180s.length / 2;
             for (let i = 0; i < total_count; i++)
                 line.totals.push({
                     altLineId: total_180s[i].id,
                     points: Number(total_180s[i].name),
-                    over: convertDecimalToAmericanOdds(total_180s[i + total_count].odds),
-                    under: convertDecimalToAmericanOdds(total_180s[i + 2 * total_count].odds),
+                    over: convertDecimalToAmericanOdds(total_180s[i].odds),
+                    under: convertDecimalToAmericanOdds(total_180s[i + total_count].odds),
                 })
         }
     }
