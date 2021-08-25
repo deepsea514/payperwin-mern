@@ -46,5 +46,9 @@
     {
         "id": 19,
         "name": "Rugby League"
+    },
+    {
+        "id": 36,
+        "name": "Australian Rules"
     }
 ]
