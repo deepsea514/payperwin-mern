@@ -65,7 +65,7 @@ async function matchResults() {
             // checkmatchresult
             try {
                 const { data: { success, results } } = await axios
-                    .get(`https://api.betsapi.com/v1/bet365/result`, {
+                    .get(`https://api.b365api.com/v1/bet365/result`, {
                         params: {
                             token: bet365ApiKey,
                             event_id: eventId,
