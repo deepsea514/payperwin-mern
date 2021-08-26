@@ -3533,6 +3533,11 @@ input.special {
 .sort-header {
     cursor: pointer;
 }
+
 .sort-header:hover {
     color: #2196F3;
+}
+
+.react-tel-input .country-list {
+    display: block !important;
 }

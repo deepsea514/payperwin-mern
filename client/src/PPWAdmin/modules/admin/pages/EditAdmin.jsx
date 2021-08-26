@@ -6,6 +6,7 @@ import SVG from "react-inlinesvg";
 import { getAdmin, updateAdmin } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import PhoneInput from 'react-phone-input-2';
 
 class EditAdmin extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class EditAdmin extends React.Component {
                     .min(3, "Minimum 3 symbols")
                     .max(50, "Maximum 50 symbols")
                     .required("Name is required."),
+                phone: Yup.string(),
                 password: Yup.string()
                     .min(3, "Minimum 8 symbols"),
                 confirmpassword: Yup.string()
@@ -49,6 +51,7 @@ class EditAdmin extends React.Component {
                     initialValues: data ? ({
                         email: data.email,
                         username: data.username,
+                        phone: data.phone ? data.phone : '',
                         password: '',
                         confirmpassword: '',
                         role: data.role,
@@ -220,6 +223,35 @@ class EditAdmin extends React.Component {
                                             </div>
                                         </div>
                                         <div className="form-row form-group">
+                                            <div className="col-6">
+                                                <label>Role</label>
+                                                <PhoneInput
+                                                    type="text"
+                                                    name="phone"
+                                                    country="us"
+                                                    placeholder="Enter Phone Number"
+                                                    containerClass="input-group"
+                                                    dropdownClass="input-group-append"
+                                                    inputClass={`form-control ${getInputClasses(formik, "phone")}`}
+                                                    required
+                                                    value={formik.values.phone}
+                                                    {...formik.getFieldProps("phone")}
+                                                    {...{
+                                                        onChange: (value, data, event, formattedValue) => {
+                                                            formik.setFieldTouched('phone', true);
+                                                            formik.setFieldValue('phone', formattedValue);
+                                                        },
+                                                        onBlur: () => {
+                                                            formik.setFieldTouched('phone', true);
+                                                        }
+                                                    }}
+                                                />
+                                                {formik.touched.phone && formik.errors.phone ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.phone}
+                                                    </div>
+                                                ) : null}
+                                            </div>
                                             <div className="col-6">
                                                 <label>Role</label>
                                                 <select type="text" name="role"

@@ -7,7 +7,9 @@ const AdminSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     email: { type: String, required: true, index: { unique: true } },
-    role: {type: String, default: 'Customer Service'},
+    phone: { type: String, default: null },
+    _2fa_enabled: { type: Boolean, default: true },
+    role: { type: String, default: 'Customer Service' },
     twoFactorAuthenticationCode: String,
     otpauthUrl: String,
 });
