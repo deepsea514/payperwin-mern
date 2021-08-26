@@ -14,7 +14,6 @@ function formatBadmintonFixturesOdds(event) {
     if (main && main.sp.match_lines) {
         const match_lines = main.sp.match_lines.odds;
         const line_count = match_lines.length / 2;
-        console.log(match_lines);
         for (let i = 0; i < line_count; i++) {
             if (match_lines[i].name == "To Win") {
                 line.moneyline = {
@@ -40,7 +39,6 @@ function formatBadmintonFixturesOdds(event) {
     } else if (match && match.sp.match_lines) {
         const match_lines = match.sp.match_lines.odds;
         const line_count = match_lines.length / 2;
-        console.log(match_lines);
         for (let i = 0; i < line_count; i++) {
             if (match_lines[i].name == "To Win") {
                 line.moneyline = {
