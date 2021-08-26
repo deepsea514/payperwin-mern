@@ -14,10 +14,11 @@ function formatTennisFixturesOdds(event) {
         const to_win_match = main.sp.to_win_match;
         if (to_win_match) {
             const moneyline = main.sp.to_win_match.odds;
-            line.moneyline = {
-                home: convertDecimalToAmericanOdds(moneyline[0].odds),
-                away: convertDecimalToAmericanOdds(moneyline[1].odds),
-            }
+            if (moneyline.length)
+                line.moneyline = {
+                    home: convertDecimalToAmericanOdds(moneyline[0].odds),
+                    away: convertDecimalToAmericanOdds(moneyline[1].odds),
+                }
         }
 
         if (main.sp['match_handicap_(games)']) {
