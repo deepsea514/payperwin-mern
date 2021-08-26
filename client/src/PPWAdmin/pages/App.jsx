@@ -48,14 +48,7 @@ class App extends Component {
     checkUser = () => {
         const { setCurrentUserAction } = this.props;
         const url = `${serverUrl}/user`;
-        axios.get(url, {
-            withCredentials: true,
-            cache: {
-                exclude: {
-                    filter: () => true,
-                },
-            },
-        }).then(({ data: user }) => {
+        axios.get(url).then(({ data: user }) => {
             this._Mounted && setCurrentUserAction(user);
         }).catch(err => {
             this._Mounted && setCurrentUserAction(null);

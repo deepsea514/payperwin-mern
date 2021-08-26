@@ -62,8 +62,8 @@ class Admins extends Component {
                 <td>{admin.role}</td>
                 <td>
                     <DropdownButton title="Actions">
-                        {currentUser && currentUser._id != admin._id && <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>}
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                        {currentUser && currentUser._id != admin._id && <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>}
                     </DropdownButton>
                 </td>
             </tr>
