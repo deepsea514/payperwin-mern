@@ -55,6 +55,10 @@ const ID = function () {
     return '' + Math.random().toString(10).substr(2, 9);
 };
 
+const get2FACode = function () {
+    return '' + Math.random().toString(10).substr(2, 6);
+};
+
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -66,8 +70,11 @@ const authenticateJWT = (req, res, next) => {
             }
             const admin = await Admin.findById(user._id);
             if (admin) {
-                req.user = admin;
-                return next();
+                if (user._2fa_passed) {
+                    req.user = admin;
+                    return next();
+                }
+                return res.sendStatus(403);
             }
             return res.sendStatus(403);
         });
@@ -75,6 +82,31 @@ const authenticateJWT = (req, res, next) => {
         res.sendStatus(401);
     }
 };
+
+const authenticate2FAJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, accessTokenSecret, async (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            const admin = await Admin.findById(user._id);
+            if (admin) {
+                if (user._2fa_passed) {
+                    return res.sendStatus(403);
+                }
+                req.user = admin;
+                req._2fa_code = user._2fa_code
+                return next();
+            }
+            return res.sendStatus(403);
+        });
+    } else {
+        res.sendStatus(401);
+    }
+}
 
 const limitRoles = (field) => (req, res, next) => {
     if (!req.user)
@@ -178,9 +210,15 @@ adminRouter.post(
                         return;
                     }
                     if (isMatch) {
-                        const data = admin._doc;
-                        const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '2d' });
-                        res.json({ accessToken });
+                        const data = { _id: admin._id, _2fa_passed: true };
+                        if (admin._2fa_enabled && admin.phone) {
+                            const _2fa_code = get2FACode();
+                            data._2fa_passed = false;
+                            data._2fa_code = _2fa_code;
+                            sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, admin.phone);
+                        }
+                        const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '1d' });
+                        res.json({ accessToken, _2fa_enabled: admin._2fa_enabled });
                     }
                     else {
                         res.status(403).json({ error: 'Password doesn\'t match.' });
@@ -199,6 +237,41 @@ adminRouter.post(
         }
     }
 );
+
+adminRouter.post(
+    '/verify-2fa',
+    authenticate2FAJWT,
+    async (req, res) => {
+        const { _2fa_code } = req.body;
+        const { _2fa_code: origin_2fa_code, user } = req;
+        if (!_2fa_code || !origin_2fa_code) {
+            res.status(400).json({ success: false, error: '2FA Code required.' });
+            return;
+        }
+        if (_2fa_code == origin_2fa_code) {
+            const data = { _id: user._id, _2fa_passed: true };
+            const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '1d' });
+            res.json({ accessToken, success: true });
+        } else {
+            res.json({ success: false });
+        }
+    }
+)
+
+adminRouter.post(
+    '/resend-2fa',
+    authenticate2FAJWT,
+    async (req, res) => {
+        const { _2fa_code, user } = req;
+        if (!_2fa_code) {
+            res.status(400).json({ success: false, error: '2FA Code required.' });
+            return;
+        }
+        if(user.phone) {
+            sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, user.phone);
+        }
+    }
+)
 
 adminRouter.patch(
     '/changePassword',
