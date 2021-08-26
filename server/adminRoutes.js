@@ -211,11 +211,13 @@ adminRouter.post(
                     }
                     if (isMatch) {
                         const data = { _id: admin._id, _2fa_passed: true };
-                        if (admin._2fa_enabled && admin.phone) {
+                        if (admin._2fa_enabled) {
                             const _2fa_code = get2FACode();
                             data._2fa_passed = false;
                             data._2fa_code = _2fa_code;
-                            sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, admin.phone);
+                            if(admin.phone) {
+                                sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, admin.phone);
+                            }
                         }
                         const accessToken = jwt.sign(data, accessTokenSecret, { expiresIn: '1d' });
                         res.json({ accessToken, _2fa_enabled: admin._2fa_enabled });
