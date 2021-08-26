@@ -20,7 +20,7 @@ function formatBadmintonFixturesOdds(event) {
                     home: convertDecimalToAmericanOdds(match_lines[i].odds),
                     away: convertDecimalToAmericanOdds(match_lines[i + line_count].odds)
                 }
-            } else if (match_lines[i].name == "Spread") {
+            } else if (match_lines[i].name == "Handicap") {
                 line.spreads.push({
                     altLineId: match_lines[i].id,
                     hdp: Number(match_lines[i].handicap),
