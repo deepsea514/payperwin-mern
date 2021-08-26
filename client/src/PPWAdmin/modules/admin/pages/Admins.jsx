@@ -58,12 +58,13 @@ class Admins extends Component {
                 <td>{index + 1}</td>
                 <td>{admin.email}</td>
                 <td>{admin.username}</td>
+                <td>{admin.phone}</td>
                 <td>{admin.role}</td>
                 <td>
-                    {currentUser && currentUser._id != admin._id && <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                    <DropdownButton title="Actions">
+                        {currentUser && currentUser._id != admin._id && <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>}
                         <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>
-                    </DropdownButton>}
+                    </DropdownButton>
                 </td>
             </tr>
         ));
@@ -115,6 +116,7 @@ class Admins extends Component {
                                             <th scope="col">#</th>
                                             <th scope="col">Email</th>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Phone</th>
                                             <th scope="col">Role</th>
                                             <th scope="col"></th>
                                         </tr>
