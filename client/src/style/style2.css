@@ -110,6 +110,11 @@ header form {
     left: 0;
     top: 6px;
     margin-right: 10px;
+    font-size: 12px;
+}
+
+.navbar-nav i {
+    font-size: 16px;
 }
 
 .frgt-pswrd {
@@ -640,7 +645,7 @@ footer ul li a i {
 }
 
 .sport-league-item label {
-    padding-left: 2rem;
+    padding-left: 1rem;
 }
 
 .fabrte {

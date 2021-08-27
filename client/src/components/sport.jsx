@@ -43,6 +43,7 @@ class Sport extends PureComponent {
 
     getSport() {
         const { sportName } = this.props;
+        this.setState({ data: null });
         if (sportName) {
             const url = `${serverUrl}/sport?name=${sportName}`;
             axios({

@@ -1,0 +1,68 @@
+@import "./_metronic/_assets/sass/themes/layout/header/base/light.scss";
+@import "./_metronic/_assets/sass/themes/layout/header/menu/light.scss";
+@import "./_metronic/_assets/sass/themes/layout/brand/dark.scss";
+@import "./_metronic/_assets/sass/themes/layout/aside/dark.scss";
+
+@import "./_metronic/_assets/sass/vendors/react/material-ui/general";
+
+@import
+    "./_metronic/_assets/sass/vendors/plugins/formvalidation",
+    // "./_metronic/_assets/sass/vendors/plugins/dropzone",
+    "./_metronic/_assets/sass/vendors/plugins/perfect-scrollbar",
+    "./_metronic/_assets/sass/vendors/plugins/prismjs",
+    "./_metronic/_assets/sass/vendors/plugins/apexcharts";
+
+@import
+    "./_metronic/_assets/sass/components/utilities",
+    // "./_metronic/_assets/sass/components/burger-icon",
+    "./_metronic/_assets/sass/components/card",
+    "./_metronic/_assets/sass/components/wizard",
+    "./_metronic/_assets/sass/components/type",
+    // "./_metronic/_assets/sass/components/breadcrumb",
+    // "./_metronic/_assets/sass/components/nav",
+    "./_metronic/_assets/sass/components/alert",
+    // "./_metronic/_assets/sass/components/buttons",
+    "./_metronic/_assets/sass/components/code",
+    "./_metronic/_assets/sass/components/dropdown",
+    // "./_metronic/_assets/sass/components/forms",
+    "./_metronic/_assets/sass/components/grid",
+    "./_metronic/_assets/sass/components/modal",
+    "./_metronic/_assets/sass/components/progress",
+    "./_metronic/_assets/sass/components/table",
+    // "./_metronic/_assets/sass/components/popover",
+    "./_metronic/_assets/sass/components/tooltip",
+    "./_metronic/_assets/sass/components/accordion",
+    "./_metronic/_assets/sass/components/datatable",
+    "./_metronic/_assets/sass/components/checkbox",
+    "./_metronic/_assets/sass/components/radio",
+    "./_metronic/_assets/sass/components/switch",
+    "./_metronic/_assets/sass/components/option",
+    "./_metronic/_assets/sass/components/dialog",
+    "./_metronic/_assets/sass/components/strikethrough",
+    "./_metronic/_assets/sass/components/separator",
+    "./_metronic/_assets/sass/components/image-input",
+    "./_metronic/_assets/sass/components/label",
+    "./_metronic/_assets/sass/components/loader",
+    "./_metronic/_assets/sass/components/symbol",
+    "./_metronic/_assets/sass/components/pulse",
+    "./_metronic/_assets/sass/components/page-loader",
+    "./_metronic/_assets/sass/components/quick-search",
+    "./_metronic/_assets/sass/components/scrolltop",
+    "./_metronic/_assets/sass/components/spinner",
+    "./_metronic/_assets/sass/components/sticky-toolbar",
+    "./_metronic/_assets/sass/components/svg-icon",
+    "./_metronic/_assets/sass/components/svg",
+    "./_metronic/_assets/sass/components/timeline",
+    "./_metronic/_assets/sass/components/timeline-2",
+    "./_metronic/_assets/sass/components/timeline-3",
+    "./_metronic/_assets/sass/components/timeline-4",
+    "./_metronic/_assets/sass/components/timeline-5",
+    "./_metronic/_assets/sass/components/timeline-6",
+    "./_metronic/_assets/sass/components/overlay",
+    "./_metronic/_assets/sass/components/wave",
+    "./_metronic/_assets/sass/components/list",
+    "./_metronic/_assets/sass/components/bullet",
+    "./_metronic/_assets/sass/components/navi",
+    "./_metronic/_assets/sass/components/ribbon",
+    "./_metronic/_assets/sass/components/offcanvas",
+    "./_metronic/_assets/sass/components/toggle";

@@ -11,6 +11,7 @@ const common = {
     entry: [
         '@babel/polyfill',
         './src/index.jsx',
+        "./src/PPWAdmin/index.scss",
     ],
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -31,7 +32,7 @@ const common = {
                 // },
             },
             {
-                test: /\.css$|.scss$/,
+                test: /\.css$/,
                 loader: 'style-loader!css-loader',
             },
             {
@@ -44,15 +45,30 @@ const common = {
                     },
                 }],
             },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sourceMap: true,
+                        }
+                    },
+                ]
+            },
         ],
     },
     resolve: {
-        extensions: ['.json', '.js', '.jsx'],
+        extensions: ['.json', '.js', '.jsx', '.scss'],
     },
     devtool: 'none',
     target: 'web',
     plugins: [
-        // new BundleAnalyzerPlugin(),
+        // new MiniCssExtractPlugin({
+        //     filename: "[name].css",
+        // }),
     ],
 };
 

@@ -22,7 +22,7 @@ class SidebarAccount extends Component {
                 <h3 className="cat-heading">MY BETS</h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
-                        <Link to={{ pathname: '/bets' }}><i className="fas fa-hockey-puck"></i>Open bets</Link>
+                        <Link to={{ pathname: '/bets' }}><i className="fas fa-gamepad"></i>Open bets</Link>
                     </li>
                     <li>
                         <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i>Betting History</Link>
@@ -35,10 +35,10 @@ class SidebarAccount extends Component {
                 <h3 className="cat-heading">CASHIER</h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
-                        <Link to={{ pathname: '/deposit' }}><i className="fas fa-hockey-puck"></i>Deposit </Link>
+                        <Link to={{ pathname: '/deposit' }}><i className="fas fa-money-check"></i>Deposit </Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/withdraw' }}><i className="fas fa-baseball-ball"></i>Withdraw </Link>
+                        <Link to={{ pathname: '/withdraw' }}><i className="fas fa-money-check-alt"></i>Withdraw </Link>
                     </li>
                     <li>
                         <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i>Transactions history </Link>
@@ -50,6 +50,19 @@ class SidebarAccount extends Component {
                         <Link to={{ pathname: '/cashback' }}><i className="fas fa-dollar-sign"></i>Cashback </Link>
                     </li>
                 </ul>
+
+                {user && user.autobet && <>
+                    <h3 className="cat-heading">AUTOBET</h3>
+                    <ul className="left-cat top-cls-sport">
+                        <li>
+                            <Link to={{ pathname: '/autobet-dashboard' }}><i className="fas fa-chart-bar"></i>Dashboard </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/autobet-settings' }}><i className="fas fa-tools"></i>Settings </Link>
+                        </li>
+                    </ul>
+                </>}
+
                 <h3 className="cat-heading">MY ACCOUNT</h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
