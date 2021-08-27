@@ -39,6 +39,7 @@ class SportsLeagues extends PureComponent {
 
     getLeagues = () => {
         const { sportName } = this.props;
+        this.setState({ leagues: [] });
         const url = `${serverUrl}/sportleague?name=${sportName}`;
         axios({
             method: 'get',

@@ -58,6 +58,8 @@ import CashbackNames from "../components/cashbackNames";
 import SportName from "../pages/sportName";
 import CustomBets from '../pages/custombets';
 import SportsLeagues from '../pages/sportleagues';
+import AutobetSettings from '../pages/AutobetSettings';
+import AutobetDashboard from '../pages/AutobetDashboard';
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -211,6 +213,8 @@ class App extends PureComponent {
             '/phone-verification',
             '/cashback',
             '/custom-bets',
+            '/autobet-dashboard',
+            '/autobet-settings',
         ].includes(pathname);
         const exceptDark = [
             '/articles',
@@ -243,6 +247,8 @@ class App extends PureComponent {
             '/cashback',
             '/support',
             '/custom-bets',
+            '/autobet-dashboard',
+            '/autobet-settings',
         ].filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
@@ -384,6 +390,8 @@ class App extends PureComponent {
                                                 <Route path="/cashback" render={(props) => <Cashback {...props} user={user} />} />
                                                 <Route path="/custom-bets" render={(props) => <CustomBets {...props} user={user} />} />
                                                 <Route path="/support" component={ContactUs} />
+                                                <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
+                                                <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
                                                 <Route path="/" render={(props) =>
                                                     <Dashboard
                                                         addBet={this.addBet}

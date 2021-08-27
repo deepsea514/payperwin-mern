@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import "react-app-polyfill/ie11";
-import "react-app-polyfill/stable";
+// import "react-app-polyfill/ie11";
+// import "react-app-polyfill/stable";
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Login from "./pages/Login";
 import App from "./pages/App";
@@ -11,10 +11,12 @@ const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
 
 // import "./assets/css/style.bundle.css";
-import "./assets/css/themes/layout/header/base/light.css";
-import "./assets/css/themes/layout/header/menu/light.css";
-import "./assets/css/themes/layout/brand/dark.css";
-import "./assets/css/themes/layout/aside/dark.css";
+// import "./assets/css/themes/layout/header/base/light.css";
+// import "./assets/css/themes/layout/header/menu/light.css";
+// import "./assets/css/themes/layout/brand/dark.css";
+// import "./assets/css/themes/layout/aside/dark.css";
+
+import './index.scss';
 
 import { LayoutSplashScreen, MaterialThemeProvider } from "./_metronic/layout";
 

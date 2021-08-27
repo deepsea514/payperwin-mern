@@ -27,6 +27,7 @@ const UserSchema = new Schema(
         securityquiz: { type: String, default: "" },
         securityans: { type: String, default: "" },
         vipcode: { type: String, default: "" },
+        bet_referral_code: { type: String, default: null },
         roles: Object,
         settings: Object,
         balance: { type: Number, default: 0 },

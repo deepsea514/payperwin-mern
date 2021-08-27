@@ -1790,7 +1790,10 @@ expressApp.get(
                     userFor: userId,
                 })
                 .count();
-            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages };
+            const autobet = await AutoBet.findOne({
+                userId: userId
+            });
+            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages, autobet };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
@@ -2112,24 +2115,27 @@ async function pinnacleLogout(req) {
         return false;
     }
     const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
-    let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-    const token = generatePinnacleToken(agentCode, agentKey, secretKey);
-    if (!pinnacle) {
-        return false;
+    if(req.user) {
+        let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
+        const token = generatePinnacleToken(agentCode, agentKey, secretKey);
+        if (!pinnacle) {
+            return false;
+        }
+        try {
+            await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {}, {
+                headers: {
+                    userCode: agentCode,
+                    token
+                }
+            });
+    
+        } catch (error) {
+            // console.log('/logout error', error)
+            return false;
+        }
+        return true;
     }
-    try {
-        await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {}, {
-            headers: {
-                userCode: agentCode,
-                token
-            }
-        });
-
-    } catch (error) {
-        // console.log('/logout error', error)
-        return false;
-    }
-    return true;
+    return false;
 }
 
 expressApp.get('/pinnacleLogout',
