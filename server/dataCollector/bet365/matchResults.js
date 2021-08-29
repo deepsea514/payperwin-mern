@@ -109,7 +109,6 @@ async function matchResults() {
                     time_status == 6) { // Cancelled, Interrupted, Abandoned, Retired, Walkover
                     matchResult.cancellationReason = true;
                 }
-                console.log(matchResult);
                 const { homeScore, awayScore, cancellationReason } = matchResult;
                 if (cancellationReason) {
                     matchCancelled = true;
@@ -135,7 +134,7 @@ async function matchResults() {
                         } else if (lineType === 'spread') {
                             const spread = {
                                 home: points,
-                                away: points * -1,
+                                away: 0,
                             };
                             const homeScoreHandiCapped = homeScore + spread.home;
                             const awayScoreHandiCapped = awayScore + spread.away;
