@@ -314,7 +314,7 @@ class OpenBets extends PureComponent {
                                         Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                         <strong className="float-right bg-primary">Peer To Peer</strong>
                                     </div>
-                                    {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
+                                    {credited ? (<div><strong>Credited: ${(credited - bet).toFixed(2)}</strong></div>) : null}
                                 </div>
                             </div>
                         );
@@ -382,7 +382,7 @@ class OpenBets extends PureComponent {
                                     <strong className="float-right bg-primary">Peer To Peer</strong>
                                 </div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
-                                {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
+                                {credited ? (<div><strong>Credited: ${(credited - bet).toFixed(2)}</strong></div>) : null}
                                 {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                                 {openBets && !this.checkEventStarted(matchStartDate) &&
                                     <button className="form-button ml-3" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
