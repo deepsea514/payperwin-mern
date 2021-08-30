@@ -175,12 +175,12 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
-                    subject: 'Your bet was accepted',
-                    text: `Your bet was accepted`,
+                    subject: 'Your bet is waiting for a match',
+                    text: `Your bet is waiting for a match`,
                     html: simpleresponsive(
                         `Hi <b>${user.email}</b>.
                             <br><br>
-                            This email is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                            This email is to advise you that your bed for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                             <br><br>
                             <ul>
                                 <li>Wager: $${betAfterFee.toFixed(2)}</li>
@@ -195,7 +195,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
 
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise that your bet for ${name} moneyline for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                sendSMS(`This is to advise you that your bed for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                 Wager: $${betAfterFee.toFixed(2)}\n 
                 Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}\n 
                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
