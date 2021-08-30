@@ -966,7 +966,6 @@ expressApp.post(
 
         let autobet = await AutoBet
             .findOne({
-                deletedAt: null,
                 userId: user._id
             });
         if (autobet) {
@@ -1451,7 +1450,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
 
     let autobets = await AutoBet
         .find({
-            deletedAt: null,
             side: side,
             betType: betType,
         })
@@ -2371,7 +2369,6 @@ const getMaxWithdraw = async (user) => {
         {
             $match: {
                 userId: new ObjectId(user._id),
-                deletedAt: null,
             }
         },
         {
@@ -2393,7 +2390,6 @@ const getMaxWithdraw = async (user) => {
             $match: {
                 userId: new ObjectId(user._id),
                 status: "Settled - Win",
-                deletedAt: null,
             }
         },
         {
@@ -2504,7 +2500,6 @@ expressApp.post(
                         $match: {
                             financialtype: "withdraw",
                             user: new ObjectId(user._id),
-                            deletedAt: null,
                         }
                     },
                     {
@@ -2576,7 +2571,6 @@ expressApp.post(
                         $match: {
                             financialtype: "withdraw",
                             user: new ObjectId(user._id),
-                            deletedAt: null,
                         }
                     },
                     {
@@ -2644,7 +2638,6 @@ expressApp.post(
             let searchObj = {
                 user: req.user._id,
                 // status: FinancialStatus.success,
-                deletedAt: null
             };
             if (daterange) {
                 const { startDate, endDate } = daterange;
@@ -3490,7 +3483,7 @@ expressApp.get(
     async (req, res) => {
         const { name } = req.query;
         try {
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (name) {
                 searchObj = {
                     ...searchObj,
