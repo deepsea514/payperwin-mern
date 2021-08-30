@@ -123,7 +123,9 @@ tripleARouter.post('/deposit',
                             Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
                             <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
@@ -181,7 +183,9 @@ tripleARouter.post('/withdraw',
                         Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have withdraw from your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
@@ -205,7 +209,9 @@ tripleARouter.post('/withdraw',
                         Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.sms)) {
                 sendSMS('Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);

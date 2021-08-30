@@ -163,7 +163,7 @@ async function matchResults() {
                             }
                             const betFee = Number((payableToWin * 0.03).toFixed(2));
                             await Bet.findOneAndUpdate({ _id }, betChanges);
-                            if(payableToWin > 0) {
+                            if (payableToWin > 0) {
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                                 await FinancialLog.create({
                                     financialtype: 'betwon',
@@ -198,7 +198,9 @@ async function matchResults() {
                                         { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                                     ),
                                 };
-                                sgMail.send(msg);
+                                sgMail.send(msg).catch(error => {
+                                    console.log('Can\'t send mail');
+                                });
                             }
                             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
                                 sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
