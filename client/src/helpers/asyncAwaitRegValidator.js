@@ -149,6 +149,29 @@ async function vipCodeExist(options) {
     }
 }
 
+async function referralCodeExist(options) {
+    const referral_code = options.value;
+    if (!referral_code || referral_code == '')
+        return true;
+    const url = `${serverUrl}/referralCodeExist?referral_code=${referral_code}`;
+    const { data } = await axios({
+        method: 'get',
+        url,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!data) {
+        throw Error('Username validation server error.');
+    } else if (data && data.success === 1) {
+        return true;
+    } else if (data && data.success === 0) {
+        return options.message || data.message;
+    } else {
+        throw Error('Username validation client error.');
+    }
+}
+
 async function involveLetterAndNumberAndSpecialCharacter(options) {
     const { value } = options;
     var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$");
@@ -250,7 +273,10 @@ const schema = {
         { validator: isString },
         { validator: vipCodeExist, hasTag: 'registration' }
     ],
-
+    referral_code: [
+        { validator: isString },
+        { validator: referralCodeExist, hasTag: 'registration' }
+    ],
     name: [
         { validator: isString, hasTag: 'customBets' },
         { validator: min, options: { number: 10, message: "Name of Event should be longer than 10 characters." }, hasTag: 'customBets' },

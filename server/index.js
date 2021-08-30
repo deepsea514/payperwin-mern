@@ -257,7 +257,7 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            vipcode, } = req.body;
+            vipcode, referral_code } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(() => {
@@ -286,7 +286,7 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    vipcode,
+                    vipcode, bet_referral_code: referral_code,
                     roles: {
                         registered: true,
                     },
@@ -1448,10 +1448,20 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             break;
     }
 
-    let autobets = await AutoBet
-        .find({
+    let orCon = [
+        {
             side: side,
             betType: betType,
+        }
+    ]
+    if (user.bet_referral_code) {
+        orCon.push({
+            referral_code: user.bet_referral_code
+        })
+    }
+    let autobets = await AutoBet
+        .find({
+            $or: orCon
         })
         .populate('userId');
 
@@ -1500,19 +1510,30 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             if (logs && logs.length)
                 budget += logs[0].amount;
         }
+        if (autobet.referral_code != user.bet_referral_code) {
+            return (
+                autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                autobet.status == AutoBetStatus.active &&                   //Check active status
+                autobet.userId.balance >= toBet &&                          //Check Balance
+                autobet.maxRisk >= toBet &&                                 //Check Max.Risk
+                (bettedamount < (budget - toBet)) &&                        //Check Budget
+                autobet.sports.find((sport) => sport == lineQuery.sportName)
+            );
+        }
         return (
             autobet.userId._id.toString() != user._id.toString() &&     //Not same user
             autobet.status == AutoBetStatus.active &&                   //Check active status
             autobet.userId.balance >= toBet &&                          //Check Balance
             autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            (bettedamount < (budget - toBet)) &&                //Check Budget
-            autobet.sports.find((sport) => sport == lineQuery.sportName)
+            (bettedamount < (budget - toBet))                           //Check Budget
         );
     });
 
     if (autobetusers.length == 0) return;
 
     autobetusers.sort((a, b) => {
+        if (a.referral_code == user.bet_referral_code) return -1;
+        if (b.referral_code == user.bet_referral_code) return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
 
@@ -2173,6 +2194,22 @@ expressApp.get('/vipCodeExist', async (req, res) => {
         return res.json({ success: 0, message: "Can't find Promotion." });
     } catch (error) {
         return res.json({ success: 0, message: "Can't find Promotion." });
+    }
+});
+
+expressApp.get('/referralCodeExist', async (req, res) => {
+    const { referral_code } = req.query;
+    if (!referral_code)
+        return res.json({ success: 1 });
+    try {
+        const autobet = await AutoBet.findOne({ referral_code: referral_code });
+        if (autobet) {
+            return res.json({ success: 1 });
+        }
+        return res.json({ success: 0, message: "Can't find Autobet User." });
+    } catch (error) {
+        console.log(error);
+        return res.json({ success: 0, message: "Can't find Autobet User." });
     }
 });
 
