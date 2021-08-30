@@ -10,6 +10,7 @@ const BetSportsBook = require('../../models/betsportsbook');
 const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const { convertTimeLineDate } = require('../../libs/timehelper');
+const sendSMS = require("../../libs/sendSMS");
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
@@ -77,6 +78,7 @@ async function checkMatchStatus() {
     );
     console.log(`${bets.length} of Unmatched bets.`);
     for (const bet of bets) {
+        await bet.update({ notifySent: new Date() });
         const user = await User.findById(bet.userId);
         let eventName = '';
         if (bet.origin == 'other') {
@@ -114,7 +116,6 @@ async function checkMatchStatus() {
             sendSMS(`Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. `, user.phone);
         }
 
-        await bet.update({ notifySent: new Date() });
     }
     console.log("Sent mails.")
 
