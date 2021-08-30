@@ -212,7 +212,7 @@ class AutobetSettings extends Component {
                                         </div>
                                         <div className="form-row">
                                             <div className="form-group col-md-6">
-                                                <label>Budget<span className="text-danger">*</span></label>
+                                                <label>Daily Max Budget<span className="text-danger">*</span></label>
                                                 <input name="budget" placeholder="Enter Budget"
                                                     className={`form-control ${getInputClasses(formik, "budget")}`}
                                                     {...formik.getFieldProps("budget")}
@@ -224,7 +224,7 @@ class AutobetSettings extends Component {
                                                 ) : null}
                                             </div>
                                             <div className="form-group col-md-6">
-                                                <label>Max.Risk<span className="text-danger">*</span></label>
+                                                <label>Max.Risk (per bet)<span className="text-danger">*</span></label>
                                                 <input name="maxRisk" placeholder="Enter Max.Risk"
                                                     className={`form-control ${getInputClasses(formik, "maxRisk")}`}
                                                     {...formik.getFieldProps("maxRisk")}
