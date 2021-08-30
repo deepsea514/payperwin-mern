@@ -862,7 +862,9 @@ adminRouter.post(
                         Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                 sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
@@ -2479,7 +2481,9 @@ adminRouter.post(
                         Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                 sendSMS('Just a quick reminder that your identify was verified. You can withdraw from your PAYPER WIN account by logging in now.', user.phone);
@@ -2524,7 +2528,9 @@ adminRouter.post(
                         Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.
                         <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                 sendSMS('Just a quick reminder that Your identify verification was declined. Please submit identification proof documents again by logging in now.', user.phone);
@@ -2631,7 +2637,9 @@ adminRouter.post(
                     ${content}
                     <br><br>`),
             };
-            sgMail.send(msg);
+            sgMail.send(msg).catch(error => {
+                console.log('Can\'t send mail');
+            });
 
             ticket.repliedAt = new Date();
             await ticket.save();
@@ -3004,7 +3012,10 @@ async function matchResults(eventId, matchResult) {
                                     { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                                 ),
                             };
-                            sgMail.send(msg);
+                            sgMail.send(msg).catch(error => {
+                                console.log('Can\'t send mail');
+                            });
+
                         }
                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
                             sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
@@ -3238,7 +3249,10 @@ adminRouter.post(
                             text: title,
                             html: simpleresponsive(content),
                         };
-                        sgMail.send(msg);
+                        sgMail.send(msg).catch(error => {
+                            console.log('Can\'t send mail');
+                        });
+
                     })
                 }
                 res.json({ success: true });
@@ -3391,7 +3405,10 @@ adminRouter.put(
                             text: title,
                             html: simpleresponsive(content),
                         };
-                        sgMail.send(msg);
+                        sgMail.send(msg).catch(error => {
+                            console.log('Can\'t send mail');
+                        });
+
                     })
                 }
                 res.json({ success: true });

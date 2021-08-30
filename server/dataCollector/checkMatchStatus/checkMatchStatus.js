@@ -106,7 +106,9 @@ async function checkMatchStatus() {
                     You can forward your bet to our sportsbook for an instant bet.
                 `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
             };
-            sgMail.send(msg);
+            sgMail.send(msg).catch(error => {
+                console.log('Can\'t send mail');
+            });
         }
         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
             sendSMS(`Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. `, user.phone);

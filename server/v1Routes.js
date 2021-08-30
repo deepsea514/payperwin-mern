@@ -362,7 +362,9 @@ async function updateAction(action, user) {
                             This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}
                             <br><br>`),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                 sendSMS(`This is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
@@ -383,9 +385,13 @@ async function updateAction(action, user) {
                         <li>Win: $${Number(WagerInfo.ToWin).toFixed(2)}</li>
                     </ul>`),
             }
-            sgMail.send(adminMsg);
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
             adminMsg.to = supportEmailAddress;
-            sgMail.send(adminMsg);
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
 
         } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
             const preference = await Preference.findOne({ user: user._id });
@@ -403,7 +409,9 @@ async function updateAction(action, user) {
                         { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                     ),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
                 sendSMS(`Congratulations! You won $${Transaction.Amount}.`, user.phone);

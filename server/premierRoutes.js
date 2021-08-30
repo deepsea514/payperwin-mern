@@ -81,7 +81,9 @@ premierRouter.post('/etransfer-deposit',
                             Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
                             <br><br>`),
                     };
-                    sgMail.send(msg);
+                    sgMail.send(msg).catch(error => {
+                        console.log('Can\'t send mail');
+                    });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
                     sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
@@ -149,7 +151,7 @@ premierRouter.post('/etransfer-deposit',
 //                         your PAYPER WIN account by logging in now.
 //                         <br><br>`),
 //                 };
-//                 sgMail.send(msg);
+//                 await sgMail.send(msg);
 
 //                 return res.json({
 //                     success: "Withdraw success"

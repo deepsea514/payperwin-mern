@@ -104,7 +104,9 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                             `),
                     };
                 }
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
                 if (bet.origin == 'other') {

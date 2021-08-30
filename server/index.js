@@ -240,7 +240,10 @@ function sendVerificationEmail(email, username, req) {
                 Verify your email address by following this link:`,
                 { href: emailValidationPath, name: 'Verify Email' }),
         };
-        sgMail.send(msg);
+        sgMail.send(msg).catch(error => {
+            console.log('Can\'t send mail');
+        });
+
         // }
     });
 }
@@ -562,7 +565,10 @@ function send2FAVerifyEmail(email, code) {
             <h4>${code}</h4>
             `),
     };
-    sgMail.send(msg);
+    sgMail.send(msg).catch(error => {
+        console.log('Can\'t send mail');
+    });
+
 }
 
 expressApp.post(
@@ -760,7 +766,10 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                     ),
                 };
                 try {
-                    await sgMail.send(msg);
+                    sgMail.send(msg).catch(error => {
+                        console.log('Can\'t send mail');
+                    });
+
                     res.send(`Sent password recovery to ${email}.
                         If you can't see mail in inbox, please check spam folder.`);
                 } catch (error) {
@@ -1062,7 +1071,10 @@ expressApp.post(
                                                     </ul>
                                                 `),
                                             };
-                                            sgMail.send(msg);
+                                            sgMail.send(msg).catch(error => {
+                                                console.log('Can\'t send mail');
+                                            });
+
                                         }
                                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                             sendSMS(`This is to advise that your bet for ${name} ${type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
@@ -1086,9 +1098,15 @@ expressApp.post(
                                                     <li>Win: $${toWin.toFixed(2)}</li>
                                                 </ul>`),
                                         }
-                                        sgMail.send(adminMsg);
+                                        sgMail.send(adminMsg).catch(error => {
+                                            console.log('Can\'t send mail');
+                                        });
+
                                         adminMsg.to = supportEmailAddress;
-                                        sgMail.send(adminMsg);
+                                        sgMail.send(adminMsg).catch(error => {
+                                            console.log('Can\'t send mail');
+                                        });
+
 
                                         const betId = savedBet.id;
                                         // add betId to betPool
@@ -1276,7 +1294,10 @@ expressApp.post(
                                                         </ul>
                                                     `),
                                             };
-                                            sgMail.send(msg);
+                                            sgMail.send(msg).catch(error => {
+                                                console.log('Can\'t send mail');
+                                            });
+
                                         }
                                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                             sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
@@ -1300,9 +1321,15 @@ expressApp.post(
                                                         <li>Win: $${toWin.toFixed(2)}</li>
                                                     </ul>`),
                                         }
-                                        sgMail.send(adminMsg);
+                                        sgMail.send(adminMsg).catch(error => {
+                                            console.log('Can\'t send mail');
+                                        });
+
                                         adminMsg.to = supportEmailAddress;
-                                        sgMail.send(adminMsg);
+                                        sgMail.send(adminMsg).catch(error => {
+                                            console.log('Can\'t send mail');
+                                        });
+
 
                                         const betId = savedBet.id;
                                         // add betId to betPool
@@ -1464,6 +1491,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             $or: orCon
         })
         .populate('userId');
+    autobets = JSON.parse(JSON.stringify(autobets));
 
     const asyncFilter = async (arr, predicate) => {
         const results = await Promise.all(arr.map(predicate));
@@ -1479,11 +1507,10 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             fromTime = new Date(fromTime.setDate(diff));
         }
         const logs = await AutoBetLog
-            // .find({ user: autobet.userId._id, createdAt: fromTime })
             .aggregate([
                 {
                     $match: {
-                        user: autobet.userId._id,
+                        user: new ObjectId(autobet.userId._id),
                         createdAt: { $gte: fromTime }
                     }
                 },
@@ -1492,7 +1519,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         let bettedamount = 0;
         if (logs && logs.length)
             bettedamount = logs[0].amount;
-
         let budget = autobet.budget;
         if (autobet.rollOver) { // If Roll Over
             // Add win amount.
@@ -1500,7 +1526,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
                 .aggregate([
                     {
                         $match: {
-                            user: autobet.userId._id,
+                            user: new ObjectId(autobet.userId._id),
                             financialtype: 'betwon',
                             createdAt: { $gte: fromTime }
                         }
@@ -1510,22 +1536,26 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             if (logs && logs.length)
                 budget += logs[0].amount;
         }
+        autobet.bettable = budget - bettedamount;
         if (autobet.referral_code != user.bet_referral_code) {
             return (
                 autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                 autobet.status == AutoBetStatus.active &&                   //Check active status
-                autobet.userId.balance >= toBet &&                          //Check Balance
-                autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                (bettedamount < (budget - toBet)) &&                        //Check Budget
-                autobet.sports.find((sport) => sport == lineQuery.sportName)
+                autobet.userId.balance > 0 &&                               //Check Balance
+                autobet.bettable > 0 &&                                     //Check bettable
+                // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
+                // (bettedamount < (budget - toBet)) &&                        //Check Budget
+                autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
             );
         }
         return (
             autobet.userId._id.toString() != user._id.toString() &&     //Not same user
             autobet.status == AutoBetStatus.active &&                   //Check active status
-            autobet.userId.balance >= toBet &&                          //Check Balance
-            autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            (bettedamount < (budget - toBet))                           //Check Budget
+            autobet.userId.balance > 0 &&                               //Check Balance
+            autobet.bettable > 0 &&                                     //Check bettable
+            // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
+            // (bettedamount < (budget - toBet))                           //Check Budget
+            true
         );
     });
 
@@ -1536,8 +1566,6 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
         if (b.referral_code == user.bet_referral_code) return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
-
-    const selectedauto = autobetusers[0];
 
     let pickName = '';
     switch (type) {
@@ -1569,135 +1597,147 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             break;
     }
 
-    const betAfterFee = toBet /* * 0.97 */;
-    const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-    const fee = Number((toBet * BetFee).toFixed(2));
-    const balanceChange = toBet * -1;
-    const newBalance = selectedauto.userId.balance ? selectedauto.userId.balance + balanceChange : 0 + balanceChange;
+    let betAmount = toBet;
+    autobetusers.map(async selectedauto => {
+        if (betAmount <= 0) return;
+        let bettable = Math.min(betAmount, selectedauto.maxRisk, selectedauto.userId.balance, selectedauto.bettable);
+        betAmount -= bettable;
+        const betAfterFee = bettable;
+        const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+        const fee = Number((bettable * BetFee).toFixed(2));
+        const balanceChange = bettable * -1;
+        const newBalance = selectedauto.userId.balance ? selectedauto.userId.balance + balanceChange : 0 + balanceChange;
 
-    // insert bet doc to bets table
-    const newBetObj = {
-        userId: selectedauto.userId._id,
-        transactionID: `B${ID()}`,
-        teamA: {
-            name: teamA,
-            odds: home,
-        },
-        teamB: {
-            name: teamB,
-            odds: away,
-        },
-        pick,
-        pickOdds: newLineOdds,
-        oldOdds: lineOdds,
-        pickName,
-        bet: betAfterFee,
-        toWin,
-        fee,
-        matchStartDate: startDate,
-        status: 'Pending',
-        lineQuery,
-    };
-    if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
-    const newBet = new Bet(newBetObj);
-    console.info(`created new auto bet`);
-
-    try {
-        const savedBet = await newBet.save();
-
-        await AutoBetLog.create({
-            user: selectedauto.userId._id,
-            amount: betAfterFee
-        });
-
-        const preference = await Preference.findOne({ user: selectedauto.userId._id.toString() });
-        let timezone = "00:00";
-        if (preference && preference.timezone) {
-            timezone = preference.timezone;
-        }
-        const timeString = convertTimeLineDate(new Date(), timezone);
-
-        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: selectedauto.userId.email,
-                subject: 'Your bet was accepted',
-                text: `Your bet was accepted`,
-                html: simpleresponsive(
-                    `Hi <b>${selectedauto.userId.email}</b>.
-                    <br><br>
-                    This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
-                    <br><br>
-                    <ul>
-                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                        <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
-                    </ul>
-                    `),
-            };
-            sgMail.send(msg);
-        }
-        if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-            sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
-            Wager: $${betAfterFee.toFixed(2)}\n 
-            Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
-            Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
-        }
-
-        let adminMsg = {
-            from: `${fromEmailName} <${fromEmailAddress}>`,
-            to: adminEmailAddress1,
-            subject: 'New Bet',
-            text: `New Bet`,
-            html: simpleresponsive(
-                `<ul>
-                    <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
-                    <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                    <li>Bet: ${lineQuery.type}</li>
-                    <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                    <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
-                    <li>Win: $${toWin.toFixed(2)}</li>
-                </ul>`),
-        }
-        sgMail.send(adminMsg);
-        adminMsg.to = supportEmailAddress;
-        sgMail.send(adminMsg);
-
-        const betId = savedBet.id;
-        // add betId to betPool
-        const docChanges = {
-            $push: pick === 'home' ? {
-                homeBets: betId,
-            } : {
-                awayBets: betId,
+        // insert bet doc to bets table
+        const newBetObj = {
+            userId: selectedauto.userId._id,
+            transactionID: `B${ID()}`,
+            teamA: {
+                name: teamA,
+                odds: home,
             },
-            $inc: {},
+            teamB: {
+                name: teamB,
+                odds: away,
+            },
+            pick,
+            pickOdds: newLineOdds,
+            oldOdds: lineOdds,
+            pickName,
+            bet: betAfterFee,
+            toWin,
+            fee,
+            matchStartDate: startDate,
+            status: 'Pending',
+            lineQuery,
         };
-        docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
-        docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
-        await betpool.update(docChanges);
+        if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
+        const newBet = new Bet(newBetObj);
+        console.info(`created new auto bet`);
 
-        await calculateBetsStatus(JSON.stringify(lineQuery));
-
-        const betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
-        const balance = Number(newBalance.toFixed(2));
         try {
-            await FinancialLog.create({
-                financialtype: 'bet',
-                uniqid: `BP${ID()}`,
+            const savedBet = await newBet.save();
+
+            await AutoBetLog.create({
                 user: selectedauto.userId._id,
-                amount: toBet,
-                method: 'bet',
-                status: FinancialStatus.success,
+                amount: betAfterFee
             });
-            await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, balance });
-        } catch (err) {
-            console.log('selectedauto.userId =>' + err);
+
+            const preference = await Preference.findOne({ user: selectedauto.userId._id.toString() });
+            let timezone = "00:00";
+            if (preference && preference.timezone) {
+                timezone = preference.timezone;
+            }
+            const timeString = convertTimeLineDate(new Date(), timezone);
+
+            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: selectedauto.userId.email,
+                    subject: 'Your bet was accepted',
+                    text: `Your bet was accepted`,
+                    html: simpleresponsive(
+                        `Hi <b>${selectedauto.userId.email}</b>.
+                        <br><br>
+                        This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}
+                        <br><br>
+                        <ul>
+                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                            <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
+                        </ul>
+                        `),
+                };
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
+            }
+            if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+                sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAfterFee.toFixed(2)} was accepted on ${timeString}\n 
+                Wager: $${betAfterFee.toFixed(2)}\n 
+                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
+                Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
+            }
+
+            let adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: adminEmailAddress1,
+                subject: 'New Bet',
+                text: `New Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
+                        <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
+                        <li>Bet: ${lineQuery.type}</li>
+                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
+                        <li>Win: $${toWin.toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
+            adminMsg.to = supportEmailAddress;
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
+
+            const betId = savedBet.id;
+            // add betId to betPool
+            const docChanges = {
+                $push: pick === 'home' ? {
+                    homeBets: betId,
+                } : {
+                    awayBets: betId,
+                },
+                $inc: {},
+            };
+            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
+            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+            await betpool.update(docChanges);
+
+            const betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
+            const balance = Number(newBalance.toFixed(2));
+            try {
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${ID()}`,
+                    user: selectedauto.userId._id,
+                    amount: bettable,
+                    method: 'bet',
+                    status: FinancialStatus.success,
+                });
+                await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, balance });
+            } catch (err) {
+                console.log('selectedauto.userId =>' + err);
+            }
         }
-    }
-    catch (e2) {
-        if (e2) console.error('newBetError', e2);
-    }
+        catch (e2) {
+            if (e2) console.error('newBetError', e2);
+        }
+    })
+
+    await calculateBetsStatus(JSON.stringify(lineQuery));
 }
 
 expressApp.get(
@@ -2935,7 +2975,9 @@ expressApp.post(
                     `,
                 ),
             };
-            await sgMail.send(msg);
+            sgMail.send(msg).catch(error => {
+                console.log('Can\'t send mail');
+            });
 
             res.json({ message: "success" });
         } catch (error) {

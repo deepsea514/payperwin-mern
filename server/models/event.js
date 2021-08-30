@@ -131,7 +131,9 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     { href: betLink, name: 'View Custom Bet' }
                 ),
             };
-            sgMail.send(msg);
+            sgMail.send(msg).catch(error => {
+                console.log('Can\'t send mail');
+            });
         }
 
         // Place initial Bet
@@ -187,7 +189,9 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                             </ul>
                         `),
                 };
-                sgMail.send(msg);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
 
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
@@ -212,9 +216,13 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                         <li>Win: $${toWin.toFixed(2)}</li>
                     </ul>`),
             }
-            sgMail.send(adminMsg);
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
             adminMsg.to = supportEmailAddress;
-            sgMail.send(adminMsg);
+            sgMail.send(adminMsg).catch(error => {
+                console.log('Can\'t send mail');
+            });
 
             const betId = savedBet.id;
             // add betId to betPool

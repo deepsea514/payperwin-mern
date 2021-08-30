@@ -175,7 +175,9 @@ async function matchResults() {
                                             { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                                         ),
                                     };
-                                    sgMail.send(msg);
+                                    sgMail.send(msg).catch(error => {
+                                        console.log('Can\'t send mail');
+                                    });
                                 }
                                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
                                     sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
