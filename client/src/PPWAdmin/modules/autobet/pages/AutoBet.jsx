@@ -57,7 +57,8 @@ class AutoBet extends React.Component {
                 sports: bet.sports.map(sport => ({ value: sport, label: sport })),
                 side: bet.side.map(side => ({ value: side, label: side })),
                 betType: bet.betType.map(betType => ({ value: betType, label: betType })),
-                status: bet.status
+                status: bet.status,
+                referral_code: bet.referral_code
             }
         })
     }
@@ -100,7 +101,7 @@ class AutoBet extends React.Component {
                 <td>{bet.maxRisk}</td>
                 <td>{bet.budget}</td>
                 <td>{bet.userId ? bet.userId.balance : null}</td>
-
+                <td>{bet.referral_code}</td>
                 <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>
                 <td>
@@ -234,6 +235,7 @@ class AutoBet extends React.Component {
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>
                                             <th scope="col">Balance</th>
+                                            <th scope="col">Ref Code</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Created At</th>
                                             <th scope="col"></th>

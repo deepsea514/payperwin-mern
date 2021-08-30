@@ -15,7 +15,6 @@ const AutoBetSchema = new Schema(
         side: { type: Array, default: [] },
         betType: { type: Array, default: [] },
         referral_code: { type: String, default: null },
-        deletedAt: Date,
     },
     {
         timestamps: true,

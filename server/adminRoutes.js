@@ -215,7 +215,7 @@ adminRouter.post(
                             const _2fa_code = get2FACode();
                             data._2fa_passed = false;
                             data._2fa_code = _2fa_code;
-                            if(admin.phone) {
+                            if (admin.phone) {
                                 sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, admin.phone);
                             }
                         }
@@ -269,7 +269,7 @@ adminRouter.post(
             res.status(400).json({ success: false, error: '2FA Code required.' });
             return;
         }
-        if(user.phone) {
+        if (user.phone) {
             sendSMS(`PAYPER WIN Admin 2FA code - ${_2fa_code}`, user.phone);
         }
     }
@@ -472,13 +472,12 @@ adminRouter.get(
             return;
         }
         try {
-            const lastbets = await Bet.find({ userId: id, deletedAt: null })
+            const lastbets = await Bet.find({ userId: id })
                 .sort({ createdAt: -1 }).limit(8);
             let totalwagers = await Bet.aggregate(
                 {
                     $match: {
                         userId: new ObjectId(id),
-                        deletedAt: null,
                     }
                 },
                 {
@@ -490,12 +489,11 @@ adminRouter.get(
                     }
                 }
             );
-            const lastsportsbookbets = await BetSportsBook.find({ userId: id, deletedAt: null })
+            const lastsportsbookbets = await BetSportsBook.find({ userId: id })
                 .sort({ createdAt: -1 }).limit(8);
 
             const betSportsbookHistory = await BetSportsBook.find({
                 userId: new ObjectId(id),
-                deletedAt: null,
             });
             let totalsportsbookwagers = 0;
             for (const bet of betSportsbookHistory) {
@@ -508,7 +506,6 @@ adminRouter.get(
                         financialtype: "deposit",
                         user: new ObjectId(id),
                         status: FinancialStatus.success,
-                        deletedAt: null,
                     }
                 },
                 {
@@ -549,7 +546,6 @@ adminRouter.get(
                 $match: {
                     status: "Settled - Win",
                     userId: new ObjectId(id),
-                    deletedAt: null
                 }
             }, {
                 $group: {
@@ -566,7 +562,6 @@ adminRouter.get(
                 $match: {
                     status: "Settled - Lose",
                     userId: new ObjectId(id),
-                    deletedAt: null
                 }
             }, {
                 $group: {
@@ -604,8 +599,8 @@ adminRouter.get(
             return;
         }
         try {
-            const total = await LoginLog.find({ user: id, deletedAt: null }).count();
-            const loginHistory = await LoginLog.find({ user: id, deletedAt: null }).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            const total = await LoginLog.find({ user: id }).count();
+            const loginHistory = await LoginLog.find({ user: id }).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
             res.json({ total, page, perPage, loginHistory });
         }
         catch (error) {
@@ -629,7 +624,7 @@ adminRouter.get(
             return;
         }
         try {
-            const searchObj = { user: id, deletedAt: null, financialtype: "deposit" };
+            const searchObj = { user: id, financialtype: "deposit" };
             const total = await FinancialLog.find(searchObj).count();
             const deposits = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage).populate('reason');
             res.json({ total, page, perPage, deposits });
@@ -655,7 +650,7 @@ adminRouter.get(
             return;
         }
         try {
-            const searchObj = { user: id, deletedAt: null, financialtype: "withdraw" };
+            const searchObj = { user: id, financialtype: "withdraw" };
             const total = await FinancialLog.find(searchObj).count();
             const withdraws = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
             res.json({ total, page, perPage, withdraws });
@@ -682,13 +677,13 @@ adminRouter.get(
         }
         try {
             if (src == 'sportsbook') {
-                const searchObj = { userId: id, deletedAt: null };
+                const searchObj = { userId: id };
                 const total = await BetSportsBook.find(searchObj).count();
                 const bets = await BetSportsBook.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
                 res.json({ total, page, perPage, bets });
             }
             else {
-                const searchObj = { userId: id, deletedAt: null };
+                const searchObj = { userId: id };
                 const total = await Bet.find(searchObj).count();
                 const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
                 res.json({ total, page, perPage, bets });
@@ -781,7 +776,7 @@ adminRouter.get(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            const reasons = await DepositReason.find({ deletedAt: null });
+            const reasons = await DepositReason.find({});
             res.status(200).json(reasons);
         } catch (erorr) {
             res.status(500).json({ error: 'Can\'t get deposit reasons.', result: error });
@@ -892,7 +887,7 @@ adminRouter.get(
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             page--;
-            let searchObj = { financialtype: 'deposit', deletedAt: null };
+            let searchObj = { financialtype: 'deposit' };
             if (minamount || maxamount) {
                 let amountObj = {}
                 if (minamount) {
@@ -970,7 +965,7 @@ adminRouter.get(
     async (req, res) => {
         try {
             let { datefrom, dateto } = req.query;
-            let searchObj = { financialtype: 'deposit', deletedAt: null, status: FinancialStatus.success };
+            let searchObj = { financialtype: 'deposit', status: FinancialStatus.success };
             if (datefrom || dateto) {
                 let dateObj = {};
                 if (datefrom) {
@@ -1061,14 +1056,7 @@ adminRouter.delete(
                 res.status(400).json({ error: 'Can\'t delete finished log.' });
                 return;
             }
-            deposit.update({ deletedAt: new Date() }).exec();
-            const user = await User.findById(deposit.user);
-            if (!user) {
-                res.status(400).json({ error: 'Can\'t find user.' });
-                return;
-            }
-            await user.save();
-
+            await FinancialLog.deleteOne({ _id: id })
             res.json(deposit);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t update deposit.', result: error });
@@ -1170,7 +1158,7 @@ adminRouter.get(
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             page--;
-            let searchObj = { financialtype: 'withdraw', deletedAt: null };
+            let searchObj = { financialtype: 'withdraw' };
             if (minamount || maxamount) {
                 let amountObj = {}
                 if (minamount) {
@@ -1233,7 +1221,7 @@ adminRouter.get(
                 .skip(page * perPage)
                 .limit(perPage)
                 .populate('user', ['email', 'currency']).populate('reason', ['title']);
-            const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.pending });
+            const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
             console.log(error);
@@ -1249,7 +1237,7 @@ adminRouter.get(
     async (req, res) => {
         try {
             let { datefrom, dateto } = req.query;
-            let searchObj = { financialtype: 'withdraw', deletedAt: null, status: FinancialStatus.success };
+            let searchObj = { financialtype: 'withdraw', status: FinancialStatus.success };
             if (datefrom || dateto) {
                 let dateObj = {};
                 if (datefrom) {
@@ -1447,13 +1435,13 @@ adminRouter.delete(
     limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
-            let { id } = req.query;
+            const { id } = req.query;
             const withdraw = await FinancialLog.findById(id);
             if (withdraw.status == FinancialStatus.success) {
                 res.status(400).json({ error: 'Can\'t delete finished log.' });
                 return;
             }
-            withdraw.update({ deletedAt: new Date() }).exec();
+            await FinancialLog.deleteOne({ _id: id });
             const user = await User.findById(withdraw.user);
             if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
@@ -1512,7 +1500,7 @@ adminRouter.get(
     async (req, res) => {
         const { name } = req.query;
         try {
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (name) {
                 searchObj = {
                     ...searchObj,
@@ -1554,7 +1542,7 @@ adminRouter.get(
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (!house || house == 'ppw') {
                 if (status && status == 'open') {
                     searchObj = {
@@ -1714,7 +1702,7 @@ adminRouter.get(
     async (req, res) => {
         try {
             const { datefrom, dateto, sport, minamount, maxamount } = req.query;
-            let searchObj = { deletedAt: null };
+            let searchObj = {};
             if (datefrom || dateto) {
                 let dateObj = {};
                 if (datefrom) {
@@ -1914,7 +1902,6 @@ const getTotalDeposit = async function (datefrom, dateto) {
         {
             $match: {
                 financialtype: "deposit",
-                deletedAt: null,
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
@@ -1938,7 +1925,6 @@ const getTotalWager = async function (datefrom, dateto) {
     const total = await Bet.aggregate(
         {
             $match: {
-                deletedAt: null,
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
@@ -1960,7 +1946,6 @@ const getTotalWager = async function (datefrom, dateto) {
 
 const getTotalWagerSportsBook = async function (datefrom, dateto) {
     const betSportsbookHistory = await BetSportsBook.find({
-        deletedAt: null,
         createdAt: {
             $gte: datefrom,
             $lte: dateto
@@ -1977,7 +1962,6 @@ const getTotalPlayer = async function (datefrom, dateto) {
     const total = await User.aggregate(
         {
             $match: {
-                deletedAt: null,
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
@@ -2001,7 +1985,6 @@ const getTotalActivePlayer = async function (datefrom, dateto) {
     const total = await Bet.aggregate(
         {
             $match: {
-                deletedAt: null,
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
@@ -2027,7 +2010,6 @@ const getTotalFees = async function (datefrom, dateto) {
             $match: {
                 financialtype: "withdraw",
                 status: FinancialStatus.success,
-                deletedAt: null,
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
@@ -2233,7 +2215,7 @@ adminRouter.post(
     async function (req, res) {
         const data = req.body;
         try {
-            const existing = await AutoBet.find({ userId: ObjectId(data.userId), deletedAt: null });
+            const existing = await AutoBet.find({ userId: ObjectId(data.userId) });
             if (existing && existing.length) {
                 return res.json({ success: false, message: "He/She is already autobet user." });
             }
@@ -2257,8 +2239,8 @@ adminRouter.get(
         page = parseInt(page);
         page--;
 
-        const total = await AutoBet.find({ deletedAt: null }).count();
-        AutoBet.find({ deletedAt: null })
+        const total = await AutoBet.find({}).count();
+        AutoBet.find({})
             .sort({ createdAt: -1 })
             .skip(page * perPage)
             .limit(perPage)
@@ -2307,7 +2289,7 @@ adminRouter.delete(
             if (!autobet) {
                 return res.status(404).json({ error: 'Can\'t find autobet data.' });
             }
-            await autobet.update({ deletedAt: new Date() });
+            await AutoBet.deleteOne({ _id: id });
             res.json("Deleted");
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t delete autobet.' });
@@ -2342,8 +2324,8 @@ adminRouter.get(
         page = parseInt(page);
         page--;
         try {
-            const total = await Promotion.find({ deletedAt: null }).count();
-            Promotion.find({ deletedAt: null })
+            const total = await Promotion.find({}).count();
+            Promotion.find({})
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)

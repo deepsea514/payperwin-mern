@@ -15,7 +15,7 @@ const sideOptions = [
     { value: 'Favorite', label: 'Favorite' },
 ]
 
-const betTypeOptions= [
+const betTypeOptions = [
     { value: 'Moneyline', label: 'Moneyline' },
     { value: 'Spreads', label: 'Spreads' },
     { value: 'Over/Under', label: 'Over/Under' },
@@ -61,6 +61,7 @@ export default class AutoBetModal extends React.Component {
                     .min(1, "Please choose at least a Bet Type."),
                 status: Yup.string()
                     .required("Status field is required."),
+                referral_code: Yup.string()
             }),
             loadingUser: false,
             loadingSports: false,
@@ -307,6 +308,18 @@ export default class AutoBetModal extends React.Component {
                                         {formik.touched.status && formik.errors.status ? (
                                             <div className="invalid-feedback">
                                                 {formik.errors.status}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Referral Code<span className="text-danger">*</span></label>
+                                        <input name="referral_code" placeholder="Enter Referral Code"
+                                            className={`form-control ${getInputClasses(formik, "referral_code")}`}
+                                            {...formik.getFieldProps("referral_code")}
+                                        />
+                                        {formik.touched.referral_code && formik.errors.referral_code ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.referral_code}
                                             </div>
                                         ) : null}
                                     </div>
