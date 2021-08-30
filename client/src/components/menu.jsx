@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 
 class Menu extends Component {
     render() {
-        const { location, toggleField, user } = this.props;
+        const { location, toggleField, oddsFormat, setOddsFormat } = this.props;
         const { pathname } = location;
+
         return (
             <>
                 <div className="background-closer" onClick={() => toggleField('menuOpen')} />
@@ -48,13 +51,15 @@ class Menu extends Component {
                             Language
                             <select>
                                 <option>English (EN)</option>
+                                <option>Chinese (CH)</option>
+                                <option>Korean (KR)</option>
                             </select>
                         </li>
                         <li>
                             Odds Format
-                            <select>
-                                <option>American Odds</option>
-                                <option>Decimal Odds</option>
+                            <select value={oddsFormat} onChange={(evt) => setOddsFormat(evt.target.value)}>
+                                <option value="american">American Odds</option>
+                                <option value="decimal">Decimal Odds</option>
                             </select>
                         </li>
                     </ul>
@@ -63,4 +68,9 @@ class Menu extends Component {
         );
     }
 }
-export default Menu;
+
+const mapStateToProps = (state) => ({
+    oddsFormat: state.frontend.oddsFormat,
+});
+
+export default connect(mapStateToProps, frontend.actions)(Menu)
