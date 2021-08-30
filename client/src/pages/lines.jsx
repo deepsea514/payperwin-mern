@@ -547,7 +547,7 @@ class Lines extends PureComponent {
                                                                         )}
                                                             >
                                                                 <div className="vertical-align">
-                                                                    <div className="points">{`${total.points}`}</div>
+                                                                    <div className="points">O {`${total.points}`}</div>
                                                                     {!started && <div className="odds">
                                                                         {this.checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'home', 'total') && <>
                                                                             <div className="old-odds">
@@ -593,7 +593,7 @@ class Lines extends PureComponent {
                                                                 }
                                                             >
                                                                 <div className="vertical-align">
-                                                                    <div className="points">{`${total.points}`}</div>
+                                                                    <div className="points">U {`${total.points}`}</div>
                                                                     {!started && <div className="odds">
                                                                         {this.checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'away', 'total') && <>
                                                                             <div className="old-odds">
