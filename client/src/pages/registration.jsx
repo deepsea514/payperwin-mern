@@ -143,6 +143,7 @@ const initState = {
     securityquiz: '',
     securityans: '',
     vipcode: '',
+    referral_code: '',
     agreeTerms: false,
     agreePrivacy: false,
     rcptchVerified: false,
@@ -165,6 +166,7 @@ const initState = {
         // securityquiz: false,
         // securityans: false,
         vipcode: false,
+        referral_code: false,
     },
     activeStep: 0,
     steps: ['', ''],
@@ -249,12 +251,12 @@ class Registration extends Component {
 
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
-                        title, dateofbirth, vipcode } = this.state;
+                        title, dateofbirth, vipcode, referral_code } = this.state;
                     axios.post(`${serverUrl}/register`,
                         {
                             email, password, firstname, lastname, region,
                             country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                            vipcode,
+                            vipcode, referral_code
                         },
                         {
                             headers: {
@@ -313,24 +315,9 @@ class Registration extends Component {
             country, email, password, cPassword, region,
             firstname, lastname, dateofbirth,
             vipcode, agreeTerms, agreePrivacy,
-            rcptchVerified,
+            rcptchVerified, referral_code,
             errors, showPass, showPassConfirm
         } = this.state;
-        const years = _.range(1950, (new Date()).getFullYear() + 1, 1);
-        const months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-        ];
 
         switch (activeStep) {
             case 0:
@@ -458,6 +445,19 @@ class Registration extends Component {
                             required
                         />
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Referral Code(optional)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="referral_code"
+                            value={referral_code}
+                            onChange={this.handleChange}
+                            onBlur={this.handleDirty}
+                            placeholder="Enter Referral Code"
+                            isInvalid={errors.referral_code !== undefined}
+                        />
+                        {errors.referral_code ? <div className="registration-feedback">{errors.referral_code}</div> : null}
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
