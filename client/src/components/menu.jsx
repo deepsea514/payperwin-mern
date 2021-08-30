@@ -9,7 +9,7 @@ class Menu extends Component {
             <>
                 <div className="background-closer" onClick={() => toggleField('menuOpen')} />
                 <div className="mobile-menu modal-content">
-                    <button type="button" className="close" onClick={() => toggleField('menuOpen')}>
+                    <button type="button" className="close-header" onClick={() => toggleField('menuOpen')}>
                         <i className="fal fa-times" />
                     </button>
                     <Link to={{ pathname: '/' }} className="logo">

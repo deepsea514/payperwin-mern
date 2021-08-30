@@ -51,8 +51,7 @@
         "inActive": "Inactive"
     },
     "AutoBetPeorid": {
-        "daily": "Daily",
-        "weekly": "Weekly"
+        "daily": "Daily"
     },
     "PromotionTypes": {
         "straightCredit": {
