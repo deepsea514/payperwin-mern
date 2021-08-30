@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 
 class AutobetSummary extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
+    balanceString = (balance) => {
+        balance = parseInt(balance * 100);
+        return balance / 100;
     }
 
     render() {
+        const { user, summary } = this.props;
+        const { totalbets, winbets, lossbets, profit } = summary;
         return (
             <>
                 <div className={`card card-custom bg-white rounded-top`}>
@@ -24,7 +25,7 @@ class AutobetSummary extends Component {
                             style={{ height: "140px" }}
                         >
                             <label className="font-weight-bolder text-white bg-primary">Your balance</label>
-                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> $400.30</h3>
+                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${this.balanceString(user.balance)}</h3>
                         </div>
 
                         {/* Stat */}
@@ -51,12 +52,12 @@ class AutobetSummary extends Component {
                                             </a>
                                             <br />
                                             <a href="#" className="text-muted font-weight-bold mt-1">
-                                                258 bets
+                                                {totalbets.count} bets
                                             </a>
                                         </div>
                                     </div>
                                     <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        +105$
+                                        ${totalbets.amount.toFixed(1)}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
@@ -84,14 +85,14 @@ class AutobetSummary extends Component {
                                             </a>
                                             <br />
                                             <a href="#" className="text-muted font-weight-bold mt-1">
-                                                103 wins
+                                                {winbets.count} wins
                                             </a>
                                         </div>
                                     </div>
                                     <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        +50$
-                                        <span className="svg-icon svg-icon-md svg-icon-danger">
-                                            <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
+                                        ${winbets.amount.toFixed(1)}
+                                        <span className="svg-icon svg-icon-md svg-icon-success">
+                                            <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
                                     </a>
                                 </div>
@@ -117,12 +118,12 @@ class AutobetSummary extends Component {
                                             </a>
                                             <br />
                                             <a href="#" className="text-muted font-weight-bold mt-1">
-                                                103 losses
+                                                {lossbets.count} losses
                                             </a>
                                         </div>
                                     </div>
                                     <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        +50$
+                                        ${lossbets.amount.toFixed(1)}
                                         <span className="svg-icon svg-icon-md svg-icon-danger">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
                                         </span>
@@ -146,7 +147,7 @@ class AutobetSummary extends Component {
                                                 href="#"
                                                 className="text-dark-75 text-hover-primary font-weight-bolder"
                                             >
-                                                P / L
+                                                P/L
                                             </a>
                                             <br />
                                             <a href="#" className="text-muted font-weight-bold mt-1">
@@ -155,10 +156,13 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        +50$
-                                        <span className="svg-icon svg-icon-md svg-icon-danger">
+                                        ${profit.toFixed(1)}
+                                        {profit >= 0 && <span className="svg-icon svg-icon-md svg-icon-success">
+                                            <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
+                                        </span>}
+                                        {profit < 0 && <span className="svg-icon svg-icon-md svg-icon-danger">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
-                                        </span>
+                                        </span>}
                                     </a>
                                 </div>
                             </div>

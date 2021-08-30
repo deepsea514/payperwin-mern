@@ -83,7 +83,7 @@ async function matchResults(sportName, events) {
                         } else if (lineType === 'spread') {
                             const spread = {
                                 home: points,
-                                away: points * -1,
+                                away: 0,
                             };
                             const homeScoreHandiCapped = score_home + spread.home;
                             const awayScoreHandiCapped = score_away + spread.away;
