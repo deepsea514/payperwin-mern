@@ -131,6 +131,8 @@ class Preferences extends Component {
             })
         });
 
+        const { submitSuccess, submitError } = this.state;
+
         return (
             <React.Fragment>
                 <div className="col-in prfnce">
