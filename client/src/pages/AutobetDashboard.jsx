@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import AutobetHistory from '../components/autobethistory';
 import AutobetSummary from '../components/autobetsummary';
+import AutobetChart from '../components/autobechart';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 
@@ -74,9 +75,10 @@ class AutobetDashboard extends Component {
                         {!loading && data && <div className="row">
                             <div className="col-md-7">
                                 <AutobetHistory histories={data.histories} />
+                                <AutobetChart sports={data.sports} />
                             </div>
                             <div className="col-md-5">
-                                <AutobetSummary user={user} />
+                                <AutobetSummary user={user} summary={data.summary} />
                             </div>
                         </div>}
                     </div>

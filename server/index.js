@@ -2115,7 +2115,7 @@ async function pinnacleLogout(req) {
         return false;
     }
     const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
-    if(req.user) {
+    if (req.user) {
         let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
         const token = generatePinnacleToken(agentCode, agentKey, secretKey);
         if (!pinnacle) {
@@ -2128,7 +2128,7 @@ async function pinnacleLogout(req) {
                     token
                 }
             });
-    
+
         } catch (error) {
             // console.log('/logout error', error)
             return false;
@@ -3335,6 +3335,152 @@ expressApp.post(
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: "Can't create a bet." });
+        }
+    }
+)
+
+expressApp.get(
+    '/autobet',
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const { user } = req;
+            const autobet = await AutoBet.findOne({ userId: user._id });
+            if (!autobet) {
+                return res.status(404).json({ success: false });
+            }
+            const today = new Date();
+            const bets = await Bet.find({
+                userId: user._id,
+                createdAt: {
+                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                },
+                orgin: { $ne: 'other' }
+            }).sort({ createdAt: -1 });
+
+            let betamount = await Bet.aggregate([
+                {
+                    $match: {
+                        userId: user._id,
+                        createdAt: {
+                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                        },
+                        orgin: { $ne: 'other' }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$bet" }
+                    }
+                }
+            ]);
+            if (betamount && betamount.length)
+                betamount = betamount[0].amount;
+            else betamount = 0;
+
+            const wincount = await Bet.find({
+                userId: user._id,
+                createdAt: {
+                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                },
+                orgin: { $ne: 'other' },
+                status: 'Settled - Win'
+            }).count();
+
+            let winamount = await Bet.aggregate([
+                {
+                    $match: {
+                        userId: user._id,
+                        createdAt: {
+                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                        },
+                        orgin: { $ne: 'other' },
+                        status: 'Settled - Win'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$payableToWin" }
+                    }
+                }
+            ]);
+            if (winamount && winamount.length)
+                winamount = winamount[0].amount;
+            else winamount = 0;
+
+            const losscount = await Bet.find({
+                userId: user._id,
+                createdAt: {
+                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                },
+                orgin: { $ne: 'other' },
+                status: 'Settled - Lose'
+            }).count();
+
+            let lossamount = await Bet.aggregate([
+                {
+                    $match: {
+                        userId: user._id,
+                        createdAt: {
+                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                        },
+                        orgin: { $ne: 'other' },
+                        status: 'Settled - Lose'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$bet" }
+                    }
+                }
+            ]);
+            if (lossamount && lossamount.length)
+                lossamount = lossamount[0].amount;
+            else lossamount = 0;
+
+            let sports = await Bet.aggregate([
+                {
+                    $match: {
+                        userId: user._id,
+                        createdAt: {
+                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
+                        },
+                        orgin: { $ne: 'other' },
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$lineQuery.sportName",
+                        count: { $sum: 1 }
+                    }
+                }
+            ])
+
+            res.json({
+                histories: bets,
+                summary: {
+                    totalbets: {
+                        count: bets.length,
+                        amount: betamount,
+                    },
+                    winbets: {
+                        count: wincount,
+                        amount: winamount
+                    },
+                    lossbets: {
+                        count: losscount,
+                        amount: lossamount
+                    },
+                    profit: winamount - lossamount,
+                },
+                sports
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ success: false });
         }
     }
 )

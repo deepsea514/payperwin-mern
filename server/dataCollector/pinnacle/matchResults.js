@@ -113,7 +113,7 @@ async function matchResults() {
                             } else if (lineType === 'spread') {
                                 const spread = {
                                     home: points,
-                                    away: points * -1,
+                                    away: 0,
                                 };
                                 const homeScoreHandiCapped = homeScore + spread.home;
                                 const awayScoreHandiCapped = awayScore + spread.away;

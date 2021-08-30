@@ -1,13 +1,30 @@
 import React, { Component } from 'react';
+import dateformat from "dateformat";
 
 class AutobetHistory extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
+    capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    getIconColor = (status) => {
+        switch (status) {
+            case 'Pending':
+                return 'text-primary';
+            case 'Matched':
+            case 'Partial Match':
+                return 'text-info';
+            case 'Settled - Win':
+                return 'text-success';
+            case 'Settled - Lose':
+                return 'text-danger';
+            case 'Cancelled':
+            default:
+                return 'text-warning';
+        }
     }
 
     render() {
+        const { histories } = this.props;
         return (
             <>
                 <div className="card card-custom">
@@ -16,138 +33,35 @@ class AutobetHistory extends Component {
                         <h3 className="card-title align-items-start flex-column">
                             <span className="font-weight-bolder text-dark">Recent Matches</span>
                             <span className="text-muted mt-3 font-weight-bold font-size-sm">
-                                10 Matches
+                                {histories.length} Matches
                             </span>
                         </h3>
                     </div>
                     {/* Body */}
                     <div className="card-body pt-4">
                         <div className="timeline timeline-6 mt-3">
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    08:42
-                                </div>
+                            {histories.map(history => {
+                                if (!history.lineQuery.type) {
+                                    return null;
+                                }
+                                return (
+                                    <div className="timeline-item align-items-start" key={history._id}>
+                                        <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
+                                            {dateformat(history.createdAt, "mm/dd")}
+                                        </div>
 
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-warning icon-xl"></i>
-                                </div>
+                                        <div className="timeline-badge">
+                                            <i className={`fa fa-genderless ${this.getIconColor(history.status)} icon-xl`}></i>
+                                        </div>
 
-                                <div className="font-weight-mormal font-size-sm timeline-content text-muted pl-3">
-                                    Outlines keep you honest. And keep structure
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    10:00
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-success icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content d-flex">
-                                    <span className="font-weight-bolder text-dark-75 pl-3 font-size-sm">
-                                        AEOL meeting
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    14:37
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-danger icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-bolder font-size-sm text-dark-75 pl-3">
-                                    Make deposit{` `}
-                                    <a href="#" className="text-primary">
-                                        USD 700
-                                    </a>
-                                    . to ESL
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    16:50
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-primary icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-mormal font-size-sm text-muted pl-3">
-                                    Indulging in poorly driving and keep structure keep great
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    21:03
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-danger icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-bolder text-dark-75 pl-3 font-size-sm">
-                                    New order placed{` `}
-                                    <a href="#" className="text-primary">
-                                        #XF-2356
-                                    </a>
-                                    .
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    23:07
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-info icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-mormal font-size-sm text-muted pl-3">
-                                    Outlines keep and you honest. Indulging in poorly driving
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    16:50
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-primary icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-mormal font-size-sm text-muted pl-3">
-                                    Indulging in poorly driving and keep structure keep great
-                                </div>
-                            </div>
-
-                            <div className="timeline-item align-items-start">
-                                <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                    21:03
-                                </div>
-
-                                <div className="timeline-badge">
-                                    <i className="fa fa-genderless text-danger icon-xl"></i>
-                                </div>
-
-                                <div className="timeline-content font-weight-bolder font-size-sm text-dark-75 pl-3">
-                                    New order placed {` `}
-                                    <a href="#" className="text-primary">
-                                        #XF-2356
-                                    </a>
-                                    .
-                                </div>
-                            </div>
+                                        <div className="font-weight-mormal font-size-sm timeline-content text-dark pl-3">
+                                            {`$${history.bet.toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} ${this.capitalizeFirstLetter(history.lineQuery.type)}
+                                         - ${history.teamA.name} vs ${history.teamB.name}`}
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            )}
                         </div>
                     </div>
                 </div>
