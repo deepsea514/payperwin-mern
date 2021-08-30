@@ -1534,11 +1534,6 @@ adminRouter.get(
                             label: sport.name,
                         }
                     })
-                    if ("Other".search(new RegExp(name, 'i')) != -1)
-                        result.push({
-                            value: "Other",
-                            label: "Other",
-                        })
                     res.status(200).json(result);
                 })
         }

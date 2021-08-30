@@ -3485,6 +3485,62 @@ expressApp.get(
     }
 )
 
+expressApp.get(
+    '/searchsports',
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = { deletedAt: null };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ name: { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            Sport.find(searchObj)
+                .sort('createdAt')
+                .select(['name'])
+                .exec(function (error, data) {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    const result = data.map(sport => {
+                        return {
+                            value: sport.name,
+                            label: sport.name,
+                        }
+                    })
+                    res.status(200).json(result);
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+expressApp.post(
+    '/autobet/settings',
+    isAuthenticated,
+    async (req, res) => {
+        const { user } = req;
+        const autobet = await AutoBet.findOne({ userId: user._id });
+        if (autobet) {
+            try {
+                await autobet.update(req.body);
+                res.json({ success: true });
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({ success: false });
+            }
+        } else {
+            return res.status(404).json({ success: false, error: 'You are not an autobet user' });
+        }
+    }
+)
+
 
 // Admin
 expressApp.use('/admin', adminRouter);

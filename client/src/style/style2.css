@@ -675,7 +675,7 @@ footer ul li a i {
     box-shadow: inset 0px -13px 15px -5px rgba(0, 0, 0, 0.1);
 }
 
-.close {
+.close-header {
     z-index: 999;
     font-size: 40px !important;
     color: #fff;
@@ -685,7 +685,7 @@ footer ul li a i {
     top: 7px;
 }
 
-.mobile-menu button.close {
+.mobile-menu button.close-header {
     padding: 0;
     background-color: #273043;
     width: 65px;

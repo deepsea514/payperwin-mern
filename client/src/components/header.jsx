@@ -360,7 +360,7 @@ class Header extends PureComponent {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal">×</button>
+                                <button type="button" className="close-header" data-dismiss="modal">×</button>
                             </div>
                             <div className="modal-body">
                                 <h2>Log in</h2>
