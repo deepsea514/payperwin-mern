@@ -53,7 +53,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 
 async function checkTimer() {
     //////////////////// Check match status
-    // checkMatchStatus();
+    checkMatchStatus();
 
     ////////////////// Delete Shared Lines
     // await SharedLine.deleteMany({
