@@ -80,6 +80,5 @@ export default {
     convertTimeClock,
     convertTimeEventDate,
     convertTimeLineDate,
-    isDstObserved,
     getDSTTimeOffset
 };
