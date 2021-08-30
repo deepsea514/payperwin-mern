@@ -452,7 +452,7 @@ class Sport extends PureComponent {
                                                                 )}
                                                         >
                                                             {!started && <div className="vertical-align">
-                                                                <div className="points">{`${totals[0].points}`}</div>
+                                                                <div className="points">O {`${totals[0].points}`}</div>
                                                                 {this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <>
                                                                     <div className="old-odds">
                                                                         {this.convertOdds(totals[0].over)}
@@ -494,7 +494,7 @@ class Sport extends PureComponent {
                                                                 )}
                                                         >
                                                             {!started && <div className="vertical-align">
-                                                                <div className="points">{`${totals[0].points}`}</div>
+                                                                <div className="points">U {`${totals[0].points}`}</div>
                                                                 {this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <>
                                                                     <div className="old-odds">
                                                                         {this.convertOdds(totals[0].under)}
