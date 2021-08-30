@@ -25,13 +25,13 @@ class AutobetSummary extends Component {
                             style={{ height: "140px" }}
                         >
                             <label className="font-weight-bolder text-white bg-primary">Your balance</label>
-                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${this.balanceString(user.balance)}</h3>
+                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${new Intl.NumberFormat().format(Number(this.balanceString(user.balance)))}</h3>
                         </div>
 
                         {/* Stat */}
                         <div className="px-3 py-5" style={{ marginTop: '-6rem' }}>
                             <div className="flex-grow-1 card card-custom px-2 bg-white">
-                                <div className="d-flex align-items-center justify-content-between mb-10">
+                                <div className="d-flex align-items-center mb-10">
                                     <div className="symbol symbol-40 symbol-light-primary mr-1">
                                         <span className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -42,7 +42,7 @@ class AutobetSummary extends Component {
                                             </span>
                                         </span>
                                     </div>
-                                    <div className="d-flex align-items-center mr-2">
+                                    <div className="d-flex align-items-start mx-2">
                                         <div>
                                             <a
                                                 href="#"
@@ -56,15 +56,15 @@ class AutobetSummary extends Component {
                                             </a>
                                         </div>
                                     </div>
-                                    <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${totalbets.amount.toFixed(1)}
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${new Intl.NumberFormat().format(Number(totalbets.amount.toFixed(2)))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
                                     </a>
                                 </div>
 
-                                <div className="d-flex align-items-center justify-content-between mb-10">
+                                <div className="d-flex align-items-center mb-10">
                                     <div className="symbol symbol-40 symbol-light-primary mr-1">
                                         <span className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -75,7 +75,7 @@ class AutobetSummary extends Component {
                                             </span>
                                         </span>
                                     </div>
-                                    <div className="d-flex align-items-center mr-2">
+                                    <div className="d-flex align-items-start mx-2">
                                         <div>
                                             <a
                                                 href="#"
@@ -89,15 +89,15 @@ class AutobetSummary extends Component {
                                             </a>
                                         </div>
                                     </div>
-                                    <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${winbets.amount.toFixed(1)}
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${new Intl.NumberFormat().format(Number(winbets.amount.toFixed(2)))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
                                     </a>
                                 </div>
 
-                                <div className="d-flex align-items-center justify-content-between mb-10">
+                                <div className="d-flex align-items-center mb-10">
                                     <div className="symbol symbol-40 symbol-light-primary mr-1">
                                         <span className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -108,7 +108,7 @@ class AutobetSummary extends Component {
                                             </span>
                                         </span>
                                     </div>
-                                    <div className="d-flex align-items-center mr-2">
+                                    <div className="d-flex align-items-start mx-2">
                                         <div>
                                             <a
                                                 href="#"
@@ -122,15 +122,15 @@ class AutobetSummary extends Component {
                                             </a>
                                         </div>
                                     </div>
-                                    <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${lossbets.amount.toFixed(1)}
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${new Intl.NumberFormat().format(Number(lossbets.amount.toFixed(2)))}
                                         <span className="svg-icon svg-icon-md svg-icon-danger">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
                                         </span>
                                     </a>
                                 </div>
 
-                                <div className="d-flex align-items-center justify-content-between mb-10">
+                                <div className="d-flex mb-10">
                                     <div className="symbol symbol-40 symbol-light-primary mr-1">
                                         <span className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -141,7 +141,7 @@ class AutobetSummary extends Component {
                                             </span>
                                         </span>
                                     </div>
-                                    <div className="d-flex align-items-center mr-2">
+                                    <div className="d-flex align-items-start mx-2">
                                         <div>
                                             <a
                                                 href="#"
@@ -155,8 +155,8 @@ class AutobetSummary extends Component {
                                             </a>
                                         </div>
                                     </div>
-                                    <a className="font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${profit.toFixed(1)}
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${new Intl.NumberFormat().format(Number(profit.toFixed(2)))}
                                         {profit >= 0 && <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>}
