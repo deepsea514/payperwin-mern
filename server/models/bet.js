@@ -5,6 +5,7 @@ const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const simpleresponsive = require('../emailtemplates/simpleresponsive');
 const { convertTimeLineDate } = require('../libs/timehelper');
+const sendSMS = require("../libs/sendSMS");
 
 const { Schema } = mongoose;
 
@@ -63,7 +64,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                 timezone = preference.timezone;
             }
             const timeString = convertTimeLineDate(new Date(), timezone);
-            const { pickOdds, lineQuery, bet: betAmount } = bet;
+            const { pickOdds, lineQuery, bet: betAmount, payableToWin } = bet;
 
             if (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.email) {
                 let msg = null;
@@ -71,36 +72,40 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                     msg = {
                         from: `${fromEmailName} <${fromEmailAddress}>`,
                         to: user.email,
-                        subject: 'Your bet was matched',
-                        text: `Your bet was matched`,
+                        subject: 'Bet Matched!',
+                        text: `Bet Matched!`,
                         html: simpleresponsive(
                             `Hi <b>${user.email}</b>.
                             <br><br>
-                            This email is to advise that your bet for ${lineQuery.eventName} for $${betAmount.toFixed(2)} was matched on ${timeString}
+                            Good news! We found you a match for ${lineQuery.eventName}
                             <br><br>
                             <ul>
                                 <li>Wager: $${betAmount.toFixed(2)}</li>
                                 <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                                <li>Matched Amount: $${payableToWin.toFixed(2)}</li>
                                 <li>Platform: PAYPERWIN Peer-to Peer</li>
                             </ul>
+                            Good luck!
                         `),
                     };
                 } else {
                     msg = {
                         from: `${fromEmailName} <${fromEmailAddress}>`,
                         to: user.email,
-                        subject: 'Your bet was matched',
-                        text: `Your bet was matched`,
+                        subject: 'Bet Matched!',
+                        text: `Bet Matched!`,
                         html: simpleresponsive(
                             `Hi <b>${user.email}</b>.
                             <br><br>
-                            This email is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAmount.toFixed(2)} was matched on ${timeString}
+                            Good news! We found you a match for ${lineQuery.sportName} ${lineQuery.type}
                             <br><br>
                             <ul>
                                 <li>Wager: $${betAmount.toFixed(2)}</li>
                                 <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                                <li>Matched Amount: $${payableToWin.toFixed(2)}</li>
                                 <li>Platform: PAYPERWIN Peer-to Peer</li>
                             </ul>
+                            Good luck!
                             `),
                     };
                 }
@@ -110,14 +115,16 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
                 if (bet.origin == 'other') {
-                    sendSMS(`This is to advise that your bet for ${lineQuery.eventName} for $${betAmount.toFixed(2)} was matched on ${timeString}\n
+                    sendSMS(`Good news! We found you a match for ${lineQuery.eventName}\n
                     Wager: $${betAmount.toFixed(2)}\n 
                     Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                    Matched Amount: $${payableToWin.toFixed(2)}\n
                     Platform: PAYPERWIN Peer-to Peer`, user.phone);
                 } else {
-                    sendSMS(`This is to advise that your bet for ${lineQuery.sportName} ${lineQuery.type} for $${betAmount.toFixed(2)} was matched on ${timeString}\n
+                    sendSMS(`Good news! We found you a match for ${lineQuery.sportName} ${lineQuery.type}\n
                     Wager: $${betAmount.toFixed(2)}\n 
                     Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                    Matched Amount: $${payableToWin.toFixed(2)}\n
                     Platform: PAYPERWIN Peer-to Peer`, user.phone);
                 }
             }

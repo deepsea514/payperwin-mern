@@ -354,12 +354,12 @@ async function updateAction(action, user) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
-                    subject: 'Your bet was accepted',
-                    text: `Your bet was accepted`,
+                    subject: 'Your bet is waiting for a match',
+                    text: `Your bet is waiting for a match`,
                     html: simpleresponsive(
                         `Hi <b>${user.email}</b>.
                             <br><br>
-                            This email is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}
+                            This email is to advise you that your bed for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                             <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
@@ -367,7 +367,7 @@ async function updateAction(action, user) {
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} for ${WagerInfo.ToRisk} was accepted on ${timeString}`, user.phone);
+                sendSMS(`This is to advise you that your bed for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. `, user.phone);
             }
 
             let adminMsg = {
