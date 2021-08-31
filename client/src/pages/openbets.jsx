@@ -368,7 +368,7 @@ class OpenBets extends PureComponent {
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
                                     <div className={this.getStatusClass(status)}>
-                                        {status ? status : 'Accepted'}
+                                        {status ? (status == 'Pending' ? 'WAITING FOR MATCH' : status) : 'Accepted'}
                                     </div>
                                 </div>
                             </div>

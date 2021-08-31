@@ -9,6 +9,9 @@ export default class BetStatus extends PureComponent {
                 <div className="verification-proof-list">
                     <ul>
                         <li>
+                            <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                        </li>
+                        <li>
                             <b>Matched:</b> Your entire bet was matched and you wager is in play.
                         </li>
                         <li>
