@@ -58,7 +58,7 @@ export function WinLoss({ className, chartColor = "info", winloss }) {
 
                 <div className="card-body d-flex flex-column p-0 text-left">
                     {winloss && <h1 className="card-title font-weight-bolder text-white ml-10">
-                        {winloss >= 0 ? ('+ $' + winloss) : ('- $' + (-winloss))} CAD
+                        {winloss >= 0 ? ('+ $' + new Intl.NumberFormat().format(Number(winloss).toFixed(2))) : ('- $' + new Intl.NumberFormat().format(Number(-winloss).toFixed(2)))} CAD
                     </h1>}
                     <div
                         id="lifetime_chart"
@@ -75,7 +75,7 @@ function getChartOption(layoutProps) {
     const options = {
         series: [
             {
-                name: "Net Profit",
+                name: "Profit",
                 data: [35, 65, 75, 55, 45, 60, 55],
             },
             {
@@ -170,7 +170,7 @@ function getChartOption(layoutProps) {
             },
             y: {
                 formatter: function (val) {
-                    return "$" + val + " thousands";
+                    return "$" + val;
                 },
             },
             marker: {
