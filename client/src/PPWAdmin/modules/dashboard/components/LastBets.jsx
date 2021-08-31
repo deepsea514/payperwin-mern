@@ -9,7 +9,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
 
-    getPPWBetType = (bet) => {
+    const getPPWBetType = (bet) => {
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
@@ -77,7 +77,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                         </span>
                     </td>
                     <td className="pl-0">
-                        {this.getPPWBetType(bet)}
+                        {getPPWBetType(bet)}
                     </td>
                 </tr>
             )
