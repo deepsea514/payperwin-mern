@@ -1537,15 +1537,15 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
                 budget += logs[0].amount;
         }
         autobet.bettable = budget - bettedamount;
-        if (autobet.referral_code != user.bet_referral_code) {
+        if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
             return (
                 autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                 autobet.status == AutoBetStatus.active &&                   //Check active status
                 autobet.userId.balance > 0 &&                               //Check Balance
                 autobet.bettable > 0 &&                                     //Check bettable
                 // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                // (bettedamount < (budget - toBet)) &&                        //Check Budget
-                autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
+                // (bettedamount < (budget - toBet))                           //Check Budget
+                true
             );
         }
         return (
@@ -1554,8 +1554,8 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
             autobet.userId.balance > 0 &&                               //Check Balance
             autobet.bettable > 0 &&                                     //Check bettable
             // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            // (bettedamount < (budget - toBet))                           //Check Budget
-            true
+            // (bettedamount < (budget - toBet)) &&                        //Check Budget
+            autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
         );
     });
 
