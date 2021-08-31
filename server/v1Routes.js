@@ -359,7 +359,7 @@ async function updateAction(action, user) {
                     html: simpleresponsive(
                         `Hi <b>${user.email}</b>.
                             <br><br>
-                            This email is to advise you that your bed for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                            This email is to advise you that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                             <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
@@ -367,7 +367,7 @@ async function updateAction(action, user) {
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise you that your bed for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. `, user.phone);
+                sendSMS(`This is to advise you that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. `, user.phone);
             }
 
             let adminMsg = {
