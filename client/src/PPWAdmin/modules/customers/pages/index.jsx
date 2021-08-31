@@ -12,7 +12,7 @@ export default class CustomerModule extends Component {
                 <Switch>
                     <Route exact path="/" component={Customers} />
                     {/* <Route path="/:id/edit" component={CustomerEdit} /> */}
-                    <Route path="/:id/detail" component={CustomerDetail} />
+                    {/* <Route path="/:id/detail" component={CustomerDetail} /> */}
                     <Route path="/:id/profile" component={CUstomerProfile} />
                 </Switch>
             </BrowserRouter>

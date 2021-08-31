@@ -4,12 +4,15 @@ import { connect } from "react-redux";
 import * as customers from "../redux/reducers";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import { deleteCustomer } from "../redux/services";
+import { deleteCustomer, updateCustomer } from "../redux/services";
 import { addWithdraw } from "../../withdrawlogs/redux/services";
 import { addDeposit } from "../../depositlogs/redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import dateformat from "dateformat";
 import CreditModal from "../components/CreditModal";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class Customers extends React.Component {
     constructor(props) {
@@ -18,12 +21,28 @@ class Customers extends React.Component {
             deleteId: null,
             addDepositId: null,
             addWithdrawId: null,
+            changePasswordId: null,
             withdrawmax: 0,
             modal: false,
             modalvariant: "success",
             resMessage: "",
             perPage: 25,
-
+            PasswordSchema: Yup.object().shape({
+                password: Yup.string()
+                    .min(3, "Minimum 3 symbols")
+                    .max(50, "Maximum 50 symbols")
+                    .required("Password is required."),
+                confirmpassword: Yup.string()
+                    .required("You should confirm password")
+                    .when("password", {
+                        is: (val) => (val && val.length > 0 ? true : false),
+                        then: Yup.string().oneOf([Yup.ref("password")], "Password and Confirm Password didn't match"),
+                    }),
+            }),
+            initialValues: {
+                password: "",
+                confirmpassword: ""
+            },
         }
     }
 
@@ -62,7 +81,7 @@ class Customers extends React.Component {
         return customers.map((customer, index) => {
             return (
                 <tr key={index}>
-                    <td>{index + 1}</td>
+                    {/* <td>{index + 1}</td> */}
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td><Link to={`/${customer._id}/profile`}>{customer.email}</Link></td>
                     <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
@@ -74,9 +93,10 @@ class Customers extends React.Component {
                             {/* <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
                                 <i className="fas fa-edit"></i>&nbsp; Edit
                             </Dropdown.Item> */}
-                            <Dropdown.Item as={Link} to={`/${customer._id}/detail`}>
+                            {/* <Dropdown.Item as={Link} to={`/${customer._id}/detail`}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
+                            <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
                             <Dropdown.Item as={Link} to={`/${customer._id}/profile`}>
                                 <i className="far fa-user"></i>&nbsp; Profile
                             </Dropdown.Item>
@@ -140,9 +160,22 @@ class Customers extends React.Component {
         this.props.filterCustomerChange(filter);
     }
 
+    changePassword = (values, formik) => {
+        const { changePasswordId } = this.state;
+        this.setState({ isError: false, isSuccess: false });
+        formik.setSubmitting(true);
+        updateCustomer(changePasswordId, { password: values.password }).then(() => {
+            this.setState({ modal: true, changePasswordId: null, resMessage: "Successfully changed!", modalvariant: "success" });
+        }).catch(() => {
+            this.setState({ modal: true, changePasswordId: null, resMessage: "Update Failed!", modalvariant: "danger" });
+        }).finally(() => {
+            formik.setSubmitting(false);
+        })
+    }
+
     render() {
-        const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId,
-            addWithdrawId, withdrawmax } = this.state;
+        const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId, changePasswordId,
+            addWithdrawId, withdrawmax, PasswordSchema, initialValues } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -204,11 +237,11 @@ class Customers extends React.Component {
                                         </small>
                                     </div>
                                 </div>
-                                <div className="">
+                                <div className="table-responsive">
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
+                                                {/* <th scope="col">#</th> */}
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
                                                 <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'joined_date' })}>
@@ -291,6 +324,57 @@ class Customers extends React.Component {
                     reasons={reasons}
                     type="deposit"
                 />}
+
+                {changePasswordId && <Modal show={changePasswordId != null} onHide={() => this.setState({ changePasswordId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Reset Password</Modal.Title>
+                    </Modal.Header>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={PasswordSchema}
+                        onSubmit={this.changePassword}>
+                        {
+                            (formik) => {
+                                return <form onSubmit={formik.handleSubmit}>
+                                    <Modal.Body>
+                                        <div className="form-group">
+                                            <label>New Password<span className="text-danger">*</span></label>
+                                            <input type="password" name="password" placeholder="Enter New Password"
+                                                className={`form-control ${getInputClasses(formik, "password")}`}
+                                                {...formik.getFieldProps("password")}
+                                            />
+                                            {formik.touched.password && formik.errors.password ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.password}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Confirm Password<span className="text-danger">*</span></label>
+                                            <input type="password" name="confirmpassword" placeholder="Enter Confirm Password"
+                                                className={`form-control ${getInputClasses(formik, "confirmpassword")}`}
+                                                {...formik.getFieldProps("confirmpassword")}
+                                            />
+                                            {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.confirmpassword}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="light-primary" onClick={() => this.setState({ changePasswordId: null })}>
+                                            Cancel
+                                        </Button>
+                                        <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
+                                            Save
+                                        </Button>
+                                    </Modal.Footer>
+                                </form>
+                            }
+                        }
+                    </Formik>
+                </Modal>}
 
                 <Modal show={modal} onHide={() => this.setState({ modal: false })}>
                     <Modal.Header closeButton>
