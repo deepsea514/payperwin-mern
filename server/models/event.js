@@ -201,6 +201,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
             }
 
+            const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: adminEmailAddress,
@@ -212,7 +213,9 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                         <li>Event: ${name}</li>
                         <li>Bet: Moneyline</li>
                         <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                        <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}(American)</li>
+                        <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}</li>
+                        <li>Pick: ${favorite == 'teamA' ? teamA.name : teamB.name}</li>
+                        <li>Date: ${matchTimeString}</li>
                         <li>Win: $${toWin.toFixed(2)}</li>
                     </ul>`),
             }

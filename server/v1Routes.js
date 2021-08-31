@@ -370,6 +370,7 @@ async function updateAction(action, user) {
                 sendSMS(`This is to advise you that your bet for ${WagerInfo.Sport} ${WagerInfo.Type} on ${timeString} for ${WagerInfo.ToRisk} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. `, user.phone);
             }
 
+            const matchTimeString = convertTimeLineDate(new Date(WagerInfo.EventDateFm), timezone);
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: adminEmailAddress,
@@ -381,7 +382,9 @@ async function updateAction(action, user) {
                         <li>Event: ${WagerInfo.EventName}</li>
                         <li>Bet: ${getPinnacleBetType(WagerInfo.BetType)}</li>
                         <li>Wager: $${Number(WagerInfo.ToRisk).toFixed(2)}</li>
-                        <li>Odds: ${WagerInfo.Odds}(${WagerInfo.OddsFormat == 1 ? 'Decimal' : 'American'})</li>
+                        <li>Odds: ${WagerInfo.Odds}</li>
+                        <li>Pick: ${WagerInfo.Selection}</li>
+                        <li>Date: ${matchTimeString}</li>
                         <li>Win: $${Number(WagerInfo.ToWin).toFixed(2)}</li>
                     </ul>`),
             }
