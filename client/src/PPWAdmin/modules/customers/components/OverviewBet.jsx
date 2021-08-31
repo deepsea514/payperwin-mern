@@ -23,7 +23,7 @@ class OverviewBet extends React.Component {
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
                     </div>
                     <span className="label label-lg label-light-primary label-inline">
-                        ${bet.bet}&nbsp;{currency}
+                        ${bet.bet.toFixed(2)}&nbsp;{currency}
                     </span>
                 </div>
             )
@@ -45,7 +45,7 @@ class OverviewBet extends React.Component {
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
                     </div>
                     <span className="label label-lg label-light-primary label-inline">
-                        ${bet.WagerInfo.ToRisk}&nbsp;{currency}
+                        ${Number(bet.WagerInfo.ToRisk).toFixed(2)}&nbsp;{currency}
                     </span>
                 </div>
             )

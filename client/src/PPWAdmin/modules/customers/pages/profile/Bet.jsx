@@ -155,38 +155,41 @@ class Bet extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        ${bet.bet} {customer.currency}
+                        ${bet.bet.toFixed(2)} {customer.currency}
                     </span>
                 </td>
                 <td className="pl-0">
-                    {this.convertOdds(bet.pickOdds)}
+                    {bet.pickName} @ {this.convertOdds(bet.pickOdds)}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {bet.lineQuery.sportName}
+                        {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {bet.teamA.name} vs {bet.teamB.name}
+                        {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                     </span>
                 </td>
                 <td className="pl-0" style={{ textTransform: "uppercase" }}>
-                    {this.getPPWBetType(bet.lineQuery.type)}
+                    {this.getPPWBetType(bet)}
                 </td>
             </tr>
         ));
     }
 
-    getPPWBetType = (type) => {
+    getPPWBetType = (bet) => {
+        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
             case "spread":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+                const spreads = bet.pickName.split(' ');
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
-            default:
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+            default:
+                return null;
         }
     }
 
@@ -235,7 +238,7 @@ class Bet extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
-                    {this.convertOdds(bet.WagerInfo.Odds)}
+                    {bet.WagerInfo.Selection} @ {this.convertOdds(bet.WagerInfo.Odds)}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
@@ -260,12 +263,12 @@ class Bet extends React.Component {
         switch (oddsFormat) {
             case 'decimal':
                 if (odd > 0)
-                    return Number(1 + odd / 100).toFixed(2) + '(Decimal Odds)';
-                return Number(1 - 100 / odd).toFixed(2) + '(Decimal Odds)';
+                    return Number(1 + odd / 100).toFixed(2);
+                return Number(1 - 100 / odd).toFixed(2);
             case 'american':
                 if (odd > 0)
-                    return '+' + odd + '(American Odds)';
-                return odd + '(American Odds)';
+                    return '+' + odd;
+                return odd;
             default:
                 return odd;
         }
@@ -307,8 +310,8 @@ class Bet extends React.Component {
                                         <tr>
                                             <th className="p-0" >#</th>
                                             <th className="p-0" >Time</th>
-                                            <th className="p-0" >Amount</th>
-                                            <th className="p-0" >Odds</th>
+                                            <th className="p-0" >Wager</th>
+                                            <th className="p-0" >Pick</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
                                             <th className="p-0" >Line</th>
@@ -334,8 +337,8 @@ class Bet extends React.Component {
                                         <tr>
                                             <th className="p-0" >#</th>
                                             <th className="p-0" >Time</th>
-                                            <th className="p-0" >Amount</th>
-                                            <th className="p-0" >Odds</th>
+                                            <th className="p-0" >Wager</th>
+                                            <th className="p-0" >Pick</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
                                         </tr>

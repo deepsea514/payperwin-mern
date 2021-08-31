@@ -3,7 +3,8 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import dateformat from "dateformat";
 import { getBetDetail } from "../redux/services";
-import sportNameIcon from '../../../../helpers/sportNameIcon';
+import sportNameImage from '../../../../helpers/sportNameImage';
+import calculateNewOdds from '../../../../helpers/calculateNewOdds';
 
 class BetDetail extends React.Component {
     constructor(props) {
@@ -48,15 +49,18 @@ class BetDetail extends React.Component {
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }
 
-    getPPWBetType = (type) => {
+    getPPWBetType = (bet) => {
+        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
             case "spread":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+                const spreads = bet.pickName.split(' ');
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
-            default:
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+            default:
+                return null;
         }
     }
 
@@ -125,7 +129,9 @@ class BetDetail extends React.Component {
     }
 
     render() {
-        const { loading, bet, } = this.state;
+        const { loading, bet } = this.state;
+        const { newHome, newAway } = bet ? calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds)) : {};
+
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-11 order-xxl-12 text-center">
@@ -150,35 +156,37 @@ class BetDetail extends React.Component {
                                             <th>Amount</th>
                                             <td>{bet.bet} {bet.userId.currency}</td>
                                             <th>User</th>
-                                            <td>{bet.userId.username}</td>
+                                            <td>{bet.userId.email}</td>
                                         </tr>
                                         <tr>
                                             <th>Pick Name</th>
                                             <td>{bet.pickName} {this.getPPWBetDogFav(bet)}</td>
                                             <th>Sport</th>
-                                            <td><i className={`${sportNameIcon(bet.lineQuery.sportName) || 'fas fa-trophy'}`} />&nbsp;{bet.lineQuery.sportName}</td>
+                                            <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
                                         </tr>
                                         <tr>
                                             <th>Match Start Date</th>
                                             <td>{this.getDate(bet.matchStartDate)}</td>
                                             <th>Event</th>
-                                            <td>{`${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                                            <td>{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                                         </tr>
                                         <tr>
                                             <th>Team A</th>
                                             <td>{bet.teamA.name} {this.getPPWBetDogFav(bet, 'home')}</td>
                                             <th>Odd</th>
-                                            <td>{bet.teamA.odds}</td>
+                                            <td>
+                                                <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Team B</th>
                                             <td>{bet.teamB.name} {this.getPPWBetDogFav(bet, 'away')}</td>
                                             <th>Odd</th>
-                                            <td>{bet.teamB.odds}</td>
+                                            <td><span><del>{bet.teamB.odds}</del></span> <span>{newAway}</span></td>
                                         </tr>
                                         <tr>
                                             <th>Line</th>
-                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet.lineQuery.type)}</td>
+                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet)}</td>
                                             <th>House</th>
                                             <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                                         </tr>

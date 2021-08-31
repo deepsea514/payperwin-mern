@@ -25,7 +25,7 @@ class ProfileCard extends React.Component {
                                 <Button onClick={this.goToBack} className="btn btn-secondary mr-2"> Back </Button>
                             </div>
                             {/* begin::User */}
-                            <div className="d-flex align-items-center mt-4">
+                            <div className="d-flex align-items-center my-4">
                                 {/* <div className="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
                                     <div
                                         className="symbol-label"
@@ -33,22 +33,12 @@ class ProfileCard extends React.Component {
                                     ></div>
                                 </div> */}
                                 <div>
-                                    <span style={{ textTransform: "uppercase" }} className="font-weight-bolder font-size-h2 text-dark-75 text-hover-primary">
-                                        {customer.username}
-                                    </span>
-                                </div>
-                            </div>
-                            {/* end::User */}
-                            {/* begin::Contact */}
-                            <div className="py-9">
-                                <div className="d-flex align-items-center justify-content-between mb-2">
-                                    <span className="font-weight-bold mr-2">Email:</span>
-                                    <span className="text-muted text-hover-primary">
+                                    <span className="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary">
                                         {customer.email}
                                     </span>
                                 </div>
                             </div>
-                            {/* end::Contact */}
+                            {/* end::User */}
                             {/* begin::Nav */}
                             <div className="navi navi-bold navi-hover navi-active navi-link-rounded">
                                 <div className="navi-item mb-2">

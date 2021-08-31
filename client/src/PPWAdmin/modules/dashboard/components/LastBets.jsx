@@ -9,15 +9,18 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
 
-    const getPPWBetType = (type) => {
+    getPPWBetType = (bet) => {
+        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
             case "spread":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
+                const spreads = bet.pickName.split(' ');
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
-            default:
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
+            default:
+                return null;
         }
     }
 
@@ -74,7 +77,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                         </span>
                     </td>
                     <td className="pl-0">
-                        {getPPWBetType(bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type)}
+                        {getPPWBetType(bet)}
                     </td>
                 </tr>
             )
