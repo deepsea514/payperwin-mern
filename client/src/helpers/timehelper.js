@@ -22,6 +22,22 @@ function getChangedTime(date, timezone) {
     return time;
 }
 
+function getDisplayModeBasedOnSystemTime(timezone) {
+    timezone = TimeZones.find(time => time.value == timezone);
+    if (!timezone) timezone = defaultTimezone;
+    else {
+        if (isDstObserved && timezone.dst) {
+            timezone = getDSTTimeOffset(timezone.time);
+        } else {
+            timezone = timezone.time;
+        }
+    }
+    const changedTime = new Date(getChangedTime(new Date(), timezone));
+    const hour = changedTime.getHours();
+    if (hour < 6 || hour > 18) return 'dark';
+    return 'light';
+}
+
 function convertTimeClock(date, timezone) {
     timezone = TimeZones.find(time => time.value == timezone);
     if (!timezone) timezone = defaultTimezone;
@@ -80,5 +96,6 @@ export default {
     convertTimeClock,
     convertTimeEventDate,
     convertTimeLineDate,
-    getDSTTimeOffset
+    getDSTTimeOffset,
+    getDisplayModeBasedOnSystemTime
 };
