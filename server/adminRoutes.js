@@ -2007,10 +2007,11 @@ const getTotalActivePlayer = async function (datefrom, dateto) {
 }
 
 const getTotalFees = async function (datefrom, dateto) {
-    const total = await FinancialLog.aggregate(
+    let totalfee = 0;
+    const withdrawfee = await FinancialLog.aggregate(
         {
             $match: {
-                financialtype: "withdraw",
+                financialtype: "withdrawfee",
                 status: FinancialStatus.success,
                 createdAt: {
                     $gte: datefrom,
@@ -2022,13 +2023,35 @@ const getTotalFees = async function (datefrom, dateto) {
             $group: {
                 _id: null,
                 total: {
-                    $sum: "$fee"
+                    $sum: "$amount"
                 }
             }
         }
     );
-    if (total.length) return total[0].total;
-    return 0;
+    if (withdrawfee.length) totalfee += withdrawfee[0].total;
+
+    const betfee = await FinancialLog.aggregate(
+        {
+            $match: {
+                financialtype: "betfee",
+                status: FinancialStatus.success,
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$amount"
+                }
+            }
+        }
+    );
+    if (betfee.length) totalfee += betfee[0].total;
+    return Number(totalfee.toFixed(2));
 }
 
 
