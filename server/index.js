@@ -1083,6 +1083,7 @@ expressApp.post(
                                             Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
 
+                                        const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                                         let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
                                             to: adminEmailAddress1,
@@ -1094,7 +1095,9 @@ expressApp.post(
                                                     <li>Event: ${name}</li>
                                                     <li>Bet: ${type}</li>
                                                     <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                    <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}(American)</li>
+                                                    <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}</li>
+                                                    <li>Pick: ${pickedCandidate.name}</li>
+                                                    <li>Date: ${matchTimeString}</li>
                                                     <li>Win: $${toWin.toFixed(2)}</li>
                                                 </ul>`),
                                         }
@@ -1306,6 +1309,25 @@ expressApp.post(
                                                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
 
+                                        const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
+                                        let betType = ''
+                                        switch (type) {
+                                            case 'total':
+                                                if (pick == 'home') {
+                                                    betType = `O ${points}`;
+                                                } else {
+                                                    betType = `U ${points}`;
+                                                }
+                                                break;
+
+                                            case 'spread':
+                                                if (pick == 'home') {
+                                                    betType = `${hdp > 0 ? '+' : ''}${hdp}`;
+                                                } else {
+                                                    betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                                                }
+                                                break;
+                                        }
                                         let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
                                             to: adminEmailAddress1,
@@ -1315,9 +1337,11 @@ expressApp.post(
                                                 `<ul>
                                                         <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
                                                         <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                                                        <li>Bet: ${lineQuery.type}</li>
+                                                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
                                                         <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
+                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                                                        <li>Pick: ${pickName}</li>
+                                                        <li>Date: ${matchTimeString}</li>
                                                         <li>Win: $${toWin.toFixed(2)}</li>
                                                     </ul>`),
                                         }
@@ -1568,20 +1592,25 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
     });
 
     let pickName = '';
+    betType = ''
     switch (type) {
         case 'total':
             if (pick == 'home') {
                 pickName = `Over ${points}`;
+                betType = `O ${points}`;
             } else {
                 pickName = `Under ${points}`;
+                betType = `U ${points}`;
             }
             break;
 
         case 'spread':
             if (pick == 'home') {
                 pickName = `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
+                betType = `${hdp > 0 ? '+' : ''}${hdp}`;
             } else {
                 pickName = `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
             }
             break;
 
@@ -1679,6 +1708,7 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
                 Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
             }
 
+            const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: adminEmailAddress1,
@@ -1688,9 +1718,11 @@ async function checkAutoBet(bet, betpool, user, sportData, line) {
                     `<ul>
                         <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
                         <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                        <li>Bet: ${lineQuery.type}</li>
+                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
                         <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}(American)</li>
+                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                        <li>Pick: ${pickName}</li>
+                        <li>Date: ${matchTimeString}</li>
                         <li>Win: $${toWin.toFixed(2)}</li>
                     </ul>`),
             }
