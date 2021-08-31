@@ -129,7 +129,7 @@ class ActiveUsers extends React.Component {
                                         </small>
                                     </div>
                                 </div>
-                                <div className="">
+                                <div className="table-responsive">
                                     <table className="table">
                                         <thead>
                                             <tr>

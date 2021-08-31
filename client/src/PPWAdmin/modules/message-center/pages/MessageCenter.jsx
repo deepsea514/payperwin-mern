@@ -76,13 +76,13 @@ class MessageCenter extends React.Component {
         const { deleteId } = this.state;
         const { getMessagesAction } = this.props;
         deleteMessageDraft(deleteId)
-        .then(() => {
-            this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
-            getMessagesAction();
-        })
-        .catch(() => {
-            this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
-        })
+            .then(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
+                getMessagesAction();
+            })
+            .catch(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+            })
     }
 
     render() {
@@ -105,7 +105,7 @@ class MessageCenter extends React.Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="">
+                            <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -120,15 +120,14 @@ class MessageCenter extends React.Component {
                                         {this.tableBody()}
                                     </tbody>
                                 </table>
-
-                                <CustomPagination
-                                    className="pagination pull-right"
-                                    currentPage={currentPage - 1}
-                                    totalPages={totalPages}
-                                    showPages={7}
-                                    onChangePage={(page) => this.onPageChange(page + 1)}
-                                />
                             </div>
+                            <CustomPagination
+                                className="pagination pull-right"
+                                currentPage={currentPage - 1}
+                                totalPages={totalPages}
+                                showPages={7}
+                                onChangePage={(page) => this.onPageChange(page + 1)}
+                            />
 
                             <Modal show={modal} onHide={() => this.setState({ modal: false })}>
                                 <Modal.Header closeButton>

@@ -90,26 +90,26 @@ class Admins extends Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="">
-                                <div className="form-group row">
-                                    <div className="col-lg-4 col-md-4">
-                                        <select
-                                            value={filter.role}
-                                            className="form-control"
-                                            name="role"
-                                            onChange={(e) => {
-                                                filterAdminChangeAction({ role: e.target.value });
-                                            }}
-                                        >
-                                            <option value='all'>All</option>
-                                            <option value='super_admin'>Super Admin</option>
-                                            <option value='customer_service'>Customer Service</option>
-                                        </select>
-                                        <small className="form-text text-muted">
-                                            <b>Search</b> by Status
-                                        </small>
-                                    </div>
+                            <div className="form-group row">
+                                <div className="col-lg-4 col-md-4">
+                                    <select
+                                        value={filter.role}
+                                        className="form-control"
+                                        name="role"
+                                        onChange={(e) => {
+                                            filterAdminChangeAction({ role: e.target.value });
+                                        }}
+                                    >
+                                        <option value='all'>All</option>
+                                        <option value='super_admin'>Super Admin</option>
+                                        <option value='customer_service'>Customer Service</option>
+                                    </select>
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Status
+                                    </small>
                                 </div>
+                            </div>
+                            <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -125,15 +125,14 @@ class Admins extends Component {
                                         {this.tableBody()}
                                     </tbody>
                                 </table>
-
-                                <CustomPagination
-                                    className="pagination pull-right"
-                                    currentPage={currentPage - 1}
-                                    totalPages={totalPages}
-                                    showPages={7}
-                                    onChangePage={(page) => this.onPageChange(page + 1)}
-                                />
                             </div>
+                            <CustomPagination
+                                className="pagination pull-right"
+                                currentPage={currentPage - 1}
+                                totalPages={totalPages}
+                                showPages={7}
+                                onChangePage={(page) => this.onPageChange(page + 1)}
+                            />
                         </div>
                     </div>
                 </div>

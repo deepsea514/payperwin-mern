@@ -48,7 +48,7 @@ class MetaTags extends React.Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="">
+                            <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
