@@ -77,7 +77,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                         </span>
                     </td>
                     <td className="pl-0">
-                        {getPPWBetType(bet)}
+                        {this.getPPWBetType(bet)}
                     </td>
                 </tr>
             )
