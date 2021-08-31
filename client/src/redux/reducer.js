@@ -3,6 +3,7 @@ import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
 import { setPreferences } from "./services";
 import Cookie from 'js-cookie';
+import timeHelper from "../helpers/timehelper";
 
 export const actionTypes = {
     setPreference: "[Set Preference Action]",
@@ -18,6 +19,7 @@ export const actionTypes = {
     setLoginFailedAction: "[Set Login Failed Action]",
     showLoginModalAction: "[Show Login Modal Action]",
     showForgotPasswordModalAction: "[Show Forgot Password Modal Action]",
+    setDisplayModeBasedOnSystem: "[Set Display Mode Based On System]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -111,8 +113,9 @@ export const actions = {
     require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
     hideTourAction: () => ({ type: actionTypes.hideTourAction }),
     setLoginFailedAction: (times) => ({ type: actionTypes.setLoginFailedAction, times }),
-    showLoginModalAction: (showLoginModal) => ({type: actionTypes.showLoginModalAction, showLoginModal}),
-    showForgotPasswordModalAction: (showForgotPasswordModal) => ({type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal}),
+    showLoginModalAction: (showLoginModal) => ({ type: actionTypes.showLoginModalAction, showLoginModal }),
+    showForgotPasswordModalAction: (showForgotPasswordModal) => ({ type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal }),
+    setDisplayModeBasedOnSystem: () => ({ type: actionTypes.setDisplayModeBasedOnSystem })
 };
 
 export function* saga() {
@@ -121,7 +124,6 @@ export function* saga() {
             const oddsFormat = yield select((state) => state.frontend.oddsFormat);
             yield setPreferences({ oddsFormat });
         } catch (error) {
-            console.log('error', error);
         }
     });
 
@@ -130,7 +132,15 @@ export function* saga() {
             const display_mode = yield select((state) => state.frontend.display_mode);
             yield setPreferences({ display_mode });
         } catch (error) {
-            console.log('error', error);
         }
     });
+
+    yield takeLatest(actionTypes.setDisplayModeBasedOnSystem, function* setDisplayModeBasedOnSystemSaga() {
+        try {
+            const timezone = yield select((state) => state.frontend.timezone);
+            const display_mode = timeHelper.getDisplayModeBasedOnSystemTime(timezone);
+            yield put(actions.setDisplayMode(display_mode));
+        } catch (error) {
+        }
+    })
 }
