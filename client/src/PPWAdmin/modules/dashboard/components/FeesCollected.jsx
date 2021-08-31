@@ -146,7 +146,7 @@ export function FeesCollected({ className, symbolShape, baseColor, categories, d
                 },
                 y: {
                     formatter: function (val) {
-                        return "$" + val + " thousands";
+                        return "$" + val;
                     },
                 },
             },
