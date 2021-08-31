@@ -113,26 +113,26 @@ class Articles extends React.Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="">
-                                <div className="form-group row">
-                                    <div className="col-lg-3 col-md-4">
-                                        <select
-                                            value={filter.status}
-                                            className="form-control"
-                                            name="status"
-                                            onChange={(e) => {
-                                                filterArticleChangeAction({ status: e.target.value });
-                                            }}
-                                        >
-                                            <option value='all'>All</option>
-                                            <option value='draft'>Draft</option>
-                                            <option value='published'>Published</option>
-                                        </select>
-                                        <small className="form-text text-muted">
-                                            <b>Search</b> by Status
-                                        </small>
-                                    </div>
+                            <div className="form-group row">
+                                <div className="col-lg-3 col-md-4">
+                                    <select
+                                        value={filter.status}
+                                        className="form-control"
+                                        name="status"
+                                        onChange={(e) => {
+                                            filterArticleChangeAction({ status: e.target.value });
+                                        }}
+                                    >
+                                        <option value='all'>All</option>
+                                        <option value='draft'>Draft</option>
+                                        <option value='published'>Published</option>
+                                    </select>
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Status
+                                    </small>
                                 </div>
+                            </div>
+                            <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -148,15 +148,14 @@ class Articles extends React.Component {
                                         {this.tableBody()}
                                     </tbody>
                                 </table>
-
-                                <CustomPagination
-                                    className="pagination pull-right"
-                                    currentPage={currentPage - 1}
-                                    totalPages={totalPages}
-                                    showPages={7}
-                                    onChangePage={(page) => this.onPageChange(page + 1)}
-                                />
                             </div>
+                            <CustomPagination
+                                className="pagination pull-right"
+                                currentPage={currentPage - 1}
+                                totalPages={totalPages}
+                                showPages={7}
+                                onChangePage={(page) => this.onPageChange(page + 1)}
+                            />
 
                             <Modal show={modal} onHide={() => this.setState({ modal: false })}>
                                 <Modal.Header closeButton>

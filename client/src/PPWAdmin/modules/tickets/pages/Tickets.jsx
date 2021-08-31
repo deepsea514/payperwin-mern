@@ -88,31 +88,31 @@ class Tickets extends Component {
                             </div>
                         </div>
                         <div className="card-body">
+                            <RadioGroup
+                                value={status}
+                                onChange={this.handleStatusChange}
+                                row
+                            >
+                                <FormControlLabel
+                                    value="new"
+                                    control={<Radio color="primary" />}
+                                    label="New"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="replied"
+                                    control={<Radio color="primary" />}
+                                    label="Replied"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="all"
+                                    control={<Radio color="primary" />}
+                                    label="All"
+                                    labelPlacement="end"
+                                />
+                            </RadioGroup>
                             <div className="table-responsive">
-                                <RadioGroup
-                                    value={status}
-                                    onChange={this.handleStatusChange}
-                                    row
-                                >
-                                    <FormControlLabel
-                                        value="new"
-                                        control={<Radio color="primary" />}
-                                        label="New"
-                                        labelPlacement="end"
-                                    />
-                                    <FormControlLabel
-                                        value="replied"
-                                        control={<Radio color="primary" />}
-                                        label="Replied"
-                                        labelPlacement="end"
-                                    />
-                                    <FormControlLabel
-                                        value="all"
-                                        control={<Radio color="primary" />}
-                                        label="All"
-                                        labelPlacement="end"
-                                    />
-                                </RadioGroup>
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -128,14 +128,14 @@ class Tickets extends Component {
                                         {this.tableBody()}
                                     </tbody>
                                 </table>
-                                <CustomPagination
-                                    className="pagination pull-right"
-                                    currentPage={currentPage - 1}
-                                    totalPages={totalPages}
-                                    showPages={7}
-                                    onChangePage={(page) => this.onPageChange(page + 1)}
-                                />
                             </div>
+                            <CustomPagination
+                                className="pagination pull-right"
+                                currentPage={currentPage - 1}
+                                totalPages={totalPages}
+                                showPages={7}
+                                onChangePage={(page) => this.onPageChange(page + 1)}
+                            />
                         </div>
                     </div>
                 </div>

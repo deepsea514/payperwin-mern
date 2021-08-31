@@ -112,7 +112,7 @@ class Promotions extends React.Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <div className="">
+                            <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -129,15 +129,14 @@ class Promotions extends React.Component {
                                         {this.tableBody()}
                                     </tbody>
                                 </table>
-
-                                <CustomPagination
-                                    className="pagination pull-right"
-                                    currentPage={currentPage - 1}
-                                    totalPages={totalPages}
-                                    showPages={7}
-                                    onChangePage={(page) => this.onPageChange(page + 1)}
-                                />
                             </div>
+                            <CustomPagination
+                                className="pagination pull-right"
+                                currentPage={currentPage - 1}
+                                totalPages={totalPages}
+                                showPages={7}
+                                onChangePage={(page) => this.onPageChange(page + 1)}
+                            />
                         </div>
                     </div>
                 </div>
