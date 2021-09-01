@@ -215,12 +215,14 @@ async function matchResults() {
         if (matchCancelled) {
             for (const betId of homeBets) {
                 const bet = await Bet.findOne({ _id: betId });
+                if (!bet) continue;
                 const { _id, userId, bet: betAmount } = bet;
                 // refund user
                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
             }
             for (const betId of awayBets) {
+                if (!bet) continue;
                 const bet = await Bet.findOne({ _id: betId });
                 const { _id, userId, bet: betAmount } = bet;
                 // refund user
