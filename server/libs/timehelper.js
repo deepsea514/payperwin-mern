@@ -33,7 +33,6 @@ function convertTimeLineDate(date, timezone) {
         }
     }
 
-    if (!timezone) timezone = defaultTimezone;
     const time = getChangedTime(date, timezone);
     return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;
 }
