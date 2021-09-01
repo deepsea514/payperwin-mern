@@ -261,20 +261,20 @@ async function checkBetWithoutBetpool() {
         status: 'Pending'
     });
     bets.forEach(async bet => {
-        const exists = await BetPool.findOne({ uid: JSON.stringify(bet.lineQuery) });
-        if (exists) return;
+        const uid = JSON.stringify(bet.lineQuery);
+        const exists = await BetPool.find({ uid: uid });
+        if (exists.length > 0) return;
         try {
             if (bet.origin == 'other') return;
             let points = bet.pickName.split(' ');
             if (bet.lineQuery.type == 'moneyline') {
                 points = null;
             } else {
-                console.log(bet.pickName, points[points.length - 1]);
                 points = Number(points[points.length - 1]);
             }
             await BetPool.create(
                 {
-                    uid: JSON.stringify(bet.lineQuery),
+                    uid: uid,
                     sportId: bet.lineQuery.sportId,
                     leagueId: bet.lineQuery.leagueId,
                     eventId: bet.lineQuery.eventId,
