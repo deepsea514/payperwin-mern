@@ -59,6 +59,11 @@ const get2FACode = function () {
     return '' + Math.random().toString(10).substr(2, 6);
 };
 
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
+}
+
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -1900,6 +1905,8 @@ adminRouter.get(
 )
 
 const getTotalDeposit = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     const total = await FinancialLog.aggregate(
         {
             $match: {
@@ -1924,6 +1931,8 @@ const getTotalDeposit = async function (datefrom, dateto) {
 }
 
 const getTotalWager = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     const total = await Bet.aggregate(
         {
             $match: {
@@ -1947,6 +1956,8 @@ const getTotalWager = async function (datefrom, dateto) {
 }
 
 const getTotalWagerSportsBook = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     const betSportsbookHistory = await BetSportsBook.find({
         createdAt: {
             $gte: datefrom,
@@ -1961,6 +1972,8 @@ const getTotalWagerSportsBook = async function (datefrom, dateto) {
 }
 
 const getTotalPlayer = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     const total = await User.aggregate(
         {
             $match: {
@@ -1984,6 +1997,8 @@ const getTotalPlayer = async function (datefrom, dateto) {
 }
 
 const getTotalActivePlayer = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     const total = await Bet.aggregate(
         {
             $match: {
@@ -2007,6 +2022,8 @@ const getTotalActivePlayer = async function (datefrom, dateto) {
 }
 
 const getTotalFees = async function (datefrom, dateto) {
+    datefrom = new Date(datefrom);
+    dateto = new Date(dateto);
     let totalfee = 0;
     const withdrawfee = await FinancialLog.aggregate(
         {
@@ -2054,76 +2071,77 @@ const getTotalFees = async function (datefrom, dateto) {
     return Number(totalfee.toFixed(2));
 }
 
-
-adminRouter.get(
+adminRouter.post(
     '/dashboard',
     authenticateJWT,
     limitRoles('dashboard'),
     async (req, res) => {
         try {
-            let { range } = req.query;
-            if (!range) range = 'today';
-            let dateranges = [];
-            let categories = [];
-            const nowDate = new Date();
-            const year = nowDate.getFullYear();
-            const month = nowDate.getMonth();
-            const date = nowDate.getDate();
-            switch (range) {
-                case 'today':
-                    for (let i = 0; i <= 24; i += 2) {
-                        let ndate = new Date(year, month, date, i);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "HH:MM"));
-                    }
-                    break;
-                case 'yesterday':
-                    for (let i = 0; i <= 24; i += 2) {
-                        let ndate = new Date(year, month, date - 1, i);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "HH:MM"));
-                    }
-                    break;
-                case 'last7days':
-                    for (let i = 0; i <= 7; i++) {
-                        let ndate = new Date(year, month, date + i - 7)
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "mmm d"));
-                    }
-                    break;
-                case 'last30days':
-                    for (let i = 0; i <= 30; i++) {
-                        let ndate = new Date(year, month, date + i - 30);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "mmm d"));
-                    }
-                    break;
-                case 'thismonth':
-                    for (let i = 0; i <= date; i++) {
-                        let ndate = new Date(year, month, i);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "mmm d"));
-                    }
-                    break;
-                case 'lastmonth':
-                    let limit = new Date(year, month, 0);
-                    for (let i = 0; i <= 31; i++) {
-                        let ndate = new Date(year, month - 1, i);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "mmm d"));
-                        if (ndate.getTime() >= limit.getTime())
-                            break;
-                    }
-                    break;
-                case 'thisyear':
-                default:
-                    for (let i = 0; i <= 12; i++) {
-                        let ndate = new Date(year, i, 1);
-                        dateranges.push(ndate);
-                        categories.push(dateformat(ndate, "mmmm"));
-                    }
-                    break;
-            };
+            let { range, dateranges, categories } = req.body;
+            if (!dateranges || !categories) {
+                if (!range) range = 'today';
+                dateranges = [];
+                categories = [];
+                const nowDate = new Date();
+                const year = nowDate.getFullYear();
+                const month = nowDate.getMonth();
+                const date = nowDate.getDate();
+                switch (range) {
+                    case 'today':
+                        for (let i = 0; i <= 24; i += 2) {
+                            let ndate = new Date(year, month, date, i);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "HH:MM"));
+                        }
+                        break;
+                    case 'yesterday':
+                        for (let i = 0; i <= 24; i += 2) {
+                            let ndate = new Date(year, month, date - 1, i);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "HH:MM"));
+                        }
+                        break;
+                    case 'last7days':
+                        for (let i = 0; i <= 7; i++) {
+                            let ndate = new Date(year, month, date + i - 7)
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "mmm d"));
+                        }
+                        break;
+                    case 'last30days':
+                        for (let i = 0; i <= 30; i++) {
+                            let ndate = new Date(year, month, date + i - 30);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "mmm d"));
+                        }
+                        break;
+                    case 'thismonth':
+                        for (let i = 0; i <= date; i++) {
+                            let ndate = new Date(year, month, i);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "mmm d"));
+                        }
+                        break;
+                    case 'lastmonth':
+                        let limit = new Date(year, month, 0);
+                        for (let i = 0; i <= 31; i++) {
+                            let ndate = new Date(year, month - 1, i);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "mmm d"));
+                            if (ndate.getTime() >= limit.getTime())
+                                break;
+                        }
+                        break;
+                    case 'thisyear':
+                    default:
+                        for (let i = 0; i <= 12; i++) {
+                            let ndate = new Date(year, i, 1);
+                            dateranges.push(ndate);
+                            categories.push(dateformat(ndate, "mmmm"));
+                        }
+                        break;
+                };
+            }
 
             const totaldeposit = await getTotalDeposit(dateranges[0], dateranges[dateranges.length - 1]);
             const totalwager = await getTotalWager(dateranges[0], dateranges[dateranges.length - 1]);
