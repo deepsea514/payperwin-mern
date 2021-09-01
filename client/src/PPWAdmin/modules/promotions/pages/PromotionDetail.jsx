@@ -89,6 +89,10 @@ class PromotionDetail extends React.Component {
                                         <tr>
                                             <th>Use For</th>
                                             <td>{PromotionFor[promotion.usage_for]}</td>
+                                            {promotion.type == '_100_SignUpBonus' && <>
+                                                <th>Maximum match amount</th>
+                                                <td>${promotion.value.toFixed(2)}</td>
+                                            </>}
                                         </tr>
                                     </tbody>
                                 </table>

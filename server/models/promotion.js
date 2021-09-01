@@ -11,6 +11,7 @@ const PromotionSchema = new Schema(
         number_of_usage: Number, // if it is -1, it is unlimited
         usage_limit: Number,
         usage_for: String,
+        value: Number,
     },
     {
         timestamps: true,

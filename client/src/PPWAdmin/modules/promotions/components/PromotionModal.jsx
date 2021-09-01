@@ -20,7 +20,8 @@ export default class PromotionModal extends React.Component {
                 type: '',
                 number_of_usage: 0,
                 usage_limit: 0,
-                usage_for: ""
+                usage_for: "",
+                value: 0,
             },
             promotionSchema: Yup.object().shape({
                 name: Yup.string()
@@ -41,6 +42,7 @@ export default class PromotionModal extends React.Component {
                     .required("Usage Limit field is required"),
                 usage_for: Yup.string()
                     .required("Use For field is required."),
+                value: Yup.number()
             }),
         }
     }
@@ -181,6 +183,20 @@ export default class PromotionModal extends React.Component {
                                             ) : null}
                                         </div>
                                     </div>
+                                    {formik.values.type == '_100_SignUpBonus' && <div className="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label>Maximum match amount</label>
+                                            <input name="value" placeholder="Enter match amount"
+                                                className={`form-control ${getInputClasses(formik, "value")}`}
+                                                {...formik.getFieldProps("value")}
+                                            />
+                                            {formik.touched.value && formik.errors.value ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.value}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>}
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="light-primary" onClick={onHide}>

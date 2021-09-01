@@ -61,6 +61,10 @@
         "creditWithCondition": {
             "name": "Credit With Condition",
             "description": "Get $50 free credit when you deposit a minimum of $200"
+        },
+        "_100_SignUpBonus": {
+            "name": "100% Sign up Bonus",
+            "description": "100% Sign up Bonus"
         }
     },
     "PromotionFor": {
