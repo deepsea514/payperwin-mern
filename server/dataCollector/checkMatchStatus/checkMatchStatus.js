@@ -3,9 +3,10 @@ const Addon = require("../../models/addon");
 const Preference = require('../../models/preference');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
-const SharedLine = require('../../models/sharedline');
 const FinancialLog = require('../../models/financiallog');
 const BetSportsBook = require('../../models/betsportsbook');
+const SharedLine = require('../../models/sharedline');
+const BetPool = require('../../models/betpool');
 //local helpers
 const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
@@ -40,9 +41,13 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 }).then(async () => {
     console.info('Using database:', databaseName);
 
-    const lineInterval = 1000 * 60 * 60;
-    checkTimer();
-    setInterval(checkTimer, lineInterval);
+    const lineInterval1 = 1000 * 60 * 60;
+    checkTimerOne();
+    setInterval(checkTimerOne, lineInterval1);
+
+    const lineInterval2 = 3000 * 60 * 60;
+    checkTimerTwo();
+    setInterval(checkTimerTwo, lineInterval2);
 
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
@@ -52,19 +57,27 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
-async function checkTimer() {
+async function checkTimerOne() {
     //////////////////// Check match status
     checkMatchStatus();
 
     ////////////////// Delete Shared Lines
-    // await SharedLine.deleteMany({
-    //     eventDate: {
-    //         $lte: new Date()
-    //     }
-    // });
+    await SharedLine.deleteMany({
+        eventDate: {
+            $lte: new Date()
+        }
+    });
 
     ////////////////// Cashback in the last day of the month.
     checkCashBack();
+}
+
+async function checkTimerTwo() {
+    // Check Betpool status
+    calculateBetsStatus();
+
+    // Check bet without betpool
+    checkBetWithoutBetpool();
 }
 
 async function checkMatchStatus() {
@@ -187,4 +200,109 @@ async function checkCashBack() {
 
 function isLastDay(date) {
     return new Date(date.getTime() - 86400000).getDate() === 1;
+}
+
+async function calculateBetsStatus() {
+    const betpools = await BetPool.find({
+        origin: 'bet365',
+        result: { $exists: false }
+    });
+
+    betpools.forEach(async betpool => {
+        try {
+            const { homeBets, awayBets, teamA, teamB } = betpool;
+            // console.log(homeBets, awayBets);
+            const bets = await Bet.find({
+                _id:
+                {
+                    $in: [
+                        ...homeBets,
+                        ...awayBets,
+                    ]
+                }
+            });
+            const payPool = {
+                home: teamB.betTotal,
+                away: teamA.betTotal,
+            }
+            for (const bet of bets) {
+                const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+                let payableToWin = 0;
+                if (payPool[pick]) {
+                    if (payPool[pick] > 0) {
+                        payableToWin += toWin;
+                        payPool[pick] -= toWin;
+                        if (payPool[pick] < 0) payableToWin += payPool[pick];
+                    }
+                }
+                let matchingStatus;
+                if (payableToWin === toWin) matchingStatus = 'Matched';
+                else if (payableToWin === 0) matchingStatus = 'Pending';
+                else matchingStatus = 'Partial Match'
+                const betChanges = {
+                    $set: {
+                        payableToWin,
+                        matchingStatus,
+                        status: matchingStatus,
+                    }
+                };
+                if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
+                    await Bet.findOneAndUpdate({ _id }, betChanges);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    })
+}
+
+async function checkBetWithoutBetpool() {
+    const bets = await Bet.find({
+        status: 'Pending'
+    });
+    bets.forEach(async bet => {
+        const exists = await BetPool.findOne({ uid: JSON.stringify(bet.lineQuery) });
+        if (exists) return;
+        try {
+            if (bet.origin == 'other') return;
+            let points = bet.pickName.split(' ');
+            if (bet.lineQuery.type == 'moneyline') {
+                points = null;
+            } else {
+                console.log(bet.pickName, points[points.length - 1]);
+                points = Number(points[points.length - 1]);
+            }
+            await BetPool.create(
+                {
+                    uid: JSON.stringify(bet.lineQuery),
+                    sportId: bet.lineQuery.sportId,
+                    leagueId: bet.lineQuery.leagueId,
+                    eventId: bet.lineQuery.eventId,
+                    lineId: bet.lineQuery.lineId,
+                    teamA: {
+                        name: bet.teamA.name,
+                        // odds: home,
+                        betTotal: bet.pick === 'home' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'home' ? bet.toWin : 0,
+                    },
+                    teamB: {
+                        name: bet.teamB.name,
+                        // odds: away,
+                        betTotal: bet.pick === 'away' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'away' ? bet.toWin : 0,
+                    },
+                    sportName: bet.lineQuery.sportName,
+                    matchStartDate: bet.matchStartDate,
+                    lineType: bet.lineQuery.type,
+                    points: points,
+                    homeBets: bet.pick === 'home' ? [bet._id] : [],
+                    awayBets: bet.pick === 'away' ? [bet._id] : [],
+                    origin: bet.origin
+                }
+            );
+            console.log('Fix one bet.');
+        } catch (error) {
+            console.error(error);
+        }
+    })
 }
