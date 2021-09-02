@@ -24,11 +24,11 @@ class Menu extends Component {
                                 <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
                             </Link>
                         </li>
-                        <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
                                 <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
                             </Link>
-                        </li>
+                        </li> */}
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>
                                 toggleField('menuOpen')}>

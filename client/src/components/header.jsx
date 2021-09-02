@@ -223,13 +223,13 @@ class Header extends PureComponent {
                                                 </Link>
                                             </center>
                                         </li>
-                                        <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/sportsbook' }} className="nav-link">
                                                     <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
                                                 </Link>
                                             </center>
-                                        </li>
+                                        </li> */}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
@@ -260,11 +260,11 @@ class Header extends PureComponent {
                                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
                                         </li>
-                                        <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
+                                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/sportsbook' }} className="nav-link">
                                                 <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
                                             </Link>
-                                        </li>
+                                        </li> */}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                 <i className="fas fa-info"></i>HOW IT WORKS
