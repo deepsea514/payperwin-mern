@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import update from 'immutability-helper';
@@ -396,13 +396,14 @@ class App extends PureComponent {
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
                                                 <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
-                                                <Route path="/" render={(props) =>
+                                                <Route exact path="/" render={(props) =>
                                                     <Dashboard
                                                         addBet={this.addBet}
                                                         betSlip={betSlip}
                                                         removeBet={this.removeBet}
                                                     />}
                                                 />
+                                                <Redirect to="/" from="*" />
                                             </Switch>
                                         </div>
                                         <div className="col-sm-3 side-bar">
