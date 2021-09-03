@@ -24,7 +24,7 @@ const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
-Date.prototype.addHours = (h) => {
+Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
@@ -84,7 +84,7 @@ const checkMatchStatus = async () => {
     // Check Match Status
     const bets = await Bet.find(
         {
-            matchStartDate: { $lt: new Date().addHours(5) },
+            matchStartDate: { $lt: (new Date()).addHours(5) },
             notifySent: { $exists: false },
             matchingStatus: ['Pending', 'Partial Match']
         }
@@ -134,7 +134,7 @@ const checkMatchStatus = async () => {
 
 }
 
-const checkCashBack = () => {
+const checkCashBack = async () => {
     const today = new Date();
     if (!isLastDay(today)) return;
     const year = today.getFullYear();
