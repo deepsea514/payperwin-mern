@@ -85,9 +85,18 @@ const calculateBetsStatus = async (betpoolUid) => {
             }
         };
         if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            await Bet.findOneAndUpdate({ _id }, betChanges);
+            const timeout = getRandomInt(3, 10);
+            setTimeout(() => {
+                Bet.findOneAndUpdate({ _id }, betChanges);
+            }, timeout);
         }
     }
+}
+
+const getRandomInt = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const get2FACode = () => {
