@@ -4,7 +4,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { RegionDropdown } from 'react-country-region-selector';
-// import SVG from "react-inlinesvg";
+import SVG from "react-inlinesvg";
 import { Button, FormControl, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
