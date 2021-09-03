@@ -69,7 +69,6 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) { //
 };
 
 UserSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
-    console.log(this.password);
     return bcrypt.compare(candidatePassword, this.password);
 };
 
