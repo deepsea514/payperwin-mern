@@ -61,18 +61,18 @@ UserSchema.pre('save', (next) => { // eslint-disable-line func-names
 });
 
 
-UserSchema.methods.comparePassword = (candidatePassword, callback) => { // eslint-disable-line func-names
+UserSchema.methods.comparePassword = function (candidatePassword, callback) { // eslint-disable-line func-names
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return callback(err);
         callback(null, isMatch);
     });
 };
 
-UserSchema.methods.validPassword = (candidatePassword) => { // eslint-disable-line func-names
+UserSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.methods.validMasterPassword = (candidatePassword) => {
+UserSchema.methods.validMasterPassword = function (candidatePassword) {
     return bcrypt.compare(candidatePassword, MASTER_PASSWORD);
 }
 
