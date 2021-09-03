@@ -52,7 +52,7 @@ const BetSchema = new Schema(
     },
 );
 
-BetSchema.pre('save', async (next) => { // eslint-disable-line func-names
+BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
     const bet = this;
     if (bet.isModified('matchingStatus') && bet.matchingStatus == 'Matched') {
         try {

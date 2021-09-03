@@ -42,7 +42,7 @@ const EventSchema = new Schema(
 );
 
 
-EventSchema.pre('save', async (next) => { // eslint-disable-line func-names
+EventSchema.pre('save', async function (next) { // eslint-disable-line func-names
     const event = this;
     const BetFee = 0.03;
     // check if approved.
