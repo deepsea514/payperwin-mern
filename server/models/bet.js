@@ -63,9 +63,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
             if (preference && preference.timezone) {
                 timezone = preference.timezone;
             }
-            const timeString = convertTimeLineDate(new Date(), timezone);
             const { pickOdds, lineQuery, bet: betAmount, payableToWin } = bet;
-
             if (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.email) {
                 let msg = null;
                 if (bet.origin == 'other') {
@@ -109,29 +107,23 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                             `),
                     };
                 }
-                setTimeout(() => {
-                    sgMail.send(msg).catch(error => {
-                        console.log('Can\'t send mail');
-                    });
-                }, 8 * 60 * 1000);
+                sgMail.send(msg).catch(error => {
+                    console.log('Can\'t send mail');
+                });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
                 if (bet.origin == 'other') {
-                    setTimeout(() => {
-                        sendSMS(`Good news! We found you a match for ${lineQuery.eventName}\n
+                    sendSMS(`Good news! We found you a match for ${lineQuery.eventName}\n
                         Wager: $${betAmount.toFixed(2)}\n 
                         Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
                         Matched Amount: $${payableToWin.toFixed(2)}\n
                         Platform: PAYPERWIN Peer-to Peer`, user.phone);
-                    }, 8 * 60 * 1000);
                 } else {
-                    setTimeout(() => {
-                        sendSMS(`Good news! We found you a match for ${lineQuery.sportName} ${lineQuery.type}\n
+                    sendSMS(`Good news! We found you a match for ${lineQuery.sportName} ${lineQuery.type}\n
                         Wager: $${betAmount.toFixed(2)}\n 
                         Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
                         Matched Amount: $${payableToWin.toFixed(2)}\n
                         Platform: PAYPERWIN Peer-to Peer`, user.phone);
-                    }, 8 * 60 * 1000);
                 }
             }
 
