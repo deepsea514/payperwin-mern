@@ -86,14 +86,14 @@ const calculateBetsStatus = async (betpoolUid) => {
             }
         };
         if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            const timeout = getRandomInt(3, 10);
-            setTimeout(async () => {
-                try {
-                    await Bet.findOneAndUpdate({ _id }, betChanges);
-                } catch (error) {
-                    console.error(error);
-                }
-            }, timeout);
+            // const timeout = getRandomInt(3, 10);
+            // setTimeout(async () => {
+            // try {
+            await Bet.findOneAndUpdate({ _id }, betChanges);
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // }, timeout);
         }
     }
 }
