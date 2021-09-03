@@ -1584,6 +1584,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             matchStartDate: startDate,
             status: 'Pending',
             lineQuery,
+            origin: bet.origin
         };
         if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
         const newBet = new Bet(newBetObj);
