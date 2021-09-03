@@ -124,7 +124,15 @@ const matchResults = async () => {
                         }
                     });
                     for (const bet of bets) {
-                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin } = bet;
+                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
+
+                        if (payableToWin <= 0 || status == 'Pending') {
+                            const { _id, userId, bet: betAmount } = bet;
+                            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+                            continue;
+                        }
+
                         let betWin;
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
