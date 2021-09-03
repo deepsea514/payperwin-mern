@@ -46,6 +46,7 @@ const {
     get2FACode,
     calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
+    checkSignupBonusPromotionEnabled,
 } = require('./libs/functions');
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
@@ -2437,7 +2438,25 @@ const getMaxWithdraw = async (user) => {
     else totalwinbet = 0;
 
     totalwinbet += totalwinsportsbook;
-    const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
+
+    let signupBonusAmount = 0;
+    const signUpBonusEnabled = await checkSignupBonusPromotionEnabled(user._id);
+    if (signUpBonusEnabled) {
+        const signUpBonus = await FinancialLog.findOne({
+            user: user._id,
+            financialtype: 'signupbonus'
+        });
+        if (signUpBonus) {
+            signupBonusAmount = signUpBonus.amount;
+        }
+    }
+
+    let maxwithdraw = totalwagers / 3 + totalwinbet;
+    if (signupBonusAmount > 0) {
+        if (totalwagers >= signupBonusAmount * 5)
+            maxwithdraw += signupBonusAmount;
+    }
+    maxwithdraw = Number(maxwithdraw.toFixed(2));
     return maxwithdraw;
 }
 
