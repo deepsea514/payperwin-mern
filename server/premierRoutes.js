@@ -19,6 +19,10 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
+const {
+    checkSignupBonusPromotionEnabled,
+    isSignupBonusUsed
+} = require('./libs/functions');
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -62,6 +66,21 @@ premierRouter.post('/etransfer-deposit',
                         error: "Doesn't make changes"
                     });
                 }
+
+                const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
+                const promotionUsed = await isSignupBonusUsed(user._id);
+                if (promotionEnabled && !promotionUsed) {
+                    await FinancialLog.create({
+                        financialtype: 'signupbonus',
+                        uniqid: `SB${ID()}`,
+                        user: user._id,
+                        amount: deposit.amount,
+                        method: deposit.method,
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ $inc: { balance: deposit.amount } });
+                }
+
                 await deposit.update({
                     status: FinancialStatus.success
                 });

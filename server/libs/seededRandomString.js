@@ -1,6 +1,6 @@
 const seedrandom = require('seedrandom');
 
-function seededRandomString(string, idLength = 6, charSetOverride) {
+const seededRandomString = (string, idLength = 6, charSetOverride) => {
     // const charSet = charSetOverride || '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
     const charSet = charSetOverride || '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let seedNumber = seedrandom(string)();

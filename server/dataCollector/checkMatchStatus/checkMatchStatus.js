@@ -12,6 +12,10 @@ const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const { convertTimeLineDate } = require('../../libs/timehelper');
 const sendSMS = require("../../libs/sendSMS");
+const {
+    ID,
+    calculateBetsStatus,
+} = require('../../libs/functions');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
@@ -20,11 +24,7 @@ const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
@@ -57,7 +57,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
-async function checkTimerOne() {
+const checkTimerOne = async () => {
     //////////////////// Check match status
     checkMatchStatus();
 
@@ -72,15 +72,15 @@ async function checkTimerOne() {
     checkCashBack();
 }
 
-async function checkTimerTwo() {
+const checkTimerTwo = async () => {
     // Check Betpool status
-    calculateBetsStatus();
+    calculateBetPoolsStatus();
 
     // Check bet without betpool
     checkBetWithoutBetpool();
 }
 
-async function checkMatchStatus() {
+const checkMatchStatus = async () => {
     // Check Match Status
     const bets = await Bet.find(
         {
@@ -134,7 +134,7 @@ async function checkMatchStatus() {
 
 }
 
-async function checkCashBack() {
+const checkCashBack = () => {
     const today = new Date();
     if (!isLastDay(today)) return;
     const year = today.getFullYear();
@@ -198,11 +198,11 @@ async function checkCashBack() {
     })
 }
 
-function isLastDay(date) {
+const isLastDay = (date) => {
     return new Date(date.getTime() - 86400000).getDate() === 1;
 }
 
-async function calculateBetsStatus() {
+const calculateBetPoolsStatus = async () => {
     const betpools = await BetPool.find({
         origin: 'bet365',
         result: { $exists: false }
@@ -210,53 +210,14 @@ async function calculateBetsStatus() {
 
     betpools.forEach(async betpool => {
         try {
-            const { homeBets, awayBets, teamA, teamB } = betpool;
-            // console.log(homeBets, awayBets);
-            const bets = await Bet.find({
-                _id:
-                {
-                    $in: [
-                        ...homeBets,
-                        ...awayBets,
-                    ]
-                }
-            });
-            const payPool = {
-                home: teamB.betTotal,
-                away: teamA.betTotal,
-            }
-            for (const bet of bets) {
-                const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-                let payableToWin = 0;
-                if (payPool[pick]) {
-                    if (payPool[pick] > 0) {
-                        payableToWin += toWin;
-                        payPool[pick] -= toWin;
-                        if (payPool[pick] < 0) payableToWin += payPool[pick];
-                    }
-                }
-                let matchingStatus;
-                if (payableToWin === toWin) matchingStatus = 'Matched';
-                else if (payableToWin === 0) matchingStatus = 'Pending';
-                else matchingStatus = 'Partial Match'
-                const betChanges = {
-                    $set: {
-                        payableToWin,
-                        matchingStatus,
-                        status: matchingStatus,
-                    }
-                };
-                if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-                    await Bet.findOneAndUpdate({ _id }, betChanges);
-                }
-            }
+            calculateBetsStatus(betpool.uid);
         } catch (error) {
             console.error(error);
         }
     })
 }
 
-async function checkBetWithoutBetpool() {
+const checkBetWithoutBetpool = async () => {
     const bets = await Bet.find({
         status: 'Pending'
     });

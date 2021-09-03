@@ -31,7 +31,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
-async function getAllSportsLines() {
+const getAllSportsLines = async () => {
     console.log(`Starting to get lines for ${call} time.`);
     try {
         for (const sport of sports) {

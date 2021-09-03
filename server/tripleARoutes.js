@@ -19,11 +19,11 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
-const CountryInfo = config.CountryInfo;
+const {
+    checkSignupBonusPromotionEnabled,
+    isSignupBonusUsed
+} = require('./libs/functions');
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
@@ -98,6 +98,20 @@ tripleARouter.post('/deposit',
                 case "BTC":
                     method = 'Bitcoin';
                     break;
+            }
+
+            const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
+            const promotionUsed = await isSignupBonusUsed(user._id);
+            if (promotionEnabled && !promotionUsed) {
+                await FinancialLog.create({
+                    financialtype: 'signupbonus',
+                    uniqid: `SB${ID()}`,
+                    user: user._id,
+                    amount: receive_amount,
+                    method: method,
+                    status: FinancialStatus.success
+                });
+                await user.update({ $inc: { balance: receive_amount } });
             }
 
             await FinancialLog.create({

@@ -1,4 +1,4 @@
-function getLineFromPinnacleData(data, leagueId, eventId) {
+const getLineFromPinnacleData = (data, leagueId, eventId) => {
     const lineData = {}
     let found = false;
     const { leagues } = data;

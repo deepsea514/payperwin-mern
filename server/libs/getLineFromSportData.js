@@ -1,4 +1,4 @@
-function getLineFromSportData(data, leagueId, eventId, lineId, type, altLineId) {
+const getLineFromSportData = (data, leagueId, eventId, lineId, type, altLineId) => {
     const lineData = {}
     let found = false;
     if (data.name) lineData.sportName = data.name;

@@ -6,21 +6,19 @@ const FinancialLog = require("../../models/financiallog");
 const Preference = require('../../models/preference');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const sendSMS = require('../../libs/sendSMS');
+const { ID } = require('../../libs/functions');
 const config = require('../../../config.json');
 const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
 
-async function matchResults(sportName, events) {
+const matchResults = (sportName, events) => {
     const betpools = await BetPool.find(
         {
             origin: 'rundown',

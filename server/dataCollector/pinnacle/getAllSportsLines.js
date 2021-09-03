@@ -42,7 +42,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 });
 
-async function getAllSportsLines() {
+const getAllSportsLines = async () => {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
     if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.value.pinnacleApiHost) {
         console.warn("Pinnacle Api is not set");

@@ -39,6 +39,14 @@ const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const { convertTimeLineDate } = require('./libs/timehelper');
 const sendSMS = require("./libs/sendSMS");
+const {
+    ID,
+    calculateToWinFromBet,
+    calculateBetsStatus,
+    get2FACode,
+    calculateCustomBetsStatus,
+    isFreeWithdrawalUsed,
+} = require('./libs/functions');
 const BetFee = 0.03;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
@@ -78,20 +86,12 @@ const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-
-const get2FACode = function () {
-    return '' + Math.random().toString(10).substr(2, 6);
-};
-
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
 
-Date.prototype.addMins = function (m) {
+Date.prototype.addMins = (m) => {
     this.setTime(this.getTime() + (m * 60 * 1000));
     return this;
 }
@@ -159,21 +159,21 @@ expressApp.use(cors({
 }));
 
 // Compression Middleware
-function shouldCompress(req, res) {
+const shouldCompress = (req, res) => {
     const { compress } = req.query;
     if (compress === 'false') {
         // don't compress responses with this query property
         return false;
     }
 
-    // fallback to standard filter function
+    // fallback to standard filter 
     return compression.filter(req, res);
 }
 expressApp.use(compression({ filter: shouldCompress }));
 
 
 // is authenticated middleware
-function isAuthenticated(req, res, next) {
+const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         const { user, session } = req;
         if (user.roles.enable_2fa) {
@@ -218,7 +218,7 @@ passport.use(new LocalStrategy(
 ));
 
 
-function sendVerificationEmail(email, username, req) {
+const sendVerificationEmail = (email, req) => {
     const { hostname, protocol, headers, subdomains } = req;
     const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
     const emailHash = seededRandomString(email, 10);
@@ -303,28 +303,50 @@ passport.use('local-signup', new LocalStrategy(
                 newUser.save(async (err2) => {
                     if (err2) console.error(err2);
                     else {
-                        sendVerificationEmail(email, username, req);
+                        sendVerificationEmail(email, req);
                         if (vipcode && vipcode != "") {
-                            const promotion = await Promotion.findOne({ name: vipcode });
-                            if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
-                                if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
-                                    let enable = false;
-                                    if (promotion.number_of_usage != -1) {
-                                        enable = true;
-                                    }
-                                    else {
-                                        const logs = await PromotionLog.find({ promotion: promotion._id });
-                                        if (logs.length < promotion.number_of_usage)
+                            const promotion = await Promotion.findOne({ name: RegExp(`^${vipcode}$`, 'i') });
+                            if (promotion) {
+                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                                    if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
+                                        let enable = false;
+                                        if (promotion.number_of_usage != -1) {
                                             enable = true;
+                                        }
+                                        else {
+                                            const logs = await PromotionLog.find({ promotion: promotion._id });
+                                            if (logs.length < promotion.number_of_usage)
+                                                enable = true;
+                                        }
+                                        if (enable) {
+                                            newUser.balance = 50;
+                                            await newUser.save();
+                                            await PromotionLog.create({
+                                                user: newUser._id,
+                                                promotion: promotion._id,
+                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                            });
+                                        }
                                     }
-                                    if (enable) {
-                                        newUser.balance = 50;
-                                        await newUser.save();
-                                        await PromotionLog.create({
-                                            user: newUser._id,
-                                            promotion: promotion._id,
-                                            ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-                                        });
+                                }
+                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                                    if (promotion && promotion.usage_for == "new" && promotion.type == "_100_SignUpBonus") {
+                                        let enable = false;
+                                        if (promotion.number_of_usage != -1) {
+                                            enable = true;
+                                        }
+                                        else {
+                                            const logs = await PromotionLog.find({ promotion: promotion._id });
+                                            if (logs.length < promotion.number_of_usage)
+                                                enable = true;
+                                        }
+                                        if (enable) {
+                                            await PromotionLog.create({
+                                                user: newUser._id,
+                                                promotion: promotion._id,
+                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -374,7 +396,7 @@ expressApp.use(expressSession({
     },
 }));
 
-expressApp.use(function (req, res, next) {
+expressApp.use((req, res, next) => {
     const { hostname, subdomains } = req;
     if (hostname) {
         const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
@@ -420,7 +442,7 @@ expressApp.post(
                         user: user._id,
                         ip_address
                     });
-                    log.save(function (error) {
+                    log.save((error) => {
                         if (error) console.log("register => ", error);
                         else console.log(`User register log - ${user.username}`);
                     });
@@ -448,7 +470,7 @@ expressApp.post('/login',
                     user: user._id,
                     ip_address
                 });
-                log.save(function (error) {
+                log.save((error) => {
                     if (error) console.log("login Error", error);
                     // else console.log(`User login log - ${user.username}`);
                 });
@@ -494,7 +516,7 @@ expressApp.post('/googleLogin',
                 user: user._id,
                 ip_address
             });
-            log.save(function (error) {
+            log.save((error) => {
                 if (error) console.log("login Error", error);
             });
 
@@ -539,7 +561,7 @@ expressApp.post('/googleRegister',
                         user: user._id,
                         ip_address
                     });
-                    log.save(function (error) {
+                    log.save((error) => {
                         if (error) console.log("register => ", error);
                         else console.log(`User register log - ${user.username}`);
                     });
@@ -550,7 +572,7 @@ expressApp.post('/googleRegister',
     }
 );
 
-function send2FAVerifyEmail(email, code) {
+const send2FAVerifyEmail = (email, code) => {
     const msg = {
         from: `${fromEmailName} <${fromEmailAddress}>`,
         to: email,
@@ -712,7 +734,7 @@ expressApp.patch(
         const { email } = req.user;
         const user = await User.findOne({ email });
 
-        user.comparePassword(oldPassword, async function (error, isMatch) {
+        user.comparePassword(oldPassword, async (error, isMatch) => {
             if (error) {
                 res.status(404).json({ error: 'User doesn\'t exist.' });
                 return;
@@ -816,104 +838,6 @@ expressApp.post('/newPasswordFromToken', bruteforce.prevent, async (req, res) =>
         },
     );
 });
-
-function calculateToWinFromBet(bet, americanOdds) {
-    const stake = Math.abs(Number(Number(bet).toFixed(2)));
-    const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
-    const calculateWin = (stake * 1) * decimalOdds;
-    const roundToPennies = Number((calculateWin).toFixed(2));
-    return roundToPennies;
-}
-
-async function calculateBetsStatus(betpoolUid) {
-    const betpool = await BetPool.findOne({ uid: betpoolUid });
-    const { homeBets, awayBets, teamA, teamB } = betpool;
-    // console.log(homeBets, awayBets);
-    const bets = await Bet.find({
-        _id:
-        {
-            $in: [
-                ...homeBets,
-                ...awayBets,
-            ]
-        }
-    });
-    const payPool = {
-        home: teamB.betTotal,
-        away: teamA.betTotal,
-    }
-    for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-        let payableToWin = 0;
-        if (payPool[pick]) {
-            if (payPool[pick] > 0) {
-                payableToWin += toWin;
-                payPool[pick] -= toWin;
-                if (payPool[pick] < 0) payableToWin += payPool[pick];
-            }
-        }
-        let matchingStatus;
-        if (payableToWin === toWin) matchingStatus = 'Matched';
-        else if (payableToWin === 0) matchingStatus = 'Pending';
-        else matchingStatus = 'Partial Match'
-        const betChanges = {
-            $set: {
-                payableToWin,
-                matchingStatus,
-                status: matchingStatus,
-            }
-        };
-        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            await Bet.findOneAndUpdate({ _id }, betChanges);
-        }
-    }
-}
-
-async function calculateCustomBetsStatus(eventId) {
-    const betpool = await EventBetPool.findOne({ eventId: eventId });
-    const { homeBets, awayBets, teamA, teamB } = betpool;
-
-    const bets = await Bet.find({
-        _id:
-        {
-            $in: [
-                ...homeBets,
-                ...awayBets,
-            ]
-        }
-    });
-
-    const payPool = {
-        home: teamB.betTotal,
-        away: teamA.betTotal,
-    }
-
-    for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-        let payableToWin = 0;
-        if (payPool[pick]) {
-            if (payPool[pick] > 0) {
-                payableToWin += toWin;
-                payPool[pick] -= toWin;
-                if (payPool[pick] < 0) payableToWin += payPool[pick];
-            }
-        }
-        let matchingStatus;
-        if (payableToWin === toWin) matchingStatus = 'Matched';
-        else if (payableToWin === 0) matchingStatus = 'Pending';
-        else matchingStatus = 'Partial Match'
-        const betChanges = {
-            $set: {
-                payableToWin,
-                matchingStatus,
-                status: matchingStatus,
-            }
-        };
-        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            await Bet.findOneAndUpdate({ _id }, betChanges);
-        }
-    }
-}
 
 expressApp.post(
     '/self-exclusion',
@@ -1458,7 +1382,7 @@ expressApp.post(
     }
 );
 
-async function checkAutoBet(bet, betpool, user, sportData, line) {
+const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const { AutoBetStatus, AutoBetPeorid } = config;
     let { pick: originPick, win: toBet, lineQuery } = bet;
     pick = originPick == 'home' ? "away" : "home";
@@ -2199,7 +2123,7 @@ expressApp.get('/getPinnacleLogin',
     }
 );
 
-async function pinnacleLogout(req) {
+const pinnacleLogout = async (req) => {
     const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
     if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
         console.warn("Pinnacel Sandbox Api is not set");
@@ -2430,7 +2354,7 @@ expressApp.post('/deposit',
                         return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                     }
                     if (data.status == "APPROVED") {
-                        const deposit = new FinancialLog({
+                        await FinancialLog.create({
                             financialtype: 'deposit',
                             uniqid,
                             user: user._id,
@@ -2438,7 +2362,6 @@ expressApp.post('/deposit',
                             method,
                             status: FinancialStatus.pending
                         });
-                        await deposit.save();
                         return res.json({ success: 1, message: "Please wait until deposit is finished." });
                     }
                     return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
@@ -2516,24 +2439,6 @@ const getMaxWithdraw = async (user) => {
     totalwinbet += totalwinsportsbook;
     const maxwithdraw = Number((totalwagers / 3 + totalwinbet).toFixed(2));
     return maxwithdraw;
-}
-
-async function isFreeWithdrawalUsed(user) {
-    const date = new Date();
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const freeWithdraw = await FinancialLog.find({
-        fee: 0,
-        createdAt: {
-            $gte: firstDay
-        },
-        user: user._id,
-        type: 'withdraw'
-    });
-
-    if (freeWithdraw && freeWithdraw.length) {
-        return true
-    }
-    return false;
 }
 
 expressApp.get(
@@ -3605,7 +3510,7 @@ expressApp.get(
             Sport.find(searchObj)
                 .sort('createdAt')
                 .select(['name'])
-                .exec(function (error, data) {
+                .exec((error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;

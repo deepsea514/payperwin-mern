@@ -7,6 +7,11 @@ const FinancialLog = require('./financiallog');
 const Bet = require('./bet');
 const simpleresponsive = require('../emailtemplates/simpleresponsive');
 const sendSMS = require("../libs/sendSMS");
+const {
+    ID,
+    calculateToWinFromBet,
+    calculateCustomBetsStatus,
+} = require('../libs/functions');
 const sgMail = require('@sendgrid/mail');
 const config = require('../../config.json');
 const fromEmailName = 'PAYPER WIN';
@@ -14,65 +19,6 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
-
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-
-function calculateToWinFromBet(bet, americanOdds) {
-    const stake = Math.abs(Number(Number(bet).toFixed(2)));
-    const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
-    const calculateWin = (stake * 1) * decimalOdds;
-    const roundToPennies = Number((calculateWin).toFixed(2));
-    return roundToPennies;
-}
-
-async function calculateCustomBetsStatus(eventId) {
-    const betpool = await EventBetPool.findOne({ eventId: eventId });
-    const { homeBets, awayBets, teamA, teamB } = betpool;
-
-    const bets = await Bet.find({
-        _id:
-        {
-            $in: [
-                ...homeBets,
-                ...awayBets,
-            ]
-        }
-    });
-
-    const payPool = {
-        home: teamB.betTotal,
-        away: teamA.betTotal,
-    }
-
-    for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-        let payableToWin = 0;
-        if (payPool[pick]) {
-            if (payPool[pick] > 0) {
-                payableToWin += toWin;
-                payPool[pick] -= toWin;
-                if (payPool[pick] < 0) payableToWin += payPool[pick];
-            }
-        }
-        let matchingStatus;
-        if (payableToWin === toWin) matchingStatus = 'Matched';
-        else if (payableToWin === 0) matchingStatus = 'Pending';
-        else matchingStatus = 'Partial Match'
-        const betChanges = {
-            $set: {
-                payableToWin,
-                matchingStatus,
-                status: matchingStatus,
-            }
-        };
-        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            await Bet.findOneAndUpdate({ _id }, betChanges);
-        }
-    }
-}
-
 const { Schema } = mongoose;
 
 const EventSchema = new Schema(
@@ -96,7 +42,7 @@ const EventSchema = new Schema(
 );
 
 
-EventSchema.pre('save', async function (next) { // eslint-disable-line func-names
+EventSchema.pre('save', async (next) => { // eslint-disable-line func-names
     const event = this;
     const BetFee = 0.03;
     // check if approved.

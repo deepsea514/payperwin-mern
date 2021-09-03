@@ -1,4 +1,4 @@
-function mergeFixturesAndOdds(fixtures, odds) {
+const mergeFixturesAndOdds = (fixtures, odds) => {
     // loop through events and find the corresponding event object and combine
     if (fixtures) {
         if (odds) {
@@ -25,7 +25,7 @@ function mergeFixturesAndOdds(fixtures, odds) {
     }
 }
 
-function formatFixturesOdds(fixtures, odds) {
+const formatFixturesOdds = (fixtures, odds) => {
     const mergedData = mergeFixturesAndOdds(fixtures, odds);
     if (mergedData) {
         const sportData = {

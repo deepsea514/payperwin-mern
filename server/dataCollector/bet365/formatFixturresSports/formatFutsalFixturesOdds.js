@@ -1,5 +1,5 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
-function formatFutsalFixturesOdds(event) {
+const formatFutsalFixturesOdds = (event) => {
     const { main } = event.odds;
     let line = {
         originId: event.id,

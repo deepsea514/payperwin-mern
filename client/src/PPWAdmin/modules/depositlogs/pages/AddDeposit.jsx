@@ -52,6 +52,7 @@ class AddDeposit extends React.Component {
     }
 
     onSubmit = (values, formik) => {
+        const { history } = this.props;
         this.setState({ isSuccess: false, isError: false });
         if (!values.user) {
             formik.setFieldTouched('user', true);
@@ -68,6 +69,9 @@ class AddDeposit extends React.Component {
         };
         addDeposit(deposit).then(() => {
             this.setState({ isSuccess: true });
+            setTimeout(() => {
+                history.push('/');
+            }, 3000);
         }).catch(() => {
             this.setState({ isError: true });
         }).finally(() => {

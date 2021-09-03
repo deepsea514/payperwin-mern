@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const aesjs = require("aes-js");
 const pkcs7 = require("pkcs7");
 
-function utf8_encode(argString) {
+const utf8_encode = (argString) => {
     if (argString === null || typeof argString === 'undefined') {
         return ''
     }
@@ -59,7 +59,7 @@ function utf8_encode(argString) {
     return utftext
 }
 
-function md5(str) {
+const md5 = (str) => {
     let hash
     try {
         const md5sum = crypto.createHash('md5')
@@ -72,10 +72,10 @@ function md5(str) {
         return hash
     }
     let xl
-    const _rotateLeft = function (lValue, iShiftBits) {
+    const _rotateLeft = (lValue, iShiftBits) => {
         return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits))
     }
-    const _addUnsigned = function (lX, lY) {
+    const _addUnsigned = (lX, lY) => {
         let lX4, lY4, lX8, lY8, lResult
         lX8 = (lX & 0x80000000)
         lY8 = (lY & 0x80000000)
@@ -95,35 +95,35 @@ function md5(str) {
             return (lResult ^ lX8 ^ lY8)
         }
     }
-    const _F = function (x, y, z) {
+    const _F = (x, y, z) => {
         return (x & y) | ((~x) & z)
     }
-    const _G = function (x, y, z) {
+    const _G = (x, y, z) => {
         return (x & z) | (y & (~z))
     }
-    const _H = function (x, y, z) {
+    const _H = (x, y, z) => {
         return (x ^ y ^ z)
     }
-    const _I = function (x, y, z) {
+    const _I = (x, y, z) => {
         return (y ^ (x | (~z)))
     }
-    const _FF = function (a, b, c, d, x, s, ac) {
+    const _FF = (a, b, c, d, x, s, ac) => {
         a = _addUnsigned(a, _addUnsigned(_addUnsigned(_F(b, c, d), x), ac))
         return _addUnsigned(_rotateLeft(a, s), b)
     }
-    const _GG = function (a, b, c, d, x, s, ac) {
+    const _GG = (a, b, c, d, x, s, ac) => {
         a = _addUnsigned(a, _addUnsigned(_addUnsigned(_G(b, c, d), x), ac))
         return _addUnsigned(_rotateLeft(a, s), b)
     }
-    const _HH = function (a, b, c, d, x, s, ac) {
+    const _HH = (a, b, c, d, x, s, ac) => {
         a = _addUnsigned(a, _addUnsigned(_addUnsigned(_H(b, c, d), x), ac))
         return _addUnsigned(_rotateLeft(a, s), b)
     }
-    const _II = function (a, b, c, d, x, s, ac) {
+    const _II = (a, b, c, d, x, s, ac) => {
         a = _addUnsigned(a, _addUnsigned(_addUnsigned(_I(b, c, d), x), ac))
         return _addUnsigned(_rotateLeft(a, s), b)
     }
-    const _convertToWordArray = function (str) {
+    const _convertToWordArray = (str) => {
         let lWordCount
         const lMessageLength = str.length
         const lNumberOfWordsTemp1 = lMessageLength + 8
@@ -146,7 +146,7 @@ function md5(str) {
         lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29
         return lWordArray
     }
-    const _wordToHex = function (lValue) {
+    const _wordToHex = (lValue) => {
         let wordToHexValue = ''
         let wordToHexValueTemp = ''
         let lByte
@@ -269,7 +269,7 @@ function md5(str) {
     return temp.toLowerCase()
 }
 
-function encryptAES(secretKey, tokenPayLoad) {
+const encryptAES = (secretKey, tokenPayLoad) => {
     const iv = aesjs.utils.utf8.toBytes("RandomInitVector");
     secretKey = aesjs.utils.utf8.toBytes(secretKey);
     tokenPayLoad = aesjs.utils.utf8.toBytes(tokenPayLoad);
@@ -283,7 +283,7 @@ function encryptAES(secretKey, tokenPayLoad) {
     return buf.toString('base64')
 }
 
-function generatePinnacleToken(agentCode, agentKey, secretKey, timestamp = null) {
+const generatePinnacleToken = (agentCode, agentKey, secretKey, timestamp = null) => {
     if (timestamp == null) {
         timestamp = new Date().getTime();
     }

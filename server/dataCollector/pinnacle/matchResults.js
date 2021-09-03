@@ -11,6 +11,7 @@ const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
+const { ID } = require('../../libs/functions');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
@@ -18,16 +19,12 @@ const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
 
-async function matchResults() {
+const matchResults = async () => {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
     if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.value.pinnacleApiHost) {
         console.warn("Pinnacle Api is not set");
