@@ -19,7 +19,7 @@ const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 
-Date.prototype.addHours = (h) => {
+Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }

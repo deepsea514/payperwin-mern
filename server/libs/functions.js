@@ -1,5 +1,8 @@
 const PromotionLog = require('../models/promotionlog');
 const FinancialLog = require('../models/financiallog');
+const BetPool = require('../models/betpool');
+const Bet = require('../models/bet');
+const EventBetPool = require('../models/eventbetpool');
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
