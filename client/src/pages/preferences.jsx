@@ -3,6 +3,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import * as Yup from "yup";
+import SVG from "react-inlinesvg";
 import { Formik } from "formik";
 import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
