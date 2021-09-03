@@ -39,7 +39,7 @@ const UserSchema = new Schema(
     },
 );
 
-UserSchema.pre('save', (next) => { // eslint-disable-line func-names
+UserSchema.pre('save', async function (next) { // eslint-disable-line func-names
     const user = this;
     // check if phone changed.
     if (user.isModified('phone'))
@@ -69,6 +69,7 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) { //
 };
 
 UserSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
+    console.log(this.password);
     return bcrypt.compare(candidatePassword, this.password);
 };
 
