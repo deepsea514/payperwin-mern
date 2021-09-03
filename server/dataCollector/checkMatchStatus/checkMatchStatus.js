@@ -210,7 +210,6 @@ const calculateBetPoolsStatus = async () => {
 
     betpools.forEach(async betpool => {
         try {
-            console.log('Check Betpool', betpool.uid);
             calculateBetsStatus(betpool.uid);
         } catch (error) {
             console.error(error);
@@ -224,8 +223,8 @@ const checkBetWithoutBetpool = async () => {
     });
     bets.forEach(async bet => {
         const uid = JSON.stringify(bet.lineQuery);
-        const exists = await BetPool.find({ uid: uid });
-        if (exists.length > 0) return;
+        const exists = await BetPool.findOne({ uid: new RegExp(`^${uid}$`, 'i') });
+        if (exists) return;
         try {
             if (bet.origin == 'other') return;
             let points = bet.pickName.split(' ');
