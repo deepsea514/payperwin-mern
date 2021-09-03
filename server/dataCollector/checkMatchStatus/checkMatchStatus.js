@@ -77,7 +77,7 @@ const checkTimerTwo = async () => {
     calculateBetPoolsStatus();
 
     // Check bet without betpool
-    checkBetWithoutBetpool();
+    // checkBetWithoutBetpool();
 }
 
 const checkMatchStatus = async () => {
@@ -210,6 +210,7 @@ const calculateBetPoolsStatus = async () => {
 
     betpools.forEach(async betpool => {
         try {
+            console.log('Check Betpool', betpool.uid);
             calculateBetsStatus(betpool.uid);
         } catch (error) {
             console.error(error);
