@@ -3,6 +3,7 @@ const FinancialLog = require('../models/financiallog');
 const BetPool = require('../models/betpool');
 const Bet = require('../models/bet');
 const EventBetPool = require('../models/eventbetpool');
+const { ObjectId } = require('mongodb');
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
@@ -42,7 +43,7 @@ const calculateToWinFromBet = (bet, americanOdds) => {
     const stake = Math.abs(Number(Number(bet).toFixed(2)));
     const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
     const calculateWin = (stake * 1) * decimalOdds;
-    const roundToPennies = Number((calculateWin).toFixed(2));
+    const roundToPennies = Number(calculateWin.toFixed(2));
     return roundToPennies;
 }
 
