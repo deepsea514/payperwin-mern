@@ -45,7 +45,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     checkTimerOne();
     setInterval(checkTimerOne, lineInterval1);
 
-    const lineInterval2 = 3000 * 60 * 60;
+    const lineInterval2 = 000 * 60 * 20;
     checkTimerTwo();
     setInterval(checkTimerTwo, lineInterval2);
 
