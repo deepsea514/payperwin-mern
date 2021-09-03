@@ -25,6 +25,7 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
 const FinancialStatus = config.FinancialStatus;
+const { ID } = require('./libs/functions');
 
 const ErrorCode = {
     Success: 0,
@@ -39,10 +40,6 @@ const ActionErrorCode = {
     UnknownError: -1,
     InsufficientFunds: -2,
 }
-
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
 
 const tokenCheck = async (req, res, next) => {
     if (req.body) {
@@ -237,7 +234,7 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
     }
 );
 
-async function bettedAction(action, user) {
+const bettedAction = async (action, user) => {
     const { Id, Name, Transaction, WagerInfo } = action;
     if (WagerInfo.Type.toUpperCase() != 'SINGLE')
         return {
@@ -317,7 +314,7 @@ const getPinnacleBetType = (type) => {
     }
 }
 
-async function updateAction(action, user) {
+const updateAction = async (action, user) => {
     const { Id, Name, Transaction, WagerInfo } = action;
     try {
         if (Transaction && Transaction.TransactionType == "DEBIT") {

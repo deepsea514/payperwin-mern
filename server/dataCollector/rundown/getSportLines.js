@@ -8,7 +8,7 @@ const sleep = require('../../libs/sleep');
 const config = require('../../../config.json');
 const dateformat = require("dateformat");
 
-async function getSportLines(sportName, call) {
+const getSportLines = async (sportName, call) => {
     const rundownAddon = await Addon.findOne({ name: 'rundown' });
     if (!rundownAddon || !rundownAddon.value || !rundownAddon.value.rundownApiHost) {
         console.warn("Rundown Api is not set");

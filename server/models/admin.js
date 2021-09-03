@@ -14,7 +14,7 @@ const AdminSchema = new Schema({
     otpauthUrl: String,
 });
 
-AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
+AdminSchema.pre('save', (next) => { // eslint-disable-line func-names
     const user = this;
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
@@ -31,14 +31,14 @@ AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
     });
 });
 
-AdminSchema.methods.comparePassword = function (candidatePassword, callback) { // eslint-disable-line func-names
+AdminSchema.methods.comparePassword = (candidatePassword, callback) => { // eslint-disable-line func-names
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return callback(err);
         callback(null, isMatch);
     });
 };
 
-AdminSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
+AdminSchema.methods.validPassword = (candidatePassword) => { // eslint-disable-line func-names
     return bcrypt.compare(candidatePassword, this.password);
 };
 

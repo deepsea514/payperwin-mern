@@ -24,7 +24,7 @@ const formatSquashFixturesOdds = require('./formatFixturresSports/formatSquashFi
 const formatWaterPoloFixturesOdds = require('./formatFixturresSports/formatWaterPoloFixturesOdds');
 const formatESportsFixturesOdds = require('./formatFixturresSports/formatESportsFixturesOdds');
 
-function formatFixturesOdds(event, sport) {
+const formatFixturesOdds = (event, sport) => {
     switch (sport) {
         case "Soccer":
             return formatSoccerFixturesOdds(event);

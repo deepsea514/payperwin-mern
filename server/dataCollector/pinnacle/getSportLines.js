@@ -8,7 +8,7 @@ const sleep = require('../../libs/sleep');
 //external libraries
 const axios = require('axios');
 
-async function getSportLines(sportName) {
+const getSportLines = async (sportName) => {
     const pinnacleAddon = await Addon.findOne({ name: 'pinnacle' });
     if (!pinnacleAddon || !pinnacleAddon.value || !pinnacleAddon.value.pinnacleApiHost) {
         console.warn("Pinnacle Api is not set");

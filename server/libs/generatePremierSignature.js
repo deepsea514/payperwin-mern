@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const Addon = require("../models/addon");
 
-async function generatePremierRequestSignature(email, amount, udf1, udf2, udf3, udf4, udf5, udf6) {
+const generatePremierRequestSignature = async (email, amount, udf1, udf2, udf3, udf4, udf5, udf6) => {
     if (!udf1) udf1 = '';
     if (!udf2) udf2 = '';
     if (!udf3) udf3 = '';
@@ -25,7 +25,7 @@ async function generatePremierRequestSignature(email, amount, udf1, udf2, udf3, 
     return signature;
 }
 
-async function generatePremierResponseSignature(txid, status, descriptor, udf1, udf2, udf3, udf4, udf5, udf6) {
+const generatePremierResponseSignature = async (txid, status, descriptor, udf1, udf2, udf3, udf4, udf5, udf6) => {
     if (!udf1) udf1 = '';
     if (!udf2) udf2 = '';
     if (!udf3) udf3 = '';
@@ -48,7 +48,7 @@ async function generatePremierResponseSignature(txid, status, descriptor, udf1, 
     return signature;
 }
 
-async function generatePremierNotificationSignature(txid, status, amount_raw, descriptor) {
+const generatePremierNotificationSignature = async (txid, status, amount_raw, descriptor) => {
     amount_raw = Number(amount_raw).toFixed(2).toString();
 
     const premierpayAddon = await Addon.findOne({ name: 'premierpay' });

@@ -50,16 +50,15 @@ const AdminRoles = config.AdminRoles;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const {
+    checkSignupBonusPromotionEnabled,
+    isSignupBonusUsed,
+    ID,
+    get2FACode,
+    isFreeWithdrawalUsed
+} = require('./libs/functions');
 
-const ID = function () {
-    return '' + Math.random().toString(10).substr(2, 9);
-};
-
-const get2FACode = function () {
-    return '' + Math.random().toString(10).substr(2, 6);
-};
-
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
@@ -123,7 +122,7 @@ const limitRoles = (field) => (req, res, next) => {
 }
 
 
-function getTwoFactorAuthenticationCode(email) {
+const getTwoFactorAuthenticationCode = (email) => {
     const secretCode = speakeasy.generateSecret({
         name: `${email}(PPW)`
     });
@@ -133,7 +132,7 @@ function getTwoFactorAuthenticationCode(email) {
     }
 }
 
-function verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode, token, time) {
+const verifyTwoFactorAuthenticationCode = (twoFactorAuthenticationCode, token, time) => {
     const token1 = speakeasy.time({ secret: twoFactorAuthenticationCode, encoding: 'base32' });
     console.log(token1, token);
     return speakeasy.totp.verify({
@@ -209,7 +208,7 @@ adminRouter.post(
         try {
             const admin = await Admin.findOne({ email });
             if (admin) {
-                admin.comparePassword(password, function (error, isMatch) {
+                admin.comparePassword(password, (error, isMatch) => {
                     if (error) {
                         res.status(404).json({ error: 'Admin doesn\'t exist.' });
                         return;
@@ -288,7 +287,7 @@ adminRouter.patch(
         const { email } = req.user;
         const admin = await Admin.findOne({ email });
 
-        admin.comparePassword(password, async function (error, isMatch) {
+        admin.comparePassword(password, async (error, isMatch) => {
             if (error) {
                 res.status(404).json({ error: 'Admin doesn\'t exist.' });
                 return;
@@ -839,7 +838,7 @@ adminRouter.post(
                 res.status(400).json({ error: 'Can\'t find reason.' });
                 return;
             }
-            const deposit = new FinancialLog({
+            const deposit = await FinancialLog.create({
                 financialtype: 'deposit',
                 uniqid: `D${ID()}`,
                 user: user._id,
@@ -848,9 +847,21 @@ adminRouter.post(
                 method,
                 status
             });
-            await deposit.save();
 
             if (status == FinancialStatus.success) {
+                const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
+                const promotionUsed = await isSignupBonusUsed(user._id);
+                if (promotionEnabled && !promotionUsed) {
+                    await FinancialLog.create({
+                        financialtype: 'signupbonus',
+                        uniqid: `SB${ID()}`,
+                        user: user._id,
+                        amount,
+                        method,
+                        status
+                    });
+                    await user.update({ $inc: { balance: amount } });
+                }
                 await user.update({ $inc: { balance: amount } });
             }
 
@@ -1040,6 +1051,20 @@ adminRouter.patch(
                 return;
             }
             if (data.status == FinancialStatus.success) {
+                const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
+                const promotionUsed = await isSignupBonusUsed(user._id);
+                if (promotionEnabled && !promotionUsed) {
+                    await FinancialLog.create({
+                        financialtype: 'signupbonus',
+                        uniqid: `SB${ID()}`,
+                        user: user._id,
+                        amount: deposit.amount,
+                        method: deposit.method,
+                        status: data.status
+                    });
+                    await user.update({ $inc: { balance: deposit.amount } });
+                }
+
                 await user.update({ $inc: { balance: deposit.amount } });
             }
 
@@ -1070,24 +1095,6 @@ adminRouter.delete(
         }
     }
 )
-
-async function isFreeWithdrawalUsed(user) {
-    const date = new Date();
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const freeWithdraw = await FinancialLog.find({
-        fee: 0,
-        createdAt: {
-            $gte: firstDay
-        },
-        user: user._id,
-        type: 'withdraw'
-    });
-
-    if (freeWithdraw && freeWithdraw.length) {
-        return true
-    }
-    return false;
-}
 
 adminRouter.post(
     '/withdraw',
@@ -1122,7 +1129,23 @@ adminRouter.post(
                         return res.status(400).json({ error: 'Invalid withdraw method.' });
                 }
             }
-            const withdraw = new FinancialLog({
+
+            if (user.balance < amount + fee) {
+                return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
+            }
+
+            if (fee > 0) {
+                await FinancialLog.create({
+                    financialtype: 'withdrawfee',
+                    uniqid: `WF${ID()}`,
+                    user: user._id,
+                    amount: fee,
+                    method: method,
+                    status: FinancialStatus.success,
+                });
+            }
+
+            await FinancialLog.create({
                 financialtype: 'withdraw',
                 uniqid: `W${ID()}`,
                 user: user._id,
@@ -1132,22 +1155,8 @@ adminRouter.post(
                 fee: fee,
             });
 
-            const withdrawFee = new FinancialLog({
-                financialtype: 'withdrawfee',
-                uniqid: `WF${ID()}`,
-                user: user._id,
-                amount: fee,
-                method: method,
-                status: FinancialStatus.success,
-            });
-
-            if (user.balance < amount + fee) {
-                return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-            }
             await user.update({ $inc: { balance: -(amount + fee) } });
-            await withdraw.save();
-            await withdrawFee.save();
-            res.json(withdraw);
+            res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: 'Can\'t save withdraw.', result: error });
         }
@@ -1480,7 +1489,7 @@ adminRouter.get(
             User.find(searchObj)
                 .sort('createdAt')
                 .select(['email', 'balance', 'currency', 'firstname', 'lastname'])
-                .exec(function (error, data) {
+                .exec((error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
@@ -1518,7 +1527,7 @@ adminRouter.get(
             Sport.find(searchObj)
                 .sort('createdAt')
                 .select(['name'])
-                .exec(function (error, data) {
+                .exec((error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
@@ -1904,7 +1913,7 @@ adminRouter.get(
     }
 )
 
-const getTotalDeposit = async function (datefrom, dateto) {
+const getTotalDeposit = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await FinancialLog.aggregate(
@@ -1930,7 +1939,7 @@ const getTotalDeposit = async function (datefrom, dateto) {
     return 0;
 }
 
-const getTotalWager = async function (datefrom, dateto) {
+const getTotalWager = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await Bet.aggregate(
@@ -1955,7 +1964,7 @@ const getTotalWager = async function (datefrom, dateto) {
     return 0;
 }
 
-const getTotalWagerSportsBook = async function (datefrom, dateto) {
+const getTotalWagerSportsBook = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const betSportsbookHistory = await BetSportsBook.find({
@@ -1971,7 +1980,7 @@ const getTotalWagerSportsBook = async function (datefrom, dateto) {
     return total;
 }
 
-const getTotalPlayer = async function (datefrom, dateto) {
+const getTotalPlayer = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await User.aggregate(
@@ -1996,7 +2005,7 @@ const getTotalPlayer = async function (datefrom, dateto) {
     return 0;
 }
 
-const getTotalActivePlayer = async function (datefrom, dateto) {
+const getTotalActivePlayer = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await Bet.aggregate(
@@ -2021,7 +2030,7 @@ const getTotalActivePlayer = async function (datefrom, dateto) {
     return 0;
 }
 
-const getTotalFees = async function (datefrom, dateto) {
+const getTotalFees = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     let totalfee = 0;
@@ -2190,7 +2199,7 @@ adminRouter.get(
     '/email-templates',
     authenticateJWT,
     limitRoles('email_templates'),
-    async function (req, res) {
+    async (req, res) => {
         const email_templates = await Email.find();
         res.json({
             email_templates
@@ -2202,7 +2211,7 @@ adminRouter.post(
     '/email-template',
     authenticateJWT,
     limitRoles('email_templates'),
-    async function (req, res) {
+    async (req, res) => {
         try {
             const email_template = await Email.create(req.body);
             res.json({ email_template })
@@ -2216,7 +2225,7 @@ adminRouter.get(
     '/email-template/:title',
     authenticateJWT,
     limitRoles('email_templates'),
-    async function (req, res) {
+    async (req, res) => {
         const { title } = req.params;
         try {
             const email_template = await Email.findOne({ title });
@@ -2233,7 +2242,7 @@ adminRouter.post(
     '/email-template/:title',
     authenticateJWT,
     limitRoles('email_templates'),
-    async function (req, res) {
+    async (req, res) => {
         const { title } = req.params;
 
         try {
@@ -2255,7 +2264,7 @@ adminRouter.post(
     '/autobet',
     authenticateJWT,
     limitRoles('autobet'),
-    async function (req, res) {
+    async (req, res) => {
         const data = req.body;
         try {
             const existing = await AutoBet.find({ userId: ObjectId(data.userId) });
@@ -2274,7 +2283,7 @@ adminRouter.get(
     '/autobets',
     authenticateJWT,
     limitRoles('autobet'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
@@ -2288,7 +2297,7 @@ adminRouter.get(
             .skip(page * perPage)
             .limit(perPage)
             .populate('userId', ['username', 'balance', 'email', 'firstname', 'lastname'])
-            .exec(function (error, data) {
+            .exec((error, data) => {
                 if (error) {
                     res.status(404).json({ error: 'Can\'t find customers.' });
                     return;
@@ -2302,7 +2311,7 @@ adminRouter.patch(
     '/autobet/:id',
     authenticateJWT,
     limitRoles('autobet'),
-    async function (req, res) {
+    async (req, res) => {
         const data = req.body;
         const { id } = req.params;
         try {
@@ -2325,7 +2334,7 @@ adminRouter.delete(
     '/autobet/:id',
     authenticateJWT,
     limitRoles('autobet'),
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
         try {
             const autobet = await AutoBet.findById(new ObjectId(id));
@@ -2344,7 +2353,7 @@ adminRouter.post(
     '/promotion',
     authenticateJWT,
     limitRoles('promotions'),
-    async function (req, res) {
+    async (req, res) => {
         const data = req.body;
         try {
             await Promotion.create(data);
@@ -2359,7 +2368,7 @@ adminRouter.get(
     '/promotions',
     authenticateJWT,
     limitRoles('promotions'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
@@ -2372,7 +2381,7 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .exec(function (error, data) {
+                .exec((error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find promotions.' });
                         return;
@@ -2389,7 +2398,7 @@ adminRouter.get(
     '/promotion/:id',
     authenticateJWT,
     limitRoles('promotions'),
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
         try {
             const promotion = await Promotion.findById(id);
@@ -2412,7 +2421,7 @@ adminRouter.get(
     '/verifications',
     authenticateJWT,
     limitRoles('kyc'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
@@ -2427,7 +2436,7 @@ adminRouter.get(
                 .skip(page * perPage)
                 .limit(perPage)
                 .populate('user', ['username', 'address', 'address2', 'city', 'postalcode', 'phone'])
-                .exec(function (error, data) {
+                .exec((error, data) => {
                     if (error) {
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
@@ -2462,7 +2471,7 @@ adminRouter.post(
     '/verification-image',
     authenticateJWT,
     limitRoles('kyc'),
-    async function (req, res) {
+    async (req, res) => {
         const { user_id, name } = req.body;
         try {
             const user = await User.findById(user_id);
@@ -2490,7 +2499,7 @@ adminRouter.post(
     '/verification-accept',
     authenticateJWT,
     limitRoles('kyc'),
-    async function (req, res) {
+    async (req, res) => {
         const { user_id } = req.body;
         try {
             const user = await User.findById(user_id);
@@ -2542,7 +2551,7 @@ adminRouter.post(
     '/verification-decline',
     authenticateJWT,
     limitRoles('kyc'),
-    async function (req, res) {
+    async (req, res) => {
         const { user_id } = req.body;
         try {
             const user = await User.findById(user_id);
@@ -2589,7 +2598,7 @@ adminRouter.get(
     '/tickets',
     authenticateJWT,
     limitRoles('support-tickets'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
@@ -2631,7 +2640,7 @@ adminRouter.get(
     '/ticket/:id',
     authenticateJWT,
     limitRoles('support-tickets'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         try {
             const ticket = await Ticket.findById(id);
@@ -2650,7 +2659,7 @@ adminRouter.post(
     '/replyticket/:id',
     authenticateJWT,
     limitRoles('support-tickets'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         try {
             const ticket = await Ticket.findById(id);
@@ -2695,7 +2704,7 @@ adminRouter.delete(
     '/ticket/:id',
     authenticateJWT,
     limitRoles('support-tickets'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         try {
             await Ticket.deleteMany({ _id: id });
@@ -2711,7 +2720,7 @@ adminRouter.get(
     '/faq-subjects',
     authenticateJWT,
     limitRoles('faq'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);
@@ -2737,7 +2746,7 @@ adminRouter.get(
     '/faq-subjects/:id',
     authenticateJWT,
     limitRoles('faq'),
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
 
         try {
@@ -2756,7 +2765,7 @@ adminRouter.post(
     authenticateJWT,
     limitRoles('faq'),
     // bruteforce.prevent,
-    async function (req, res) {
+    async (req, res) => {
         const { title } = req.body;
         if (!title) {
             return res.json({ error: 'Title is required.' });
@@ -2779,7 +2788,7 @@ adminRouter.delete(
     authenticateJWT,
     limitRoles('faq'),
     // bruteforce.prevent,
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
         try {
             await FAQSubject.deleteOne({ _id: id });
@@ -2796,7 +2805,7 @@ adminRouter.post(
     authenticateJWT,
     limitRoles('faq'),
     // bruteforce.prevent,
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
         const { title, content } = req.body;
         try {
@@ -2829,7 +2838,7 @@ adminRouter.delete(
     authenticateJWT,
     limitRoles('faq'),
     // bruteforce.prevent,
-    async function (req, res) {
+    async (req, res) => {
         const { subjectid, id } = req.params;
         try {
             const faq_subject = await FAQSubject.findById(subjectid);
@@ -2853,7 +2862,7 @@ adminRouter.put(
     authenticateJWT,
     limitRoles('faq'),
     // bruteforce.prevent,
-    async function (req, res) {
+    async (req, res) => {
         const { id } = req.params;
         const { title, content } = req.body;
         try {
@@ -2909,7 +2918,7 @@ adminRouter.get(
     '/events/:id',
     authenticateJWT,
     limitRoles('custom-events'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         try {
             const event = await Event.findById(id);
@@ -2928,7 +2937,7 @@ adminRouter.put(
     '/events/:id',
     authenticateJWT,
     limitRoles('custom-events'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         const { name, startDate, teamA, teamB, approved } = req.body;
         try {
@@ -2968,7 +2977,7 @@ adminRouter.put(
     }
 );
 
-async function matchResults(eventId, matchResult) {
+const matchResults = async (eventId, matchResult) => {
     const betpool = await EventBetPool.findOne({
         eventId: eventId,
         // matchStartDate: { $lt: new Date() },
@@ -3113,7 +3122,7 @@ adminRouter.post(
     '/events/:id/settle',
     authenticateJWT,
     limitRoles('custom-events'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         const { teamAScore, teamBScore } = req.body;
         try {
@@ -3146,7 +3155,7 @@ adminRouter.post(
     '/events/:id/cancel',
     authenticateJWT,
     limitRoles('custom-events'),
-    async function (req, res) {
+    async (req, res) => {
         let { id } = req.params;
         try {
             const event = await Event.findById(id);
@@ -3173,7 +3182,7 @@ adminRouter.get(
     '/events',
     authenticateJWT,
     limitRoles('custom-events'),
-    async function (req, res) {
+    async (req, res) => {
         let { page, perPage, status } = req.query;
         if (!perPage) perPage = 25;
         perPage = parseInt(perPage);

@@ -1,7 +1,7 @@
 const Addon = require("../models/addon");
 const twilio = require('twilio');
 
-async function sendSMS(message, phone) {
+const sendSMS = async (message, phone) => {
     const twilioAddon = await Addon.findOne({ name: 'twilio' });
     if (!twilioAddon || !twilioAddon.value || !twilioAddon.value.accountSid) {
         console.warn('Twilio Key is not set');

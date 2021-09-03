@@ -9,7 +9,7 @@ const offsetHour = Math.floor(absOffset / 60);
 const offsetMin = absOffset % 60;
 const defaultTimezone = (offset > 0 ? '+' : '-') + (offsetHour > 9 ? offsetHour : '0' + offsetHour) + ":" + (offsetMin > 9 ? offsetMin : '0' + offsetMin)
 
-function getChangedTime(date, timezone) {
+const getChangedTime = (date, timezone) => {
     const timezoneArr = timezone.split(':');
     const min = Number(timezoneArr[1]);
     const hour = Number(timezoneArr[0]);
@@ -22,7 +22,7 @@ function getChangedTime(date, timezone) {
     return time;
 }
 
-function convertTimeLineDate(date, timezone) {
+const convertTimeLineDate = (date, timezone) => {
     timezone = TimeZones.find(time => time.value == timezone);
     if (!timezone) timezone = defaultTimezone;
     else {
@@ -37,7 +37,7 @@ function convertTimeLineDate(date, timezone) {
     return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;
 }
 
-function getDSTTimeOffset(offset) {
+const getDSTTimeOffset = (offset) => {
     const timezoneArr = offset.split(':');
     const min = Number(timezoneArr[1]);
     let hour = Number(timezoneArr[0]);

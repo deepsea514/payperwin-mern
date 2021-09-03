@@ -1,4 +1,4 @@
-function convertDecimalToAmericanOdds(decimal) {
+const convertDecimalToAmericanOdds = (decimal) => {
     if (decimal == "") return null;
     decimal = Number(decimal);
     if (decimal == 1.0) return null;

@@ -1,6 +1,6 @@
 const UNSET = 0.0001;
 
-function mergeExistingOdds(events, oldEvents) {
+const mergeExistingOdds = (events, oldEvents) => {
     events.sort((e1, e2) => {
         let date1 = (new Date(e1.startDate)).getTime();
         let date2 = (new Date(e2.startDate)).getTime();
@@ -22,7 +22,7 @@ function mergeExistingOdds(events, oldEvents) {
     return [...events, ...oldEvents];
 }
 
-function formatFixturesOdds(events, sportData, oldEvents) {
+const formatFixturesOdds = (events, sportData, oldEvents) => {
     let formattedSportData = {
         originSportId: sportData.id,
         leagues: [],

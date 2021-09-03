@@ -45,12 +45,12 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     setInterval(matchResults, resultInterval);
 });
 
-Date.prototype.addHours = function (h) {
+Date.prototype.addHours = (h) => {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
 
-async function getAllSportsLines() {
+const getAllSportsLines = async () => {
     // const bet365Addon = await Addon.findOne({ name: 'bet365' });
     // if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
     //     console.warn("Bet365 Api Key is not set");

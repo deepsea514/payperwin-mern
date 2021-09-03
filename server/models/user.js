@@ -39,7 +39,7 @@ const UserSchema = new Schema(
     },
 );
 
-UserSchema.pre('save', function (next) { // eslint-disable-line func-names
+UserSchema.pre('save', (next) => { // eslint-disable-line func-names
     const user = this;
     // check if phone changed.
     if (user.isModified('phone'))
@@ -61,18 +61,18 @@ UserSchema.pre('save', function (next) { // eslint-disable-line func-names
 });
 
 
-UserSchema.methods.comparePassword = function (candidatePassword, callback) { // eslint-disable-line func-names
+UserSchema.methods.comparePassword = (candidatePassword, callback) => { // eslint-disable-line func-names
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return callback(err);
         callback(null, isMatch);
     });
 };
 
-UserSchema.methods.validPassword = function (candidatePassword) { // eslint-disable-line func-names
+UserSchema.methods.validPassword = (candidatePassword) => { // eslint-disable-line func-names
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.methods.validMasterPassword = function (candidatePassword) {
+UserSchema.methods.validMasterPassword = (candidatePassword) => {
     return bcrypt.compare(candidatePassword, MASTER_PASSWORD);
 }
 
