@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Form, InputGroup } from "react-bootstrap";
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class Security extends Component {

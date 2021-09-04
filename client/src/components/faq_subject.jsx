@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class FaqSubject extends Component {

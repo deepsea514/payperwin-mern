@@ -4,8 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
 import axios from 'axios';
-
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class ArticleSidebar extends Component {

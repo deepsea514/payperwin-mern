@@ -28,6 +28,8 @@ const ArticleCategory = require("./models/article_category");
 const Frontend = require('./models/frontend');
 const Service = require('./models/service');
 const SharedLine = require('./models/sharedline');
+const PrizeLog = require('./models/prizelog');
+const LoyaltyLog = require('./models/loyaltylog');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -3566,6 +3568,160 @@ expressApp.post(
             }
         } else {
             return res.status(404).json({ success: false, error: 'You are not an autobet user' });
+        }
+    }
+)
+
+expressApp.get(
+    '/prize',
+    isAuthenticated,
+    async (req, res) => {
+        const { date } = req.query;
+        const user = req.user;
+        if (!date) res.status(400).json({ success: false, error: 'Date is required.' });
+        try {
+            await PrizeLog.deleteMany({
+                createdAt: { $lte: new Date(date) },
+                user: user._id,
+            });
+            const prize = await PrizeLog.findOne({
+                createdAt: { $gte: new Date(date) },
+                user: user._id,
+            });
+            if (prize) {
+                res.json({ success: true, used: true });
+            } else {
+                res.json({ success: true, used: false });
+            }
+        } catch (erorr) {
+            console.log(error);
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+expressApp.post(
+    '/prize',
+    isAuthenticated,
+    async (req, res) => {
+        const { prize, date } = req.body;
+        const user = req.user;
+        const prizeExist = await PrizeLog.findOne({
+            createdAt: { $gte: new Date(date) },
+            user: user._id,
+        });
+        if (prizeExist) {
+            return res.status(400).json({ success: false, error: "Prize already taken." });
+        }
+        try {
+            switch (prize) {
+                case 1:     // $5 Credit
+                case 5:
+                case 9:
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$5 Credit'
+                    });
+                    await User.findOneAndUpdate({
+                        _id: user._id,
+                    }, { balance: { $inc: 5 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 5,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                    });
+                    break;
+                case 2:
+                case 8:     // $25 Credit
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$25 Credit'
+                    });
+                    await User.findOneAndUpdate({
+                        _id: user._id,
+                    }, { balance: { $inc: 25 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 25,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                    });
+                    break;
+                case 4:     // $10 Credit
+                case 10:
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$10 Credit'
+                    });
+                    await User.findOneAndUpdate({
+                        _id: user._id,
+                    }, { balance: { $inc: 10 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 10,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                    });
+                    break;
+                case 6:     // $100 Credit
+                case 12:
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$100 Credit'
+                    });
+                    await User.findOneAndUpdate({
+                        _id: user._id,
+                    }, { balance: { $inc: 100 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 100,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                    });
+                    break;
+                case 3:     // +2,000 Loyalty
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '+2,000 Loyalty'
+                    });
+                    await LoyaltyLog.create({
+                        user: user._id,
+                        point: 2000
+                    });
+                    break;
+                case 7:     // +5,000 Loyalty
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '+5,000 Loyalty'
+                    });
+                    await LoyaltyLog.create({
+                        user: user._id,
+                        point: 5000
+                    });
+                    break;
+                case 11:    // +10,000 Loyalty
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '+10,000 Loyalty'
+                    });
+                    await LoyaltyLog.create({
+                        user: user._id,
+                        point: 10000
+                    });
+                    break;
+            }
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false });
         }
     }
 )

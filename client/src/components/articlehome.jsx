@@ -5,8 +5,7 @@ import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
 import axios from 'axios';
 import ArticleWrapper from './articlewrapper';
-
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class ArticleHome extends Component {

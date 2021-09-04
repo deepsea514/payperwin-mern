@@ -61,6 +61,7 @@ import SportsLeagues from '../pages/sportleagues';
 import AutobetSettings from '../pages/AutobetSettings';
 import AutobetDashboard from '../pages/AutobetDashboard';
 import { FormattedMessage, injectIntl } from "react-intl";
+import Prize from '../pages/prize';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 
@@ -396,6 +397,7 @@ class App extends PureComponent {
                                                 <Route path="/support" component={ContactUs} />
                                                 <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
                                                 <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
+                                                <Route path="/prize" render={(props) => <Prize {...props} user={user} />} />
                                                 <Route exact path="/" render={(props) =>
                                                     <Dashboard
                                                         addBet={this.addBet}

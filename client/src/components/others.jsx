@@ -5,8 +5,6 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-
-
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 

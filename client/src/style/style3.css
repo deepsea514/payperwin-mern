@@ -269,7 +269,7 @@ a.log-in-btn {
     padding-top: 15px;
 }
 
-.login-nav .fa-envelope:hover, .login-nav .username:hover {
+.login-nav i:hover {
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.75);
 }
 
@@ -796,7 +796,7 @@ a.log-in-btn {
     top: 8rem;
 }
 
-.show-mobile.bet-slip-contain {
+.show-mobile {
     display: none !important;
 }
 
@@ -804,10 +804,10 @@ a.log-in-btn {
     .highlights .nav-tabs .nav-item:nth-child(n+5) {
         display: none;
     }
-    .hide-mobile.bet-slip-contain {
+    .hide-mobile {
         display: none !important;
     }
-    .show-mobile.bet-slip-contain {
+    .show-mobile {
         display: flex !important;
     }
     .bet-slip.empty {
