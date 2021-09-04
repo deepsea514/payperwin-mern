@@ -184,6 +184,14 @@ const matchResults = (sportName, events) => {
 
                 await Bet.findByIdAndUpdate(_id, { status: 'Cancelled' });
                 await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: userId,
+                    amount: betAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                });
             }
             for (const betId of awayBets) {
                 const bet = await Bet.findOne({ _id: betId });
@@ -191,6 +199,14 @@ const matchResults = (sportName, events) => {
 
                 await Bet.findByIdAndUpdate(_id, { status: 'Cancelled' });
                 await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: userId,
+                    amount: betAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                });
             }
             await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
         }
