@@ -1003,8 +1003,8 @@ expressApp.post(
                                         }
                                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                             sendSMS(`This email is to advise you that your bet for ${name} ${type} on $${betAfterFee.toFixed(2)} for ${timeString} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                                            Wager: $${betAfterFee.toFixed(2)}\n 
-                                            Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}\n 
+                                            Wager: $${betAfterFee.toFixed(2)}
+                                            Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}
                                             Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
 
@@ -1229,8 +1229,8 @@ expressApp.post(
                                         }
                                         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                                             sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                                                Wager: $${betAfterFee.toFixed(2)}\n 
-                                                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
+                                                Wager: $${betAfterFee.toFixed(2)}
+                                                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                                                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
                                         }
 
@@ -1629,8 +1629,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             }
             if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                 sendSMS(`This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.\n 
-                Wager: $${betAfterFee.toFixed(2)}\n 
-                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}\n 
+                Wager: $${betAfterFee.toFixed(2)}
+                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                 Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
             }
 

@@ -142,8 +142,8 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                 sendSMS(`This is to advise you that your bet for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                Wager: $${betAfterFee.toFixed(2)}\n 
-                Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}\n 
+                Wager: $${betAfterFee.toFixed(2)}
+                Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}
                 Platform: PAYPERWIN Peer-to Peer`, user.phone);
             }
 

@@ -126,7 +126,7 @@ const checkMatchStatus = async () => {
             });
         }
         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
-            sendSMS(`Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. `, user.phone);
+            sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
         }
 
     }
