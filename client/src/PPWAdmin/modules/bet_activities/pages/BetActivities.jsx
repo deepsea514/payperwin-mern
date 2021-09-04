@@ -9,6 +9,7 @@ import { getSports, getWagerActivityAsCSV } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
+import numberFormat from "../../../../helpers/numberFormat";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -67,14 +68,15 @@ class BetActivities extends React.Component {
                 <tr key={index}>
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
-                    <td scope="col">{bet.bet} {bet.userId ? bet.userId.currency : null}</td>
+                    <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                     <td scope="col">{bet.pickName} @ {Number(bet.pickOdds).toFixed(2)}</td>
                     <td scope="col">{bet.userId ? bet.userId.email : null}</td>
                     <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
                     <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                    <td scope="col">{dateformat(bet.matchStartDate)}</td>
                     <td scope="col">{this.getPPWBetDogFav(bet, index)}</td>
-                    <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet)}</td>
-                    <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
+                    {/* <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet)}</td> */}
+                    {/* <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td> */}
                     <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
                     <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
                     <td scope="col">{this.getPPWWinLoss(bet)}</td>
@@ -129,8 +131,9 @@ class BetActivities extends React.Component {
                             }) :
                             bet.WagerInfo.EventName
                     }</td>
-                    <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td>
-                    <td scope="col"><span className="label label-lg label-info label-inline font-weight-lighter mr-2">Pinnacle</span></td>
+                    <td scope="col">{dateformat(bet.WagerInfo.EventDateFm)}</td>
+                    {/* <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td> */}
+                    {/* <td scope="col"><span className="label label-lg label-info label-inline font-weight-lighter mr-2">Pinnacle</span></td> */}
                     <td scope="col">{this.getPInnacleBetStatus(bet.Name)}</td>
                     <td scope="col">{this.getPinnacleWinLoss(bet)}</td>
                     <td scope="col">{bet.WagerInfo.WagerId}</td>
@@ -449,9 +452,10 @@ class BetActivities extends React.Component {
                                             <th scope="col">User</th>
                                             <th scope="col">Sport</th>
                                             <th scope="col">Event</th>
+                                            <th scope="col">Start Date</th>
                                             <th scope="col">Dog/Fav</th>
-                                            <th scope="col">Line</th>
-                                            <th scope="col">House</th>
+                                            {/* <th scope="col">Line</th> */}
+                                            {/* <th scope="col">House</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
                                             <th scope="col">Win/Loss Amount</th>
@@ -466,8 +470,9 @@ class BetActivities extends React.Component {
                                             <th scope="col">User</th>
                                             <th scope="col">Sport</th>
                                             <th scope="col">Event</th>
-                                            <th scope="col">Type</th>
-                                            <th scope="col">House</th>
+                                            <th scope="col">Start Date</th>
+                                            {/* <th scope="col">Type</th> */}
+                                            {/* <th scope="col">House</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Win/Loss Amount</th>
                                             <th scope="col">WagerID</th>

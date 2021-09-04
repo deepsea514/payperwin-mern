@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from "react";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
+import numberFormat from "../../../../helpers/numberFormat";
 
 export function WinLoss({ className, chartColor = "info", winloss }) {
     const uiService = useHtmlClassService();
@@ -57,9 +58,9 @@ export function WinLoss({ className, chartColor = "info", winloss }) {
                 </div>
 
                 <div className="card-body d-flex flex-column p-0 text-left">
-                    {winloss && <h1 className="card-title font-weight-bolder text-white ml-10">
-                        {winloss >= 0 ? ('+ $' + new Intl.NumberFormat().format(Number(winloss).toFixed(2))) : ('- $' + new Intl.NumberFormat().format(Number(-winloss).toFixed(2)))} CAD
-                    </h1>}
+                    <h1 className="card-title font-weight-bolder text-white ml-10">
+                        {winloss >= 0 ? ('+ $' + numberFormat(winloss.toFixed(2))) : ('- $' + numberFormat(-winloss.toFixed(2)))} CAD
+                    </h1>
                     <div
                         id="lifetime_chart"
                         data-color={chartColor}
