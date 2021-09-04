@@ -261,7 +261,7 @@ class OpenBets extends PureComponent {
                             <div className="open-bets" key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
-                                        <strong>Accepted</strong>
+                                        <strong>Bet</strong>
                                         <div>
                                             {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                         </div>
@@ -312,7 +312,7 @@ class OpenBets extends PureComponent {
                                     {lineQuery.eventName}
                                     <div>
                                         Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                        <strong className="float-right bg-primary">Peer To Peer</strong>
+                                        {/* <strong className="float-right bg-primary">Peer To Peer</strong> */}
                                     </div>
                                     {credited ? (<div><strong>Credited: ${(credited - bet).toFixed(2)}</strong></div>) : null}
                                 </div>
@@ -326,7 +326,7 @@ class OpenBets extends PureComponent {
                         <div className="open-bets" key={_id}>
                             <div className="open-bets-flex">
                                 <div className="open-bets-col">
-                                    <strong>Accepted</strong>
+                                    <strong>Bet</strong>
                                     <div>
                                         {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                     </div>
@@ -379,7 +379,7 @@ class OpenBets extends PureComponent {
                                 {homeScore && awayScore ? <div>{pickName}</div> : null}
                                 <div>
                                     Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                    <strong className="float-right bg-primary">Peer To Peer</strong>
+                                    {/* <strong className="float-right bg-primary">Peer To Peer</strong> */}
                                 </div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {credited ? (<div><strong>Credited: ${(credited - bet).toFixed(2)}</strong></div>) : null}
@@ -402,7 +402,7 @@ class OpenBets extends PureComponent {
                         <div className="open-bets" key={_id}>
                             <div className="open-bets-flex">
                                 <div className="open-bets-col">
-                                    <strong>Accepted</strong>
+                                    <strong>Bet</strong>
                                     <div>
                                         {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                     </div>
@@ -454,7 +454,7 @@ class OpenBets extends PureComponent {
                                 <div>{WagerInfo.EventName}</div>
                                 <div>
                                     Event Date: {dayjs(WagerInfo.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}
-                                    <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong>
+                                    {/* <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong> */}
                                 </div>
                             </div>}
 
@@ -465,7 +465,7 @@ class OpenBets extends PureComponent {
                                     <div>{leg.EventName}</div>
                                     <div>
                                         Event Date: {dayjs(leg.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}
-                                        <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong>
+                                        {/* <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong> */}
                                     </div>
                                 </div>
                             ))}

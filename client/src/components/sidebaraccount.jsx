@@ -27,9 +27,9 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i>Betting History</Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link to={{ pathname: '/custom-bets' }}><i className="fas fa-user-clock"></i>Custom Bets</Link>
-                    </li>
+                    </li> */}
                 </ul>
 
                 <h3 className="cat-heading">CASHIER</h3>
