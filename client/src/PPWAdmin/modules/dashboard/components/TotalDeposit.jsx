@@ -5,6 +5,7 @@ import React, { useMemo, useEffect } from "react";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
+import numberFormat from "../../../../helpers/numberFormat";
 
 export function TotalDeposit({ className, loadingdashboarddata, categories, dashboarddeposit }) {
     const getChartOptions = (layoutProps) => {
@@ -186,7 +187,7 @@ export function TotalDeposit({ className, loadingdashboarddata, categories, dash
             </div>
             {/* Body */}
             <div className="card-body p-0 position-relative overflow-hidden bg-danger pb-4">
-                <h1 className="font-weight-bolder text-white bg-danger p-0 m-0 pl-10"> ${new Intl.NumberFormat().format(Number(dashboarddeposit.totaldeposit).toFixed(2))}</h1>
+                <h1 className="font-weight-bolder text-white bg-danger p-0 m-0 pl-10"> ${numberFormat(dashboarddeposit.totaldeposit.toFixed(2))}</h1>
 
                 {/* Chart */}
                 <div

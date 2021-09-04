@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
+import numberFormat from '../helpers/numberFormat';
 
 class AutobetSummary extends Component {
     balanceString = (balance) => {
@@ -25,7 +26,7 @@ class AutobetSummary extends Component {
                             style={{ height: "140px" }}
                         >
                             <label className="font-weight-bolder text-white bg-primary">Your balance</label>
-                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${new Intl.NumberFormat().format(Number(this.balanceString(user.balance)))}</h3>
+                            <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${numberFormat(this.balanceString(user.balance))}</h3>
                         </div>
 
                         {/* Stat */}
@@ -57,7 +58,7 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${new Intl.NumberFormat().format(Number(totalbets.amount.toFixed(2)))}
+                                        ${numberFormat(totalbets.amount.toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
@@ -90,7 +91,7 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${new Intl.NumberFormat().format(Number(winbets.amount.toFixed(2)))}
+                                        ${numberFormat(winbets.amount.toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>
@@ -123,7 +124,7 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${new Intl.NumberFormat().format(Number(lossbets.amount.toFixed(2)))}
+                                        ${numberFormat(lossbets.amount.toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-danger">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
                                         </span>
@@ -156,7 +157,7 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${new Intl.NumberFormat().format(Number(profit.toFixed(2)))}
+                                        ${numberFormat(profit.toFixed(2))}
                                         {profit >= 0 && <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>}

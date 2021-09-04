@@ -5,6 +5,7 @@ import React, { useMemo, useEffect } from "react";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../_metronic/layout";
+import numberFormat from "../../../../helpers/numberFormat";
 
 export function TotalWagerSportsBook({ className, categories, dashboardwagersportsbook }) {
     const uiService = useHtmlClassService();
@@ -186,7 +187,7 @@ export function TotalWagerSportsBook({ className, categories, dashboardwagerspor
             </div>
             {/* Body */}
             <div className="card-body p-0 position-relative bg-info overflow-hidden pb-4">
-                <h1 className="font-weight-bolder text-white bg-info p-0 m-0 pl-10"> ${new Intl.NumberFormat().format(Number(dashboardwagersportsbook.totalwager).toFixed(2))}</h1>
+                <h1 className="font-weight-bolder text-white bg-info p-0 m-0 pl-10"> ${numberFormat(dashboardwagersportsbook.totalwager.toFixed(2))}</h1>
                 {/* Chart */}
                 <div
                     id="total_wager_sportsbook_chart"

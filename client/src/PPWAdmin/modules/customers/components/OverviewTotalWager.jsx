@@ -1,6 +1,7 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React from "react";
 import SVG from "react-inlinesvg";
+import numberFormat from "../../../../helpers/numberFormat";
 
 class OverviewTotalWager extends React.Component {
     render() {
@@ -18,7 +19,7 @@ class OverviewTotalWager extends React.Component {
                         </span>
                     </span>
                     <h1 className="card-title font-weight-bolder text-white mt-5">
-                        ${new Intl.NumberFormat().format(Number(totalwagers).toFixed(2))}&nbsp;{currency}
+                        ${numberFormat(totalwagers.toFixed(2))}&nbsp;{currency}
                     </h1>
                     <h3 className="card-title font-weight-bolder text-white m-0">
                         Total Wager
