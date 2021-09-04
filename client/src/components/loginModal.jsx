@@ -7,8 +7,7 @@ import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { connect } from "react-redux";
 import Recaptcha from 'react-recaptcha';
-
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 const recaptchaSiteKey = config.recaptchaSiteKey;
 

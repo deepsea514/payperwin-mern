@@ -4,8 +4,7 @@ import axios from 'axios';
 import Bet from "./bet";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class BetSlip extends PureComponent {

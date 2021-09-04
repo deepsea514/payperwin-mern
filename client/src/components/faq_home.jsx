@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 class FaqHome extends Component {
