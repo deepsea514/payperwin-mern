@@ -119,7 +119,7 @@ class Prize extends PureComponent {
             .then(({ data }) => {
                 if (data.used) {
                     this.remainingTimeHandler();
-                    const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 1000);
+                    const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 60 * 1000);
                     this.setState({ loading: false, error: false, used: true, remainingTimer });
                 } else {
                     this.setState({ loading: false, error: false, used: false });
@@ -183,7 +183,7 @@ class Prize extends PureComponent {
 
     savePrize = (indicatedSegment) => {
         this.remainingTimeHandler();
-        const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 1000);
+        const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 60 * 1000);
         this.setState({ used: true, remainingTimer });
         const today = new Date();
         const year = today.getFullYear();
