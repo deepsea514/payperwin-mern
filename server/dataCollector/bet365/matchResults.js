@@ -80,6 +80,10 @@ const matchResults = async () => {
                     cancellationReason: false
                 };
                 if (time_status == 3) { //Ended
+                    if (ss == null || ss == "") {
+                        await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
+                        continue;
+                    }
                     const matchScores = ss.split(',');
                     for (let match = 0; match < matchScores.length; match++) {
                         const scores = matchScores[match].split('-');
@@ -104,6 +108,8 @@ const matchResults = async () => {
                     time_status == 8 ||
                     time_status == 9 ||
                     time_status == 6) { // Cancelled, Interrupted, Abandoned, Retired, Walkover
+                    matchResult.cancellationReason = true;
+                } else {
                     matchResult.cancellationReason = true;
                 }
                 const { homeScore, awayScore, cancellationReason } = matchResult;
