@@ -148,7 +148,6 @@ class Header extends PureComponent {
                                     ? (
                                         <div className="login-nav-contain">
                                             <ul className="login-nav">
-                                                <li className="hide-mobile"><Link to="/prize" className="blue-icon"><i className="fas fa-cart-plus mx-0" /></Link></li>
                                                 <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
                                                 <li>
                                                     <Link to={{ pathname: '/deposit' }}>

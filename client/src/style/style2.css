@@ -3552,7 +3552,7 @@ input.special {
     border-radius: 4px;
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.48);
     overflow: hidden;
-    padding: 20px 50px 20px 70px;
+    padding: 20px 20px 20px 20px;
     margin-bottom: 20px;
     font-size: 20px;
     position: relative;
