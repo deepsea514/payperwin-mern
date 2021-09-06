@@ -148,8 +148,10 @@ const matchResults = async () => {
                         }
 
                         let betWin;
+                        let draw = false;
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
+                            draw = awayScore == homeScore;
                         } else if (lineType === 'spread') {
                             const spread = {
                                 home: points,
@@ -161,16 +163,32 @@ const matchResults = async () => {
                             if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = pick === spreadWinner;
+                            draw = homeScoreHandiCapped == awayScoreHandiCapped;
                         } else if (lineType === 'total') {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
                         }
 
+                        if (draw) {
+                            // refund user
+                            await Bet.findOneAndUpdate({ _id: _id }, { status: 'Cancelled' });
+                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: userId,
+                                amount: betAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                            });
+                            continue;
+                        }
+
                         if (betWin === true) {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
-                            if(user) {
+                            if (user) {
                                 const { balance, email } = user;
                                 const betChanges = {
                                     $set: {
