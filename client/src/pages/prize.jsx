@@ -12,6 +12,8 @@ const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'product
 class Prize extends PureComponent {
     constructor(props) {
         super(props);
+        const tickSound = new Audio('/media/tick.mp3');
+        const tadaSound = new Audio('/media/tada.wav');
         this.state = {
             prizeWheel: null,
             isSpinning: false,
@@ -34,6 +36,8 @@ class Prize extends PureComponent {
             remainingTime: '',
             winMessage: null,
             error: false,
+            tickSound: tickSound,
+            tadaSound: tadaSound
         };
     }
 
@@ -69,7 +73,8 @@ class Prize extends PureComponent {
                 'duration': 12,
                 'spins': 6,
                 'callbackFinished': this.finishPrize.bind(this),
-                // 'soundTrigger': 'pin',
+                'soundTrigger': 'pin',
+                'callbackSound': this.playTickSound.bind(this),
             },
             'pins': {
                 'number': 12,
@@ -116,6 +121,15 @@ class Prize extends PureComponent {
             })
     }
 
+    playTickSound = () => {
+        const { tickSound } = this.state;
+        if (tickSound) {
+            tickSound.pause();
+            tickSound.currentTime = 0;
+            tickSound.play();
+        }
+    }
+
     componentWillUnmount() {
         const { remainingTimer } = this.state;
         if (remainingTimer) clearInterval(remainingTimer);
@@ -160,6 +174,12 @@ class Prize extends PureComponent {
     }
 
     finishPrize = (indicatedSegment) => {
+        const { tadaSound } = this.state;
+        if(tadaSound) {
+            tadaSound.pause();
+            tadaSound.currentTime = 0;
+            tadaSound.play();
+        }
         this.setState({ winMessage: 'Congratulations! You have won ' + indicatedSegment.text });
         setTimeout(() => {
             this.resetWheel();

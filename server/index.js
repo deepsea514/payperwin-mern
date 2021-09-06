@@ -3626,7 +3626,7 @@ expressApp.post(
                     });
                     await User.findOneAndUpdate({
                         _id: user._id,
-                    }, { balance: { $inc: 5 } });
+                    }, { $inc: { balance: 5 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -3644,7 +3644,7 @@ expressApp.post(
                     });
                     await User.findOneAndUpdate({
                         _id: user._id,
-                    }, { balance: { $inc: 25 } });
+                    }, { $inc: { balance: 25 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -3662,7 +3662,7 @@ expressApp.post(
                     });
                     await User.findOneAndUpdate({
                         _id: user._id,
-                    }, { balance: { $inc: 10 } });
+                    }, { $inc: { balance: 10 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -3680,7 +3680,7 @@ expressApp.post(
                     });
                     await User.findOneAndUpdate({
                         _id: user._id,
-                    }, { balance: { $inc: 100 } });
+                    }, { $inc: { balance: 100 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
