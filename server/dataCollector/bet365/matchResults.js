@@ -170,59 +170,61 @@ const matchResults = async () => {
                         if (betWin === true) {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
-                            const { balance, email } = user;
-                            const betChanges = {
-                                $set: {
-                                    status: 'Settled - Win',
-                                    walletBeforeCredited: balance,
-                                    credited: betAmount + payableToWin,
-                                    homeScore,
-                                    awayScore,
+                            if(user) {
+                                const { balance, email } = user;
+                                const betChanges = {
+                                    $set: {
+                                        status: 'Settled - Win',
+                                        walletBeforeCredited: balance,
+                                        credited: betAmount + payableToWin,
+                                        homeScore,
+                                        awayScore,
+                                    }
                                 }
-                            }
-                            const betFee = Number((payableToWin * 0.03).toFixed(2));
-                            await Bet.findOneAndUpdate({ _id }, betChanges);
-                            if (payableToWin > 0) {
-                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
-                                await FinancialLog.create({
-                                    financialtype: 'betwon',
-                                    uniqid: `BW${ID()}`,
-                                    user: userId,
-                                    amount: betAmount + payableToWin,
-                                    method: 'betwon',
-                                    status: FinancialStatus.success,
-                                });
-                                await FinancialLog.create({
-                                    financialtype: 'betfee',
-                                    uniqid: `BF${ID()}`,
-                                    user: userId,
-                                    amount: betFee,
-                                    method: 'betfee',
-                                    status: FinancialStatus.success,
-                                });
-                            }
-                            // TODO: email winner
-                            const preference = await Preference.findOne({ user: user._id });
-                            if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                                const msg = {
-                                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                                    to: email,
-                                    subject: 'You won a wager!',
-                                    text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
-                                    html: simpleresponsive(`
-                                            <p>
-                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                            </p>
-                                            `,
-                                        { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
-                                    ),
-                                };
-                                sgMail.send(msg).catch(error => {
-                                    console.log('Can\'t send mail');
-                                });
-                            }
-                            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                                sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
+                                const betFee = Number((payableToWin * 0.03).toFixed(2));
+                                await Bet.findOneAndUpdate({ _id }, betChanges);
+                                if (payableToWin > 0) {
+                                    await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
+                                    await FinancialLog.create({
+                                        financialtype: 'betwon',
+                                        uniqid: `BW${ID()}`,
+                                        user: userId,
+                                        amount: betAmount + payableToWin,
+                                        method: 'betwon',
+                                        status: FinancialStatus.success,
+                                    });
+                                    await FinancialLog.create({
+                                        financialtype: 'betfee',
+                                        uniqid: `BF${ID()}`,
+                                        user: userId,
+                                        amount: betFee,
+                                        method: 'betfee',
+                                        status: FinancialStatus.success,
+                                    });
+                                }
+                                // TODO: email winner
+                                const preference = await Preference.findOne({ user: user._id });
+                                if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
+                                    const msg = {
+                                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                                        to: email,
+                                        subject: 'You won a wager!',
+                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                        html: simpleresponsive(`
+                                                <p>
+                                                    Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                                </p>
+                                                `,
+                                            { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                        ),
+                                    };
+                                    sgMail.send(msg).catch(error => {
+                                        console.log('Can\'t send mail');
+                                    });
+                                }
+                                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
+                                    sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
+                                }
                             }
                         } else if (betWin === false) {
                             const betChanges = {
