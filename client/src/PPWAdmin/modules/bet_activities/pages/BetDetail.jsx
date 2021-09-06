@@ -5,6 +5,7 @@ import dateformat from "dateformat";
 import { getBetDetail } from "../redux/services";
 import sportNameImage from '../../../../helpers/sportNameImage';
 import calculateNewOdds from '../../../../helpers/calculateNewOdds';
+import numberFormat from "../../../../helpers/numberFormat";
 
 class BetDetail extends React.Component {
     constructor(props) {
@@ -153,10 +154,14 @@ class BetDetail extends React.Component {
                                 {bet.house == 'ppw' && <table className="table">
                                     <tbody>
                                         <tr>
-                                            <th>Amount</th>
-                                            <td>{bet.bet} {bet.userId.currency}</td>
                                             <th>User</th>
                                             <td>{bet.userId.email}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Amount</th>
+                                            <td>${numberFormat(bet.bet.toFixed(2))} {bet.userId.currency} (${numberFormat(bet.toWin.toFixed(2))})</td>
+                                            <th>Matched Amount</th>
+                                            <td>${numberFormat(bet.payableToWin.toFixed(2))} {bet.userId.currency}</td>
                                         </tr>
                                         <tr>
                                             <th>Pick Name</th>

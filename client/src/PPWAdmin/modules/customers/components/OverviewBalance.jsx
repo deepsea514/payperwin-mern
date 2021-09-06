@@ -20,9 +20,9 @@ class OverviewBalance extends React.Component {
 
                     {/* begin::Body */}
                     <div className="card-body d-flex flex-column p-0 text-left">
-                        <h1 className="card-title font-weight-bolder text-white ml-10">
+                        <h2 className="card-title font-weight-bolder text-white ml-10">
                             ${numberFormat(Number(balance).toFixed(2))} {currency}
-                        </h1>
+                        </h2>
                     </div>
                     {/* end::Body */}
                 </div>
