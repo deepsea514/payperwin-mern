@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
+import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
 import { getSports, getWagerActivityAsCSV } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
@@ -22,7 +23,8 @@ class BetActivities extends React.Component {
     }
 
     componentDidMount() {
-        const { getBetActivities, getSportsSuccess } = this.props
+        const { getBetActivities, getSportsSuccess, getAutoBetsAction } = this.props;
+        getAutoBetsAction();
         getBetActivities();
         getSports().then(({ data }) => {
             getSportsSuccess(data);
@@ -38,7 +40,7 @@ class BetActivities extends React.Component {
     }
 
     tableBody = () => {
-        const { bet_activities, loading, filter } = this.props;
+        const { bet_activities, loading, filter, autobets } = this.props;
 
         if (filter.house == '' || filter.house == 'ppw') {
             if (loading) {
@@ -64,8 +66,10 @@ class BetActivities extends React.Component {
                 );
             }
 
-            return bet_activities.map((bet, index) => (
-                <tr key={index}>
+            return bet_activities.map((bet, index) => {
+                let isAutobet = false;
+                if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
+                return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
                     <td scope="col">{index + 1}</td>
                     <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                     <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
@@ -89,7 +93,7 @@ class BetActivities extends React.Component {
                         </DropdownButton>
                     </td>
                 </tr>
-            ));
+            });
         }
 
         if (filter.house == 'pinnacle') {
@@ -506,6 +510,7 @@ const mapStateToProps = (state) => ({
     currentPage: state.bet_activities.currentPage,
     filter: state.bet_activities.filter,
     sports: state.bet_activities.sports,
+    autobets: state.autobets.autobets,
 })
 
-export default connect(mapStateToProps, bet_activities.actions)(BetActivities)
+export default connect(mapStateToProps, { ...bet_activities.actions, ...autobet.actions })(BetActivities)
