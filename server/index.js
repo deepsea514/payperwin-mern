@@ -82,6 +82,7 @@ const twilio = require('twilio');
 let twilioClient = null;
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(config.googleClientID);
+const isDstObserved = config.isDstObserved;
 
 //express routers
 const v1Router = require('./v1Routes');
@@ -1450,13 +1451,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
         if (!autobet.userId) return false;
-        const today = new Date();
-        let fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        if (autobet.peorid == AutoBetPeorid.weekly) {
-            var day = fromTime.getDay(),
-                diff = fromTime.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-            fromTime = new Date(fromTime.setDate(diff));
-        }
+        let timezoneOffset = -8;
+        if (isDstObserved) timezoneOffset = -7;
+        const today = new Date().addHours(timezoneOffset);
+        timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+        const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
         const logs = await AutoBetLog
             .aggregate([
                 {
