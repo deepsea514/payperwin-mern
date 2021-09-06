@@ -69,20 +69,6 @@ class Prize extends PureComponent {
                 'duration': 12,
                 'spins': 6,
                 'callbackFinished': this.finishPrize.bind(this),
-                // 'callbackAfter': function drawTriangle() {
-                //     let ctx = prizeWheel.ctx;
-
-                //     ctx.strokeStyle = 'navy';
-                //     ctx.fillStyle = 'aqua';
-                //     ctx.lineWidth = 2;
-                //     ctx.beginPath();
-                //     ctx.moveTo(170, 5);
-                //     ctx.lineTo(230, 5);
-                //     ctx.lineTo(200, 40);
-                //     ctx.lineTo(171, 5);
-                //     ctx.stroke();
-                //     ctx.fill();
-                // }
                 // 'soundTrigger': 'pin',
             },
             'pins': {
@@ -216,13 +202,15 @@ class Prize extends PureComponent {
                 </>}
                 <div className="" style={{ display: user && !loading && !error && !used ? 'block' : 'none' }}>
                     <div className="d-flex justify-content-center">
-                        <canvas id="prize-canvas" width="420" height="420"
-                            data-responsiveminwidth="150"
-                            data-responsivescaleheight="true"
-                            data-responsivemargin="50"
-                        >
-                            <p align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-                        </canvas>
+                        <div className="wheel_container">
+                            <canvas id="prize-canvas" width="420" height="420"
+                                data-responsiveminwidth="150"
+                                data-responsivescaleheight="true"
+                                data-responsivemargin="50"
+                            >
+                                <p align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                            </canvas>
+                        </div>
                     </div>
                     <div className="d-flex justify-content-center mt-2">
                         <div style={{ width: '50%' }}>
