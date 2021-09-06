@@ -1,4 +1,5 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
+const TestEvent = require('../../../models/testEvent');
 const formatSquashFixturesOdds = (event) => {
     TestEvent.create({ event, name: 'squash' });
     const { schedule } = event.odds;
