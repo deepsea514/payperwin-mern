@@ -6,7 +6,7 @@ class SidebarSports extends Component {
     render() {
         const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen } = this.props;
         return (
-            <div className={`col-sm-2 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
+            <div className={`col-md-2 col-sm-6 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
                 style={sportsMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('sportsMenuMobileOpen', false)}>
                 {/* <div className="fabrt-d">

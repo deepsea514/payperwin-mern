@@ -18,9 +18,9 @@ class OverviewTotalDeposit extends React.Component {
                             </span>
                         </span>
                     </span>
-                    <h1 className="card-title font-weight-bolder text-white mt-5">
+                    <h2 className="card-title font-weight-bolder text-white mt-5">
                         ${numberFormat(totaldeposit.toFixed(2))}&nbsp;{currency}
-                    </h1>
+                    </h2>
                     <h3 className="card-title font-weight-bolder text-white m-0">
                         Total Deposit
                     </h3>

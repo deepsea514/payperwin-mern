@@ -408,7 +408,7 @@ class App extends PureComponent {
                                                 <Redirect to="/" from="*" />
                                             </Switch>
                                         </div>
-                                        <div className="col-sm-3 side-bar">
+                                        <div className="col-md-3 side-bar">
                                             {!sidebarShowAccountLinks &&
                                                 <BetSlip
                                                     betSlip={betSlip}

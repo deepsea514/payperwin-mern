@@ -58,9 +58,9 @@ export function WinLoss({ className, chartColor = "info", winloss }) {
                 </div>
 
                 <div className="card-body d-flex flex-column p-0 text-left">
-                    <h1 className="card-title font-weight-bolder text-white ml-10">
+                    <h2 className="card-title font-weight-bolder text-white ml-10">
                         {winloss >= 0 ? ('+ $' + numberFormat(winloss.toFixed(2))) : ('- $' + numberFormat(-winloss.toFixed(2)))} CAD
-                    </h1>
+                    </h2>
                     <div
                         id="lifetime_chart"
                         data-color={chartColor}
