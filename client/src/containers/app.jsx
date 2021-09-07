@@ -60,10 +60,11 @@ import CustomBets from '../pages/custombets';
 import SportsLeagues from '../pages/sportleagues';
 import AutobetSettings from '../pages/AutobetSettings';
 import AutobetDashboard from '../pages/AutobetDashboard';
-import { FormattedMessage, injectIntl } from "react-intl";
 import Prize from '../pages/prize';
+import Loyalty from '../pages/loyalty';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
 import '../style/bootstrap.min.css';
@@ -220,6 +221,7 @@ class App extends PureComponent {
             '/custom-bets',
             '/autobet-dashboard',
             '/autobet-settings',
+            '/loyalty',
         ].includes(pathname);
         const exceptDark = [
             '/articles',
@@ -254,6 +256,7 @@ class App extends PureComponent {
             '/custom-bets',
             '/autobet-dashboard',
             '/autobet-settings',
+            '/loyalty',
         ].filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
@@ -398,6 +401,7 @@ class App extends PureComponent {
                                                 <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
                                                 <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
                                                 <Route path="/prize" render={(props) => <Prize {...props} user={user} />} />
+                                                <Route path="/loyalty" render={(props) => <Loyalty {...props} user={user} />} />
                                                 <Route exact path="/" render={(props) =>
                                                     <Dashboard
                                                         addBet={this.addBet}

@@ -78,8 +78,11 @@ class BetDetail extends React.Component {
             case "Settled - Lose":
                 return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Lose</span>
             case "Settled - Win":
-            default:
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
+            case "Draw":
+                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
+            default:
+                return null;
         }
     }
 
@@ -124,6 +127,7 @@ class BetDetail extends React.Component {
             case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
+            case "Draw":
             default:
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
         }
