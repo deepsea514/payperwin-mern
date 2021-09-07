@@ -17,6 +17,7 @@ export default class Loyalty extends PureComponent {
         this.state = {
             error: null,
             loading: false,
+            data: null
         };
     }
 
@@ -34,12 +35,17 @@ export default class Loyalty extends PureComponent {
         }
     }
 
+    getLoyaltyPoints = () => {
+        this.setState({ loading: true });
+        this.setState({ loading: false, data: { loyalty: 1000 } });
+    }
+
     capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     render() {
-        const { loading, error } = this.state;
+        const { loading, error, data } = this.state;
 
         return (
             <div className="col-in px-3">
@@ -51,7 +57,12 @@ export default class Loyalty extends PureComponent {
                     duration={800} />
                 </center>}
                 {error && <p>Error...</p>}
+                {data && <div className="row">
+                    <div className="col-md-5">
 
+                    </div>
+                    <div className="col-md-7"></div>
+                </div>}
             </div>
         );
     }

@@ -155,6 +155,8 @@ class OpenBets extends PureComponent {
                 return 'loss';
             case 'Settled - Win':
                 return 'win';
+            case 'Draw':
+                return 'draw'
             // sportsbook
             case 'BETTED':
                 return 'pending';
