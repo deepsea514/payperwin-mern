@@ -172,14 +172,14 @@ const matchResults = async () => {
 
                         if (draw) {
                             // refund user
-                            await Bet.findOneAndUpdate({ _id: _id }, { status: 'Cancelled' });
+                            await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
                             await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
                             await FinancialLog.create({
-                                financialtype: 'betcancel',
-                                uniqid: `BC${ID()}`,
+                                financialtype: 'betdraw',
+                                uniqid: `BD${ID()}`,
                                 user: userId,
                                 amount: betAmount,
-                                method: 'betcancel',
+                                method: 'betdraw',
                                 status: FinancialStatus.success,
                             });
                             continue;

@@ -1568,7 +1568,7 @@ adminRouter.get(
                 } else if (status && status == 'settled') {
                     searchObj = {
                         ...searchObj,
-                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] } }
+                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
                     };
                 }
 

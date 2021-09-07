@@ -150,5 +150,21 @@
     {
         "title": "Custom Bets",
         "path": "/custom-bets"
+    },
+    {
+        "title": "Autobet Dashboard",
+        "path": "/autobet-dashboard"
+    },
+    {
+        "title": "Autobet Settings",
+        "path": "/autobet-settings"
+    },
+    {
+        "title": "Prize",
+        "path": "/prize"
+    },
+    {
+        "title": "Loyalty Program",
+        "path": "/loyalty"
     }
 ]
