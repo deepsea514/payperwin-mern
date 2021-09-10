@@ -325,7 +325,7 @@ adminRouter.get(
     limitRoles('users'),
     async (req, res) => {
         try {
-            let { page, perPage, email, balancemin, balancemax, sortby, sort } = req.query;
+            let { page, perPage, email, name, balancemin, balancemax, sortby, sort } = req.query;
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             if (!page) page = 1;
@@ -335,6 +335,21 @@ adminRouter.get(
                 searchObj = {
                     ...searchObj,
                     ...{ email: { "$regex": email, "$options": "i" } }
+                }
+            }
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{
+                        $or: [
+                            {
+                                firstname: { "$regex": name, "$options": "i" }
+                            },
+                            {
+                                lastname: { "$regex": name, "$options": "i" }
+                            }
+                        ]
+                    }
                 }
             }
             if (balancemin || balancemax) {

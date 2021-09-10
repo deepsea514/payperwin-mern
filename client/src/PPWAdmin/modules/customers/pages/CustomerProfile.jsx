@@ -50,46 +50,46 @@ class CustomerProfile extends React.Component {
                     {!loading && customer &&
                         <>
                             <div className="d-flex flex-row">
-                                <BrowserRouter basename={`/RP1021/users/${id}/profile`}>
+                                {/* <BrowserRouter basename={`/RP1021/users/${id}/profile`}> */}
                                     <ProfileCard customer={customer} history={history}></ProfileCard>
                                     <div className="flex-row-fluid ml-lg-8">
                                         <Switch>
-                                            <Redirect
-                                                from="/"
-                                                exact={true}
-                                                to="/overview"
-                                            />
                                             <Route
-                                                path="/overview"
+                                                path={`/users/${id}/profile/overview`}
                                                 component={(props) => <ProfileOverview {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/information"
+                                                path={`/users/${id}/profile/information`}
                                                 component={(props) => <PersonaInformation {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/preference"
+                                                path={`/users/${id}/profile/preference`}
                                                 component={(props) => <Preference {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/login-history"
+                                                path={`/users/${id}/profile/login-history`}
                                                 component={(props) => <LoginHistory {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/deposit"
+                                                path={`/users/${id}/profile/deposit`}
                                                 component={(props) => <Deposit {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/withdraw"
+                                                path={`/users/${id}/profile/withdraw`}
                                                 component={(props) => <Withdraw {...props} customer={customer} />}
                                             />
                                             <Route
-                                                path="/bet-log"
+                                                path={`/users/${id}/profile/bet-log`}
                                                 component={(props) => <Bet {...props} customer={customer} />}
+                                            />
+                                            <Redirect
+                                                // from="*"
+                                                // exact={true}
+                                                to={`/users/${id}/profile/overview`}
                                             />
                                         </Switch>
                                     </div>
-                                </BrowserRouter >
+                                {/* </BrowserRouter > */}
                             </div>
                         </>}
                 </div>

@@ -7,11 +7,12 @@ import SVG from "react-inlinesvg";
 class ProfileCard extends React.Component {
     goToBack = () => {
         const { history } = this.props;
-        history.push("/");
+        history.push("/users");
     }
 
     render() {
         const { customer } = this.props;
+        const { _id: id } = customer;
         return (
             <>
                 <div
@@ -43,7 +44,7 @@ class ProfileCard extends React.Component {
                             <div className="navi navi-bold navi-hover navi-active navi-link-rounded">
                                 <div className="navi-item mb-2">
                                     <NavLink exact
-                                        to="/overview"
+                                        to={`/users/${id}/profile/overview`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -60,7 +61,7 @@ class ProfileCard extends React.Component {
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/information"
+                                        to={`/users/${id}/profile/information`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -72,12 +73,12 @@ class ProfileCard extends React.Component {
                                         </span>
                                         <span className="text-left navi-text font-size-lg">
                                             Personal Information
-                                            </span>
+                                        </span>
                                     </NavLink>
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/preference"
+                                        to={`/users/${id}/profile/preference`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -94,7 +95,7 @@ class ProfileCard extends React.Component {
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/login-history"
+                                        to={`/users/${id}/profile/login-history`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -106,12 +107,12 @@ class ProfileCard extends React.Component {
                                         </span>
                                         <span className="text-left navi-text font-size-lg">
                                             Login History
-                                            </span>
+                                        </span>
                                     </NavLink>
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/deposit"
+                                        to={`/users/${id}/profile/deposit`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -128,7 +129,7 @@ class ProfileCard extends React.Component {
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/withdraw"
+                                        to={`/users/${id}/profile/withdraw`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">
@@ -145,7 +146,7 @@ class ProfileCard extends React.Component {
                                 </div>
                                 <div className="navi-item mb-2">
                                     <NavLink
-                                        to="/bet-log"
+                                        to={`/users/${id}/profile/bet-log`}
                                         className="navi-link py-4 non-border-bottom"
                                     >
                                         <span className="navi-icon mr-2">

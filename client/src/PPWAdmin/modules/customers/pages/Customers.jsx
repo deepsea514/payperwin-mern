@@ -83,7 +83,7 @@ class Customers extends React.Component {
                 <tr key={index}>
                     {/* <td>{index + 1}</td> */}
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
-                    <td><Link to={`/${customer._id}/profile`}>{customer.email}</Link></td>
+                    <td><Link to={`/users/${customer._id}/profile`}>{customer.email}</Link></td>
                     <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
                     <td className="">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
                     <td className="">{customer.totalBetCount}</td>
@@ -204,6 +204,21 @@ class Customers extends React.Component {
                                         />
                                         <small className="form-text text-muted">
                                             <b>Search</b> by Email
+                                        </small>
+                                    </div>
+                                    <div className="col-lg-2 col-md-3">
+                                        <input
+                                            type="text"
+                                            value={filter.name}
+                                            className="form-control"
+                                            name="searchName"
+                                            placeholder="Search"
+                                            onChange={(e) => {
+                                                this.onFilterChange({ name: e.target.value });
+                                            }}
+                                        />
+                                        <small className="form-text text-muted">
+                                            <b>Search</b> by Name
                                         </small>
                                     </div>
                                     <div className="col-lg-2 col-md-3">

@@ -2,20 +2,21 @@
 import React from "react";
 import dateformat from "dateformat";
 import { Tabs, Tab } from "react-bootstrap";
+import { Link, withRouter } from 'react-router-dom';
 
 class OverviewBet extends React.Component {
     getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
     tablePPWBody = () => {
-        const { lastbets, currency } = this.props;
+        const { lastbets, currency, history } = this.props;
         return lastbets.map((bet, index) => {
             return (
                 <div className="d-flex mb-5" key={index}>
                     <div className="d-flex flex-column flex-grow-1 font-weight-bold text-left">
                         <a
-                            href="#"
-                            className="text-dark text-hover-primary mb-1 font-size-lg"
+                            onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
+                            className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer"
                         >
                             {bet.origin == 'other' && bet.lineQuery.eventName}
                             {bet.teamA ? bet.teamA.name : null} vs {bet.teamB ? bet.teamB.name : null} ({bet.lineQuery.sportName})
@@ -37,8 +38,8 @@ class OverviewBet extends React.Component {
                 <div className="d-flex mb-5" key={index}>
                     <div className="d-flex flex-column flex-grow-1 font-weight-bold text-left">
                         <a
-                            href="#"
-                            className="text-dark text-hover-primary mb-1 font-size-lg"
+                            onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
+                            className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer"
                         >
                             {bet.WagerInfo.EventName} ({bet.WagerInfo.Sport})
                         </a>
@@ -75,4 +76,4 @@ class OverviewBet extends React.Component {
     }
 }
 
-export default OverviewBet;
+export default withRouter(OverviewBet);
