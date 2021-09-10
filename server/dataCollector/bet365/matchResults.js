@@ -51,8 +51,6 @@ const matchResults = async () => {
             homeBets,
             awayBets,
             uid,
-            sportId,
-            leagueId,
             eventId,
             lineType,
             points

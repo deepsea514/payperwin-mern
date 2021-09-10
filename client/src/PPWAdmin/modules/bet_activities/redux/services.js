@@ -41,3 +41,7 @@ export function getWagerActivityAsCSV(filter) {
 export function deleteBet(id) {
     return axios.delete(`${serverUrl}/bets/${id}`);
 }
+
+export function settleBet(id, score) {
+    return axios.post(`${serverUrl}/bets/${id}/settle`, score);
+}

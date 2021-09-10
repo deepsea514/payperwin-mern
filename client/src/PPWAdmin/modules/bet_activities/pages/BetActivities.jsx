@@ -6,11 +6,14 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
 import numberFormat from "../../../../helpers/numberFormat";
+import * as Yup from "yup";
+import { Formik, Form } from "formik";
+import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -19,9 +22,18 @@ class BetActivities extends React.Component {
             perPage: 25,
             wagerActivityDownloadData: [],
             deleteId: null,
+            settleId: null,
             modal: false,
             resMessage: "",
             modalvariant: "success",
+            scoreSchema: Yup.object().shape({
+                teamAScore: Yup.number().required("Team A Score is required."),
+                teamBScore: Yup.number().required("Team B Score is required."),
+            }),
+            initialValues: {
+                teamAScore: 0,
+                teamBScore: 0,
+            }
         }
         this.csvRef = createRef();
     }
@@ -94,9 +106,16 @@ class BetActivities extends React.Component {
                             <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
-                            {['Pending', 'Partial Match', 'Matched'].includes(bet.status) && <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
-                                <i className="fas fa-trash"></i>&nbsp; Delete
-                            </Dropdown.Item>}
+                            {['Pending', 'Partial Match', 'Matched'].includes(bet.status) &&
+                                <>
+                                    <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
+                                        <i className="fas fa-trash"></i>&nbsp; Delete
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                        <i className="fas fa-check"></i>&nbsp; Settle
+                                    </Dropdown.Item>
+                                </>
+                            }
                         </DropdownButton>
                     </td>
                 </tr>
@@ -170,6 +189,22 @@ class BetActivities extends React.Component {
             })
             .catch(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+            })
+    }
+
+    onSettleBet = (values, formik) => {
+        const { settleId } = this.state;
+        const { getBetActivities } = this.props;
+        settleBet(settleId, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, settleId: null, resMessage: "Successfully Settled!", modalvariant: "success" });
+
+                getBetActivities();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, settleId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
             })
     }
 
@@ -327,7 +362,7 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant } = this.state;
+        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, scoreSchema, initialValues } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -546,6 +581,62 @@ class BetActivities extends React.Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+
+                {settleId && <Modal show={settleId != null} onHide={() => this.setState({ settleId: null })}>
+                    <Formik
+                        validationSchema={scoreSchema}
+                        initialValues={initialValues}
+                        onSubmit={this.onSettleBet}
+                    >
+                        {(formik) => {
+                            const { errors, touched, isSubmitting, getFieldProps } = formik;
+                            return <Form>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Settle Bet</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <div className="form-group">
+                                        <label>Team A Score <span className="text-danger">*</span></label>
+                                        <input name="teamAScore" placeholder="Team A Score"
+                                            className={`form-control ${getInputClasses(formik, "teamAScore")}`}
+                                            {...getFieldProps("teamAScore")}
+                                        />
+                                        {errors &&
+                                            errors &&
+                                            errors.teamAScore &&
+                                            touched &&
+                                            touched.teamAScore && (
+                                                <div className="invalid-feedback">
+                                                    {errors.teamAScore}
+                                                </div>
+                                            )}
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Team B Score <span className="text-danger">*</span></label>
+                                        <input name="teamBScore" placeholder="Team B Score"
+                                            className={`form-control ${getInputClasses(formik, "teamBScore")}`}
+                                            {...getFieldProps("teamBScore")}
+                                        />
+                                        {errors &&
+                                            errors &&
+                                            errors.teamBScore &&
+                                            touched &&
+                                            touched.teamBScore && (
+                                                <div className="invalid-feedback">
+                                                    {errors.teamBScore}
+                                                </div>
+                                            )}
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>Submit</button>
+                                    <button onClick={() => this.setState({ settleId: null })} className="btn btn-secondary">Cancel</button>
+                                </Modal.Footer>
+                            </Form>
+                        }}
+                    </Formik>
+                </Modal>}
             </div>
         );
     }
