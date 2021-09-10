@@ -27,6 +27,7 @@ const ArticleCategory = require("./models/article_category");
 const Frontend = require("./models/frontend");
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
+const Betpool = require('./models/betpool');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -55,7 +56,8 @@ const {
     isSignupBonusUsed,
     ID,
     get2FACode,
-    isFreeWithdrawalUsed
+    isFreeWithdrawalUsed,
+    calculateBetsStatus
 } = require('./libs/functions');
 
 Date.prototype.addHours = function (h) {
@@ -1707,6 +1709,40 @@ adminRouter.get(
 
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/bets/:id',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const bet = await Bet.findById(id);
+            const user_id = bet.userId;
+            const lineQuery = JSON.stringify(bet.lineQuery);
+            if (!bet) {
+                return res.status(404).json({ success: false });
+            }
+            const user = await User.findById(user_id);
+            if (user) {
+                user.betHistory = user.betHistory.filter(bet => bet.toString() != id);
+                user.balance = user.balance + bet.bet;
+                await user.save();
+            }
+            const betpool = await Betpool.findOne({ uid: lineQuery });
+            if (betpool) {
+                betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
+                betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
+                calculateBetsStatus(betpool.uid);
+            }
+            await Bet.deleteMany({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ success: false });
         }
     }
 )
