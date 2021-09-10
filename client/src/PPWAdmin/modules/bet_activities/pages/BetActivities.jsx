@@ -1,12 +1,12 @@
 import React, { createRef } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton, Modal, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
@@ -17,7 +17,11 @@ class BetActivities extends React.Component {
         super(props);
         this.state = {
             perPage: 25,
-            wagerActivityDownloadData: []
+            wagerActivityDownloadData: [],
+            deleteId: null,
+            modal: false,
+            resMessage: "",
+            modalvariant: "success",
         }
         this.csvRef = createRef();
     }
@@ -90,6 +94,9 @@ class BetActivities extends React.Component {
                             <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
+                            {['Pending', 'Partial Match', 'Matched'].includes(bet.status) && <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
+                                <i className="fas fa-trash"></i>&nbsp; Delete
+                            </Dropdown.Item>}
                         </DropdownButton>
                     </td>
                 </tr>
@@ -151,6 +158,19 @@ class BetActivities extends React.Component {
                 </tr>
             ));
         }
+    }
+
+    deleteBet = () => {
+        const { deleteId } = this.state;
+        const { getBetActivities } = this.props;
+        deleteBet(deleteId)
+            .then(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
+                getBetActivities();
+            })
+            .catch(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+            })
     }
 
     getPPWBetDogFav = (bet) => {
@@ -307,7 +327,7 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData } = this.state;
+        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -502,6 +522,30 @@ class BetActivities extends React.Component {
                         </div>
                     </div>
                 </div>
+                <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to delete this log?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={this.deleteBet}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{resMessage}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }

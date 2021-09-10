@@ -37,3 +37,7 @@ export function getWagerActivityAsCSV(filter) {
 
     return axios.get(url, { withCredentials: true });
 }
+
+export function deleteBet(id) {
+    return axios.delete(`${serverUrl}/bets/${id}`);
+}
