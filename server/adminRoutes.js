@@ -493,6 +493,10 @@ adminRouter.get(
             return;
         }
         try {
+            const user = await User.findById(id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
             const lastbets = await Bet.find({ userId: id })
                 .sort({ createdAt: -1 }).limit(8);
             let totalwagers = await Bet.aggregate(
@@ -547,55 +551,7 @@ adminRouter.get(
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            let winlossbetsSportsbook = await BetSportsBook.aggregate({
-                $match: {
-                    Name: "SETTLED",
-                    userId: new ObjectId(id),
-                }
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
-                    }
-                }
-            });
-            if (winlossbetsSportsbook.length) winlossbetsSportsbook = winlossbetsSportsbook[0].total;
-            else winlossbetsSportsbook = 0;
-
-            let winbets = await Bet.aggregate({
-                $match: {
-                    status: "Settled - Win",
-                    userId: new ObjectId(id),
-                }
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $sum: "$payableToWin"
-                    }
-                }
-            });
-            if (winbets.length) winbets = winbets[0].total;
-            else winbets = 0;
-
-            let lossbets = await Bet.aggregate({
-                $match: {
-                    status: "Settled - Lose",
-                    userId: new ObjectId(id),
-                }
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $sum: "$bet"
-                    }
-                }
-            })
-            if (lossbets.length) lossbets = lossbets[0].total;
-            else lossbets = 0;
-            const winloss = Number((winlossbetsSportsbook + winbets - lossbets).toFixed(2));
-
+            const winloss = totaldeposit - user.balance;
 
             res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
         }
