@@ -24,6 +24,7 @@ const initialState = {
     loading: false,
     filter: {
         email: '',
+        name: '',
         balancemin: '',
         balancemax: '',
         sortby: 'joined_date',
@@ -33,7 +34,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "customers", whitelist: ['filter'] },
+    { storage, key: "customers", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getCustomers:
