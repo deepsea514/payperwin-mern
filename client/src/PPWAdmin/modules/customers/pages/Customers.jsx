@@ -97,7 +97,7 @@ class Customers extends React.Component {
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item> */}
                             <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
-                            <Dropdown.Item as={Link} to={`/${customer._id}/profile`}>
+                            <Dropdown.Item as={Link} to={`/users/${customer._id}/profile`}>
                                 <i className="far fa-user"></i>&nbsp; Profile
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
