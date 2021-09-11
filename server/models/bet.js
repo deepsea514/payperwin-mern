@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('./user');
 const Preference = require('./preference');
+const ErrorLog = require('./errorlog');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
 const simpleresponsive = require('../emailtemplates/simpleresponsive');
@@ -108,7 +109,10 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                     };
                 }
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {

@@ -4,6 +4,7 @@ const User = require('./user');
 const { convertTimeLineDate } = require('../libs/timehelper');
 const EventBetPool = require('./eventbetpool');
 const FinancialLog = require('./financiallog');
+const ErrorLog = require('./errorlog');
 const Bet = require('./bet');
 const simpleresponsive = require('../emailtemplates/simpleresponsive');
 const sendSMS = require("../libs/sendSMS");
@@ -78,7 +79,10 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 ),
             };
             sgMail.send(msg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
         }
 
@@ -136,7 +140,10 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                         `),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
 
             }
@@ -166,11 +173,17 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
 
             const betId = savedBet.id;

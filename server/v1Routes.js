@@ -11,6 +11,7 @@ const BetSportsBook = require("./models/betsportsbook");
 const FinancialLog = require('./models/financiallog');
 const Addon = require("./models/addon");
 const Preference = require('./models/preference');
+const ErrorLog = require('./models/errorlog');
 //local helpers
 const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { convertTimeLineDate } = require('./libs/timehelper');
@@ -336,7 +337,10 @@ const updateAction = async (action, user) => {
                             <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
@@ -362,11 +366,17 @@ const updateAction = async (action, user) => {
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
 
         } else if (Name.toUpperCase() == 'SETTLED' && WagerInfo.Outcome == 'WIN') {
@@ -386,7 +396,10 @@ const updateAction = async (action, user) => {
                     ),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {

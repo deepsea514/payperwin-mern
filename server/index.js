@@ -29,6 +29,7 @@ const Service = require('./models/service');
 const SharedLine = require('./models/sharedline');
 const PrizeLog = require('./models/prizelog');
 const LoyaltyLog = require('./models/loyaltylog');
+const ErrorLog = require('./models/errorlog');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -242,7 +243,10 @@ const sendVerificationEmail = (email, req) => {
                 { href: emailValidationPath, name: 'Verify Email' }),
         };
         sgMail.send(msg).catch(error => {
-            console.log('Can\'t send mail');
+            ErrorLog.create({
+                name: 'Send Grid Error',
+                error: error
+            });
         });
 
         // }
@@ -589,7 +593,10 @@ const send2FAVerifyEmail = (email, code) => {
             `),
     };
     sgMail.send(msg).catch(error => {
-        console.log('Can\'t send mail');
+        ErrorLog.create({
+            name: 'Send Grid Error',
+            error: error
+        });
     });
 
 }
@@ -790,7 +797,10 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 };
                 try {
                     sgMail.send(msg).catch(error => {
-                        console.log('Can\'t send mail');
+                        ErrorLog.create({
+                            name: 'Send Grid Error',
+                            error: error
+                        });
                     });
 
                     res.send(`Sent password recovery to ${email}.
@@ -997,7 +1007,10 @@ expressApp.post(
                                                 `),
                                             };
                                             sgMail.send(msg).catch(error => {
-                                                console.log('Can\'t send mail');
+                                                ErrorLog.create({
+                                                    name: 'Send Grid Error',
+                                                    error: error
+                                                });
                                             });
 
                                         }
@@ -1027,12 +1040,18 @@ expressApp.post(
                                                 </ul>`),
                                         }
                                         sgMail.send(adminMsg).catch(error => {
-                                            console.log('Can\'t send mail');
+                                            ErrorLog.create({
+                                                name: 'Send Grid Error',
+                                                error: error
+                                            });
                                         });
 
                                         adminMsg.to = supportEmailAddress;
                                         sgMail.send(adminMsg).catch(error => {
-                                            console.log('Can\'t send mail');
+                                            ErrorLog.create({
+                                                name: 'Send Grid Error',
+                                                error: error
+                                            });
                                         });
 
 
@@ -1223,7 +1242,10 @@ expressApp.post(
                                                     `),
                                             };
                                             sgMail.send(msg).catch(error => {
-                                                console.log('Can\'t send mail');
+                                                ErrorLog.create({
+                                                    name: 'Send Grid Error',
+                                                    error: error
+                                                });
                                             });
 
                                         }
@@ -1271,12 +1293,18 @@ expressApp.post(
                                                     </ul>`),
                                         }
                                         sgMail.send(adminMsg).catch(error => {
-                                            console.log('Can\'t send mail');
+                                            ErrorLog.create({
+                                                name: 'Send Grid Error',
+                                                error: error
+                                            });
                                         });
 
                                         adminMsg.to = supportEmailAddress;
                                         sgMail.send(adminMsg).catch(error => {
-                                            console.log('Can\'t send mail');
+                                            ErrorLog.create({
+                                                name: 'Send Grid Error',
+                                                error: error
+                                            });
                                         });
 
 
@@ -1622,7 +1650,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         `),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
@@ -1651,11 +1682,17 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
 
             const betId = savedBet.id;
@@ -2929,7 +2966,10 @@ expressApp.post(
                 ),
             };
             sgMail.send(msg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
 
             res.json({ message: "success" });

@@ -5,8 +5,8 @@ const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
 const Preference = require('../../models/preference');
 const Addon = require('../../models/addon');
+const ErrorLog = require('../../models/errorlog');
 //Local helpers
-const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
@@ -24,13 +24,13 @@ Date.prototype.addHours = function (h) {
 }
 
 const matchResults = async () => {
-    // const bet365Addon = await Addon.findOne({ name: 'bet365' });
-    // if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
-    //     console.warn("Bet365 Api Key is not set");
-    //     return;
-    // }
-    // const { bet365ApiKey } = bet365Addon.value;
-    const bet365ApiKey = "93744-14OHbIxqh3sRxS";
+    const bet365Addon = await Addon.findOne({ name: 'bet365' });
+    if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
+        console.warn("Bet365 Api Key is not set");
+        return;
+    }
+    const { bet365ApiKey } = bet365Addon.value;
+    // const bet365ApiKey = "93744-14OHbIxqh3sRxS";
     // Check  betpools
     const betpools = await BetPool.find(
         // settle matches that started before 3 hours ago
@@ -235,7 +235,10 @@ const matchResults = async () => {
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {
-                                        console.log('Can\'t send mail');
+                                        ErrorLog.create({
+                                            name: 'Send Grid Error',
+                                            error: error
+                                        });
                                     });
                                 }
                                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {

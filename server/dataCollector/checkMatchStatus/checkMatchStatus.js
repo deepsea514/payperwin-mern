@@ -7,6 +7,7 @@ const FinancialLog = require('../../models/financiallog');
 const BetSportsBook = require('../../models/betsportsbook');
 const SharedLine = require('../../models/sharedline');
 const BetPool = require('../../models/betpool');
+const ErrorLog = require('../../models/errorlog');
 //local helpers
 const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
@@ -122,7 +123,10 @@ const checkMatchStatus = async () => {
                 `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
             };
             sgMail.send(msg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
         }
         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {

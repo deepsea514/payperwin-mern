@@ -5,6 +5,7 @@ const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
 const Preference = require('../../models/preference');
 const Addon = require('../../models/addon');
+const ErrorLog = require('../../models/errorlog');
 //Local helpers
 const getLineFromPinnacleData = require('../../libs/getLineFromPinnacleData');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
@@ -166,7 +167,10 @@ const matchResults = async () => {
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {
-                                        console.log('Can\'t send mail');
+                                        ErrorLog.create({
+                                            name: 'Send Grid Error',
+                                            error: error
+                                        });
                                     });
                                 }
                                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {

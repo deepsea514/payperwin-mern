@@ -51,13 +51,13 @@ Date.prototype.addHours = function (h) {
 }
 
 const getAllSportsLines = async () => {
-    // const bet365Addon = await Addon.findOne({ name: 'bet365' });
-    // if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
-    //     console.warn("Bet365 Api Key is not set");
-    //     return;
-    // }
-    // const { bet365ApiKey } = bet365Addon.value;
-    const bet365ApiKey = "93744-14OHbIxqh3sRxS";
+    const bet365Addon = await Addon.findOne({ name: 'bet365' });
+    if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
+        console.warn("Bet365 Api Key is not set");
+        return;
+    }
+    const { bet365ApiKey } = bet365Addon.value;
+    // const bet365ApiKey = "93744-14OHbIxqh3sRxS";
 
     let sportsDir = await SportsDir.findOne({ origin: "bet365" });
     if (!sportsDir) {

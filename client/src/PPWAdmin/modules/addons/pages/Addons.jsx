@@ -1,21 +1,18 @@
 import React from "react"
-import Pinnacle from "../components/Pinnacle";
-import PinnacleSandbox from "../components/PinnacleSandbox";
+// import Pinnacle from "../components/Pinnacle";
+// import PinnacleSandbox from "../components/PinnacleSandbox";
 import PremierPay from "../components/PremierPay";
 import TheRundown from "../components/TheRundown";
 import TripleA from "../components/TripleA";
 import SendGrid from "../components/SendGrid";
 import Twilio from "../components/Twilio";
+import Bet365 from "../components/Bet365";
 
 class Addons extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
         }
-    }
-
-    componentDidMount() {
-
     }
 
     render() {
@@ -31,29 +28,19 @@ class Addons extends React.Component {
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-md-6 col-12">
-                                    <Pinnacle />
-                                    <hr />
-                                </div>
-                                <div className="col-md-6 col-12">
                                     <SendGrid />
                                     <hr />
-                                </div>
-                                <div className="col-md-6 col-12">
-                                    <PinnacleSandbox />
+                                    <TripleA />
                                     <hr />
                                 </div>
                                 <div className="col-md-6 col-12">
+                                    <Bet365 />
+                                    <hr />
                                     <PremierPay />
                                     <hr />
-                                </div>
-                                <div className="col-md-6 col-12">
                                     <TheRundown />
                                     <hr />
                                     <Twilio />
-                                    <hr />
-                                </div>
-                                <div className="col-md-6 col-12">
-                                    <TripleA />
                                     <hr />
                                 </div>
                             </div>
