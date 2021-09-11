@@ -209,18 +209,27 @@ class BetActivities extends React.Component {
     }
 
     getPPWBetDogFav = (bet) => {
-        const { teamA, teamB, pick } = bet;
+        const { teamA, teamB, pick, pickName, lineQuery } = bet;
         if (!teamA) return;
         const oddsA = Number(teamA.odds);
         const oddsB = Number(teamB.odds);
 
-        if (oddsA == oddsB) {
-            if (pick == 'away') {
+        if (lineQuery.type == 'spread') {
+            let spreads = pickName.split(' ');
+            spreads = Number(spreads[spreads.length - 1]);
+            if (spreads < 0) {
                 return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
             }
         } else {
-            if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
-                return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+            if (oddsA == oddsB) {
+                console.log(pick);
+                if (pick == 'away' || pick == 'under') {
+                    return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+                }
+            } else {
+                if ((oddsA < oddsB) && (pick == 'home' || pick == 'over') || (oddsA > oddsB) && (pick == 'away' || pick == 'under')) {
+                    return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
+                }
             }
         }
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
