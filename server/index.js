@@ -2326,7 +2326,10 @@ const depositTripleA = async (req, res, data) => {
             });
         hosted_url = data.hosted_url;
     } catch (error) {
-        console.log(error);
+        ErrorLog.create({
+            name: 'Triple-A Error',
+            error: error
+        });
         return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
     }
     if (!hosted_url) {
@@ -2356,34 +2359,44 @@ expressApp.post('/deposit',
                 try {
                     const uniqid = `D${ID()}`;
                     const signature = await generatePremierRequestSignature(email, amount, user._id, uniqid);
-                    const { data } = await axios.post(`${paymenturl}/${sid}`,
-                        {
-                            "payby": "etransfer",
-                            "first_name": user.firstname,
-                            "last_name": user.lastname,
-                            "email": email,
-                            "phone": phone,
-                            "address": "Artery roads",
-                            "city": "Edmonton",
-                            "state": "AB",
-                            "country": "CA",
-                            "zip_code": "T5A",
-                            "ip_address": "159.203.4.60",
-                            "items": [
-                                {
-                                    "name": "ETransfer Deposit to PayperWin",
-                                    "quantity": 1,
-                                    "unit_price": amount,
-                                    "sku": uniqid
-                                }
-                            ],
-                            "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
-                            "amount_shipping": 0.00,
-                            "udf1": user._id,
-                            "udf2": uniqid,
-                            "signature": signature
-                        }
-                    );
+                    let data = null;
+                    try {
+                        const { data: result } = await axios.post(`${paymenturl}/${sid}`,
+                            {
+                                "payby": "etransfer",
+                                "first_name": user.firstname,
+                                "last_name": user.lastname,
+                                "email": email,
+                                "phone": phone,
+                                "address": "Artery roads",
+                                "city": "Edmonton",
+                                "state": "AB",
+                                "country": "CA",
+                                "zip_code": "T5A",
+                                "ip_address": "159.203.4.60",
+                                "items": [
+                                    {
+                                        "name": "ETransfer Deposit to PayperWin",
+                                        "quantity": 1,
+                                        "unit_price": amount,
+                                        "sku": uniqid
+                                    }
+                                ],
+                                "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
+                                "amount_shipping": 0.00,
+                                "udf1": user._id,
+                                "udf2": uniqid,
+                                "signature": signature
+                            }
+                        );
+                        data = result;
+                    } catch (error) {
+                        ErrorLog.create({
+                            name: 'PremierPay Error',
+                            error: error
+                        });
+                        return res.status(400).json({ success: 0, message: "Failed to create deposit." });
+                    }
 
                     const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
                     if (responsesignature != data.signature) {

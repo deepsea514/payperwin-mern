@@ -1,4 +1,5 @@
 const Addon = require("../models/addon");
+const ErrorLog = require('../models/errorlog');
 const twilio = require('twilio');
 
 const sendSMS = async (message, phone) => {
@@ -17,6 +18,10 @@ const sendSMS = async (message, phone) => {
         })
     } catch (error) {
         console.log("error => ", error);
+        ErrorLog.create({
+            name: 'Twilio Error',
+            error: error
+        });
     }
 }
 

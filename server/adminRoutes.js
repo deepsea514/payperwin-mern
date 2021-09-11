@@ -1355,7 +1355,10 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         });
         payout_reference = data.payout_reference;
     } catch (error) {
-        console.log(error);
+        ErrorLog.create({
+            name: 'Triple-A Error',
+            error: error
+        });
         res.status(500).json({ success: 0, message: "Can't make withdraw." });
         return false;
     }
