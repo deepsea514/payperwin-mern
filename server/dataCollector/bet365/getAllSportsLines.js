@@ -2,6 +2,7 @@
 const Sport = require('../../models/sport');
 const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
+const ErrorLog = require("../../models/errorlog");
 //local helpers
 const config = require('../../../config.json');
 const sportsData = require('./sports.json');
@@ -79,16 +80,30 @@ const getAllSportsLines = async () => {
             // const date = new Date().addHours(24 * day);
             let page = 1;
             while (true) {
-                const { data: { success, results, pager: { total } } } = await axios
-                    .get(`https://api.b365api.com/v1/bet365/upcoming`, {
-                        params: {
-                            sport_id: sport.id,
-                            token: bet365ApiKey,
-                            page: page,
-                            per_page: per_page,
-                            // day: dateformat(date, "yyyymmdd"),
-                        }
+                let success = false;
+                let results = [];
+                let total = 0;
+                try {
+                    const { data: { success: success_result, results: results_result, pager: { total: total_result } } } = await axios
+                        .get(`https://api.b365api.com/v1/bet365/upcoming`, {
+                            params: {
+                                sport_id: sport.id,
+                                token: bet365ApiKey,
+                                page: page,
+                                per_page: per_page,
+                                // day: dateformat(date, "yyyymmdd"),
+                            }
+                        });
+                    success = success_result;
+                    results = results_result;
+                    total = total_result;
+                }
+                catch (error) {
+                    ErrorLog.create({
+                        name: 'Bet365 Error',
+                        error: error
                     });
+                }
                 console.log("total =>", total);
                 console.log("page =>", page);
                 if (!success) continue;
@@ -97,13 +112,25 @@ const getAllSportsLines = async () => {
                     for (let i = 0; i < 10 && results[ei + i]; i++) {
                         ids.push(results[ei + i].id);
                     }
-                    const { data: { success, results: oddsResult } } = await axios
-                        .get(`https://api.b365api.com/v3/bet365/prematch`, {
-                            params: {
-                                FI: ids.join(','),
-                                token: bet365ApiKey,
-                            }
+                    let success = false;
+                    let oddsResult = [];
+                    try {
+                        const { data: { success: success_result, results: oddsResult_result } } = await axios
+                            .get(`https://api.b365api.com/v3/bet365/prematch`, {
+                                params: {
+                                    FI: ids.join(','),
+                                    token: bet365ApiKey,
+                                }
+                            });
+                        success = success_result;
+                        oddsResult = oddsResult_result;
+                    } catch (error) {
+                        ErrorLog.create({
+                            name: 'Bet365 Error',
+                            error: error
                         });
+                    }
+
                     if (!success) {
                         continue;
                     }
