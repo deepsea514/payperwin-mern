@@ -1185,11 +1185,11 @@ expressApp.post(
                                         transactionID: `B${ID()}`,
                                         teamA: {
                                             name: teamA,
-                                            odds: home,
+                                            odds: oddsA,
                                         },
                                         teamB: {
                                             name: teamB,
-                                            odds: away,
+                                            odds: oddsB,
                                         },
                                         // sportName,
                                         pick,
@@ -1431,11 +1431,16 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
 
     let side = 'Underdog';
-    if (oddsA == oddsB) {
-        if (pick == 'away') side = 'Favorite';
-    } else {
-        if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
-            side = 'Favorite';
+    if (type == 'spread') {
+        if (points > 0 && pick == 'away' || points < 0 && pick == 'home') side = 'Favorite';
+    }
+    else {
+        if (oddsA == oddsB) {
+            if (pick == 'away' || pick == 'under') side = 'Favorite';
+        } else {
+            if ((oddsA < oddsB) && (pick == 'home' || pick == 'over') || (oddsA > oddsB) && (pick == 'away' || pick == 'under')) {
+                side = 'Favorite';
+            }
         }
     }
     let betType = 'Moneyline';
