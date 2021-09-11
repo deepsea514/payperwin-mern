@@ -4,10 +4,13 @@ const Bet = require('../../models/bet');
 const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
 const Preference = require('../../models/preference');
+const ErrorLog = require('../../models/errorlog');
+
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const sendSMS = require('../../libs/sendSMS');
 const { ID } = require('../../libs/functions');
 const config = require('../../../config.json');
+
 const sgMail = require('@sendgrid/mail');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
@@ -144,7 +147,10 @@ const matchResults = (sportName, events) => {
                                     ),
                                 };
                                 sgMail.send(msg).catch(error => {
-                                    console.log('Can\'t send mail');
+                                    ErrorLog.create({
+                                        name: 'Send Grid Error',
+                                        error: error
+                                    });
                                 });
                             }
                             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {

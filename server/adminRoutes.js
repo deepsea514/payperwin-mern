@@ -28,6 +28,7 @@ const Frontend = require("./models/frontend");
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
 const BetPool = require('./models/betpool');
+const ErrorLog = require('./models/errorlog');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -852,7 +853,10 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
@@ -1885,7 +1889,10 @@ adminRouter.post(
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {
-                                        console.log('Can\'t send mail');
+                                        ErrorLog.create({
+                                            name: 'Send Grid Error',
+                                            error: error
+                                        });
                                     });
                                 }
                                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
@@ -2780,7 +2787,10 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -2827,7 +2837,10 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    console.log('Can\'t send mail');
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: error
+                    });
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -2936,7 +2949,10 @@ adminRouter.post(
                     <br><br>`),
             };
             sgMail.send(msg).catch(error => {
-                console.log('Can\'t send mail');
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: error
+                });
             });
 
             ticket.repliedAt = new Date();
@@ -3327,7 +3343,10 @@ const matchResults = async (eventId, matchResult) => {
                                 ),
                             };
                             sgMail.send(msg).catch(error => {
-                                console.log('Can\'t send mail');
+                                ErrorLog.create({
+                                    name: 'Send Grid Error',
+                                    error: error
+                                });
                             });
 
                         }
@@ -3580,7 +3599,10 @@ adminRouter.post(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            console.log('Can\'t send mail');
+                            ErrorLog.create({
+                                name: 'Send Grid Error',
+                                error: error
+                            });
                         });
 
                     })
@@ -3736,7 +3758,10 @@ adminRouter.put(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            console.log('Can\'t send mail');
+                            ErrorLog.create({
+                                name: 'Send Grid Error',
+                                error: error
+                            });
                         });
 
                     })

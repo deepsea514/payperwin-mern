@@ -10,6 +10,7 @@ const sgMail = require('@sendgrid/mail');
 const User = require("./models/user");
 const FinancialLog = require('./models/financiallog');
 const Preference = require('./models/preference');
+const ErrorLog = require('./models/errorlog');
 //local helpers
 const { generatePremierNotificationSignature } = require('./libs/generatePremierSignature');
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
@@ -97,7 +98,10 @@ premierRouter.post('/etransfer-deposit',
                             <br><br>`),
                     };
                     sgMail.send(msg).catch(error => {
-                        console.log('Can\'t send mail');
+                        ErrorLog.create({
+                            name: 'Send Grid Error',
+                            error: error
+                        });
                     });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
