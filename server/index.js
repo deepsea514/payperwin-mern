@@ -11,7 +11,6 @@ const AutoBetLog = require("./models/autobetlog");
 const Promotion = require('./models/promotion');
 const PromotionLog = require('./models/promotionlog');
 const FinancialLog = require('./models/financiallog');
-const PremierResponse = require('./models/premier-response');
 const BetSportsBook = require('./models/betsportsbook');
 const Verification = require('./models/verification');
 const Ticket = require("./models/ticket");
@@ -61,7 +60,6 @@ const supportEmailAddress = 'support@payperwin.co';
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
-const apicache = require('apicache');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const compression = require('compression');
@@ -143,7 +141,6 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, mongooptions)
 
 // Server
 const expressApp = express();
-const cache = apicache.middleware;
 
 // CORS
 // expressApp.use((req, res, next) => {
@@ -2350,7 +2347,6 @@ expressApp.post('/deposit',
                             "signature": signature
                         }
                     );
-                    await PremierResponse.create(data);
 
                     const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
                     if (responsesignature != data.signature) {
@@ -2520,7 +2516,6 @@ expressApp.post(
                 //         "signature": signature
                 //     }
                 // );
-                // await PremierResponse.create(data);
 
                 // const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
                 // if (responsesignature != data.signature) {

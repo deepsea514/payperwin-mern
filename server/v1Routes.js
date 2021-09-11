@@ -8,8 +8,6 @@ const sgMail = require('@sendgrid/mail');
 const User = require("./models/user");
 const Pinnacle = require('./models/pinnacle');
 const BetSportsBook = require("./models/betsportsbook");
-const TransactionSportsBook = require('./models/transactionsportsbook');
-const V1Request = require('./models/v1requests');
 const FinancialLog = require('./models/financiallog');
 const Addon = require("./models/addon");
 const Preference = require('./models/preference');
@@ -103,14 +101,6 @@ v1Router.post('/:agentcode/wallet/usercode/:usercode/balance',
     async (req, res) => {
         const agentcode = req.params.agentcode;
         const usercode = req.params.usercode;
-        await V1Request.create({
-            request: req.body,
-            type: 'getBalance',
-            params: {
-                agentcode,
-                usercode
-            }
-        });
         const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
         if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.agentCode) {
             console.warn("Pinnacel Sandbox Api is not set");
@@ -159,15 +149,6 @@ v1Router.post('/:agentcode/wagering/usercode/:usercode/request/:requestid',
         const usercode = req.params.usercode;
         const requestid = req.params.requestid;
 
-        await V1Request.create({
-            request: req.body,
-            type: 'wagering',
-            params: {
-                agentcode,
-                usercode,
-                requestid
-            }
-        });
         const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
         if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.agentCode) {
             console.warn("Pinnacel Sandbox Api is not set");
@@ -258,11 +239,6 @@ const bettedAction = async (action, user) => {
             Name,
             WagerInfo
         });
-
-        await TransactionSportsBook.create({
-            userId: user._id,
-            ...Transaction
-        })
 
         const betSportsbookHistory = [...user.betSportsbookHistory, bet._id];
 

@@ -8,7 +8,6 @@ const { ObjectId } = require('bson');
 const sgMail = require('@sendgrid/mail');
 //Models
 const User = require("./models/user");
-const PremierNotification = require('./models/premier-notification');
 const FinancialLog = require('./models/financiallog');
 const Preference = require('./models/preference');
 //local helpers
@@ -27,11 +26,8 @@ const {
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const data = req.body;
-        const notify = await PremierNotification.create(data);
         const signature = await generatePremierNotificationSignature(data.txid, data.status, data.amount_raw, data.descriptor)
         if (signature == data.signature_v2) {
-            notify.succeed = true;
-            await notify.save();
             return next();
         }
         else {

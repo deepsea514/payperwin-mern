@@ -8,7 +8,6 @@ const bruteforce = new ExpressBrute(store);
 const sgMail = require('@sendgrid/mail');
 //Models
 const User = require("./models/user");
-const TripleANotification = require('./models/tripleA-notification');
 const FinancialLog = require('./models/financiallog');
 const Addon = require('./models/addon');
 const Preference = require('./models/preference');
@@ -28,7 +27,6 @@ const {
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
         const sig = req.headers['triplea-signature'];
-        const noti = await TripleANotification.create({ signature: sig, body: req.body, rawBody: req.rawBody });
         let timestamp, signature;
         for (let sig_part of sig.split(',')) {
             let [key, value] = sig_part.split('=');
@@ -59,8 +57,6 @@ const signatureCheck = async (req, res, next) => {
         let curr_timestamp = Math.round((new Date()).getTime() / 1000);
 
         if (signature === check_signature && Math.abs(curr_timestamp - timestamp) <= 300) {
-            noti.succeed = true;
-            await noti.save();
             return next();
         } else {
             return res.json({
