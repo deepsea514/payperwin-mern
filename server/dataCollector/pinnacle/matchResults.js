@@ -3,7 +3,6 @@ const BetPool = require('../../models/betpool');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
 const FinancialLog = require("../../models/financiallog");
-const ApiCache = require('../../models/apiCache');
 const Preference = require('../../models/preference');
 const Addon = require('../../models/addon');
 //Local helpers
@@ -62,23 +61,17 @@ const matchResults = async () => {
             // checkmatchresult
             try {
                 const url = `${pinnacleApiHost}/v1/fixtures/settled?sportId=${sportId}&leagueIds=${leagueId}`;
-                let result = await ApiCache.findOne({ url });
-                if (!result || (result.updatedAt && new Date() - new Date(result.updatedAt) > 1000 * 60 * 59)) {
-                    // TODO: last/since
-                    const reqConfig = {
-                        maxRedirects: 999,
-                        headers: {
-                            'User-Agent': 'PostmanRuntime/7.24.1',
-                            'Authorization': pinnacleAuthorizationHeader,
-                            'Accept': 'application/json',
-                        },
-                    };
-                    result = await axios.get(url, reqConfig);
-                    // TODO: last/since merge previous
-                    if (result) {
-                        await ApiCache.findOneAndUpdate({ url }, result, { upsert: true });
-                    }
-                }
+                // TODO: last/since
+                const reqConfig = {
+                    maxRedirects: 999,
+                    headers: {
+                        'User-Agent': 'PostmanRuntime/7.24.1',
+                        'Authorization': pinnacleAuthorizationHeader,
+                        'Accept': 'application/json',
+                    },
+                };
+                const result = await axios.get(url, reqConfig);
+                // TODO: last/since merge previous
                 const { data } = result;
                 if (!data) {
                     console.log('no data from api/cache for this line');
