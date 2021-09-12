@@ -180,6 +180,7 @@ const matchResults = async () => {
                                 method: 'betdraw',
                                 status: FinancialStatus.success,
                             });
+                            await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Draw' } });
                             continue;
                         }
 
