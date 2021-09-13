@@ -318,13 +318,13 @@ class OpenBets extends PureComponent {
                                     </div>
                                     {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                     {settledBets && status == 'Settled - Lose' && <div><strong>Credited: -${bet.toFixed(2)}</strong></div>}
-                                    {settledBets && ['Settled - Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                    {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                 </div>
                             </div>
                         );
                     }
 
-                    const { type, sportName, leagueId, eventId, index } = lineQuery;
+                    const { type, sportName } = lineQuery;
 
                     return (
                         <div className="open-bets" key={_id}>
@@ -388,7 +388,7 @@ class OpenBets extends PureComponent {
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                 {settledBets && status == 'Settled - Lose' && <div><strong>Credited: -${bet.toFixed(2)}</strong></div>}
-                                {settledBets && ['Settled - Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                 {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                                 {openBets && !this.checkEventStarted(matchStartDate) &&
                                     <button className="form-button ml-3" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
@@ -431,7 +431,7 @@ class OpenBets extends PureComponent {
                                 <div className="open-bets-col">
                                     <strong>Odds</strong>
                                     <div>
-                                        {WagerInfo.Odds} ({WagerInfo.OddsFormat == 1 ? 'decimal' : 'american'})
+                                        {WagerInfo.Odds} ({WagerInfo.OddsFormat == 1 ? 'Decimal' : 'American'})
                                     </div>
                                 </div>
                                 <div className="open-bets-col">
