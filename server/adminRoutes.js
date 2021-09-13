@@ -434,6 +434,7 @@ adminRouter.get(
                             lastname: 1,
                             currency: 1,
                             balance: 1,
+                            roles: 1,
                             totalBetCount: { '$add': [{ '$size': '$betHistory' }, { '$size': '$betSportsbookHistory' }] },
                             totalWager: { $sum: [{ $sum: '$betHistory.bet' }, { $sum: '$betSportsbookHistory.bet' }] },
                             createdAt: 1
@@ -558,6 +559,33 @@ adminRouter.get(
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
+        }
+    }
+)
+
+adminRouter.put(
+    '/customer/:id/suspend',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        const { id } = req.params;
+        const { suspended } = req.body;
+        try {
+            if (!id) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            const user = await User.findById(id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            user.roles = {
+                ...user.roles,
+                suspended: suspended ? true : false
+            }
+            await user.save();
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t suspend user.', result: error });
         }
     }
 )

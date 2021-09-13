@@ -71,3 +71,7 @@ export function getCustomerPreference(id) {
 export function updateCustomerPreference(id, data) {
     return axios.put(`${serverUrl}/customer-preference/${id}`, data);
 }
+
+export function suspendCustomer(id, suspended) {
+    return axios.put(`${serverUrl}/customer/${id}/suspend`, { suspended });
+}
