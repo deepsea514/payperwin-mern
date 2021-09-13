@@ -13,13 +13,14 @@ export default class CreditModal extends React.Component {
         super(props);
         const { withdrawmax, type } = props;
 
-        if (props.type == "deposit") {
+        if (type == "deposit") {
             this.state = {
                 initialValues: {
                     amount: 0,
                     method: "",
                     reason: "",
                     status: '',
+                    sendEmail: false
                 },
                 creditSchema: Yup.object().shape({
                     amount: Yup.number()
@@ -30,7 +31,8 @@ export default class CreditModal extends React.Component {
                     reason: Yup.string()
                         .required("Reason field is required."),
                     status: Yup.string()
-                        .required("Status field is required.")
+                        .required("Status field is required."),
+                    sendEmail: Yup.bool().default(false),
                 }),
             }
         }
@@ -49,7 +51,7 @@ export default class CreditModal extends React.Component {
                     method: Yup.string()
                         .required("Method field is required"),
                     status: Yup.string()
-                        .required("Status field is required.")
+                        .required("Status field is required."),
                 }),
             }
         }
@@ -143,6 +145,15 @@ export default class CreditModal extends React.Component {
                                             </div>
                                         ) : null}
                                     </div>
+                                    {type == 'deposit' && <div className="form-group">
+                                        <input type="checkbox" id="sendEmail" name="sendEmail" {...formik.getFieldProps("sendEmail")} />
+                                        <label htmlFor="sendEmail"> &nbsp;&nbsp;Send Notification Email</label>
+                                        {formik.touched.sendEmail && formik.errors.sendEmail ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.sendEmail}
+                                            </div>
+                                        ) : null}
+                                    </div>}
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="light-primary" onClick={onHide}>

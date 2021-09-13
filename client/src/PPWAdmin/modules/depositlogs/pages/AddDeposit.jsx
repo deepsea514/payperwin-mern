@@ -28,6 +28,7 @@ class AddDeposit extends React.Component {
                 reason: '',
                 method: "",
                 status: '',
+                sendEmail: false,
             },
             depositSchema: Yup.object().shape({
                 user: Yup.object()
@@ -40,7 +41,8 @@ class AddDeposit extends React.Component {
                 method: Yup.string()
                     .required("Method field is required"),
                 status: Yup.string()
-                    .required("Status field is required.")
+                    .required("Status field is required."),
+                sendEmail: Yup.bool().default(false),
             }),
         }
     }
@@ -265,6 +267,18 @@ class AddDeposit extends React.Component {
                                             {formik.touched.status && formik.errors.status ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.status}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <input type="checkbox"
+                                                id="sendEmail"
+                                                name="sendEmail"
+                                                {...formik.getFieldProps("sendEmail")} />
+                                            <label htmlFor="sendEmail"> &nbsp;&nbsp;Send Notification Email</label>
+                                            {formik.touched.sendEmail && formik.errors.sendEmail ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.sendEmail}
                                                 </div>
                                             ) : null}
                                         </div>
