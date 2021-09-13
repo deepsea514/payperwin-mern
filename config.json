@@ -44,7 +44,8 @@
         "Bitcoin",
         "Ethereum",
         "Tether",
-        "CREDIT"
+        "CREDIT",
+        "DEBIT"
     ],
     "AutoBetStatus": {
         "active": "Active",

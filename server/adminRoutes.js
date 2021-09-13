@@ -1107,6 +1107,10 @@ adminRouter.post(
                     case "Tether":
                         fee = 25;
                         break;
+                    case "CREDIT":
+                    case "DEBIT":
+                        fee = 0;
+                        break;
                     default:
                         return res.status(400).json({ error: 'Invalid withdraw method.' });
                 }
