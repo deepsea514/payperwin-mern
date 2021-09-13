@@ -245,7 +245,11 @@ const sendVerificationEmail = (email, req) => {
         sgMail.send(msg).catch(error => {
             ErrorLog.create({
                 name: 'Send Grid Error',
-                error: error
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
             });
         });
 
@@ -595,7 +599,11 @@ const send2FAVerifyEmail = (email, code) => {
     sgMail.send(msg).catch(error => {
         ErrorLog.create({
             name: 'Send Grid Error',
-            error: error
+            error: {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            }
         });
     });
 
@@ -799,7 +807,11 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                     sgMail.send(msg).catch(error => {
                         ErrorLog.create({
                             name: 'Send Grid Error',
-                            error: error
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
                         });
                     });
 
@@ -1009,7 +1021,11 @@ expressApp.post(
                                             sgMail.send(msg).catch(error => {
                                                 ErrorLog.create({
                                                     name: 'Send Grid Error',
-                                                    error: error
+                                                    error: {
+                                                        name: error.name,
+                                                        message: error.message,
+                                                        stack: error.stack
+                                                    }
                                                 });
                                             });
 
@@ -1042,7 +1058,11 @@ expressApp.post(
                                         sgMail.send(adminMsg).catch(error => {
                                             ErrorLog.create({
                                                 name: 'Send Grid Error',
-                                                error: error
+                                                error: {
+                                                    name: error.name,
+                                                    message: error.message,
+                                                    stack: error.stack
+                                                }
                                             });
                                         });
 
@@ -1050,7 +1070,11 @@ expressApp.post(
                                         sgMail.send(adminMsg).catch(error => {
                                             ErrorLog.create({
                                                 name: 'Send Grid Error',
-                                                error: error
+                                                error: {
+                                                    name: error.name,
+                                                    message: error.message,
+                                                    stack: error.stack
+                                                }
                                             });
                                         });
 
@@ -1244,7 +1268,11 @@ expressApp.post(
                                             sgMail.send(msg).catch(error => {
                                                 ErrorLog.create({
                                                     name: 'Send Grid Error',
-                                                    error: error
+                                                    error: {
+                                                        name: error.name,
+                                                        message: error.message,
+                                                        stack: error.stack
+                                                    }
                                                 });
                                             });
 
@@ -1295,7 +1323,11 @@ expressApp.post(
                                         sgMail.send(adminMsg).catch(error => {
                                             ErrorLog.create({
                                                 name: 'Send Grid Error',
-                                                error: error
+                                                error: {
+                                                    name: error.name,
+                                                    message: error.message,
+                                                    stack: error.stack
+                                                }
                                             });
                                         });
 
@@ -1303,7 +1335,11 @@ expressApp.post(
                                         sgMail.send(adminMsg).catch(error => {
                                             ErrorLog.create({
                                                 name: 'Send Grid Error',
-                                                error: error
+                                                error: {
+                                                    name: error.name,
+                                                    message: error.message,
+                                                    stack: error.stack
+                                                }
                                             });
                                         });
 
@@ -1657,7 +1693,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }
@@ -1689,14 +1729,22 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
 
@@ -2333,7 +2381,11 @@ const depositTripleA = async (req, res, data) => {
     } catch (error) {
         ErrorLog.create({
             name: 'Triple-A Error',
-            error: error
+            error: {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            }
         });
         return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
     }
@@ -2398,7 +2450,11 @@ expressApp.post('/deposit',
                     } catch (error) {
                         ErrorLog.create({
                             name: 'PremierPay Error',
-                            error: error
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
                         });
                         return res.status(400).json({ success: 0, message: "Failed to create deposit." });
                     }
@@ -2987,7 +3043,11 @@ expressApp.post(
             sgMail.send(msg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
 

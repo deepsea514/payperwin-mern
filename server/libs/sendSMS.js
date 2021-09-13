@@ -20,7 +20,11 @@ const sendSMS = async (message, phone) => {
         console.log("error => ", error);
         ErrorLog.create({
             name: 'Twilio Error',
-            error: error
+            error: {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            }
         });
     }
 }

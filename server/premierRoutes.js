@@ -100,7 +100,11 @@ premierRouter.post('/etransfer-deposit',
                     sgMail.send(msg).catch(error => {
                         ErrorLog.create({
                             name: 'Send Grid Error',
-                            error: error
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
                         });
                     });
                 }
