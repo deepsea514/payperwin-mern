@@ -16,7 +16,7 @@ const fs = require('fs');
 const dateformat = require('dateformat');
 require('dotenv').config();
 
-const per_page = 100;
+const per_page = 50;
 
 // Database
 mongoose.Promise = global.Promise;
@@ -84,7 +84,7 @@ const getAllSportsLines = async () => {
                 let results = [];
                 let total = 0;
                 try {
-                    const { data: { success: success_result, results: results_result, pager: { total: total_result } } } = await axios
+                    const { data: { success: success_result, results: results_result, pager } } = await axios
                         .get(`https://api.b365api.com/v1/bet365/upcoming`, {
                             params: {
                                 sport_id: sport.id,
@@ -96,7 +96,8 @@ const getAllSportsLines = async () => {
                         });
                     success = success_result;
                     results = results_result;
-                    total = total_result;
+                    if (pager)
+                        total = pager.total;
                 }
                 catch (error) {
                     ErrorLog.create({
