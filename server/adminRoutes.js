@@ -1107,7 +1107,6 @@ adminRouter.post(
                         return res.status(400).json({ error: 'Invalid withdraw method.' });
                 }
             }
-            console.log(amount, fee);
 
             if (user.balance < amount + fee) {
                 return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
