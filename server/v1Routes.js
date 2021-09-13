@@ -339,7 +339,11 @@ const updateAction = async (action, user) => {
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }
@@ -368,14 +372,22 @@ const updateAction = async (action, user) => {
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
 
@@ -398,7 +410,11 @@ const updateAction = async (action, user) => {
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }

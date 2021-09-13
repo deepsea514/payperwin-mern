@@ -81,7 +81,11 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
             sgMail.send(msg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
         }
@@ -142,7 +146,11 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
 
@@ -175,14 +183,22 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
 

@@ -855,7 +855,11 @@ adminRouter.post(
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }
@@ -1358,7 +1362,11 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
     } catch (error) {
         ErrorLog.create({
             name: 'Triple-A Error',
-            error: error
+            error: {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            }
         });
         res.status(500).json({ success: 0, message: "Can't make withdraw." });
         return false;
@@ -1895,7 +1903,11 @@ adminRouter.post(
                                     sgMail.send(msg).catch(error => {
                                         ErrorLog.create({
                                             name: 'Send Grid Error',
-                                            error: error
+                                            error: {
+                                                name: error.name,
+                                                message: error.message,
+                                                stack: error.stack
+                                            }
                                         });
                                     });
                                 }
@@ -2793,7 +2805,11 @@ adminRouter.post(
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }
@@ -2843,7 +2859,11 @@ adminRouter.post(
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
                         name: 'Send Grid Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 });
             }
@@ -2955,7 +2975,11 @@ adminRouter.post(
             sgMail.send(msg).catch(error => {
                 ErrorLog.create({
                     name: 'Send Grid Error',
-                    error: error
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
                 });
             });
 
@@ -3349,7 +3373,11 @@ const matchResults = async (eventId, matchResult) => {
                             sgMail.send(msg).catch(error => {
                                 ErrorLog.create({
                                     name: 'Send Grid Error',
-                                    error: error
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
                                 });
                             });
 
@@ -3605,7 +3633,11 @@ adminRouter.post(
                         sgMail.send(msg).catch(error => {
                             ErrorLog.create({
                                 name: 'Send Grid Error',
-                                error: error
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
                             });
                         });
 
@@ -3764,7 +3796,11 @@ adminRouter.put(
                         sgMail.send(msg).catch(error => {
                             ErrorLog.create({
                                 name: 'Send Grid Error',
-                                error: error
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
                             });
                         });
 

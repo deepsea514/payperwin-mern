@@ -101,7 +101,11 @@ const getAllSportsLines = async () => {
                 catch (error) {
                     ErrorLog.create({
                         name: 'Bet365 Error',
-                        error: error
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
                     });
                 }
                 console.log("total =>", total);
@@ -127,7 +131,11 @@ const getAllSportsLines = async () => {
                     } catch (error) {
                         ErrorLog.create({
                             name: 'Bet365 Error',
-                            error: error
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
                         });
                     }
 
