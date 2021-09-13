@@ -163,7 +163,7 @@ const getAllSportsLines = async () => {
                     }
 
                 });
-                if (total == 0 || Math.ceil(total / per_page) == page) break;
+                if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
             // }
