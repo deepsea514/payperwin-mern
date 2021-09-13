@@ -823,7 +823,7 @@ adminRouter.post(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            let { user: userId, reason, amount, method, status } = req.body;
+            let { user: userId, reason, amount, method, status, sendEmail } = req.body;
             if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!reason) res.status(400).json({ error: 'Reason field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
@@ -867,34 +867,35 @@ adminRouter.post(
                 await user.update({ $inc: { balance: amount } });
             }
 
-            const preference = await Preference.findOne({ user: user._id });
-            if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'You’ve got funds in your account',
-                    text: `You’ve got funds in your account`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.email}</b>.
-                        <br><br>
-                        Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
-                        <br><br>`),
-                };
-                sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
+            if(sendEmail) {
+                const preference = await Preference.findOne({ user: user._id });
+                if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
+                    const msg = {
+                        from: `${fromEmailName} <${fromEmailAddress}>`,
+                        to: user.email,
+                        subject: 'You’ve got funds in your account',
+                        text: `You’ve got funds in your account`,
+                        html: simpleresponsive(
+                            `Hi <b>${user.email}</b>.
+                            <br><br>
+                            Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.
+                            <br><br>`),
+                    };
+                    sgMail.send(msg).catch(error => {
+                        ErrorLog.create({
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        });
                     });
-                });
+                }
+                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
+                    sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+                }
             }
-            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
-                sendSMS('Just a quick reminder that you currently have funds in your PAYPER WIN account. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
-            }
-
             res.json(deposit);
         } catch (error) {
             console.log(error)
