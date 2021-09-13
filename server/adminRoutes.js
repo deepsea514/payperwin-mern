@@ -867,7 +867,7 @@ adminRouter.post(
                 await user.update({ $inc: { balance: amount } });
             }
 
-            if(sendEmail) {
+            if (sendEmail) {
                 const preference = await Preference.findOne({ user: user._id });
                 if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
                     const msg = {
@@ -1752,7 +1752,23 @@ adminRouter.delete(
                 user.balance = user.balance + bet.bet;
                 await user.save();
             }
-            const betpool = await BetPool.findOne({ uid: lineQuery });
+            let linePoints = bet.pickName.split(' ');
+            if (lineQuery.type.toLowerCase() == 'moneyline') {
+                linePoints = null;
+            } else {
+                linePoints = Number(linePoints[linePoints.length - 1]);
+                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+            }
+            const betpool = await BetPool.findOne({
+                sportId: lineQuery.sportId,
+                leagueId: lineQuery.leagueId,
+                eventId: lineQuery.eventId,
+                lineId: lineQuery.lineId,
+                lineType: lineQuery.type,
+                sportName: lineQuery.sportName,
+                origin: bet.origin,
+                points: linePoints
+            });
             if (betpool) {
                 betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
                 betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
