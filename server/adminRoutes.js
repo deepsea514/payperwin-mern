@@ -1082,6 +1082,7 @@ adminRouter.post(
             let { user: userId, amount, method, status } = req.body;
             if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
+            amount = Number(amount);
             if (!method) res.status(400).json({ error: 'Method field is required.' });
             if (!status) status = FinancialStatus.pending;
 
@@ -1106,6 +1107,7 @@ adminRouter.post(
                         return res.status(400).json({ error: 'Invalid withdraw method.' });
                 }
             }
+            console.log(amount, fee);
 
             if (user.balance < amount + fee) {
                 return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
