@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
-import sportNameIcon from "../helpers/sportNameIcon";
 import dayjs from 'dayjs';
 
 import QRCode from "react-qr-code";
@@ -70,27 +69,27 @@ class OpenBets extends PureComponent {
                 this.setState({ error: err });
             });
 
-        let url2 = `${serverUrl}/bets-sportsbook`;
-        if (openBets) {
-            url2 += '?openBets=true'
-        } else if (settledBets) {
-            url2 += '?settledBets=true'
-        }
-        axios({
-            method: 'get',
-            url: url2,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        })
-            .then(({ data }) => {
-                if (data) {
-                    this.setState({ betsSportsBook: data })
-                }
-            }).catch((err) => {
-                this.setState({ error: err });
-            });
+        // let url2 = `${serverUrl}/bets-sportsbook`;
+        // if (openBets) {
+        //     url2 += '?openBets=true'
+        // } else if (settledBets) {
+        //     url2 += '?settledBets=true'
+        // }
+        // axios({
+        //     method: 'get',
+        //     url: url2,
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     withCredentials: true,
+        // })
+        //     .then(({ data }) => {
+        //         if (data) {
+        //             this.setState({ betsSportsBook: data })
+        //         }
+        //     }).catch((err) => {
+        //         this.setState({ error: err });
+        //     });
     }
 
     capitalizeFirstLetter = (string) => {
@@ -317,7 +316,7 @@ class OpenBets extends PureComponent {
                                         {/* <strong className="float-right bg-primary">Peer To Peer</strong> */}
                                     </div>
                                     {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                    {settledBets && status == 'Settled - Lose' && <div><strong>Credited: -${bet.toFixed(2)}</strong></div>}
+                                    {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                 </div>
                             </div>
@@ -387,7 +386,7 @@ class OpenBets extends PureComponent {
                                 </div>
                                 {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
                                 {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                {settledBets && status == 'Settled - Lose' && <div><strong>Credited: -${bet.toFixed(2)}</strong></div>}
+                                {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                 {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                 {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>}
                                 {openBets && !this.checkEventStarted(matchStartDate) &&
@@ -396,7 +395,7 @@ class OpenBets extends PureComponent {
                         </div>
                     );
                 })}
-                {betsSportsBook.map(betObj => {
+                {/* {betsSportsBook.map(betObj => {
                     const {
                         _id,
                         WagerInfo,
@@ -440,12 +439,6 @@ class OpenBets extends PureComponent {
                                         {Number(WagerInfo.ToWin).toFixed(2)}
                                     </div>
                                 </div>
-                                {/* {settledBets && <div className="open-bets-col">
-                                    <strong>Profit And Loss</strong>
-                                    <div>
-                                        {Number(WagerInfo.ProfitAndLoss).toFixed(2)}
-                                    </div>
-                                </div>} */}
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
                                     <div className={this.getStatusClass(Name, WagerInfo.Outcome)}>
@@ -460,7 +453,6 @@ class OpenBets extends PureComponent {
                                 <div>{WagerInfo.EventName}</div>
                                 <div>
                                     Event Date: {dayjs(WagerInfo.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}
-                                    {/* <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong> */}
                                 </div>
                             </div>}
 
@@ -471,14 +463,13 @@ class OpenBets extends PureComponent {
                                     <div>{leg.EventName}</div>
                                     <div>
                                         Event Date: {dayjs(leg.EventDateFm).format('ddd, MMM DD, YYYY, HH:MM')}
-                                        {/* <strong className="float-right bg-warning">PAYPER WIN Sportsbook</strong> */}
                                     </div>
                                 </div>
                             ))}
 
                         </div>
                     );
-                })}
+                })} */}
             </div>
         );
     }
