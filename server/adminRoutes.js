@@ -1742,7 +1742,7 @@ adminRouter.delete(
             const { id } = req.params;
             const bet = await Bet.findById(id);
             const user_id = bet.userId;
-            const lineQuery = JSON.stringify(bet.lineQuery);
+            const lineQuery = bet.lineQuery;
             if (!bet) {
                 return res.status(404).json({ success: false });
             }
