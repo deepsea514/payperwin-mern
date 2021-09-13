@@ -170,7 +170,12 @@ const matchResults = async () => {
 
                         if (draw) {
                             // refund user
-                            await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
+                            await Bet.findOneAndUpdate({ _id: _id }, {
+                                status: 'Draw',
+                                credited: betAmount,
+                                homeScore,
+                                awayScore,
+                            });
                             await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
                             await FinancialLog.create({
                                 financialtype: 'betdraw',

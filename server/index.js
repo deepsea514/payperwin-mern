@@ -1787,7 +1787,7 @@ expressApp.get(
                 bets = await Bet
                     .find({
                         _id: { $in: betHistory },
-                        status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled'] }
+                        status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
                     })
                     .sort({ createdAt: -1 });
             } else if (custom) {
