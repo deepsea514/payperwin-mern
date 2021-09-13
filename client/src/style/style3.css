@@ -945,6 +945,7 @@ a.log-in-btn {
     }
     .open-bets-flex {
         flex-wrap: wrap;
+        justify-content: right;
     }
     .open-bets-col {
         width: 50%;

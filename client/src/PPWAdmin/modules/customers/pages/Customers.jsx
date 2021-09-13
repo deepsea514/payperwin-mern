@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as customers from "../redux/reducers";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import { deleteCustomer, updateCustomer } from "../redux/services";
+import { deleteCustomer, suspendCustomer, updateCustomer } from "../redux/services";
 import { addWithdraw } from "../../withdrawlogs/redux/services";
 import { addDeposit } from "../../depositlogs/redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
@@ -43,6 +43,8 @@ class Customers extends React.Component {
                 password: "",
                 confirmpassword: ""
             },
+            suspendId: null,
+            returnId: null,
         }
     }
 
@@ -103,6 +105,8 @@ class Customers extends React.Component {
                             <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ addWithdrawId: customer._id, withdrawmax: customer.balance })}><i className="fas fa-credit-card"></i>&nbsp; Add Withdraw</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ deleteId: customer._id })}><i className="fas fa-trash"></i>&nbsp; Delete Customer</Dropdown.Item>
+                            {!customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ suspendId: customer._id })}><i className="fas fa-pause"></i>&nbsp; Suspend Customer</Dropdown.Item>}
+                            {customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ returnId: customer._id })}><i className="fas fa-play"></i>&nbsp; Return Customer</Dropdown.Item>}
                         </DropdownButton>
                     </td>
                 </tr>
@@ -173,9 +177,23 @@ class Customers extends React.Component {
         })
     }
 
+    suspendUser = (suspend) => {
+        const { returnId, suspendId } = this.state;
+        const { getCustomers } = this.props;
+        const id = suspend ? suspendId : returnId;
+        suspendCustomer(id, suspend)
+            .then(() => {
+                this.setState({ modal: true, returnId: null, suspendId: null, resMessage: "Successfully changed!", modalvariant: "success" });
+                getCustomers();
+            })
+            .catch(() => {
+                this.setState({ modal: true, returnId: null, suspendId: null, resMessage: "Update failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
         const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId, changePasswordId,
-            addWithdrawId, withdrawmax, PasswordSchema, initialValues } = this.state;
+            addWithdrawId, withdrawmax, PasswordSchema, initialValues, suspendId, returnId } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -315,6 +333,34 @@ class Customers extends React.Component {
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={this.deleteUser}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={suspendId != null} onHide={() => this.setState({ suspendId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to return this customer?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ suspendId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={() => this.suspendUser(true)}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={returnId != null} onHide={() => this.setState({ returnId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to return this customer?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ returnId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={() => this.suspendUser(false)}>
                             Confirm
                         </Button>
                     </Modal.Footer>

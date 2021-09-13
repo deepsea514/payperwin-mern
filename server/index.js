@@ -467,8 +467,15 @@ expressApp.post('/login',
     (req, res, next) => {
         const { session } = req;
         passport.authenticate('local', (err, user/* , info */) => {
-            if (err) { return next(err); }
-            if (!user) { return res.status(403).json({ error: 'Incorrect email or password' }); }
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return res.status(403).json({ error: 'Incorrect email or password' });
+            }
+            if (user.roles.suspended) {
+                return res.status(403).json({ error: 'Your account is suspended, please contact us' });
+            }
             req.logIn(user, (err2) => {
                 if (err) { return next(err2); }
                 var ip_address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
