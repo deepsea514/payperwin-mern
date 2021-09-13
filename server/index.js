@@ -2528,7 +2528,7 @@ expressApp.post(
     isAuthenticated,
     async (req, res) => {
         const data = req.body;
-        const { amount, method } = data;
+        let { amount, method } = data;
         const { user } = req;
         const freeWithdrawalUsed = await isFreeWithdrawalUsed(user);
         if (method == "eTransfer") {
@@ -2536,6 +2536,7 @@ expressApp.post(
             if (!amount) {
                 return res.json({ success: 0, message: "Withdraw Amount is required." });
             }
+            amount = Number(amount);
             if (!user.roles.verified) {
                 return res.json({ success: 0, message: "You should verify your identify to make withdraw." });
             }
