@@ -648,7 +648,7 @@ footer ul li a i {
     padding-left: 1rem;
 }
 
-@media (min-width: 576px) {
+@media (max-width: 576px) {
     .sport-list-dropdown-league {
         display: block;
     }
