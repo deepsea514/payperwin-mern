@@ -49,7 +49,9 @@ const calculateToWinFromBet = (bet, americanOdds) => {
 
 const calculateBetsStatus = async (betpoolUid) => {
     const betpool = await BetPool.findOne({ uid: betpoolUid });
-    if (!betpool) return;
+    if (!betpool) {
+        console.log('Betpool not found.');
+    }
     const { homeBets, awayBets, teamA, teamB } = betpool;
     // console.log(homeBets, awayBets);
     const bets = await Bet.find({
