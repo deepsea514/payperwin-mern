@@ -46,7 +46,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     checkTimerOne();
     setInterval(checkTimerOne, lineInterval1);
 
-    const lineInterval2 = 000 * 60 * 20;
+    const lineInterval2 = 1000 * 60 * 20;
     checkTimerTwo();
     setInterval(checkTimerTwo, lineInterval2);
 
@@ -218,6 +218,7 @@ const calculateBetPoolsStatus = async () => {
 
     betpools.forEach(async betpool => {
         try {
+            console.log("Check betpool: ", betpool.uid);
             calculateBetsStatus(betpool.uid);
         } catch (error) {
             console.error(error);
