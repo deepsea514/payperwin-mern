@@ -119,7 +119,6 @@ const checkMatchStatus = async () => {
                     <br><br>
                     Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
                     <br><br>
-                    You can forward your bet to our sportsbook for an instant bet.
                 `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
             };
             sgMail.send(msg).catch(error => {

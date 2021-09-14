@@ -178,7 +178,7 @@ class Sport extends PureComponent {
                                 Peer-to-Peer betting is unavailable for this particular bet, please bet with the Sportsbook.
                             </p>
                             <div className="text-right">
-                                <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link>
+                                {/* <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link> */}
                                 <button className="form-button ml-2" onClick={() => this.setState({ showModal: false })}> Cancel </button>
                             </div>
                         </div>
