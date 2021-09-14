@@ -648,6 +648,15 @@ footer ul li a i {
     padding-left: 1rem;
 }
 
+@media (min-width: 576px) {
+    .sport-list-dropdown-league {
+        display: block;
+    }
+    .sport-desktop-list li.active .sport-list-count, .sport-desktop-list li:hover .sport-list-count {
+        display: block;
+    }
+}
+
 .fabrte {
     font-size: 11px;
     padding: 7px 10px;
