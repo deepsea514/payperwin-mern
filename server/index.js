@@ -1407,12 +1407,12 @@ expressApp.post(
                                             try {
                                                 await newBetPool.save();
 
-                                                await checkAutoBet(bet, newBetPool, user, sportData, line);
                                             } catch (err) {
                                                 console.log('can\'t save newBetPool => ' + err);
                                             }
                                         }
-
+                                        
+                                        await checkAutoBet(bet, newBetPool, user, sportData, line);
                                         await calculateBetsStatus(JSON.stringify(lineQuery));
 
                                         user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
