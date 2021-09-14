@@ -33,10 +33,10 @@ export function UserProfileDropdown({ history }) {
                         "btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
                     }
                 >
-                    <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">
+                    <span className="text-muted font-weight-bold font-size-base d-md-inline mr-1">
                         Hi,
                     </span>{" "}
-                    <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
+                    <span className="text-dark-50 font-weight-bolder font-size-base d-md-inline mr-3">
                         Admin
                     </span>
                     <span className="symbol symbol-35 symbol-light-success">
