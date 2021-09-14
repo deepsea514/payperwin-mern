@@ -163,6 +163,18 @@ function AsideMenuList({
                                     <span className="menu-text">Articles</span>
                                 </NavLink>
                             </li>}
+
+                            {currentUser && isAvailable('errorlogs') && <li
+                                className={`menu-item ${getMenuItemActive("/errorlogs", false)}`}
+                                aria-haspopup="true"
+                            >
+                                <NavLink className="menu-link border-0" to="/errorlogs/">
+                                    <span className="svg-icon menu-icon">
+                                        <SVG src={"/media/svg/icons/Code/Error-circle.svg"} />
+                                    </span>
+                                    <span className="menu-text">Error Logs</span>
+                                </NavLink>
+                            </li>}
                         </ul>
                     </div>
                 </li>
