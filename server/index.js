@@ -82,6 +82,7 @@ let twilioClient = null;
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(config.googleClientID);
 const isDstObserved = config.isDstObserved;
+const loyaltyPerBet = 25;
 
 //express routers
 const v1Router = require('./v1Routes');
@@ -999,6 +1000,10 @@ expressApp.post(
                                     console.info(`created new bet`);
                                     try {
                                         const savedBet = await newBet.save();
+                                        await LoyaltyLog.create({
+                                            user: user._id,
+                                            point: toBet * loyaltyPerBet
+                                        });
 
                                         const preference = await Preference.findOne({ user: user._id });
                                         let timezone = "00:00";
@@ -1411,7 +1416,7 @@ expressApp.post(
                                                 console.log('can\'t save newBetPool => ' + err);
                                             }
                                         }
-                                        
+
                                         await checkAutoBet(bet, newBetPool, user, sportData, line);
                                         await calculateBetsStatus(JSON.stringify(lineQuery));
 
@@ -1666,6 +1671,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
 
         try {
             const savedBet = await newBet.save();
+            await LoyaltyLog.create({
+                user: selectedauto.userId._id,
+                point: bettable * loyaltyPerBet
+            })
 
             await AutoBetLog.create({
                 user: selectedauto.userId._id,
