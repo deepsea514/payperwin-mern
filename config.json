@@ -111,7 +111,8 @@
             "faq": true,
             "articles": true,
             "reports": true,
-            "cashback": true
+            "cashback": true,
+            "errorlogs": true
         },
         "Customer Service": {
             "dashboard": true,
@@ -133,7 +134,8 @@
             "faq": false,
             "articles": true,
             "reports": true,
-            "cashback": true
+            "cashback": true,
+            "errorlogs": true
         }
     },
     "isDstObserved": true,

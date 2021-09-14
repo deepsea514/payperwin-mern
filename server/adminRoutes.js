@@ -4573,4 +4573,84 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/errorlogs',
+    authenticateJWT,
+    limitRoles('errorlogs'),
+    async (req, res) => {
+        let { page, perPage, name } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page--;
+
+        let searchObj = {};
+        if (name) searchObj.name = name;
+
+        try {
+            const errorlogs = await ErrorLog.aggregate(
+                [
+                    {
+                        $match: searchObj
+                    },
+                    {
+                        $group: {
+                            _id: "$error.stack",
+                            stack: { "$first": "$error.stack" },
+                            name: { "$first": "$name" },
+                            id: { "$first": "$_id" }
+                        }
+                    },
+                    { $sort: { createdAt: -1 } },
+                    { $skip: page * perPage },
+                    { $limit: perPage },
+                ]);
+
+            let total = await ErrorLog.aggregate(
+                [
+                    {
+                        $match: searchObj
+                    },
+                    {
+                        $group: {
+                            _id: "$error.stack",
+                        }
+                    },
+                    {
+                        $count: "total"
+                    }
+                ]
+            );
+            if (total.length) total = total[0].total;
+            else total = 0;
+            res.json({ data: errorlogs, total: total });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/errorlogs/:id',
+    authenticateJWT,
+    limitRoles('errorlogs'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const errorlog = await ErrorLog.findById(id);
+            if (!errorlog) {
+                return res.status(404).json({ success: false, error: 'Log not found' });
+            }
+            await ErrorLog.deleteMany({
+                name: errorlog.name,
+                "error.stack": errorlog.error.stack
+            })
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
 module.exports = adminRouter;
