@@ -27,6 +27,9 @@ export const reducer = persistReducer(
             case actionTypes.getErrorLogsSuccess:
                 return { ...state, ...action.data, loading: false };
 
+            case actionTypes.onErrorLogNameChange:
+                return { ...state, name: action.name };
+
             default:
                 return state;
         }
