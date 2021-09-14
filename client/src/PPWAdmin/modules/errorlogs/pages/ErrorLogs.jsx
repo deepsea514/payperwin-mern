@@ -110,7 +110,6 @@ class ErrorLogs extends React.Component {
                                         <select
                                             value={name}
                                             className="form-control"
-                                            placeholder=""
                                             onChange={(e) => {
                                                 onErrorLogNameChange(e.target.value);
                                             }}
