@@ -91,7 +91,7 @@ class ErrorLogs extends React.Component {
 
     render() {
         const { perPage, deleteId, modal, modalvariant, resMessage } = this.state;
-        const { total, currentPage } = this.props;
+        const { total, currentPage, name, onErrorLogNameChange } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
         return (
@@ -106,16 +106,22 @@ class ErrorLogs extends React.Component {
                             </div>
                             <div className="card-body">
                                 <div className="form-group row">
-                                    <div className="col-lg-2 col-md-3">
-                                        {/* <input
-                                            type="number"
-                                            value={count}
+                                    <div className="col-lg-3 col-md-4">
+                                        <select
+                                            value={name}
                                             className="form-control"
                                             placeholder=""
                                             onChange={(e) => {
-                                                this.onCountChange(e.target.value);
+                                                onErrorLogNameChange(e.target.value);
                                             }}
-                                        /> */}
+                                        >
+                                            <option value=''>...Select Error Type</option>
+                                            <option>Bet365 Error</option>
+                                            <option>Send Grid Error</option>
+                                            <option>Twilio Error</option>
+                                            <option>Triple-A Error</option>
+                                            <option>PremierPay Error</option>
+                                        </select>
                                         <small className="form-text text-muted">
                                             Errors <b>Type</b>
                                         </small>
@@ -181,6 +187,7 @@ const mapStateToProps = (state) => ({
     loading: state.errorlogs.loading,
     total: state.errorlogs.total,
     currentPage: state.errorlogs.currentPage,
+    name: state.errorlogs.name
 })
 
 export default connect(mapStateToProps, errorlogs.actions)(ErrorLogs)
