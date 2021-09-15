@@ -239,6 +239,14 @@ a.log-in-btn {
     display: none;
 }
 
+.highlights ul {
+    display: inline-flex;
+    flex-wrap: unset;
+    overflow-y: hidden;
+    width: 100%;
+    overflow-x: auto;
+}
+
 .highlights .nav-link {
     color: #545a64;
     padding: 4px 1rem;
@@ -805,9 +813,6 @@ a.log-in-btn {
 }
 
 @media (max-width: 1000px) {
-    .highlights .nav-tabs .nav-item:nth-child(n+5) {
-        display: none;
-    }
     .hide-mobile {
         display: none !important;
     }
@@ -1478,4 +1483,23 @@ button.loginButton span {
 
 .leagues-list li.league-list-letter:hover {
     background-color: #273043;
+}
+
+*::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 2px;
+}
+
+*::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #000000;
+    border: 1px solid #555555;
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
 }
