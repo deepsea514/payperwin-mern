@@ -18,7 +18,6 @@ class OpenBets extends PureComponent {
         super(props);
         this.state = {
             bets: [],
-            betsSportsBook: [],
             error: null,
             shareModal: false,
             loadingUrl: false,
@@ -176,7 +175,7 @@ class OpenBets extends PureComponent {
     }
 
     render() {
-        const { bets, betsSportsBook, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
+        const { bets, shareModal, lineUrl, urlCopied, loadingUrl } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
