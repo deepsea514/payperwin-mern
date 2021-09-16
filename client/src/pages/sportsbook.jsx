@@ -12,7 +12,7 @@ class SportsBook extends PureComponent {
             loginUrl: null,
             loading: false,
             showModal: false,
-            comingSoon: true,
+            comingSoon: false,
         };
     }
 
