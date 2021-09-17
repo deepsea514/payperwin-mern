@@ -1377,6 +1377,7 @@ expressApp.post(
                                                 },
                                                 docChanges,
                                             );
+                                            await checkAutoBet(bet, exists, user, sportData, line);
                                         } else {
                                             // Create new bet pool
                                             console.log('creating betpool');
@@ -1411,13 +1412,11 @@ expressApp.post(
 
                                             try {
                                                 await newBetPool.save();
-
+                                                await checkAutoBet(bet, newBetPool, user, sportData, line);
                                             } catch (err) {
                                                 console.log('can\'t save newBetPool => ' + err);
                                             }
                                         }
-
-                                        await checkAutoBet(bet, newBetPool, user, sportData, line);
                                         await calculateBetsStatus(JSON.stringify(lineQuery));
 
                                         user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
@@ -1460,7 +1459,7 @@ expressApp.post(
 );
 
 const checkAutoBet = async (bet, betpool, user, sportData, line) => {
-    const { AutoBetStatus, AutoBetPeorid } = config;
+    const { AutoBetStatus } = config;
     let { pick: originPick, win: toBet, lineQuery } = bet;
     pick = originPick == 'home' ? "away" : "home";
 
