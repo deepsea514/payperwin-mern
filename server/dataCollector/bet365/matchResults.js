@@ -36,7 +36,7 @@ const matchResults = async () => {
         // settle matches that started before 3 hours ago
         {
             origin: 'bet365',
-            matchStartDate: { $lt: new Date().addHours(-6) },
+            matchStartDate: { $lt: new Date().addHours(-2) },
             result: { $exists: false }
         }
     );
