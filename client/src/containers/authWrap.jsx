@@ -91,7 +91,7 @@ class AuthWrap extends Component {
                         <Route path="/" render={() => (
                             <App
                                 user={user}
-                                getUser={this.getUser}
+                                getUser={this.getUser.bind(this)}
                                 updateUser={this.updateUser}
                             />
                         )} />
