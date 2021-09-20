@@ -58,6 +58,9 @@ const fromEmailAddress = 'donotreply@payperwin.co';
 const adminEmailAddress = 'admin@payperwin.co';
 const adminEmailAddress1 = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
+const isDstObserved = config.isDstObserved;
+const loyaltyPerBet = 25;
+const isMultiBetpool = config.isMultiBetpool;
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -81,8 +84,6 @@ const twilio = require('twilio');
 let twilioClient = null;
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(config.googleClientID);
-const isDstObserved = config.isDstObserved;
-const loyaltyPerBet = 25;
 
 //express routers
 const v1Router = require('./v1Routes');
@@ -1211,7 +1212,7 @@ expressApp.post(
                             if (oddsMatch) {
                                 const betAfterFee = toBet /* * 0.98 */;
                                 const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-                                const fee = Number((toBet * BetFee).toFixed(2));
+                                const fee = Number((toWin * BetFee).toFixed(2));
                                 const balanceChange = toBet * -1;
                                 const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
                                 if (newBalance >= 0) {
@@ -1359,7 +1360,8 @@ expressApp.post(
                                         const betId = savedBet.id;
                                         // add betId to betPool
                                         const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
-                                        if (exists) {
+                                        let betpoolId = '';
+                                        if (exists && isMultiBetpool) {
                                             // console.log('exists updating betpool');
                                             const docChanges = {
                                                 $push: pick === 'home' ? {
@@ -1378,12 +1380,13 @@ expressApp.post(
                                                 docChanges,
                                             );
                                             await checkAutoBet(bet, exists, user, sportData, line);
+                                            betpoolId = exists.uid;
                                         } else {
                                             // Create new bet pool
                                             console.log('creating betpool');
                                             const newBetPool = new BetPool(
                                                 {
-                                                    uid: JSON.stringify(lineQuery),
+                                                    uid: JSON.stringify({ ...lineQuery, user: user._id, time: new Date().getTime() }),
                                                     sportId: originSportId,
                                                     leagueId,
                                                     eventId,
@@ -1413,11 +1416,12 @@ expressApp.post(
                                             try {
                                                 await newBetPool.save();
                                                 await checkAutoBet(bet, newBetPool, user, sportData, line);
+                                                betpoolId = newBetPool.uid;
                                             } catch (err) {
                                                 console.log('can\'t save newBetPool => ' + err);
                                             }
                                         }
-                                        await calculateBetsStatus(JSON.stringify(lineQuery));
+                                        await calculateBetsStatus(betpoolId);
 
                                         user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
                                         user.balance = newBalance;
@@ -1630,7 +1634,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }
 
     let betAmount = toBet;
-    autobetusers.map(async selectedauto => {
+    for (const selectedauto in autobetusers) {
         if (betAmount <= 0) return;
         let bettable = Math.min(betAmount, selectedauto.maxRisk, selectedauto.userId.balance, selectedauto.bettable);
         betAmount -= bettable;
@@ -1796,9 +1800,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         catch (e2) {
             if (e2) console.error('newBetError', e2);
         }
-    })
+    }
 
-    await calculateBetsStatus(JSON.stringify(lineQuery));
+    await calculateBetsStatus(betpool.uid);
 }
 
 expressApp.get(
