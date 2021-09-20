@@ -23,6 +23,11 @@ Date.prototype.addHours = function (h) {
     return this;
 }
 
+Date.prototype.addMinutes = function (m) {
+    this.setTime(this.getTime() + (m * 60 * 1000));
+    return this;
+}
+
 const matchResults = async () => {
     const bet365Addon = await Addon.findOne({ name: 'bet365' });
     if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
@@ -36,7 +41,7 @@ const matchResults = async () => {
         // settle matches that started before 3 hours ago
         {
             origin: 'bet365',
-            matchStartDate: { $lt: new Date().addHours(-2) },
+            matchStartDate: { $lt: new Date().addMinutes(-60) },
             result: { $exists: false }
         }
     );
