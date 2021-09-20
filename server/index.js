@@ -61,6 +61,7 @@ const supportEmailAddress = 'support@payperwin.co';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
 const isMultiBetpool = config.isMultiBetpool;
+const maximumPayouts = 2000;
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -1201,8 +1202,15 @@ expressApp.post(
                         lineQuery.sportId = originSportId;
                         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                         if (line) {
-                            const { teamA, teamB, startDate, line: { home, away, draw, hdp, points, periodNumber } } = line;
-                            lineQuery.periodNumber = periodNumber;
+                            const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
+                            const existingBet = await Bet.findOne({
+                                userId: user._id,
+                                lineQuery: lineQuery
+                            });
+                            if (existingBet) {
+                                errors.push(`${pickName} ${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
+                                continue;
+                            }
                             const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
                             const lineOdds = line.line[pickWithOverUnder];
                             const oddsA = type === 'total' ? line.line.over : line.line.home;
@@ -1212,73 +1220,131 @@ expressApp.post(
                             if (oddsMatch) {
                                 const betAfterFee = toBet /* * 0.98 */;
                                 const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-                                const fee = Number((toWin * BetFee).toFixed(2));
-                                const balanceChange = toBet * -1;
-                                const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
-                                if (newBalance >= 0) {
-                                    // insert bet doc to bets table
-                                    const newBetObj = {
-                                        userId: user._id,
-                                        transactionID: `B${ID()}`,
-                                        teamA: {
-                                            name: teamA,
-                                            odds: oddsA,
-                                        },
-                                        teamB: {
-                                            name: teamB,
-                                            odds: oddsB,
-                                        },
-                                        // sportName,
-                                        pick,
-                                        pickOdds: newLineOdds,
-                                        oldOdds: lineOdds,
-                                        pickName,
-                                        bet: betAfterFee,
-                                        toWin,
-                                        fee,
-                                        matchStartDate: startDate,
-                                        // lineType: type,
-                                        // index,
-                                        status: 'Pending',
-                                        lineQuery,
-                                        lineId: lineId,
-                                        origin: origin
-                                    };
-                                    if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
-                                    const newBet = new Bet(newBetObj);
-                                    console.info(`created new bet`);
+                                if (toBet + toWin > maximumPayouts) {
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum payout.`);
+                                } else {
+                                    const fee = Number((toWin * BetFee).toFixed(2));
+                                    const balanceChange = toBet * -1;
+                                    const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
+                                    if (newBalance >= 0) {
+                                        // insert bet doc to bets table
+                                        const newBetObj = {
+                                            userId: user._id,
+                                            transactionID: `B${ID()}`,
+                                            teamA: {
+                                                name: teamA,
+                                                odds: oddsA,
+                                            },
+                                            teamB: {
+                                                name: teamB,
+                                                odds: oddsB,
+                                            },
+                                            // sportName,
+                                            pick,
+                                            pickOdds: newLineOdds,
+                                            oldOdds: lineOdds,
+                                            pickName,
+                                            bet: betAfterFee,
+                                            toWin,
+                                            fee,
+                                            matchStartDate: startDate,
+                                            // lineType: type,
+                                            // index,
+                                            status: 'Pending',
+                                            lineQuery,
+                                            lineId: lineId,
+                                            origin: origin
+                                        };
+                                        if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
+                                        const newBet = new Bet(newBetObj);
+                                        console.info(`created new bet`);
 
-                                    // save the user
+                                        // save the user
 
-                                    try {
-                                        const savedBet = await newBet.save();
+                                        try {
+                                            const savedBet = await newBet.save();
 
-                                        const preference = await Preference.findOne({ user: user._id });
-                                        let timezone = "00:00";
-                                        if (preference && preference.timezone) {
-                                            timezone = preference.timezone;
-                                        }
-                                        const timeString = convertTimeLineDate(new Date(), timezone);
+                                            const preference = await Preference.findOne({ user: user._id });
+                                            let timezone = "00:00";
+                                            if (preference && preference.timezone) {
+                                                timezone = preference.timezone;
+                                            }
+                                            const timeString = convertTimeLineDate(new Date(), timezone);
 
-                                        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                                            const msg = {
+                                            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                                                const msg = {
+                                                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                                                    to: user.email,
+                                                    subject: 'Your bet is waiting for a match',
+                                                    text: `Your bet is waiting for a match`,
+                                                    html: simpleresponsive(
+                                                        `Hi <b>${user.email}</b>.
+                                                            <br><br>
+                                                            This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                                                            <br><br>
+                                                            <ul>
+                                                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                                                <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                                                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                                            </ul>
+                                                        `),
+                                                };
+                                                sgMail.send(msg).catch(error => {
+                                                    ErrorLog.create({
+                                                        name: 'Send Grid Error',
+                                                        error: {
+                                                            name: error.name,
+                                                            message: error.message,
+                                                            stack: error.stack
+                                                        }
+                                                    });
+                                                });
+
+                                            }
+                                            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+                                                sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
+                                                    Wager: $${betAfterFee.toFixed(2)}
+                                                    Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
+                                                    Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                                            }
+
+                                            const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
+                                            let betType = ''
+                                            switch (type) {
+                                                case 'total':
+                                                    if (pick == 'home') {
+                                                        betType = `O ${points}`;
+                                                    } else {
+                                                        betType = `U ${points}`;
+                                                    }
+                                                    break;
+
+                                                case 'spread':
+                                                    if (pick == 'home') {
+                                                        betType = `${hdp > 0 ? '+' : ''}${hdp}`;
+                                                    } else {
+                                                        betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                                                    }
+                                                    break;
+                                            }
+                                            let adminMsg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                to: user.email,
-                                                subject: 'Your bet is waiting for a match',
-                                                text: `Your bet is waiting for a match`,
+                                                to: adminEmailAddress1,
+                                                subject: 'New Bet',
+                                                text: `New Bet`,
                                                 html: simpleresponsive(
-                                                    `Hi <b>${user.email}</b>.
-                                                        <br><br>
-                                                        This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                                                        <br><br>
-                                                        <ul>
+                                                    `<ul>
+                                                            <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                                                            <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
+                                                            <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
                                                             <li>Wager: $${betAfterFee.toFixed(2)}</li>
                                                             <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                                                            <li>Platform: PAYPERWIN Peer-to Peer</li>
-                                                        </ul>
-                                                    `),
-                                            };
-                                            sgMail.send(msg).catch(error => {
+                                                            <li>Pick: ${pickName}</li>
+                                                            <li>Date: ${matchTimeString}</li>
+                                                            <li>Win: $${toWin.toFixed(2)}</li>
+                                                        </ul>`),
+                                            }
+                                            sgMail.send(adminMsg).catch(error => {
                                                 ErrorLog.create({
                                                     name: 'Send Grid Error',
                                                     error: {
@@ -1289,161 +1355,107 @@ expressApp.post(
                                                 });
                                             });
 
-                                        }
-                                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                                            sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                                                Wager: $${betAfterFee.toFixed(2)}
-                                                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                                                Platform: PAYPERWIN Peer-to Peer`, user.phone);
-                                        }
-
-                                        const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
-                                        let betType = ''
-                                        switch (type) {
-                                            case 'total':
-                                                if (pick == 'home') {
-                                                    betType = `O ${points}`;
-                                                } else {
-                                                    betType = `U ${points}`;
-                                                }
-                                                break;
-
-                                            case 'spread':
-                                                if (pick == 'home') {
-                                                    betType = `${hdp > 0 ? '+' : ''}${hdp}`;
-                                                } else {
-                                                    betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
-                                                }
-                                                break;
-                                        }
-                                        let adminMsg = {
-                                            from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: adminEmailAddress1,
-                                            subject: 'New Bet',
-                                            text: `New Bet`,
-                                            html: simpleresponsive(
-                                                `<ul>
-                                                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
-                                                        <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                                                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
-                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                                                        <li>Pick: ${pickName}</li>
-                                                        <li>Date: ${matchTimeString}</li>
-                                                        <li>Win: $${toWin.toFixed(2)}</li>
-                                                    </ul>`),
-                                        }
-                                        sgMail.send(adminMsg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
+                                            adminMsg.to = supportEmailAddress;
+                                            sgMail.send(adminMsg).catch(error => {
+                                                ErrorLog.create({
+                                                    name: 'Send Grid Error',
+                                                    error: {
+                                                        name: error.name,
+                                                        message: error.message,
+                                                        stack: error.stack
+                                                    }
+                                                });
                                             });
-                                        });
-
-                                        adminMsg.to = supportEmailAddress;
-                                        sgMail.send(adminMsg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
-                                            });
-                                        });
 
 
-                                        const betId = savedBet.id;
-                                        // add betId to betPool
-                                        const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
-                                        let betpoolId = '';
-                                        if (exists && isMultiBetpool) {
-                                            // console.log('exists updating betpool');
-                                            const docChanges = {
-                                                $push: pick === 'home' ? {
-                                                    homeBets: betId,
-                                                } : {
-                                                    awayBets: betId,
-                                                },
-                                                $inc: {},
-                                            };
-                                            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
-                                            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
-                                            await BetPool.findOneAndUpdate(
-                                                {
-                                                    uid: JSON.stringify(lineQuery)
-                                                },
-                                                docChanges,
-                                            );
-                                            await checkAutoBet(bet, exists, user, sportData, line);
-                                            betpoolId = exists.uid;
-                                        } else {
-                                            // Create new bet pool
-                                            console.log('creating betpool');
-                                            const newBetPool = new BetPool(
-                                                {
-                                                    uid: JSON.stringify({ ...lineQuery, user: user._id, time: new Date().getTime() }),
-                                                    sportId: originSportId,
-                                                    leagueId,
-                                                    eventId,
-                                                    lineId,
-                                                    teamA: {
-                                                        name: teamA,
-                                                        odds: home,
-                                                        betTotal: pick === 'home' ? betAfterFee : 0,
-                                                        toWinTotal: pick === 'home' ? toWin : 0,
+                                            const betId = savedBet.id;
+                                            // add betId to betPool
+                                            const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
+                                            let betpoolId = '';
+                                            if (exists && isMultiBetpool) {
+                                                // console.log('exists updating betpool');
+                                                const docChanges = {
+                                                    $push: pick === 'home' ? {
+                                                        homeBets: betId,
+                                                    } : {
+                                                        awayBets: betId,
                                                     },
-                                                    teamB: {
-                                                        name: teamB,
-                                                        odds: away,
-                                                        betTotal: pick === 'away' ? betAfterFee : 0,
-                                                        toWinTotal: pick === 'away' ? toWin : 0,
+                                                    $inc: {},
+                                                };
+                                                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
+                                                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+                                                await BetPool.findOneAndUpdate(
+                                                    {
+                                                        uid: JSON.stringify(lineQuery)
                                                     },
-                                                    sportName,
-                                                    matchStartDate: startDate,
-                                                    lineType: type,
-                                                    points: hdp ? hdp : points ? points : null,
-                                                    homeBets: pick === 'home' ? [betId] : [],
-                                                    awayBets: pick === 'away' ? [betId] : [],
-                                                    origin
-                                                }
-                                            );
+                                                    docChanges,
+                                                );
+                                                await checkAutoBet(bet, exists, user, sportData, line);
+                                                betpoolId = exists.uid;
+                                            } else {
+                                                // Create new bet pool
+                                                console.log('creating betpool');
+                                                const newBetPool = new BetPool(
+                                                    {
+                                                        uid: JSON.stringify({ ...lineQuery, user: user._id, time: new Date().getTime() }),
+                                                        sportId: originSportId,
+                                                        leagueId,
+                                                        eventId,
+                                                        lineId,
+                                                        teamA: {
+                                                            name: teamA,
+                                                            odds: home,
+                                                            betTotal: pick === 'home' ? betAfterFee : 0,
+                                                            toWinTotal: pick === 'home' ? toWin : 0,
+                                                        },
+                                                        teamB: {
+                                                            name: teamB,
+                                                            odds: away,
+                                                            betTotal: pick === 'away' ? betAfterFee : 0,
+                                                            toWinTotal: pick === 'away' ? toWin : 0,
+                                                        },
+                                                        sportName,
+                                                        matchStartDate: startDate,
+                                                        lineType: type,
+                                                        points: hdp ? hdp : points ? points : null,
+                                                        homeBets: pick === 'home' ? [betId] : [],
+                                                        awayBets: pick === 'away' ? [betId] : [],
+                                                        origin
+                                                    }
+                                                );
 
+                                                try {
+                                                    await newBetPool.save();
+                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
+                                                    betpoolId = newBetPool.uid;
+                                                } catch (err) {
+                                                    console.log('can\'t save newBetPool => ' + err);
+                                                }
+                                            }
+                                            await calculateBetsStatus(betpoolId);
+
+                                            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
+                                            user.balance = newBalance;
                                             try {
-                                                await newBetPool.save();
-                                                await checkAutoBet(bet, newBetPool, user, sportData, line);
-                                                betpoolId = newBetPool.uid;
+                                                await FinancialLog.create({
+                                                    financialtype: 'bet',
+                                                    uniqid: `BP${ID()}`,
+                                                    user: user._id,
+                                                    amount: toBet,
+                                                    method: 'bet',
+                                                    status: FinancialStatus.success,
+                                                });
+                                                await user.save();
                                             } catch (err) {
-                                                console.log('can\'t save newBetPool => ' + err);
+                                                console.log('can\'t save user balance => ' + err);
                                             }
                                         }
-                                        await calculateBetsStatus(betpoolId);
-
-                                        user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
-                                        user.balance = newBalance;
-                                        try {
-                                            await FinancialLog.create({
-                                                financialtype: 'bet',
-                                                uniqid: `BP${ID()}`,
-                                                user: user._id,
-                                                amount: toBet,
-                                                method: 'bet',
-                                                status: FinancialStatus.success,
-                                            });
-                                            await user.save();
-                                        } catch (err) {
-                                            console.log('can\'t save user balance => ' + err);
+                                        catch (e2) {
+                                            if (e2) console.error('newBetError', e2);
                                         }
+                                    } else {
+                                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds.`);
                                     }
-                                    catch (e2) {
-                                        if (e2) console.error('newBetError', e2);
-                                    }
-                                } else {
-                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Insufficient funds.`);
                                 }
                             } else {
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Odds have changed.`);
