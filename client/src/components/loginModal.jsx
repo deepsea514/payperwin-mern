@@ -27,7 +27,8 @@ class LoginModal extends React.Component {
                 password: Yup.string()
                     .required("Password is required."),
             }),
-            errors: {}
+            errors: {},
+            passType: 'password',
         }
     }
 
@@ -127,7 +128,7 @@ class LoginModal extends React.Component {
 
     render() {
         const { closeModal, forgotPassword, loginFailed } = this.props;
-        const { initialValues, loginSchema, errors } = this.state;
+        const { initialValues, loginSchema, errors, passType } = this.state;
 
         return (
             <div className="modal confirmation">
@@ -179,13 +180,16 @@ class LoginModal extends React.Component {
                                                             </div>
                                                             <input
                                                                 maxLength="200"
-                                                                type="password"
+                                                                type={passType}
                                                                 name="password"
                                                                 placeholder="Password"
                                                                 className="formElement"
                                                                 autoComplete="off"
                                                                 {...formik.getFieldProps("password")}
                                                             />
+                                                            <div className="leftIcon cursor-pointer" style={{ minWidth: '30px' }} onClick={() => this.setState({ passType: passType == 'password' ? 'text' : 'password' })}>
+                                                                <i fill="currentColor" className={passType == 'password' ? "fas fa-eye": "fas fa-eye-slash"} style={{ minWidth: '30px' }} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <p className="loginForgotPasswordWrapper">
