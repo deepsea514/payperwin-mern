@@ -1,6 +1,6 @@
 const { convertDecimalToAmericanOdds } = require('../convertOdds');
 const formatSoccerFixturesOdds = (event) => {
-    const { goals, main, others } = event.odds;
+    const { goals, main, others, half } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
@@ -8,6 +8,7 @@ const formatSoccerFixturesOdds = (event) => {
         moneyline: null,
         spreads: [],
         totals: [],
+        half: {},
     }
 
     if (main && main.sp.full_time_result) {
@@ -55,6 +56,10 @@ const formatSoccerFixturesOdds = (event) => {
                 })
             }
         }
+    }
+
+    if (half) {
+
     }
 
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {

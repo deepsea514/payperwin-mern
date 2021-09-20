@@ -41,7 +41,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     getAllSportsLines();
     setInterval(getAllSportsLines, lineInterval);
 
-    const resultInterval = 30 * 60 * 1000;
+    const resultInterval = 10 * 60 * 1000;
     matchResults();
     setInterval(matchResults, resultInterval);
 });
@@ -175,7 +175,6 @@ const getAllSportsLines = async () => {
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
-            // }
 
             // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
 
