@@ -19,10 +19,7 @@ class AuthWrap extends Component {
         super(props);
         this.state = {
             user: null,
-            getUser: this.getUser.bind(this),
         };
-        this.getUser = this.getUser.bind(this);
-        this.updateUser = this.updateUser.bind(this);
         this._isMounted = false;
     }
 
@@ -35,6 +32,8 @@ class AuthWrap extends Component {
                 window.location = '/bets';
             }
         });
+
+        setInterval(this.getUser.bind(this), 10 * 60 * 1000);
     }
 
     componentWillUnmount() {
@@ -79,7 +78,7 @@ class AuthWrap extends Component {
     }
 
     render() {
-        const { user, getUser } = this.state;
+        const { user } = this.state;
         return (
             <UserContext.Provider value={{ user, getUser }}>
                 <BrowserRouter basename="">
@@ -92,7 +91,7 @@ class AuthWrap extends Component {
                         <Route path="/" render={() => (
                             <App
                                 user={user}
-                                getUser={getUser}
+                                getUser={this.getUser}
                                 updateUser={this.updateUser}
                             />
                         )} />
