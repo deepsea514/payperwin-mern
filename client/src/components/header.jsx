@@ -10,6 +10,7 @@ import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
 import config from '../../../config.json';
+import numberFormat from '../helpers/numberFormat';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
 function logout(getUser, history) {
@@ -150,13 +151,16 @@ class Header extends PureComponent {
                                             <ul className="login-nav">
                                                 <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
                                                 <li>
-                                                    <Link to={{ pathname: '/deposit' }}>
-                                                        <span className="blue-icon">CAD {user.currency} {user.balance ? this.balanceString(user.balance) : 0}</span>
-                                                    </Link>
+                                                    <span className="blue-icon">
+                                                        <Link to={{ pathname: '/deposit' }}>
+                                                            CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
+                                                        </Link>
+                                                        &nbsp;<i className="fa fa-refresh cursor-pointer" onClick={() => getUser()} />
+                                                    </span>
                                                 </li>
                                                 <li>
                                                     <Link to={{ pathname: '/deposit' }} className="deposit">
-                                                        <i className="fas fa-piggy-bank" /><span className="not-mobile">Deposit</span>
+                                                        <span className="not-mobile">Deposit</span>
                                                     </Link>
                                                 </li>
                                                 <li>
