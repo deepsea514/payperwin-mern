@@ -80,7 +80,7 @@ class AuthWrap extends Component {
     render() {
         const { user } = this.state;
         return (
-            <UserContext.Provider value={{ user, getUser }}>
+            <UserContext.Provider value={{ user, getUser: this.getUser.bind(this) }}>
                 <BrowserRouter basename="">
                     <Switch>
                         <Route path="/someroute" render={() => (
