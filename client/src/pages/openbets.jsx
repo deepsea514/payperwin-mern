@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
 import dayjs from 'dayjs';
-
+import { Popover, OverlayTrigger } from "react-bootstrap";
 import QRCode from "react-qr-code";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { connect } from "react-redux";
@@ -302,9 +302,38 @@ class OpenBets extends PureComponent {
                                     </div>
                                     <div className="open-bets-col status">
                                         <strong>Status</strong>
-                                        <div className={this.getStatusClass(status)}>
-                                            {status ? status : 'Accepted'}
-                                        </div>
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            placement={'left'}
+                                            overlay={
+                                                <Popover>
+                                                    <Popover.Body>
+                                                        <h6>Bet Status</h6>
+                                                        <div className="verification-proof-list">
+                                                            <ul>
+                                                                <li>
+                                                                    <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Partially Match:</b> Only a portion of your wager was matched with another user.
+                                                                    The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Settled:</b> The game is over and the winner has been paid.
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+                                            <button className={this.getStatusClass(status) + ' cursor-pointer'}>
+                                                {status ? status : 'Accepted'}
+                                            </button>
+                                        </OverlayTrigger>
                                     </div>
                                 </div>
                                 <div className="open-bets-event">
@@ -369,9 +398,39 @@ class OpenBets extends PureComponent {
                                 </div>
                                 <div className="open-bets-col status">
                                     <strong>Status</strong>
-                                    <div className={this.getStatusClass(status)}>
-                                        {status ? (status == 'Pending' ? 'WAITING FOR MATCH' : status) : 'Accepted'}
-                                    </div>
+                                    <OverlayTrigger
+                                        trigger="click"
+                                        placement={'bottom'}
+                                        rootClose={true}
+                                        overlay={
+                                            <Popover>
+                                                <div className="m-2" style={{ fontFamily: "'Roboto', sans-serif", fontSize: '12px' }}>
+                                                    <h6>Bet Status</h6>
+                                                    <div className="verification-proof-list">
+                                                        <ul>
+                                                            <li>
+                                                                <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
+                                                            </li>
+                                                            <li>
+                                                                <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                                                            </li>
+                                                            <li>
+                                                                <b>Partially Match:</b> Only a portion of your wager was matched with another user.
+                                                                The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                                                            </li>
+                                                            <li>
+                                                                <b>Settled:</b> The game is over and the winner has been paid.
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </Popover>
+                                        }
+                                    >
+                                        <div className={this.getStatusClass(status) + ' cursor-pointer'}>
+                                            {status ? (status == 'Pending' ? 'WAITING FOR MATCH' : status) : 'Accepted'}
+                                        </div>
+                                    </OverlayTrigger>
                                 </div>
                             </div>
                             <div className="open-bets-event">
