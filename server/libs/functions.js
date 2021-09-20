@@ -4,6 +4,8 @@ const BetPool = require('../models/betpool');
 const Bet = require('../models/bet');
 const EventBetPool = require('../models/eventbetpool');
 const { ObjectId } = require('mongodb');
+const config = require('../../config.json');
+const isMultiBetpool = config.isMultiBetpool;
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
@@ -51,6 +53,7 @@ const calculateBetsStatus = async (betpoolUid) => {
     const betpool = await BetPool.findOne({ uid: new RegExp(`^${betpoolUid}$`, 'i') });
     if (!betpool) {
         console.log('Betpool not found.');
+        return;
     }
     const { homeBets, awayBets, teamA, teamB } = betpool;
     // console.log(homeBets, awayBets);
@@ -67,18 +70,46 @@ const calculateBetsStatus = async (betpoolUid) => {
         home: teamB.betTotal,
         away: teamA.betTotal,
     }
-    for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-        let payableToWin = 0;
-        if (payPool[pick]) {
-            if (payPool[pick] > 0) {
+    const betAmounts = {
+        home: teamA.betTotal,
+        away: teamB.betTotal,
+    }
+    if (isMultiBetpool) {
+        for (const bet of bets) {
+            const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+            let payableToWin = 0;
+            if (payPool[pick] && payPool[pick] > 0) {
                 payableToWin += toWin;
                 payPool[pick] -= toWin;
-                if (payPool[pick] < 0) payableToWin += payPool[pick];
+                if (payPool[pick] < 0)
+                    payableToWin += payPool[pick];
+            }
+            let matchingStatus;
+            if (payableToWin === toWin) matchingStatus = 'Matched';
+            else if (payableToWin === 0) matchingStatus = 'Pending';
+            else matchingStatus = 'Partial Match'
+            const betChanges = {
+                $set: {
+                    payableToWin,
+                    matchingStatus,
+                    status: matchingStatus,
+                }
+            };
+            if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
+                await Bet.findOneAndUpdate({ _id }, betChanges);
             }
         }
+        return;
+    }
+    for (const bet of bets) {
+        const { _id, bet: betAmount, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+        let payableToWin = 0;
+        if (payPool[pick] && payPool[pick] > 0 && betAmounts[pick]) {
+            const rate = betAmount / betAmounts[pick];
+            payableToWin = Number((payPool[pick] * rate).toFixed(2));
+        }
         let matchingStatus;
-        if (payableToWin === toWin) matchingStatus = 'Matched';
+        if (payableToWin >= toWin) matchingStatus = 'Matched';
         else if (payableToWin === 0) matchingStatus = 'Pending';
         else matchingStatus = 'Partial Match'
         const betChanges = {
@@ -89,14 +120,7 @@ const calculateBetsStatus = async (betpoolUid) => {
             }
         };
         if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            // const timeout = getRandomInt(3, 10);
-            // setTimeout(async () => {
-            // try {
             await Bet.findOneAndUpdate({ _id }, betChanges);
-            //     } catch (error) {
-            //         console.error(error);
-            //     }
-            // }, timeout);
         }
     }
 }

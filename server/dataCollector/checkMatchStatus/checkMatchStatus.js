@@ -217,7 +217,6 @@ const calculateBetPoolsStatus = async () => {
 
     betpools.forEach(async betpool => {
         try {
-            console.log("Check betpool: ", betpool.uid);
             calculateBetsStatus(betpool.uid);
         } catch (error) {
             console.error(error);
