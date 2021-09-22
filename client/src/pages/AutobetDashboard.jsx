@@ -5,6 +5,7 @@ import AutobetSummary from '../components/autobetsummary';
 import AutobetChart from '../components/autobechart';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
 
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
@@ -15,7 +16,8 @@ class AutobetDashboard extends Component {
         this.state = {
             loading: false,
             error: null,
-            data: null
+            data: null,
+            daterange: null,
         };
         this._Mounted = false;
     }
@@ -44,8 +46,9 @@ class AutobetDashboard extends Component {
     }
 
     getAutobetData = () => {
+        const { daterange } = this.state;
         this._Mounted && this.setState({ loading: true });
-        axios.get(`${serverUrl}/autobet`, { withCredentials: true })
+        axios.get(`${serverUrl}/autobet`, { withCredentials: true, params: daterange })
             .then(({ data }) => {
                 this._Mounted && this.setState({ loading: false, data });
             })
@@ -55,8 +58,18 @@ class AutobetDashboard extends Component {
             })
     }
 
+    handleChangeDate = async (event, picker) => {
+        await this.setState({
+            daterange: {
+                startDate: picker.startDate._d,
+                endDate: picker.endDate._d
+            }
+        });
+        this.getAutobetData();
+    }
+
     render() {
-        const { data, loading, error } = this.state;
+        const { data, loading, error, daterange } = this.state;
         const { user } = this.props;
 
         return (
@@ -78,6 +91,14 @@ class AutobetDashboard extends Component {
                                 <AutobetChart sports={data.sports} />
                             </div>
                             <div className="col-md-5">
+                                <DateRangePicker
+                                    initialSettings={daterange}
+                                    onApply={this.handleChangeDate}
+                                >
+                                    <div className="rangepicker-container">
+                                        <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
+                                    </div>
+                                </DateRangePicker>
                                 <AutobetSummary user={user} summary={data.summary} />
                             </div>
                         </div>}

@@ -261,6 +261,11 @@ class App extends PureComponent {
             if (pathname.startsWith(path)) return true;
             else return false;
         }).length;
+        const fullWidth = [
+            '/loyalty',
+            '/autobet-dashboard'
+        ].includes(pathname);
+
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
 
@@ -299,7 +304,7 @@ class App extends PureComponent {
                                             sportsMenuMobileOpen={sportsMenuMobileOpen}
                                             sidebarShowAccountLinks={sidebarShowAccountLinks}
                                         />
-                                        <div className="col-md-7 p-0">
+                                        <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
                                                 {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}

@@ -16,7 +16,7 @@ class AutobetSummary extends Component {
                 <div className={`card card-custom bg-white rounded-top`}>
                     {/* Header */}
                     <div className="card-header border-0 bg-primary py-3">
-                        <h3 className="card-title font-weight-bolder text-white">Monthly Summary</h3>
+                        <h3 className="card-title font-weight-bolder text-white">Summary</h3>
                     </div>
                     {/* Body */}
                     <div className="card-body p-0 position-relative overflow-hidden">
@@ -92,6 +92,36 @@ class AutobetSummary extends Component {
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
                                         ${numberFormat(winbets.amount.toFixed(2))}
+                                        <span className="svg-icon svg-icon-md svg-icon-success">
+                                            <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div className="d-flex align-items-center mb-10">
+                                    <div className="symbol symbol-40 symbol-light-primary mr-1">
+                                        <span className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                <SVG
+                                                    className="h-75 align-self-end"
+                                                    src="/media/svg/icons/Home/Library.svg"
+                                                />
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div className="d-flex align-items-start mx-2">
+                                        <div>
+                                            <a
+                                                href="#"
+                                                className="text-dark-75 text-hover-primary font-weight-bolder"
+                                            >
+                                                Fee
+                                            </a>
+                                            <br />
+                                        </div>
+                                    </div>
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${numberFormat((winbets.amount * 0.03).toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>

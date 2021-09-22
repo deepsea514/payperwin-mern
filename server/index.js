@@ -1615,9 +1615,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 autobet.status == AutoBetStatus.active &&                   //Check active status
                 autobet.userId.balance > 0 &&                               //Check Balance
                 autobet.bettable > 0 &&                                     //Check bettable
-                // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                // (bettedamount < (budget - toBet)) &&                        //Check Budget
-                autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
+                // autobet.maxRisk >= toBet &&                                  //Check Max.Risk
+                // (bettedamount < (budget - toBet)) &&                         //Check Budget
+                !autobet.sports.find((sport) => sport == lineQuery.sportName)   // Check Sports
             );
         } catch (error) {
             console.log('filter => ', error);
@@ -3541,26 +3541,32 @@ expressApp.get(
     async (req, res) => {
         try {
             const { user } = req;
+            const { startDate, endDate } = req.query;
             const autobet = await AutoBet.findOne({ userId: user._id });
             if (!autobet) {
                 return res.status(404).json({ success: false });
             }
             const today = new Date();
+            let dateObj = {
+                $gte: new Date(today.getFullYear(), today.getMonth(), 1)
+            }
+            if (startDate && endDate) {
+                dateObj = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            }
             const bets = await Bet.find({
                 userId: user._id,
-                createdAt: {
-                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                },
+                updatedAt: dateObj,
                 orgin: { $ne: 'other' }
-            }).sort({ createdAt: -1 });
+            }).sort({ updatedAt: -1 });
 
             let betamount = await Bet.aggregate([
                 {
                     $match: {
                         userId: user._id,
-                        createdAt: {
-                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                        },
+                        updatedAt: dateObj,
                         orgin: { $ne: 'other' }
                     }
                 },
@@ -3577,9 +3583,7 @@ expressApp.get(
 
             const wincount = await Bet.find({
                 userId: user._id,
-                createdAt: {
-                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                },
+                updatedAt: dateObj,
                 orgin: { $ne: 'other' },
                 status: 'Settled - Win'
             }).count();
@@ -3588,9 +3592,7 @@ expressApp.get(
                 {
                     $match: {
                         userId: user._id,
-                        createdAt: {
-                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                        },
+                        updatedAt: dateObj,
                         orgin: { $ne: 'other' },
                         status: 'Settled - Win'
                     }
@@ -3608,9 +3610,7 @@ expressApp.get(
 
             const losscount = await Bet.find({
                 userId: user._id,
-                createdAt: {
-                    $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                },
+                updatedAt: dateObj,
                 orgin: { $ne: 'other' },
                 status: 'Settled - Lose'
             }).count();
@@ -3619,9 +3619,7 @@ expressApp.get(
                 {
                     $match: {
                         userId: user._id,
-                        createdAt: {
-                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                        },
+                        updatedAt: dateObj,
                         orgin: { $ne: 'other' },
                         status: 'Settled - Lose'
                     }
@@ -3641,9 +3639,7 @@ expressApp.get(
                 {
                     $match: {
                         userId: user._id,
-                        createdAt: {
-                            $gte: new Date(today.getFullYear(), today.getMonth(), 1),
-                        },
+                        updatedAt: dateObj,
                         orgin: { $ne: 'other' },
                     }
                 },

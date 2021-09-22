@@ -4,7 +4,7 @@ import { TotalWager } from "../components/TotalWager";
 import { TotalWagerSportsBook } from "../components/TotalWagerSportsBook";
 import { TotalPlayers } from "../components/TotalPlayers";
 import { ActivePlayers } from "../components/ActivePlayers";
-import { FeesCollected } from "../components/FeesCollected";
+import FeesCollected from "../components/FeesCollected";
 import { LastDeposits } from "../components/LastDeposits";
 import { LastWithdraws } from "../components/LastWithdraws";
 import { LastBets } from "../components/LastBets";
@@ -54,36 +54,6 @@ class AdminDashboard extends React.Component {
                             dashboardwagersportsbook={dashboardwagersportsbook}
                             className="card-stretch gutter-b" />
                     </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-4">
-                        <TotalPlayers
-                            loadingdashboarddata={loadingdashboarddata}
-                            categories={categories}
-                            dashboardplayer={dashboardplayer}
-                            symbolShape="circle"
-                            baseColor="success"
-                            className="mb-8"
-                        />
-                    </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-4">
-                        <ActivePlayers
-                            loadingdashboarddata={loadingdashboarddata}
-                            categories={categories}
-                            dashboardactiveplayer={dashboardactiveplayer}
-                            symbolShape="circle"
-                            baseColor="info"
-                            className="mb-8"
-                        />
-                    </div>
-                    <div className="col-lg-6 col-xl-4 col-xxl-4">
-                        <FeesCollected
-                            loadingdashboarddata={loadingdashboarddata}
-                            categories={categories}
-                            dashboardfees={dashboardfees}
-                            symbolShape="circle"
-                            baseColor="warning"
-                            className="mb-8"
-                        />
-                    </div>
                     <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
                         <div className="d-flex flex-row">
                             <BrowserRouter basename={`/RP1021/dashboard`}>
@@ -94,7 +64,7 @@ class AdminDashboard extends React.Component {
                                     </Switch>
                                     <Route
                                         path="/lastdeposits"
-                                        component={(props) => <LastDeposits
+                                        render={(props) => <LastDeposits
                                             {...props}
                                             roothistory={history}
                                             lastdeposits={lastdeposits}
@@ -103,7 +73,7 @@ class AdminDashboard extends React.Component {
                                     />
                                     <Route
                                         path="/lastwithdraws"
-                                        component={(props) => <LastWithdraws
+                                        render={(props) => <LastWithdraws
                                             {...props}
                                             roothistory={history}
                                             lastwithdraws={lastwithdraws}
@@ -112,7 +82,7 @@ class AdminDashboard extends React.Component {
                                     />
                                     <Route
                                         path="/lastbets"
-                                        component={(props) => <LastBets
+                                        render={(props) => <LastBets
                                             {...props}
                                             roothistory={history}
                                             loadingbets={loadingbets}
@@ -120,6 +90,15 @@ class AdminDashboard extends React.Component {
                                             lastsportsbookbets={lastsportsbookbets}
                                             loadingportsbookbets={loadingportsbookbets}
                                             className="card-stretch gutter-b" />}
+                                    />
+                                    <Route path="/fees"
+                                        render={(props) => <FeesCollected
+                                            loadingdashboarddata={loadingdashboarddata}
+                                            categories={categories}
+                                            dashboardfees={dashboardfees}
+                                            symbolShape="circle"
+                                            baseColor="warning"
+                                        />}
                                     />
                                 </div>
                             </BrowserRouter>

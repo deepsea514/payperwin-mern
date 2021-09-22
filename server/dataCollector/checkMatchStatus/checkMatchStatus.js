@@ -78,7 +78,7 @@ const checkTimerTwo = async () => {
     calculateBetPoolsStatus();
 
     // Check bet without betpool
-    checkBetWithoutBetpool();
+    // checkBetWithoutBetpool();
 }
 
 const checkMatchStatus = async () => {
