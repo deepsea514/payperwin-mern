@@ -8,16 +8,17 @@ class SidebarAccount extends Component {
             <div className={`col-sm-2 responsive-v ${sidebarShowAccountLinks ? '' : 'hide'}`}
                 style={accountMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('accountMenuMobileOpen', false)}>
-
-                <h3 className="cat-heading">MESSAGE CENTER</h3>
-                <ul className="left-cat top-cls-sport">
-                    <li>
-                        <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i>Inbox</Link>
-                    </li>
-                    {/* <li>
+                {(!user || !user.autobet) && <>
+                    <h3 className="cat-heading">MESSAGE CENTER</h3>
+                    <ul className="left-cat top-cls-sport">
+                        <li>
+                            <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i>Inbox</Link>
+                        </li>
+                        {/* <li>
                         <Link to={{ pathname: '/announcements' }}><i className="fas fa-bell"></i>Announcements </Link>
                     </li> */}
-                </ul>
+                    </ul>
+                </>}
 
                 <h3 className="cat-heading">MY BETS</h3>
                 <ul className="left-cat top-cls-sport">
@@ -32,27 +33,29 @@ class SidebarAccount extends Component {
                     </li> */}
                 </ul>
 
-                <h3 className="cat-heading">CASHIER</h3>
-                <ul className="left-cat top-cls-sport">
-                    <li>
-                        <Link to={{ pathname: '/deposit' }}><i className="fas fa-money-check"></i>Deposit </Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/withdraw' }}><i className="fas fa-money-check-alt"></i>Withdraw </Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i>Transactions history </Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i>Payment methods </Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/cashback' }}><i className="fas fa-comment-dollar"></i> Cashback </Link>
-                    </li>
-                    <li>
-                        <Link to={{ pathname: '/loyalty' }}><i className="fas fa-file-invoice-dollar"></i> Loyalty </Link>
-                    </li>
-                </ul>
+                {(!user || !user.autobet) && <>
+                    <h3 className="cat-heading">CASHIER</h3>
+                    <ul className="left-cat top-cls-sport">
+                        <li>
+                            <Link to={{ pathname: '/deposit' }}><i className="fas fa-money-check"></i>Deposit </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/withdraw' }}><i className="fas fa-money-check-alt"></i>Withdraw </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i>Transactions history </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i>Payment methods </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/cashback' }}><i className="fas fa-comment-dollar"></i> Cashback </Link>
+                        </li>
+                        <li>
+                            <Link to={{ pathname: '/loyalty' }}><i className="fas fa-file-invoice-dollar"></i> Loyalty </Link>
+                        </li>
+                    </ul>
+                </>}
 
                 {user && user.autobet && <>
                     <h3 className="cat-heading">AUTOBET</h3>

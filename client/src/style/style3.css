@@ -959,7 +959,7 @@ a.log-in-btn {
         display: block;
     }
     .not-mobile {
-        display: none;
+        display: none !important;
     }
     .open-bets-flex {
         flex-wrap: wrap;

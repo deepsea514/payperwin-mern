@@ -20,6 +20,9 @@ const months = [
 
 export default class CustomDatePicker extends React.Component {
     render() {
+        const { years: propsYears } = this.props;
+        let displayYears = propsYears ? propsYears : years;
+
         return (
             <DatePicker
                 renderCustomHeader={({
@@ -45,7 +48,7 @@ export default class CustomDatePicker extends React.Component {
                             value={(new Date(date)).getFullYear()}
                             onChange={({ target: { value } }) => changeYear(value)}
                         >
-                            {years.map(option => (
+                            {displayYears.map(option => (
                                 <option key={option} value={option}>
                                     {option}
                                 </option>

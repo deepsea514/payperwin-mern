@@ -118,6 +118,7 @@ export default class PromotionModal extends React.Component {
                                             placeholder="Enter Birthday"
                                             isInvalid={formik.touched.expiration_date && formik.errors.expiration_date !== undefined}
                                             required
+                                            years={[2021, 2022, 2023, 2024, 2025]}
                                         />
                                         {formik.touched.expiration_date && formik.errors.expiration_date ? (
                                             <div className="invalid-feedback">

@@ -145,62 +145,64 @@ class Header extends PureComponent {
                                 </Link>
                             </div>
                             <div className="col-7 col-sm-6 text-right">
-                                {user
-                                    ? (
-                                        <div className="login-nav-contain">
-                                            <ul className="login-nav">
-                                                <li><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
-                                                <li>
-                                                    <span className="blue-icon">
-                                                        <Link to={{ pathname: '/deposit' }}>
-                                                            CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
-                                                        </Link>
-                                                        &nbsp;<i className="fa fa-refresh cursor-pointer" onClick={() => getUser()} />
-                                                    </span>
-                                                </li>
-                                                <li>
-                                                    <Link to={{ pathname: '/deposit' }} className="deposit">
-                                                        <span className="not-mobile">Deposit</span>
+                                {user ? (
+                                    <div className="login-nav-contain">
+                                        <ul className="login-nav">
+                                            <li className="not-mobile"><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
+                                            <li>
+                                                <span className="blue-icon">
+                                                    <Link to={{ pathname: '/deposit' }}>
+                                                        CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
                                                     </Link>
-                                                </li>
-                                                <li>
-                                                    <a className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
-                                                        <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan">My Account</span>&nbsp;<i className="fa fa-caret-down not-mobile" />
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            {userDropDownOpen ? (
-                                                <React.Fragment>
-                                                    <div className="background-closer" onClick={() => this.toggleField('userDropDownOpen')} />
-                                                    <div className="login-dropdown">
-                                                        <ul>
-                                                            <li className="mobile username">
-                                                                My Account
-                                                            </li>
-                                                            <li className="mobile" onClick={() => toggleField('accountMenuMobileOpen')}>
-                                                                My Account
-                                                            </li>
-                                                            <li>
-                                                                <Link to={{ pathname: '/preferences' }}>Preferences</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to={{ pathname: '/deposit' }}>Deposit</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to={{ pathname: '/withdraw' }}>Withdraw</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to={{ pathname: '/bets' }}>Open bets</Link>
-                                                            </li>
-                                                            <li>
-                                                                <button onClick={this.logout}>Logout<i className="fap fa-sign-out" /></button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </React.Fragment>
-                                            ) : null}
-                                        </div>
-                                    )
+                                                    &nbsp;<i className="fa fa-refresh cursor-pointer" onClick={() => getUser()} />
+                                                </span>
+                                            </li>
+                                            <li className="not-mobile">
+                                                <Link to={{ pathname: '/deposit' }} className="deposit">
+                                                    <span>Deposit</span>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <a className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
+                                                    <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan">My Account</span>&nbsp;<i className="fa fa-caret-down not-mobile" />
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        {userDropDownOpen ? (
+                                            <React.Fragment>
+                                                <div className="background-closer" onClick={() => this.toggleField('userDropDownOpen')} />
+                                                <div className="login-dropdown">
+                                                    <ul>
+                                                        <li className="mobile username">
+                                                            My Account
+                                                        </li>
+                                                        <li className="mobile" onClick={() => toggleField('accountMenuMobileOpen')}>
+                                                            My Account
+                                                        </li>
+                                                        {!user.autobet && <li>
+                                                            <Link to={{ pathname: '/preferences' }}>Preferences</Link>
+                                                        </li>}
+                                                        {!user.autobet && <li>
+                                                            <Link to={{ pathname: '/deposit' }}>Deposit</Link>
+                                                        </li>}
+                                                        {!user.autobet && <li>
+                                                            <Link to={{ pathname: '/withdraw' }}>Withdraw</Link>
+                                                        </li>}
+                                                        {user.autobet && <li>
+                                                            <Link to={{ pathname: '/autobet-dashboard' }}>Dashboard</Link>
+                                                        </li>}
+                                                        <li>
+                                                            <Link to={{ pathname: '/bets' }}>Open bets</Link>
+                                                        </li>
+                                                        <li>
+                                                            <button onClick={this.logout}>Logout<i className="fap fa-sign-out" /></button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </React.Fragment>
+                                        ) : null}
+                                    </div>
+                                )
                                     : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />
                                 }
                             </div>

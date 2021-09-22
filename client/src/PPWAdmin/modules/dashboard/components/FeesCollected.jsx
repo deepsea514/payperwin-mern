@@ -4,8 +4,21 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import SVG from "react-inlinesvg";
 import { useHtmlClassService } from "../../../_metronic/layout";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
+import dateformat from "dateformat";
+import * as reports from "../../reports/redux/reducers";
+import { connect } from "react-redux";
 
-export function FeesCollected({ className, symbolShape, baseColor, categories, dashboardfees }) {
+function FeesCollected({
+    className,
+    symbolShape,
+    baseColor,
+    categories,
+    dashboardfees,
+    profits,
+    loading,
+    getProfitReports
+}) {
     const uiService = useHtmlClassService();
     const layoutProps = useMemo(() => {
         return {
@@ -161,6 +174,7 @@ export function FeesCollected({ className, symbolShape, baseColor, categories, d
     }
 
     useEffect(() => {
+        getProfitReports();
         const element = document.getElementById("fees_collected_chart");
 
         if (!element) {
@@ -174,6 +188,44 @@ export function FeesCollected({ className, symbolShape, baseColor, categories, d
             chart.destroy();
         };
     }, [layoutProps, categories, dashboardfees]);
+
+    const tableBody = () => {
+        if (loading) {
+            return (
+                <tr>
+                    <td colSpan="9" align="center">
+                        <Preloader use={ThreeDots}
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />
+                    </td>
+                </tr>
+            );
+        }
+        if (profits.length == 0) {
+            return (
+                <tr>
+                    <td colSpan="9" align="center">
+                        <h3>No Records</h3>
+                    </td>
+                </tr>
+            );
+        }
+
+        return profits.slice(0, 10).map((record, index) => {
+            return (
+                <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{dateformat(new Date(record.updatedAt), "yyyy-mm-dd HH:MM")}</td>
+                    <td>{record.user ? record.user.email : null}</td>
+                    <td>{record.financialtype == 'betfee' ? 'Winning Bet Fee' : 'Withdrawal Fee'}</td>
+                    <td>{record.uniqid}</td>
+                    <td>CAD {Number(record.amount).toFixed(2)}</td>
+                </tr>
+            )
+        })
+    }
 
     return (
         <div className={`card card-custom ${className}`}>
@@ -205,6 +257,33 @@ export function FeesCollected({ className, symbolShape, baseColor, categories, d
                     style={{ height: "150px" }}
                 ></div>
             </div>
+            <div className="table-responsive p-3">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Event</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableBody()}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
+
+const mapStateToProps = (state) => ({
+    profits: state.reports.profits,
+    loading: state.reports.loading_profits,
+    total: state.reports.total_profits,
+    currentPage: state.reports.currentPage_profits,
+    filter: state.reports.filter_profits,
+});
+
+export default connect(mapStateToProps, reports.actions)(FeesCollected)

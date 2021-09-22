@@ -217,7 +217,7 @@ export default class AutoBetModal extends React.Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label>Sports<span className="text-danger">*</span></label>
+                                        <label>Sports to exclude<span className="text-danger">*</span></label>
                                         <AsyncSelect
                                             className={`basic-single ${getInputClasses(formik, "sports")}`}
                                             classNamePrefix="select"

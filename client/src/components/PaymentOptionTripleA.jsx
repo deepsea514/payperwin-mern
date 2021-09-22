@@ -34,15 +34,15 @@ class PaymentOptionTripleA extends Component {
                 </a>
                 {option == 'bitcoin' && <div>
                     <span className="card-name">Bitcoin</span>
-                    <img className="right" style={{ border: "none" }} src="images/bitcoin.png" alt="Interac e-Transfer" width="170" height="auto" />
+                    <img className="right-image" style={{ border: "none" }} src="images/bitcoin.png" alt="Interac e-Transfer" width="170" height="auto" />
                 </div>}
                 {option == 'ethereum' && <div>
                     <span className="card-name">Ethereum</span>
-                    <img className="right" style={{ border: "none" }} src="images/Ethereum.png" alt="Interac e-Transfer" width="170" height="auto" />
+                    <img className="right-image" style={{ border: "none" }} src="images/Ethereum.png" alt="Interac e-Transfer" width="170" height="auto" />
                 </div>}
                 {option == 'usdt' && <div>
                     <span className="card-name">USDT</span>
-                    <img className="right" style={{ border: "none" }} src="images/USDT.png" alt="Interac e-Transfer" width="170" height="auto" />
+                    <img className="right-image" style={{ border: "none" }} src="images/USDT.png" alt="Interac e-Transfer" width="170" height="auto" />
                 </div>}
 
                 <hr />

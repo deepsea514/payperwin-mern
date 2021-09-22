@@ -2272,7 +2272,7 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     color: #444444;
 }
 
-.right {
+.right-image {
     margin: 0;
     float: right;
     display: inline-block;
@@ -3651,4 +3651,11 @@ a:hover {
     text-transform: uppercase;
     font-weight: bold;
     border-radius: 3px;
+}
+
+.rangepicker-container {
+    border: 1px solid #777;
+    padding: 5px 20px;
+    text-align: center;
+    cursor: pointer;
 }

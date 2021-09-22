@@ -8,18 +8,31 @@ class AutobetHistory extends Component {
 
     getIconColor = (status) => {
         switch (status) {
-            case 'Pending':
+            case 'Draw':
                 return 'text-primary';
-            case 'Matched':
-            case 'Partial Match':
-                return 'text-info';
             case 'Settled - Win':
                 return 'text-success';
             case 'Settled - Lose':
                 return 'text-danger';
             case 'Cancelled':
-            default:
                 return 'text-warning';
+            default:
+                return 'text-dark';
+        }
+    }
+
+    getBetStatus = (status) => {
+        switch (status) {
+            case 'Draw':
+                return <b>DRAW</b>;
+            case 'Settled - Win':
+                return <>WIN</>;
+            case 'Settled - Lose':
+                return <b>LOSS</b>;
+            case 'Cancelled':
+                return <b>CANCELLED</b>;
+            default:
+                return null;
         }
     }
 
@@ -47,7 +60,7 @@ class AutobetHistory extends Component {
                                 return (
                                     <div className="timeline-item align-items-start" key={history._id}>
                                         <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
-                                            {dateformat(history.createdAt, "mm/dd")}
+                                            {dateformat(history.updatedAt, "mm/dd")}
                                         </div>
 
                                         <div className="timeline-badge">
@@ -55,7 +68,7 @@ class AutobetHistory extends Component {
                                         </div>
 
                                         <div className="font-weight-mormal font-size-sm timeline-content text-dark pl-3">
-                                            {`$${history.bet.toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} ${this.capitalizeFirstLetter(history.lineQuery.type)}
+                                            {this.getBetStatus(history.status)}{` $${history.bet.toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} ${this.capitalizeFirstLetter(history.lineQuery.type)}
                                          - ${history.teamA.name} vs ${history.teamB.name}`}
                                         </div>
                                     </div>

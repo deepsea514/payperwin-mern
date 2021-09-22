@@ -12,7 +12,7 @@ class PaymentOptionEtransfer extends Component {
                 </a>
                 <div>
                     <span className="card-name">Interac e-Transfer</span>
-                    <img className="right" style={{ border: "none" }} src="images/eTransfer.png" alt="Interac e-Transfer" width="170" height="70" />
+                    <img className="right-image" style={{ border: "none" }} src="images/eTransfer.png" alt="Interac e-Transfer" width="170" height="70" />
                 </div>
 
                 <hr />
