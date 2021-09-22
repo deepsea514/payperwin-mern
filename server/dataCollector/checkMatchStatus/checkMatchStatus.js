@@ -234,12 +234,15 @@ const checkBetWithoutBetpool = async () => {
     });
     bets.forEach(async bet => {
         if (bet.origin == 'other') return;
+        const lineQuery = bet.lineQuery;
         let linePoints = bet.pickName.split(' ');
         if (lineQuery.type.toLowerCase() == 'moneyline') {
             linePoints = null;
-        } else {
+        } else if (lineQuery.type.toLowerCase() == 'spread') {
             linePoints = Number(linePoints[linePoints.length - 1]);
             if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+        } else if (lineQuery.type.toLowerCase() == 'total') {
+            linePoints = Number(linePoints[linePoints.length - 1]);
         }
         const uid = JSON.stringify(bet.lineQuery);
         const exists = await BetPool.findOne({
