@@ -1742,7 +1742,6 @@ adminRouter.delete(
             const { id } = req.params;
             const bet = await Bet.findById(id);
             const user_id = bet.userId;
-            const lineQuery = bet.lineQuery;
             if (!bet) {
                 return res.status(404).json({ success: false });
             }
@@ -1752,12 +1751,15 @@ adminRouter.delete(
                 user.balance = user.balance + bet.bet;
                 await user.save();
             }
+            const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
             if (lineQuery.type.toLowerCase() == 'moneyline') {
                 linePoints = null;
-            } else {
+            } else if (lineQuery.type.toLowerCase() == 'spread') {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+            } else if (lineQuery.type.toLowerCase() == 'total') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpool = await BetPool.findOne({
                 sportId: lineQuery.sportId,
