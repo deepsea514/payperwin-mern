@@ -3635,3 +3635,20 @@ input.special {
     background-size: contain;
     padding-top: 10px;
 }
+
+a:hover {
+    text-decoration: none;
+}
+
+.deposit-btn, .deposit-btn:hover {
+    padding: 7px 20px;
+    background: #ED254E;
+    display: block;
+    font-size: 13px;
+    color: #fff;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 3px;
+}

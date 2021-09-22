@@ -14,7 +14,7 @@ class Bet extends PureComponent {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
@@ -82,39 +82,46 @@ class Bet extends PureComponent {
         const { bet, removeBet, oddsFormat } = this.props;
         const { name, type, league, odds, pick, sportName, lineId, pickName, index } = bet;
         return (
-            <div className="bet">
-                <div>
-                    {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
-                    <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
-                    {` ${name}`}
-                    <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index)} />
+            <>
+                {stake + win > 2000 && <div className="bet-warn-message">
+                    <div><b>Above Maximum Stake</b></div>
+                    Please enter a new amount that payout does not exceed CAD 2,000.
+                </div>}
+                <div className={`bet ${stake + win > 2000 ? 'bet-warn' : ''}`}>
+                    <div>
+                        {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
+                        <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
+                        {` ${name}`}
+                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index)} />
+                    </div>
+                    <div className="bet-type-league">{type} - {league}</div>
+                    <span className="bet-pick">{pickName}</span>
+                    <span className="bet-pick-odds">{oddsFormat == 'decimal' ? this.convertOdds(odds[pick]) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
+                    <div>
+                        <input
+                            className="bet-stake"
+                            placeholder="Risk"
+                            name="stake"
+                            type="number"
+                            value={stake === 0 ? '' : stake}
+                            onChange={this.handleChange}
+                            min={0}
+                            step={20}
+                        />
+                        <input
+                            className="bet-win"
+                            placeholder="Win"
+                            name="win"
+                            type="number"
+                            value={win === 0 ? '' : win}
+                            onChange={this.handleChange}
+                            min={0}
+                            step={20}
+                        />
+                    </div>
+                    <div className="bet-type-league mt-2">Max Payout: CAD 2,000</div>
                 </div>
-                <div className="bet-type-league">{type} - {league}</div>
-                <span className="bet-pick">{pickName}</span>
-                <span className="bet-pick-odds">{oddsFormat == 'decimal' ? this.convertOdds(odds[pick]) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
-                <div>
-                    <input
-                        className="bet-stake"
-                        placeholder="Risk"
-                        name="stake"
-                        type="number"
-                        value={stake === 0 ? '' : stake}
-                        onChange={this.handleChange}
-                        min={0}
-                        step={20}
-                    />
-                    <input
-                        className="bet-win"
-                        placeholder="Win"
-                        name="win"
-                        type="number"
-                        value={win === 0 ? '' : win}
-                        onChange={this.handleChange}
-                        min={0}
-                        step={20}
-                    />
-                </div>
-            </div>
+            </>
         )
     }
 }
