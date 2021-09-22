@@ -204,7 +204,7 @@ class BetActivities extends React.Component {
             })
             .catch(() => {
                 formik.setSubmitting(false);
-                this.setState({ modal: true, settleId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+                this.setState({ modal: true, settleId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
             })
     }
 
