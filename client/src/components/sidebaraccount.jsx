@@ -80,23 +80,25 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/security' }}><i className="fas fa-baseball-ball"></i>Password and security </Link>
                     </li>
-                    {user && !user.roles.verified && <li>
+                    {user && !user.roles.verified && !user.autobet && <li>
                         <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i>Verification</Link>
                     </li>}
-                    {user && !user.roles.phone_verified && <li>
+                    {user && !user.roles.phone_verified && !user.autobet && <li>
                         <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i>Phone Verification</Link>
                     </li>}
                 </ul>
 
-                <h3 className="cat-heading">RESPONSIBLE GAMING</h3>
-                <ul className="left-cat top-cls-sport">
-                    <li>
-                        <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i>Self exclusion</Link>
-                    </li>
-                    {/* <li>
+                {(!user || !user.autobet) && <>
+                    <h3 className="cat-heading">RESPONSIBLE GAMING</h3>
+                    <ul className="left-cat top-cls-sport">
+                        <li>
+                            <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i>Self exclusion</Link>
+                        </li>
+                        {/* <li>
                         <Link to={{ pathname: '/deactivation' }}><i className="far fa-user-circle"></i>Account deactivation</Link>
                     </li> */}
-                </ul>
+                    </ul>
+                </>}
             </div >
         );
     }
