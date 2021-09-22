@@ -86,6 +86,10 @@
     background: #082242;
 }
 
+.main-section.dark .betslip-deposit-message, .main-section.dark .betslip-deposit-message i {
+    color: black !important;
+}
+
 .main-section.dark .no-bets {
     background: #082242;
     color: white;

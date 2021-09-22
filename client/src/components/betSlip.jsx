@@ -18,11 +18,7 @@ class BetSlip extends PureComponent {
         this.toggleField = this.toggleField.bind(this);
     }
 
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    toggleField(fieldName, forceState) {
+    toggleField = (fieldName, forceState) => {
         if (typeof this.state[fieldName] !== 'undefined') {
             this.setState({
                 [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
@@ -30,9 +26,26 @@ class BetSlip extends PureComponent {
         }
     }
 
-    placeBets() {
-        const { updateUser, betSlip, removeBet } = this.props;
+    placeBets = () => {
+        const { updateUser, user, betSlip, removeBet } = this.props;
         const url = `${serverUrl}/placeBets`;
+
+        let totalStake = 0;
+        let totalWin = 0;
+        for (let i = 0; i < betSlip.length; i++) {
+            const b = betSlip[i];
+            totalStake += b.stake;
+            totalWin += b.win;
+            if (b.stake + b.win > 2000) {
+                this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum payout.`] });
+                return;
+            }
+        }
+        if (user && totalStake > user.balance) {
+            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
+            return;
+        }
+
         axios({
             method: 'post',
             url,
@@ -73,7 +86,6 @@ class BetSlip extends PureComponent {
             removeBet,
             updateBet,
             user,
-            history,
             className,
             showLoginModalAction
         } = this.props;
@@ -114,24 +126,37 @@ class BetSlip extends PureComponent {
                     <div className="tab-content" id="myTabContent">
                         <div className="tab-pane fade show active" id="Singles" role="tabpanel" aria-labelledby="home-tab">
                             <div className="bet-slip-list">
-                                {
-                                    betSlip.length > 0 ? (
-                                        <React.Fragment>
-                                            {betSlip.map(bet => <Bet
-                                                bet={bet}
-                                                removeBet={removeBet}
-                                                updateBet={updateBet}
-                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
-                                            />)}
-                                        </React.Fragment>
-                                    ) :
-                                        (
-                                            <div className="no-bets">
-                                                <h4>There are no bets on your ticket.</h4>
-                                                <small>Click the odds to add a bet</small>
-                                            </div>
-                                        )
-                                }
+                                {user && user.balance < totalStake && <div className="bet p-0">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> Insufficient Funds</b></div>
+                                        <div>You do not have sufficient funds to place these bets. Please deposit now to continue betting.</div>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link
+                                            type="button"
+                                            className="deposit-btn text-center"
+                                            to="/deposit"
+                                        >
+                                            Deposit
+                                        </Link>
+                                    </div>
+                                </div>}
+                                {betSlip.length > 0 ? (
+                                    <React.Fragment>
+                                        {betSlip.map(bet => <Bet
+                                            bet={bet}
+                                            removeBet={removeBet}
+                                            updateBet={updateBet}
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
+                                        />)}
+                                    </React.Fragment>
+                                ) :
+                                    (
+                                        <div className="no-bets">
+                                            <h4>There are no bets on your ticket.</h4>
+                                            <small>Click the odds to add a bet</small>
+                                        </div>
+                                    )}
                             </div>
                             <div className="total">
                                 <div className="total-stack d-flex">
