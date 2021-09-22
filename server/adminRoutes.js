@@ -1798,9 +1798,11 @@ adminRouter.post(
             let linePoints = bet.pickName.split(' ');
             if (lineQuery.type.toLowerCase() == 'moneyline') {
                 linePoints = null;
-            } else {
+            } else if (lineQuery.type.toLowerCase() == 'spread') {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+            } else if (lineQuery.type.toLowerCase() == 'total') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpool = await BetPool.findOne({
                 sportId: lineQuery.sportId,
@@ -1881,6 +1883,7 @@ adminRouter.post(
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
+                            console.log(totalPoints, betWin);
                         }
 
                         if (draw) {
