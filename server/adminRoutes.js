@@ -1883,7 +1883,6 @@ adminRouter.post(
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
-                            console.log(totalPoints, betWin);
                         }
 
                         if (draw) {

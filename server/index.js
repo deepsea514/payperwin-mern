@@ -962,6 +962,20 @@ expressApp.post(
                 if (origin == 'other') {
                     const event = await Event.findById(lineId);
                     const { name, startDate, teamA, teamB, status } = event;
+
+                    const existingBet = await Bet.findOne({
+                        userId: user._id,
+                        lineQuery: {
+                            lineId: lineId,
+                            eventName: lineQuery,
+                            sportName: 'other',
+                        }
+                    });
+                    if (existingBet) {
+                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
+                        continue;
+                    }
+
                     if (status == EventStatus.pending.value) {
                         if ((new Date(startDate)).getTime() <= (new Date()).getTime()) {
                             errors.push(`${pickName} ${odds[pick]} wager could not be placed. It is outdated.`);
@@ -971,6 +985,10 @@ expressApp.post(
                             const pickedCandidate = pick == 'home' ? teamA : teamB;
                             if (pickedCandidate) {
                                 const toWin = calculateToWinFromBet(betAfterFee, pickedCandidate.currentOdds);
+                                if (toBet + toWin > maximumPayouts) {
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum payout.`);
+                                    continue;
+                                }
                                 const fee = Number((toBet * BetFee).toFixed(2));
                                 const balanceChange = toBet * -1;
                                 const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
