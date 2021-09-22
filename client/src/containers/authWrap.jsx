@@ -40,7 +40,7 @@ class AuthWrap extends Component {
         this._isMounted = false;
     }
 
-    getUser(callback) {
+    getUser = (callback) => {
         const { setPreference } = this.props;
         const url = `${serverUrl}/user?compress=false`;
         axios.get(url, {
@@ -66,7 +66,7 @@ class AuthWrap extends Component {
         });
     }
 
-    updateUser(field, value) {
+    updateUser = (field, value) => {
         const { user } = this.state;
         this._isMounted && this.setState({
             user: update(user, {
@@ -91,7 +91,7 @@ class AuthWrap extends Component {
                         <Route path="/" render={() => (
                             <App
                                 user={user}
-                                getUser={this.getUser.bind(this)}
+                                getUser={this.getUser}
                                 updateUser={this.updateUser}
                             />
                         )} />

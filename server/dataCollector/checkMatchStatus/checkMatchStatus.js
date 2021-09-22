@@ -221,6 +221,10 @@ const calculateBetPoolsStatus = async () => {
         } catch (error) {
             console.error(error);
         }
+    });
+
+    await BetPool.deleteMany({
+        result: { $exists: false }
     })
 }
 

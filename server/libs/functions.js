@@ -55,7 +55,6 @@ const calculateBetsStatus = async (betpoolUid) => {
         console.log('Betpool not found.');
         return;
     }
-    console.log(betpoolUid);
     const { homeBets, awayBets, teamA, teamB } = betpool;
     // console.log(homeBets, awayBets);
     const bets = await Bet.find({

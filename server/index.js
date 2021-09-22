@@ -1543,63 +1543,68 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         return arr.filter((_v, index) => results[index]);
     }
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
-        if (!autobet.userId) return false;
-        let timezoneOffset = -8;
-        if (isDstObserved) timezoneOffset = -7;
-        const today = new Date().addHours(timezoneOffset);
-        timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
-        const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
-        const logs = await AutoBetLog
-            .aggregate([
-                {
-                    $match: {
-                        user: new ObjectId(autobet.userId._id),
-                        createdAt: { $gte: fromTime }
-                    }
-                },
-                { $group: { _id: null, amount: { $sum: "$amount" } } }
-            ]);
-        let bettedamount = 0;
-        if (logs && logs.length)
-            bettedamount = logs[0].amount;
-        let budget = autobet.budget;
-        if (autobet.rollOver) { // If Roll Over
-            // Add win amount.
-            const logs = await FinancialLog
+        try {
+            if (!autobet.userId) return false;
+            let timezoneOffset = -8;
+            if (isDstObserved) timezoneOffset = -7;
+            const today = new Date().addHours(timezoneOffset);
+            timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+            const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+            const logs = await AutoBetLog
                 .aggregate([
                     {
                         $match: {
                             user: new ObjectId(autobet.userId._id),
-                            financialtype: 'betwon',
                             createdAt: { $gte: fromTime }
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
                 ]);
+            let bettedamount = 0;
             if (logs && logs.length)
-                budget += logs[0].amount;
-        }
-        autobet.bettable = budget - bettedamount;
-        if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+                bettedamount = logs[0].amount;
+            let budget = autobet.budget;
+            if (autobet.rollOver) { // If Roll Over
+                // Add win amount.
+                const logs = await FinancialLog
+                    .aggregate([
+                        {
+                            $match: {
+                                user: new ObjectId(autobet.userId._id),
+                                financialtype: 'betwon',
+                                createdAt: { $gte: fromTime }
+                            }
+                        },
+                        { $group: { _id: null, amount: { $sum: "$amount" } } }
+                    ]);
+                if (logs && logs.length)
+                    budget += logs[0].amount;
+            }
+            autobet.bettable = budget - bettedamount;
+            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+                return (
+                    autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                    autobet.status == AutoBetStatus.active &&                   //Check active status
+                    autobet.userId.balance > 0 &&                               //Check Balance
+                    autobet.bettable > 0 &&                                     //Check bettable
+                    // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
+                    // (bettedamount < (budget - toBet))                           //Check Budget
+                    true
+                );
+            }
             return (
                 autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                 autobet.status == AutoBetStatus.active &&                   //Check active status
                 autobet.userId.balance > 0 &&                               //Check Balance
                 autobet.bettable > 0 &&                                     //Check bettable
                 // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                // (bettedamount < (budget - toBet))                           //Check Budget
-                true
+                // (bettedamount < (budget - toBet)) &&                        //Check Budget
+                autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
             );
+        } catch (error) {
+            console.log('filter => ', error);
+            return false;
         }
-        return (
-            autobet.userId._id.toString() != user._id.toString() &&     //Not same user
-            autobet.status == AutoBetStatus.active &&                   //Check active status
-            autobet.userId.balance > 0 &&                               //Check Balance
-            autobet.bettable > 0 &&                                     //Check bettable
-            // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-            // (bettedamount < (budget - toBet)) &&                        //Check Budget
-            autobet.sports.find((sport) => sport == lineQuery.sportName)// Check Sports
-        );
     });
 
     if (autobetusers.length == 0) return;
@@ -1646,15 +1651,14 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }
 
     let betAmount = toBet;
-    for (const selectedauto in autobetusers) {
+    for (let i = 0; i < autobetusers.length; i++) {
+        const selectedauto = autobetusers[i];
         if (betAmount <= 0) return;
         let bettable = Math.min(betAmount, selectedauto.maxRisk, selectedauto.userId.balance, selectedauto.bettable);
         betAmount -= bettable;
         const betAfterFee = bettable;
         const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
         const fee = Number((bettable * BetFee).toFixed(2));
-        const balanceChange = bettable * -1;
-        const newBalance = selectedauto.userId.balance ? selectedauto.userId.balance + balanceChange : 0 + balanceChange;
 
         // insert bet doc to bets table
         const newBetObj = {
@@ -1711,15 +1715,15 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     text: `Your bet is waiting for a match`,
                     html: simpleresponsive(
                         `Hi <b>${selectedauto.userId.email}</b>.
-                        <br><br>
-                        This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                        <br><br>
-                        <ul>
-                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
-                        </ul>
-                        `),
+                            <br><br>
+                            This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                            <br><br>
+                            <ul>
+                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                                <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                                <li>Platform: PAYPERWIN Peer-to Peer(Autobet)</li>
+                            </ul>
+                            `),
                 };
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
@@ -1734,9 +1738,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             }
             if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                 sendSMS(`This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.\n 
-                Wager: $${betAfterFee.toFixed(2)}
-                Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
+                    Wager: $${betAfterFee.toFixed(2)}
+                    Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
+                    Platform: PAYPERWIN Peer-to Peer(Autobet)`, selectedauto.userId.phone);
             }
 
             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
@@ -1747,15 +1751,15 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 text: `New Bet`,
                 html: simpleresponsive(
                     `<ul>
-                        <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
-                        <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
-                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                        <li>Pick: ${pickName}</li>
-                        <li>Date: ${matchTimeString}</li>
-                        <li>Win: $${toWin.toFixed(2)}</li>
-                    </ul>`),
+                            <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
+                            <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
+                            <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
+                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                            <li>Pick: ${pickName}</li>
+                            <li>Date: ${matchTimeString}</li>
+                            <li>Win: $${toWin.toFixed(2)}</li>
+                        </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
                 ErrorLog.create({
@@ -1794,7 +1798,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             await betpool.update(docChanges);
 
             const betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
-            const balance = Number(newBalance.toFixed(2));
             try {
                 await FinancialLog.create({
                     financialtype: 'bet',
@@ -1804,7 +1807,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     method: 'bet',
                     status: FinancialStatus.success,
                 });
-                await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, balance });
+                await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, $inc: { balance: -bettable } });
             } catch (err) {
                 console.log('selectedauto.userId =>' + err);
             }
