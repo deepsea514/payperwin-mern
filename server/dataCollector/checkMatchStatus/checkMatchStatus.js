@@ -233,6 +233,14 @@ const checkBetWithoutBetpool = async () => {
         status: 'Pending'
     });
     bets.forEach(async bet => {
+        if (bet.origin == 'other') return;
+        let linePoints = bet.pickName.split(' ');
+        if (lineQuery.type.toLowerCase() == 'moneyline') {
+            linePoints = null;
+        } else {
+            linePoints = Number(linePoints[linePoints.length - 1]);
+            if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+        }
         const uid = JSON.stringify(bet.lineQuery);
         const exists = await BetPool.findOne({
             sportId: bet.lineQuery.sportId,
@@ -242,18 +250,11 @@ const checkBetWithoutBetpool = async () => {
             sportName: bet.lineQuery.sportName,
             matchStartDate: bet.matchStartDate,
             lineType: bet.lineQuery.type,
-            points: points,
+            points: linePoints,
             origin: bet.origin
         });
         if (exists) return;
         try {
-            if (bet.origin == 'other') return;
-            let points = bet.pickName.split(' ');
-            if (bet.lineQuery.type == 'moneyline') {
-                points = null;
-            } else {
-                points = Number(points[points.length - 1]);
-            }
             await BetPool.create(
                 {
                     uid: uid,
@@ -276,7 +277,7 @@ const checkBetWithoutBetpool = async () => {
                     sportName: bet.lineQuery.sportName,
                     matchStartDate: bet.matchStartDate,
                     lineType: bet.lineQuery.type,
-                    points: points,
+                    points: linePoints,
                     homeBets: bet.pick === 'home' ? [bet._id] : [],
                     awayBets: bet.pick === 'away' ? [bet._id] : [],
                     origin: bet.origin
