@@ -53,15 +53,14 @@ export default class AutoBetModal extends React.Component {
                     .required("Peorid field is required."),
                 priority: Yup.number()
                     .required("Pririty field is required."),
-                sports: Yup.array().of(Yup.object())
-                    .min(1, "Please choose at least a sport."),
+                sports: Yup.array().of(Yup.object()),
                 side: Yup.array().of(Yup.object())
                     .min(1, "Please choose at least a Side."),
                 betType: Yup.array().of(Yup.object())
                     .min(1, "Please choose at least a Bet Type."),
                 status: Yup.string()
                     .required("Status field is required."),
-                referral_code: Yup.string()
+                referral_code: Yup.string().nullable()
             }),
             loadingUser: false,
             loadingSports: false,
