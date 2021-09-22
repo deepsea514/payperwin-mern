@@ -51,11 +51,12 @@ class BetSlip extends PureComponent {
                 removeBet(null, null, null, null, true);
                 stateChanges.confirmationOpen = true;
             }
-            if (errors) stateChanges.errors = errors;
+            if (errors && errors.length) stateChanges.errors = errors;
             if (successCount || errors) {
                 this.setState(stateChanges);
             }
         }).catch((err) => {
+            console.log(err)
             if (err.response && err.response.data) {
                 const { error } = err.response.data;
                 this.setState({ formError: error });
