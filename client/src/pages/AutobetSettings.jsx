@@ -41,8 +41,7 @@ class AutobetSettings extends Component {
                 maxRisk: Yup.number()
                     .moreThan(0, "Max Risk should be more than 0")
                     .required("Max Risk field is required."),
-                sports: Yup.array().of(Yup.object())
-                    .min(1, "Please choose at least a sport."),
+                sports: Yup.array().of(Yup.object()),
                 side: Yup.array().of(Yup.object())
                     .min(1, "Please choose at least a Side."),
                 betType: Yup.array().of(Yup.object())
