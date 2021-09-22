@@ -78,7 +78,7 @@ const checkTimerTwo = async () => {
     calculateBetPoolsStatus();
 
     // Check bet without betpool
-    // checkBetWithoutBetpool();
+    checkBetWithoutBetpool();
 }
 
 const checkMatchStatus = async () => {
@@ -224,7 +224,7 @@ const calculateBetPoolsStatus = async () => {
     });
 
     await BetPool.deleteMany({
-        result: { $exists: false }
+        result: { $exists: true }
     })
 }
 
@@ -234,7 +234,17 @@ const checkBetWithoutBetpool = async () => {
     });
     bets.forEach(async bet => {
         const uid = JSON.stringify(bet.lineQuery);
-        const exists = await BetPool.findOne({ uid: new RegExp(`^${uid}$`, 'i') });
+        const exists = await BetPool.findOne({
+            sportId: bet.lineQuery.sportId,
+            leagueId: bet.lineQuery.leagueId,
+            eventId: bet.lineQuery.eventId,
+            lineId: bet.lineQuery.lineId,
+            sportName: bet.lineQuery.sportName,
+            matchStartDate: bet.matchStartDate,
+            lineType: bet.lineQuery.type,
+            points: points,
+            origin: bet.origin
+        });
         if (exists) return;
         try {
             if (bet.origin == 'other') return;
