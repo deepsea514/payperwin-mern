@@ -1750,6 +1750,14 @@ adminRouter.delete(
                 user.betHistory = user.betHistory.filter(bet => bet.toString() != id);
                 user.balance = user.balance + bet.bet;
                 await user.save();
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: user._id,
+                    amount: bet.bet,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                });
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
