@@ -26,7 +26,7 @@ class AutobetHistory extends Component {
             case 'Draw':
                 return <b>DRAW</b>;
             case 'Settled - Win':
-                return <>WIN</>;
+                return <b>WIN</b>;
             case 'Settled - Lose':
                 return <b>LOSS</b>;
             case 'Cancelled':
