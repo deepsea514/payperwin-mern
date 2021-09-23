@@ -2072,20 +2072,28 @@ expressApp.post(
 expressApp.get(
     '/sport',
     async (req, res) => {
-        const { name, leagueId } = req.query;
+        const { name, leagueId, eventId } = req.query;
         const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
         if (sportData) {
             if (leagueId) {
                 const sportLeague = sportData.leagues.find(league => league.originId == leagueId)
-                if (sportLeague)
-                    return res.json({ league: sportLeague, origin: sportData.origin });
+                if (sportLeague) {
+                    if (eventId) {
+                        const event = sportLeague.events.find(event => event.originId == eventId);
+                        if (event)
+                            return res.json({
+                                leagueName: sportLeague.name,
+                                ...event
+                            });
+                        return res.json(null);
+                    }
+                    return res.json({ ...sportData, leagues: [sportLeague] });
+                }
                 return res.json(null);
             }
             return res.json(sportData);
         } else {
-            if (leagueId)
-                return res.json(null);
-            return res.json([]);
+            return res.json(null);
         }
     },
 );

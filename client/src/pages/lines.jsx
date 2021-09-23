@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import axios from 'axios';
 import { withRouter, Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-import getLinesFromSportData from '../libs/getLinesFromSportData';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
@@ -91,62 +90,34 @@ class Lines extends PureComponent {
     }
 
     getSportLine() {
-        const { match: { params: { sportName, leagueId, eventId, lineId } }, timezone } = this.props;
+        const { match: { params: { sportName, leagueId, eventId } } } = this.props;
         if (sportName) {
-            const url = `${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`;
-            axios({
-                method: 'get',
-                url,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(({ data }) => {
-                if (data) {
-                    // Remove moneyline with draw
-                    const { league } = data;
-                    const { events } = league;
-                    events.forEach(event => {
-                        const { lines, startDate } = event;
-                        if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                            event.started = false;
-                        } else {
-                            event.started = true;
-                        }
-                        if (lines) {
-                            lines.forEach(line => {
-                                const { moneyline, spreads, totals } = line;
-                                if (spreads) {
-                                    line.spreads = spreads.length ? spreads : null;
+            axios.get(`${serverUrl}/sport`, { params: { name: sportName, leagueId: leagueId, eventId } })
+                .then(({ data }) => {
+                    const { timer } = this.state;
+                    if (timer) clearInterval(timer);
+                    if (data) {
+                        this.setState({
+                            data: data,
+                            timer: setInterval(() => {
+                                const { data } = this.state;
+                                const { startDate } = data;
+                                if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
+                                    this.setState({
+                                        data: { ...data, started: false }
+                                    });
+                                } else {
+                                    this.setState({
+                                        data: { ...data, started: true }
+                                    });
                                 }
-
-                                if (totals) {
-                                    line.totals = totals.length ? totals : null;
-                                }
-                            });
-                        }
-                    });
-                    const lineData = getLinesFromSportData(data, leagueId, eventId, lineId);
-
-                    this.setState({
-                        data: lineData,
-                        timer: setInterval(() => {
-                            const { data } = this.state;
-                            const { startDate } = data;
-                            if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                                this.setState({
-                                    data: { ...lineData, started: false }
-                                });
-                            } else {
-                                this.setState({
-                                    data: { ...lineData, started: true }
-                                });
-                            }
-                        }, 10 * 60 * 1000),
-                    })
-                }
-            }).catch((err) => {
-                this.setState({ error: err });
-            });
+                            }, 1 * 60 * 1000),
+                        })
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ error: err });
+                });
         }
     }
 
@@ -272,7 +243,8 @@ class Lines extends PureComponent {
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {
-                        const { spreads, originId: lineId, moneyline, totals } = line;
+                        const { spreads, originId: lineId, moneyline, totals,
+                            first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
                         if (!spreads && !moneyline && !totals) {
                             return null;
                         }
@@ -296,7 +268,7 @@ class Lines extends PureComponent {
                                         const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
                                         return (
                                             <React.Fragment>
-                                                <div className="line-type-header line-type-header-moneyline">Moneyline:</div>
+                                                <div className="line-type-header line-type-header-moneyline">Moneyline - Game</div>
                                                 <li>
                                                     <div className="row mx-0">
                                                         <div className="col-md-6 com-sm-12 col-12">
@@ -393,7 +365,7 @@ class Lines extends PureComponent {
                                 ) : null}
                                 {(!type || type == 'spread') && spreads ? (
                                     <React.Fragment>
-                                        <div className="line-type-header">Spreads</div>
+                                        <div className="line-type-header">Spreads - Game</div>
                                         {spreads.map((spread, i) => {
                                             if (type && index && index != i) return null;
                                             const { newHome, newAway } = calculateNewOdds(spread.home, spread.away)
@@ -508,7 +480,7 @@ class Lines extends PureComponent {
                                 ) : null}
                                 {(!type || type == 'total') && totals ? (
                                     <React.Fragment>
-                                        <div className="line-type-header">Over/Under</div>
+                                        <div className="line-type-header">Over/Under - Game</div>
                                         {totals.map((total, i) => {
                                             if (type && index && index != i) return null;
                                             const { newHome, newAway } = calculateNewOdds(total.over, total.under)

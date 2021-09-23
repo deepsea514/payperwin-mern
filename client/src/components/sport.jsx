@@ -32,9 +32,9 @@ class Sport extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName } = this.props;
-        const { sportName: prevSportName } = prevProps;
-        const sportChanged = (sportName !== prevSportName);
+        const { sportName, league } = this.props;
+        const { sportName: prevSportName, league: prevLeague } = prevProps;
+        const sportChanged = (sportName !== prevSportName || league !== prevLeague);
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
@@ -42,54 +42,53 @@ class Sport extends PureComponent {
     }
 
     getSport() {
-        const { sportName } = this.props;
+        const { sportName, league: league } = this.props;
         this.setState({ data: null });
         if (sportName) {
-            const url = `${serverUrl}/sport?name=${sportName}`;
-            axios({
-                method: 'get',
-                url,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(({ data }) => {
-                if (data) {
-                    // Remove moneyline with draw
-                    data.leagues.forEach(league => {
-                        const { events } = league;
-                        events.forEach(event => {
-                            const { lines, startDate } = event;
-                            if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                                event.started = false;
-                            } else {
-                                event.started = true;
-                            }
-                            event.lineCount = 0;
-                            if (lines) {
-                                lines.forEach((line, i) => {
-                                    if (i === 0) {
-                                        const { moneyline, spreads, totals } = line;
-                                        if (moneyline) {
-                                            event.lineCount++;
+            axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName, leagueId: league } : { name: sportName } })
+                .then(({ data }) => {
+                    if (data) {
+                        // Remove moneyline with draw
+                        data.leagues.forEach(league => {
+                            const { events } = league;
+                            events.forEach(event => {
+                                const { lines, startDate } = event;
+                                if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
+                                    event.started = false;
+                                } else {
+                                    event.started = true;
+                                }
+                                event.lineCount = 0;
+                                if (lines) {
+                                    lines.forEach((line, i) => {
+                                        if (i === 0) {
+                                            const { moneyline, spreads, totals, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
+                                            let mline = [{ moneyline, spreads, totals }, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter];
+                                            mline.forEach(line => {
+                                                if (!line) return;
+                                                const { moneyline, spreads, totals } = line;
+                                                if (moneyline) {
+                                                    event.lineCount++;
+                                                }
+                                                if (spreads) {
+                                                    event.lineCount += spreads.length;
+                                                    line.spreads = spreads.length ? spreads : null;
+                                                }
+                                                if (totals) {
+                                                    event.lineCount += totals.length;
+                                                    line.totals = totals.length ? totals : null;
+                                                }
+                                            })
                                         }
-                                        if (spreads) {
-                                            event.lineCount += spreads.length;
-                                            line.spreads = spreads.length ? spreads : null;
-                                        }
-                                        if (totals) {
-                                            event.lineCount += totals.length;
-                                            line.totals = totals.length ? totals : null;
-                                        }
-                                    }
-                                });
-                            }
+                                    });
+                                }
+                            });
                         });
-                    });
-                    this.setState({ data });
-                }
-            }).catch((err) => {
-                this.setState({ error: err });
-            });
+                        this.setState({ data });
+                    }
+                }).catch((err) => {
+                    this.setState({ error: err });
+                });
         }
     }
 
@@ -528,7 +527,7 @@ class Sport extends PureComponent {
                         });
                         events = events.filter(event => event);
                         return (events.length ?
-                            <div className="tab-content sport-container" id="myTabContent" key={leagueName}>
+                            <div className="tab-content" id="myTabContent" key={leagueName}>
                                 <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>

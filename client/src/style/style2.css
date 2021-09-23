@@ -3540,10 +3540,6 @@ input.special {
     opacity: 1;
 }
 
-.sport-container {
-    min-width: 600px;
-}
-
 .sort-header {
     cursor: pointer;
 }
