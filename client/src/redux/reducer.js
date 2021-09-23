@@ -27,7 +27,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: 'light',
+    display_mode: timeHelper.getDisplayModeBasedOnSystemTime(null),
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
@@ -54,7 +54,7 @@ export const reducer = persistReducer(
         switch (action.type) {
             case actionTypes.setPreference:
                 if (action.preference)
-                    return { ...state, ...action.preference };
+                    return { ...state, ...action.preference, display_mode: state.display_mode };
                 return initialState;
 
             case actionTypes.setLanguage:
@@ -141,6 +141,7 @@ export function* saga() {
             const display_mode = timeHelper.getDisplayModeBasedOnSystemTime(timezone);
             yield put(actions.setDisplayMode(display_mode));
         } catch (error) {
+            console.log(error)
         }
     })
 }

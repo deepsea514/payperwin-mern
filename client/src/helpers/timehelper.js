@@ -34,7 +34,7 @@ function getDisplayModeBasedOnSystemTime(timezone) {
     }
     const changedTime = new Date(getChangedTime(new Date(), timezone));
     const hour = changedTime.getHours();
-    if (hour < 6 || hour > 18) return 'dark';
+    if (hour < 6 || hour >= 18) return 'dark';
     return 'light';
 }
 
