@@ -241,6 +241,10 @@
     background: #0a294e;
 }
 
+.main-section.dark .content-container .rules table {
+    background-color: black;
+}
+
 .main-section.dark .content-container .terms-and-conditions table {
     background: #071d38;
 }
