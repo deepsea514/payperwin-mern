@@ -40,11 +40,11 @@ const arrangeLeagues = (leagues, sport) => {
     const topLeague = getTopLeagueInSport(sport);
     if (!topLeague) return;
     for (let i = 0; i < leagues.length; i++) {
-        if (league[i].name == topLeague) {
+        if (leagues[i].name == topLeague) {
             if (i == 0) return;
             const mid = leagues[0];
-            leageus[0] = leageus[i];
-            leageus[i] = mid;
+            leagues[0] = leagues[i];
+            leagues[i] = mid;
         }
     }
 }
