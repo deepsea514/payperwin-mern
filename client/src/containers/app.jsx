@@ -95,8 +95,7 @@ class App extends PureComponent {
     componentDidMount() {
         const { setDisplayModeBasedOnSystem } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
-
-        setInterval(setDisplayModeBasedOnSystem, 1 * 60 * 1000);
+        setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
     }
 
