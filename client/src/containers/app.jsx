@@ -52,7 +52,6 @@ import Others from "../components/others";
 import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
 import PhoneVerification from "../pages/phoneVerification";
-import SportLeague from "../pages/sportleague";
 import Cashback from "../pages/cashback";
 import CashbackNames from "../components/cashbackNames";
 import SportName from "../pages/sportName";
@@ -332,7 +331,7 @@ class App extends PureComponent {
                                                     const league = resObjPath(match, 'params.league');
                                                     return (
                                                         <React.Fragment>
-                                                            <SportLeague addBet={this.addBet} betSlip={betSlip}
+                                                            <Sport addBet={this.addBet} betSlip={betSlip}
                                                                 removeBet={this.removeBet} sportName={name}
                                                                 league={league}
                                                             />

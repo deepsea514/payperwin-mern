@@ -127,13 +127,13 @@ export function* saga() {
         }
     });
 
-    yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
-        try {
-            const display_mode = yield select((state) => state.frontend.display_mode);
-            yield setPreferences({ display_mode });
-        } catch (error) {
-        }
-    });
+    // yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
+    //     try {
+    //         const display_mode = yield select((state) => state.frontend.display_mode);
+    //         yield setPreferences({ display_mode });
+    //     } catch (error) {
+    //     }
+    // });
 
     yield takeLatest(actionTypes.setDisplayModeBasedOnSystem, function* setDisplayModeBasedOnSystemSaga() {
         try {
