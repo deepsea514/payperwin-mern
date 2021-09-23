@@ -221,6 +221,7 @@ class App extends PureComponent {
             '/autobet-dashboard',
             '/autobet-settings',
             '/loyalty',
+            '/support',
         ].includes(pathname);
         const exceptDark = [
             '/articles',
