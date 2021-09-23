@@ -75,8 +75,21 @@ class AutobetDashboard extends Component {
         return (
             <React.Fragment>
                 <div className="col-in">
-                    <h1 className="main-heading-in">Autobet Dashboard</h1>
-                    <div className="main-cnt">
+                    <div className="my-3 ml-5">
+                        <span className="main-heading-in">Autobet Dashboard</span>
+                        <div className="float-right">
+                            <DateRangePicker
+                                initialSettings={daterange}
+                                onApply={this.handleChangeDate}
+                            >
+                                <div className="rangepicker-container">
+                                    <i className="fas fa-calendar-week"></i> Date Range
+                                </div>
+                            </DateRangePicker>
+                        </div>
+                    </div>
+                    {/* <h1 className="main-heading-in">Autobet Dashboard</h1> */}
+                    <div className="main-cnt mt-5">
                         {loading && <center>
                             <Preloader use={ThreeDots}
                                 size={100}
@@ -91,14 +104,6 @@ class AutobetDashboard extends Component {
                                 <AutobetChart sports={data.sports} />
                             </div>
                             <div className="col-md-5">
-                                <DateRangePicker
-                                    initialSettings={daterange}
-                                    onApply={this.handleChangeDate}
-                                >
-                                    <div className="rangepicker-container">
-                                        <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
-                                    </div>
-                                </DateRangePicker>
                                 <AutobetSummary user={user} summary={data.summary} />
                             </div>
                         </div>}

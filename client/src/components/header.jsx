@@ -149,14 +149,14 @@ class Header extends PureComponent {
                                     <div className="login-nav-contain">
                                         <ul className="login-nav">
                                             <li className="not-mobile"><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
-                                            <li>
+                                            {!user.autobet && <li>
                                                 <span className="blue-icon">
                                                     <Link to={{ pathname: '/deposit' }}>
                                                         CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
                                                     </Link>
                                                     &nbsp;<i className="fa fa-refresh cursor-pointer" onClick={() => getUser()} />
                                                 </span>
-                                            </li>
+                                            </li>}
                                             <li className="not-mobile">
                                                 <Link to={{ pathname: '/deposit' }} className="deposit">
                                                     <span>Deposit</span>
