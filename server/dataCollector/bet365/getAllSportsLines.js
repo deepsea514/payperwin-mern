@@ -14,6 +14,7 @@ const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
 const fs = require('fs');
 const dateformat = require('dateformat');
+const arrangeLeagues = require('./arrangeLeagues');
 require('dotenv').config();
 
 const per_page = 50;
@@ -175,6 +176,7 @@ const getAllSportsLines = async () => {
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
+            arrangeLeagues(sportEvents.leagues, sport.name);
 
             // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
 
