@@ -1415,7 +1415,7 @@ expressApp.post(
                                                 console.log('creating betpool');
                                                 const newBetPool = new BetPool(
                                                     {
-                                                        uid: JSON.stringify({ ...lineQuery, user: user._id, time: new Date().getTime() }),
+                                                        uid: JSON.stringify({ ...lineQuery, user: user._id }),
                                                         sportId: originSportId,
                                                         leagueId,
                                                         eventId,
