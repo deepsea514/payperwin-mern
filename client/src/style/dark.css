@@ -237,6 +237,10 @@
     background: #0a294e;
 }
 
+.main-section.dark .line-name {
+    color: white;
+}
+
 .main-section.dark .content-container .privacy-policy-paragraph {
     background: #0a294e;
 }

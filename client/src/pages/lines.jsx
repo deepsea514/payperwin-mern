@@ -258,7 +258,7 @@ class Lines extends PureComponent {
                     </div>
                 </div>}
                 <center>
-                    <div>
+                    <div className="line-name">
                         {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
                         <div className="float-right">
                             <button className="form-button ml-2"
@@ -267,7 +267,7 @@ class Lines extends PureComponent {
                             </button>
                         </div>
                     </div>
-                    <strong>{teamA} VS {teamB}</strong>
+                    <strong className="line-name">{teamA} VS {teamB}</strong>
                 </center>
                 <br />
                 <ul>
