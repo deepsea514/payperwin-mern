@@ -9,11 +9,9 @@ import { Button } from '@material-ui/core';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { withStyles } from "@material-ui/core/styles";
-
 import { getInputClasses } from "../helpers/getInputClasses";
-
-import config from "../../../config.json";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

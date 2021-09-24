@@ -2,7 +2,7 @@
 import React from "react";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 
 export function LastDeposits({ className, lastdeposits, loadingdeposits, roothistory }) {

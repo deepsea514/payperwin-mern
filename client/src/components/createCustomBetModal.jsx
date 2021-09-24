@@ -5,8 +5,8 @@ import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/c
 import { withStyles } from '@material-ui/core/styles';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import axios from 'axios';
-import config from '../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const WhiteRadio = withStyles({
     root: {

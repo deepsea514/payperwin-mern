@@ -6,8 +6,8 @@ import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import convertOdds from '../helpers/convertOdds';
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Others extends Component {
     constructor(props) {
@@ -73,7 +73,7 @@ class Others extends Component {
                                     </div>
                                     <div className="row mx-0 pt-2 bg-white">
                                         <div className="col-md-6 com-sm-6 col-12">
-                                            <span className={`box-odds box-moneyline line-full ${teamAExist ? 'orange' : null}`}
+                                            <span className={`box-odds line-full ${teamAExist ? 'orange' : null}`}
                                                 onClick={teamAExist ?
                                                     () => removeBet(event._id, 'moneyline', 'home') :
                                                     () => addBet(
@@ -102,7 +102,7 @@ class Others extends Component {
                                             </span>
                                         </div>
                                         <div className="col-md-6 com-sm-6 col-12">
-                                            <span className={`box-odds box-moneyline line-full ${teamBExist ? 'orange' : null}`}
+                                            <span className={`box-odds line-full ${teamBExist ? 'orange' : null}`}
                                                 onClick={teamBExist ?
                                                     () => removeBet(event._id, 'moneyline', 'away') :
                                                     () => addBet(

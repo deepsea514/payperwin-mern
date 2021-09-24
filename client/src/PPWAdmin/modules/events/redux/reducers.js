@@ -2,7 +2,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
 import { getEvents } from "./services";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const EventStatus = config.EventStatus;
 
 export const actionTypes = {

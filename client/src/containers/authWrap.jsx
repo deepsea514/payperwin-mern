@@ -8,11 +8,8 @@ import axios from 'axios';
 import socket from "../helpers/socket";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
-
-window.recaptchaSiteKey = config.recaptchaSiteKey;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class AuthWrap extends Component {
     constructor(props) {

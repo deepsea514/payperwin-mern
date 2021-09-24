@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
-import config from "../../../config.json";
-const appUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
-const socket = io(appUrl);
+const socket = io(serverUrl);
 
 socket.on("connect", () => {
 });

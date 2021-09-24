@@ -7,10 +7,9 @@ import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
-
 import { getInputClasses } from "../helpers/getInputClasses";
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

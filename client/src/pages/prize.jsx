@@ -5,9 +5,8 @@ import WinWheel from '../libs/WinWheel';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import rouletteSelection from '../libs/rouletteSelection';
-
-import config from '../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Prize extends Component {
     constructor(props) {

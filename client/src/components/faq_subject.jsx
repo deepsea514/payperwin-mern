@@ -4,8 +4,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import config from '../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class FaqSubject extends Component {
     constructor(props) {

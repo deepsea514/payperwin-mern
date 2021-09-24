@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class TfaModal extends Component {
     constructor(props) {

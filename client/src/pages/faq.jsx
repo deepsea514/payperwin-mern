@@ -8,9 +8,8 @@ import FaqSubject from "../components/faq_subject";
 import FaqHome from "../components/faq_home";
 import FaqArticle from "../components/faq_article";
 import FaqSearch from "../components/faq_search";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Faq extends Component {
     constructor(props) {

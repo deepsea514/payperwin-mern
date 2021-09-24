@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import dateformat from "dateformat";
 import * as promotions from "../redux/reducers";
 import { getPromotionDetail } from "../redux/services";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
 

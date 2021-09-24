@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Iframe from 'react-iframe';
 import { setTitle } from '../libs/documentTitleBuilder';
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class SportsBook extends Component {
     constructor(props) {

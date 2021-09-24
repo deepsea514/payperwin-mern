@@ -5,9 +5,8 @@ import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
-
-import config from "../../../config.json";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class TransactionHistory extends Component {
     constructor(props) {

@@ -9,9 +9,8 @@ import QRCode from "react-qr-code";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { connect } from "react-redux";
 import TourModal from '../components/tourModal';
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class OpenBets extends Component {
     constructor(props) {

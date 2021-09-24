@@ -6,9 +6,8 @@ import AutobetChart from '../components/autobechart';
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class AutobetDashboard extends Component {
     constructor(props) {

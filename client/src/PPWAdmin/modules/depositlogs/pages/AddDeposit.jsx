@@ -10,7 +10,7 @@ import { getReason, searchUsers } from "../../customers/redux/services";
 import { addDeposit } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const PaymentMethod = config.PaymentMethod;
 const FinancialStatus = config.FinancialStatus;
 

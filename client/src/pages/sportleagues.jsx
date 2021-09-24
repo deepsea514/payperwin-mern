@@ -3,9 +3,8 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
-import '../style/all.min.css';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const sportNameSpanStyle = {
     float: 'initial',

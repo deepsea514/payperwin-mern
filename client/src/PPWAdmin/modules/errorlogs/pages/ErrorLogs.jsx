@@ -12,8 +12,6 @@ import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { deleteErrorLog } from "../redux/services";
 
-const config = require("../../../../../../config.json");
-
 class ErrorLogs extends React.Component {
     constructor(props) {
         super(props);

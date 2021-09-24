@@ -5,8 +5,8 @@ import { Formik } from "formik";
 import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { connect } from "react-redux";
-import config from '../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class ForgotPasswordModal extends React.Component {
     constructor(props) {

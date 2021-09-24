@@ -12,8 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
-
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 const PaymentMethod = config.PaymentMethod;
 

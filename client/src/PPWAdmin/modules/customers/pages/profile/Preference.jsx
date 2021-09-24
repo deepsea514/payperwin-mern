@@ -8,8 +8,7 @@ import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../../helpers/getInputClasses";
 import timeHelper from "../../../../../helpers/timehelper";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-
-const config = require('../../../../../../../config.json');
+import config from '../../../../../../../config.json';
 const TimeZones = config.TimeZones;
 const isDstObserved = config.isDstObserved;
 

@@ -7,8 +7,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
 import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import { cancelEvent, editEvent } from "../redux/services";
-
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const EventStatus = config.EventStatus;
 
 class Events extends React.Component {

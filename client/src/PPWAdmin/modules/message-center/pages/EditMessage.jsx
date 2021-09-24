@@ -7,8 +7,7 @@ import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
 import { editMessageDraft, getMessageDraft } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
-
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const CountryInfo = config.CountryInfo;
 
 const years = _.range(1950, (new Date()).getFullYear() + 1, 1);

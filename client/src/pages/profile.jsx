@@ -10,10 +10,8 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { getInputClasses } from "../helpers/getInputClasses";
 import CustomDatePicker from '../components/customDatePicker';
-
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 export default class Profile extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import axios from "axios";
-import config from "../../../../../../config.json";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
+import _env from '../../../../env.json';
+const serverUrl = _env.appAdminUrl;
 
 export function getFAQSubjects(page) {
     return axios.get(`${serverUrl}/faq-subjects?page=${page}`, { withCredentials: true });

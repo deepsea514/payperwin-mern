@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Button } from "@material-ui/core";
 import axios from 'axios';
-
 import { Form, InputGroup } from "react-bootstrap";
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-
-import config from '../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Security extends Component {
     constructor(props) {

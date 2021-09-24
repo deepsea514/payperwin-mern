@@ -8,12 +8,10 @@ import { Formik } from "formik";
 import { Form } from "react-bootstrap";
 import { setPreferences } from "../redux/services";
 import timeHelper from "../helpers/timehelper";
-
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@material-ui/core";
 import { Link } from "react-router-dom";
-
-const config = require('../../../config.json');
+import config from '../../../config.json';
 const TimeZones = config.TimeZones;
 const isDstObserved = config.isDstObserved;
 

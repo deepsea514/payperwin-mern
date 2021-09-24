@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as currentUser from "../redux/reducers";
-const config = require('../../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
-const AdminRoles = config.AdminRoles;
 import axios from 'axios';
+import config from '../../../../config.json';
+import _env from '../../env.json';
+const serverUrl = _env.appAdminUrl;
+const AdminRoles = config.AdminRoles;
 
 import { Layout } from "../_metronic/layout";
 import AdminDashboard from "../modules/dashboard/pages/AdminDashboard.jsx";
