@@ -7,4 +7,4 @@ npm-debug.log
 # IntelliJ
 *.iml
 /.idea
-.env
+env.json
