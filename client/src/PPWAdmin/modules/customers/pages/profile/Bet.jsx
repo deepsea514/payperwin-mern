@@ -5,6 +5,7 @@ import { getCustomerBets } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
 import { Tabs, Tab } from "react-bootstrap";
+import convertOdds from '../../../../../helpers/convertOdds.js';
 
 class Bet extends React.Component {
     constructor(props) {
@@ -159,7 +160,7 @@ class Bet extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
-                    {bet.pickName} @ {this.convertOdds(bet.pickOdds)}
+                    {bet.pickName} @ {convertOdds(bet.pickOdds, 'american')}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
@@ -238,7 +239,7 @@ class Bet extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
-                    {bet.WagerInfo.Selection} @ {this.convertOdds(bet.WagerInfo.Odds)}
+                    {bet.WagerInfo.Selection} @ {convertOdds(bet.WagerInfo.Odds, 'american')}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
@@ -252,26 +253,6 @@ class Bet extends React.Component {
                 </td>
             </tr>
         ));
-    }
-
-    convertOdds = (odd) => {
-        const { customer } = this.props;
-        const { preference } = customer;
-        const { oddsFormat } = preference;
-
-        odd = Number(odd);
-        switch (oddsFormat) {
-            case 'decimal':
-                if (odd > 0)
-                    return Number(1 + odd / 100).toFixed(2);
-                return Number(1 - 100 / odd).toFixed(2);
-            case 'american':
-                if (odd > 0)
-                    return '+' + odd;
-                return odd;
-            default:
-                return odd;
-        }
     }
 
     getDate = (date) => {

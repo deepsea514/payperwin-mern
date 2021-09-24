@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -72,7 +72,7 @@ import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
 
-class App extends PureComponent {
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {

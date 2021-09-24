@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import axios from "axios";
@@ -32,7 +32,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class Verification extends PureComponent {
+class Verification extends Component {
     constructor(props) {
         super(props);
         this.state = {

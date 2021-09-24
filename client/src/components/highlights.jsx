@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Sport from './sport';
 import Others from "./others";
 // import sportNameIcon from '../helpers/sportNameIcon';
@@ -7,7 +7,7 @@ import axios from "axios";
 import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-export default class Highlights extends PureComponent {
+export default class Highlights extends Component {
     constructor(props) {
         super(props);
         this.state = {

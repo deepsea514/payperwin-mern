@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import SportsList from '../components/sportsList';
 
 
-export default class Sports extends PureComponent {
+export default class Sports extends Component {
     constructor(props) {
         super(props);
         this.state = {

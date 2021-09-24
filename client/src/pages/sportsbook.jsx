@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import Iframe from 'react-iframe';
 import { setTitle } from '../libs/documentTitleBuilder';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-class SportsBook extends PureComponent {
+class SportsBook extends Component {
     constructor(props) {
         super(props);
         this.state = {

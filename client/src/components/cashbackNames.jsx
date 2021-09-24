@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class CashbackNames extends PureComponent {
+export default class CashbackNames extends Component {
     render() {
         return (
             <div className="verification-proof-container shadow">

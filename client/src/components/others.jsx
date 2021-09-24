@@ -1,14 +1,15 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
+import convertOdds from '../helpers/convertOdds';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-class Others extends PureComponent {
+class Others extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,24 +40,8 @@ class Others extends PureComponent {
             });
     }
 
-    convertOdds = (odd) => {
-        const { oddsFormat } = this.props;
-        switch (oddsFormat) {
-            case 'decimal':
-                if (odd > 0)
-                    return Number(1 + odd / 100).toFixed(2);
-                return Number(1 - 100 / odd).toFixed(2);
-            case 'american':
-                if (odd > 0)
-                    return '+' + odd;
-                return odd;
-            default:
-                return odd;
-        }
-    }
-
     render() {
-        const { addBet, betSlip, removeBet, timezone, search } = this.props;
+        const { addBet, betSlip, removeBet, timezone, oddsFormat } = this.props;
         const { data, error } = this.state;
         if (error) {
             return <div>Error</div>;
@@ -110,7 +95,7 @@ class Others extends PureComponent {
                                                     <div className="points">{teamA.name}</div>
                                                     <div className="odds">
                                                         <div className="new-odds">
-                                                            {this.convertOdds(teamA.currentOdds)}
+                                                            {convertOdds(teamA.currentOdds, oddsFormat)}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -139,7 +124,7 @@ class Others extends PureComponent {
                                                     <div className="points">{teamB.name}</div>
                                                     <div className="odds">
                                                         <div className="new-odds">
-                                                            {this.convertOdds(teamB.currentOdds)}
+                                                            {convertOdds(teamB.currentOdds, oddsFormat)}
                                                         </div>
                                                     </div>
                                                 </div>

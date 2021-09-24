@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
@@ -9,7 +9,7 @@ import CreateCustomBetModal from '../components/createCustomBetModal';
 const config = require('../../../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-export default class CustomBets extends PureComponent {
+export default class CustomBets extends Component {
     constructor(props) {
         super(props);
         this.state = {

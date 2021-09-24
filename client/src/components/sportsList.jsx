@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 // import sportNameIcon from '../helpers/sportNameIcon';
@@ -12,7 +12,7 @@ const sportNameSpanStyle = {
     textOverflow: 'no-wrap'
 };
 
-class SportsList extends PureComponent {
+class SportsList extends Component {
     constructor(props) {
         super(props);
         this.state = {

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Highlights from '../components/highlights';
 
 
-class Dashboard extends PureComponent {
+class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import SimpleLogin from './simpleLogin';
@@ -27,7 +27,7 @@ function logout(getUser, history) {
     });
 }
 
-class Header extends PureComponent {
+class Header extends Component {
     constructor(props) {
         super(props);
         const { timezone } = props;

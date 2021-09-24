@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 
 
-class Withdraw extends PureComponent {
+class Withdraw extends Component {
     constructor(props) {
         super(props);
         this.state = {
