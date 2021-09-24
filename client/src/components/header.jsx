@@ -9,9 +9,9 @@ import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
-import config from '../../../config.json';
 import numberFormat from '../helpers/numberFormat';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;

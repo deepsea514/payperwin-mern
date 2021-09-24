@@ -7,9 +7,8 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 export default class Loyalty extends Component {
     constructor(props) {

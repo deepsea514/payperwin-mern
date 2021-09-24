@@ -1,6 +1,6 @@
 import axios from 'axios';
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;

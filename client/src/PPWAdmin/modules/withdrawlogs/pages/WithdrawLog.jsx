@@ -12,9 +12,7 @@ import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import CustomDatePicker from "../../../../components/customDatePicker";
-
-
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 const PaymentMethod = config.PaymentMethod;
 

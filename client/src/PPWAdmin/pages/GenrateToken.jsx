@@ -2,9 +2,9 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
-import config from "../../../../config.json";
 import { getInputClasses } from "../../helpers/getInputClasses";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
+import _env from '../../env.json';
+const serverUrl = _env.appAdminUrl;
 
 class GenerateToken extends React.Component {
     constructor(props) {

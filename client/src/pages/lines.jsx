@@ -5,16 +5,15 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
-import Line from "../components/line.jsx";
+import MoneyLine from "../components/line.jsx";
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import convertOdds from '../helpers/convertOdds';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Lines extends Component {
     constructor(props) {
@@ -227,8 +226,9 @@ class Lines extends Component {
                                             eventId,
                                             lineId,
                                             type: 'moneyline',
+                                            subtype: null
                                         };
-                                        return <Line
+                                        return <MoneyLine
                                             originOdds={moneyline}
                                             betSlip={betSlip}
                                             lineQuery={lineQuery}

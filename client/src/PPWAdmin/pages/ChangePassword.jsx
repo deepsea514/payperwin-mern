@@ -3,8 +3,8 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import axios from "axios";
 import { getInputClasses } from "../../helpers/getInputClasses";
-import config from "../../../../config.json";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
+import _env from '../../env.json';
+const serverUrl = _env.appAdminUrl;
 
 class ChangePassword extends React.Component {
     constructor(props) {

@@ -4,7 +4,7 @@ import dateformat from "dateformat";
 import { getCustomerDeposits } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
-const config = require("../../../../../../../config.json");
+import config from "../../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 
 class Deposit extends React.Component {

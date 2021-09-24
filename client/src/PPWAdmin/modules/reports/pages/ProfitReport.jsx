@@ -9,8 +9,7 @@ import { Link } from "react-router-dom";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
-
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 const PaymentMethod = config.PaymentMethod;
 

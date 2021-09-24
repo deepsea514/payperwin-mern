@@ -9,7 +9,8 @@ require('dotenv').config();
 
 const pagesData = require('./src/PPWAdmin/modules/meta-tags/redux/pages.json');
 const config = require('../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+const _env = require('./src/env.json');
+const serverUrl = _env.appUrl;
 const port = process.env.NODE_ENV == 'production' ? 8000 : 80;
 const app = express();
 

@@ -4,6 +4,48 @@ import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import convertOdds from '../helpers/convertOdds';
 
 export default class Line extends Component {
+    getLineTitle = (type, subtype) => {
+        let title = '';
+        switch (type) {
+            case 'moneyline':
+                title = 'Moneyline - ';
+                break;
+            case 'spread':
+                title = 'Spreads - ';
+                break;
+            case 'total':
+                title = 'Over/Under - ';
+                break;
+            default:
+        }
+
+        switch (subtype) {
+            case null:
+                title += 'Game';
+                break;
+            case 'first_half':
+                title += '1st Half';
+                break;
+            case 'second_half':
+                title += '2nd Half';
+                break;
+            case 'first_quarter':
+                title += '1st Quarter';
+                break;
+            case 'second_quarter':
+                title += '2nd Quarter';
+                break;
+            case 'third_quarter':
+                title += '3rd Quarter';
+                break;
+            case 'forth_quarter':
+                title += '4th Quarter';
+                break;
+        }
+
+        return title;
+    }
+
     render() {
         const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet } = this.props;
         const { teamA, teamB, leagueName, origin, started } = event;
@@ -13,16 +55,16 @@ export default class Line extends Component {
         const awayExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'away' && b.type === lineQuery.type);
         return (
             <>
-                <div className="line-type-header line-type-header-moneyline">Moneyline - Game</div>
+                <div className="line-type-header ">{this.getLineTitle(lineQuery.type, null)}</div>
                 <li>
                     <div className="row mx-0">
                         <div className="col-md-6 com-sm-12 col-12">
-                            <span className={`box-odds box-moneyline line-full ${homeExist ? 'orange' : null}`}
+                            <span className={`box-odds line-full ${homeExist ? 'orange' : null}`}
                                 onClick={homeExist ?
-                                    () => removeBet(lineQuery.lineId, 'moneyline', 'home')
+                                    () => removeBet(lineQuery.lineId, lineQuery.type, 'home')
                                     : () => addBet(
                                         `${teamA} - ${teamB}`,
-                                        'moneyline',
+                                        lineQuery.type,
                                         leagueName,
                                         { home: newHome, away: newAway },
                                         originOdds,
@@ -39,17 +81,19 @@ export default class Line extends Component {
                                 <div className="vertical-align">
                                     <div className="points">{teamA}</div>
                                     {!started && <div className="odds">
-                                        {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', 'moneyline') && <>
-                                            <div className="old-odds">
+                                        {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type) &&
+                                            <>
+                                                <div className="old-odds">
+                                                    {convertOdds(home, oddsFormat)}
+                                                </div>
+                                                <div className="new-odds">
+                                                    {convertOdds(newHome, oddsFormat)}
+                                                </div>
+                                            </>}
+                                        {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type) &&
+                                            <div className="origin-odds">
                                                 {convertOdds(home, oddsFormat)}
-                                            </div>
-                                            <div className="new-odds">
-                                                {convertOdds(newHome, oddsFormat)}
-                                            </div>
-                                        </>}
-                                        {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', 'moneyline') && <div className="origin-odds">
-                                            {convertOdds(home, oddsFormat)}
-                                        </div>}
+                                            </div>}
                                     </div>}
                                     {started && <div className="odds">
                                         <div className="origin-odds">
@@ -60,12 +104,12 @@ export default class Line extends Component {
                             </span>
                         </div>
                         <div className="col-md-6 com-sm-12 col-12">
-                            <span className={`box-odds box-moneyline line-full ${awayExist ? 'orange' : null}`}
+                            <span className={`box-odds line-full ${awayExist ? 'orange' : null}`}
                                 onClick={awayExist ?
-                                    () => removeBet(lineQuery.lineId, 'moneyline', 'away')
+                                    () => removeBet(lineQuery.lineId, lineQuery.type, 'away')
                                     : () => addBet(
                                         `${teamA} - ${teamB}`,
-                                        'moneyline',
+                                        lineQuery.type,
                                         leagueName,
                                         { home: newHome, away: newAway },
                                         originOdds,
@@ -82,7 +126,7 @@ export default class Line extends Component {
                                 <div className="vertical-align">
                                     <div className="points">{teamB}</div>
                                     {!started && <div className="odds">
-                                        {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', 'moneyline') && <>
+                                        {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type) && <>
                                             <div className="old-odds">
                                                 {convertOdds(originOdds.away, oddsFormat)}
                                             </div>
@@ -90,9 +134,10 @@ export default class Line extends Component {
                                                 {convertOdds(newAway, oddsFormat)}
                                             </div>
                                         </>}
-                                        {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', 'moneyline') && <div className="origin-odds">
-                                            {convertOdds(originOdds.away, oddsFormat)}
-                                        </div>}
+                                        {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type) &&
+                                            <div className="origin-odds">
+                                                {convertOdds(originOdds.away, oddsFormat)}
+                                            </div>}
                                     </div>}
                                     {started && <div className="odds">
                                         <div className="origin-odds">

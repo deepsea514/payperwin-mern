@@ -1,6 +1,6 @@
 import axios from "axios";
-import config from "../../../../../../config.json";
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
+import _env from '../../../../env.json';
+const serverUrl = _env.appAdminUrl;
 
 export function createMessage(value) {
     return axios.post(`${serverUrl}/messages`, value, { withCredentials: true });

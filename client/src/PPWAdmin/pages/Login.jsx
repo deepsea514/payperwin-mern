@@ -5,8 +5,8 @@ import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import axios from 'axios';
 import { getInputClasses } from "../../helpers/getInputClasses";
-import config from '../../../../config.json';
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appAdminUrl;
+import _env from '../../env.json';
+const serverUrl = _env.appAdminUrl;
 
 
 const initialLoginValues = {

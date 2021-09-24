@@ -8,7 +8,7 @@ import dateformat from "dateformat";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import PromotionModal from "../components/PromotionModal";
 import { createPromotion } from "../redux/services";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
 

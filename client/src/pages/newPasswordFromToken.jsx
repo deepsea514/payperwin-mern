@@ -10,9 +10,8 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const Form = ({
     password, // eslint-disable-line react/prop-types

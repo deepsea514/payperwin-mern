@@ -10,9 +10,8 @@ import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import axios from 'axios';
 import SVG from "react-inlinesvg";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const sideOptions = [
     { value: 'Underdog', label: 'Underdog' },

@@ -11,9 +11,8 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import JoditEditor from "jodit-react";
 import { getInputClasses } from "../helpers/getInputClasses";
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 const useStyles = (theme) => ({
     formContent: {

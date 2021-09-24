@@ -19,9 +19,9 @@ import { RegionDropdown } from 'react-country-region-selector';
 import _ from 'lodash';
 import GoogleLogin from "react-google-login";
 import CustomDatePicker from '../components/customDatePicker';
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import config from '../../../config.json';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 const CountryInfo = config.CountryInfo;
 
 const useStyles = (theme) => ({

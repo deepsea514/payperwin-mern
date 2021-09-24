@@ -4,7 +4,7 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import CustomDatePicker from "../../../../components/customDatePicker";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
 

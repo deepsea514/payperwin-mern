@@ -6,7 +6,7 @@ import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { searchUsers, searchSports } from "../../customers/redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
 const AutoBetPeorid = config.AutoBetPeorid;
 

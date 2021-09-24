@@ -4,10 +4,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { Link, Switch, Route, BrowserRouter } from "react-router-dom";
 import InboxDetail from "./inboxDetail";
-
-
-const config = require('../../../config.json');
-const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Inbox extends Component {
     constructor(props) {

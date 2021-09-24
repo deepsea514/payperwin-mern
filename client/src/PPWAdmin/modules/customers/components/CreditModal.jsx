@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const PaymentMethod = config.PaymentMethod;
 const FinancialStatus = config.FinancialStatus;
 

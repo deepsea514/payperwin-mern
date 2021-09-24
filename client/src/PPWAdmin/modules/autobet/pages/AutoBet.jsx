@@ -11,7 +11,7 @@ import AutoBetModal from "../components/AutoBetModal";
 import { createAutoBet, deleteAutoBet, updateAutoBet } from "../redux/services";
 import * as Yup from "yup";
 import { Formik } from "formik";
-const config = require("../../../../../../config.json");
+import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
 
 class AutoBet extends React.Component {
