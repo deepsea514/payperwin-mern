@@ -10,7 +10,7 @@ require('dotenv').config();
 const pagesData = require('./src/PPWAdmin/modules/meta-tags/redux/pages.json');
 const config = require('../config.json');
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
-
+const port = process.env.NODE_ENV == 'production' ? 8000 : 80;
 const app = express();
 
 // CORS
@@ -143,6 +143,5 @@ if (process.env.NODE_ENV === 'development2') {
     }, app).listen(port, () => console.log(`API Server listening on port ${port}`));
 } else {
     console.log(process.env.NODE_ENV, 'mode');
-    const port = 8000;
     app.listen(port, () => console.log(`Server listening on port ${port}!`)); // eslint-disable-line
 }
