@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
@@ -31,7 +31,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class DepositETransfer extends PureComponent {
+class DepositETransfer extends Component {
     constructor(props) {
         super(props);
         this.state = {

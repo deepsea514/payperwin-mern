@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { connect } from "react-redux";
 
-class HowTo extends PureComponent {
+class HowTo extends Component {
     constructor(props) {
         super(props);
         this.state = {

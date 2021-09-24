@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
 
-class Deposit extends PureComponent {
+class Deposit extends Component {
     constructor(props) {
         super(props);
         this.state = {

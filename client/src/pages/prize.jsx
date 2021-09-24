@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
 import WinWheel from '../libs/WinWheel';
@@ -9,7 +9,7 @@ import rouletteSelection from '../libs/rouletteSelection';
 import config from '../../../config.json';
 const serverUrl = config.serverHostToClientHost[process.env.NODE_ENV == 'production' ? 'production' : 'development'].appUrl;
 
-class Prize extends PureComponent {
+class Prize extends Component {
     constructor(props) {
         super(props);
         const tickSound = new Audio('/media/tick.mp3');

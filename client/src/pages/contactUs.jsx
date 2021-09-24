@@ -1,4 +1,4 @@
-import React, { PureComponent, useRef } from 'react';
+import React, { Component, useRef } from 'react';
 import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
@@ -32,7 +32,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class ContactUs extends PureComponent {
+class ContactUs extends Component {
     constructor(props) {
         super(props);
         this.state = {

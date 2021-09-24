@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class VerificationProof extends PureComponent {
+export default class VerificationProof extends Component {
     render() {
         return (
             <>

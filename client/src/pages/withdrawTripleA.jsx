@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
@@ -30,7 +30,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class WithdrawTripleA extends PureComponent {
+class WithdrawTripleA extends Component {
     constructor(props) {
         super(props);
         this.state = {

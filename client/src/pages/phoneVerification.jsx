@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
@@ -32,7 +32,7 @@ const useStyles = (theme) => ({
     },
 });
 
-class PhoneVerification extends PureComponent {
+class PhoneVerification extends Component {
     constructor(props) {
         super(props);
         this.state = {

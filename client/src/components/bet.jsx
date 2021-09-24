@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 // import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
+import convertOdds from '../helpers/convertOdds';
 
-class Bet extends PureComponent {
+class Bet extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,22 +62,6 @@ class Bet extends PureComponent {
         this.setState(stateChange);
     }
 
-    convertOdds = (odd) => {
-        const { oddsFormat } = this.props;
-        switch (oddsFormat) {
-            case 'decimal':
-                if (odd > 0)
-                    return Number(1 + odd / 100).toFixed(2);
-                return Number(1 - 100 / odd).toFixed(2);
-            case 'american':
-                if (odd > 0)
-                    return '+' + odd;
-                return odd;
-            default:
-                return odd;
-        }
-    }
-
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat } = this.props;
@@ -96,7 +81,7 @@ class Bet extends PureComponent {
                     </div>
                     <div className="bet-type-league">{type} - {league}</div>
                     <span className="bet-pick">{pickName}</span>
-                    <span className="bet-pick-odds">{oddsFormat == 'decimal' ? this.convertOdds(odds[pick]) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
+                    <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
                     <div>
                         <input
                             className="bet-stake"
