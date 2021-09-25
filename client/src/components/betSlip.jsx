@@ -61,7 +61,7 @@ class BetSlip extends Component {
             const stateChanges = {};
             if (successCount) {
                 updateUser('balance', balance);
-                removeBet(null, null, null, null, true);
+                removeBet(null, null, null, null, null, true);
                 stateChanges.confirmationOpen = true;
             }
             if (errors && errors.length) stateChanges.errors = errors;
@@ -147,7 +147,7 @@ class BetSlip extends Component {
                                             bet={bet}
                                             removeBet={removeBet}
                                             updateBet={updateBet}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`}
                                         />)}
                                     </React.Fragment>
                                 ) :

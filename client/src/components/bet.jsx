@@ -65,7 +65,7 @@ class Bet extends Component {
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat } = this.props;
-        const { name, type, league, odds, pick, sportName, lineId, pickName, index } = bet;
+        const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index } = bet;
         return (
             <>
                 {stake + win > 2000 && <div className="bet-warn-message">
@@ -77,7 +77,7 @@ class Bet extends Component {
                         {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
-                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index)} />
+                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
                     </div>
                     <div className="bet-type-league">{type} - {league}</div>
                     <span className="bet-pick">{pickName}</span>

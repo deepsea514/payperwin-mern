@@ -5,11 +5,9 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
-import MoneyLine from "../components/line.jsx";
-import calculateNewOdds from '../helpers/calculateNewOdds';
+import LineDetail from "../components/linedetail.jsx";
+import Line from "../components/line.jsx";
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
-import convertOdds from '../helpers/convertOdds';
-import { Preloader, ThreeDots } from 'react-preloader-icon';
 import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import _env from '../env.json';
@@ -22,6 +20,7 @@ class Lines extends Component {
         const currentUrl = href;
         const params = new URLSearchParams(search);
         const type = params.get('type');
+        const subtype = params.get('subtype');
         const index = params.get('index');
         this.state = {
             data: null,
@@ -32,9 +31,11 @@ class Lines extends Component {
             urlCopied: false,
             timer: null,
             type: type,
+            subtype: subtype,
             index: index,
             ogTitle: '',
             ogDescription: '',
+            showAll: false,
         };
     }
 
@@ -106,19 +107,21 @@ class Lines extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin) => {
+    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype) => {
         const { data: { started } } = this.state;
         if (started) return;
         if (checkOddsAvailable(originOdds, odds, pick, type)) {
-            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin);
+            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype);
         }
         this.setState({ showModal: true });
     }
 
     render() {
-        const { match, addBet, betSlip, removeBet, timezone, oddsFormat } = this.props;
+        const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
         const { sportName, leagueId, eventId } = match.params;
-        const { data, error, showModal, shareModal, currentUrl, urlCopied, type, index, ogTitle, ogDescription } = this.state;
+        const { data, error, showModal, shareModal, currentUrl, urlCopied,
+            type, subtype, index, ogTitle, ogDescription, showAll
+        } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -128,7 +131,7 @@ class Lines extends Component {
 
         const { teamA, teamB, startDate, leagueName, lines, origin, started } = data;
         return (
-            <div className="content detailed-lines">
+            <div className="content detailed-lines mb-5">
                 {ogTitle && <MetaTags>
                     <meta property="og:type" content="article" />
                     <meta property="og:title" content={ogTitle} />
@@ -210,268 +213,46 @@ class Lines extends Component {
                     {lines ? lines.map((line, i) => {
                         const { spreads, originId: lineId, moneyline, totals,
                             first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
-                        if (!spreads && !moneyline && !totals) {
+                        if (i > 0 && !spreads && !moneyline && !totals) {
                             return null;
                         }
-                        if (i > 0) {
-                            return null;
-                        }
-                        return (
-                            <React.Fragment key={lineId}>
-                                {(!type || type == 'moneyline') && moneyline ? (
-                                    (() => {
-                                        const lineQuery = {
-                                            sportName,
-                                            leagueId,
-                                            eventId,
-                                            lineId,
-                                            type: 'moneyline',
-                                            subtype: null
-                                        };
-                                        return <MoneyLine
-                                            originOdds={moneyline}
-                                            betSlip={betSlip}
-                                            lineQuery={lineQuery}
-                                            removeBet={removeBet}
-                                            addBet={this.addBet}
-                                            event={data}
-                                            oddsFormat={oddsFormat} />
-                                    })()
-                                ) : null}
-                                {(!type || type == 'spread') && spreads ? (
-                                    <React.Fragment>
-                                        <div className="line-type-header">Spreads - Game</div>
-                                        {spreads.map((spread, i) => {
-                                            if (type && index && index != i) return null;
-                                            const { newHome, newAway } = calculateNewOdds(spread.home, spread.away)
-                                            const lineQuery = {
-                                                sportName,
-                                                leagueId,
-                                                eventId,
-                                                lineId,
-                                                type: 'spread',
-                                                index: i,
-                                            };
-                                            if (spread.altLineId) lineQuery.altLineId = spread.altLineId;
-                                            const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index);
-                                            const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index);
-                                            return (
-                                                <li key={i}>
-                                                    <div className="row mx-0">
-                                                        <div className="col-md-6 com-sm-12 col-12">
-                                                            <span
-                                                                className={`box-odds line-full ${homeExist ? 'orange' : null}`}
-                                                                onClick={homeExist
-                                                                    ? () => removeBet(lineId, 'spread', 'home', i)
-                                                                    : () => this.addBet(
-                                                                        `${teamA} - ${teamB}`,
-                                                                        'spread',
-                                                                        leagueName,
-                                                                        { home: newHome, away: newAway },
-                                                                        spread,
-                                                                        'home',
-                                                                        teamA,
-                                                                        teamB,
-                                                                        sportName,
-                                                                        lineId,
-                                                                        lineQuery,
-                                                                        `${teamA} ${spread.hdp > 0 ? '+' : ''}${spread.hdp}`,
-                                                                        i,
-                                                                        origin
-                                                                    )}
-                                                            >
-                                                                <div className="vertical-align">
-                                                                    <div className="points">{`${spread.hdp > 0 ? '+' : ''}${spread.hdp}`}</div>
-                                                                    {!started && <div className="odds">
-                                                                        {checkOddsAvailable(spread, { home: newHome, away: newAway }, 'home', 'spread') && <>
-                                                                            <div className="old-odds">
-                                                                                {convertOdds(spread.home, oddsFormat)}
-                                                                            </div>
-                                                                            <div className="new-odds">
-                                                                                {convertOdds(newHome, oddsFormat)}
-                                                                            </div>
-                                                                        </>}
-                                                                        {!checkOddsAvailable(spread, { home: newHome, away: newAway }, 'home', 'spread') && <div className="origin-odds">
-                                                                            {convertOdds(spread.home, oddsFormat)}
-                                                                        </div>}
-                                                                    </div>}
-                                                                    {started && <div className="odds">
-                                                                        <div className="origin-odds">
-                                                                            <i className="fas fa-lock" />
-                                                                        </div>
-                                                                    </div>}
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                        <div className="col-md-6 com-sm-12 col-12">
-                                                            <span
-                                                                className={`box-odds line-full ${awayExist ? 'orange' : null}`}
-                                                                onClick={awayExist
-                                                                    ? () => removeBet(lineId, 'spread', 'away', i)
-                                                                    : () => this.addBet(
-                                                                        `${teamA} - ${teamB}`,
-                                                                        'spread',
-                                                                        leagueName,
-                                                                        { home: newHome, away: newAway },
-                                                                        spread,
-                                                                        'away',
-                                                                        teamA,
-                                                                        teamB,
-                                                                        sportName,
-                                                                        lineId,
-                                                                        lineQuery,
-                                                                        `${teamB} ${-1 * spread.hdp > 0 ? '+' : ''}${-1 * spread.hdp}`,
-                                                                        i,
-                                                                        origin
-                                                                    )}>
-                                                                <div className="vertical-align">
-                                                                    <div className="points">{`${(-1 * spread.hdp) > 0 ? '+' : ''}${-1 * spread.hdp}`}</div>
-                                                                    {!started && <div className="odds">
-                                                                        {checkOddsAvailable(spread, { home: newHome, away: newAway }, 'away', 'spread') && <>
-                                                                            <div className="old-odds">
-                                                                                {convertOdds(spread.away, oddsFormat)}
-                                                                            </div>
-                                                                            <div className="new-odds">
-                                                                                {convertOdds(newAway, oddsFormat)}
-                                                                            </div>
-                                                                        </>}
-                                                                        {!checkOddsAvailable(spread, { home: newHome, away: newAway }, 'away', 'spread') && <div className="origin-odds">
-                                                                            {convertOdds(spread.away, oddsFormat)}
-                                                                        </div>}
-                                                                    </div>}
-                                                                    {started && <div className="odds">
-                                                                        <div className="origin-odds">
-                                                                            <i className="fas fa-lock" />
-                                                                        </div>
-                                                                    </div>}
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            );
-                                        })}
-                                    </React.Fragment>
-                                ) : null}
-                                {(!type || type == 'total') && totals ? (
-                                    <React.Fragment>
-                                        <div className="line-type-header">Over/Under - Game</div>
-                                        {totals.map((total, i) => {
-                                            if (type && index && index != i) return null;
-                                            const { newHome, newAway } = calculateNewOdds(total.over, total.under)
-                                            const lineQuery = {
-                                                sportName,
-                                                leagueId,
-                                                eventId,
-                                                lineId,
-                                                type: 'total',
-                                                index: i,
-                                            };
-                                            if (total.altLineId) lineQuery.altLineId = total.altLineId;
-                                            return (
-                                                <li key={i}>
-                                                    <div className="row mx-0">
-                                                        <div className="col-md-6 com-sm-12 col-12 ">
-                                                            <span
-                                                                className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
-                                                                onClick={
-                                                                    betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index)
-                                                                        ? () => removeBet(lineId, 'total', 'home', i)
-                                                                        : () => addBet(
-                                                                            `${teamA} - ${teamB}`,
-                                                                            'total',
-                                                                            leagueName,
-                                                                            { home: newHome, away: newAway },
-                                                                            'home',
-                                                                            teamA,
-                                                                            teamB,
-                                                                            sportName,
-                                                                            lineId,
-                                                                            lineQuery,
-                                                                            `Over ${total.points}`,
-                                                                            i,
-                                                                            origin
-                                                                        )}
-                                                            >
-                                                                <div className="vertical-align">
-                                                                    <div className="points">O {`${total.points}`}</div>
-                                                                    {!started && <div className="odds">
-                                                                        {checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'home', 'total') && <>
-                                                                            <div className="old-odds">
-                                                                                {convertOdds(total.over, oddsFormat)}
-                                                                            </div>
-                                                                            <div className="new-odds">
-                                                                                {convertOdds(newHome, oddsFormat)}
-                                                                            </div>
-                                                                        </>}
-                                                                        {!checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'home', 'total') && <div className="origin-odds">
-                                                                            {convertOdds(total.over, oddsFormat)}
-                                                                        </div>}
-                                                                    </div>}
-                                                                    {started && <div className="odds">
-                                                                        <div className="origin-odds">
-                                                                            <i className="fas fa-lock" />
-                                                                        </div>
-                                                                    </div>}
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                        <div className="col-md-6 com-sm-12 col-12 ">
-                                                            <span
-                                                                className={`box-odds line-full ${betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index) ? 'orange' : null}`}
-                                                                onClick={
-                                                                    betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index)
-                                                                        ? () => removeBet(lineId, 'total', 'away', i)
-                                                                        : () => addBet(
-                                                                            `${teamA} - ${teamB}`,
-                                                                            'total',
-                                                                            leagueName,
-                                                                            { home: newHome, away: newAway },
-                                                                            'away',
-                                                                            teamA,
-                                                                            teamB,
-                                                                            sportName,
-                                                                            lineId,
-                                                                            lineQuery,
-                                                                            `Under ${total.points}`,
-                                                                            i,
-                                                                            origin
-                                                                        )
-                                                                }
-                                                            >
-                                                                <div className="vertical-align">
-                                                                    <div className="points">U {`${total.points}`}</div>
-                                                                    {!started && <div className="odds">
-                                                                        {checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'away', 'total') && <>
-                                                                            <div className="old-odds">
-                                                                                {convertOdds(total.under, oddsFormat)}
-                                                                            </div>
-                                                                            <div className="new-odds">
-                                                                                {convertOdds(newAway, oddsFormat)}
-                                                                            </div>
-                                                                        </>}
-                                                                        {!checkOddsAvailable({ home: total.over, away: total.under }, { home: newHome, away: newAway }, 'away', 'total') && <div className="origin-odds">
-                                                                            {convertOdds(total.under, oddsFormat)}
-                                                                        </div>}
-                                                                    </div>}
-                                                                    {started && <div className="odds">
-                                                                        <div className="origin-odds">
-                                                                            <i className="fas fa-lock" />
-                                                                        </div>
-                                                                    </div>}
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            );
-                                        })}
-                                    </React.Fragment>
-                                ) : null}
-                            </React.Fragment>
-                        );
+
+                        let lines = [
+                            { line: { moneyline, totals, spreads }, subtype: null },
+                            { line: first_half, subtype: "first_half" },
+                            { line: second_half, subtype: "second_half" },
+                            { line: first_quarter, subtype: "first_quarter" },
+                            { line: second_quarter, subtype: "second_quarter" },
+                            { line: third_quarter, subtype: "third_quarter" },
+                            { line: forth_quarter, subtype: "forth_quarter" },
+                        ]
+                        return lines.slice(0, showAll ? lines.length : 1)
+                            .map((line, idx) =>
+                                <React.Fragment key={idx}>
+                                    {idx != 0 && <hr />}
+                                    <Line
+                                        type={type}
+                                        subtype={subtype}
+                                        index={index}
+                                        event={data}
+                                        line={line}
+                                        betSlip={betSlip}
+                                        removeBet={removeBet}
+                                        addBet={this.addBet}
+                                        sportName={sportName}
+                                        leagueId={leagueId}
+                                        oddsFormat={oddsFormat}
+                                    />
+                                </React.Fragment>
+                            );
                     }) : null}
                 </ul>
+
+                {!showAll && <div className="d-flex flex-wr justify-content-center mt-3">
+                    <div className="show-allmarkets-button" onClick={() => this.setState({ showAll: true })}>
+                        Show All markets&nbsp;&nbsp;<i className="fas fa-caret-down" />
+                    </div>
+                </div>}
             </div>
         );
     }

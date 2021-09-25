@@ -25,6 +25,7 @@ const BetpoolSchema = new Schema(
         points: Number, // hdp or total points
         matchStartDate: Date,
         lineType: String,
+        lineSubType: { type: String, default: null },
         result: String,
         homeBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
         awayBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
