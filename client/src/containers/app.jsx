@@ -66,6 +66,7 @@ import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
+import '../style/all.min.css';
 import '../style/bootstrap.min.css';
 import '../style/dark.css';
 import '../style/style2.css';
