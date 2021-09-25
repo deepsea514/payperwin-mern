@@ -67,7 +67,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
             const game_lines = main.sp.game_lines.odds;
             const whole_line = gotLineToOdds(game_lines);
             if (whole_line == null) return null;
-            line = { ...line, ...whole_line };
+            line = { line.moneyline, ...whole_line };
         }
 
         if (main.sp["1st_half_lines_2_way"]) {
@@ -137,6 +137,8 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
     }
 
+    line.spreads = line.spreads.length ? line.spreads : null;
+    line.totals = line.totals.length ? line.totals : null;
     return line;
 
 }
