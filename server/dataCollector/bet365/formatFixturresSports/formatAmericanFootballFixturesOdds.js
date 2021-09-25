@@ -137,6 +137,8 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
     }
 
+    line.spreads = line.spreads.length ? line.spreads : null;
+    line.totals = line.totals.length ? line.totals : null;
     return line;
 
 }
