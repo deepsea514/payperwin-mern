@@ -253,6 +253,7 @@ const checkBetWithoutBetpool = async () => {
             sportName: bet.lineQuery.sportName,
             matchStartDate: bet.matchStartDate,
             lineType: bet.lineQuery.type,
+            lineSubType: bet.lineQuery.subtype,
             points: linePoints,
             origin: bet.origin
         });
@@ -280,6 +281,7 @@ const checkBetWithoutBetpool = async () => {
                     sportName: bet.lineQuery.sportName,
                     matchStartDate: bet.matchStartDate,
                     lineType: bet.lineQuery.type,
+                    lineSubType: bet.lineQuery.subtype,
                     points: linePoints,
                     homeBets: bet.pick === 'home' ? [bet._id] : [],
                     awayBets: bet.pick === 'away' ? [bet._id] : [],

@@ -66,6 +66,7 @@ import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 import '../style/all.css';
+import '../style/all.min.css';
 import '../style/bootstrap.min.css';
 import '../style/dark.css';
 import '../style/style2.css';
@@ -84,11 +85,6 @@ class App extends Component {
             betSlip: [],
         };
         setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
-        this.toggleField = this.toggleField.bind(this);
-        this.addBet = this.addBet.bind(this);
-        this.removeBet = this.removeBet.bind(this);
-        this.updateBet = this.updateBet.bind(this);
-        this.updateScrollStatus = this.updateScrollStatus.bind(this);
     }
 
     componentDidMount() {
@@ -98,7 +94,7 @@ class App extends Component {
         setDisplayModeBasedOnSystem();
     }
 
-    updateScrollStatus() {
+    updateScrollStatus = () => {
         const { scrollY } = window;
         this.scrollTop = scrollY;
         if (!this.ticking) {
@@ -117,7 +113,7 @@ class App extends Component {
         this.ticking = true;
     }
 
-    toggleField(fieldName, forceState) {
+    toggleField = (fieldName, forceState) => {
         if (typeof this.state[fieldName] !== 'undefined') {
             this.setState({
                 [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
@@ -125,9 +121,9 @@ class App extends Component {
         }
     }
 
-
-    addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin) {
-        const newBet = { name, type, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin };
+    addBet = (name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype) => {
+        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin };
+        console.log(newBet);
         const { betSlip } = this.state;
         this.setState({
             betSlip: update(betSlip, {
@@ -138,7 +134,7 @@ class App extends Component {
         });
     }
 
-    removeBet(lineId, type, pick, index, all = false) {
+    removeBet = (lineId, type, pick, index, subtype = null, all = false) => {
         const { betSlip } = this.state;
         if (all) {
             this.setState({
@@ -147,7 +143,7 @@ class App extends Component {
                 })
             });
         } else {
-            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true));
+            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true) && b.subtype == subtype);
             // console.log(indexOfBet);
             if (typeof indexOfBet === 'number') {
                 this.setState({
@@ -159,7 +155,7 @@ class App extends Component {
         }
     }
 
-    updateBet(lineId, pick, propUpdates, index) {
+    updateBet = (lineId, pick, propUpdates, index) => {
         const { betSlip } = this.state;
         const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && (typeof index === 'number' ? b.index === index : true));
         if (typeof indexOfBet === 'number') {

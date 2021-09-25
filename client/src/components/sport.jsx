@@ -95,10 +95,10 @@ class Sport extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, started) => {
+    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, started, subtype) => {
         if (started) return;
         if (this.checkOddsAvailable(originOdds, odds, pick, type)) {
-            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin);
+            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype);
         }
         this.setState({ showModal: true });
     }
@@ -212,7 +212,7 @@ class Sport extends Component {
                                                     <li>
                                                         <span className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist ?
-                                                                () => removeBet(lineId, 'moneyline', 'home')
+                                                                () => removeBet(lineId, 'moneyline', 'home', null, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'moneyline',
@@ -225,10 +225,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    teamA,
+                                                                    `${teamA} - Game`,
                                                                     null,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}>
                                                             {!started && <div className="vertical-align">
                                                                 {this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <>
@@ -251,7 +252,7 @@ class Sport extends Component {
                                                         </span>
                                                         <span className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist ?
-                                                                () => removeBet(lineId, 'moneyline', 'away')
+                                                                () => removeBet(lineId, 'moneyline', 'away', null, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'moneyline',
@@ -264,10 +265,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    `${teamB}`,
+                                                                    `${teamB} - Game`,
                                                                     null,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}>
                                                             {!started && <div className="vertical-align">
                                                                 {this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <>
@@ -292,7 +294,7 @@ class Sport extends Component {
                                                 );
                                             })()
                                         ) : emptyBoxLine}
-                                        {spreads ? (
+                                        {spreads && spreads[0] ? (
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away);
                                                 const lineQuery = {
@@ -311,7 +313,7 @@ class Sport extends Component {
                                                         <span
                                                             className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist
-                                                                ? () => removeBet(lineId, 'spread', 'home')
+                                                                ? () => removeBet(lineId, 'spread', 'home', 0, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'spread',
@@ -324,10 +326,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    `${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
+                                                                    `${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp} - Game`,
                                                                     0,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}
                                                         >
                                                             {!started && <div className="vertical-align">
@@ -353,7 +356,7 @@ class Sport extends Component {
                                                         <span
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist
-                                                                ? () => removeBet(lineId, 'spread', 'away')
+                                                                ? () => removeBet(lineId, 'spread', 'away', 0, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'spread',
@@ -366,10 +369,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    `${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
+                                                                    `${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp} - Game`,
                                                                     0,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}>
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`}</div>
@@ -395,7 +399,7 @@ class Sport extends Component {
                                                 );
                                             })()
                                         ) : emptyBoxLine}
-                                        {totals ? (
+                                        {totals && totals[0] ? (
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under);
                                                 const lineQuery = {
@@ -414,7 +418,7 @@ class Sport extends Component {
                                                         <span
                                                             className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist
-                                                                ? () => removeBet(lineId, 'total', 'home')
+                                                                ? () => removeBet(lineId, 'total', 'home', 0, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'total',
@@ -427,10 +431,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    `Over ${totals[0].points}`,
+                                                                    `Over ${totals[0].points} - Game`,
                                                                     0,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}
                                                         >
                                                             {!started && <div className="vertical-align">
@@ -456,7 +461,7 @@ class Sport extends Component {
                                                         <span
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist
-                                                                ? () => removeBet(lineId, 'total', 'away')
+                                                                ? () => removeBet(lineId, 'total', 'away', 0, null)
                                                                 : () => this.addBet(
                                                                     `${teamA} - ${teamB}`,
                                                                     'total',
@@ -469,10 +474,11 @@ class Sport extends Component {
                                                                     sportName,
                                                                     lineId,
                                                                     lineQuery,
-                                                                    `Under ${totals[0].points}`,
+                                                                    `Under ${totals[0].points} - Game`,
                                                                     0,
                                                                     origin,
                                                                     started,
+                                                                    null
                                                                 )}
                                                         >
                                                             {!started && <div className="vertical-align">

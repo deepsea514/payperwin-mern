@@ -58,6 +58,7 @@ const matchResults = async () => {
             uid,
             eventId,
             lineType,
+            lineSubType,
             points
         } = betpool;
         let matchCancelled = false;
@@ -76,13 +77,15 @@ const matchResults = async () => {
                     console.log('no data from api/cache for this line');
                     continue;
                 }
-                const { ss, time_status, time } = results[0];
+                const { ss, scores, time_status, time } = results[0];
                 const matchResult = {
                     homeScore: 0,
                     awayScore: 0,
                     cancellationReason: false
                 };
                 if (time_status == 3) { //Ended
+                    // Calculate Match Score
+
                     if (ss == null || ss == "") {
                         await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                         continue;
@@ -290,7 +293,7 @@ const matchResults = async () => {
         if (matchCancelled) {
             for (const betId of homeBets) {
                 const bet = await Bet.findOne({ _id: betId });
-                if(bet) {
+                if (bet) {
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
@@ -307,7 +310,7 @@ const matchResults = async () => {
             }
             for (const betId of awayBets) {
                 const bet = await Bet.findOne({ _id: betId });
-                if(bet) {
+                if (bet) {
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });

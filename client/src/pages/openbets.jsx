@@ -116,16 +116,16 @@ class OpenBets extends Component {
     }
 
     shareLink = (lineQuery, matchStartDate) => () => {
-        const { type, sportName, leagueId, eventId, index } = lineQuery;
+        const { type, sportName, leagueId, eventId, index, subtype } = lineQuery;
         const generatedLineUrl = `${window.location.origin}/sport/${sportName}/league/${leagueId}/event/${eventId}`;
         this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
         axios.put(
             `${serverUrl}/share-line`,
-            { url: generatedLineUrl, eventDate: matchStartDate, type, index },
+            { url: generatedLineUrl, eventDate: matchStartDate, type, index, subtype },
             { withCredentials: true }
         ).then(({ data }) => {
-            const { url, index, type, uniqueId } = data;
-            this.setState({ loadingUrl: false, lineUrl: `${url}?type=${type}${isNaN(index) ? '' : `&index=${index}`}&uniqueId=${uniqueId}` });
+            const { url, index, type, uniqueId, subtype } = data;
+            this.setState({ loadingUrl: false, lineUrl: `${url}?type=${type}${isNaN(index) ? '' : `&index=${index}`}${subtype ? `&subtype=${subtype}`: ''}&uniqueId=${uniqueId}` });
         }).catch(() => {
             this.setState({ loadingUrl: false, lineUrl: '' });
         })
@@ -447,7 +447,7 @@ class OpenBets extends Component {
                                 {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                 {/* {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>} */}
                                 {openBets && !this.checkEventStarted(matchStartDate) &&
-                                    <button className="form-button ml-3" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
+                                    <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
                             </div>
                         </div>
                     );

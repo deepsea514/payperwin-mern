@@ -1775,6 +1775,7 @@ adminRouter.delete(
                 eventId: lineQuery.eventId,
                 lineId: lineQuery.lineId,
                 lineType: lineQuery.type,
+                lineSubType: lineQuery.subtype,
                 sportName: lineQuery.sportName,
                 origin: bet.origin,
                 points: linePoints
@@ -1820,6 +1821,7 @@ adminRouter.post(
                 eventId: lineQuery.eventId,
                 lineId: lineQuery.lineId,
                 lineType: lineQuery.type,
+                lineSubType: lineQuery.subtype,
                 sportName: lineQuery.sportName,
                 origin: bet.origin,
                 points: linePoints

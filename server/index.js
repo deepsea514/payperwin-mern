@@ -951,7 +951,7 @@ expressApp.post(
                 lineQuery,
                 pickName,
                 origin,
-                type
+                type,
             } = bet;
             if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
@@ -965,11 +965,10 @@ expressApp.post(
 
                     const existingBet = await Bet.findOne({
                         userId: user._id,
-                        lineQuery: {
-                            lineId: lineId,
-                            eventName: lineQuery,
-                            sportName: 'other',
-                        }
+                        "lineQuery.lineId": "lineId",
+                        "lineQuery.lineId": lineId,
+                        "lineQuery.eventName": lineQuery,
+                        "lineQuery.sportName": 'other',
                     });
                     if (existingBet) {
                         errors.push(`${pickName} ${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
@@ -1212,18 +1211,25 @@ expressApp.post(
                         eventId,
                         lineId,
                         type,
+                        subtype,
                         altLineId,
                     } = lineQuery;
                     const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
                     if (sportData) {
                         const { originSportId } = sportData;
                         lineQuery.sportId = originSportId;
-                        const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
+                        const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
                         if (line) {
                             const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
                             const existingBet = await Bet.findOne({
                                 userId: user._id,
-                                lineQuery: lineQuery
+                                "lineQuery.sportName": lineQuery.sportName,
+                                "lineQuery.leagueId": lineQuery.leagueId,
+                                "lineQuery.eventId": lineQuery.eventId,
+                                "lineQuery.lineId": lineQuery.lineId,
+                                "lineQuery.type": lineQuery.type,
+                                "lineQuery.subtype": lineQuery.subtype,
+                                "lineQuery.altLineId": lineQuery.altLineId
                             });
                             if (existingBet) {
                                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
@@ -1327,21 +1333,21 @@ expressApp.post(
                                             }
 
                                             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
-                                            let betType = ''
+                                            let betType = '';
                                             switch (type) {
                                                 case 'total':
                                                     if (pick == 'home') {
-                                                        betType = `O ${points}`;
+                                                        betType += `O ${points}`;
                                                     } else {
-                                                        betType = `U ${points}`;
+                                                        betType += `U ${points}`;
                                                     }
                                                     break;
 
                                                 case 'spread':
                                                     if (pick == 'home') {
-                                                        betType = `${hdp > 0 ? '+' : ''}${hdp}`;
+                                                        betType += `${hdp > 0 ? '+' : ''}${hdp}`;
                                                     } else {
-                                                        betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                                                        betType += `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
                                                     }
                                                     break;
                                             }
@@ -1435,6 +1441,7 @@ expressApp.post(
                                                         sportName,
                                                         matchStartDate: startDate,
                                                         lineType: type,
+                                                        lineSubType: subtype,
                                                         points: hdp ? hdp : points ? points : null,
                                                         homeBets: pick === 'home' ? [betId] : [],
                                                         awayBets: pick === 'away' ? [betId] : [],
@@ -1497,7 +1504,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     let { pick: originPick, win: toBet, lineQuery } = bet;
     pick = originPick == 'home' ? "away" : "home";
 
-    const { type, altLineId, } = lineQuery;
+    const { type, altLineId, subtype } = lineQuery;
 
     const { originSportId } = sportData;
     lineQuery.sportId = originSportId;
@@ -1634,33 +1641,33 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     });
 
     let pickName = '';
-    betType = ''
+    betType = '';
     switch (type) {
         case 'total':
             if (pick == 'home') {
-                pickName = `Over ${points}`;
-                betType = `O ${points}`;
+                pickName += `Over ${points}`;
+                betType += `O ${points}`;
             } else {
-                pickName = `Under ${points}`;
-                betType = `U ${points}`;
+                pickName += `Under ${points}`;
+                betType += `U ${points}`;
             }
             break;
 
         case 'spread':
             if (pick == 'home') {
-                pickName = `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
-                betType = `${hdp > 0 ? '+' : ''}${hdp}`;
+                pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
+                betType += `${hdp > 0 ? '+' : ''}${hdp}`;
             } else {
-                pickName = `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
-                betType = `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                pickName += `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                betType += `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
             }
             break;
 
         case 'moneyline':
             if (pick == 'home') {
-                pickName = teamA;
+                pickName += teamA;
             } else {
-                pickName = teamB;
+                pickName += teamB;
             }
             break;
 
@@ -2083,6 +2090,7 @@ expressApp.get(
                         if (event)
                             return res.json({
                                 leagueName: sportLeague.name,
+                                origin: sportData.origin,
                                 ...event
                             });
                         return res.json(null);
@@ -3408,18 +3416,22 @@ expressApp.put(
     '/share-line',
     isAuthenticated,
     async (req, res) => {
-        const { url, eventDate, type, index } = req.body;
-        const sharedLine = await SharedLine.findOne({ user: req.user._id, url, type, index });
-        if (sharedLine) {
-            return res.json(sharedLine);
+        try {
+            const { url, eventDate, type, index, subtype } = req.body;
+            const sharedLine = await SharedLine.findOne({ user: req.user._id, url, type, index, subtype });
+            if (sharedLine) {
+                return res.json(sharedLine);
+            }
+            const newSharedLine = await SharedLine.create({
+                user: req.user._id,
+                url: url,
+                uniqueId: ID(),
+                eventDate, type, index, subtype
+            });
+            res.json(newSharedLine);
+        } catch(error) {
+            res.status(500).json({success: false});
         }
-        const newSharedLine = await SharedLine.create({
-            user: req.user._id,
-            url: url,
-            uniqueId: ID(),
-            eventDate, type, index
-        });
-        res.json(newSharedLine);
     }
 )
 
