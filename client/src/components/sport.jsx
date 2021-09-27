@@ -507,7 +507,7 @@ class Sport extends Component {
                                         ) : emptyBoxLine}
                                     </React.Fragment>
                                     <li className="detailed-lines-link not-mobile">
-                                        <Link to={{ pathname: `/sport/${sportName}/league/${league.originId}/event/${event.originId}` }}>
+                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }}>
                                             +{event.lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>
