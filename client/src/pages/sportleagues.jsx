@@ -39,7 +39,7 @@ class SportsLeagues extends Component {
     getLeagues = () => {
         const { sportName } = this.props;
         this.setState({ leagues: [] });
-        const url = `${serverUrl}/sportleague?name=${sportName}`;
+        const url = `${serverUrl}/sportleague?name=${sportName ? sportName.replace("_", " ") : ""}`;
         axios({
             method: 'get',
             url,
