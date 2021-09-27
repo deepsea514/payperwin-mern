@@ -144,6 +144,5 @@ if (process.env.NODE_ENV === 'development2') {
         cert,
     }, app).listen(port, () => console.log(`API Server listening on port ${port}`));
 } else {
-    console.log(process.env.NODE_ENV, 'mode');
     app.listen(port, () => console.log(`Server listening on port ${port}!`)); // eslint-disable-line
 }
