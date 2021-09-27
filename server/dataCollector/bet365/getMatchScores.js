@@ -1,11 +1,14 @@
 const getDefaultMatchScores = require('./getMatchScores/getDefaultMatchScores');
 const getAmericanFootballMatchScores = require('./getMatchScores/getAmericanFootballMatchScores');
+const getTableTennisMatchScores = require('./getMatchScores/getTableTennisMatchScores');
 
 const getMatchScores = (sport, type, subtype, ss, scores) => {
     try {
         switch (sport) {
             case "American Football":
                 return getAmericanFootballMatchScores(type, subtype, ss, scores);
+            case "Table Tennis":
+                return getTableTennisMatchScores(type, subtype, ss, scores);
             case "Soccer":
             case "Cricket":
             case "Rugby Union":
@@ -24,7 +27,6 @@ const getMatchScores = (sport, type, subtype, ss, scores) => {
             case "Futsal":
             case "Floorball":
             case "Volleyball":
-            case "Table Tennis":
             case "Badminton":
             case "Beach Volleyball":
             case "Squash":
