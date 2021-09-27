@@ -186,12 +186,12 @@ class Sport extends Component {
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
-                                        <Link to={{ pathname: `/sport/${sportName}/league/${league.originId}/event/${event.originId}` }} className="widh-adf">
+                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf">
                                             <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
-                                        <Link to={{ pathname: `/sport/${sportName}/league/${league.originId}/event/${event.originId}` }}>
+                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }}>
                                             +{event.lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>
