@@ -44,7 +44,7 @@ class Sport extends Component {
         const { sportName, league: league } = this.props;
         this.setState({ data: null });
         if (sportName) {
-            axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName, leagueId: league } : { name: sportName } })
+            axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
                 .then(({ data }) => {
                     if (data) {
                         // Remove moneyline with draw

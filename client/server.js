@@ -43,7 +43,6 @@ app.get("/*", (req, res) => {
         if (staticPageFound) {
             try {
                 const { data } = await axios.get(`${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`);
-                console.log(data);
                 if (data) {
                     const { title: metaTitle, description: metaDescription } = data;
                     title = metaTitle;
@@ -55,7 +54,8 @@ app.get("/*", (req, res) => {
         } else {
             if (path.startsWith('/sport')) {
                 const urlParams = path.split('/');
-                const sportName = urlParams[2];
+                let sportName = urlParams[2];
+                sportName = sportName.replace("_", " ");
                 const leagueId = urlParams[4];
                 const eventId = urlParams[6];
                 if (leagueId) { // Has league
