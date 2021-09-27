@@ -11,7 +11,7 @@ const pagesData = require('./src/PPWAdmin/modules/meta-tags/redux/pages.json');
 const config = require('../config.json');
 const _env = require('./src/env.json');
 const serverUrl = _env.appUrl;
-const port = process.env.NODE_ENV == 'production' ? 8000 : 80;
+const port = _env.port;
 const app = express();
 
 // CORS
@@ -43,7 +43,6 @@ app.get("/*", (req, res) => {
         if (staticPageFound) {
             try {
                 const { data } = await axios.get(`${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`);
-                console.log(data);
                 if (data) {
                     const { title: metaTitle, description: metaDescription } = data;
                     title = metaTitle;
@@ -55,7 +54,8 @@ app.get("/*", (req, res) => {
         } else {
             if (path.startsWith('/sport')) {
                 const urlParams = path.split('/');
-                const sportName = urlParams[2];
+                let sportName = urlParams[2];
+                sportName = sportName.replace("_", " ");
                 const leagueId = urlParams[4];
                 const eventId = urlParams[6];
                 if (leagueId) { // Has league
