@@ -1488,6 +1488,8 @@ expressApp.post(
                         } else {
                             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Line not found`);
                         }
+                    } else {
+                        errors.push(`${pickName} ${odds[pick]} wager could not be placed. Line not found`);
                     }
                 }
             }

@@ -68,10 +68,11 @@ class BetSlip extends Component {
                 this.setState(stateChanges);
             }
         }).catch((err) => {
-            console.log(err)
             if (err.response && err.response.data) {
                 const { error } = err.response.data;
                 this.setState({ formError: error });
+            } else {
+                this.setState({ errors: ['Can\'t place bet.'] });
             }
         });
     }
