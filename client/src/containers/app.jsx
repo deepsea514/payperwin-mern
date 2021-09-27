@@ -123,7 +123,6 @@ class App extends Component {
 
     addBet = (name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype) => {
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin };
-        console.log(newBet);
         const { betSlip } = this.state;
         this.setState({
             betSlip: update(betSlip, {

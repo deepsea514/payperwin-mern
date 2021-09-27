@@ -59,7 +59,8 @@ const matchResults = async () => {
             eventId,
             lineType,
             lineSubType,
-            points
+            points,
+            sportName,
         } = betpool;
         let matchCancelled = false;
         if (homeBets.length > 0 && awayBets.length > 0) {
@@ -72,36 +73,28 @@ const matchResults = async () => {
                             event_id: eventId,
                         }
                     });
-
                 if (!success) {
                     console.log('no data from api/cache for this line');
                     continue;
                 }
                 const { ss, scores, time_status, time } = results[0];
-                const matchResult = {
+                let matchResult = {
                     homeScore: 0,
                     awayScore: 0,
                     cancellationReason: false
                 };
                 if (time_status == 3) { //Ended
                     // Calculate Match Score
-
                     if (ss == null || ss == "") {
                         await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                         continue;
                     }
-                    const matchScores = ss.split(',');
-                    for (let match = 0; match < matchScores.length; match++) {
-                        const scores = matchScores[match].split('-');
-                        if (lineType == 'moneyline') {
-                            if (Number(scores[0]) > Number(scores[1]))
-                                matchResult.homeScore++;
-                            if (Number(scores[1]) > Number(scores[0]))
-                                matchResult.awayScore++;
-                        } else {
-                            matchResult.homeScore += Number(scores[0]);
-                            matchResult.awayScore += Number(scores[1]);
-                        }
+                    const result = getMatchScores(sportName, lineType, lineSubType, ss, scores);
+                    if (result)
+                        matchResult = { ...matchResult, ...result };
+                    else {
+                        console.error("matchError:", eventId);
+                        continue;
                     }
                 } else if (time_status == 4 ||
                     time_status == 0 ||
