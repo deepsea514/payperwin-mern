@@ -1512,3 +1512,7 @@ button.loginButton span {
     border-radius: 2px;
     -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
 }
+
+.tab-pane {
+    background-color: #E5E5E5;
+}
