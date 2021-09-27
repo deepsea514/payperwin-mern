@@ -1642,6 +1642,29 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
 
     let pickName = '';
     betType = '';
+    switch (subtype) {
+        case 'first_half':
+            pickName += '1st Half: ';
+            break;
+        case 'second_half':
+            pickName += '2nd Half: ';
+            break;
+        case 'first_quarter':
+            pickName += '1st Quarter: ';
+            break;
+        case 'second_quarter':
+            pickName += '2nd Quarter: ';
+            break;
+        case 'third_quarter':
+            pickName += '3rd Quarter: ';
+            break;
+        case 'forth_quarter':
+            pickName += '4th Quarter: ';
+            break;
+        default:
+            pickName += 'Game: ';
+            break;
+    }
     switch (type) {
         case 'total':
             if (pick == 'home') {
