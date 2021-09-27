@@ -62,7 +62,8 @@ app.get("/*", (req, res) => {
                     try {
                         const { data } = await axios.get(`${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`);
                         if (data) {
-                            const { league: { name: leagueName, events } } = data;
+                            const league = data.leagues[0];
+                            const { name: leagueName, events } = league;
                             if (eventId) {  // Has Event
                                 const { uniqueId } = req.query;
                                 const event = events.find((event) => event.originId == eventId);
