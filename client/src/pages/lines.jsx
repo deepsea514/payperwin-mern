@@ -229,7 +229,7 @@ class Lines extends Component {
                         return lines.slice(0, showAll ? lines.length : 1)
                             .map((line, idx) =>
                                 <React.Fragment key={idx}>
-                                    {idx != 0 && <hr />}
+                                    {idx != 0 && line.line && <hr />}
                                     <Line
                                         type={type}
                                         subtype={subtype}

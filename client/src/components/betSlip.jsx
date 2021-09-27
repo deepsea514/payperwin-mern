@@ -14,8 +14,6 @@ class BetSlip extends Component {
             errors: [],
             confirmationOpen: false,
         };
-        this.placeBets = this.placeBets.bind(this);
-        this.toggleField = this.toggleField.bind(this);
     }
 
     toggleField = (fieldName, forceState) => {
@@ -29,6 +27,7 @@ class BetSlip extends Component {
     placeBets = () => {
         const { updateUser, user, betSlip, removeBet } = this.props;
         const url = `${serverUrl}/placeBets`;
+        this.setState({ errors: [] });
 
         let totalStake = 0;
         let totalWin = 0;

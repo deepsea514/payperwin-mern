@@ -5,8 +5,6 @@ import classnames from "classnames";
 export default class Line extends Component {
     getSubTypeName = (subtype) => {
         switch (subtype) {
-            case null:
-                return '- Game';
             case 'first_half':
                 return '- 1st Half';
             case 'second_half':
@@ -19,6 +17,8 @@ export default class Line extends Component {
                 return '- 3rd Quarter';
             case 'forth_quarter':
                 return '- 4th Quarter';
+            default:
+                return '- Game';
         }
     }
 

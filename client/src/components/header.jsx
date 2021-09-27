@@ -38,8 +38,6 @@ class Header extends Component {
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
-        this.toggleField = this.toggleField.bind(this);
-        this.logout = this.logout.bind(this);
         this._isMounted = false;
     }
 
@@ -62,11 +60,11 @@ class Header extends Component {
         this.setState({ timerInterval: null });
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    toggleField(fieldName, forceState) {
+    toggleField = (fieldName, forceState) => {
         if (typeof this.state[fieldName] !== 'undefined') {
             this.setState({
                 [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
@@ -74,7 +72,7 @@ class Header extends Component {
         }
     }
 
-    logout() {
+    logout = () => {
         const { getUser, history } = this.props;
         logout(getUser, history);
         this.setState({ userDropDownOpen: false, oddsDropDownOpen: false, langDropDownOpen: false });

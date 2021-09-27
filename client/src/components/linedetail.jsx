@@ -27,9 +27,6 @@ export default class LineDetail extends Component {
         let pickName = '';
 
         switch (lineQuery.subtype) {
-            case null:
-                pickName += 'Game: ';
-                break;
             case 'first_half':
                 pickName += '1st Half: ';
                 break;
@@ -47,6 +44,9 @@ export default class LineDetail extends Component {
                 break;
             case 'forth_quarter':
                 pickName += '4th Quarter: ';
+                break;
+            default:
+                pickName += 'Game: ';
                 break;
         }
 

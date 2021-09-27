@@ -69,9 +69,6 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDirty = this.handleDirty.bind(this);
     }
 
     componentDidMount() {
@@ -79,11 +76,11 @@ export default class Login extends Component {
         setTitle({ pageTitle: title })
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleSubmit() {
+    handleSubmit = () => {
         const { errors } = this.state;
         registrationValidation.validateFields(this.state)
             .then((result) => {
@@ -120,7 +117,7 @@ export default class Login extends Component {
             });
     }
 
-    handleDirty(e) {
+    handleDirty = (e) => {
         const { errors } = this.state;
         const { name } = e.target;
         registrationValidation.validateField(name, this.state).then((result) => {

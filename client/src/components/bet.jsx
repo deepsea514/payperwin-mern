@@ -12,7 +12,6 @@ class Bet extends Component {
             stake: '',
             win: '',
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange = (e) => {
