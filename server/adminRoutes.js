@@ -1803,7 +1803,7 @@ adminRouter.post(
             const { id } = req.params;
             const bet = await Bet.findById(id);
             if (!bet || bet.origin == 'other') {
-                return res.status(404).json({ success: false });
+                return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
@@ -1815,7 +1815,7 @@ adminRouter.post(
             } else if (lineQuery.type.toLowerCase() == 'total') {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
-            const betpool = await BetPool.findOne({
+            const betpoolQuery = {
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,
                 eventId: lineQuery.eventId,
@@ -1825,9 +1825,11 @@ adminRouter.post(
                 sportName: lineQuery.sportName,
                 origin: bet.origin,
                 points: linePoints
-            });
+            };
+            console.log(betpoolQuery);
+            const betpool = await BetPool.findOne(betpoolQuery);
             if (!betpool) {
-                return res.status(404).json({ success: false });
+                return res.status(404).json({ error: 'Betpool not found' });
             }
             const {
                 homeBets,
