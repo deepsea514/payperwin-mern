@@ -35,8 +35,8 @@ class BetSlip extends Component {
             const b = betSlip[i];
             totalStake += b.stake;
             totalWin += b.win;
-            if (b.stake + b.win > 2000) {
-                this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum payout.`] });
+            if (b.win > 2000) {
+                this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
                 return;
             }
         }
