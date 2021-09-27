@@ -30,7 +30,7 @@ const BetpoolSchema = new Schema(
         awayBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
         homeScore: Number,
         awayScore: Number,
-        origin: { type: String, default: 'pinnacle' }
+        origin: { type: String, default: 'bet365' }
         // betStartDate: Date,
         // betEndDate: Date,
     },
