@@ -61,7 +61,7 @@ const supportEmailAddress = 'support@payperwin.co';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
 const isMultiBetpool = config.isMultiBetpool;
-const maximumPayouts = 2000;
+const maximumWin = 2000;
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -985,8 +985,8 @@ expressApp.post(
                             const pickedCandidate = pick == 'home' ? teamA : teamB;
                             if (pickedCandidate) {
                                 const toWin = calculateToWinFromBet(betAfterFee, pickedCandidate.currentOdds);
-                                if (toBet + toWin > maximumPayouts) {
-                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum payout.`);
+                                if (toWin > maximumWin) {
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum win amount.`);
                                     continue;
                                 }
                                 const fee = Number((toBet * BetFee).toFixed(2));
@@ -1238,8 +1238,8 @@ expressApp.post(
                             if (oddsMatch) {
                                 const betAfterFee = toBet /* * 0.98 */;
                                 const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-                                if (toBet + toWin > maximumPayouts) {
-                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum payout.`);
+                                if (toWin > maximumWin) {
+                                    errors.push(`${pickName} ${odds[pick]} wager could not be placed. Exceed maximum win amount.`);
                                 } else {
                                     const fee = Number((toWin * BetFee).toFixed(2));
                                     const balanceChange = toBet * -1;

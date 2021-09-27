@@ -68,11 +68,11 @@ class Bet extends Component {
         const { name, type, league, odds, pick, sportName, lineId, pickName, index } = bet;
         return (
             <>
-                {stake + win > 2000 && <div className="bet-warn-message">
+                {win > 2000 && <div className="bet-warn-message">
                     <div><b>Above Maximum Stake</b></div>
                     Please enter a new amount that payout does not exceed CAD 2,000.
                 </div>}
-                <div className={`bet ${stake + win > 2000 ? 'bet-warn' : ''}`}>
+                <div className={`bet ${win > 2000 ? 'bet-warn' : ''}`}>
                     <div>
                         {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
@@ -104,7 +104,7 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Payout: CAD 2,000</div>
+                    <div className="bet-type-league mt-2">Max Win: CAD 2,000</div>
                 </div>
             </>
         )
