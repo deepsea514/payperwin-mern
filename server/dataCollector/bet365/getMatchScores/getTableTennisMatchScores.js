@@ -7,8 +7,8 @@ const getTableTennisMatchScores = (type, subtype, ss, scores) => {
         if (type == 'total') {
             const sets = Object.keys(scores);
             for (let i = 0; i < sets.length; i++) {
-                matchResult.homeScore += scores[sets].home;
-                matchResult.awayScore += scores[sets].away;
+                matchResult.homeScore += parseInt(scores[sets[i]].home);
+                matchResult.awayScore += parseInt(scores[sets[i]].away);
             }
             return matchResult;
         }

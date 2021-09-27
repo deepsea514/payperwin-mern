@@ -11,6 +11,7 @@ const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
 const { ID } = require('../../libs/functions');
+const getMatchScores = require('./getMatchScores');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
