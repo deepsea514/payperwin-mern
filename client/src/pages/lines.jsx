@@ -74,7 +74,7 @@ class Lines extends Component {
     getSportLine() {
         const { match: { params: { sportName, leagueId, eventId } } } = this.props;
         if (sportName) {
-            axios.get(`${serverUrl}/sport`, { params: { name: sportName, leagueId: leagueId, eventId } })
+            axios.get(`${serverUrl}/sport`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
                 .then(({ data }) => {
                     const { timer } = this.state;
                     if (timer) clearInterval(timer);
