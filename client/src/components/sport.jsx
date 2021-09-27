@@ -200,14 +200,15 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away);
                                                 const lineQuery = {
-                                                    sportName,
+                                                    sportName: sportName.replace("_", " "),
                                                     leagueId,
                                                     eventId,
                                                     lineId,
                                                     type: 'moneyline',
+                                                    subtype: null
                                                 };
-                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type);
-                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
                                                 return (
                                                     <li>
                                                         <span className={`box-odds ${homeExist ? 'orange' : null}`}
@@ -298,16 +299,17 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away);
                                                 const lineQuery = {
-                                                    sportName,
+                                                    sportName: sportName.replace("_", " "),
                                                     leagueId,
                                                     eventId,
                                                     lineId,
                                                     type: 'spread',
                                                     index: 0,
+                                                    subtype: null,
                                                 };
                                                 if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
-                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type);
-                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
                                                 return (
                                                     <li>
                                                         <span
@@ -403,16 +405,17 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under);
                                                 const lineQuery = {
-                                                    sportName,
+                                                    sportName: sportName.replace("_", " "),
                                                     leagueId,
                                                     eventId,
                                                     lineId,
                                                     type: 'total',
-                                                    index: 0
+                                                    index: 0,
+                                                    subtype: null
                                                 };
                                                 if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
-                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type);
-                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type);
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
                                                 return (
                                                     <li>
                                                         <span

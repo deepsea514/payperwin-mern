@@ -35,12 +35,13 @@ export default class Line extends Component {
                 {(!type || type == 'moneyline' && subtype == line.subtype) && moneyline ?
                     ((() => {
                         const lineQuery = {
-                            sportName,
+                            sportName: sportName.replace("_", " "),
                             leagueId,
                             eventId,
                             lineId: eventId,
                             type: 'moneyline',
-                            subtype: line.subtype
+                            subtype: line.subtype,
+                            index: null
                         };
                         return <>
                             <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}>Moneyline {this.getSubTypeName(line.subtype)}</div>
