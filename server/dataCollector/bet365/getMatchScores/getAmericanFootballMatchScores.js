@@ -10,8 +10,8 @@ const getAmericanFootballMatchScores = (type, subtype, ss, scores) => {
                 matchResult.awayScore = parseInt(scores["3"].away);
                 break;
             case 'second_half':
-                matchResult.homeScore = parseInt(scores["7"].home);
-                matchResult.awayScore = parseInt(scores["7"].away);
+                matchResult.homeScore = parseInt(scores["7"].home) - parseInt(scores["3"].home);
+                matchResult.awayScore = parseInt(scores["7"].away) - parseInt(scores["3"].away);
                 break;
             case 'first_quarter':
                 matchResult.homeScore = parseInt(scores["1"].home);
@@ -30,8 +30,8 @@ const getAmericanFootballMatchScores = (type, subtype, ss, scores) => {
                 matchResult.awayScore = parseInt(scores["5"].away);
                 break;
             default:
-                matchResult.homeScore = parseInt(scores["3"].home) + parseInt(scores["7"].home);
-                matchResult.awayScore = parseInt(scores["3"].away) + parseInt(scores["7"].away);
+                matchResult.homeScore = parseInt(scores["7"].home);
+                matchResult.awayScore = parseInt(scores["7"].away);
                 break;
         }
         return matchResult;
