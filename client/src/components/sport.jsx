@@ -205,7 +205,8 @@ class Sport extends Component {
                                                     eventId,
                                                     lineId,
                                                     type: 'moneyline',
-                                                    subtype: null
+                                                    subtype: null,
+                                                    index: null
                                                 };
                                                 const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
                                                 const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);

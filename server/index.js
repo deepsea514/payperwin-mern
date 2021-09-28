@@ -1391,7 +1391,6 @@ expressApp.post(
                                                 });
                                             });
 
-
                                             const betId = savedBet.id;
                                             // add betId to betPool
                                             const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
@@ -2120,7 +2119,12 @@ expressApp.get(
                             });
                         return res.json(null);
                     }
-                    return res.json({ ...sportData, leagues: [sportLeague] });
+                    return res.json({
+                        name: sportData.name,
+                        leagues: [sportLeague],
+                        origin: sportData.origin,
+                        originSportId: sportData.originSportId
+                    });
                 }
                 return res.json(null);
             }
@@ -3454,8 +3458,8 @@ expressApp.put(
                 eventDate, type, index, subtype
             });
             res.json(newSharedLine);
-        } catch(error) {
-            res.status(500).json({success: false});
+        } catch (error) {
+            res.status(500).json({ success: false });
         }
     }
 )
