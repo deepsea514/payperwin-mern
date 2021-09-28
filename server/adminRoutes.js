@@ -49,6 +49,7 @@ const FinancialStatus = config.FinancialStatus;
 const CountryInfo = config.CountryInfo;
 const EventStatus = config.EventStatus;
 const AdminRoles = config.AdminRoles;
+const isDstObserved = config.isDstObserved;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
@@ -2627,18 +2628,74 @@ adminRouter.get(
         page--;
 
         const total = await AutoBet.find({}).count();
-        AutoBet.find({})
-            .sort({ createdAt: -1 })
-            .skip(page * perPage)
-            .limit(perPage)
-            .populate('userId', ['username', 'balance', 'email', 'firstname', 'lastname'])
-            .exec((error, data) => {
-                if (error) {
-                    res.status(404).json({ error: 'Can\'t find customers.' });
-                    return;
-                }
-                res.status(200).json({ total, perPage, page: page + 1, data });
-            });
+        let timezoneOffset = -8;
+        if (isDstObserved) timezoneOffset = -7;
+        const today = new Date().addHours(timezoneOffset);
+        today.addHours(today.getTimezoneOffset() / 60);
+        timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+        const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+        try {
+            const autobets = await AutoBet.aggregate([
+                {
+                    $lookup: {
+                        from: 'autobetlogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $gte: ["$createdAt", fromTime] },
+                                        { $eq: ["$user", "$$user_id"] }
+                                    ]
+                                }
+                            },
+                        }],
+                        as: 'autobetlogs',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $eq: ["$_id", "$$user_id"] }
+                            },
+                        }, {
+                            $project: {
+                                email: 1,
+                                balance: 1,
+                            }
+                        }],
+                        as: 'userId',
+                    }
+                },
+                {
+                    $project: {
+                        userId: 1,
+                        sports: 1,
+                        side: 1,
+                        betType: 1,
+                        rollOver: 1,
+                        priority: 1,
+                        maxRisk: 1,
+                        budget: 1,
+                        hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
+                        referral_code: 1,
+                        status: 1,
+                        createdAt: 1
+                    }
+                },
+                { $unwind: "$userId" },
+                { $sort: { "createdAt": -1 } },
+                { $skip: page * perPage },
+                { $limit: perPage }
+            ]);
+            return res.json({ total, perPage, page: page + 1, data: autobets });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ success: false });
+        }
     }
 )
 
