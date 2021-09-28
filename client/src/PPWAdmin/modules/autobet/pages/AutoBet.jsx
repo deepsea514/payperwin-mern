@@ -11,6 +11,7 @@ import AutoBetModal from "../components/AutoBetModal";
 import { createAutoBet, deleteAutoBet, updateAutoBet } from "../redux/services";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import numberFormat from "../../../../helpers/numberFormat";
 import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
 
@@ -98,9 +99,10 @@ class AutoBet extends React.Component {
                 <td>{bet.betType.join(', ')}</td>
                 <td>{this.getRollOver(bet.rollOver)}</td>
                 <td>{bet.priority}</td>
-                <td>{bet.maxRisk}</td>
-                <td>{bet.budget}</td>
-                <td>{bet.userId ? bet.userId.balance : null}</td>
+                <td>{numberFormat(bet.maxRisk)}</td>
+                <td>{numberFormat(bet.budget)}</td>
+                <td>{bet.hold}</td>
+                <td>{bet.userId ? numberFormat(bet.userId.balance) : null}</td>
                 <td>{bet.referral_code}</td>
                 <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>
@@ -234,6 +236,7 @@ class AutoBet extends React.Component {
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>
+                                            <th scope="col">Hold</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Ref Code</th>
                                             <th scope="col">Status</th>

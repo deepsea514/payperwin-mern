@@ -1574,6 +1574,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             let timezoneOffset = -8;
             if (isDstObserved) timezoneOffset = -7;
             const today = new Date().addHours(timezoneOffset);
+            today.addHours(today.getTimezoneOffset() / 60);
             timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
             const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
             const logs = await AutoBetLog
