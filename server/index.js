@@ -2087,7 +2087,12 @@ expressApp.get(
                             });
                         return res.json(null);
                     }
-                    return res.json({ ...sportData, leagues: [sportLeague] });
+                    return res.json({
+                        name: sportData.name,
+                        leagues: [sportLeague],
+                        origin: sportData.origin,
+                        originSportId: sportData.originSportId
+                    });
                 }
                 return res.json(null);
             }
