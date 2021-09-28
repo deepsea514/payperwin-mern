@@ -143,7 +143,6 @@ class App extends Component {
             });
         } else {
             const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true) && b.subtype == subtype);
-            // console.log(indexOfBet);
             if (typeof indexOfBet === 'number') {
                 this.setState({
                     betSlip: update(betSlip, {

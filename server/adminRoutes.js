@@ -1826,7 +1826,6 @@ adminRouter.post(
                 origin: bet.origin,
                 points: linePoints
             };
-            console.log(betpoolQuery);
             const betpool = await BetPool.findOne(betpoolQuery);
             if (!betpool) {
                 return res.status(404).json({ error: 'Betpool not found' });
