@@ -9,6 +9,7 @@ import socket from "../helpers/socket";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import _env from '../env.json';
+import ErrorBoundary from '../libs/ErrorBoundary';
 const serverUrl = _env.appUrl;
 
 class AuthWrap extends Component {
@@ -86,11 +87,13 @@ class AuthWrap extends Component {
                             </div>
                         )} />
                         <Route path="/" render={() => (
-                            <App
-                                user={user}
-                                getUser={this.getUser}
-                                updateUser={this.updateUser}
-                            />
+                            <ErrorBoundary>
+                                <App
+                                    user={user}
+                                    getUser={this.getUser}
+                                    updateUser={this.updateUser}
+                                />
+                            </ErrorBoundary>
                         )} />
                     </Switch>
                 </BrowserRouter>

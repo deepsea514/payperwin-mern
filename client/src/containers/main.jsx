@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import axios from "axios";
 import _env from '../env.json';
+import ErrorBoundary from '../libs/ErrorBoundary';
 const serverUrl = _env.appUrl;
 
 export default class Main extends Component {
@@ -45,7 +46,10 @@ export default class Main extends Component {
                         <I18nProvider>
                             <BrowserRouter basename="">
                                 <Switch>
-                                    <Route path="/RP1021" component={AdminWrap} />
+                                    <Route path="/RP1021" render={(props) =>
+                                        <ErrorBoundary>
+                                            <AdminWrap {...props} />
+                                        </ErrorBoundary>} />
                                     <Route path="/maintenance" render={(props) => <Maintenance maintenance={maintenance} {...props} />} />
                                     {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <AuthWrap {...props} />} />}
                                 </Switch>
