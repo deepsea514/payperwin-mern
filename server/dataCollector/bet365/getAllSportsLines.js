@@ -3,7 +3,6 @@ const Sport = require('../../models/sport');
 const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
 const ErrorLog = require("../../models/errorlog");
-const Bet = require("../../models/bet");
 //local helpers
 const config = require('../../../config.json');
 const sportsData = require('./sports.json');
@@ -54,9 +53,6 @@ Date.prototype.addHours = function (h) {
 }
 
 const getAllSportsLines = async () => {
-    await Bet.updateMany({
-        origin: { $exists: false }
-    }, { origin: 'bet365' });
     const bet365Addon = await Addon.findOne({ name: 'bet365' });
     if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
         console.warn("Bet365 Api Key is not set");
