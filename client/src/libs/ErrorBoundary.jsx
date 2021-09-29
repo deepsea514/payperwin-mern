@@ -1,5 +1,6 @@
 import React from "react";
 import '../PPWAdmin/_metronic/_assets/sass/pages/error/error-5.scss';
+import { Link } from "react-router-dom";
 
 export default class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -15,30 +16,13 @@ export default class ErrorBoundary extends React.Component {
     }
 
     render() {
-        const { errorInfo, error } = this.state;
+        const { errorInfo } = this.state;
         if (errorInfo) {
             return (
-                <div
-                    className="error error-5 d-flex flex-row-fluid bgi-size-cover bgi-position-center"
-                    style={{
-                        backgroundImage: `url("/images/PPW Meta.jpg")`,
-                    }}
-                >
-                    <div className="container d-flex flex-row-fluid flex-column justify-content-md-center p-12">
-                        <h1 className="error-title font-weight-boldest text-info mt-10 mt-md-0 mb-12">
-                            Oops!
-                        </h1>
-                        <p className="font-weight-boldest display-4 text-white">
-                            Something went wrong here.
-                        </p>
-                        <p className="font-size-h3 text-white">
-                            We're working on it and we'll get it fixed
-                            <br />
-                            as soon possible.
-                            <br />
-                            You can back or use our Help Center.
-                        </p>
-                    </div>
+                <div className="container p-12" style={{ height: '60vh'}}>
+                    <p className="font-weight-boldest display-4">
+                        Sorry, this page isn’t available. Our team is working to resolve the issue. Please <Link to="/support">contact us</Link> if you require further assistance
+                    </p>
                 </div>
             );
         }
