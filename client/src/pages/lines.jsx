@@ -41,11 +41,7 @@ class Lines extends Component {
     componentDidMount() {
         const { type, index } = this.state;
         const title = 'Betting on Detailed Sports line';
-        if (!type || !index) {
-            setTitle({ pageTitle: title })
-        } else {
-            setTitle({ pageTitle: title });
-        }
+        setTitle({ pageTitle: title })
         this.getSportLine();
     }
 
@@ -75,24 +71,9 @@ class Lines extends Component {
         if (sportName) {
             axios.get(`${serverUrl}/sport`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
                 .then(({ data }) => {
-                    const { timer } = this.state;
-                    if (timer) clearInterval(timer);
                     if (data) {
                         this.setState({
                             data: data,
-                            timer: setInterval(() => {
-                                const { data } = this.state;
-                                const { startDate } = data;
-                                if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                                    this.setState({
-                                        data: { ...data, started: false }
-                                    });
-                                } else {
-                                    this.setState({
-                                        data: { ...data, started: true }
-                                    });
-                                }
-                            }, 1 * 60 * 1000),
                         })
                     }
                 }).catch((err) => {
@@ -130,7 +111,7 @@ class Lines extends Component {
             return <div>Loading...</div>;
         }
 
-        const { teamA, teamB, startDate, leagueName, lines, origin, started } = data;
+        const { teamA, teamB, startDate, lines } = data;
         return (
             <div className="content detailed-lines mb-5">
                 {ogTitle && <MetaTags>
