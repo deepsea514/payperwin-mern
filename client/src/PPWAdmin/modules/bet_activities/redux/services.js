@@ -45,3 +45,7 @@ export function deleteBet(id) {
 export function settleBet(id, score) {
     return axios.post(`${serverUrl}/bets/${id}/settle`, score);
 }
+
+export function matchBet(id, data) {
+    return axios.post(`${serverUrl}/bets/${id}/match`, data);
+}

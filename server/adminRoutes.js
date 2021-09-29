@@ -29,6 +29,7 @@ const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
 const BetPool = require('./models/betpool');
 const ErrorLog = require('./models/errorlog');
+const LoyaltyLog = require('./models/loyaltylog');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -53,14 +54,21 @@ const isDstObserved = config.isDstObserved;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const adminEmailAddress1 = 'hello@payperwin.co';
+const supportEmailAddress = 'support@payperwin.co';
+const calculateNewOdds = require('./libs/calculateNewOdds');
+const { convertTimeLineDate } = require('./libs/timehelper');
 const {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
     ID,
     get2FACode,
     isFreeWithdrawalUsed,
-    calculateBetsStatus
+    calculateBetsStatus,
+    calculateToWinFromBet
 } = require('./libs/functions');
+const BetFee = 0.03;
+const loyaltyPerBet = 25;
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -1534,6 +1542,54 @@ adminRouter.get(
 )
 
 adminRouter.get(
+    '/searchautobetusers',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = { status: 'Active' };
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ "userId.email": { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            const autobets = await AutoBet.aggregate([
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $eq: ["$_id", "$$user_id"] },
+                            },
+                        }],
+                        as: 'userId',
+                    }
+                },
+                { $unwind: "$userId" },
+                {
+                    $match: searchObj
+                },
+                { $sort: { "createdAt": -1 } },
+                { $limit: 20 }
+            ]);
+            const results = autobets.map(autobet => (autobet.userId ? {
+                value: autobet.userId._id,
+                label: `${autobet.userId.email} (${autobet.userId.firstname} ${autobet.userId.lastname})`,
+                balance: autobet.userId.balance,
+            } : null)).filter(autobet => autobet != null);
+            res.status(200).json(results);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
     '/searchsports',
     authenticateJWT,
     async (req, res) => {
@@ -2046,6 +2102,254 @@ adminRouter.post(
         }
     }
 )
+
+adminRouter.post(
+    '/bets/:id/match',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            if (!data.user || !data.amount) {
+                return res.status(400).json({ success: false });
+            }
+            const bet = await Bet.findById(id);
+            if (!bet) {
+                return res.status(404).json({ success: false });
+            }
+            const lineQuery = bet.lineQuery;
+            let linePoints = bet.pickName.split(' ');
+            if (lineQuery.type.toLowerCase() == 'moneyline') {
+                linePoints = null;
+            } else if (lineQuery.type.toLowerCase() == 'spread') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
+                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+            } else if (lineQuery.type.toLowerCase() == 'total') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
+            }
+
+            const betpool = await BetPool.findOne({
+                sportId: lineQuery.sportId,
+                leagueId: lineQuery.leagueId,
+                eventId: lineQuery.eventId,
+                lineId: lineQuery.lineId,
+                lineType: lineQuery.type,
+                lineSubType: lineQuery.subtype,
+                sportName: lineQuery.sportName,
+                origin: bet.origin,
+                points: linePoints
+            });
+
+            if (!betpool) {
+                return res.json({ success: false, error: 'Betpool not found.' });
+            }
+
+            const user = await User.findById(data.user);
+            if (!user) {
+                return res.json({ success: false, error: 'User not found.' });
+            }
+            const amount = Number(data.amount);
+            if (amount > user.balance) {
+                return res.json({ success: false, error: 'Insufficient Funds.' });
+            }
+
+            const pick = bet.pick == 'home' ? 'away' : 'home';
+            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick);
+            const betAfterFee = amount;
+            const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+            const fee = Number((betAfterFee * BetFee).toFixed(2));
+
+            let pickName = '';
+            let betType = '';
+            switch (bet.lineQuery.subtype) {
+                case 'first_half':
+                    pickName += '1st Half: ';
+                    break;
+                case 'second_half':
+                    pickName += '2nd Half: ';
+                    break;
+                case 'first_quarter':
+                    pickName += '1st Quarter: ';
+                    break;
+                case 'second_quarter':
+                    pickName += '2nd Quarter: ';
+                    break;
+                case 'third_quarter':
+                    pickName += '3rd Quarter: ';
+                    break;
+                case 'forth_quarter':
+                    pickName += '4th Quarter: ';
+                    break;
+                default:
+                    pickName += 'Game: ';
+                    break;
+            }
+            switch (bet.lineQuery.type) {
+                case 'total':
+                    if (pick == 'home') {
+                        pickName += `Over ${linePoints}`;
+                        betType += `O ${linePoints}`;
+                    } else {
+                        pickName += `Under ${linePoints}`;
+                        betType += `U ${linePoints}`;
+                    }
+                    break;
+                case 'spread':
+                    if (pick == 'home') {
+                        pickName += `${bet.teamA.name} ${linePoints > 0 ? '+' : ''}${linePoints}`;
+                        betType += `${linePoints > 0 ? '+' : ''}${linePoints}`;
+                    } else {
+                        pickName += `${bet.teamB.name} ${-1 * linePoints > 0 ? '+' : ''}${-1 * linePoints}`;
+                        betType += `${-1 * linePoints > 0 ? '+' : ''}${-1 * linePoints}`;
+                    }
+                    break;
+                case 'moneyline':
+                    if (pick == 'home') {
+                        pickName += bet.teamA.name;
+                    } else {
+                        pickName += bet.teamB.name;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            const newBet = await Bet.create({
+                userId: user._id,
+                transactionID: `B${ID()}`,
+                teamA: bet.teamA,
+                teamB: bet.teamB,
+                pick: pick,
+                pickOdds: newLineOdds,
+                oldOdds: pick == 'home' ? bet.teamA.odds : bet.teamB.odds,
+                pickName: pickName,
+                bet: betAfterFee,
+                toWin: toWin,
+                fee: fee,
+                matchStartDate: bet.matchStartDate,
+                status: 'Pending',
+                lineQuery: bet.lineQuery,
+                origin: bet.origin
+            });
+            await FinancialLog.create({
+                financialtype: 'bet',
+                uniqid: `BP${ID()}`,
+                user: user._id,
+                amount: betAfterFee,
+                method: 'bet',
+                status: FinancialStatus.success,
+            });
+            await LoyaltyLog.create({
+                user: user._id,
+                point: betAfterFee * loyaltyPerBet
+            })
+
+            const preference = await Preference.findOne({ user: user._id });
+            let timezone = "00:00";
+            if (preference && preference.timezone) {
+                timezone = preference.timezone;
+            }
+            const timeString = convertTimeLineDate(new Date(), timezone);
+
+            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'Your bet is waiting for a match',
+                    text: `Your bet is waiting for a match`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.email}</b>.
+                        <br><br>
+                        This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                        <br><br>
+                        <ul>
+                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                            <li>Platform: PAYPERWIN Peer-to Peer</li>
+                            </ul>
+                        `),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+            }
+            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
+                sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
+                        Wager: $${betAfterFee.toFixed(2)}
+                        Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
+                        Platform: PAYPERWIN Peer-to Peer`, user.phone);
+            }
+
+            const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
+            let adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: adminEmailAddress1,
+                subject: 'New Bet',
+                text: `New Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                        <li>Event: ${bet.teamA.name} vs ${bet.teamB.name}(${lineQuery.sportName})</li>
+                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
+                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                        <li>Pick: ${pickName}</li>
+                        <li>Date: ${matchTimeString}</li>
+                        <li>Win: $${toWin.toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            adminMsg.to = supportEmailAddress;
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            const docChanges = {
+                $push: pick === 'home' ? {
+                    homeBets: newBet._id,
+                } : {
+                    awayBets: newBet._id,
+                },
+                $inc: {},
+            };
+            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
+            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+            await betpool.update(docChanges);
+            await user.update({ $push: { betHistory: newBet._id }, $inc: { balance: -amount } });
+
+            await calculateBetsStatus(betpool.uid);
+            res.json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ success: false });
+        }
+    }
+);
 
 adminRouter.get(
     '/bets-csv',
