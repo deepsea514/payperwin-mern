@@ -18,17 +18,22 @@ class Sport extends Component {
             error: null,
             sportsbookInfo: null,
             timer: null,
+            updateTimer: null
         };
     }
 
     componentDidMount() {
         this.getSport();
-        this.setState({ timer: setInterval(this.getSport.bind(this), 10 * 60 * 1000) })
+        this.setState({
+            timer: setInterval(this.getSport.bind(this), 10 * 60 * 1000),
+            updateTimer: setInterval(this.forceUpdate.bind(this), 1000),
+        })
     }
 
     componentWillUnmount() {
-        const { timer } = this.state;
+        const { timer, updateTimer } = this.state;
         if (timer) clearInterval(timer);
+        if (updateTimer) clearInterval(updateTimer);
     }
 
     componentDidUpdate(prevProps) {
@@ -159,7 +164,7 @@ class Sport extends Component {
                             if (teamA.toLowerCase().indexOf(search.toLowerCase()) == -1 && teamB.toLowerCase().indexOf(search.toLowerCase()) == -1) {
                                 return null;
                             }
-                            if (!lines || !lines.length || new Date() > new Date(startDate))
+                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
                                 return null;
 
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
