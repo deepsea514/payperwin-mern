@@ -173,10 +173,18 @@ a.log-in-btn {
     max-height: 350px;
 }
 
+.bet-container {
+    margin: 0 10px 10px 10px;
+}
+
+.bet-sportsbook {
+    border: rgb(12, 236, 131) 2px solid;
+    border-radius: 5px;
+}
+
 .bet {
     background: white;
     border-radius: 3px;
-    margin: 0 10px 10px 10px;
     padding: 15px;
     font-size: 12px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
@@ -192,7 +200,8 @@ a.log-in-btn {
     background: #f9ec77;
     font-size: 10px;
     padding: 10px;
-    margin: 0 10px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
 .bet i {
@@ -209,6 +218,11 @@ a.log-in-btn {
     color: #334E6A;
     font-size: 11px;
     margin: 2px 0;
+}
+
+.bet-max-win {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .bet-pick {

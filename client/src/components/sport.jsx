@@ -103,12 +103,18 @@ class Sport extends Component {
 
     addBet = (bet) => {
         const { addBet } = this.props;
-        const { type, odds, originOdds, pick, started } = bet;
-        if (started) return;
+        const { type, odds, originOdds, pick } = bet;
         if (checkOddsAvailable(originOdds, odds, pick, type)) {
             return addBet(bet);
         }
         this.setState({ sportsbookInfo: bet });
+    }
+
+    addSportsbookBet = () => {
+        const { sportsbookInfo } = this.state;
+        const { addBet } = this.props;
+        addBet({ ...sportsbookInfo, odds: sportsbookInfo.originOdds, sportsbook: true });
+        this.setState({ sportsbookInfo: null });
     }
 
     render() {
@@ -145,11 +151,11 @@ class Sport extends Component {
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Peer to peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
+                                Peer to Peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
                             </p>
                             <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
                             <div className="text-right">
-                                <button className="form-button ml-2"> Accept </button>
+                                <button className="form-button ml-2" onClick={this.addSportsbookBet}> Accept </button>
                                 <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
                             </div>
                         </div>

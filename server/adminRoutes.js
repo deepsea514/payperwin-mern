@@ -2266,7 +2266,7 @@ adminRouter.post(
                         <ul>
                             <li>Wager: $${betAfterFee.toFixed(2)}</li>
                             <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Platform: PAYPERWIN Peer-to Peer</li>
+                            <li>Platform: PAYPER WIN Peer-to Peer</li>
                             </ul>
                         `),
                 };
@@ -2285,7 +2285,7 @@ adminRouter.post(
                 sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
                         Wager: $${betAfterFee.toFixed(2)}
                         Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                        Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                        Platform: PAYPER WIN Peer-to Peer`, user.phone);
             }
 
             const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
