@@ -10,7 +10,7 @@ class AutobetSummary extends Component {
 
     render() {
         const { user, summary } = this.props;
-        const { totalbets, winbets, lossbets, profit } = summary;
+        const { totalbets, winbets, lossbets, pendingbets, profit } = summary;
         return (
             <>
                 <div className={`card card-custom bg-white rounded-top`}>
@@ -155,6 +155,39 @@ class AutobetSummary extends Component {
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
                                         ${numberFormat(lossbets.amount.toFixed(2))}
+                                        <span className="svg-icon svg-icon-md svg-icon-danger">
+                                            <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div className="d-flex align-items-center mb-10">
+                                    <div className="symbol symbol-40 symbol-light-primary mr-1">
+                                        <span className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                <SVG
+                                                    className="h-75 align-self-end"
+                                                    src="/media/svg/icons/Home/Library.svg"
+                                                />
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div className="d-flex align-items-start mx-2">
+                                        <div>
+                                            <a
+                                                href="#"
+                                                className="text-dark-75 text-hover-primary font-weight-bolder"
+                                            >
+                                                Pending
+                                            </a>
+                                            <br />
+                                            <a href="#" className="text-muted font-weight-bold mt-1">
+                                                {pendingbets.count} bets
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
+                                        ${numberFormat(pendingbets.amount.toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-danger">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-down.svg" />
                                         </span>

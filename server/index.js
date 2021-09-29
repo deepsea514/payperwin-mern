@@ -3684,6 +3684,33 @@ expressApp.get(
                 lossamount = lossamount[0].amount;
             else lossamount = 0;
 
+            const pendingcount = await Bet.find({
+                userId: user._id,
+                updatedAt: dateObj,
+                orgin: { $ne: 'other' },
+                status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+            }).count();
+
+            let pendingamount = await Bet.aggregate([
+                {
+                    $match: {
+                        userId: user._id,
+                        updatedAt: dateObj,
+                        orgin: { $ne: 'other' },
+                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$bet" }
+                    }
+                }
+            ]);
+            if (pendingamount && pendingamount.length)
+                pendingamount = pendingamount[0].amount;
+            else pendingamount = 0;
+
             let sports = await Bet.aggregate([
                 {
                     $match: {
@@ -3714,6 +3741,10 @@ expressApp.get(
                     lossbets: {
                         count: losscount,
                         amount: lossamount
+                    },
+                    pendingbets: {
+                        count: pendingcount,
+                        amount: pendingamount
                     },
                     profit: winamount - lossamount,
                 },
