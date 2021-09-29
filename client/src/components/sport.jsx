@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import convertOdds from '../helpers/convertOdds';
+import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -15,7 +16,7 @@ class Sport extends Component {
         this.state = {
             data: null,
             error: null,
-            showModal: false,
+            sportsbookInfo: null,
             timer: null,
         };
     }
@@ -95,37 +96,19 @@ class Sport extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, started, subtype) => {
+    addBet = (bet) => {
+        const { addBet } = this.props;
+        const { type, odds, originOdds, pick, started } = bet;
         if (started) return;
-        if (this.checkOddsAvailable(originOdds, odds, pick, type)) {
-            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype);
+        if (checkOddsAvailable(originOdds, odds, pick, type)) {
+            return addBet(bet);
         }
-        this.setState({ showModal: true });
-    }
-
-    checkOddsAvailable = (odds, newOdds, pick, type) => {
-        if (type == 'moneyline') {
-            if (odds.home > 0 && odds.away > 0 || odds.home < 0 && odds.away < 0)
-                return false;
-            if (odds[pick] == newOdds[pick])
-                return false;
-            return true;
-        }
-        if (type == 'spread' || type == 'total') {
-            if (odds.home > 0 && odds.away > 0 || odds.home < 0 && odds.away < 0) {
-                if (odds.home == odds.away)
-                    return true;
-                return false;
-            }
-            if (odds[pick] == newOdds[pick])
-                return false;
-            return true;
-        }
+        this.setState({ sportsbookInfo: bet });
     }
 
     render() {
         const { betSlip, removeBet, sportName, timezone, search, oddsFormat } = this.props;
-        const { data, error, showModal } = this.state;
+        const { data, error, sportsbookInfo } = this.state;
         if (error) {
             return <div>Error</div>;
         }
@@ -149,19 +132,20 @@ class Sport extends Component {
         );
         return (
             <div className="mt-2">
-                {showModal && <div className="modal confirmation">
-                    <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
+                {sportsbookInfo && <div className="modal confirmation">
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ sportsbookInfo: null })} />
                     <div className="col-in">
-                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
+                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ sportsbookInfo: null })} />
                         <div>
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Peer-to-Peer betting is unavailable for this particular bet, please bet with the Sportsbook.
+                                Peer to peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
                             </p>
+                            <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
                             <div className="text-right">
-                                {/* <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link> */}
-                                <button className="form-button ml-2" onClick={() => this.setState({ showModal: false })}> Cancel </button>
+                                <button className="form-button ml-2"> Accept </button>
+                                <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
                             </div>
                         </div>
                     </div>
@@ -215,26 +199,26 @@ class Sport extends Component {
                                                         <span className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist ?
                                                                 () => removeBet(lineId, 'moneyline', 'home', null, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'moneyline',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    moneyline,
-                                                                    'home',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: ${teamA}`,
-                                                                    null,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}>
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'moneyline',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: moneyline,
+                                                                    pick: 'home',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: ${teamA}`,
+                                                                    index: null,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}>
                                                             {!started && <div className="vertical-align">
-                                                                {this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <>
+                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.home, oddsFormat)}
                                                                     </div>
@@ -242,7 +226,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <div className="origin-odds">
                                                                     {convertOdds(moneyline.home, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -255,26 +239,26 @@ class Sport extends Component {
                                                         <span className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist ?
                                                                 () => removeBet(lineId, 'moneyline', 'away', null, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'moneyline',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    moneyline,
-                                                                    'away',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: ${teamB}`,
-                                                                    null,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}>
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'moneyline',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: moneyline,
+                                                                    pick: 'away',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: ${teamA}`,
+                                                                    index: null,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}>
                                                             {!started && <div className="vertical-align">
-                                                                {this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <>
+                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.away, oddsFormat)}
                                                                     </div>
@@ -282,7 +266,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <div className="origin-odds">
                                                                     {convertOdds(moneyline.away, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -317,28 +301,28 @@ class Sport extends Component {
                                                             className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist
                                                                 ? () => removeBet(lineId, 'spread', 'home', 0, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'spread',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    spreads[0],
-                                                                    'home',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
-                                                                    0,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'spread',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: spreads[0],
+                                                                    pick: 'home',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
+                                                                    index: 0,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`}</div>
-                                                                {this.checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <>
+                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(spreads[0].home, oddsFormat)}
                                                                     </div>
@@ -346,7 +330,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].home, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -360,27 +344,27 @@ class Sport extends Component {
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist
                                                                 ? () => removeBet(lineId, 'spread', 'away', 0, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'spread',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    spreads[0],
-                                                                    'away',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
-                                                                    0,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}>
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'spread',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: spreads[0],
+                                                                    pick: 'away',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
+                                                                    index: 0,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}>
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`}</div>
-                                                                {this.checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <>
+                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(spreads[0].away, oddsFormat)}
                                                                     </div>
@@ -388,7 +372,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].away, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -423,28 +407,28 @@ class Sport extends Component {
                                                             className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist
                                                                 ? () => removeBet(lineId, 'total', 'home', 0, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'total',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    { home: totals[0].over, away: totals[0].under },
-                                                                    'home',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: Over ${totals[0].points}`,
-                                                                    0,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'total',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: { home: totals[0].over, away: totals[0].under },
+                                                                    pick: 'home',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: Over ${totals[0].points}`,
+                                                                    index: 0,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">O {`${totals[0].points}`}</div>
-                                                                {this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <>
+                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(totals[0].over, oddsFormat)}
                                                                     </div>
@@ -452,7 +436,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <div className="origin-odds">
+                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <div className="origin-odds">
                                                                     {convertOdds(totals[0].over, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -466,28 +450,28 @@ class Sport extends Component {
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist
                                                                 ? () => removeBet(lineId, 'total', 'away', 0, null)
-                                                                : () => this.addBet(
-                                                                    `${teamA} - ${teamB}`,
-                                                                    'total',
-                                                                    leagueName,
-                                                                    { home: newHome, away: newAway },
-                                                                    { home: totals[0].over, away: totals[0].under },
-                                                                    'away',
-                                                                    teamA,
-                                                                    teamB,
-                                                                    sportName,
-                                                                    lineId,
-                                                                    lineQuery,
-                                                                    `Game: Under ${totals[0].points}`,
-                                                                    0,
-                                                                    origin,
-                                                                    started,
-                                                                    null
-                                                                )}
+                                                                : () => this.addBet({
+                                                                    name: `${teamA} - ${teamB}`,
+                                                                    type: 'total',
+                                                                    league: leagueName,
+                                                                    odds: { home: newHome, away: newAway },
+                                                                    originOdds: { home: totals[0].over, away: totals[0].under },
+                                                                    pick: 'away',
+                                                                    home: teamA,
+                                                                    away: teamB,
+                                                                    sportName: sportName,
+                                                                    lineId: lineId,
+                                                                    lineQuery: lineQuery,
+                                                                    pickName: `Game: Under ${totals[0].points}`,
+                                                                    index: 0,
+                                                                    origin: origin,
+                                                                    started: started,
+                                                                    subtype: null
+                                                                })}
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">U {`${totals[0].points}`}</div>
-                                                                {this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <>
+                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(totals[0].under, oddsFormat)}
                                                                     </div>
@@ -495,7 +479,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!this.checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <div className="origin-odds">
+                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <div className="origin-odds">
                                                                     {convertOdds(totals[0].under, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -521,12 +505,14 @@ class Sport extends Component {
                         events = events.filter(event => event);
                         return (events.length ?
                             <div className="tab-content" id="myTabContent" key={leagueName}>
-                                <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
+                                        <li className="detailed-lines-link mobile"></li>
                                         <li>MONEY LINE</li>
                                         <li>HANDICAP</li>
                                         <li>OVER UNDER</li>
+                                        <li className="detailed-lines-link not-mobile"></li>
                                     </ul>
                                     {events}
                                 </div>
@@ -535,7 +521,7 @@ class Sport extends Component {
                         );
                     })}
                 </div>
-            </div>
+            </div >
         );
     }
 }

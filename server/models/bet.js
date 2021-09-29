@@ -47,6 +47,7 @@ const BetSchema = new Schema(
         transactionID: { type: String, unique: true },
         origin: { type: String, default: 'bet365' },
         notifySent: Date,
+        sportsbook: { type: Boolean, default: false },
     },
     {
         timestamps: true,

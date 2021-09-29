@@ -80,23 +80,23 @@ export default class LineDetail extends Component {
                         <span className={`box-odds line-full ${homeExist ? 'orange' : null}`}
                             onClick={homeExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'home', lineQuery.index, lineQuery.subtype)
-                                : () => addBet(
-                                    `${teamA} vs ${teamB}`,
-                                    lineQuery.type,
-                                    leagueName,
-                                    { home: newHome, away: newAway },
-                                    { home: home, away: away },
-                                    'home',
-                                    teamA,
-                                    teamB,
-                                    lineQuery.sportName,
-                                    lineQuery.lineId,
-                                    lineQuery,
-                                    this.getPickName('home'),
-                                    lineQuery.index,
-                                    origin,
-                                    lineQuery.subtype
-                                )}>
+                                : () => addBet({
+                                    name: `${teamA} vs ${teamB}`,
+                                    type: lineQuery.type,
+                                    league: leagueName,
+                                    odds: { home: newHome, away: newAway },
+                                    originOdds: { home: home, away: away },
+                                    pick: 'home',
+                                    home: teamA,
+                                    away: teamB,
+                                    sportName: lineQuery.sportName,
+                                    lineId: lineQuery.lineId,
+                                    lineQuery: lineQuery,
+                                    pickName: this.getPickName('home'),
+                                    index: lineQuery.index,
+                                    origin: origin,
+                                    subtype: lineQuery.subtype
+                                })}>
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('home')}</div>
                                 {!started && <div className="odds">
@@ -126,23 +126,23 @@ export default class LineDetail extends Component {
                         <span className={`box-odds line-full ${awayExist ? 'orange' : null}`}
                             onClick={awayExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'away', lineQuery.index, lineQuery.subtype)
-                                : () => addBet(
-                                    `${teamA} vs ${teamB}`,
-                                    lineQuery.type,
-                                    leagueName,
-                                    { home: newHome, away: newAway },
-                                    { home: home, away: away },
-                                    'away',
-                                    teamA,
-                                    teamB,
-                                    lineQuery.sportName,
-                                    lineQuery.lineId,
-                                    lineQuery,
-                                    this.getPickName('away'),
-                                    lineQuery.index,
-                                    origin,
-                                    lineQuery.subtype
-                                )}>
+                                : () => addBet({
+                                    name: `${teamA} vs ${teamB}`,
+                                    type: lineQuery.type,
+                                    league: leagueName,
+                                    odds: { home: newHome, away: newAway },
+                                    originOdds: { home: home, away: away },
+                                    pick: 'away',
+                                    home: teamA,
+                                    away: teamB,
+                                    sportName: lineQuery.sportName,
+                                    lineId: lineQuery.lineId,
+                                    lineQuery: lineQuery,
+                                    pickName: this.getPickName('away'),
+                                    index: lineQuery.index,
+                                    origin: origin,
+                                    subtype: lineQuery.subtype
+                                })}>
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('away')}</div>
                                 {!started && <div className="odds">
