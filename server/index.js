@@ -1581,7 +1581,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     {
                         $match: {
                             user: new ObjectId(autobet.userId._id),
-                            createdAt: { $gte: fromTime }
+                            createdAt: { $gte: fromTime },
+                            type: { $ne: 'sportsbook' },
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
