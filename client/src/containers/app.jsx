@@ -95,11 +95,6 @@ class App extends Component {
         setDisplayModeBasedOnSystem();
     }
 
-    componentDidCatch() {
-        const { history } = this.props;
-        history.push('/error');
-    }
-
     updateScrollStatus = () => {
         const { scrollY } = window;
         this.scrollTop = scrollY;
@@ -127,7 +122,7 @@ class App extends Component {
         }
     }
 
-    addBet = (name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype) => {
+    addBet = ({ name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype }) => {
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin };
         const { betSlip } = this.state;
         this.setState({

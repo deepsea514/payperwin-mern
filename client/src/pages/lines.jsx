@@ -5,7 +5,6 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
-import LineDetail from "../components/linedetail.jsx";
 import Line from "../components/line.jsx";
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import MetaTags from "react-meta-tags";
@@ -25,7 +24,7 @@ class Lines extends Component {
         this.state = {
             data: null,
             error: null,
-            showModal: false,
+            sportsbookInfo: null,
             shareModal: false,
             currentUrl: currentUrl,
             urlCopied: false,
@@ -107,19 +106,21 @@ class Lines extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    addBet = (name, type, league, odds, originOdds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype) => {
+    addBet = (bet) => {
         const { data: { started } } = this.state;
+        const { addBet } = this.props;
+        const { type, odds, originOdds, pick } = bet;
         if (started) return;
         if (checkOddsAvailable(originOdds, odds, pick, type)) {
-            return this.props.addBet(name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype);
+            return addBet(bet);
         }
-        this.setState({ showModal: true });
+        this.setState({ sportsbookInfo: bet });
     }
 
     render() {
         const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
         const { sportName, leagueId, eventId } = match.params;
-        const { data, error, showModal, shareModal, currentUrl, urlCopied,
+        const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, ogTitle, ogDescription, showAll
         } = this.state;
         if (error) {
@@ -137,19 +138,20 @@ class Lines extends Component {
                     <meta property="og:title" content={ogTitle} />
                     <meta property="og:description" content={ogDescription} />
                 </MetaTags>}
-                {showModal && <div className="modal confirmation">
-                    <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
+                {sportsbookInfo && <div className="modal confirmation">
+                    <div className="background-closer bg-modal" onClick={() => this.setState({ sportsbookInfo: null })} />
                     <div className="col-in">
-                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
+                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ sportsbookInfo: null })} />
                         <div>
                             <b>BET ON SPORTSBOOK</b>
                             <hr />
                             <p>
-                                Peer-to-Peer betting is unavailable for this particular bet, please bet with the Sportsbook.
+                                Peer to peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
                             </p>
+                            <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
                             <div className="text-right">
-                                {/* <Link className="form-button" to="/sportsbook"> Bet on Sportsbook </Link> */}
-                                <button className="form-button ml-2" onClick={() => this.setState({ showModal: false })}> Cancel </button>
+                                <button className="form-button ml-2"> Accept </button>
+                                <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
                             </div>
                         </div>
                     </div>

@@ -141,7 +141,13 @@ a.log-in-btn {
 }
 
 .table-list, .table-list-top {
-    min-width: 600px;
+    min-width: 100%;
+    width: fit-content;
+}
+
+.tab-pane-leagues {
+    width: fit-content;
+    min-width: 100%;
 }
 
 .bet-slip-count {
@@ -800,6 +806,10 @@ a.log-in-btn {
 }
 
 .table-list li.detailed-lines-link {
+    width: 40px;
+}
+
+.table-list-top li.detailed-lines-link {
     width: 40px;
 }
 
