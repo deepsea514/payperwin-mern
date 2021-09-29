@@ -83,7 +83,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                                 <li>Wager: $${betAmount.toFixed(2)}</li>
                                 <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
                                 <li>Matched Amount: $${payableToWin.toFixed(2)}</li>
-                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                <li>Platform: PAYPER WIN Peer-to Peer</li>
                             </ul>
                             Good luck!
                         `),
@@ -103,7 +103,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                                 <li>Wager: $${betAmount.toFixed(2)}</li>
                                 <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
                                 <li>Matched Amount: $${payableToWin.toFixed(2)}</li>
-                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                <li>Platform: PAYPER WIN Peer-to Peer</li>
                             </ul>
                             Good luck!
                             `),
@@ -126,13 +126,13 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                         Wager: $${betAmount.toFixed(2)}\n 
                         Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
                         Matched Amount: $${payableToWin.toFixed(2)}\n
-                        Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                        Platform: PAYPER WIN Peer-to Peer`, user.phone);
                 } else {
                     sendSMS(`Good news! We found you a match for ${lineQuery.sportName} ${lineQuery.type}\n
                         Wager: $${betAmount.toFixed(2)}\n 
                         Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
                         Matched Amount: $${payableToWin.toFixed(2)}\n
-                        Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                        Platform: PAYPER WIN Peer-to Peer`, user.phone);
                 }
             }
 
