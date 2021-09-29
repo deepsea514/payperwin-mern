@@ -1279,7 +1279,6 @@ expressApp.post(
                                             lineId: lineId,
                                             origin: origin
                                         };
-                                        if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
                                         const newBet = new Bet(newBetObj);
                                         console.info(`created new bet`);
 
@@ -1734,7 +1733,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             lineQuery,
             origin: bet.origin
         };
-        if (altLineId) newBetObj.pinnacleAltLineId = altLineId;
         const newBet = new Bet(newBetObj);
         console.info(`created new auto bet`);
 

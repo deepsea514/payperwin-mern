@@ -6,14 +6,13 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet, settleBet } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
 import numberFormat from "../../../../helpers/numberFormat";
-import * as Yup from "yup";
-import { Formik, Form } from "formik";
-import { getInputClasses } from "../../../../helpers/getInputClasses";
+import SettleBetModal from "../components/SettleBetModal";
+import ManualMatchBetModal from "../components/ManualMatchBetModal";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -23,17 +22,10 @@ class BetActivities extends React.Component {
             wagerActivityDownloadData: [],
             deleteId: null,
             settleId: null,
+            matchId: null,
             modal: false,
             resMessage: "",
             modalvariant: "success",
-            scoreSchema: Yup.object().shape({
-                teamAScore: Yup.number().required("Team A Score is required."),
-                teamBScore: Yup.number().required("Team B Score is required."),
-            }),
-            initialValues: {
-                teamAScore: 0,
-                teamBScore: 0,
-            }
         }
         this.csvRef = createRef();
     }
@@ -115,6 +107,11 @@ class BetActivities extends React.Component {
                                         <i className="fas fa-check"></i>&nbsp; Settle
                                     </Dropdown.Item>
                                 </>
+                            }
+                            {['Pending', 'Partial Match'].includes(bet.status) &&
+                                <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
+                                    <i className="fas fa-link"></i>&nbsp; Manual Match
+                                </Dropdown.Item>
                             }
                         </DropdownButton>
                     </td>
@@ -208,6 +205,27 @@ class BetActivities extends React.Component {
             })
     }
 
+    onMatchBet = (values, formik) => {
+        console.log(values)
+        const { matchId } = this.state;
+        const { getBetActivities } = this.props;
+        matchBet(matchId, { user: values.user.value, amount: values.amount })
+            .then(({ data }) => {
+                if (data.success) {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, matchId: null, resMessage: "Successfully Matched!", modalvariant: "success" });
+                    getBetActivities();
+                } else {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, matchId: null, resMessage: data.error, modalvariant: "danger" });
+                }
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, matchId: null, resMessage: "Match Failed!", modalvariant: "danger" });
+            })
+    }
+
     getPPWBetDogFav = (bet) => {
         const { teamA, teamB, pick, pickName, lineQuery } = bet;
         if (!teamA) return;
@@ -222,12 +240,11 @@ class BetActivities extends React.Component {
             }
         } else {
             if (oddsA == oddsB) {
-                console.log(pick);
-                if (pick == 'away' || pick == 'under') {
+                if (pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             } else {
-                if ((oddsA < oddsB) && (pick == 'home' || pick == 'over') || (oddsA > oddsB) && (pick == 'away' || pick == 'under')) {
+                if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             }
@@ -371,7 +388,7 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, scoreSchema, initialValues } = this.state;
+        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, matchId } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -591,61 +608,17 @@ class BetActivities extends React.Component {
                     </Modal.Footer>
                 </Modal>
 
-                {settleId && <Modal show={settleId != null} onHide={() => this.setState({ settleId: null })}>
-                    <Formik
-                        validationSchema={scoreSchema}
-                        initialValues={initialValues}
-                        onSubmit={this.onSettleBet}
-                    >
-                        {(formik) => {
-                            const { errors, touched, isSubmitting, getFieldProps } = formik;
-                            return <Form>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Settle Bet</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <div className="form-group">
-                                        <label>Team A Score <span className="text-danger">*</span></label>
-                                        <input name="teamAScore" placeholder="Team A Score"
-                                            className={`form-control ${getInputClasses(formik, "teamAScore")}`}
-                                            {...getFieldProps("teamAScore")}
-                                        />
-                                        {errors &&
-                                            errors &&
-                                            errors.teamAScore &&
-                                            touched &&
-                                            touched.teamAScore && (
-                                                <div className="invalid-feedback">
-                                                    {errors.teamAScore}
-                                                </div>
-                                            )}
-                                    </div>
+                {settleId && <SettleBetModal
+                    show={settleId != null}
+                    onHide={() => this.setState({ settleId: null })}
+                    onSubmit={this.onSettleBet}
+                />}
 
-                                    <div className="form-group">
-                                        <label>Team B Score <span className="text-danger">*</span></label>
-                                        <input name="teamBScore" placeholder="Team B Score"
-                                            className={`form-control ${getInputClasses(formik, "teamBScore")}`}
-                                            {...getFieldProps("teamBScore")}
-                                        />
-                                        {errors &&
-                                            errors &&
-                                            errors.teamBScore &&
-                                            touched &&
-                                            touched.teamBScore && (
-                                                <div className="invalid-feedback">
-                                                    {errors.teamBScore}
-                                                </div>
-                                            )}
-                                    </div>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>Submit</button>
-                                    <button onClick={() => this.setState({ settleId: null })} className="btn btn-secondary">Cancel</button>
-                                </Modal.Footer>
-                            </Form>
-                        }}
-                    </Formik>
-                </Modal>}
+                {matchId && <ManualMatchBetModal
+                    show={matchId != null}
+                    onHide={() => this.setState({ matchId: null })}
+                    onSubmit={this.onMatchBet}
+                />}
             </div>
         );
     }
