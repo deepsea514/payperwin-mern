@@ -64,6 +64,7 @@ import Loyalty from '../pages/loyalty';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
+import ErrorBoundary from '../libs/ErrorBoundary';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -92,6 +93,11 @@ class App extends Component {
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
+    }
+
+    componentDidCatch() {
+        const { history } = this.props;
+        history.push('/error');
     }
 
     updateScrollStatus = () => {
@@ -274,166 +280,168 @@ class App extends Component {
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
                 <section className={`main-section ${display_mode == 'dark' && !exceptDark ? 'dark' : ''}`}>
-                    {require_2fa && <TfaModal getUser={getUser} />}
-                    <div className="container">
-                        <Switch>
-                            <Route path="/sportsbook" render={(props) =>
-                                <SportsBook {...props} user={user} />} />
-                            <Route path="/signup" render={(props) =>
-                                <Registration getUser={getUser} {...props} />} />
-                            <Route path="/faq" component={Faq} />
-                            <Route path="/articles" component={Articles} />
-                            <Route path="/">
-                                {() => {
-                                    return <div className="row">
-                                        <SidebarAccount
-                                            toggleField={this.toggleField}
-                                            sidebarShowAccountLinks={sidebarShowAccountLinks}
-                                            accountMenuMobileOpen={accountMenuMobileOpen}
-                                            user={user}
-                                        />
-                                        <SidebarSports
-                                            toggleField={this.toggleField}
-                                            sportsMenuMobileOpen={sportsMenuMobileOpen}
-                                            sidebarShowAccountLinks={sidebarShowAccountLinks}
-                                        />
-                                        <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
-                                            <Switch>
-                                                <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
-                                                {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}
-                                                <Route path="/passwordRecovery" component={PasswordRecovery} />
-                                                {/* <Route path="/login" component={Login} /> */}
-                                                <Route path="/deposit" render={(props) =>
-                                                    <Deposit updateUser={updateUser} {...props} />} />
-                                                <Route path="/withdraw" render={(props) =>
-                                                    <Withdrawal updateUser={updateUser} {...props} />} />
-                                                <Route path="/bets" render={(props) =>
-                                                    <OpenBets openBets={true} {...props} />
-                                                } />
-                                                <Route path="/history" render={(props) =>
-                                                    <OpenBets settledBets={true} {...props} />
-                                                } />
-                                                <Route path="/how-it-works" component={HowTo} />
-                                                <Route path="/sports" component={Sports} />
-                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId"
-                                                    render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} />}
-                                                />
-                                                <Route path="/sport/:name/league/:league" render={(props) => {
-                                                    const { match } = props;
-                                                    const name = resObjPath(match, 'params.name');
-                                                    const league = resObjPath(match, 'params.league');
-                                                    return (
-                                                        <React.Fragment>
-                                                            <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet} sportName={name}
-                                                                league={league}
-                                                            />
-                                                        </React.Fragment>
-                                                    );
-                                                }} />
-                                                <Route path="/sport/:name/league" render={(props) => {
-                                                    const { match } = props;
-                                                    const name = resObjPath(match, 'params.name');
-                                                    return (
-                                                        <React.Fragment>
-                                                            <SportsLeagues sportName={name} />
-                                                        </React.Fragment>
-                                                    );
-                                                }} />
-                                                <Route path="/sport/:name" render={(props) => {
-                                                    const { match } = props;
-                                                    const name = resObjPath(match, 'params.name');
-                                                    return (
-                                                        <SportName addBet={this.addBet} betSlip={betSlip}
-                                                            removeBet={this.removeBet} sportName={name} />
-                                                    );
-                                                }} />
-                                                <Route path="/others/:id" render={(props) => {
-                                                    const { match } = props;
-                                                    const id = resObjPath(match, 'params.id');
-                                                    return (
-                                                        <React.Fragment>
-                                                            <h1>Custom Event</h1>
-                                                            <Others {...props} addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet} id={id}
-                                                            />
-                                                        </React.Fragment>
-                                                    );
-                                                }} />
-                                                <Route path="/others" render={(props) => {
-                                                    return (
-                                                        <React.Fragment>
-                                                            <h1>Custom Events</h1>
-                                                            <Others {...props} addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet}
-                                                            />
-                                                        </React.Fragment>
-                                                    );
-                                                }} />
-                                                {/* <Route path="/announcements" component={Announcements} /> */}
-                                                <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
-                                                <Route path="/inbox" render={(props) => <Inbox {...props} getUser={getUser} />} />
-                                                <Route path="/payment-options" component={PaymentOptions} />
-                                                <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
-                                                <Route path="/security" render={(props) => <Security {...props} user={user} getUser={getUser} />} />
-                                                <Route path="/account" component={Profile} />
-                                                <Route path="/self-exclusion" render={(props) => <SelfExcusion {...props} user={user} getUser={getUser} />} />
-                                                <Route path="/deactivation" component={Deactivation} />
-                                                <Route path="/privacy-policy" component={PrivacyPolicy} />
-                                                <Route path="/terms-and-conditions" component={TermsAndConditions} />
-                                                <Route path="/betting-rules" component={BettingRules} />
-                                                <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
-                                                <Route path="/deposit-bitcoin" render={(props) => <DepositTripleA {...props} user={user} method="Bitcoin" />} />
-                                                <Route path="/deposit-ethereum" render={(props) => <DepositTripleA {...props} user={user} method="Ethereum" />} />
-                                                <Route path="/deposit-tether" render={(props) => <DepositTripleA {...props} user={user} method="Tether" />} />
-                                                <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} getUser={getUser} />} />
-                                                <Route path="/withdraw-bitcoin" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Bitcoin" />} />
-                                                <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Ethereum" />} />
-                                                <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" />} />
-                                                <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
-                                                <Route path="/phone-verification" render={(props) => <PhoneVerification {...props} user={user} getUser={getUser} />} />
-                                                <Route path="/cashback" render={(props) => <Cashback {...props} user={user} />} />
-                                                <Route path="/custom-bets" render={(props) => <CustomBets {...props} user={user} />} />
-                                                <Route path="/support" component={ContactUs} />
-                                                <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
-                                                <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
-                                                <Route path="/prize" render={(props) => <Prize {...props} user={user} />} />
-                                                <Route path="/loyalty" render={(props) => <Loyalty {...props} user={user} />} />
-                                                <Route exact path="/" render={(props) =>
-                                                    <Dashboard
-                                                        addBet={this.addBet}
+                    <ErrorBoundary>
+                        {require_2fa && <TfaModal getUser={getUser} />}
+                        <div className="container">
+                            <Switch>
+                                <Route path="/sportsbook" render={(props) =>
+                                    <SportsBook {...props} user={user} />} />
+                                <Route path="/signup" render={(props) =>
+                                    <Registration getUser={getUser} {...props} />} />
+                                <Route path="/faq" component={Faq} />
+                                <Route path="/articles" component={Articles} />
+                                <Route path="/">
+                                    {() => {
+                                        return <div className="row">
+                                            <SidebarAccount
+                                                toggleField={this.toggleField}
+                                                sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                                accountMenuMobileOpen={accountMenuMobileOpen}
+                                                user={user}
+                                            />
+                                            <SidebarSports
+                                                toggleField={this.toggleField}
+                                                sportsMenuMobileOpen={sportsMenuMobileOpen}
+                                                sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                            />
+                                            <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
+                                                <Switch>
+                                                    <Route path="/newPasswordFromToken" component={NewPasswordFromToken} />
+                                                    {/* <Route path="/usernameRecovery" component={UsernameRecovery} /> */}
+                                                    <Route path="/passwordRecovery" component={PasswordRecovery} />
+                                                    {/* <Route path="/login" component={Login} /> */}
+                                                    <Route path="/deposit" render={(props) =>
+                                                        <Deposit updateUser={updateUser} {...props} />} />
+                                                    <Route path="/withdraw" render={(props) =>
+                                                        <Withdrawal updateUser={updateUser} {...props} />} />
+                                                    <Route path="/bets" render={(props) =>
+                                                        <OpenBets openBets={true} {...props} />
+                                                    } />
+                                                    <Route path="/history" render={(props) =>
+                                                        <OpenBets settledBets={true} {...props} />
+                                                    } />
+                                                    <Route path="/how-it-works" component={HowTo} />
+                                                    <Route path="/sports" component={Sports} />
+                                                    <Route path="/sport/:sportName/league/:leagueId/event/:eventId"
+                                                        render={(props) => <Lines addBet={this.addBet} betSlip={betSlip}
+                                                            removeBet={this.removeBet} {...props} />}
+                                                    />
+                                                    <Route path="/sport/:name/league/:league" render={(props) => {
+                                                        const { match } = props;
+                                                        const name = resObjPath(match, 'params.name');
+                                                        const league = resObjPath(match, 'params.league');
+                                                        return (
+                                                            <React.Fragment>
+                                                                <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} sportName={name}
+                                                                    league={league}
+                                                                />
+                                                            </React.Fragment>
+                                                        );
+                                                    }} />
+                                                    <Route path="/sport/:name/league" render={(props) => {
+                                                        const { match } = props;
+                                                        const name = resObjPath(match, 'params.name');
+                                                        return (
+                                                            <React.Fragment>
+                                                                <SportsLeagues sportName={name} />
+                                                            </React.Fragment>
+                                                        );
+                                                    }} />
+                                                    <Route path="/sport/:name" render={(props) => {
+                                                        const { match } = props;
+                                                        const name = resObjPath(match, 'params.name');
+                                                        return (
+                                                            <SportName addBet={this.addBet} betSlip={betSlip}
+                                                                removeBet={this.removeBet} sportName={name} />
+                                                        );
+                                                    }} />
+                                                    <Route path="/others/:id" render={(props) => {
+                                                        const { match } = props;
+                                                        const id = resObjPath(match, 'params.id');
+                                                        return (
+                                                            <React.Fragment>
+                                                                <h1>Custom Event</h1>
+                                                                <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} id={id}
+                                                                />
+                                                            </React.Fragment>
+                                                        );
+                                                    }} />
+                                                    <Route path="/others" render={(props) => {
+                                                        return (
+                                                            <React.Fragment>
+                                                                <h1>Custom Events</h1>
+                                                                <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet}
+                                                                />
+                                                            </React.Fragment>
+                                                        );
+                                                    }} />
+                                                    {/* <Route path="/announcements" component={Announcements} /> */}
+                                                    <Route path="/preferences" render={(props) => <Preferences {...props} user={user} />} />
+                                                    <Route path="/inbox" render={(props) => <Inbox {...props} getUser={getUser} />} />
+                                                    <Route path="/payment-options" component={PaymentOptions} />
+                                                    <Route path="/transaction-history" render={(props) => <TransactionHistory {...props} user={user} />} />
+                                                    <Route path="/security" render={(props) => <Security {...props} user={user} getUser={getUser} />} />
+                                                    <Route path="/account" component={Profile} />
+                                                    <Route path="/self-exclusion" render={(props) => <SelfExcusion {...props} user={user} getUser={getUser} />} />
+                                                    <Route path="/deactivation" component={Deactivation} />
+                                                    <Route path="/privacy-policy" component={PrivacyPolicy} />
+                                                    <Route path="/terms-and-conditions" component={TermsAndConditions} />
+                                                    <Route path="/betting-rules" component={BettingRules} />
+                                                    <Route path="/deposit-etransfer" render={(props) => <DepositETransfer {...props} user={user} />} />
+                                                    <Route path="/deposit-bitcoin" render={(props) => <DepositTripleA {...props} user={user} method="Bitcoin" />} />
+                                                    <Route path="/deposit-ethereum" render={(props) => <DepositTripleA {...props} user={user} method="Ethereum" />} />
+                                                    <Route path="/deposit-tether" render={(props) => <DepositTripleA {...props} user={user} method="Tether" />} />
+                                                    <Route path="/withdraw-etransfer" render={(props) => <WithdrawETransfer {...props} user={user} getUser={getUser} />} />
+                                                    <Route path="/withdraw-bitcoin" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Bitcoin" />} />
+                                                    <Route path="/withdraw-ethereum" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Ethereum" />} />
+                                                    <Route path="/withdraw-tether" render={(props) => <WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" />} />
+                                                    <Route path="/verification" render={(props) => <Verification {...props} user={user} />} />
+                                                    <Route path="/phone-verification" render={(props) => <PhoneVerification {...props} user={user} getUser={getUser} />} />
+                                                    <Route path="/cashback" render={(props) => <Cashback {...props} user={user} />} />
+                                                    <Route path="/custom-bets" render={(props) => <CustomBets {...props} user={user} />} />
+                                                    <Route path="/support" component={ContactUs} />
+                                                    <Route path="/autobet-dashboard" render={(props) => <AutobetDashboard {...props} user={user} />} />
+                                                    <Route path="/autobet-settings" render={(props) => <AutobetSettings {...props} user={user} />} />
+                                                    <Route path="/prize" render={(props) => <Prize {...props} user={user} />} />
+                                                    <Route path="/loyalty" render={(props) => <Loyalty {...props} user={user} />} />
+                                                    <Route exact path="/" render={(props) =>
+                                                        <Dashboard
+                                                            addBet={this.addBet}
+                                                            betSlip={betSlip}
+                                                            removeBet={this.removeBet}
+                                                        />}
+                                                    />
+                                                    <Redirect to="/" from="*" />
+                                                </Switch>
+                                            </div>
+                                            <div className="col-md-3 side-bar">
+                                                {!sidebarShowAccountLinks &&
+                                                    <BetSlip
                                                         betSlip={betSlip}
+                                                        className="hide-mobile"
+                                                        openBetSlipMenu={openBetSlipMenu}
+                                                        toggleField={this.toggleField}
                                                         removeBet={this.removeBet}
+                                                        updateBet={this.updateBet}
+                                                        user={user}
+                                                        updateUser={updateUser}
+                                                        history={history}
                                                     />}
-                                                />
-                                                <Redirect to="/" from="*" />
-                                            </Switch>
+                                                {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
+                                                {!verified && pathname == '/verification' && <VerificationProof />}
+                                                {['/bets', '/history'].includes(pathname) && <BetStatus />}
+                                                {pathname == '/cashback' && <CashbackNames />}
+                                            </div>
                                         </div>
-                                        <div className="col-md-3 side-bar">
-                                            {!sidebarShowAccountLinks &&
-                                                <BetSlip
-                                                    betSlip={betSlip}
-                                                    className="hide-mobile"
-                                                    openBetSlipMenu={openBetSlipMenu}
-                                                    toggleField={this.toggleField}
-                                                    removeBet={this.removeBet}
-                                                    updateBet={this.updateBet}
-                                                    user={user}
-                                                    updateUser={updateUser}
-                                                    history={history}
-                                                />}
-                                            {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
-                                            {!verified && pathname == '/verification' && <VerificationProof />}
-                                            {['/bets', '/history'].includes(pathname) && <BetStatus />}
-                                            {pathname == '/cashback' && <CashbackNames />}
-                                        </div>
-                                    </div>
-                                }}
-                            </Route>
-                        </Switch>
-                        <GoToTop />
-                    </div>
+                                    }}
+                                </Route>
+                            </Switch>
+                            <GoToTop />
+                        </div>
+                    </ErrorBoundary>
                 </section>
                 <Footer user={user} display_mode={display_mode} />
                 {!sidebarShowAccountLinks &&
