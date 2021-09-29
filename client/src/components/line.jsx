@@ -61,7 +61,7 @@ export default class Line extends Component {
                         {spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
                             const lineQuery = {
-                                sportName,
+                                sportName: sportName.replace("_", " "),
                                 leagueId,
                                 eventId,
                                 lineId: eventId,
@@ -87,7 +87,7 @@ export default class Line extends Component {
                         {totals.map((total, i) => {
                             if (type && index && index != i) return null;
                             const lineQuery = {
-                                sportName,
+                                sportName: sportName.replace("_", " "),
                                 leagueId,
                                 eventId,
                                 lineId: eventId,
