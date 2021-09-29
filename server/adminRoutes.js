@@ -2949,7 +2949,8 @@ adminRouter.get(
                                 $expr: {
                                     $and: [
                                         { $gte: ["$createdAt", fromTime] },
-                                        { $eq: ["$user", "$$user_id"] }
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $ne: ["$type", "sportsbook"] }
                                     ]
                                 }
                             },
@@ -2984,6 +2985,7 @@ adminRouter.get(
                         priority: 1,
                         maxRisk: 1,
                         budget: 1,
+                        sportsbookBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
                         referral_code: 1,
                         status: 1,
