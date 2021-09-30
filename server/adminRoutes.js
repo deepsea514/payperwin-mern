@@ -7,13 +7,11 @@ const DepositReason = require("./models/depositreason");
 const FinancialLog = require("./models/financiallog");
 const Bet = require("./models/bet");
 const Sport = require("./models/sport");
-const SportsDir = require("./models/sportsDir");
 const LoginLog = require('./models/loginlog');
 const Email = require("./models/email");
 const AutoBet = require("./models/autobet");
 const Promotion = require("./models/promotion");
 const PromotionLog = require("./models/promotionlog");
-const BetSportsBook = require("./models/betsportsbook");
 const EventBetPool = require("./models/eventbetpool");
 const Verification = require("./models/verification");
 const Preference = require("./models/preference");
@@ -419,20 +417,9 @@ adminRouter.get(
                     {
                         $lookup: {
                             from: 'bets',
-                            localField: 'betHistory',
-                            foreignField: '_id',
+                            localField: '_id',
+                            foreignField: 'userId',
                             as: 'betHistory'
-                        }
-                    },
-                    {
-                        $lookup: {
-                            from: 'betsportsbooks',
-                            let: { betSportsbookHistory: "$betSportsbookHistory" },
-                            pipeline: [
-                                { $match: { $expr: { '$in': ['$_id', '$$betSportsbookHistory'] } } },
-                                { $project: { _id: '$_id', bet: { $toDouble: '$WagerInfo.ToRisk' } } }
-                            ],
-                            as: 'betSportsbookHistory'
                         }
                     },
                     {
@@ -444,8 +431,8 @@ adminRouter.get(
                             currency: 1,
                             balance: 1,
                             roles: 1,
-                            totalBetCount: { '$add': [{ '$size': '$betHistory' }, { '$size': '$betSportsbookHistory' }] },
-                            totalWager: { $sum: [{ $sum: '$betHistory.bet' }, { $sum: '$betSportsbookHistory.bet' }] },
+                            totalBetCount: { '$size': '$betHistory' },
+                            totalWager: { $sum: '$betHistory.bet' },
                             createdAt: 1
                         }
                     },
@@ -508,33 +495,23 @@ adminRouter.get(
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            const lastbets = await Bet.find({ userId: id })
+            const lastsportsbookbets = await Bet.find({
+                userId: id,
+                sportsbook: true
+            })
                 .sort({ createdAt: -1 }).limit(8);
             let totalwagers = await Bet.aggregate(
-                {
-                    $match: {
-                        userId: new ObjectId(id),
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        total: {
-                            $sum: "$bet"
-                        }
-                    }
-                }
+                { $match: { userId: new ObjectId(id) } },
+                { $group: { _id: null, total: { $sum: "$bet" } } }
             );
-            const lastsportsbookbets = await BetSportsBook.find({ userId: id })
+            const lastbets = await Bet.find({
+                userId: id,
+                $or: [
+                    { sportsbook: false },
+                    { sportsbook: { $exists: false } }
+                ]
+            })
                 .sort({ createdAt: -1 }).limit(8);
-
-            const betSportsbookHistory = await BetSportsBook.find({
-                userId: new ObjectId(id),
-            });
-            let totalsportsbookwagers = 0;
-            for (const bet of betSportsbookHistory) {
-                totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
-            }
 
             let totaldeposit = await FinancialLog.aggregate(
                 {
@@ -544,26 +521,16 @@ adminRouter.get(
                         status: FinancialStatus.success,
                     }
                 },
-                {
-                    $group: {
-                        _id: null,
-                        total: {
-                            $sum: "$amount"
-                        }
-                    }
-                }
+                { $group: { _id: null, total: { $sum: "$amount" } } }
             )
 
             if (totalwagers.length) totalwagers = totalwagers[0].total;
             else totalwagers = 0;
 
-            totalwagers += totalsportsbookwagers;
-
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
             const winloss = totaldeposit - user.balance;
-
             res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
         }
         catch (error) {
@@ -692,13 +659,13 @@ adminRouter.get(
         }
         try {
             if (src == 'sportsbook') {
-                const searchObj = { userId: id };
-                const total = await BetSportsBook.find(searchObj).count();
-                const bets = await BetSportsBook.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+                const searchObj = { userId: id, sportsbook: true };
+                const total = await Bet.find(searchObj).count();
+                const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
                 res.json({ total, page, perPage, bets });
             }
             else {
-                const searchObj = { userId: id };
+                const searchObj = { userId: id, $or: [{ sportsbook: false }, { sportsbook: { $exists: false } }] };
                 const total = await Bet.find(searchObj).count();
                 const bets = await Bet.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
                 res.json({ total, page, perPage, bets });
@@ -1637,8 +1604,13 @@ adminRouter.get(
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            let searchObj = {};
-            if (!house || house == 'ppw') {
+            if (!house || house == 'p2p') {
+                let searchObj = {
+                    $or: [
+                        { sportsbook: { $exists: false } },
+                        { sportsbook: false }
+                    ]
+                };
                 if (status && status == 'open') {
                     searchObj = {
                         ...searchObj,
@@ -1725,7 +1697,20 @@ adminRouter.get(
                     .populate('userId', ['email', 'currency'])
                 page++;
                 return res.json({ total, perPage, page, data, });
-            } else if (house == 'pinnacle') {
+            } else if (house == 'sportsbook') {
+                let searchObj = { sportsbook: true };
+                if (status && status == 'open') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: null }
+                    };
+                } else if (status && status == 'settled') {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
+                    };
+                }
+
                 if (datefrom || dateto) {
                     let dateObj = {};
                     if (datefrom) {
@@ -1752,32 +1737,40 @@ adminRouter.get(
                     }
                 }
 
+                if (sport) {
+                    searchObj = {
+                        ...searchObj,
+                        ...{ "lineQuery.sportId": parseInt(sport) }
+                    }
+                }
+
                 if (minamount || maxamount) {
                     let amountObj = {}
                     if (minamount) {
                         amountObj = {
                             ...amountObj,
-                            ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
+                            ...{ $gte: parseInt(minamount) }
                         }
                     }
                     if (maxamount) {
                         amountObj = {
                             ...amountObj,
-                            ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
+                            ...{ $lte: parseInt(maxamount) }
                         }
                     }
                     searchObj = {
                         ...searchObj,
-                        ...{ $expr: amountObj }
+                        ...{ bet: amountObj }
                     }
                 }
 
-                const total = await BetSportsBook.find(searchObj).count();
-                const data = await BetSportsBook.find(searchObj)
+                const total = await Bet.find(searchObj).count();
+                const data = await Bet.find(searchObj)
                     .sort({ createdAt: -1 })
                     .skip(page * perPage)
                     .limit(perPage)
-                    .populate('userId', ['email', 'currency']);
+                    .populate('userId', ['email', 'currency'])
+                page++;
                 return res.json({ total, perPage, page, data, });
             } else {
                 return res.status(404).json({ error: 'Can\'t find bets on house.' });
@@ -2416,57 +2409,6 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .populate('userId', ['username', 'currency', 'email']);
 
-            searchObj = {};
-            if (datefrom || dateto) {
-                let dateObj = {};
-                if (datefrom) {
-                    datefrom = new Date(datefrom);
-                    if (!isNaN(datefrom.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $gte: datefrom }
-                        }
-                    }
-                }
-                if (dateto) {
-                    dateto = new Date(dateto);
-                    if (!isNaN(dateto.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $lte: dateto }
-                        }
-                    }
-                }
-                searchObj = {
-                    ...searchObj,
-                    ...{ createdAt: dateObj }
-                }
-            }
-
-            if (minamount || maxamount) {
-                let amountObj = {}
-                if (minamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $gte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(minamount)] }
-                    }
-                }
-                if (maxamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $lte: [{ $toDouble: "$WagerInfo.ToRisk" }, parseInt(maxamount)] }
-                    }
-                }
-                searchObj = {
-                    ...searchObj,
-                    ...{ $expr: amountObj }
-                }
-            }
-
-            const betSportsBook = await BetSportsBook.find(searchObj)
-                .sort({ createdAt: -1 })
-                .populate('userId', ['username', 'email', 'currency']);
-
             let data = [
                 ['House', 'Name', 'Email', 'Sport', 'Game', 'Wager', 'Odds', 'Results', 'Win/Loss', 'Time']
             ];
@@ -2482,7 +2424,7 @@ adminRouter.get(
                     winLoss = '+ $' + Number(bet.bet).toFixed(2);
                 }
                 data.push([
-                    'PPW',
+                    bet.sportsbook ? 'Sportsbook' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
                     bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
@@ -2491,20 +2433,6 @@ adminRouter.get(
                     Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
                     results,
                     winLoss,
-                    dateformat(bet.updatedAt, 'default')
-                ]);
-            })
-            betSportsBook.forEach(bet => {
-                data.push([
-                    'Pinnacle',
-                    bet.userId.username,
-                    bet.userId.email,
-                    bet.WagerInfo.Sport,
-                    bet.WagerInfo.EventName,
-                    `$ ${Number(bet.WagerInfo.ToRisk)}`,
-                    Number(bet.WagerInfo.Odds) > 0 ? `+${Number(bet.WagerInfo.Odds).toFixed(2)}` : `${Number(bet.WagerInfo.Odds).toFixed(2)}`,
-                    bet.WagerInfo.Outcome ? bet.WagerInfo.Outcome : '-',
-                    bet.WagerInfo.ProfitAndLoss ? (Number(bet.WagerInfo.ProfitAndLoss) > 0 ? `+ $${Number(bet.WagerInfo.ProfitAndLoss).toFixed(2)}` : `- $${Number(-bet.WagerInfo.ProfitAndLoss).toFixed(2)}`) : '-',
                     dateformat(bet.updatedAt, 'default')
                 ]);
             })
@@ -2523,16 +2451,6 @@ adminRouter.get(
         try {
             let { id } = req.query;
             let bet = await Bet.findById(id).populate('userId', ['email', 'currency']);
-            if (bet) {
-                bet = JSON.parse(JSON.stringify(bet));
-                bet.house = 'ppw';
-                return res.json(bet);
-            }
-            bet = await BetSportsBook.findById(id).populate('userId', ['email', 'currency']);
-            if (bet) {
-                bet = JSON.parse(JSON.stringify(bet));
-                bet.house = 'pinnacle';
-            }
             return res.json(bet);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find bet.', message: error });
@@ -2588,17 +2506,14 @@ const getTotalWager = async (datefrom, dateto) => {
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
-                }
+                },
+                $or: [
+                    { sportsbook: false },
+                    { sportsbook: { $exists: false } },
+                ]
             }
         },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: "$bet"
-                }
-            }
-        }
+        { $group: { _id: null, total: { $sum: "$bet" } } }
     );
     if (total.length) return total[0].total;
     return 0;
@@ -2607,17 +2522,20 @@ const getTotalWager = async (datefrom, dateto) => {
 const getTotalWagerSportsBook = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
-    const betSportsbookHistory = await BetSportsBook.find({
-        createdAt: {
-            $gte: datefrom,
-            $lte: dateto
-        }
-    });
-    let total = 0;
-    for (const bet of betSportsbookHistory) {
-        total += Number(bet.WagerInfo.ToRisk);
-    }
-    return total;
+    const total = await Bet.aggregate(
+        {
+            $match: {
+                createdAt: {
+                    $gte: datefrom,
+                    $lte: dateto
+                },
+                sportsbook: true,
+            }
+        },
+        { $group: { _id: null, total: { $sum: "$bet" } } }
+    );
+    if (total.length) return total[0].total;
+    return 0;
 }
 
 const getTotalPlayer = async (datefrom, dateto) => {
@@ -3997,7 +3915,7 @@ adminRouter.post(
                 if (is_wager_more) {
                     const users_wager = await User.find();
                     users_wager.forEach(user => {
-                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (user.betHistory.length < wager_more) return;
                         if (users.find(e_user => e_user._id == user._id)) return;
                         users.push(user);
                     })
@@ -4160,7 +4078,7 @@ adminRouter.put(
                 if (is_wager_more) {
                     const users_wager = await User.find();
                     users_wager.forEach(user => {
-                        if ((user.betHistory.length + user.betSportsbookHistory.length) < wager_more) return;
+                        if (user.betHistory.length < wager_more) return;
                         if (users.find(e_user => e_user._id == user._id)) return;
                         users.push(user);
                     })
@@ -4262,15 +4180,13 @@ adminRouter.get(
                     "username": 1,
                     "email": 1,
                     "betHistory": 1,
-                    "betSportsbookHistory": 1,
-                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                    "total_bets": { "$size": "$betHistory" }
                 }
             },
             { "$sort": { "total_bets": -1 } },
             { "$limit": count },
         ])
         data = await Bet.populate(data, { path: "betHistory" });
-        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
         data = data.map(data => {
             let win = 0, loss = 0;
             data.betHistory.forEach(bet => {
@@ -4282,16 +4198,6 @@ adminRouter.get(
                     return;
                 }
             });
-            data.betSportsbookHistory.forEach(bet => {
-                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
-                    loss += Number(bet.WagerInfo.ToRisk);
-                    return;
-                }
-                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
-                    win += Number(bet.WagerInfo.ProfitAndLoss);
-                    return;
-                }
-            })
             return {
                 username: data.username,
                 email: data.email,
@@ -4319,15 +4225,13 @@ adminRouter.get(
                     "username": 1,
                     "email": 1,
                     "betHistory": 1,
-                    "betSportsbookHistory": 1,
-                    "total_bets": { "$add": [{ "$size": "$betHistory" }, { "$size": "$betSportsbookHistory" }] }
+                    "total_bets": { "$size": "$betHistory" }
                 }
             },
             { "$sort": { "total_bets": -1 } },
             { "$limit": count },
         ])
         data = await Bet.populate(data, { path: "betHistory" });
-        data = await BetSportsBook.populate(data, { path: 'betSportsbookHistory' });
         let csvData = [
             ['Name', 'Email', '# of Bets', 'Win', 'Loss', 'Net']
         ]
@@ -4342,16 +4246,6 @@ adminRouter.get(
                     return;
                 }
             });
-            data.betSportsbookHistory.forEach(bet => {
-                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'LOSE') {
-                    loss += Number(bet.WagerInfo.ToRisk);
-                    return;
-                }
-                if (bet.Name == 'SETTLED' && bet.WagerInfo.Outcome == 'WIN') {
-                    win += Number(bet.WagerInfo.ProfitAndLoss);
-                    return;
-                }
-            })
             csvData.push([
                 data.username,
                 data.email,
@@ -4813,20 +4707,16 @@ adminRouter.get(
         try {
             const { user_id, year, month } = req.params;
 
-            const lossbetsSportsbook = await BetSportsBook.find({
-                Name: "SETTLED",
+            const history = await Bet.find({
+                status: "Settled - Lose",
                 userId: user_id,
-                "WagerInfo.Outcome": "LOSE",
                 createdAt: {
                     $gte: new Date(year, month - 1, 0),
                     $lte: new Date(year, month, 0),
                 }
             });
-
             const user = await User.findById(user_id);
-
-            res.json({ history: lossbetsSportsbook, user });
-
+            res.json({ history: history, user });
         } catch (error) {
             console.log(error)
             res.status(500).json({ success: false });

@@ -6,14 +6,14 @@ export function getBetActivities(page, filter, perPage = null) {
     let url = `${serverUrl}/bets?page=${page}`;
     if (perPage) url += `&perPage=${perPage}`;
     const { datefrom, dateto, sport, status, minamount, maxamount, house, match } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(new Date(datefrom).toISOString())}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(new Date(dateto).toISOString())}`;
-    if (sport && sport != '') url += `&sport=${encodeURIComponent(sport)}`;
-    if (status && status != '') url += `&status=${encodeURIComponent(status)}`;
-    if (minamount && minamount != '') url += `&minamount=${encodeURIComponent(minamount)}`;
-    if (maxamount && maxamount != '') url += `&maxamount=${encodeURIComponent(maxamount)}`;
-    if (house && house != '') url += `&house=${encodeURIComponent(house)}`;
-    if (match && match != '') url += `&match=${encodeURIComponent(match)}`;
+    if (datefrom) url += `&datefrom=${encodeURIComponent(new Date(datefrom).toISOString())}`;
+    if (dateto) url += `&dateto=${encodeURIComponent(new Date(dateto).toISOString())}`;
+    if (sport) url += `&sport=${encodeURIComponent(sport)}`;
+    if (status) url += `&status=${encodeURIComponent(status)}`;
+    if (minamount) url += `&minamount=${encodeURIComponent(minamount)}`;
+    if (maxamount) url += `&maxamount=${encodeURIComponent(maxamount)}`;
+    if (house) url += `&house=${encodeURIComponent(house)}`;
+    if (match) url += `&match=${encodeURIComponent(match)}`;
 
     return axios.get(url, { withCredentials: true });
 }
@@ -29,11 +29,11 @@ export function getSports() {
 export function getWagerActivityAsCSV(filter) {
     let url = `${serverUrl}/bets-csv?format=csv`;
     const { datefrom, dateto, sport, minamount, maxamount } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(new Date(datefrom).toISOString())}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(new Date(dateto).toISOString())}`;
-    if (sport && sport != '') url += `&sport=${encodeURIComponent(sport)}`;
-    if (minamount && minamount != '') url += `&minamount=${encodeURIComponent(minamount)}`;
-    if (maxamount && maxamount != '') url += `&maxamount=${encodeURIComponent(maxamount)}`;
+    if (datefrom) url += `&datefrom=${encodeURIComponent(new Date(datefrom).toISOString())}`;
+    if (dateto) url += `&dateto=${encodeURIComponent(new Date(dateto).toISOString())}`;
+    if (sport) url += `&sport=${encodeURIComponent(sport)}`;
+    if (minamount) url += `&minamount=${encodeURIComponent(minamount)}`;
+    if (maxamount) url += `&maxamount=${encodeURIComponent(maxamount)}`;
 
     return axios.get(url, { withCredentials: true });
 }
