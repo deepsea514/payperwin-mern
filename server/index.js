@@ -1992,6 +1992,73 @@ expressApp.post(
     },
 );
 
+expressApp.post(
+    '/bets/:id/forward',
+    isAuthenticated,
+    async (req, res) => {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(404).json({ error: 'Bet info not found.' });
+        }
+        try {
+            const bet = await Bet.findById(id);
+            if (!bet) {
+                return res.status(404).json({ error: 'Bet info not found.' });
+            }
+            const lineQuery = bet.lineQuery;
+            let linePoints = bet.pickName.split(' ');
+            if (lineQuery.type.toLowerCase() == 'moneyline') {
+                linePoints = null;
+            } else if (lineQuery.type.toLowerCase() == 'spread') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
+                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
+            } else if (lineQuery.type.toLowerCase() == 'total') {
+                linePoints = Number(linePoints[linePoints.length - 1]);
+            }
+            const betpool = await BetPool.findOne({
+                sportId: lineQuery.sportId,
+                leagueId: lineQuery.leagueId,
+                eventId: lineQuery.eventId,
+                lineId: lineQuery.lineId,
+                lineType: lineQuery.type,
+                lineSubType: lineQuery.subtype,
+                sportName: lineQuery.sportName,
+                origin: bet.origin,
+                points: linePoints
+            });
+
+            if (betpool) {
+                if (bet.pick == 'home' && betpool.homeBets.length > 0) {
+                    betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
+                    betpool.teamA.betTotal -= bet.bet;
+                    betpool.teamA.toWinTotal -= bet.toWin;
+                } else if (bet.pick == 'away' && betpool.awayBets.length > 0) {
+                    betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
+                    betpool.teamB.betTotal -= bet.bet;
+                    betpool.teamB.toWinTotal -= bet.toWin;
+                }
+                if (betpool.homeBets.length == 0 && betpool.awayBets.length == 0) {
+                    await BetPool.deleteOne({ _id: betpool._id });
+                } else {
+                    await betpool.save();
+                    await calculateBetsStatus(betpool.uid);
+                }
+            }
+            bet.pickOdds = bet.oldOdds;
+            bet.status = null;
+            bet.toWin = calculateToWinFromBet(bet.bet, Number(bet.oldOdds));
+            bet.fee = bet.toWin * BetFee;
+            bet.sportsbook = true;
+            await bet.save();
+
+            res.json(bet);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: error.stack });
+        }
+    }
+)
+
 expressApp.get(
     '/user',
     isAuthenticated,
