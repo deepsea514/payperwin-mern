@@ -2005,6 +2005,12 @@ expressApp.post(
             if (!bet) {
                 return res.status(404).json({ error: 'Bet info not found.' });
             }
+            if (bet.sportsbook) {
+                return res.status(400).json({ error: 'Bet already forwarded.' });
+            }
+            if (bet.status != 'Pending') {
+                return res.status(400).json({ error: 'Forward is for only pending bets.' });
+            }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
             if (lineQuery.type.toLowerCase() == 'moneyline') {
