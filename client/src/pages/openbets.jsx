@@ -33,6 +33,8 @@ class OpenBets extends Component {
             },
             showFilter: false,
             noMore: false,
+            forwardBet: null,
+            forwardResult: null,
         };
     }
 
@@ -163,9 +165,32 @@ class OpenBets extends Component {
         }
     }
 
+    forwardSportsbook = (bet) => {
+        this.setState({ forwardBet: bet });
+    }
+
+    confirmForward = () => {
+        const { forwardBet, bets } = this.state;
+        axios.post(`${serverUrl}/bets/${forwardBet._id}/forward`, null, { withCredentials: true })
+            .then(({ data }) => {
+                console.log(data)
+                this.setState({
+                    bets: bets.map(bet => {
+                        if (bet._id == data._id) return data;
+                        return bet;
+                    }),
+                    forwardBet: null,
+                    forwardResult: 'Bet forwarded.'
+                })
+            })
+            .catch(() => {
+                this.setState({ forwardBet: null, forwardResult: 'Can\'t forward bet to sportsbook.' });
+            })
+    }
+
     render() {
         const { bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
-            daterange, showFilter, filter, page, noMore } = this.state;
+            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
@@ -223,6 +248,38 @@ class OpenBets extends Component {
                             </div>
                         </div>
                     </div>}
+                    {forwardBet != null && <div className="modal confirmation">
+                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardBet: null })} />
+                        <div className="col-in">
+                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null })} />
+                            <div>
+                                <b> Forward to Sportsbook</b>
+                                <hr />
+                                <p>A peer has not matched your bet. You can forward your bet to the sportsbook for immediate acceptance.</p>
+                                <p>Peer to Peer Odds: {Number(forwardBet.pickOdds) > 0 ? '+' : ''}{forwardBet.pickOdds}</p>
+                                <p>Sportsbook Odds: {Number(forwardBet.oldOdds) > 0 ? '+' : ''}{forwardBet.oldOdds}</p>
+                                <div className="text-right">
+                                    <button className="form-button" onClick={this.confirmForward}> Proceed </button>
+                                    <button className="form-button ml-2" onClick={() => this.setState({ forwardBet: null })}> Cancel </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
+                    {forwardResult != null && <div className="modal confirmation">
+                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardResult: null })} />
+                        <div className="col-in">
+                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardResult: null })} />
+                            <div>
+                                <b> Forward to Sportsbook</b>
+                                <hr />
+                                <p>{forwardResult}</p>
+                                <div className="text-right">
+                                    <button className="form-button ml-2" onClick={() => this.setState({ forwardResult: null })}> Close </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
+
                     <h3>{settledBets ? 'Bet History' : 'Open Bets'}</h3>
 
                     <ul className="histyr-list d-flex justify-content-space">
@@ -270,25 +327,9 @@ class OpenBets extends Component {
                     </ul>
                     {bets.map(betObj => {
                         const {
-                            _id,
-                            teamA,
-                            teamB,
-                            bet,
-                            toWin,
-                            matchStartDate,
-                            pick,
-                            pickName,
-                            pickOdds,
-                            createdAt,
-                            status,
-                            credited,
-                            homeScore,
-                            awayScore,
-                            payableToWin,
-                            matchingStatus,
-                            lineQuery,
-                            origin,
-                            sportsbook,
+                            _id, teamA, teamB, bet, toWin, matchStartDate, pickName, pickOdds,
+                            createdAt, status, credited, homeScore, awayScore, payableToWin,
+                            matchingStatus, lineQuery, origin, sportsbook,
                         } = betObj;
                         if (origin == "other") {
                             const type = "moneyline";
@@ -473,6 +514,8 @@ class OpenBets extends Component {
                                     {/* {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>} */}
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
+                                    {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' &&
+                                        <button className="form-button ml-2" onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
                                 </div>
                             </div>
                         );
