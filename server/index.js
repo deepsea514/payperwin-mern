@@ -1007,7 +1007,7 @@ expressApp.post(
                                         toWin: toWin,
                                         fee: fee,
                                         matchStartDate: startDate,
-                                        status: 'Pending',
+                                        status: sportsbook ? 'Pending' : null,
                                         lineQuery: {
                                             lineId: lineId,
                                             eventName: lineQuery,
@@ -1288,9 +1288,13 @@ expressApp.post(
                                         console.info(`created new bet`);
 
                                         // save the user
-
                                         try {
                                             const savedBet = await newBet.save();
+
+                                            await LoyaltyLog.create({
+                                                user: user._id,
+                                                point: toBet * loyaltyPerBet
+                                            })
 
                                             const preference = await Preference.findOne({ user: user._id });
                                             let timezone = "00:00";
@@ -1927,44 +1931,63 @@ expressApp.get(
     },
 );
 
-expressApp.get(
+expressApp.post(
     '/bets',
     isAuthenticated,
     async (req, res) => {
-        const { betHistory } = req.user;
+        const { betHistory, _id } = req.user;
+        const perPage = 20;
         if (betHistory && betHistory.length > 0) {
-            const { openBets, settledBets, custom } = req.query;
-            let bets;
+            let { openBets, settledBets, custom, page, daterange, filter } = req.body;
+            if (!page) page = 0;
+            let searchObj = {
+                userId: _id,
+            };
             if (openBets) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
-                    })
-                    .sort({ createdAt: -1 });
+                searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', null] };
             } else if (settledBets) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
-                    })
-                    .sort({ createdAt: -1 });
+                searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
             } else if (custom) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        origin: 'other',
-                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
-                    })
-                    .sort({ createdAt: -1 });
+                searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
+                searchObj.origin = 'other';
             }
-            else {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory }
-                    })
-                    .sort({ createdAt: -1 });
+
+            if (daterange) {
+                try {
+                    const { startDate, endDate } = daterange;
+                    searchObj.createdAt = {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate),
+                    }
+                } catch (error) { }
             }
+
+            if (filter) {
+                let orCon = [];
+                if (filter.p2p) {
+                    orCon.push({
+                        sportsbook: { $exists: false },
+                    });
+                    orCon.push({
+                        sportsbook: false,
+                    });
+                }
+                if (filter.sportsbook) {
+                    orCon.push({
+                        sportsbook: true,
+                    });
+                }
+                searchObj = {
+                    ...searchObj,
+                    $or: orCon
+                }
+            }
+
+            const bets = await Bet
+                .find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage);
             res.json(bets);
         } else {
             res.json([]);
@@ -2907,14 +2930,16 @@ expressApp.post(
                 // status: FinancialStatus.success,
             };
             if (daterange) {
-                const { startDate, endDate } = daterange;
-                searchObj = {
-                    ...searchObj,
-                    updatedAt: {
-                        "$gte": new Date(startDate),
-                        "$lte": new Date(endDate),
+                try {
+                    const { startDate, endDate } = daterange;
+                    searchObj = {
+                        ...searchObj,
+                        updatedAt: {
+                            "$gte": new Date(startDate),
+                            "$lte": new Date(endDate),
+                        }
                     }
-                }
+                } catch (error) { }
             }
             if (filter) {
                 if (filter.all == false) {
@@ -3487,6 +3512,7 @@ expressApp.put(
             });
             res.json(newSharedLine);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
