@@ -11,7 +11,6 @@ const AutoBetLog = require("./models/autobetlog");
 const Promotion = require('./models/promotion');
 const PromotionLog = require('./models/promotionlog');
 const FinancialLog = require('./models/financiallog');
-const BetSportsBook = require('./models/betsportsbook');
 const Verification = require('./models/verification');
 const Ticket = require("./models/ticket");
 const Preference = require('./models/preference');
@@ -87,7 +86,6 @@ const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(config.googleClientID);
 
 //express routers
-const v1Router = require('./v1Routes');
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
@@ -306,7 +304,6 @@ passport.use('local-signup', new LocalStrategy(
                         registered: true,
                     },
                     betHistory: [],
-                    betSportsbookHistory: [],
                 };
                 const newUser = new User(newUserObj);
                 console.info(`created new user ${username}`);
@@ -1996,23 +1993,6 @@ expressApp.post(
 );
 
 expressApp.get(
-    '/bets-sportsbook',
-    async (req, res) => {
-        const { openBets, settledBets } = req.query;
-        if (req.user && req.user.username) {
-            let bets = [];
-            if (settledBets)
-                bets = await BetSportsBook.find({ userId: req.user._id, Name: 'SETTLED' }).sort({ createdAt: -1 });
-            else
-                bets = await BetSportsBook.find({ userId: req.user._id, Name: { $in: ['ACCEPTED', 'BETTED'] } }).sort({ createdAt: -1 });
-            res.json(bets);
-        } else {
-            res.status(404).end();
-        }
-    },
-);
-
-expressApp.get(
     '/user',
     isAuthenticated,
     async (req, res) => {
@@ -2644,36 +2624,12 @@ expressApp.post('/deposit',
 );
 
 const getMaxWithdraw = async (user) => {
-    let totalsportsbookwagers = 0;
-    let totalwinsportsbook = 0;
-    const betSportsbookHistory = await BetSportsBook.find({ userId: user._id });
-    for (const bet of betSportsbookHistory) {
-        totalsportsbookwagers += Number(bet.WagerInfo.ToRisk);
-        const profit = Number(bet.WagerInfo.ProfitAndLoss);
-        if (profit > 0) {
-            totalwinsportsbook += profit;
-        }
-    }
-
     let totalwagers = await Bet.aggregate(
-        {
-            $match: {
-                userId: new ObjectId(user._id),
-            }
-        },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: "$bet"
-                }
-            }
-        }
+        { $match: { userId: new ObjectId(user._id), } },
+        { $group: { _id: null, total: { $sum: "$bet" } } }
     );
     if (totalwagers.length) totalwagers = totalwagers[0].total;
     else totalwagers = 0;
-
-    totalwagers += totalsportsbookwagers;
 
     let totalwinbet = await Bet.aggregate(
         {
@@ -2682,19 +2638,10 @@ const getMaxWithdraw = async (user) => {
                 status: "Settled - Win",
             }
         },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: "$credited"
-                }
-            }
-        }
+        { $group: { _id: null, total: { $sum: "$credited" } } }
     );
     if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
     else totalwinbet = 0;
-
-    totalwinbet += totalwinsportsbook;
 
     let signupBonusAmount = 0;
     const signUpBonusEnabled = await checkSignupBonusPromotionEnabled(user._id);
@@ -3537,33 +3484,29 @@ expressApp.get(
         const month = today.getMonth();
 
         try {
-            let lossbetsSportsbook = await BetSportsBook.aggregate({
-                $match: {
-                    Name: "SETTLED",
-                    "WagerInfo.Outcome": "LOSE",
-                    createdAt: {
-                        $gte: new Date(year, month, 0),
-                        $lte: new Date(),
-                    },
-                    userId: user._id
-                }
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
+            let lossbetsSportsbook = await Bet.aggregate(
+                {
+                    $match: {
+                        status: "Settled - Lose",
+                        userId: user._id,
+                        sportsbook: false,
+                        createdAt: {
+                            $gte: new Date(year, month - 1, 0),
+                            $lte: new Date(year, month, 0),
+                        }
                     }
-                }
-            });
-
-            const lossBetHistory = await BetSportsBook.find({
-                Name: "SETTLED",
-                "WagerInfo.Outcome": "LOSE",
-                createdAt: {
-                    $gte: new Date(year, month, 0),
-                    $lte: new Date(),
                 },
-                userId: user._id
+                { $group: { _id: "$userId", total: { $sum: "$bet" } } }
+            );
+
+            const lossBetHistory = await Bet.find({
+                status: "Settled - Lose",
+                userId: user._id,
+                sportsbook: false,
+                createdAt: {
+                    $gte: new Date(year, month - 1, 0),
+                    $lte: new Date(year, month, 0),
+                }
             })
 
             if (lossbetsSportsbook.length) lossbetsSportsbook = lossbetsSportsbook[0].total;
@@ -4027,7 +3970,6 @@ expressApp.post(
 
 // Admin
 expressApp.use('/admin', adminRouter);
-expressApp.use('/v1', v1Router)
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 
