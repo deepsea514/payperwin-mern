@@ -1004,7 +1004,7 @@ expressApp.post(
                                         toWin: toWin,
                                         fee: fee,
                                         matchStartDate: startDate,
-                                        status: sportsbook ? 'Pending' : null,
+                                        status: 'Pending',
                                         lineQuery: {
                                             lineId: lineId,
                                             eventName: lineQuery,
@@ -1275,7 +1275,7 @@ expressApp.post(
                                             matchStartDate: startDate,
                                             // lineType: type,
                                             // index,
-                                            status: 'Pending',
+                                            status: sportsbook ? null : 'Pending',
                                             lineQuery,
                                             lineId: lineId,
                                             origin: origin,
