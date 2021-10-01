@@ -1797,7 +1797,6 @@ adminRouter.delete(
             }
             const user = await User.findById(user_id);
             if (user) {
-                user.betHistory = user.betHistory.filter(bet => bet.toString() != id);
                 user.balance = user.balance + bet.bet;
                 await user.save();
                 await FinancialLog.create({
@@ -2333,7 +2332,7 @@ adminRouter.post(
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
             await betpool.update(docChanges);
-            await user.update({ $push: { betHistory: newBet._id }, $inc: { balance: -amount } });
+            await user.update({ $inc: { balance: -amount } });
 
             await calculateBetsStatus(betpool.uid);
             res.json({ success: true });
@@ -3913,7 +3912,14 @@ adminRouter.post(
                     users = [...users_balance];
                 }
                 if (is_wager_more) {
-                    const users_wager = await User.find();
+                    const users_wager = await User.aggregate({
+                        $lookup: {
+                            from: 'bets',
+                            localField: '_id',
+                            foreignField: 'userId',
+                            as: 'betHistory'
+                        }
+                    });
                     users_wager.forEach(user => {
                         if (user.betHistory.length < wager_more) return;
                         if (users.find(e_user => e_user._id == user._id)) return;
@@ -4076,7 +4082,14 @@ adminRouter.put(
                     users = [...users_balance];
                 }
                 if (is_wager_more) {
-                    const users_wager = await User.find();
+                    const users_wager = await User.aggregate({
+                        $lookup: {
+                            from: 'bets',
+                            localField: '_id',
+                            foreignField: 'userId',
+                            as: 'betHistory'
+                        }
+                    });
                     users_wager.forEach(user => {
                         if (user.betHistory.length < wager_more) return;
                         if (users.find(e_user => e_user._id == user._id)) return;
@@ -4176,6 +4189,14 @@ adminRouter.get(
         count = parseInt(count);
         let data = await User.aggregate([
             {
+                $lookup: {
+                    from: 'bets',
+                    localField: '_id',
+                    foreignField: 'userId',
+                    as: 'betHistory'
+                }
+            },
+            {
                 "$project": {
                     "username": 1,
                     "email": 1,
@@ -4194,7 +4215,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.payableToWin;
+                    win += bet.credited - bet.bet;
                     return;
                 }
             });
@@ -4221,6 +4242,14 @@ adminRouter.get(
         count = parseInt(count);
         let data = await User.aggregate([
             {
+                $lookup: {
+                    from: 'bets',
+                    localField: '_id',
+                    foreignField: 'userId',
+                    as: 'betHistory'
+                }
+            },
+            {
                 "$project": {
                     "username": 1,
                     "email": 1,
@@ -4242,7 +4271,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.payableToWin;
+                    win += bet.bet.credited - bet.bet;
                     return;
                 }
             });

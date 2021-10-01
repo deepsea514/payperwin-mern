@@ -303,7 +303,6 @@ passport.use('local-signup', new LocalStrategy(
                     roles: {
                         registered: true,
                     },
-                    betHistory: [],
                 };
                 const newUser = new User(newUserObj);
                 console.info(`created new user ${username}`);
@@ -1170,7 +1169,6 @@ expressApp.post(
 
                                         await calculateCustomBetsStatus(lineId);
 
-                                        user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
                                         user.balance = newBalance;
                                         try {
                                             await FinancialLog.create({
@@ -1486,7 +1484,6 @@ expressApp.post(
                                                 await calculateBetsStatus(betpoolId);
                                             }
 
-                                            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
                                             user.balance = newBalance;
                                             try {
                                                 await FinancialLog.create({
@@ -1875,7 +1872,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
             await betpool.update(docChanges);
 
-            const betHistory = selectedauto.userId.betHistory ? [...selectedauto.userId.betHistory, betId] : [betId];
             try {
                 await FinancialLog.create({
                     financialtype: 'bet',
@@ -1885,7 +1881,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     method: 'bet',
                     status: FinancialStatus.success,
                 });
-                await User.findByIdAndUpdate(selectedauto.userId._id, { betHistory, $inc: { balance: -bettable } });
+                await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
             } catch (err) {
                 console.log('selectedauto.userId =>' + err);
             }
@@ -1932,63 +1928,60 @@ expressApp.post(
     '/bets',
     isAuthenticated,
     async (req, res) => {
-        const { betHistory, _id } = req.user;
+        const { _id } = req.user;
         const perPage = 20;
-        if (betHistory && betHistory.length > 0) {
-            let { openBets, settledBets, custom, page, daterange, filter } = req.body;
-            if (!page) page = 0;
-            let searchObj = {
-                userId: _id,
-            };
-            if (openBets) {
-                searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', null] };
-            } else if (settledBets) {
-                searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
-            } else if (custom) {
-                searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
-                searchObj.origin = 'other';
-            }
-
-            if (daterange) {
-                try {
-                    const { startDate, endDate } = daterange;
-                    searchObj.createdAt = {
-                        $gte: new Date(startDate),
-                        $lte: new Date(endDate),
-                    }
-                } catch (error) { }
-            }
-
-            if (filter) {
-                let orCon = [];
-                if (filter.p2p) {
-                    orCon.push({
-                        sportsbook: { $exists: false },
-                    });
-                    orCon.push({
-                        sportsbook: false,
-                    });
-                }
-                if (filter.sportsbook) {
-                    orCon.push({
-                        sportsbook: true,
-                    });
-                }
-                searchObj = {
-                    ...searchObj,
-                    $or: orCon
-                }
-            }
-
-            const bets = await Bet
-                .find(searchObj)
-                .sort({ createdAt: -1 })
-                .skip(page * perPage)
-                .limit(perPage);
-            res.json(bets);
-        } else {
-            res.json([]);
+        let { openBets, settledBets, custom, page, daterange, filter } = req.body;
+        if (!page) page = 0;
+        let searchObj = {
+            userId: _id,
+        };
+        if (openBets) {
+            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', null] };
+        } else if (settledBets) {
+            searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
+        } else if (custom) {
+            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
+            searchObj.origin = 'other';
         }
+
+        if (daterange) {
+            try {
+                const { startDate, endDate } = daterange;
+                searchObj.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate),
+                }
+            } catch (error) { }
+        }
+
+        if (filter) {
+            let orCon = [];
+            if (filter.p2p) {
+                orCon.push({
+                    sportsbook: { $exists: false },
+                });
+                orCon.push({
+                    sportsbook: false,
+                });
+            }
+            if (filter.sportsbook) {
+                orCon.push({
+                    sportsbook: true,
+                });
+            }
+            searchObj = {
+                ...searchObj,
+                $or: orCon
+            }
+        }
+
+        const bets = await Bet
+            .find(searchObj)
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage);
+        res.json(bets);
+
     },
 );
 

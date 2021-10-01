@@ -264,7 +264,6 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
 
             await calculateCustomBetsStatus(event._id);
 
-            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
             user.balance = newBalance;
             await FinancialLog.create({
                 financialtype: 'bet',
