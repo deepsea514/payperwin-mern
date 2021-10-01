@@ -247,7 +247,7 @@ class BetActivities extends React.Component {
             case "Settled - Lose":
                 return `- $${bet.bet.toFixed(2)} CAD`;
             case "Settled - Win":
-                return `+ $${bet.payableToWin.toFixed(2)} CAD`
+                return `+ $${(bet.credited - bet.bet).toFixed(2)} CAD`
             case "Pending":
             case "Partial Match":
             case "Matched":
