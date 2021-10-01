@@ -453,6 +453,10 @@ a.log-in-btn {
     margin-bottom: 5px;
 }
 
+.open-bets-sportsbook {
+    border: 1px solid rgb(12, 236, 131) !important;
+}
+
 .open-bets-flex {
     justify-content: space-around;
     display: flex;
