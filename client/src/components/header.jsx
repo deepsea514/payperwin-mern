@@ -301,13 +301,13 @@ class Header extends Component {
                             <div className="">
                                 <ul className="list-s">
                                     <li style={{ padding: '0 15px' }}>
-                                        <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode' : 'darkmode'}`}
+                                        {/* <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode' : 'darkmode'}`}
                                             onClick={() => this.setDisplayMode(display_mode == 'light' ? 'dark' : 'light')}
                                         >
                                             <i className="far fa-sun lightmode_ico"></i>
                                             <i className="far fa-moon darkmode_ico"></i>
                                             <div className="lightmode_switch"></div>
-                                        </div>
+                                        </div> */}
                                     </li>
                                     {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
