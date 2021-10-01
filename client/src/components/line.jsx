@@ -2,6 +2,31 @@ import React, { Component } from 'react';
 import LineDetail from './linedetail';
 import classnames from "classnames";
 
+class EmptyLine extends Component {
+    render() {
+        return (
+            <li>
+                <div className="row mx-0">
+                    <div className="col-md-6 com-sm-12 col-12">
+                        <span className="box-odds line-full">
+                            <div className="vertical-align">
+                                <center><i className="fap fa-do-not-enter" /></center>
+                            </div>
+                        </span>
+                    </div>
+                    <div className="col-md-6 com-sm-12 col-12">
+                        <span className="box-odds line-full">
+                            <div className="vertical-align">
+                                <center><i className="fap fa-do-not-enter" /></center>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </li>
+        )
+    }
+}
+
 export default class Line extends Component {
     getSubTypeName = (subtype) => {
         switch (subtype) {
@@ -30,35 +55,36 @@ export default class Line extends Component {
         if (!line.line) return null;
         const { moneyline, spreads, totals } = line.line;
         const { originId: eventId } = event;
+
+        const lineQueryMoneyLine = {
+            sportName: sportName.replace("_", " "),
+            leagueId,
+            eventId,
+            lineId: eventId,
+            type: 'moneyline',
+            subtype: line.subtype,
+            index: null
+        };
+
         return (
             <>
-                {(!type || type == 'moneyline' && subtype == line.subtype) && moneyline ?
-                    ((() => {
-                        const lineQuery = {
-                            sportName: sportName.replace("_", " "),
-                            leagueId,
-                            eventId,
-                            lineId: eventId,
-                            type: 'moneyline',
-                            subtype: line.subtype,
-                            index: null
-                        };
-                        return <>
-                            <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}>Moneyline {this.getSubTypeName(line.subtype)}</div>
-                            <LineDetail
-                                originOdds={moneyline}
-                                betSlip={betSlip}
-                                lineQuery={lineQuery}
-                                removeBet={removeBet}
-                                addBet={addBet}
-                                event={event}
-                                oddsFormat={oddsFormat} />
-                        </>
-                    })()) : null}
-                {(!type || type == 'spread' && subtype == line.subtype) && spreads ?
-                    (<>
-                        <div className="line-type-header">Spreads {this.getSubTypeName(line.subtype)}</div>
-                        {spreads.map((spread, i) => {
+                {(!type || type == 'moneyline' && subtype == line.subtype) && <>
+                    <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}>Moneyline {this.getSubTypeName(line.subtype)}</div>
+                    {moneyline ? <LineDetail
+                        originOdds={moneyline}
+                        betSlip={betSlip}
+                        lineQuery={lineQueryMoneyLine}
+                        removeBet={removeBet}
+                        addBet={addBet}
+                        event={event}
+                        oddsFormat={oddsFormat} />
+                        : <EmptyLine />}
+                </>}
+
+                {(!type || type == 'spread' && subtype == line.subtype) && <>
+                    <div className="line-type-header">Spreads {this.getSubTypeName(line.subtype)}</div>
+                    {spreads && spreads.length != 0 ?
+                        spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
@@ -79,34 +105,34 @@ export default class Line extends Component {
                                 addBet={addBet}
                                 event={event}
                                 oddsFormat={oddsFormat} />
-                        })}
-                    </>) : null}
-                {(!type || type == 'total' && subtype == line.subtype) && totals ?
-                    (<>
-                        <div className="line-type-header">Over/Under {this.getSubTypeName(line.subtype)}</div>
-                        {totals.map((total, i) => {
-                            if (type && index && index != i) return null;
-                            const lineQuery = {
-                                sportName: sportName.replace("_", " "),
-                                leagueId,
-                                eventId,
-                                lineId: eventId,
-                                type: 'total',
-                                index: i,
-                                subtype: line.subtype
-                            };
-                            if (total.altLineId) lineQuery.altLineId = total.altLineId;
-                            return <LineDetail
-                                key={i}
-                                originOdds={{ home: total.over, away: total.under, points: total.points }}
-                                betSlip={betSlip}
-                                lineQuery={lineQuery}
-                                removeBet={removeBet}
-                                addBet={addBet}
-                                event={event}
-                                oddsFormat={oddsFormat} />
-                        })}
-                    </>) : null}
+                        }) : <EmptyLine />}
+                </>}
+
+                {(!type || type == 'total' && subtype == line.subtype) && <>
+                    <div className="line-type-header">Over/Under {this.getSubTypeName(line.subtype)}</div>
+                    {totals && totals.length != 0 ? totals.map((total, i) => {
+                        if (type && index && index != i) return null;
+                        const lineQuery = {
+                            sportName: sportName.replace("_", " "),
+                            leagueId,
+                            eventId,
+                            lineId: eventId,
+                            type: 'total',
+                            index: i,
+                            subtype: line.subtype
+                        };
+                        if (total.altLineId) lineQuery.altLineId = total.altLineId;
+                        return <LineDetail
+                            key={i}
+                            originOdds={{ home: total.over, away: total.under, points: total.points }}
+                            betSlip={betSlip}
+                            lineQuery={lineQuery}
+                            removeBet={removeBet}
+                            addBet={addBet}
+                            event={event}
+                            oddsFormat={oddsFormat} />
+                    }) : <EmptyLine />}
+                </>}
             </>
         );
     }
