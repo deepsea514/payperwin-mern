@@ -425,7 +425,7 @@ class OpenBets extends Component {
                         const { type, sportName } = lineQuery;
 
                         return (
-                            <div className="open-bets" key={_id}>
+                            <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook': ''}`} key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
                                         <strong>Bet</strong>
