@@ -2109,6 +2109,9 @@ adminRouter.post(
             if (!bet) {
                 return res.status(404).json({ success: false });
             }
+            if(bet.status != 'Pending') {
+                return res.json({ success: false, error: 'Only pending bets are acceptable.' });
+            }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
             if (lineQuery.type.toLowerCase() == 'moneyline') {
@@ -2221,7 +2224,8 @@ adminRouter.post(
                 matchStartDate: bet.matchStartDate,
                 status: 'Pending',
                 lineQuery: bet.lineQuery,
-                origin: bet.origin
+                origin: bet.origin,
+                sportsbook: bet.sportsbook,
             });
             await FinancialLog.create({
                 financialtype: 'bet',
