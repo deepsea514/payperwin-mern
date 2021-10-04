@@ -182,7 +182,7 @@ class App extends Component {
             updateUser,
             location,
             require_2fa,
-            display_mode,
+            dark_light,
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = [
@@ -275,7 +275,7 @@ class App extends Component {
                     location={location}
                 />
                 {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
-                <section className={`main-section ${display_mode == 'dark' && !exceptDark ? 'dark' : ''}`}>
+                <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
                     <ErrorBoundary>
                         {require_2fa && <TfaModal getUser={getUser} />}
                         <div className="container">
@@ -439,7 +439,7 @@ class App extends Component {
                         </div>
                     </ErrorBoundary>
                 </section>
-                <Footer user={user} display_mode={display_mode} />
+                <Footer user={user} display_mode={dark_light} />
                 {!sidebarShowAccountLinks &&
                     <BetSlip
                         betSlip={betSlip}
@@ -461,7 +461,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
-    display_mode: state.frontend.display_mode,
+    dark_light: state.frontend.dark_light,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))
