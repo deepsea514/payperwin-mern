@@ -77,85 +77,127 @@ class App extends Component {
         const { history, currentUser } = this.props;
         return (
             <Layout history={history}>
-                <ErrorBoundary>
-                    {/* <BrowserRouter basename="RP1021"> */}
-                    <Switch>
+                {/* <BrowserRouter basename="RP1021"> */}
+                <Switch>
+                    {/* change password */}
+                    <Route path="/change-password" render={(props) =>
+                        <ErrorBoundary><ChangePassword {...props} /></ErrorBoundary>
+                    } />
 
-                        {/* change password */}
-                        <Route path="/change-password" component={ChangePassword} />
+                    {/* token */}
+                    <Route path="/token" render={(props) =>
+                        <ErrorBoundary><GenerateToken {...props} /></ErrorBoundary>
+                    } />
 
-                        {/* token */}
-                        <Route path="/token" component={GenerateToken} />
+                    {/* dashboard */}
+                    <Route path="/dashboard" render={(props) =>
+                        <ErrorBoundary><AdminDashboard {...props} /></ErrorBoundary>
+                    } />
 
-                        {/* dashboard */}
-                        <Route path="/dashboard" component={AdminDashboard} />
+                    {/* Admin */}
+                    {this.isAvailable('admins') && <Route path="/admin" render={(props) =>
+                        <ErrorBoundary><AdminModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Admin */}
-                        {this.isAvailable('admins') && <Route path="/admin" component={AdminModule} />}
+                    {/* customers */}
+                    {this.isAvailable('users') && <Route path="/users" render={(props) =>
+                        <ErrorBoundary><CustomerModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* customers */}
-                        {this.isAvailable('users') && <Route path="/users" component={CustomerModule} />}
+                    {/* bet activities */}
+                    {this.isAvailable('bet_activities') && <Route path="/bet-activities" render={(props) =>
+                        <ErrorBoundary><BetActivityModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* bet activities */}
-                        {this.isAvailable('bet_activities') && <Route path="/bet-activities" component={BetActivityModule} />}
+                    {/* withdraw */}
+                    {this.isAvailable('withdraw_logs') && <Route path="/withdraw-log" render={(props) =>
+                        <ErrorBoundary><WithdrawLogModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* withdraw */}
-                        {this.isAvailable('withdraw_logs') && <Route path="/withdraw-log" component={WithdrawLogModule} />}
+                    {/* deposit */}
+                    {this.isAvailable('deposit_logs') && <Route path="/deposit-log" render={(props) =>
+                        <ErrorBoundary><DepositLogModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* deposit */}
-                        {this.isAvailable('deposit_logs') && <Route path="/deposit-log" component={DepositLogModule} />}
+                    {/* events */}
+                    {this.isAvailable('custom-events') && <Route path="/custom-events" render={(props) =>
+                        <ErrorBoundary><EventModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* events */}
-                        {this.isAvailable('custom-events') && <Route path="/custom-events" component={EventModule} />}
+                    {/* autobet */}
+                    {this.isAvailable('autobet') && <Route path="/autobet" render={(props) =>
+                        <ErrorBoundary><AutoBet {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* autobet */}
-                        {this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
+                    {/* email templates */}
+                    {this.isAvailable('email_templates') && <Route path="/email-templates" render={(props) =>
+                        <ErrorBoundary><EmailTemplatesModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* email templates */}
-                        {this.isAvailable('email_templates') && <Route path="/email-templates" component={EmailTemplatesModule} />}
+                    {/* promotions */}
+                    {this.isAvailable('promotions') && <Route path="/promotions" render={(props) =>
+                        <ErrorBoundary><PromotionModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* promotions */}
-                        {this.isAvailable('promotions') && <Route path="/promotions" component={PromotionModule} />}
+                    {/* KYC(Know Your Customers) */}
+                    {this.isAvailable('kyc') && <Route path="/kyc" render={(props) =>
+                        <ErrorBoundary><KYC {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* KYC(Know Your Customers) */}
-                        {this.isAvailable('kyc') && <Route path="/kyc" component={KYC} />}
+                    {/* Support Ticket Module */}
+                    {this.isAvailable('support-tickets') && <Route path="/support-tickets" render={(props) =>
+                        <ErrorBoundary><TicketsModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Support Ticket Module */}
-                        {this.isAvailable('support-tickets') && <Route path="/support-tickets" component={TicketsModule} />}
+                    {/* Support FAQ Module */}
+                    {this.isAvailable('faq') && <Route path="/faq" render={(props) =>
+                        <ErrorBoundary><FAQModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Support FAQ Module */}
-                        {this.isAvailable('faq') && <Route path="/faq" component={FAQModule} />}
+                    {/* Message Center Module */}
+                    {this.isAvailable('messages') && <Route path="/message-center" render={(props) =>
+                        <ErrorBoundary><MessageCenterModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Message Center Module */}
-                        {this.isAvailable('messages') && <Route path="/message-center" component={MessageCenterModule} />}
+                    {/* meta tags */}
+                    {this.isAvailable('page-metas') && <Route path="/page-metas" render={(props) =>
+                        <ErrorBoundary><MetaTagsModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* meta tags */}
-                        {this.isAvailable('page-metas') && <Route path="/page-metas" component={MetaTagsModule} />}
+                    {/* Addons */}
+                    {this.isAvailable('api-settings') && <Route path="/api-settings" render={(props) =>
+                        <ErrorBoundary><Addons {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Addons */}
-                        {this.isAvailable('api-settings') && <Route path="/api-settings" component={Addons} />}
+                    {/* Reports */}
+                    {this.isAvailable('reports') && <Route path="/reports" render={(props) =>
+                        <ErrorBoundary><ReportsModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Reports */}
-                        {this.isAvailable('reports') && <Route path="/reports" component={ReportsModule} />}
+                    {/* Articles */}
+                    {this.isAvailable('articles') && <Route path="/articles" render={(props) =>
+                        <ErrorBoundary><ArticlesModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Articles */}
-                        {this.isAvailable('articles') && <Route path="/articles" component={ArticlesModule} />}
+                    {/* Frontend */}
+                    {this.isAvailable('frontend') && <Route path="/frontend" render={(props) =>
+                        <ErrorBoundary><FrontendManageModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Frontend */}
-                        {this.isAvailable('frontend') && <Route path="/frontend" component={FrontendManageModule} />}
+                    {/* Cashback */}
+                    {this.isAvailable('cashback') && <Route path="/cashback" render={(props) =>
+                        <ErrorBoundary><CashbackModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* Cashback */}
-                        {this.isAvailable('cashback') && <Route path="/cashback" component={CashbackModule} />}
+                    {/* ErrorLogs */}
+                    {this.isAvailable('errorlogs') && <Route path="/errorlogs" render={(props) =>
+                        <ErrorBoundary><ErrorLogsModule {...props} /></ErrorBoundary>
+                    } />}
 
-                        {/* ErrorLogs */}
-                        {this.isAvailable('errorlogs') && <Route path="/errorlogs" component={ErrorLogsModule} />}
-
-                        <Redirect exact from="/" to="/dashboard" />
-
-                        <Redirect to="/dashboard" />
-                    </Switch>
-                    {/* </BrowserRouter> */}
-                </ErrorBoundary>
+                    <Redirect exact from="/" to="/dashboard" />
+                    <Redirect to="/dashboard" />
+                </Switch>
+                {/* </BrowserRouter> */}
             </Layout>
         );
     }
