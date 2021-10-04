@@ -1918,7 +1918,7 @@ expressApp.post(
                 $or: orCon
             }
         }
-        console.log(searchObj);
+
         const bets = await Bet
             .find(searchObj)
             .sort({ createdAt: -1 })
