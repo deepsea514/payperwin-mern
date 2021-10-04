@@ -1872,44 +1872,60 @@ expressApp.get(
     '/bets',
     isAuthenticated,
     async (req, res) => {
-        const { betHistory } = req.user;
-        if (betHistory && betHistory.length > 0) {
-            const { openBets, settledBets, custom } = req.query;
-            let bets;
-            if (openBets) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
-                    })
-                    .sort({ createdAt: -1 });
-            } else if (settledBets) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
-                    })
-                    .sort({ createdAt: -1 });
-            } else if (custom) {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory },
-                        origin: 'other',
-                        status: { $in: ['Pending', 'Partial Match', 'Matched'] }
-                    })
-                    .sort({ createdAt: -1 });
-            }
-            else {
-                bets = await Bet
-                    .find({
-                        _id: { $in: betHistory }
-                    })
-                    .sort({ createdAt: -1 });
-            }
-            res.json(bets);
-        } else {
-            res.json([]);
+        const { _id } = req.user;
+        const perPage = 20;
+        let { openBets, settledBets, custom, page, daterange, filter } = req.body;
+        if (!page) page = 0;
+        let searchObj = {
+            userId: _id,
+        };
+        if (openBets) {
+            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', null] };
+        } else if (settledBets) {
+            searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
+        } else if (custom) {
+            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
+            searchObj.origin = 'other';
         }
+
+        if (daterange) {
+            try {
+                const { startDate, endDate } = daterange;
+                searchObj.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate),
+                }
+            } catch (error) { }
+        }
+
+        if (filter) {
+            let orCon = [];
+            if (filter.p2p) {
+                orCon.push({
+                    sportsbook: { $exists: false },
+                });
+                orCon.push({
+                    sportsbook: false,
+                });
+            }
+            if (filter.sportsbook) {
+                orCon.push({
+                    sportsbook: true,
+                });
+            }
+            searchObj = {
+                ...searchObj,
+                $or: orCon
+            }
+        }
+
+        const bets = await Bet
+            .find(searchObj)
+            .sort({ createdAt: -1 })
+            .skip(page * perPage)
+            .limit(perPage);
+        res.json(bets);
+
     },
 );
 
