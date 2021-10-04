@@ -1868,12 +1868,12 @@ expressApp.get(
     },
 );
 
-expressApp.get(
+expressApp.post(
     '/bets',
     isAuthenticated,
     async (req, res) => {
         const { _id } = req.user;
-        const perPage = 20;
+        // const perPage = 20;
         let { openBets, settledBets, custom, page, daterange, filter } = req.body;
         if (!page) page = 0;
         let searchObj = {
@@ -1922,8 +1922,8 @@ expressApp.get(
         const bets = await Bet
             .find(searchObj)
             .sort({ createdAt: -1 })
-            .skip(page * perPage)
-            .limit(perPage);
+            // .skip(page * perPage)
+            // .limit(perPage);
         res.json(bets);
 
     },
