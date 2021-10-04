@@ -44,50 +44,27 @@ class OpenBets extends Component {
     }
 
     getBetHistory() {
-        let url1 = `${serverUrl}/bets`;
         const { openBets, settledBets } = this.props;
-        if (openBets) {
-            url1 += '?openBets=true'
-        } else if (settledBets) {
-            url1 += '?settledBets=true'
-        }
-        axios({
-            method: 'get',
-            url: url1,
-            headers: {
-                'Content-Type': 'application/json',
+        axios.post(`${serverUrl}/bets`,
+            {
+                openBets: openBets,
+                settledBets: settledBets,
+                // filter: filter,
+                // daterange: daterange,
+                // page: page
             },
-            withCredentials: true,
-        })
+            {
+                headers: { 'Content-Type': 'application/json', },
+                withCredentials: true,
+            })
             .then(({ data }) => {
                 if (data) {
                     this.setState({ bets: data })
                 }
+                this.setState({ loading: false })
             }).catch((err) => {
-                this.setState({ error: err });
+                this.setState({ error: err, loading: false });
             });
-
-        // let url2 = `${serverUrl}/bets-sportsbook`;
-        // if (openBets) {
-        //     url2 += '?openBets=true'
-        // } else if (settledBets) {
-        //     url2 += '?settledBets=true'
-        // }
-        // axios({
-        //     method: 'get',
-        //     url: url2,
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     withCredentials: true,
-        // })
-        //     .then(({ data }) => {
-        //         if (data) {
-        //             this.setState({ betsSportsBook: data })
-        //         }
-        //     }).catch((err) => {
-        //         this.setState({ error: err });
-        //     });
     }
 
     capitalizeFirstLetter = (string) => {
