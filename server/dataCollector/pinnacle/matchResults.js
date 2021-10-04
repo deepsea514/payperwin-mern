@@ -125,7 +125,6 @@ const matchResults = async () => {
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',
-                                        walletBeforeCredited: balance,
                                         credited: betAmount + payableToWin,
                                         homeScore,
                                         awayScore,

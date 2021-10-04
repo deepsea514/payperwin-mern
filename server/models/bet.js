@@ -36,7 +36,6 @@ const BetSchema = new Schema(
         // index: Number, // REDUNDANT
         result: String, // team name that won
         credited: Number, // amount won or lost
-        walletBeforeCredited: Number, // to show user how it changed their wallet
         status: { type: String, default: null }, // undefined, Settled, Cancelled
         matchingStatus: String, // Matched, Partial, Waiting
         homeScore: Number,

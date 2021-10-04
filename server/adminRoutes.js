@@ -1968,7 +1968,6 @@ adminRouter.post(
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Win',
-                                    walletBeforeCredited: user ? user.balance : 0,
                                     credited: betAmount + payableToWin,
                                     homeScore,
                                     awayScore,
@@ -3672,7 +3671,6 @@ const matchResults = async (eventId, matchResult) => {
                         const betChanges = {
                             $set: {
                                 status: 'Settled - Win',
-                                walletBeforeCredited: balance,
                                 credited: betAmount + payableToWin,
                                 homeScore,
                                 awayScore,
@@ -4215,7 +4213,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.credited - bet.bet;
+                    win += bet.payableToWin;
                     return;
                 }
             });
@@ -4271,7 +4269,7 @@ adminRouter.get(
                     loss += bet.bet;
                     return;
                 } else if (bet.status == 'Settled - Win') {
-                    win += bet.bet.credited - bet.bet;
+                    win += bet.payableToWin;
                     return;
                 }
             });

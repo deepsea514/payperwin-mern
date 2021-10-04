@@ -88,12 +88,14 @@ class BetDetail extends React.Component {
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
             case "Draw":
                 return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
-            default:
+            case "Accepted":
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
 
-    getPPWBetMatch = (status) => {
+    getBetMatch = (status) => {
         switch (status) {
             case "Cancelled":
             case "Settled - Lose":
@@ -103,6 +105,8 @@ class BetDetail extends React.Component {
             case "Pending":
             case "Partial Match":
             case "Matched":
+            case "Accepted":
+            case "Partial Accepted":
             default:
                 return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
         }
@@ -186,7 +190,7 @@ class BetDetail extends React.Component {
                                             <th>Status</th>
                                             <td scope="col">{this.getBetStatus(bet.status)}</td>
                                             <th>Match</th>
-                                            <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
+                                            <td scope="col">{this.getBetMatch(bet.status)}</td>
                                         </tr>
                                         <tr>
                                             <th>Transaction ID</th>
