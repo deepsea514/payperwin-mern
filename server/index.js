@@ -1404,7 +1404,7 @@ expressApp.post(
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
                                                 );
-                                                await checkP2PAutoBet(bet, exists, user, sportData, line);
+                                                await checkAutoBet(bet, exists, user, sportData, line);
                                                 betpoolId = exists.uid;
                                             } else {
                                                 console.log('creating betpool');
@@ -1440,7 +1440,7 @@ expressApp.post(
 
                                                 try {
                                                     await newBetPool.save();
-                                                    await checkP2PAutoBet(bet, newBetPool, user, sportData, line);
+                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
                                                     betpoolId = newBetPool.uid;
                                                 } catch (err) {
                                                     console.log('can\'t save newBetPool => ' + err);
@@ -1489,7 +1489,7 @@ expressApp.post(
     }
 );
 
-const checkP2PAutoBet = async (bet, betpool, user, sportData, line) => {
+const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const { AutoBetStatus } = config;
     let { pick: originPick, win: toBet, lineQuery } = bet;
     pick = originPick == 'home' ? "away" : "home";
@@ -1556,15 +1556,15 @@ const checkP2PAutoBet = async (bet, betpool, user, sportData, line) => {
         const results = await Promise.all(arr.map(predicate));
         return arr.filter((_v, index) => results[index]);
     }
+    let timezoneOffset = -8;
+    if (isDstObserved) timezoneOffset = -7;
+    const today = new Date().addHours(timezoneOffset);
+    today.addHours(today.getTimezoneOffset() / 60);
+    timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+    const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
         try {
             if (!autobet.userId) return false;
-            let timezoneOffset = -8;
-            if (isDstObserved) timezoneOffset = -7;
-            const today = new Date().addHours(timezoneOffset);
-            today.addHours(today.getTimezoneOffset() / 60);
-            timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
-            const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
             const logs = await AutoBetLog
                 .aggregate([
                     {
@@ -1846,8 +1846,47 @@ const checkP2PAutoBet = async (bet, betpool, user, sportData, line) => {
             } catch (err) {
                 console.log('selectedauto.userId =>' + err);
             }
-        }
-        catch (e2) {
+
+            let amount = 0;
+            const logs = await AutoBetLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(selectedauto.userId._id),
+                            createdAt: { $gte: fromTime },
+                            type: bet.sportsbook ? 'sportsbook' : { $ne: 'sportsbook' },
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            if (logs && logs.length)
+                amount = logs[0].amount;
+            const usage = parseInt(amount / (bet.sportsbook ? selectedauto.sportsbookBudget : selectedauto.budget) * 100);
+            if (usage >= 80) {
+                let msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: selectedauto.userId.email,
+                    subject: `PPW Alert: Usage at ${usage}%`,
+                    text: `PPW Alert: Usage at ${usage}% `,
+                    html: simpleresponsive(
+                        `<h3>Usage Limit Alert</H3>
+                        <p>
+                            This is a notification that your have exceeded ${usage}% ($${amount} / $${bet.sportsbook ? selectedauto.sportsbookBudget : selectedauto.budget}) of your daily risk limit.
+                        </p>`,
+                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                }
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+            }
+        } catch (e2) {
             if (e2) console.error('newBetError', e2);
         }
     }
@@ -2013,7 +2052,7 @@ expressApp.post(
             bet.sportsbook = true;
             await bet.save();
 
-            await checkP2PAutoBet(bet, betpool, user, { originSportId: bet.lineQuery.sportId },
+            await checkAutoBet(bet, betpool, user, { originSportId: bet.lineQuery.sportId },
                 {
                     teamA: bet.teama.name,
                     teamB: bet.teamB.name,
