@@ -114,7 +114,7 @@ class OpenBets extends Component {
         this.setState({ urlCopied: true });
     }
 
-    getStatusClass = (status, sportsbook) => {
+    getStatusClass = (status) => {
         switch (status) {
             case 'Matched':
                 return 'matched';
@@ -130,9 +130,27 @@ class OpenBets extends Component {
                 return 'draw'
             case 'Pending':
                 return 'pending';
-            default:
-                if (sportsbook) return 'matched';
-                return ''
+            case 'Accepted':
+                return 'matched';
+            case 'Partial Accepted':
+                return 'partialmatched';
+        }
+    }
+
+    getStatusName = (status, sportsbook) => {
+        switch (status) {
+            case 'Pending':
+                if (sportsbook) return 'WAITING TO ACCEPT';
+                return 'WAITING FOR MATCH';
+            case 'Matched':
+            case 'Partial Match':
+            case 'Cancelled':
+            case 'Settled - Lose':
+            case 'Settled - Win':
+            case 'Draw':
+            case 'Accepted':
+            case 'Partial Accepted':
+                return status;
         }
     }
 
@@ -360,10 +378,10 @@ class OpenBets extends Component {
                                         </div>
                                         <div className="open-bets-col">
                                             <strong>To win</strong>
-                                            {matchingStatus === 'Partial Match' && <div>
+                                            {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
                                                 {toWin.toFixed(2)}
                                                 <br />
-                                                {payableToWin.toFixed(2)} Matched
+                                                {payableToWin.toFixed(2)} {sportsbook ? 'Accepted' : 'Matched'}
                                                 <br />
                                                 {(toWin - payableToWin).toFixed(2)} Pending
                                             </div>}
@@ -425,7 +443,7 @@ class OpenBets extends Component {
                         const { type, sportName } = lineQuery;
 
                         return (
-                            <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook': ''}`} key={_id}>
+                            <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook' : ''}`} key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
                                         <strong>Bet</strong>
@@ -493,7 +511,7 @@ class OpenBets extends Component {
                                             }
                                         >
                                             <div className={this.getStatusClass(status, sportsbook) + ' cursor-pointer'}>
-                                                {status ? (status == 'Pending' ? 'WAITING FOR MATCH' : status) : 'Accepted'}
+                                                {this.getStatusName(status, sportsbook)}
                                             </div>
                                         </OverlayTrigger>
                                     </div>
@@ -514,7 +532,7 @@ class OpenBets extends Component {
                                     {/* {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>} */}
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
-                                    {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' &&
+                                    {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
                                         <button className="form-button ml-2" onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
                                 </div>
                             </div>

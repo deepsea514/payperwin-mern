@@ -222,8 +222,10 @@ class BetActivities extends React.Component {
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
             case "Draw":
                 return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
-            default:
+            case "Accepted":
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
 
@@ -237,6 +239,8 @@ class BetActivities extends React.Component {
             case "Pending":
             case "Partial Match":
             case "Matched":
+            case "Accepted":
+            case "Partial Accepted":
             default:
                 return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
         }
@@ -247,7 +251,7 @@ class BetActivities extends React.Component {
             case "Settled - Lose":
                 return `- $${bet.bet.toFixed(2)} CAD`;
             case "Settled - Win":
-                return `+ $${(bet.credited - bet.bet).toFixed(2)} CAD`
+                return `+ $${(bet.payableToWin).toFixed(2)} CAD`
             case "Pending":
             case "Partial Match":
             case "Matched":

@@ -76,7 +76,7 @@ const calculateBetsStatus = async (betpoolUid) => {
     }
     if (isMultiBetpool) {
         for (const bet of bets) {
-            const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+            const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin, sportsbook } = bet;
             let payableToWin = 0;
             if (payPool[pick] && payPool[pick] > 0) {
                 payableToWin += toWin;
@@ -85,9 +85,9 @@ const calculateBetsStatus = async (betpoolUid) => {
                     payableToWin += payPool[pick];
             }
             let matchingStatus;
-            if (payableToWin === toWin) matchingStatus = 'Matched';
+            if (payableToWin >= toWin) matchingStatus = sportsbook ? 'Accepted' : 'Matched';
             else if (payableToWin === 0) matchingStatus = 'Pending';
-            else matchingStatus = 'Partial Match'
+            else matchingStatus = sportsbook ? 'Partial Accepted' : 'Partial Match';
             const betChanges = {
                 $set: {
                     payableToWin,
