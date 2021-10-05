@@ -80,7 +80,7 @@ class Preferences extends Component {
             lang,
             dateFormat,
             timezone,
-            display_mode: display_mode ? display_mode : 'light',
+            display_mode: display_mode ? display_mode : 'system',
             notification_settings: notification_settings ? notification_settings : initial_notification_settings
         };
 
@@ -294,6 +294,7 @@ class Preferences extends Component {
                                                     >
                                                         <FormControlLabel value="light" control={<Radio />} label="Light Mode" />
                                                         <FormControlLabel value="dark" control={<Radio />} label="Dark Mode" />
+                                                        <FormControlLabel value="system" control={<Radio />} label="System Base Mode" />
                                                     </RadioGroup>
                                                 </FormControl>
                                             </Form.Group>

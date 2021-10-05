@@ -14,7 +14,7 @@ const AdminSchema = new Schema({
     otpauthUrl: String,
 });
 
-AdminSchema.pre('save', (next) => { // eslint-disable-line func-names
+AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
     const user = this;
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();

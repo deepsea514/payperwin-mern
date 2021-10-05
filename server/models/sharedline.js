@@ -9,6 +9,7 @@ const SharedLineSchema = new Schema(
         eventDate: { type: Date, required: true },
         uniqueId: { type: String, required: true },
         type: { type: String, required: true },
+        subtype: { type: String, default: null },
         index: { type: Number },
     },
     {

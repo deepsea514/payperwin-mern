@@ -139,7 +139,7 @@
         width: 150px;
     }
     .table-list-top li:nth-child(1) {
-        width: 180px;
+        /* width: 180px; */
     }
     /* .table-list li:nth-child(n+3) {
     display: none;

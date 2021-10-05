@@ -2,8 +2,7 @@ import React from "react";
 import { TotalDeposit } from "../components/TotalDeposit";
 import { TotalWager } from "../components/TotalWager";
 import { TotalWagerSportsBook } from "../components/TotalWagerSportsBook";
-import { TotalPlayers } from "../components/TotalPlayers";
-import { ActivePlayers } from "../components/ActivePlayers";
+import { Players } from "../components/Players";
 import FeesCollected from "../components/FeesCollected";
 import { LastDeposits } from "../components/LastDeposits";
 import { LastWithdraws } from "../components/LastWithdraws";
@@ -28,7 +27,7 @@ class AdminDashboard extends React.Component {
             lastdeposits, loadingdeposits,
             loadingdashboarddata, categories,
             dashboarddeposit, dashboardwager, dashboardwagersportsbook,
-            dashboardplayer, dashboardactiveplayer, dashboardfees
+            dashboardplayer, dashboardfees
         } = this.props;
         return (
             <>
@@ -54,6 +53,11 @@ class AdminDashboard extends React.Component {
                             dashboardwagersportsbook={dashboardwagersportsbook}
                             className="card-stretch gutter-b" />
                     </div>
+                    <Players
+                        loadingdashboarddata={loadingdashboarddata}
+                        dashboardplayer={dashboardplayer}
+                        className="card-stretch gutter-b"
+                    />
                     <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
                         <div className="d-flex flex-row">
                             <BrowserRouter basename={`/RP1021/dashboard`}>

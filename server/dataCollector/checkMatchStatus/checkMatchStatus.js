@@ -4,7 +4,6 @@ const Preference = require('../../models/preference');
 const Bet = require('../../models/bet');
 const User = require('../../models/user');
 const FinancialLog = require('../../models/financiallog');
-const BetSportsBook = require('../../models/betsportsbook');
 const SharedLine = require('../../models/sharedline');
 const BetPool = require('../../models/betpool');
 const ErrorLog = require('../../models/errorlog');
@@ -155,23 +154,19 @@ const checkCashBack = async () => {
         return;
     }
 
-    let lossbetsSportsbook = await BetSportsBook.aggregate({
-        $match: {
-            Name: "SETTLED",
-            "WagerInfo.Outcome": "LOSE",
-            createdAt: {
-                $gte: new Date(year, month - 1, 0),
-                $lte: new Date(year, month, 0),
+    let lossbetsSportsbook = await Bet.aggregate(
+        {
+            $match: {
+                status: "Settled - Lose",
+                sportsbook: false,
+                createdAt: {
+                    $gte: new Date(year, month - 1, 0),
+                    $lte: new Date(year, month, 0),
+                }
             }
-        }
-    }, {
-        $group: {
-            _id: "$userId",
-            total: {
-                $sum: { $toDouble: "$WagerInfo.ProfitAndLoss" }
-            }
-        }
-    });
+        },
+        { $group: { _id: "$userId", total: { $sum: "$bet" } } }
+    );
 
     lossbetsSportsbook.map(async lossbet => {
         const { _id, total } = lossbet;
@@ -253,6 +248,7 @@ const checkBetWithoutBetpool = async () => {
             sportName: bet.lineQuery.sportName,
             matchStartDate: bet.matchStartDate,
             lineType: bet.lineQuery.type,
+            lineSubType: bet.lineQuery.subtype,
             points: linePoints,
             origin: bet.origin
         });
@@ -280,6 +276,7 @@ const checkBetWithoutBetpool = async () => {
                     sportName: bet.lineQuery.sportName,
                     matchStartDate: bet.matchStartDate,
                     lineType: bet.lineQuery.type,
+                    lineSubType: bet.lineQuery.subtype,
                     points: linePoints,
                     homeBets: bet.pick === 'home' ? [bet._id] : [],
                     awayBets: bet.pick === 'away' ? [bet._id] : [],

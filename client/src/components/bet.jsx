@@ -12,14 +12,13 @@ class Bet extends Component {
             stake: '',
             win: '',
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange = (e) => {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
-        const { odds, pick, lineId } = bet;
+        const { odds, pick, lineId, sportsbook } = bet;
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
@@ -65,9 +64,9 @@ class Bet extends Component {
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat } = this.props;
-        const { name, type, league, odds, pick, sportName, lineId, pickName, index } = bet;
+        const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
         return (
-            <>
+            <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
                 {win > 2000 && <div className="bet-warn-message">
                     <div><b>Above Maximum Stake</b></div>
                     Please enter a new amount that payout does not exceed CAD 2,000.
@@ -77,7 +76,7 @@ class Bet extends Component {
                         {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
-                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index)} />
+                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
                     </div>
                     <div className="bet-type-league">{type} - {league}</div>
                     <span className="bet-pick">{pickName}</span>
@@ -104,9 +103,9 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: CAD 2,000</div>
+                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 2000 } })}>CAD 2,000</span></div>
                 </div>
-            </>
+            </div>
         )
     }
 }

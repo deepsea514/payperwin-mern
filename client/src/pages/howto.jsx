@@ -23,13 +23,13 @@ class HowTo extends Component {
     }
 
     render() {
-        const { intl, display_mode } = this.props;
+        const { intl, dark_light } = this.props;
         return (
             <div className="col-in">
                 <div className="how-it-works">
                     <h2>
                         How
-                        <img src={display_mode == 'light' ? "/images/payperwin logo blue.png" : '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
+                        <img src={dark_light == 'light' ? "/images/payperwin logo blue.png" : '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
                         />Works
                     </h2>
                     <div className="summary">
@@ -144,7 +144,7 @@ class HowTo extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    display_mode: state.frontend.display_mode,
+    dark_light: state.frontend.dark_light,
 });
 
 export default connect(mapStateToProps, null)(injectIntl(HowTo))

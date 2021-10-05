@@ -45,7 +45,7 @@ export default class Main extends Component {
                         <I18nProvider>
                             <BrowserRouter basename="">
                                 <Switch>
-                                    <Route path="/RP1021" component={AdminWrap} />
+                                    <Route path="/RP1021" render={(props) => <AdminWrap {...props} />} />
                                     <Route path="/maintenance" render={(props) => <Maintenance maintenance={maintenance} {...props} />} />
                                     {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <AuthWrap {...props} />} />}
                                 </Switch>

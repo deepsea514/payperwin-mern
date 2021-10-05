@@ -1,4 +1,4 @@
-const getLineFromSportData = (data, leagueId, eventId, lineId, type, altLineId) => {
+const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, altLineId) => {
     const lineData = {}
     let found = false;
     if (data.name) lineData.sportName = data.name;
@@ -14,23 +14,46 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, altLineId) 
                     lineData.startDate = event.startDate;
                     lines.forEach(line => {
                         if (lineId.toString() === line.originId.toString()) {
-                            if (type === 'spread') {
-                                line.spreads.forEach((spread) => {
-                                    if (altLineId === spread.altLineId || (!altLineId && !spread.altLineId)) {
-                                        lineData.line = spread;
-                                    }
-                                });
-                            } else if (type === 'total') {
-                                line.totals.forEach((total) => {
-                                    if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
-                                        lineData.line = total;
-                                    }
-                                });
-                            } else {
-                                lineData.line = line[type];
+                            let selectedLine = line;
+                            switch (subtype) {
+                                case 'first_half':
+                                    selectedLine = line.first_half;
+                                    break;
+                                case 'second_half':
+                                    selectedLine = line.second_half;
+                                    break;
+                                case 'first_quarter':
+                                    selectedLine = line.first_quarter;
+                                    break;
+                                case 'second_quarter':
+                                    selectedLine = line.second_quarter;
+                                    break;
+                                case 'third_quarter':
+                                    selectedLine = line.third_quarter;
+                                    break;
+                                case 'forth_quarter':
+                                    selectedLine = line.forth_quarter;
+                                    break;
                             }
-                            if (lineData.line) {
-                                found = true;
+                            if (selectedLine) {
+                                if (type === 'spread') {
+                                    selectedLine.spreads.forEach((spread) => {
+                                        if (altLineId === spread.altLineId || (!altLineId && !spread.altLineId)) {
+                                            lineData.line = spread;
+                                        }
+                                    });
+                                } else if (type === 'total') {
+                                    selectedLine.totals.forEach((total) => {
+                                        if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                            lineData.line = total;
+                                        }
+                                    });
+                                } else if (type == 'moneyline') {
+                                    lineData.line = selectedLine[type];
+                                }
+                                if (lineData.line) {
+                                    found = true;
+                                }
                             }
                         }
                     });

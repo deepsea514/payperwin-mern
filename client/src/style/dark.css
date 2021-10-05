@@ -140,12 +140,20 @@
     cursor: pointer;
 }
 
-.main-section.dark .origin-odds, .main-section.dark .old-odds, .main-section.dark .points {
+.main-section.dark .points {
     color: white;
 }
 
+.main-section.dark .origin-odds, .main-section.dark .old-odds {
+    color: #ED254E;
+}
+
+.main-section.dark .new-odds {
+    color: #0a74ef
+}
+
 .main-section.dark .old-odds::before {
-    background: white;
+    background: #ED254E;
 }
 
 .main-section.dark .table-list li.detailed-lines-link a {
