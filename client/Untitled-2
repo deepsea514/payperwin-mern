@@ -1,0 +1,12 @@
+
+✖ ｢wds｣:  Error: listen EADDRINUSE: address already in use 0.0.0.0:80
+    at Server.setupListenHandle [as _listen2] (node:net:1306:16)
+    at listenInCluster (node:net:1354:12)
+    at doListen (node:net:1492:7)
+    at processTicksAndRejections (node:internal/process/task_queues:84:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 80
+}

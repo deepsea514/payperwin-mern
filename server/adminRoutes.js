@@ -2681,6 +2681,61 @@ adminRouter.delete(
     }
 )
 
+
+adminRouter.get(
+    '/seacrhautobets',
+    authenticateJWT,
+    async (req, res) => {
+        let { name } = req.query;
+
+        try {
+            let searchObj = {};
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ email: { "$regex": name, "$options": "i" } }
+                }
+            
+    
+        AutoBet.find({})
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'userId',
+                match:searchObj,
+                select: ['username', 'balance', 'email', 'firstname', 'lastname']
+            })
+            .exec((error, data) => {
+                if (error) {
+                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                    //res.status(404).json({ error });
+                    return;
+                }
+
+                if (!data[0].userId) {
+                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                    //res.status(404).json({ error });
+                    return;
+                }
+
+                const result = data.map(autoBetUser => {
+                    return {
+                        value: autoBetUser._id,
+                        label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
+                        budget: autoBetUser.budget,
+                        maxBudget: autoBetUser.maxBudget
+                    }
+                })
+                res.status(200).json(result);
+            });
+        }
+        }
+        catch(error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+
+
 adminRouter.post(
     '/promotion',
     authenticateJWT,

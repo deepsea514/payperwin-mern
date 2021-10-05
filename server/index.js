@@ -122,11 +122,16 @@ const mongooptions = {
     authSource: "admin",
     user: config.mongo.username,
     pass: config.mongo.password,
-    useMongoClient: true,
+    //useMongoClient: true,
 }
 
 
-mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, mongooptions).then(async () => {
+
+let dbUri = `mongodb+srv://${config.mongo.host}/${databaseName}`;
+
+console.log(dbUri);
+
+mongoose.connect(dbUri.toString(), mongooptions).then(async () => {
     console.info('Using database:', databaseName);
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
@@ -917,7 +922,7 @@ expressApp.post(
             betSlip,
         } = req.body;
 
-
+console.log( req.body);
         const { user } = req;
         const errors = [];
         if (user.roles.selfExcluded &&
@@ -941,6 +946,9 @@ expressApp.post(
                 errors,
             });
         }
+
+        console.log(betSlip);
+
         for (const bet of betSlip) {
             const {
                 odds,

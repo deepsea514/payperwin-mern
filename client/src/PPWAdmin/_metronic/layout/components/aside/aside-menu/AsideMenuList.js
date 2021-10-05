@@ -204,6 +204,19 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
+                {currentUser && isAvailable('autobet') && <li
+                    className={`menu-item ${getMenuItemActive("/placebet", false)}`}
+                    aria-haspopup="true"
+                >
+                    <Link className="menu-link" to="/placebet/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/Devices/Laptop-macbook.svg"} />
+                        </span>
+                        <span className="menu-text">Place Bet</span>
+                        {pending_event_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_event_total}&nbsp;</span>}
+                    </Link>
+                </li>}
+
                 {currentUser && isAvailable('messages') && <li
                     className={`menu-item ${getMenuItemActive("/message-center", false)}`}
                     aria-haspopup="true"
