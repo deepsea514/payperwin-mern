@@ -11,6 +11,7 @@ const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
 const { ID } = require('../../libs/functions');
+const getMatchScores = require('./getMatchScores');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
@@ -28,14 +29,7 @@ Date.prototype.addMinutes = function (m) {
     return this;
 }
 
-const matchResults = async () => {
-    const bet365Addon = await Addon.findOne({ name: 'bet365' });
-    if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
-        console.warn("Bet365 Api Key is not set");
-        return;
-    }
-    const { bet365ApiKey } = bet365Addon.value;
-    // const bet365ApiKey = "93744-14OHbIxqh3sRxS";
+const matchResultsP2P = async (bet365ApiKey) => {
     // Check  betpools
     const betpools = await BetPool.find(
         // settle matches that started before 3 hours ago
@@ -52,14 +46,7 @@ const matchResults = async () => {
         return;
     }
     for (const betpool of betpools) {
-        const {
-            homeBets,
-            awayBets,
-            uid,
-            eventId,
-            lineType,
-            points
-        } = betpool;
+        const { homeBets, awayBets, uid, eventId, lineType, lineSubType, points, sportName } = betpool;
         let matchCancelled = false;
         if (homeBets.length > 0 && awayBets.length > 0) {
             // checkmatchresult
@@ -71,34 +58,28 @@ const matchResults = async () => {
                             event_id: eventId,
                         }
                     });
-
                 if (!success) {
                     console.log('no data from api/cache for this line');
                     continue;
                 }
-                const { ss, time_status, time } = results[0];
-                const matchResult = {
+                const { ss, scores, time_status, time } = results[0];
+                let matchResult = {
                     homeScore: 0,
                     awayScore: 0,
                     cancellationReason: false
                 };
                 if (time_status == 3) { //Ended
+                    // Calculate Match Score
                     if (ss == null || ss == "") {
                         await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                         continue;
                     }
-                    const matchScores = ss.split(',');
-                    for (let match = 0; match < matchScores.length; match++) {
-                        const scores = matchScores[match].split('-');
-                        if (lineType == 'moneyline') {
-                            if (Number(scores[0]) > Number(scores[1]))
-                                matchResult.homeScore++;
-                            if (Number(scores[1]) > Number(scores[0]))
-                                matchResult.awayScore++;
-                        } else {
-                            matchResult.homeScore += Number(scores[0]);
-                            matchResult.awayScore += Number(scores[1]);
-                        }
+                    const result = getMatchScores(sportName, lineType, lineSubType, ss, scores);
+                    if (result)
+                        matchResult = { ...matchResult, ...result };
+                    else {
+                        console.error("matchError:", eventId);
+                        continue;
                     }
                 } else if (time_status == 4 ||
                     time_status == 0 ||
@@ -123,15 +104,7 @@ const matchResults = async () => {
                     let moneyLineWinner = null;
                     if (homeScore > awayScore) moneyLineWinner = 'home';
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
-                    const bets = await Bet.find({
-                        _id:
-                        {
-                            $in: [
-                                ...homeBets,
-                                ...awayBets,
-                            ]
-                        }
-                    });
+                    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
                     for (const bet of bets) {
                         const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
 
@@ -202,7 +175,6 @@ const matchResults = async () => {
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',
-                                        walletBeforeCredited: balance,
                                         credited: betAmount + payableToWin,
                                         homeScore,
                                         awayScore,
@@ -238,10 +210,10 @@ const matchResults = async () => {
                                         subject: 'You won a wager!',
                                         text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
                                         html: simpleresponsive(`
-                                                <p>
-                                                    Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                                </p>
-                                                `,
+                                            <p>
+                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
+                                            </p>
+                                            `,
                                             { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
                                         ),
                                     };
@@ -290,7 +262,7 @@ const matchResults = async () => {
         if (matchCancelled) {
             for (const betId of homeBets) {
                 const bet = await Bet.findOne({ _id: betId });
-                if(bet) {
+                if (bet) {
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
@@ -307,7 +279,7 @@ const matchResults = async () => {
             }
             for (const betId of awayBets) {
                 const bet = await Bet.findOne({ _id: betId });
-                if(bet) {
+                if (bet) {
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
@@ -325,7 +297,18 @@ const matchResults = async () => {
             await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
         }
     }
-    console.log('finished checking betpools', new Date().toLocaleString());
+    console.log('Finished checking betpools', new Date().toLocaleString());
+}
+
+const matchResults = async () => {
+    const bet365Addon = await Addon.findOne({ name: 'bet365' });
+    if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
+        console.warn("Bet365 Api Key is not set");
+        return;
+    }
+    const { bet365ApiKey } = bet365Addon.value;
+
+    matchResultsP2P(bet365ApiKey);
 }
 
 module.exports = matchResults;

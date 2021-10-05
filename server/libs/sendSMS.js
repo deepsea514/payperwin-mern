@@ -17,7 +17,6 @@ const sendSMS = async (message, phone) => {
             to: phone
         })
     } catch (error) {
-        console.log("error => ", error);
         ErrorLog.create({
             name: 'Twilio Error',
             error: {

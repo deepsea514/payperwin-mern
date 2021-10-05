@@ -37,7 +37,7 @@ const sportImages = {
 };
 
 function sportNameImage(name) {
-    return sportImages[name];
+    return sportImages[name.replace("_", " ")];
 }
 
 module.exports = sportNameImage;

@@ -68,13 +68,12 @@ class AutobetHistory extends Component {
                                         </div>
 
                                         <div className="font-weight-mormal font-size-sm timeline-content text-dark pl-3">
-                                            {this.getBetStatus(history.status)}{` $${history.bet.toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} ${this.capitalizeFirstLetter(history.lineQuery.type)}
+                                            {this.getBetStatus(history.status)}{` $${(history.status == 'Settled - Win' ? history.payableToWin : history.bet).toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} ${this.capitalizeFirstLetter(history.lineQuery.type)}
                                          - ${history.teamA.name} vs ${history.teamB.name}`}
                                         </div>
                                     </div>
                                 )
-                            }
-                            )}
+                            })}
                         </div>
                     </div>
                 </div>

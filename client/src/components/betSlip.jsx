@@ -14,8 +14,6 @@ class BetSlip extends Component {
             errors: [],
             confirmationOpen: false,
         };
-        this.placeBets = this.placeBets.bind(this);
-        this.toggleField = this.toggleField.bind(this);
     }
 
     toggleField = (fieldName, forceState) => {
@@ -29,6 +27,7 @@ class BetSlip extends Component {
     placeBets = () => {
         const { updateUser, user, betSlip, removeBet } = this.props;
         const url = `${serverUrl}/placeBets`;
+        this.setState({ errors: [] });
 
         let totalStake = 0;
         let totalWin = 0;
@@ -61,7 +60,7 @@ class BetSlip extends Component {
             const stateChanges = {};
             if (successCount) {
                 updateUser('balance', balance);
-                removeBet(null, null, null, null, true);
+                removeBet(null, null, null, null, null, true);
                 stateChanges.confirmationOpen = true;
             }
             if (errors && errors.length) stateChanges.errors = errors;
@@ -69,10 +68,11 @@ class BetSlip extends Component {
                 this.setState(stateChanges);
             }
         }).catch((err) => {
-            console.log(err)
             if (err.response && err.response.data) {
                 const { error } = err.response.data;
                 this.setState({ formError: error });
+            } else {
+                this.setState({ errors: ['Can\'t place bet.'] });
             }
         });
     }
@@ -147,7 +147,7 @@ class BetSlip extends Component {
                                             bet={bet}
                                             removeBet={removeBet}
                                             updateBet={updateBet}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}`}
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`}
                                         />)}
                                     </React.Fragment>
                                 ) :

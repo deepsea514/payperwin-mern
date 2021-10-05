@@ -22,8 +22,8 @@ body {
     margin: 0px;
     padding: 0px;
     font-size: $root-font-size !important;
-    font-weight: $font-weight-base;
-    font-family: $font-family-base;
+    // font-weight: $font-weight-base;
+    // font-family: $font-family-base;
 
     // Tablet mode
     @include media-breakpoint-down(lg) {

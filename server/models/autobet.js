@@ -9,7 +9,7 @@ const AutoBetSchema = new Schema(
         rollOver: { type: Boolean, default: 'false' },
         maxRisk: Number,
         budget: Number,
-        peorid: String,
+        sportsbookBudget: Number,
         status: String,
         sports: { type: Array, default: [] },
         side: { type: Array, default: [] },
