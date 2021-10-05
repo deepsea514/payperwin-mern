@@ -34,7 +34,7 @@ class Lines extends Component {
             index: index,
             ogTitle: '',
             ogDescription: '',
-            showAll: false,
+            showAll: type != null || subtype != null || index != null || false,
         };
     }
 
@@ -90,9 +90,9 @@ class Lines extends Component {
     addBet = (bet) => {
         const { data: { started } } = this.state;
         const { addBet } = this.props;
-        const { type, odds, originOdds, pick } = bet;
+        const { type, odds, originOdds, pick, subtype } = bet;
         if (started) return;
-        if (checkOddsAvailable(originOdds, odds, pick, type)) {
+        if (checkOddsAvailable(originOdds, odds, pick, type, subtype)) {
             return addBet(bet);
         }
         this.setState({ sportsbookInfo: bet });

@@ -1,4 +1,7 @@
-const calculateNewOdds = (home, away, pick) => {
+const calculateNewOdds = (home, away, pick, subtype = null) => {
+    if (subtype != null) {
+        return pick == 'home' ? home : away;
+    }
     const moneylineDifference = Math.abs(Math.abs(home) - Math.abs(away)) / 2;
     let bigHome = 1;
     if (home > 0 && away > 0 || home < 0 && away < 0) {
