@@ -11,6 +11,7 @@ import AutoBetModal from "../components/AutoBetModal";
 import { createAutoBet, deleteAutoBet, updateAutoBet } from "../redux/services";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import numberFormat from "../../../../helpers/numberFormat";
 import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
 
@@ -51,8 +52,8 @@ class AutoBet extends React.Component {
                     label: `${bet.userId.email} (${bet.userId.firstname} ${bet.userId.lastname})`
                 },
                 budget: bet.budget,
+                sportsbookBudget: bet.sportsbookBudget ? bet.sportsbookBudget : 0,
                 maxRisk: bet.maxRisk,
-                peorid: bet.peorid,
                 priority: bet.priority,
                 sports: bet.sports.map(sport => ({ value: sport, label: sport })),
                 side: bet.side.map(side => ({ value: side, label: side })),
@@ -98,9 +99,11 @@ class AutoBet extends React.Component {
                 <td>{bet.betType.join(', ')}</td>
                 <td>{this.getRollOver(bet.rollOver)}</td>
                 <td>{bet.priority}</td>
-                <td>{bet.maxRisk}</td>
-                <td>{bet.budget}</td>
-                <td>{bet.userId ? bet.userId.balance : null}</td>
+                <td>{numberFormat(bet.maxRisk)}</td>
+                <td>{numberFormat(bet.budget)}</td>
+                <td>{bet.hold}</td>
+                <td>{numberFormat(bet.sportsbookBudget ? bet.sportsbookBudget : 0)}</td>
+                <td>{bet.userId ? numberFormat(bet.userId.balance) : null}</td>
                 <td>{bet.referral_code}</td>
                 <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>
@@ -168,11 +171,11 @@ class AutoBet extends React.Component {
         delete autobet.user;
 
         const { editId: editId } = this.state;
-        const { updateAutoBetSuccess } = this.props;
+        const { getAutoBetsAction } = this.props;
         updateAutoBet(editId, autobet)
             .then(({ data }) => {
                 formik.setSubmitting(false);
-                updateAutoBetSuccess(editId, data);
+                getAutoBetsAction();
                 this.setState({ modal: true, editId: null, resMessage: "Successfully changed!", modalvariant: "success" });
             })
             .catch(() => {
@@ -234,6 +237,8 @@ class AutoBet extends React.Component {
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>
+                                            <th scope="col">Hold</th>
+                                            <th scope="col">Sportsbook Budget</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Ref Code</th>
                                             <th scope="col">Status</th>

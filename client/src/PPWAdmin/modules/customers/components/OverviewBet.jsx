@@ -8,8 +8,9 @@ class OverviewBet extends React.Component {
     getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
-    tablePPWBody = () => {
-        const { lastbets, currency, history } = this.props;
+
+    tablePPWBody = (lastbets) => {
+        const { currency, history } = this.props;
         return lastbets.map((bet, index) => {
             return (
                 <div className="d-flex mb-5" key={index}>
@@ -31,29 +32,8 @@ class OverviewBet extends React.Component {
         })
     }
 
-    tableSportsBookBody = () => {
-        const { lastsportsbookbets, currency } = this.props;
-        return lastsportsbookbets.map((bet, index) => {
-            return (
-                <div className="d-flex mb-5" key={index}>
-                    <div className="d-flex flex-column flex-grow-1 font-weight-bold text-left">
-                        <a
-                            onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
-                            className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer"
-                        >
-                            {bet.WagerInfo.EventName} ({bet.WagerInfo.Sport})
-                        </a>
-                        <span className="text-muted">{this.getDate(bet.createdAt)}</span>
-                    </div>
-                    <span className="label label-lg label-light-primary label-inline">
-                        ${Number(bet.WagerInfo.ToRisk).toFixed(2)}&nbsp;{currency}
-                    </span>
-                </div>
-            )
-        })
-    }
     render() {
-        const { className } = this.props;
+        const { className, lastsportsbookbets, lastbets } = this.props;
         return (
             <>
                 <div className={`card card-custom ${className}`}>
@@ -62,11 +42,11 @@ class OverviewBet extends React.Component {
                     </div>
                     <div className="card-body pt-2">
                         <Tabs>
-                            <Tab eventKey="ppwbets" title="PPW Bets" className="border-0">
-                                {this.tablePPWBody()}
+                            <Tab eventKey="ppwbets" title="P2P Bets" className="border-0 pt-3">
+                                {this.tablePPWBody(lastbets)}
                             </Tab>
-                            <Tab eventKey="sportsbook" title="SportsBook" className="border-0">
-                                {this.tableSportsBookBody()}
+                            <Tab eventKey="sportsbook" title="SB Bets" className="border-0 pt-3">
+                                {this.tablePPWBody(lastsportsbookbets)}
                             </Tab>
                         </Tabs>
                     </div>

@@ -27,7 +27,8 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: timeHelper.getDisplayModeBasedOnSystemTime(null),
+    display_mode: 'system',
+    dark_light: timeHelper.getDisplayModeBasedOnSystemTime(null),
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
@@ -54,7 +55,7 @@ export const reducer = persistReducer(
         switch (action.type) {
             case actionTypes.setPreference:
                 if (action.preference)
-                    return { ...state, ...action.preference, display_mode: state.display_mode };
+                    return { ...state, ...action.preference };
                 return initialState;
 
             case actionTypes.setLanguage:
@@ -127,21 +128,23 @@ export function* saga() {
         }
     });
 
-    // yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
-    //     try {
-    //         const display_mode = yield select((state) => state.frontend.display_mode);
-    //         yield setPreferences({ display_mode });
-    //     } catch (error) {
-    //     }
-    // });
+    yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
+        try {
+            const display_mode = yield select((state) => state.frontend.display_mode);
+            yield setPreferences({ display_mode });
+            const dark_light = display_mode == 'system' ? timeHelper.getDisplayModeBasedOnSystemTime(timezone) : display_mode;
+            yield put(actions.setPreference({ dark_light }));
+        } catch (error) {
+        }
+    });
 
     yield takeLatest(actionTypes.setDisplayModeBasedOnSystem, function* setDisplayModeBasedOnSystemSaga() {
         try {
             const timezone = yield select((state) => state.frontend.timezone);
-            const display_mode = timeHelper.getDisplayModeBasedOnSystemTime(timezone);
-            yield put(actions.setDisplayMode(display_mode));
+            const display_mode = yield select((state) => state.frontend.display_mode);
+            const dark_light = display_mode == 'system' ? timeHelper.getDisplayModeBasedOnSystemTime(timezone) : display_mode;
+            yield put(actions.setPreference({ dark_light }));
         } catch (error) {
-            console.log(error)
         }
     })
 }

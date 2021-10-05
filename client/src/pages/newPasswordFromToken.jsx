@@ -87,9 +87,6 @@ class NewPasswordFromToken extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDirty = this.handleDirty.bind(this);
     }
 
     componentDidMount() {
@@ -97,11 +94,11 @@ class NewPasswordFromToken extends Component {
         setTitle({ pageTitle: title })
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleSubmit() {
+    handleSubmit = () => {
         const { location: { search: queryParams }, history } = this.props;
         const { errors } = this.state;
         registrationValidation.validateFields(this.state, { tags: ['changePassword'] })
@@ -145,7 +142,7 @@ class NewPasswordFromToken extends Component {
             });
     }
 
-    handleDirty(e) {
+    handleDirty = (e) => {
         const { errors } = this.state;
         const { name } = e.target;
         registrationValidation.validateField(name, this.state, { tags: ['changePassword'] }).then((result) => {

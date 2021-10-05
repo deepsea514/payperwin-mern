@@ -31,8 +31,6 @@ const UserSchema = new Schema(
         roles: Object,
         settings: Object,
         balance: { type: Number, default: 0 },
-        betHistory: [{ type: Schema.Types.ObjectId, ref: "Bet", default: [] }],
-        betSportsbookHistory: [{ type: Schema.Types.ObjectId, ref: "BetSportsBook", default: [] }],
     },
     {
         timestamps: true,

@@ -22,7 +22,7 @@ const initialState = {
         status: '',
         minamount: '',
         maxamount: '',
-        house: 'ppw',
+        house: 'p2p',
         match: '',
     },
     sports: [],

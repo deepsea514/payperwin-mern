@@ -113,10 +113,6 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDirty = this.handleDirty.bind(this);
-        this.recaptchaCallback = this.recaptchaCallback.bind(this);
     }
 
     componentDidMount() {
@@ -124,11 +120,11 @@ class Login extends Component {
         setTitle({ pageTitle: title })
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleSubmit(userContextValue) {
+    handleSubmit = (userContextValue) => {
         const { history, location: { pathname }, require2FAAction } = this.props;
         const { getUser } = userContextValue;
         const { rcptchVerified, errors } = this.state;
@@ -181,7 +177,7 @@ class Login extends Component {
             });
     }
 
-    handleDirty(e) {
+    handleDirty = (e) => {
         const { errors } = this.state;
         const { name } = e.target;
         registrationValidation.validateField(name, this.state).then((result) => {
@@ -195,7 +191,7 @@ class Login extends Component {
         });
     }
 
-    recaptchaCallback(/* response */) {
+    recaptchaCallback = () => {
         const { errors } = this.state;
         this.setState({ rcptchVerified: true, errors: { ...errors, recaptcha: undefined } });
     }

@@ -104,7 +104,6 @@ const matchResults = (sportName, events) => {
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Win',
-                                    walletBeforeCredited: balance,
                                     credited: betAmount + payableToWin,
                                     homeScore: score_home,
                                     awayScore: score_away,

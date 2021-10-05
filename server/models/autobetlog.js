@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const AutoBetLogSchema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, ref: "User" },
-        amount: Number
+        amount: Number,
+        type: String
     },
     {
         timestamps: true,

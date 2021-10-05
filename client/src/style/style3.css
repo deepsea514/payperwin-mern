@@ -141,7 +141,13 @@ a.log-in-btn {
 }
 
 .table-list, .table-list-top {
-    min-width: 600px;
+    min-width: 100%;
+    width: fit-content;
+}
+
+.tab-pane-leagues {
+    width: fit-content;
+    min-width: 100%;
 }
 
 .bet-slip-count {
@@ -167,10 +173,18 @@ a.log-in-btn {
     max-height: 350px;
 }
 
+.bet-container {
+    margin: 0 10px 10px 10px;
+}
+
+.bet-sportsbook {
+    border: rgb(12, 236, 131) 2px solid;
+    border-radius: 5px;
+}
+
 .bet {
     background: white;
     border-radius: 3px;
-    margin: 0 10px 10px 10px;
     padding: 15px;
     font-size: 12px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
@@ -186,7 +200,8 @@ a.log-in-btn {
     background: #f9ec77;
     font-size: 10px;
     padding: 10px;
-    margin: 0 10px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
 .bet i {
@@ -203,6 +218,11 @@ a.log-in-btn {
     color: #334E6A;
     font-size: 11px;
     margin: 2px 0;
+}
+
+.bet-max-win {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .bet-pick {
@@ -431,6 +451,10 @@ a.log-in-btn {
     padding: 17px 0;
     border-radius: 5px;
     margin-bottom: 5px;
+}
+
+.open-bets-sportsbook {
+    border: 1px solid rgb(12, 236, 131) !important;
 }
 
 .open-bets-flex {
@@ -800,6 +824,10 @@ a.log-in-btn {
 }
 
 .table-list li.detailed-lines-link {
+    width: 40px;
+}
+
+.table-list-top li.detailed-lines-link {
     width: 40px;
 }
 
@@ -1511,4 +1539,8 @@ button.loginButton span {
     border: 1px solid #555555;
     border-radius: 2px;
     -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
+}
+
+.tab-pane-leagues {
+    background-color: #E5E5E5;
 }

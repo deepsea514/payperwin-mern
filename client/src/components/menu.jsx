@@ -5,7 +5,7 @@ import * as frontend from "../redux/reducer";
 
 class Menu extends Component {
     render() {
-        const { location, toggleField, oddsFormat, setOddsFormat } = this.props;
+        const { location, toggleField, oddsFormat, display_mode, setOddsFormat, setDisplayMode } = this.props;
         const { pathname } = location;
 
         return (
@@ -24,11 +24,6 @@ class Menu extends Component {
                                 <i className="fas fa-users"></i>PEER&nbsp;TO&nbsp;PEER&nbsp;BETTING
                             </Link>
                         </li>
-                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
-                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
-                            </Link>
-                        </li> */}
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>
                                 toggleField('menuOpen')}>
@@ -62,6 +57,13 @@ class Menu extends Component {
                                 <option value="decimal">Decimal Odds</option>
                             </select>
                         </li>
+                        <li>
+                            Display
+                            <select value={display_mode} onChange={(evt) => setDisplayMode(evt.target.value)}>
+                                <option value="light">Light Mode</option>
+                                <option value="dark">Night Mode</option>
+                            </select>
+                        </li>
                     </ul>
                 </div>
             </>
@@ -71,6 +73,7 @@ class Menu extends Component {
 
 const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
+    display_mode: state.frontend.display_mode
 });
 
 export default connect(mapStateToProps, frontend.actions)(Menu)
