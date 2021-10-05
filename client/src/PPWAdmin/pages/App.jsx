@@ -34,6 +34,7 @@ import ChangePassword from './ChangePassword';
 import AdminModule from "../modules/admin/pages";
 import CashbackModule from "../modules/cashback/pages";
 import ErrorLogsModule from "../modules/errorlogs/pages";
+import PlaceBet from "../modules/placebet/pages/PlaceBet";
 
 class App extends Component {
     constructor(props) {
@@ -108,6 +109,10 @@ class App extends Component {
 
                     {/* autobet */}
                     {this.isAvailable('autobet') && <Route path="/autobet" component={AutoBet} />}
+
+                     {/* Placebet */}
+                     {this.isAvailable('placebet') && <Route path="/placebet" component={PlaceBet} />}
+
 
                     {/* email templates */}
                     {this.isAvailable('email_templates') && <Route path="/email-templates" component={EmailTemplatesModule} />}
