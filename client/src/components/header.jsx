@@ -38,8 +38,6 @@ class Header extends Component {
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
-        this.toggleField = this.toggleField.bind(this);
-        this.logout = this.logout.bind(this);
         this._isMounted = false;
     }
 
@@ -62,11 +60,11 @@ class Header extends Component {
         this.setState({ timerInterval: null });
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    toggleField(fieldName, forceState) {
+    toggleField = (fieldName, forceState) => {
         if (typeof this.state[fieldName] !== 'undefined') {
             this.setState({
                 [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
@@ -74,7 +72,7 @@ class Header extends Component {
         }
     }
 
-    logout() {
+    logout = () => {
         const { getUser, history } = this.props;
         logout(getUser, history);
         this.setState({ userDropDownOpen: false, oddsDropDownOpen: false, langDropDownOpen: false });
@@ -120,7 +118,7 @@ class Header extends Component {
             setSearch,
             acceptCookie,
             acceptCookieAction,
-            display_mode,
+            dark_light,
             getUser,
             showLoginModal,
             showForgotPasswordModal,
@@ -209,7 +207,7 @@ class Header extends Component {
                         </div>
                     </div>
                 </div>
-                <div className={`header-bottom ${display_mode == 'light' ? 'light' : 'dark'}`}>
+                <div className={`header-bottom ${dark_light == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-12">
@@ -291,7 +289,7 @@ class Header extends Component {
                         </div>
                     </div>
                 </div>
-                {pathname !== '/sportsbook' && <div className={`header-search ${display_mode == 'light' ? 'light' : 'dark'}`}>
+                {pathname !== '/sportsbook' && <div className={`header-search ${dark_light == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
                         <div className="d-flex justify-content-between">
                             <div className="">
@@ -303,8 +301,8 @@ class Header extends Component {
                             <div className="">
                                 <ul className="list-s">
                                     <li style={{ padding: '0 15px' }}>
-                                        <div className={`displaymode_container ${display_mode == 'light' ? 'lightmode' : 'darkmode'}`}
-                                            onClick={() => this.setDisplayMode(display_mode == 'light' ? 'dark' : 'light')}
+                                        <div className={`displaymode_container ${dark_light == 'light' ? 'lightmode' : 'darkmode'}`}
+                                            onClick={() => this.setDisplayMode(dark_light == 'light' ? 'dark' : 'light')}
                                         >
                                             <i className="far fa-sun lightmode_ico"></i>
                                             <i className="far fa-moon darkmode_ico"></i>
@@ -417,7 +415,7 @@ const mapStateToProps = (state) => ({
     search: state.frontend.search,
     timezone: state.frontend.timezone,
     acceptCookie: state.frontend.acceptCookie,
-    display_mode: state.frontend.display_mode,
+    dark_light: state.frontend.dark_light,
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
 });

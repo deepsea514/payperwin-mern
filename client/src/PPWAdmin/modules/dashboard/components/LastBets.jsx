@@ -108,6 +108,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         }
 
         return lastsportsbookbets.map((bet, index) => {
+            if (!bet.userId) return null;
             return (
                 <tr key={index} onClick={gotoBet} style={{ cursor: "pointer" }} className="text-hover-primary">
                     <td className="pl-0">
@@ -117,23 +118,26 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className="font-weight-bolder d-block font-size-lg">
-                            {bet.userId.email}
+                            {bet.userId ? bet.userId.email : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.WagerInfo.ToRisk} {bet.userId.currency}
+                            {bet.bet} {bet.userId ? bet.userId.currency : 'CAD'}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.WagerInfo.Sport}
+                            {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.WagerInfo.EventName}
+                            {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </span>
+                    </td>
+                    <td className="pl-0">
+                        {getPPWBetType(bet)}
                     </td>
                 </tr>
             )
@@ -162,7 +166,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
             {/* Body */}
             <div className="card-body pt-3 pb-0">
                 <Tabs>
-                    <Tab eventKey="ppwbets" title="PPW Bets" className="border-0">
+                    <Tab eventKey="ppwbets" title="P2P Bets" className="border-0">
                         <div className="table-responsive p-3">
                             <table className="table table-vertical-center">
                                 <thead>
@@ -181,7 +185,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                             </table>
                         </div>
                     </Tab>
-                    <Tab eventKey="sportsbook" title="SportsBook" className="border-0">
+                    <Tab eventKey="sportsbook" title="SB Bets" className="border-0">
                         <div className="table-responsive p-3">
                             <table className="table table-vertical-center">
                                 <thead>
@@ -191,6 +195,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                                         <th className="p-0" style={{ minWidth: "100px" }} >Amount</th>
                                         <th className="p-0" style={{ minWidth: "100px" }} >Sport</th>
                                         <th className="p-0" style={{ minWidth: "110px" }} >Event</th>
+                                        <th className="p-0" style={{ minWidth: "150px" }} >Line</th>
                                     </tr>
                                 </thead>
                                 <tbody>

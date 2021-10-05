@@ -37,6 +37,9 @@ class AutobetSettings extends Component {
                 budget: Yup.number()
                     .moreThan(0, "Budget should be more than 0")
                     .required("Budget field is required"),
+                sportsbookBudget: Yup.number()
+                    .moreThan(0, "Sportsbook Budget should be more than 0")
+                    .required("Sportsbook Budget field is required"),
                 maxRisk: Yup.number()
                     .moreThan(0, "Max Risk should be more than 0")
                     .required("Max Risk field is required."),
@@ -84,6 +87,7 @@ class AutobetSettings extends Component {
                         rollOver: user.autobet.rollOver,
                         budget: user.autobet.budget,
                         maxRisk: user.autobet.maxRisk,
+                        sportsbookBudget: user.autobet.sportsbookBudget ? user.autobet.sportsbookBudget : 0,
                         sports: user.autobet.sports.map(sport => ({ value: sport, label: sport })),
                         side: user.autobet.side.map(side => ({ value: side, label: side })),
                         betType: user.autobet.betType.map(betType => ({ value: betType, label: betType }))
@@ -110,6 +114,7 @@ class AutobetSettings extends Component {
             rollOver: values.rollOver,
             budget: values.budget,
             maxRisk: values.maxRisk,
+            sportsbookBudget: values.sportsbookBudget,
             sports: values.sports.map(sport => sport.value),
             side: values.side.map(side => side.value),
             betType: values.betType.map(betType => betType.value),
@@ -221,6 +226,20 @@ class AutobetSettings extends Component {
                                                     </div>
                                                 ) : null}
                                             </div>
+                                            <div className="form-group col-md-6">
+                                                <label>Daily Max Sportsbook Budget<span className="text-danger">*</span></label>
+                                                <input name="sportsbookBudget" placeholder="Enter Sportsbook Budget"
+                                                    className={`form-control ${getInputClasses(formik, "sportsbookBudget")}`}
+                                                    {...formik.getFieldProps("sportsbookBudget")}
+                                                />
+                                                {formik.touched.sportsbookBudget && formik.errors.sportsbookBudget ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.sportsbookBudget}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
                                             <div className="form-group col-md-6">
                                                 <label>Max.Risk (per bet)<span className="text-danger">*</span></label>
                                                 <input name="maxRisk" placeholder="Enter Max.Risk"

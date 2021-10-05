@@ -178,10 +178,6 @@ class Registration extends Component {
     constructor(props) {
         super(props);
         this.state = { ...initState };
-        // this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDirty = this.handleDirty.bind(this);
-        this.recaptchaCallback = this.recaptchaCallback.bind(this);
     }
 
     componentDidMount() {
@@ -239,7 +235,7 @@ class Registration extends Component {
         });
     }
 
-    handleSubmit() {
+    handleSubmit = () => {
         const { getUser, history } = this.props;
         const { rcptchVerified, errors } = this.state;
         if (window.recaptchaSiteKey && !rcptchVerified) {
@@ -290,7 +286,7 @@ class Registration extends Component {
             });
     }
 
-    handleDirty(e) {
+    handleDirty = (e) => {
         // Handle Validation on touch
         const { errors } = this.state;
         const { name } = e.target;
@@ -305,7 +301,7 @@ class Registration extends Component {
         });
     }
 
-    recaptchaCallback(/* response */) {
+    recaptchaCallback = () => {
         const { errors } = this.state;
         this.setState({ rcptchVerified: true, errors: { ...errors, recaptcha: undefined } });
     }

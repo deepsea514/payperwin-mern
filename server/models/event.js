@@ -139,7 +139,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                             <ul>
                                 <li>Wager: $${betAfterFee.toFixed(2)}</li>
                                 <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}</li>
-                                <li>Platform: PAYPERWIN Peer-to Peer</li>
+                                <li>Platform: PAYPER WIN Peer-to Peer</li>
                             </ul>
                         `),
                 };
@@ -159,7 +159,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 sendSMS(`This is to advise you that your bet for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                 Wager: $${betAfterFee.toFixed(2)}
                 Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}
-                Platform: PAYPERWIN Peer-to Peer`, user.phone);
+                Platform: PAYPER WIN Peer-to Peer`, user.phone);
             }
 
             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
@@ -264,7 +264,6 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
 
             await calculateCustomBetsStatus(event._id);
 
-            user.betHistory = user.betHistory ? [...user.betHistory, betId] : [betId];
             user.balance = newBalance;
             await FinancialLog.create({
                 financialtype: 'bet',

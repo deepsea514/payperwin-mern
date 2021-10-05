@@ -37,16 +37,7 @@ export default class CustomBets extends Component {
 
     getCustomBetsHistory = () => {
         this.setState({ loading: true });
-
-        let url1 = `${serverUrl}/bets?custom=true`;
-        axios({
-            method: 'get',
-            url: url1,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        })
+        axios.post(`${serverUrl}/bets`, { custom: true }, { withCredentials: true })
             .then(({ data }) => {
                 if (data) {
                     this.setState({ bets: data, loading: false })

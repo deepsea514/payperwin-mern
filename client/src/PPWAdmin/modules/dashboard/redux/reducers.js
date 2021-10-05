@@ -137,7 +137,7 @@ export function* saga() {
 
     yield takeLatest(actionTypes.getLastBets, function* getLastBetsSaga() {
         try {
-            const { data } = yield getBetActivities(1, { house: 'pinnacle' }, 10);
+            const { data } = yield getBetActivities(1, { house: 'sportsbook' }, 10);
             yield put(actions.getLastSportsBookBetsSuccess(data.data));
         } catch (error) {
             yield put(actions.getLastSportsBookBetsSuccess([]));

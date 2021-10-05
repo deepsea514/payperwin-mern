@@ -8,7 +8,6 @@ import { searchUsers, searchSports } from "../../customers/redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
-const AutoBetPeorid = config.AutoBetPeorid;
 
 const sideOptions = [
     { value: 'Underdog', label: 'Underdog' },
@@ -30,8 +29,8 @@ export default class AutoBetModal extends React.Component {
                 user: null,
                 rollOver: false,
                 budget: 0,
+                sportsbookBudget: 0,
                 maxRisk: 0,
-                peorid: AutoBetPeorid.daily,
                 priority: 0,
                 sports: [],
                 side: [],
@@ -46,11 +45,12 @@ export default class AutoBetModal extends React.Component {
                 budget: Yup.number()
                     .moreThan(0, "Budget should be more than 0")
                     .required("Budget field is required"),
+                sportsbookBudget: Yup.number()
+                    .moreThan(0, "Sportsbook Budget should be more than 0")
+                    .required("Sportsbook Budget field is required"),
                 maxRisk: Yup.number()
                     .moreThan(0, "Max Risk should be more than 0")
                     .required("Max Risk field is required."),
-                peorid: Yup.string()
-                    .required("Peorid field is required."),
                 priority: Yup.number()
                     .required("Pririty field is required."),
                 sports: Yup.array().of(Yup.object()),
@@ -92,12 +92,6 @@ export default class AutoBetModal extends React.Component {
     renderStatus = () => {
         return Object.keys(AutoBetStatus).map(function (key, index) {
             return <option key={AutoBetStatus[key]} value={AutoBetStatus[key]}>{AutoBetStatus[key]}</option>
-        });
-    }
-
-    renderPeorid = () => {
-        return Object.keys(AutoBetPeorid).map(function (key, index) {
-            return <option key={AutoBetPeorid[key]} value={AutoBetPeorid[key]}>{AutoBetPeorid[key]}</option>
         });
     }
 
@@ -175,16 +169,14 @@ export default class AutoBetModal extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group col-md-6">
-                                            <label>Peorid<span className="text-danger">*</span></label>
-                                            <select name="peorid" placeholder="Choose Peorid"
-                                                className={`form-control ${getInputClasses(formik, "peorid")}`}
-                                                {...formik.getFieldProps("peorid")}
-                                            >
-                                                {this.renderPeorid()}
-                                            </select>
-                                            {formik.touched.peorid && formik.errors.peorid ? (
+                                            <label>Sportsbook Budget<span className="text-danger">*</span></label>
+                                            <input name="sportsbookBudget" placeholder="Enter Sportsbook Budget"
+                                                className={`form-control ${getInputClasses(formik, "sportsbookBudget")}`}
+                                                {...formik.getFieldProps("sportsbookBudget")}
+                                            />
+                                            {formik.touched.sportsbookBudget && formik.errors.sportsbookBudget ? (
                                                 <div className="invalid-feedback">
-                                                    {formik.errors.peorid}
+                                                    {formik.errors.sportsbookBudget}
                                                 </div>
                                             ) : null}
                                         </div>

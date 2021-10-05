@@ -75,7 +75,7 @@ class Others extends Component {
                                         <div className="col-md-6 com-sm-6 col-12">
                                             <span className={`box-odds line-full ${teamAExist ? 'orange' : null}`}
                                                 onClick={teamAExist ?
-                                                    () => removeBet(event._id, 'moneyline', 'home') :
+                                                    () => removeBet(event._id, 'moneyline', 'home', null, null) :
                                                     () => addBet(
                                                         name,
                                                         'moneyline',
@@ -89,7 +89,8 @@ class Others extends Component {
                                                         event.name,
                                                         teamA.name,
                                                         null,
-                                                        "other"
+                                                        "other",
+                                                        null
                                                     )}>
                                                 <div className="vertical-align">
                                                     <div className="points">{teamA.name}</div>
@@ -104,7 +105,7 @@ class Others extends Component {
                                         <div className="col-md-6 com-sm-6 col-12">
                                             <span className={`box-odds line-full ${teamBExist ? 'orange' : null}`}
                                                 onClick={teamBExist ?
-                                                    () => removeBet(event._id, 'moneyline', 'away') :
+                                                    () => removeBet(event._id, 'moneyline', 'away', null, null) :
                                                     () => addBet(
                                                         name,
                                                         'moneyline',
@@ -118,7 +119,8 @@ class Others extends Component {
                                                         event.name,
                                                         teamB.name,
                                                         null,
-                                                        "other"
+                                                        "other",
+                                                        null
                                                     )}>
                                                 <div className="vertical-align">
                                                     <div className="points">{teamB.name}</div>

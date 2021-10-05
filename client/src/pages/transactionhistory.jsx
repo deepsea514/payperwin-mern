@@ -5,6 +5,7 @@ import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -24,6 +25,7 @@ class TransactionHistory extends Component {
             daterange: null,
             page: 1,
             loading: false,
+            noMore: false,
         };
     }
 
@@ -41,15 +43,10 @@ class TransactionHistory extends Component {
 
     getHistory = (page = 0, clear = true) => {
         const { filter, daterange, transactions } = this.state;
-        this.setState({ loading: true, });
+        this.setState({ loading: true, noMore: false });
         axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
             .then(({ data }) => {
-                if (clear) {
-                    this.setState({ transactions: data, page });
-                }
-                else {
-                    this.setState({ transactions: [...transactions, ...data], page });
-                }
+                this.setState({ transactions: clear ? data : [...transactions, ...data], page, noMore: data.length == 0 });
             }).finally(() => this.setState({ loading: false }));
     }
 
@@ -168,7 +165,7 @@ class TransactionHistory extends Component {
             });
         }
         else {
-            const { filter, daterange } = this.state;
+            const { filter } = this.state;
             if (value) {
                 await this.setState({
                     filter: {
@@ -192,7 +189,6 @@ class TransactionHistory extends Component {
                 });
             }
         }
-        // this.getHistory();
     }
 
     handleChangeDate = async (event, picker) => {
@@ -206,13 +202,12 @@ class TransactionHistory extends Component {
     }
 
     render() {
-        const { transactions, showFilter, filter, daterange, page, loading } = this.state;
+        const { transactions, showFilter, filter, daterange, page, loading, noMore } = this.state;
         return (
             <div className="col-in">
                 <h1 className="main-heading-in">Transaction history</h1>
                 <div className="main-cnt">
-                    <ul
-                        className="histyr-list d-flex justify-content-space">
+                    <ul className="histyr-list d-flex justify-content-space">
                         <li>FILTER OPTIONS</li>
                         <li>
                             <DateRangePicker
@@ -305,7 +300,15 @@ class TransactionHistory extends Component {
                             </div>
                         ))}
                     </div>
-                    <div className="load-m text-center">
+
+                    {loading && <center>
+                        <Preloader use={ThreeDots}
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />
+                    </center>}
+                    {!loading && !noMore && <div className="load-m text-center">
                         <a className="load-more"
                             disabled={loading}
                             onClick={() => this.getHistory(page + 1, false)}
@@ -313,9 +316,9 @@ class TransactionHistory extends Component {
                         >
                             Load More
                         </a>
-                    </div>
+                    </div>}
                 </div>
-            </div>
+            </div >
         );
     }
 }

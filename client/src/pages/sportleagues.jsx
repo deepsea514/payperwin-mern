@@ -39,7 +39,7 @@ class SportsLeagues extends Component {
     getLeagues = () => {
         const { sportName } = this.props;
         this.setState({ leagues: [] });
-        const url = `${serverUrl}/sportleague?name=${sportName}`;
+        const url = `${serverUrl}/sportleague?name=${sportName ? sportName.replace("_", " ") : ""}`;
         axios({
             method: 'get',
             url,
@@ -74,7 +74,7 @@ class SportsLeagues extends Component {
                                 <li key={league.name}
                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
                                     <Link
-                                        to={{ pathname: `/sport/${sportName}/league/${league.originId}` }}
+                                        to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}
                                     >
                                         <span style={sportNameSpanStyle}>{league.name}</span>
                                         <span>{league.eventCount}</span>
@@ -96,7 +96,7 @@ class SportsLeagues extends Component {
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
                                             <Link
-                                                to={{ pathname: `/sport/${sportName}/league/${league.originId}` }}
+                                                to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}
                                             >
                                                 <span style={sportNameSpanStyle}>{league.name}</span>
                                                 <span>{league.eventCount}</span>

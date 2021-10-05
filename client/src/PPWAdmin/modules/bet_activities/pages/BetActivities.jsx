@@ -6,14 +6,13 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet, settleBet } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
 import numberFormat from "../../../../helpers/numberFormat";
-import * as Yup from "yup";
-import { Formik, Form } from "formik";
-import { getInputClasses } from "../../../../helpers/getInputClasses";
+import SettleBetModal from "../components/SettleBetModal";
+import ManualMatchBetModal from "../components/ManualMatchBetModal";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -23,17 +22,10 @@ class BetActivities extends React.Component {
             wagerActivityDownloadData: [],
             deleteId: null,
             settleId: null,
+            matchId: null,
             modal: false,
             resMessage: "",
             modalvariant: "success",
-            scoreSchema: Yup.object().shape({
-                teamAScore: Yup.number().required("Team A Score is required."),
-                teamBScore: Yup.number().required("Team B Score is required."),
-            }),
-            initialValues: {
-                teamAScore: 0,
-                teamBScore: 0,
-            }
         }
         this.csvRef = createRef();
     }
@@ -58,125 +50,70 @@ class BetActivities extends React.Component {
     tableBody = () => {
         const { bet_activities, loading, filter, autobets } = this.props;
 
-        if (filter.house == '' || filter.house == 'ppw') {
-            if (loading) {
-                return (
-                    <tr>
-                        <td colSpan="12" align="center">
-                            <Preloader use={ThreeDots}
-                                size={100}
-                                strokeWidth={10}
-                                strokeColor="#F0AD4E"
-                                duration={800} />
-                        </td>
-                    </tr>
-                );
-            }
-            if (bet_activities.length == 0) {
-                return (
-                    <tr>
-                        <td colSpan="12" align="center">
-                            <h3>No Bet Activities</h3>
-                        </td>
-                    </tr>
-                );
-            }
-
-            return bet_activities.map((bet, index) => {
-                let isAutobet = false;
-                if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
-                return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
-                    <td scope="col">{index + 1}</td>
-                    <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
-                    <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
-                    <td scope="col">{bet.pickName} @ {Number(bet.pickOdds).toFixed(2)}</td>
-                    <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                    <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
-                    <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
-                    <td scope="col">{dateformat(bet.matchStartDate)}</td>
-                    <td scope="col">{this.getPPWBetDogFav(bet, index)}</td>
-                    {/* <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet)}</td> */}
-                    {/* <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td> */}
-                    <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
-                    <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
-                    <td scope="col">{this.getPPWWinLoss(bet)}</td>
-                    <td scope="col">{bet.transactionID}</td>
-                    <td scope="col">
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
-                                <i className="far fa-eye"></i>&nbsp; Detail
-                            </Dropdown.Item>
-                            {['Pending', 'Partial Match', 'Matched'].includes(bet.status) &&
-                                <>
-                                    <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
-                                        <i className="fas fa-trash"></i>&nbsp; Delete
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
-                                        <i className="fas fa-check"></i>&nbsp; Settle
-                                    </Dropdown.Item>
-                                </>
-                            }
-                        </DropdownButton>
+        if (loading) {
+            return (
+                <tr>
+                    <td colSpan="12" align="center">
+                        <Preloader use={ThreeDots}
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />
                     </td>
                 </tr>
-            });
+            );
         }
-
-        if (filter.house == 'pinnacle') {
-            if (loading) {
-                return (
-                    <tr>
-                        <td colSpan="11" align="center">
-                            <Preloader use={ThreeDots}
-                                size={100}
-                                strokeWidth={10}
-                                strokeColor="#F0AD4E"
-                                duration={800} />
-                        </td>
-                    </tr>
-                );
-            }
-            if (bet_activities.length == 0) {
-                return (
-                    <tr>
-                        <td colSpan="11" align="center">
-                            <h3>No Bet Activities</h3>
-                        </td>
-                    </tr>
-                );
-            }
-
-            return bet_activities.map((bet, index) => (
-                <tr key={index}>
-                    <td scope="col">{index + 1}</td>
-                    <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
-                    <td scope="col">{Number(bet.WagerInfo.ToRisk).toFixed(2)} {bet.userId.currency}</td>
-                    <td scope="col">{bet.WagerInfo.Selection} @ {Number(bet.WagerInfo.Odds).toFixed(2)}</td>
-                    <td scope="col">{bet.userId.email}</td>
-                    <td scope="col">{bet.WagerInfo.Sport}</td>
-                    <td scope="col">{
-                        bet.WagerInfo.Legs ?
-                            bet.WagerInfo.Legs.map(leg => {
-                                return <p key={leg.EventName}>{leg.EventName}</p>
-                            }) :
-                            bet.WagerInfo.EventName
-                    }</td>
-                    <td scope="col">{dateformat(bet.WagerInfo.EventDateFm)}</td>
-                    {/* <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td> */}
-                    {/* <td scope="col"><span className="label label-lg label-info label-inline font-weight-lighter mr-2">Pinnacle</span></td> */}
-                    <td scope="col">{this.getPInnacleBetStatus(bet.Name)}</td>
-                    <td scope="col">{this.getPinnacleWinLoss(bet)}</td>
-                    <td scope="col">{bet.WagerInfo.WagerId}</td>
-                    <td scope="col">
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
-                                <i className="far fa-eye"></i>&nbsp; Detail
-                            </Dropdown.Item>
-                        </DropdownButton>
+        if (bet_activities.length == 0) {
+            return (
+                <tr>
+                    <td colSpan="12" align="center">
+                        <h3>No Bet Activities</h3>
                     </td>
                 </tr>
-            ));
+            );
         }
+
+        return bet_activities.map((bet, index) => {
+            let isAutobet = false;
+            if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
+            return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
+                <td scope="col">{index + 1}</td>
+                <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
+                <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
+                <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
+                <td scope="col">{bet.userId ? bet.userId.email : null}</td>
+                <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
+                <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                <td scope="col">{dateformat(bet.matchStartDate)}</td>
+                <td scope="col">{this.getBetDogFav(bet, index)}</td>
+                <td scope="col">{this.getBetStatus(bet.status)}</td>
+                <td scope="col">{this.getBetMatch(bet.status)}</td>
+                <td scope="col">{this.getWinLoss(bet)}</td>
+                <td scope="col">{bet.transactionID}</td>
+                <td scope="col">
+                    <DropdownButton title="Actions">
+                        <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
+                            <i className="far fa-eye"></i>&nbsp; Detail
+                        </Dropdown.Item>
+                        {['Pending', 'Partial Match', 'Matched', null].includes(bet.status) &&
+                            <>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
+                                    <i className="fas fa-trash"></i>&nbsp; Delete
+                                </Dropdown.Item>
+                                {filter.house != 'sportsbook' && <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                    <i className="fas fa-check"></i>&nbsp; Settle
+                                </Dropdown.Item>}
+                            </>
+                        }
+                        {['Pending', 'Partial Match'].includes(bet.status) &&
+                            <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
+                                <i className="fas fa-link"></i>&nbsp; Manual Match
+                            </Dropdown.Item>
+                        }
+                    </DropdownButton>
+                </td>
+            </tr>
+        });
     }
 
     deleteBet = () => {
@@ -208,7 +145,27 @@ class BetActivities extends React.Component {
             })
     }
 
-    getPPWBetDogFav = (bet) => {
+    onMatchBet = (values, formik) => {
+        const { matchId } = this.state;
+        const { getBetActivities } = this.props;
+        matchBet(matchId, { user: values.user.value, amount: values.amount })
+            .then(({ data }) => {
+                if (data.success) {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, matchId: null, resMessage: "Successfully Matched!", modalvariant: "success" });
+                    getBetActivities();
+                } else {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, matchId: null, resMessage: data.error, modalvariant: "danger" });
+                }
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, matchId: null, resMessage: "Match Failed!", modalvariant: "danger" });
+            })
+    }
+
+    getBetDogFav = (bet) => {
         const { teamA, teamB, pick, pickName, lineQuery } = bet;
         if (!teamA) return;
         const oddsA = Number(teamA.odds);
@@ -222,12 +179,11 @@ class BetActivities extends React.Component {
             }
         } else {
             if (oddsA == oddsB) {
-                console.log(pick);
-                if (pick == 'away' || pick == 'under') {
+                if (pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             } else {
-                if ((oddsA < oddsB) && (pick == 'home' || pick == 'over') || (oddsA > oddsB) && (pick == 'away' || pick == 'under')) {
+                if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             }
@@ -235,19 +191,7 @@ class BetActivities extends React.Component {
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }
 
-    getPinnacleBetType = (type) => {
-        switch (type.toLowerCase()) {
-            case "single":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
-            case "parlay":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
-            case "teaser":
-            default:
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
-        }
-    }
-
-    getPPWBetType = (bet) => {
+    getBetType = (bet) => {
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
@@ -262,7 +206,7 @@ class BetActivities extends React.Component {
         }
     }
 
-    getPPWBetStatus = (status) => {
+    getBetStatus = (status) => {
         switch (status) {
             case "Pending":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">Pending</span>
@@ -278,73 +222,40 @@ class BetActivities extends React.Component {
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
             case "Draw":
                 return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
-            default:
-                return null;
+            case "Accepted":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
 
-    getPInnacleBetStatus = (status) => {
+    getBetMatch = (status) => {
         switch (status) {
-            case "BETTED":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">BETTED</span>
-            case "ACCEPTED":
-                return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">ACCEPTED</span>
-            case "SETTLED":
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">SETTLED</span>
-            case "CANCELLED":
-                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">SETTLED</span>
-            case "REJECTED":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">REJECTED</span>
-            case "ROLLBACKED":
-                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">ROLLBACKED</span>
-            case "UNSETTLED":
-            default:
-                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">UNSETTLED</span>
-        }
-    }
-
-    getPPWBetMatch = (status) => {
-        switch (status) {
-            case "Pending":
-            case "Partial Match":
-            case "Matched":
-                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
             case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
             case "Draw":
-            default:
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+            case "Accepted":
+            case "Partial Accepted":
+            default:
+                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
         }
     }
 
-    getPPWWinLoss = (bet) => {
+    getWinLoss = (bet) => {
         switch (bet.status) {
             case "Settled - Lose":
                 return `- $${bet.bet.toFixed(2)} CAD`;
             case "Settled - Win":
-                return `+ $${bet.payableToWin.toFixed(2)} CAD`
+                return `+ $${(bet.payableToWin).toFixed(2)} CAD`
             case "Pending":
             case "Partial Match":
             case "Matched":
             case "Cancelled":
-            default:
-                return "$0 CAD";
-        }
-    }
-
-    getPinnacleWinLoss = (bet) => {
-        switch (bet.Name) {
-            case "SETTLED":
-                if (bet.WagerInfo.Outcome == "LOSE")
-                    return `- $${(-Number(bet.WagerInfo.ProfitAndLoss)).toFixed(2)} CAD`;
-                return `+ ${Number(bet.WagerInfo.ProfitAndLoss).toFixed(2)} CAD`
-            case "BETTED":
-            case "ACCEPTED":
-            case "CANCELLED":
-            case "REJECTED":
-            case "ROLLBACKED":
-            case "UNSETTLED":
             default:
                 return "$0 CAD";
         }
@@ -371,7 +282,7 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, scoreSchema, initialValues } = this.state;
+        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, matchId } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -475,8 +386,8 @@ class BetActivities extends React.Component {
                                         onChange={e => {
                                             this.onFilterChange({ house: e.target.value });
                                         }} >
-                                        <option value="ppw">PPW</option>
-                                        <option value="pinnacle">Pinnacle</option>
+                                        <option value="p2p">P2P Bets</option>
+                                        <option value="sportsbook">SB Bets</option>
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by House
@@ -516,7 +427,7 @@ class BetActivities extends React.Component {
                             <div className="table-responsive">
                                 <table className="table">
                                     <thead>
-                                        {filter.house == "ppw" && <tr>
+                                        <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Wager</th>
@@ -526,30 +437,12 @@ class BetActivities extends React.Component {
                                             <th scope="col">Event</th>
                                             <th scope="col">Start Date</th>
                                             <th scope="col">Dog/Fav</th>
-                                            {/* <th scope="col">Line</th> */}
-                                            {/* <th scope="col">House</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
                                             <th scope="col">Win/Loss Amount</th>
                                             <th scope="col">TransactionID</th>
                                             <th scope="col"></th>
-                                        </tr>}
-                                        {filter.house == "pinnacle" && <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Wager</th>
-                                            <th scope="col">Pick</th>
-                                            <th scope="col">User</th>
-                                            <th scope="col">Sport</th>
-                                            <th scope="col">Event</th>
-                                            <th scope="col">Start Date</th>
-                                            {/* <th scope="col">Type</th> */}
-                                            {/* <th scope="col">House</th> */}
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Win/Loss Amount</th>
-                                            <th scope="col">WagerID</th>
-                                            <th scope="col"></th>
-                                        </tr>}
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {this.tableBody()}
@@ -591,61 +484,17 @@ class BetActivities extends React.Component {
                     </Modal.Footer>
                 </Modal>
 
-                {settleId && <Modal show={settleId != null} onHide={() => this.setState({ settleId: null })}>
-                    <Formik
-                        validationSchema={scoreSchema}
-                        initialValues={initialValues}
-                        onSubmit={this.onSettleBet}
-                    >
-                        {(formik) => {
-                            const { errors, touched, isSubmitting, getFieldProps } = formik;
-                            return <Form>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Settle Bet</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <div className="form-group">
-                                        <label>Team A Score <span className="text-danger">*</span></label>
-                                        <input name="teamAScore" placeholder="Team A Score"
-                                            className={`form-control ${getInputClasses(formik, "teamAScore")}`}
-                                            {...getFieldProps("teamAScore")}
-                                        />
-                                        {errors &&
-                                            errors &&
-                                            errors.teamAScore &&
-                                            touched &&
-                                            touched.teamAScore && (
-                                                <div className="invalid-feedback">
-                                                    {errors.teamAScore}
-                                                </div>
-                                            )}
-                                    </div>
+                {settleId && <SettleBetModal
+                    show={settleId != null}
+                    onHide={() => this.setState({ settleId: null })}
+                    onSubmit={this.onSettleBet}
+                />}
 
-                                    <div className="form-group">
-                                        <label>Team B Score <span className="text-danger">*</span></label>
-                                        <input name="teamBScore" placeholder="Team B Score"
-                                            className={`form-control ${getInputClasses(formik, "teamBScore")}`}
-                                            {...getFieldProps("teamBScore")}
-                                        />
-                                        {errors &&
-                                            errors &&
-                                            errors.teamBScore &&
-                                            touched &&
-                                            touched.teamBScore && (
-                                                <div className="invalid-feedback">
-                                                    {errors.teamBScore}
-                                                </div>
-                                            )}
-                                    </div>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <button type="submit" className="btn btn-primary mr-2" disabled={isSubmitting}>Submit</button>
-                                    <button onClick={() => this.setState({ settleId: null })} className="btn btn-secondary">Cancel</button>
-                                </Modal.Footer>
-                            </Form>
-                        }}
-                    </Formik>
-                </Modal>}
+                {matchId && <ManualMatchBetModal
+                    show={matchId != null}
+                    onHide={() => this.setState({ matchId: null })}
+                    onSubmit={this.onMatchBet}
+                />}
             </div>
         );
     }

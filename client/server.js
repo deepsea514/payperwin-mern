@@ -62,7 +62,8 @@ app.get("/*", (req, res) => {
                     try {
                         const { data } = await axios.get(`${serverUrl}/sport?name=${sportName}&leagueId=${leagueId}`);
                         if (data) {
-                            const { league: { name: leagueName, events } } = data;
+                            const league = data.leagues[0];
+                            const { name: leagueName, events } = league;
                             if (eventId) {  // Has Event
                                 const { uniqueId } = req.query;
                                 const event = events.find((event) => event.originId == eventId);
@@ -143,6 +144,5 @@ if (process.env.NODE_ENV === 'development2') {
         cert,
     }, app).listen(port, () => console.log(`API Server listening on port ${port}`));
 } else {
-    console.log(process.env.NODE_ENV, 'mode');
     app.listen(port, () => console.log(`Server listening on port ${port}!`)); // eslint-disable-line
 }

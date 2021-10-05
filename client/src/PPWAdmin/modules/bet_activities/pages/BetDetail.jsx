@@ -31,8 +31,8 @@ class BetDetail extends React.Component {
         return dateformat(new Date(date), "mediumDate");
     }
 
-    getPPWBetDogFav = (bet) => {
-        const { teamA, teamB, pick, pickName, lineQuery } = bet;
+    getBetDogFav = (bet, pick) => {
+        const { teamA, teamB, pickName, lineQuery } = bet;
         if (!teamA) return;
         const oddsA = Number(teamA.odds);
         const oddsB = Number(teamB.odds);
@@ -45,11 +45,11 @@ class BetDetail extends React.Component {
             }
         } else {
             if (oddsA == oddsB) {
-                if (pick == 'away' || pick == 'under') {
+                if (pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             } else {
-                if ((oddsA < oddsB) && (pick == 'home' || pick == 'over') || (oddsA > oddsB) && (pick == 'away' || pick == 'under')) {
+                if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
                     return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
                 }
             }
@@ -57,7 +57,7 @@ class BetDetail extends React.Component {
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }
 
-    getPPWBetType = (bet) => {
+    getBetType = (bet) => {
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
@@ -72,7 +72,7 @@ class BetDetail extends React.Component {
         }
     }
 
-    getPPWBetStatus = (status) => {
+    getBetStatus = (status) => {
         switch (status) {
             case "Pending":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">Pending</span>
@@ -88,55 +88,27 @@ class BetDetail extends React.Component {
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
             case "Draw":
                 return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
-            default:
-                return null;
+            case "Accepted":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
 
-    getPinnacleBetType = (type) => {
-        switch (type.toLowerCase()) {
-            case "single":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
-            case "parlay":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}</span>
-            case "teaser":
-            default:
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
-        }
-    }
-
-    getPInnacleBetStatus = (status) => {
+    getBetMatch = (status) => {
         switch (status) {
-            case "BETTED":
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">BETTED</span>
-            case "ACCEPTED":
-                return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">ACCEPTED</span>
-            case "SETTLED":
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">SETTLED</span>
-            case "CANCELLED":
-                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">SETTLED</span>
-            case "REJECTED":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">REJECTED</span>
-            case "ROLLBACKED":
-                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">ROLLBACKED</span>
-            case "UNSETTLED":
-            default:
-                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">UNSETTLED</span>
-        }
-    }
-
-    getPPWBetMatch = (status) => {
-        switch (status) {
-            case "Pending":
-            case "Partial Match":
-            case "Matched":
-                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
             case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
             case "Draw":
-            default:
                 return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+            case "Accepted":
+            case "Partial Accepted":
+            default:
+                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
         }
     }
 
@@ -162,21 +134,25 @@ class BetDetail extends React.Component {
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
-                                {bet.house == 'ppw' && <table className="table">
+                                <table className="table">
                                     <tbody>
                                         <tr>
                                             <th>User</th>
                                             <td>{bet.userId.email}</td>
+                                            <th>House</th>
+                                            <td>{bet.sportsbook ? 'Sportsbook' : 'Peer to Peer'}</td>
                                         </tr>
                                         <tr>
                                             <th>Amount</th>
                                             <td>${numberFormat(bet.bet.toFixed(2))} {bet.userId.currency} (${numberFormat(bet.toWin.toFixed(2))})</td>
-                                            <th>Matched Amount</th>
-                                            <td>${numberFormat(bet.payableToWin.toFixed(2))} {bet.userId.currency}</td>
+                                            {!bet.sportsbook && <>
+                                                <th>Matched Amount</th>
+                                                <td>${numberFormat(bet.payableToWin.toFixed(2))} {bet.userId.currency}</td>
+                                            </>}
                                         </tr>
                                         <tr>
                                             <th>Pick Name</th>
-                                            <td>{bet.pickName} {this.getPPWBetDogFav(bet)}</td>
+                                            <td>{bet.pickName} @{Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds} {this.getBetDogFav(bet, bet.pick)}</td>
                                             <th>Sport</th>
                                             <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
                                         </tr>
@@ -188,29 +164,33 @@ class BetDetail extends React.Component {
                                         </tr>
                                         <tr>
                                             <th>Team A</th>
-                                            <td>{bet.teamA.name} {this.getPPWBetDogFav(bet, 'home')}</td>
+                                            <td>{bet.teamA.name} {this.getBetDogFav(bet, 'home')}</td>
                                             <th>Odd</th>
                                             <td>
-                                                <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>
+                                                {!bet.sportsbook && <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>}
+                                                {bet.sportsbook && <span>{bet.teamA.odds}</span>}
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>Team B</th>
-                                            <td>{bet.teamB.name} {this.getPPWBetDogFav(bet, 'away')}</td>
+                                            <td>{bet.teamB.name} {this.getBetDogFav(bet, 'away')}</td>
                                             <th>Odd</th>
-                                            <td><span><del>{bet.teamB.odds}</del></span> <span>{newAway}</span></td>
+                                            <td>
+                                                {!bet.sportsbook && <span><del>{bet.teamB.odds}</del> <span>{newAway}</span></span>}
+                                                {bet.sportsbook && <span>{bet.teamB.odds}</span>}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Line</th>
-                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPPWBetType(bet)}</td>
+                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getBetType(bet)}</td>
                                             <th>House</th>
                                             <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                                         </tr>
                                         <tr>
                                             <th>Status</th>
-                                            <td scope="col">{this.getPPWBetStatus(bet.status)}</td>
+                                            <td scope="col">{this.getBetStatus(bet.status)}</td>
                                             <th>Match</th>
-                                            <td scope="col">{this.getPPWBetMatch(bet.status)}</td>
+                                            <td scope="col">{this.getBetMatch(bet.status)}</td>
                                         </tr>
                                         <tr>
                                             <th>Transaction ID</th>
@@ -219,51 +199,7 @@ class BetDetail extends React.Component {
                                             <td scope="col">{this.getDate(bet.createdAt)}</td>
                                         </tr>
                                     </tbody>
-                                </table>}
-
-                                {bet.house == 'pinnacle' && <table className="table">
-                                    <tbody>
-                                        <tr>
-                                            <th>Amount</th>
-                                            <td>{bet.WagerInfo.ToRisk} {bet.userId.currency}</td>
-                                            <th>User</th>
-                                            <td>{bet.userId.username}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Pick Name</th>
-                                            <td>{bet.WagerInfo.SelectionType}</td>
-                                            <th>Sport</th>
-                                            <td>{bet.WagerInfo.Sport}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Match Start Date</th>
-                                            <td>{this.getDate(bet.WagerInfo.EventDateFm)}</td>
-                                            <th>Event</th>
-                                            <td>{
-                                                bet.WagerInfo.Legs ?
-                                                    bet.WagerInfo.Legs.map(leg => {
-                                                        return <p key={leg.EventName}>{leg.EventName}</p>
-                                                    }) :
-                                                    bet.WagerInfo.EventName}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Type</th>
-                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getPinnacleBetType(bet.WagerInfo.Type)}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Status</th>
-                                            <td scope="col">{this.getPInnacleBetStatus(bet.Name)}</td>
-                                            <th>House</th>
-                                            <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">Pinnacle</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Wager ID</th>
-                                            <td scope="col">{bet.WagerInfo.WagerId}</td>
-                                            <th>Created</th>
-                                            <td scope="col">{this.getDate(bet.createdAt)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>}
+                                </table>
                             </div>
                         </div>
                         <div className="card-footer">

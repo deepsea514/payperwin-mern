@@ -74,9 +74,9 @@ class AutobetDashboard extends Component {
         return (
             <React.Fragment>
                 <div className="col-in">
-                    <div className="my-3 ml-5">
+                    <div className="my-3 ml-5 d-flex justify-content-between">
                         <span className="main-heading-in">Autobet Dashboard</span>
-                        <div className="float-right">
+                        <div className="">
                             <DateRangePicker
                                 initialSettings={daterange}
                                 onApply={this.handleChangeDate}

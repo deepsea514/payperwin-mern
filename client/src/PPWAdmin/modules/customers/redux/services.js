@@ -40,6 +40,10 @@ export function searchUsers(name) {
     return axios.get(`${serverUrl}/searchusers?name=${name}`);
 }
 
+export function searchAutobetUsers(name) {
+    return axios.get(`${serverUrl}/searchautobetusers?name=${name}`);
+}
+
 export function getCustomerOverview(id) {
     return axios.get(`${serverUrl}/customer-overview?id=${id}`);
 }

@@ -240,7 +240,7 @@ export default class Cashback extends Component {
                             <Tabs defaultActiveKey="current">
                                 <Tab eventKey="current" title={dateformat(new Date(), "mmmm yyyy") + ' Cashback'} className="profile-tabitem border-0">
                                     <div className="pt-2">
-                                        {data.lossBetHistory.map((history, index) => (
+                                        {/* {data.lossBetHistory.map((history, index) => (
                                             <div className="d-flex align-items-center mb-10" key={index}>
                                                 <div className="symbol symbol-40 symbol-light-success mr-2">
                                                     <span className="symbol-label">
@@ -258,7 +258,7 @@ export default class Cashback extends Component {
                                                 </div>
                                                 <span style={{ fontSize: '16px' }}>{this.getCashbackPercentage(data.lossThisMonth)}</span>
                                             </div>
-                                        ))}
+                                        ))} */}
                                     </div>
                                 </Tab>
                                 <Tab eventKey="previous" title="Previous Cashback" className="profile-tabitem border-0">

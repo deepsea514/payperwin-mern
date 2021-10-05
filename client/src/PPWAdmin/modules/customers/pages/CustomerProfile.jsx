@@ -10,7 +10,7 @@ import PersonaInformation from "./profile/PersonaInformation";
 import LoginHistory from "./profile/LoginHistory";
 import Deposit from "./profile/Deposit";
 import Withdraw from "./profile/Withdraw";
-import Bet from "./profile/Bet";
+import BetLog from "./profile/BetLog";
 import Preference from "./profile/Preference";
 
 class CustomerProfile extends React.Component {
@@ -80,7 +80,7 @@ class CustomerProfile extends React.Component {
                                             />
                                             <Route
                                                 path={`/users/${id}/profile/bet-log`}
-                                                component={(props) => <Bet {...props} customer={customer} />}
+                                                component={(props) => <BetLog {...props} customer={customer} />}
                                             />
                                             <Redirect
                                                 // from="*"
