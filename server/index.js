@@ -1936,7 +1936,7 @@ expressApp.post(
             userId: _id,
         };
         if (openBets) {
-            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', null] };
+            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted', null] };
         } else if (settledBets) {
             searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
         } else if (custom) {
