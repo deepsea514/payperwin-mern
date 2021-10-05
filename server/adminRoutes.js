@@ -2558,7 +2558,7 @@ const getTotalActivePlayer = async (datefrom, dateto) => {
         { $match: { createdAt: { $gte: datefrom, $lte: dateto } } },
         { $group: { _id: "$userId", total: { $sum: 1 } } }
     );
-    return total[0].length;
+    return total.length;
 }
 
 const getTotalFees = async (datefrom, dateto) => {
