@@ -2149,7 +2149,7 @@ adminRouter.post(
             }
 
             const pick = bet.pick == 'home' ? 'away' : 'home';
-            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick);
+            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.subtype);
             const betAfterFee = amount;
             const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
             const fee = Number((betAfterFee * BetFee).toFixed(2));

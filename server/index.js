@@ -1235,7 +1235,7 @@ expressApp.post(
                             const lineOdds = line.line[pickWithOverUnder];
                             const oddsA = type === 'total' ? line.line.over : line.line.home;
                             const oddsB = type === 'total' ? line.line.under : line.line.away;
-                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
+                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.subtype);
                             if (sportsbook) {
                                 newLineOdds = pick == 'home' ? oddsA : oddsB;
                             }

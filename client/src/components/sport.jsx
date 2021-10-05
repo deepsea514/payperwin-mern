@@ -103,8 +103,8 @@ class Sport extends Component {
 
     addBet = (bet) => {
         const { addBet } = this.props;
-        const { type, odds, originOdds, pick } = bet;
-        if (checkOddsAvailable(originOdds, odds, pick, type)) {
+        const { type, odds, originOdds, pick, subtype } = bet;
+        if (checkOddsAvailable(originOdds, odds, pick, type, subtype)) {
             return addBet(bet);
         }
         this.setState({ sportsbookInfo: bet });
@@ -229,7 +229,7 @@ class Sport extends Component {
                                                                     subtype: null
                                                                 })}>
                                                             {!started && <div className="vertical-align">
-                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <>
+                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.home, oddsFormat)}
                                                                     </div>
@@ -237,7 +237,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <div className="origin-odds">
                                                                     {convertOdds(moneyline.home, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -269,7 +269,7 @@ class Sport extends Component {
                                                                     subtype: null
                                                                 })}>
                                                             {!started && <div className="vertical-align">
-                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <>
+                                                                {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.away, oddsFormat)}
                                                                     </div>
@@ -277,7 +277,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <div className="origin-odds">
                                                                     {convertOdds(moneyline.away, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -333,7 +333,7 @@ class Sport extends Component {
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`}</div>
-                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <>
+                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(spreads[0].home, oddsFormat)}
                                                                     </div>
@@ -341,7 +341,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].home, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -375,7 +375,7 @@ class Sport extends Component {
                                                                 })}>
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`}</div>
-                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <>
+                                                                {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(spreads[0].away, oddsFormat)}
                                                                     </div>
@@ -383,7 +383,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread') && <div className="origin-odds">
+                                                                {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].away, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -439,7 +439,7 @@ class Sport extends Component {
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">O {`${totals[0].points}`}</div>
-                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <>
+                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(totals[0].over, oddsFormat)}
                                                                     </div>
@@ -447,7 +447,7 @@ class Sport extends Component {
                                                                         {convertOdds(newHome, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total') && <div className="origin-odds">
+                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <div className="origin-odds">
                                                                     {convertOdds(totals[0].over, oddsFormat)}
                                                                 </div>}
                                                             </div>}
@@ -482,7 +482,7 @@ class Sport extends Component {
                                                         >
                                                             {!started && <div className="vertical-align">
                                                                 <div className="points">U {`${totals[0].points}`}</div>
-                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <>
+                                                                {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(totals[0].under, oddsFormat)}
                                                                     </div>
@@ -490,7 +490,7 @@ class Sport extends Component {
                                                                         {convertOdds(newAway, oddsFormat)}
                                                                     </div>
                                                                 </>}
-                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total') && <div className="origin-odds">
+                                                                {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <div className="origin-odds">
                                                                     {convertOdds(totals[0].under, oddsFormat)}
                                                                 </div>}
                                                             </div>}

@@ -70,7 +70,7 @@ export default class LineDetail extends Component {
         const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet } = this.props;
         const { teamA, teamB, leagueName, origin, started } = event;
         const { home, away } = originOdds;
-        const { newHome, newAway } = calculateNewOdds(home, away);
+        const { newHome, newAway } = lineQuery.subtype == null ? calculateNewOdds(home, away) : { newHome: home, newAway: away };
         const homeExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         const awayExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         return (
@@ -100,7 +100,7 @@ export default class LineDetail extends Component {
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('home')}</div>
                                 {!started && <div className="odds">
-                                    {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type) &&
+                                    {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type, lineQuery.subtype) &&
                                         <>
                                             <div className="old-odds">
                                                 {convertOdds(home, oddsFormat)}
@@ -109,7 +109,7 @@ export default class LineDetail extends Component {
                                                 {convertOdds(newHome, oddsFormat)}
                                             </div>
                                         </>}
-                                    {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type) &&
+                                    {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type, lineQuery.subtype) &&
                                         <div className="origin-odds">
                                             {convertOdds(home, oddsFormat)}
                                         </div>}
@@ -146,7 +146,7 @@ export default class LineDetail extends Component {
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('away')}</div>
                                 {!started && <div className="odds">
-                                    {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type) && <>
+                                    {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type, lineQuery.subtype) && <>
                                         <div className="old-odds">
                                             {convertOdds(originOdds.away, oddsFormat)}
                                         </div>
@@ -154,7 +154,7 @@ export default class LineDetail extends Component {
                                             {convertOdds(newAway, oddsFormat)}
                                         </div>
                                     </>}
-                                    {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type) &&
+                                    {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type, lineQuery.subtype) &&
                                         <div className="origin-odds">
                                             {convertOdds(originOdds.away, oddsFormat)}
                                         </div>}
