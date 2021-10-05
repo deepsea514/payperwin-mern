@@ -47,11 +47,7 @@ const initialState = {
     },
     dashboardplayer: {
         totalplayer: 0,
-        players: [],
-    },
-    dashboardactiveplayer: {
         totalactiveplayer: 0,
-        activeplayers: [],
     },
     dashboardfees: {
         totalfees: 0,
@@ -170,8 +166,8 @@ export function* saga() {
                 totaldeposit, deposits,
                 totalwager, wagers,
                 totalwagersportsbook, wagerssportsbook,
-                totalplayer, players,
-                totalactiveplayer, activeplayers,
+                totalplayer,
+                totalactiveplayer,
                 totalfees, fees,
                 categories
             } = data;
@@ -179,8 +175,7 @@ export function* saga() {
                 dashboarddeposit: { totaldeposit, deposits },
                 dashboardwager: { totalwager, wagers },
                 dashboardwagersportsbook: { totalwager: totalwagersportsbook, wagers: wagerssportsbook },
-                dashboardplayer: { totalplayer, players, },
-                dashboardactiveplayer: { totalactiveplayer, activeplayers, },
+                dashboardplayer: { totalplayer, totalactiveplayer, },
                 dashboardfees: { totalfees, fees },
                 categories
             }));
@@ -189,8 +184,7 @@ export function* saga() {
                 dashboarddeposit: { totaldeposit: 0, deposits: [] },
                 dashboardwager: { totalwager: 0, wagers: [] },
                 dashboardwagersportsbook: { totalwager: 0, wagers: [] },
-                dashboardplayer: { totalplayer: 0, players: [], },
-                dashboardactiveplayer: { totalactiveplayer: 0, activeplayers: [], },
+                dashboardplayer: { totalplayer: 0, totalactiveplayer: 0, },
                 dashboardfees: { totalfees: 0, fees: [], },
                 categories: [],
             }));

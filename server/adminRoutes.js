@@ -2109,7 +2109,7 @@ adminRouter.post(
             if (!bet) {
                 return res.status(404).json({ success: false });
             }
-            if(bet.status != 'Pending') {
+            if (bet.status != 'Pending') {
                 return res.json({ success: false, error: 'Only pending bets are acceptable.' });
             }
             const lineQuery = bet.lineQuery;
@@ -2544,22 +2544,8 @@ const getTotalPlayer = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await User.aggregate(
-        {
-            $match: {
-                createdAt: {
-                    $gte: datefrom,
-                    $lte: dateto
-                }
-            }
-        },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: 1
-                }
-            }
-        }
+        { $match: { createdAt: { $gte: datefrom, $lte: dateto } } },
+        { $group: { _id: null, total: { $sum: 1 } } }
     );
     if (total.length) return total[0].total;
     return 0;
@@ -2569,22 +2555,8 @@ const getTotalActivePlayer = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);
     const total = await Bet.aggregate(
-        {
-            $match: {
-                createdAt: {
-                    $gte: datefrom,
-                    $lte: dateto
-                }
-            }
-        },
-        {
-            $group: {
-                _id: "$userId",
-                total: {
-                    $sum: 1
-                }
-            }
-        }
+        { $match: { createdAt: { $gte: datefrom, $lte: dateto } } },
+        { $group: { _id: "$userId", total: { $sum: 1 } } }
     );
     if (total.length) return total[0].total;
     return 0;
@@ -2605,14 +2577,7 @@ const getTotalFees = async (datefrom, dateto) => {
                 }
             }
         },
-        {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: "$amount"
-                }
-            }
-        }
+        { $group: { _id: null, total: { $sum: "$amount" } } }
     );
     if (withdrawfee.length) totalfee += withdrawfee[0].total;
 
@@ -2716,13 +2681,11 @@ adminRouter.post(
             const totalwager = await getTotalWager(dateranges[0], dateranges[dateranges.length - 1]);
             const totalwagersportsbook = await getTotalWagerSportsBook(dateranges[0], dateranges[dateranges.length - 1]);
             const totalplayer = await getTotalPlayer(new Date(0), new Date());
-            const totalactiveplayer = await getTotalActivePlayer(dateranges[0], dateranges[dateranges.length - 1]);
+            const totalactiveplayer = await getTotalActivePlayer(new Date().addHours(-15 * 24), new Date());
             const totalfees = await getTotalFees(dateranges[0], dateranges[dateranges.length - 1]);
             let deposits = [];
             let wagers = [];
             let wagerssportsbook = [];
-            let players = [];
-            let activeplayers = [];
             let fees = [];
             for (let i = 1; i < dateranges.length; i++) {
                 const deposit = await getTotalDeposit(dateranges[i - 1], dateranges[i]);
@@ -2731,10 +2694,6 @@ adminRouter.post(
                 wagers.push(wager);
                 const wagersportsbook = await getTotalWagerSportsBook(dateranges[i - 1], dateranges[i]);
                 wagerssportsbook.push(wagersportsbook);
-                const player = await getTotalPlayer(dateranges[i - 1], dateranges[i]);
-                players.push(player);
-                const activeplayer = await getTotalActivePlayer(dateranges[i - 1], dateranges[i]);
-                activeplayers.push(activeplayer);
                 const fee = await getTotalFees(dateranges[i - 1], dateranges[i]);
                 fees.push(fee);
             }
@@ -2743,8 +2702,8 @@ adminRouter.post(
                 totaldeposit, deposits,
                 totalwager, wagers,
                 totalwagersportsbook, wagerssportsbook,
-                totalplayer, players,
-                totalactiveplayer, activeplayers,
+                totalplayer,
+                totalactiveplayer,
                 totalfees, fees,
                 categories,
             });
