@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-// import sportNameIcon from '../helpers/sportNameIcon';
-import sportNameImage from "../helpers/sportNameImage";
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -96,8 +94,7 @@ class SportsLeagues extends Component {
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
                                             <Link
-                                                to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}
-                                            >
+                                                to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
                                                 <span style={sportNameSpanStyle}>{league.name}</span>
                                                 <span>{league.eventCount}</span>
                                             </Link>

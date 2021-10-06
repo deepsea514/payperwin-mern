@@ -953,7 +953,6 @@ expressApp.post(
             if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
             } else {
-
                 // TODO: error if match has already started
                 // TODO: prevent certain types of bets
                 if (origin == 'other') {
@@ -2351,6 +2350,68 @@ expressApp.get(
             res.json(customBets);
         }
     },
+);
+
+expressApp.get(
+    '/search',
+    async (req, res) => {
+        const { param } = req.query;
+        if (!param) return res.json([]);
+        try {
+            const results = [];
+            const searchSports = await Sport.find({
+                $or: [
+                    {
+                        "leagues.name": { "$regex": param, "$options": "i" }
+                    },
+                    {
+                        "leagues.events.startDate": { $gte: new Date() },
+                        $or: [
+                            { "leagues.events.teamA": { "$regex": param, "$options": "i" } },
+                            { "leagues.events.teamB": { "$regex": param, "$options": "i" } },
+                        ]
+                    }
+                ]
+            });
+            for (const sport of searchSports) {
+                for (const league of sport.leagues) {
+                    if (league.name.toLowerCase().includes(param.toLowerCase())) {
+                        results.push({
+                            type: 'league',
+                            sportName: sport.name,
+                            leagueName: league.name,
+                            leagueId: league.originId,
+                        })
+                    }
+                    for (const event of league.events) {
+                        if (new Date(event.startDate).getTime() > new Date().getTime()) {
+                            if (event.teamA.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamA
+                                });
+                            } else if (event.teamB.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamB
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.json([]);
+        }
+    }
 )
 
 expressApp.get('/getPinnacleLogin',
