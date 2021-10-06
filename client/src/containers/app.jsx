@@ -65,6 +65,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
+import Search from '../pages/search';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -333,6 +334,22 @@ class App extends Component {
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} /></ErrorBoundary>
                                                 } />
+                                                <Route path="/sport/:name/league/:league/team/:team" render={(props) => {
+                                                    const { match } = props;
+                                                    const name = resObjPath(match, 'params.name');
+                                                    const league = resObjPath(match, 'params.league');
+                                                    const team = resObjPath(match, 'params.team');
+                                                    return (
+                                                        <ErrorBoundary>
+                                                            <React.Fragment>
+                                                                <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} sportName={name}
+                                                                    league={league} team={team}
+                                                                />
+                                                            </React.Fragment>
+                                                        </ErrorBoundary>
+                                                    );
+                                                }} />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
@@ -478,6 +495,9 @@ class App extends Component {
                                                 } />
                                                 <Route path="/loyalty" render={(props) =>
                                                     <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
+                                                } />
+                                                <Route path="/search/:param" render={(props) =>
+                                                    <ErrorBoundary><Search {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route exact path="/" render={(props) =>
                                                     <ErrorBoundary>

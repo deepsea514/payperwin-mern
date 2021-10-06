@@ -105,6 +105,12 @@ class Header extends Component {
         return balance / 100;
     }
 
+    onSearch = (evt) => {
+        const { search, history } = this.props;
+        if (evt.key !== 'Enter') return;
+        history.push(`/search/${search}`);
+    }
+
     render() {
         const { userDropDownOpen,
             oddsDropDownOpen,
@@ -295,7 +301,14 @@ class Header extends Component {
                             <div className="">
                                 <div className="search-box">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input className="searh-f" type="search" placeholder="Search" value={search} onChange={(evt) => setSearch(evt.target.value)} />
+                                    <input
+                                        className="searh-f"
+                                        type="search"
+                                        placeholder="Search"
+                                        value={search}
+                                        onChange={(evt) => setSearch(evt.target.value)}
+                                        onKeyDown={this.onSearch}
+                                    />
                                 </div>
                             </div>
                             <div className="">

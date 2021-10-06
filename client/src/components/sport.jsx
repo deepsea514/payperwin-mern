@@ -118,7 +118,7 @@ class Sport extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, sportName, timezone, search, oddsFormat } = this.props;
+        const { betSlip, removeBet, sportName, timezone, oddsFormat, team } = this.props;
         const { data, error, sportsbookInfo } = this.state;
         if (error) {
             return <div>Error</div>;
@@ -167,11 +167,9 @@ class Sport extends Component {
                         const { name: leagueName, originId: leagueId } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId, started } = event;
-                            if (teamA.toLowerCase().indexOf(search.toLowerCase()) == -1 && teamB.toLowerCase().indexOf(search.toLowerCase()) == -1) {
-                                return null;
-                            }
                             if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
                                 return null;
+                            if (team && teamA != team && teamB != team) return;
 
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
@@ -540,7 +538,6 @@ class Sport extends Component {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
-    search: state.frontend.search,
     timezone: state.frontend.timezone,
 });
 

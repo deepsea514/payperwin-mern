@@ -1522,6 +1522,10 @@ button.loginButton span {
     background-color: #273043;
 }
 
+.no-result {
+    background-color: #a75963 !important;
+}
+
 *::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
