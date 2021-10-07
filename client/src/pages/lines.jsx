@@ -34,7 +34,7 @@ class Lines extends Component {
             index: index,
             ogTitle: '',
             ogDescription: '',
-            showAll: type != null || subtype != null || index != null || false,
+            showAll: type != null || subtype != null || index != null || true,
         };
     }
 
