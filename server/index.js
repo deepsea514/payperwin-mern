@@ -1230,11 +1230,11 @@ expressApp.post(
                                 errors.push(`${pickName} @${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
                                 continue;
                             }
-                            const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+                            const pickWithOverUnder = ['total', 'alternative_total'].includes(lineQuery.type) ? (pick === 'home' ? 'over' : 'under') : pick;
                             const lineOdds = line.line[pickWithOverUnder];
-                            const oddsA = type === 'total' ? line.line.over : line.line.home;
-                            const oddsB = type === 'total' ? line.line.under : line.line.away;
-                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.subtype);
+                            const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+                            const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
                             if (sportsbook) {
                                 newLineOdds = pick == 'home' ? oddsA : oddsB;
                             }
@@ -1500,14 +1500,14 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
 
     const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
 
-    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+    const pickWithOverUnder = ['total', 'alternative_total'].includes(type) ? (pick === 'home' ? 'over' : 'under') : pick;
     const lineOdds = line.line[pickWithOverUnder];
-    const oddsA = type === 'total' ? line.line.over : line.line.home;
-    const oddsB = type === 'total' ? line.line.under : line.line.away;
-    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick);
+    const oddsA = ['total', 'alternative_total'].includes(type) ? line.line.over : line.line.home;
+    const oddsB = ['total', 'alternative_total'].includes(type) ? line.line.under : line.line.away;
+    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
 
     let side = 'Underdog';
-    if (type == 'spread') {
+    if (['spread', 'alternative_spread'].includes(type)) {
         if (points > 0 && pick == 'away' || points < 0 && pick == 'home') side = 'Favorite';
     }
     else {
@@ -1525,9 +1525,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             betType = 'Moneyline';
             break;
         case 'spread':
+        case 'alternative_spread':
             betType = 'Spreads';
             break;
         case 'total':
+        case 'alternative_total':
         default:
             betType = 'Over/Under';
             break;
@@ -1657,6 +1659,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }
     switch (type) {
         case 'total':
+        case 'alternative_total':
             if (pick == 'home') {
                 pickName += `Over ${points}`;
                 betType += `O ${points}`;
@@ -1665,8 +1668,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 betType += `U ${points}`;
             }
             break;
-
         case 'spread':
+        case 'alternative_spread':
             if (pick == 'home') {
                 pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
                 betType += `${hdp > 0 ? '+' : ''}${hdp}`;
@@ -2006,14 +2009,15 @@ expressApp.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
+
             const betpool = await BetPool.findOne({
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,

@@ -45,8 +45,6 @@ const gotLineToOdds = (game_lines) => {
 
 const formatAmericanFootballFixturesOdds = (event) => {
     const { main, others } = event.odds;
-    // console.log(main);
-    // console.log(others);
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
@@ -54,6 +52,8 @@ const formatAmericanFootballFixturesOdds = (event) => {
         moneyline: null,
         spreads: [],
         totals: [],
+        alternative_spreads: [],
+        alternative_totals: [],
         first_half: null,
         second_half: null,
         first_quarter: null,
@@ -135,10 +135,41 @@ const formatAmericanFootballFixturesOdds = (event) => {
                 line.forth_quarter = gotLineToOdds(_4th_quarter_lines_2_way);
             }
         }
+
+        // Alternative spreads and totals
+        let other = others.find(other => other.sp && other.sp["alternative_point_spread_2_way"]);
+        const alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
+        if (alternative_point_spread_2_way.length > 0) {
+            const count = alternative_point_spread_2_way.length / 2;
+            for (let i = 0; i < count; i++) {
+                line.alternative_spreads.push({
+                    altLineId: alternative_point_spread_2_way[i].id,
+                    hdp: Number(alternative_point_spread_2_way[i].handicap),
+                    home: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i].odds),
+                    away: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i + count].odds),
+                });
+            }
+        }
+
+        other = others.find(other => other.sp && other.sp["alternative_total_2_way"]);
+        const alternative_total_2_way = other ? other.sp["alternative_total_2_way"].odds : [];
+        if (alternative_total_2_way.length > 0) {
+            const count = alternative_total_2_way.length / 2;
+            for (let i = 0; i < count; i++) {
+                line.alternative_totals.push({
+                    altLineId: alternative_total_2_way[i].id,
+                    points: Number(alternative_total_2_way[i].name),
+                    over: convertDecimalToAmericanOdds(alternative_total_2_way[i].odds),
+                    under: convertDecimalToAmericanOdds(alternative_total_2_way[i + count].odds),
+                });
+            }
+        }
     }
 
     line.spreads = line.spreads.length ? line.spreads : null;
     line.totals = line.totals.length ? line.totals : null;
+    line.alternative_spreads = line.alternative_spreads.length ? line.alternative_spreads : null;
+    line.alternative_totals = line.alternative_totals.length ? line.alternative_totals : null;
     return line;
 
 }

@@ -107,7 +107,7 @@ class Lines extends Component {
 
     render() {
         const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
-        const { sportName, leagueId, eventId } = match.params;
+        const { sportName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, ogTitle, ogDescription, showAll
         } = this.state;
@@ -201,14 +201,18 @@ class Lines extends Component {
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {
-                        const { spreads, originId: lineId, moneyline, totals,
-                            first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
+                        const {
+                            spreads, moneyline, totals, alternative_spreads, alternative_totals,
+                            first_half, second_half,
+                            first_quarter, second_quarter,
+                            third_quarter, forth_quarter
+                        } = line;
                         if (i > 0 && !spreads && !moneyline && !totals) {
                             return null;
                         }
 
                         let lines = [
-                            { line: { moneyline, totals, spreads }, subtype: null },
+                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals }, subtype: null },
                             { line: first_half, subtype: "first_half" },
                             { line: second_half, subtype: "second_half" },
                             { line: first_quarter, subtype: "first_quarter" },

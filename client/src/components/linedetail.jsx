@@ -12,10 +12,12 @@ export default class LineDetail extends Component {
             case 'moneyline':
                 return pick == 'home' ? teamA : teamB;
             case 'spread':
+            case 'alternative_spread':
                 return pick == 'home' ?
                     `${originOdds.hdp > 0 ? '+' : ''}${originOdds.hdp}` :
                     `${(-1 * originOdds.hdp) > 0 ? '+' : ''}${-1 * originOdds.hdp}`;
             case 'total':
+            case 'alternative_total':
                 return pick == 'home' ? `O ${originOdds.points}` : `U ${originOdds.points}`;
         }
     }
@@ -55,11 +57,13 @@ export default class LineDetail extends Component {
                 pickName += pick == 'home' ? teamA : teamB;
                 break;
             case 'spread':
+            case 'alternative_spread':
                 pickName += pick == 'home' ?
                     `${teamA} ${originOdds.hdp > 0 ? '+' : ''}${originOdds.hdp}` :
                     `${teamB} ${(-1 * originOdds.hdp) > 0 ? '+' : ''}${-1 * originOdds.hdp}`;
                 break;
             case 'total':
+            case 'alternative_total':
                 pickName += pick == 'home' ? `Over ${originOdds.points}` : `Under ${originOdds.points}`;
         }
 

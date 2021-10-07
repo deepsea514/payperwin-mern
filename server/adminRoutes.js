@@ -1810,12 +1810,12 @@ adminRouter.delete(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpool = await BetPool.findOne({
@@ -1856,12 +1856,12 @@ adminRouter.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpoolQuery = {
@@ -1929,7 +1929,7 @@ adminRouter.post(
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
                             draw = awayScore == homeScore;
-                        } else if (lineType === 'spread') {
+                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
                             const spread = {
                                 home: Number(points),
                                 away: 0,
@@ -1941,7 +1941,7 @@ adminRouter.post(
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = pick === spreadWinner;
                             draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (lineType === 'total') {
+                        } else if (['total', 'alternative_total'].includes(lineType)) {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
@@ -2114,12 +2114,12 @@ adminRouter.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
 
@@ -2149,7 +2149,7 @@ adminRouter.post(
             }
 
             const pick = bet.pick == 'home' ? 'away' : 'home';
-            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.subtype);
+            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
             const betAfterFee = amount;
             const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
             const fee = Number((betAfterFee * BetFee).toFixed(2));
@@ -2181,6 +2181,7 @@ adminRouter.post(
             }
             switch (bet.lineQuery.type) {
                 case 'total':
+                case 'alternative_total':
                     if (pick == 'home') {
                         pickName += `Over ${linePoints}`;
                         betType += `O ${linePoints}`;
@@ -2190,6 +2191,7 @@ adminRouter.post(
                     }
                     break;
                 case 'spread':
+                case 'alternative_spread':
                     if (pick == 'home') {
                         pickName += `${bet.teamA.name} ${linePoints > 0 ? '+' : ''}${linePoints}`;
                         betType += `${linePoints > 0 ? '+' : ''}${linePoints}`;
@@ -2838,6 +2840,24 @@ adminRouter.get(
                 },
                 {
                     $lookup: {
+                        from: 'autobetlogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $gte: ["$createdAt", fromTime] },
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$type", "sportsbook"] }
+                                    ]
+                                }
+                            },
+                        }],
+                        as: 'sbautobetlogs',
+                    }
+                },
+                {
+                    $lookup: {
                         from: 'users',
                         let: { user_id: "$userId" },
                         pipeline: [{
@@ -2865,6 +2885,7 @@ adminRouter.get(
                         budget: 1,
                         sportsbookBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
+                        sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },
                         referral_code: 1,
                         status: 1,
                         createdAt: 1

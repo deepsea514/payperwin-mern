@@ -17,6 +17,7 @@ function checkOddsAvailable(odds, newOdds, pick, type, subtype = null) {
             return false;
         return true;
     }
+    return false;
 }
 
 module.exports = checkOddsAvailable;

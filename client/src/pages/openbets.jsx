@@ -82,8 +82,19 @@ class OpenBets extends Component {
             });
     }
 
-    capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+    getBetType = (type) => {
+        switch (type) {
+            case 'moneyline':
+                return 'Moneyline';
+            case 'total':
+            case 'alternative_total':
+                return 'Total';
+            case 'spread':
+            case 'alternative_spread':
+                return 'Spread';
+            default:
+                return null;
+        }
     }
 
     checkEventStarted = (matchStartDate) => {
@@ -364,7 +375,7 @@ class OpenBets extends Component {
                                         <div className="open-bets-col">
                                             <strong>Bet Type</strong>
                                             <div>
-                                                {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                                {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                             </div>
                                             <div>
                                                 {pickName}
@@ -454,7 +465,7 @@ class OpenBets extends Component {
                                     <div className="open-bets-col">
                                         <strong>Bet Type</strong>
                                         <div>
-                                            {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                            {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                         <div>
                                             {pickName}

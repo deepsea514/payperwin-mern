@@ -128,7 +128,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
                             draw = awayScore == homeScore;
-                        } else if (lineType === 'spread') {
+                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
                             const spread = {
                                 home: points,
                                 away: 0,
@@ -140,7 +140,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = pick === spreadWinner;
                             draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (lineType === 'total') {
+                        } else if (['total', 'alternative_total'].includes(lineType)) {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;

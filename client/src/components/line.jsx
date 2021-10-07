@@ -53,7 +53,7 @@ export default class Line extends Component {
             addBet, sportName, leagueId, oddsFormat,
         } = this.props;
         if (!line.line) return null;
-        const { moneyline, spreads, totals } = line.line;
+        const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line.line;
         const { originId: eventId } = event;
 
         const lineQueryMoneyLine = {
@@ -133,6 +133,60 @@ export default class Line extends Component {
                             oddsFormat={oddsFormat} />
                     }) : <EmptyLine />}
                 </>}
+
+                {(!type || type == 'alternative_spread' && subtype == line.subtype) &&
+                    alternative_spreads && alternative_spreads.length != 0 && <>
+                        <div className="line-type-header">Alternative Spreads {this.getSubTypeName(line.subtype)}</div>
+                        {alternative_spreads.map((spread, i) => {
+                            if (type && index && index != i) return null;
+                            const lineQuery = {
+                                sportName: sportName.replace("_", " "),
+                                leagueId,
+                                eventId,
+                                lineId: eventId,
+                                type: 'alternative_spread',
+                                index: i,
+                                subtype: line.subtype
+                            };
+                            if (spread.altLineId) lineQuery.altLineId = spread.altLineId;
+                            return <LineDetail
+                                key={i}
+                                originOdds={spread}
+                                betSlip={betSlip}
+                                lineQuery={lineQuery}
+                                removeBet={removeBet}
+                                addBet={addBet}
+                                event={event}
+                                oddsFormat={oddsFormat} />
+                        })}
+                    </>}
+
+                {(!type || type == 'total' && subtype == line.subtype) &&
+                    alternative_totals && alternative_totals.length != 0 && <>
+                        <div className="line-type-header">Alternative Over/Under {this.getSubTypeName(line.subtype)}</div>
+                        {alternative_totals.map((total, i) => {
+                            if (type && index && index != i) return null;
+                            const lineQuery = {
+                                sportName: sportName.replace("_", " "),
+                                leagueId,
+                                eventId,
+                                lineId: eventId,
+                                type: 'alternative_total',
+                                index: i,
+                                subtype: line.subtype
+                            };
+                            if (total.altLineId) lineQuery.altLineId = total.altLineId;
+                            return <LineDetail
+                                key={i}
+                                originOdds={{ home: total.over, away: total.under, points: total.points }}
+                                betSlip={betSlip}
+                                lineQuery={lineQuery}
+                                removeBet={removeBet}
+                                addBet={addBet}
+                                event={event}
+                                oddsFormat={oddsFormat} />
+                        })}
+                    </>}
             </>
         );
     }
