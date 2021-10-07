@@ -85,10 +85,10 @@ class Sport extends Component {
                                                 if (totals) {
                                                     event.lineCount += totals.length;
                                                 }
-                                                if(alternative_spreads) {
+                                                if (alternative_spreads) {
                                                     event.lineCount += alternative_spreads.length;
                                                 }
-                                                if(alternative_totals) {
+                                                if (alternative_totals) {
                                                     event.lineCount += alternative_totals.length;
                                                 }
                                             })

@@ -78,6 +78,7 @@ class BetActivities extends React.Component {
             if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
             return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
                 <td scope="col">{index + 1}</td>
+                <td scope="col">{this.getBetHouse(bet.sportsbook)}</td>
                 <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
@@ -191,21 +192,6 @@ class BetActivities extends React.Component {
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
     }
 
-    getBetType = (bet) => {
-        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
-        switch (type) {
-            case "moneyline":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
-            case "spread":
-                const spreads = bet.pickName.split(' ');
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
-            case "total":
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
-            default:
-                return null;
-        }
-    }
-
     getBetStatus = (status) => {
         switch (status) {
             case "Pending":
@@ -259,6 +245,13 @@ class BetActivities extends React.Component {
             default:
                 return "$0 CAD";
         }
+    }
+
+    getBetHouse = (sportsbook) => {
+        if(sportsbook) {
+            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
+        }
+        return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">P2P</span>
     }
 
     onPageChange = (page) => {
@@ -386,6 +379,7 @@ class BetActivities extends React.Component {
                                         onChange={e => {
                                             this.onFilterChange({ house: e.target.value });
                                         }} >
+                                        <option value="">All</option>
                                         <option value="p2p">P2P Bets</option>
                                         <option value="sportsbook">SB Bets</option>
                                     </select>
@@ -429,6 +423,7 @@ class BetActivities extends React.Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
+                                            <th scope="col">Type</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Wager</th>
                                             <th scope="col">Pick</th>

@@ -63,9 +63,11 @@ class BetDetail extends React.Component {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
             case "spread":
+            case 'alternative_spread':
                 const spreads = bet.pickName.split(' ');
                 return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
+            case 'alternative_total':
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
             default:
                 return null;
@@ -149,6 +151,8 @@ class BetDetail extends React.Component {
                                                 <th>Matched Amount</th>
                                                 <td>${numberFormat(bet.payableToWin.toFixed(2))} {bet.userId.currency}</td>
                                             </>}
+                                            <th>Line</th>
+                                            <td style={{ textTransform: "uppercase" }}>{this.getBetType(bet)}</td>
                                         </tr>
                                         <tr>
                                             <th>Pick Name</th>
@@ -179,12 +183,6 @@ class BetDetail extends React.Component {
                                                 {!bet.sportsbook && <span><del>{bet.teamB.odds}</del> <span>{newAway}</span></span>}
                                                 {bet.sportsbook && <span>{bet.teamB.odds}</span>}
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Line</th>
-                                            <td scope="col" style={{ textTransform: "uppercase" }}>{this.getBetType(bet)}</td>
-                                            <th>House</th>
-                                            <td scope="col"><span className="label label-lg label-success label-inline font-weight-lighter mr-2">PPW</span></td>
                                         </tr>
                                         <tr>
                                             <th>Status</th>

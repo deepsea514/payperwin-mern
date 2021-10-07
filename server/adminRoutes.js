@@ -1604,179 +1604,87 @@ adminRouter.get(
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            if (!house || house == 'p2p') {
-                let searchObj = {
+            let searchObj = {};
+            if (house == 'p2p') {
+                searchObj = {
+                    ...searchObj,
                     $or: [
                         { sportsbook: { $exists: false } },
                         { sportsbook: false }
                     ]
                 };
-                if (status && status == 'open') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
-                    };
-                } else if (status && status == 'settled') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
-                    };
-                }
-
-                if (match && match == 'pending') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
-                    };
-                }
-                else if (match && match == 'matched') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ matchingStatus: 'Matched' }
-                    };
-                }
-
-                if (datefrom || dateto) {
-                    let dateObj = {};
-                    if (datefrom) {
-                        datefrom = new Date(datefrom);
-                        if (!isNaN(datefrom.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $gte: datefrom }
-                            }
-                        }
-                    }
-                    if (dateto) {
-                        dateto = new Date(dateto);
-                        if (!isNaN(dateto.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $lte: dateto }
-                            }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ createdAt: dateObj }
-                    }
-                }
-
-                if (sport) {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ "lineQuery.sportId": parseInt(sport) }
-                    }
-                }
-
-                if (minamount || maxamount) {
-                    let amountObj = {}
-                    if (minamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $gte: parseInt(minamount) }
-                        }
-                    }
-                    if (maxamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $lte: parseInt(maxamount) }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ bet: amountObj }
-                    }
-                }
-
-                const total = await Bet.find(searchObj).count();
-                const data = await Bet.find(searchObj)
-                    .sort({ createdAt: -1 })
-                    .skip(page * perPage)
-                    .limit(perPage)
-                    .populate('userId', ['email', 'currency'])
-                page++;
-                return res.json({ total, perPage, page, data, });
             } else if (house == 'sportsbook') {
-                let searchObj = { sportsbook: true };
-                if (status && status == 'open') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: null }
-                    };
-                } else if (status && status == 'settled') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
-                    };
-                }
-
-                if (datefrom || dateto) {
-                    let dateObj = {};
-                    if (datefrom) {
-                        datefrom = new Date(datefrom);
-                        if (!isNaN(datefrom.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $gte: datefrom }
-                            }
-                        }
-                    }
-                    if (dateto) {
-                        dateto = new Date(dateto);
-                        if (!isNaN(dateto.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $lte: dateto }
-                            }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ createdAt: dateObj }
-                    }
-                }
-
-                if (sport) {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ "lineQuery.sportId": parseInt(sport) }
-                    }
-                }
-
-                if (minamount || maxamount) {
-                    let amountObj = {}
-                    if (minamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $gte: parseInt(minamount) }
-                        }
-                    }
-                    if (maxamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $lte: parseInt(maxamount) }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ bet: amountObj }
-                    }
-                }
-
-                const total = await Bet.find(searchObj).count();
-                const data = await Bet.find(searchObj)
-                    .sort({ createdAt: -1 })
-                    .skip(page * perPage)
-                    .limit(perPage)
-                    .populate('userId', ['email', 'currency'])
-                page++;
-                return res.json({ total, perPage, page, data, });
-            } else {
-                return res.status(404).json({ error: 'Can\'t find bets on house.' });
+                searchObj = {
+                    ...searchObj,
+                    sportsbook: true
+                };
             }
 
+            if (status && status == 'open') {
+                searchObj = {
+                    ...searchObj,
+                    status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+                };
+            } else if (status && status == 'settled') {
+                searchObj = {
+                    ...searchObj,
+                    status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
+                };
+            }
 
+            if (match && match == 'pending') {
+                searchObj = {
+                    ...searchObj,
+                    matchingStatus: { $in: ['Pending', 'Partial Match'] }
+                };
+            }
+            else if (match && match == 'matched') {
+                searchObj = {
+                    ...searchObj,
+                    matchingStatus: 'Matched'
+                };
+            }
+
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = { ...dateObj, $gte: datefrom }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = { ...dateObj, $lte: dateto }
+                    }
+                }
+                searchObj = { ...searchObj, createdAt: dateObj }
+            }
+
+            if (sport) {
+                searchObj = { ...searchObj, "lineQuery.sportId": parseInt(sport) }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = { ...amountObj, $gte: parseInt(minamount) }
+                }
+                if (maxamount) {
+                    amountObj = { ...amountObj, $lte: parseInt(maxamount) }
+                }
+                searchObj = { ...searchObj, bet: amountObj }
+            }
+
+            const total = await Bet.find(searchObj).count();
+            const data = await Bet.find(searchObj)
+                .sort({ createdAt: -1 })
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('userId', ['email', 'currency'])
+            page++;
+            return res.json({ total, perPage, page, data, });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
