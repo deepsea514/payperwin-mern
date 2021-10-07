@@ -32,8 +32,6 @@ const BetSchema = new Schema(
         toWin: Number,
         fee: Number,
         matchStartDate: Date,
-        // lineType: String, // REDUNDANT
-        // index: Number, // REDUNDANT
         result: String, // team name that won
         credited: Number, // amount won or lost
         status: { type: String, default: null }, // undefined, Settled, Cancelled
@@ -41,8 +39,6 @@ const BetSchema = new Schema(
         homeScore: Number,
         awayScore: Number,
         payableToWin: Number, // how much has been matched with opposing bets
-        // betStartDate: Date,
-        // betEndDate: Date,
         transactionID: { type: String, unique: true },
         origin: { type: String, default: 'bet365' },
         notifySent: Date,

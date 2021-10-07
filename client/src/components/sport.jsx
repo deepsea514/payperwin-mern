@@ -67,21 +67,29 @@ class Sport extends Component {
                                 if (lines) {
                                     lines.forEach((line, i) => {
                                         if (i === 0) {
-                                            const { moneyline, spreads, totals, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
-                                            let mline = [{ moneyline, spreads, totals }, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter];
+                                            const {
+                                                moneyline, spreads, totals, alternative_spreads, alternative_totals,
+                                                first_half, second_half,
+                                                first_quarter, second_quarter, third_quarter, forth_quarter
+                                            } = line;
+                                            let mline = [{ moneyline, spreads, totals, alternative_spreads, alternative_totals }, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter];
                                             mline.forEach(line => {
                                                 if (!line) return;
-                                                const { moneyline, spreads, totals } = line;
+                                                const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line;
                                                 if (moneyline) {
                                                     event.lineCount++;
                                                 }
                                                 if (spreads) {
                                                     event.lineCount += spreads.length;
-                                                    line.spreads = spreads.length ? spreads : null;
                                                 }
                                                 if (totals) {
                                                     event.lineCount += totals.length;
-                                                    line.totals = totals.length ? totals : null;
+                                                }
+                                                if(alternative_spreads) {
+                                                    event.lineCount += alternative_spreads.length;
+                                                }
+                                                if(alternative_totals) {
+                                                    event.lineCount += alternative_totals.length;
                                                 }
                                             })
                                         }

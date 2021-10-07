@@ -171,7 +171,7 @@ class BetActivities extends React.Component {
         const oddsA = Number(teamA.odds);
         const oddsB = Number(teamB.odds);
 
-        if (lineQuery.type == 'spread') {
+        if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
             let spreads = pickName.split(' ');
             spreads = Number(spreads[spreads.length - 1]);
             if (spreads < 0) {
