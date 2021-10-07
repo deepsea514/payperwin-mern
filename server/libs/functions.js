@@ -74,44 +74,17 @@ const calculateBetsStatus = async (betpoolUid) => {
         home: teamA.betTotal,
         away: teamB.betTotal,
     }
-    if (isMultiBetpool) {
-        for (const bet of bets) {
-            const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin, sportsbook } = bet;
-            let payableToWin = 0;
-            if (payPool[pick] && payPool[pick] > 0) {
-                payableToWin += toWin;
-                payPool[pick] -= toWin;
-                if (payPool[pick] < 0)
-                    payableToWin += payPool[pick];
-            }
-            let matchingStatus;
-            if (payableToWin >= toWin) matchingStatus = sportsbook ? 'Accepted' : 'Matched';
-            else if (payableToWin === 0) matchingStatus = 'Pending';
-            else matchingStatus = sportsbook ? 'Partial Accepted' : 'Partial Match';
-            const betChanges = {
-                $set: {
-                    payableToWin,
-                    matchingStatus,
-                    status: matchingStatus,
-                }
-            };
-            if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-                await Bet.findOneAndUpdate({ _id }, betChanges);
-            }
-        }
-        return;
-    }
     for (const bet of bets) {
-        const { _id, bet: betAmount, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+        const { _id, bet: betAmount, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin, sportsbook } = bet;
         let payableToWin = 0;
         if (payPool[pick] && payPool[pick] > 0 && betAmounts[pick]) {
             const rate = betAmount / betAmounts[pick];
             payableToWin = Number((payPool[pick] * rate).toFixed(2));
         }
         let matchingStatus;
-        if (payableToWin >= toWin) matchingStatus = 'Matched';
+        if (payableToWin >= toWin) matchingStatus = sportsbook ? 'Accepted' : 'Matched';
         else if (payableToWin === 0) matchingStatus = 'Pending';
-        else matchingStatus = 'Partial Match'
+        else matchingStatus = sportsbook ? 'Partial Accepted' : 'Partial Match';
         const betChanges = {
             $set: {
                 payableToWin,
