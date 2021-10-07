@@ -3,6 +3,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import AutobetHistory from '../components/autobethistory';
 import AutobetSummary from '../components/autobetsummary';
 import AutobetChart from '../components/autobechart';
+import AutobetHistoryTable from "../components/autobethistorytable"
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
@@ -17,6 +18,7 @@ class AutobetDashboard extends Component {
             error: null,
             data: null,
             daterange: null,
+            detail: null,
         };
         this._Mounted = false;
     }
@@ -49,11 +51,11 @@ class AutobetDashboard extends Component {
         this._Mounted && this.setState({ loading: true });
         axios.get(`${serverUrl}/autobet`, { withCredentials: true, params: daterange })
             .then(({ data }) => {
-                this._Mounted && this.setState({ loading: false, data });
+                this._Mounted && this.setState({ loading: false, data, detail: null });
             })
             .catch((error) => {
                 console.log(error);
-                this._Mounted && this.setState({ loading: false, error, data: null });
+                this._Mounted && this.setState({ loading: false, error, data: null, detail: null });
             })
     }
 
@@ -68,7 +70,7 @@ class AutobetDashboard extends Component {
     }
 
     render() {
-        const { data, loading, error, daterange } = this.state;
+        const { data, loading, error, daterange, detail } = this.state;
         const { user } = this.props;
 
         return (
@@ -87,8 +89,7 @@ class AutobetDashboard extends Component {
                             </DateRangePicker>
                         </div>
                     </div>
-                    {/* <h1 className="main-heading-in">Autobet Dashboard</h1> */}
-                    <div className="main-cnt mt-5">
+                    {detail == null && <div className="main-cnt">
                         {loading && <center>
                             <Preloader use={ThreeDots}
                                 size={100}
@@ -103,10 +104,20 @@ class AutobetDashboard extends Component {
                                 <AutobetChart sports={data.sports} />
                             </div>
                             <div className="col-md-5">
-                                <AutobetSummary user={user} summary={data.summary} />
+                                <AutobetSummary
+                                    user={user}
+                                    summary={data.summary}
+                                    setDetail={(detail) => this.setState({ detail: detail })}
+                                />
                             </div>
                         </div>}
-                    </div>
+                    </div>}
+                    {detail && <div className="main-cnt">
+                        <AutobetHistoryTable
+                            detail={detail}
+                            cancel={() => this.setState({ detail: null })}
+                            histories={data.histories} />
+                    </div>}
                 </div>
             </React.Fragment>
         );
