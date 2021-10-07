@@ -45,7 +45,7 @@ const EventSchema = new Schema(
 
 EventSchema.pre('save', async function (next) { // eslint-disable-line func-names
     const event = this;
-    const BetFee = 0.03;
+    const BetFee = 0.05;
     // check if approved.
     if (event.isModified('approved') && event.approved && event.creator == 'User' && event.user) {
         const { name, teamA, teamB, startDate, initialWager: { wagerAmount, favorite } } = event;

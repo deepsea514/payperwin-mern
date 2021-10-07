@@ -65,7 +65,7 @@ const {
     calculateBetsStatus,
     calculateToWinFromBet
 } = require('./libs/functions');
-const BetFee = 0.03;
+const BetFee = 0.05;
 const loyaltyPerBet = 25;
 
 Date.prototype.addHours = function (h) {
@@ -1884,7 +1884,7 @@ adminRouter.post(
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                             if (user) {
                                 const { email } = user;
-                                const betFee = Number((payableToWin * 0.03).toFixed(2));
+                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                                     await FinancialLog.create({
@@ -3567,7 +3567,7 @@ const matchResults = async (eventId, matchResult) => {
                                 awayScore,
                             }
                         }
-                        const betFee = Number((payableToWin * 0.03).toFixed(2));
+                        const betFee = Number((payableToWin * BetFee).toFixed(2));
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                         await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                         await FinancialLog.create({

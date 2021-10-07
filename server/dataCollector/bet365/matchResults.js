@@ -18,6 +18,7 @@ const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const BetFee = 0.05;
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -180,7 +181,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                                         awayScore,
                                     }
                                 }
-                                const betFee = Number((payableToWin * 0.03).toFixed(2));
+                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
