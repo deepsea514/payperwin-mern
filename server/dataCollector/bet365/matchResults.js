@@ -172,16 +172,17 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
                             if (user) {
-                                const { balance, email } = user;
+                                const { email } = user;
+                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',
                                         credited: betAmount + payableToWin,
-                                        homeScore,
-                                        awayScore,
+                                        homeScore: homeScore,
+                                        awayScore: awayScore,
+                                        fee: betFee
                                     }
                                 }
-                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });

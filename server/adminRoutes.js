@@ -1873,18 +1873,19 @@ adminRouter.post(
                         if (betWin === true) {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
+                            const betFee = Number((payableToWin * BetFee).toFixed(2));
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Win',
                                     credited: betAmount + payableToWin,
-                                    homeScore,
-                                    awayScore,
+                                    homeScore: homeScore,
+                                    awayScore: awayScore,
+                                    fee: betFee
                                 }
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                             if (user) {
                                 const { email } = user;
-                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                                     await FinancialLog.create({
@@ -3558,16 +3559,17 @@ const matchResults = async (eventId, matchResult) => {
 
                     if (betWin === true) {
                         const user = await User.findById(userId);
-                        const { balance, email } = user;
+                        const { email } = user;
+                        const betFee = Number((payableToWin * BetFee).toFixed(2));
                         const betChanges = {
                             $set: {
                                 status: 'Settled - Win',
                                 credited: betAmount + payableToWin,
-                                homeScore,
-                                awayScore,
+                                homeScore: homeScore,
+                                awayScore: awayScore,
+                                fee: betFee
                             }
                         }
-                        const betFee = Number((payableToWin * BetFee).toFixed(2));
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                         await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                         await FinancialLog.create({
