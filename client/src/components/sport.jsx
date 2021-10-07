@@ -268,7 +268,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: ${teamA}`,
+                                                                    pickName: `Game: ${teamB}`,
                                                                     index: null,
                                                                     origin: origin,
                                                                     started: started,
