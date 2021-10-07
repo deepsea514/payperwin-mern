@@ -121,7 +121,7 @@ class AutobetSummary extends Component {
                                         </div>
                                     </div>
                                     <a className="ml-auto font-weight-bold text-dark-50 py-4 font-size-base">
-                                        ${numberFormat((winbets.amount * 0.03).toFixed(2))}
+                                        ${numberFormat((winbets.fee ? winbets.fee : 0).toFixed(2))}
                                         <span className="svg-icon svg-icon-md svg-icon-success">
                                             <SVG src="/media/svg/icons/Navigation/Arrow-up.svg" />
                                         </span>

@@ -49,7 +49,7 @@ const {
     isFreeWithdrawalUsed,
     checkSignupBonusPromotionEnabled,
 } = require('./libs/functions');
-const BetFee = 0.03;
+const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
@@ -3772,8 +3772,9 @@ expressApp.get(
                     }
                 }
             ]);
-            if (betamount && betamount.length)
+            if (betamount && betamount.length) {
                 betamount = betamount[0].amount;
+            }
             else betamount = 0;
 
             const wincount = await Bet.find({
@@ -3782,6 +3783,25 @@ expressApp.get(
                 orgin: { $ne: 'other' },
                 status: 'Settled - Win'
             }).count();
+
+            let fee = await FinancialLog.aggregate([
+                {
+                    $match: {
+                        user: user._id,
+                        updatedAt: dateObj,
+                        financialtype: "betfee",
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$amount" },
+                    }
+                }
+            ]);
+            if (fee && fee.length) {
+                fee = fee[0].amount;
+            } else fee = 0;
 
             let winamount = await Bet.aggregate([
                 {
@@ -3795,12 +3815,13 @@ expressApp.get(
                 {
                     $group: {
                         _id: null,
-                        amount: { $sum: "$payableToWin" }
+                        amount: { $sum: "$payableToWin" },
                     }
                 }
             ]);
-            if (winamount && winamount.length)
+            if (winamount && winamount.length) {
                 winamount = winamount[0].amount;
+            }
             else winamount = 0;
 
             const losscount = await Bet.find({
@@ -3882,7 +3903,8 @@ expressApp.get(
                     },
                     winbets: {
                         count: wincount,
-                        amount: winamount
+                        amount: winamount,
+                        fee: fee
                     },
                     lossbets: {
                         count: losscount,
