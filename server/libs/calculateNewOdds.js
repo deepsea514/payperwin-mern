@@ -4,11 +4,11 @@ const calculateNewOdds = (home, away, pick, type, subtype = null) => {
     }
     const moneylineDifference = Math.abs(Math.abs(home) - Math.abs(away)) / 2;
 
-    if (home == away) {
-        if (home < 0 && home + 5.5 > -100) {
-            return 200 + parseInt(home) + 5.5;
+    if (home == away && home < 0) {
+        if (home + 11 > -100) {
+            return 200 + parseInt(home) + 11;
         }
-        return parseInt(home) + 5.5;
+        return parseInt(home) + 11;
     }
 
     let bigHome = 1;
