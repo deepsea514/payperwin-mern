@@ -80,7 +80,7 @@ export default class LineDetail extends Component {
         return (
             <li>
                 <div className="row mx-0">
-                    <div className="col-md-6 com-sm-12 col-12">
+                    <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${homeExist ? 'orange' : null}`}
                             onClick={homeExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'home', lineQuery.index, lineQuery.subtype)
@@ -126,7 +126,7 @@ export default class LineDetail extends Component {
                             </div>
                         </span>
                     </div>
-                    <div className="col-md-6 com-sm-12 col-12">
+                    <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${awayExist ? 'orange' : null}`}
                             onClick={awayExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'away', lineQuery.index, lineQuery.subtype)
