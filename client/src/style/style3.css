@@ -783,7 +783,18 @@ a.log-in-btn {
     font-size: 12px;
     height: 30px;
     line-height: 30px;
+    /* margin-bottom: 5px; */
+}
+
+.line-type-header+li {
+    margin-top: 5px;
+}
+
+.line-type-header-teams {
+    background-color: #c2c6ce;
     margin-bottom: 5px;
+    color: #707070;
+    font-size: 10px;
 }
 
 .line-type-header-moneyline {
