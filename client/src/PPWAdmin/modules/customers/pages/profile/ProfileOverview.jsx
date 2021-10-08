@@ -34,35 +34,27 @@ class ProfileOverview extends React.Component {
         const { lastbets, lastsportsbookbets, totalwagers, totaldeposit, balance, currency, winloss } = this.state;
         return (
             <div className="row">
-                <div className="col-lg-5">
+                <div className="col-lg-8">
                     <OverviewBet
                         lastbets={lastbets}
                         lastsportsbookbets={lastsportsbookbets}
                         currency={currency}
                         className="card-stretch gutter-b" />
                 </div>
-                <div className="col-lg-7">
+                <div className="col-lg-4">
                     <OverviewBalance
                         balance={Number(balance).toFixed(2)}
                         currency={currency}
                         className="" />
                     <WinLoss className="mt-3" winloss={winloss} />
-                    <div className="mt-3">
-                        <div className="row">
-                            <div className="col-lg-6">
-                                <OverviewTotalWager
-                                    totalwagers={totalwagers}
-                                    currency={currency}
-                                    className="card-stretch gutter-b" />
-                            </div>
-                            <div className="col-lg-6">
-                                <OverviewTotalDeposit
-                                    totaldeposit={totaldeposit}
-                                    currency={currency}
-                                    className="card-stretch gutter-b" />
-                            </div>
-                        </div>
-                    </div>
+                    <OverviewTotalWager
+                        totalwagers={totalwagers}
+                        currency={currency}
+                        className="mt-3" />
+                    <OverviewTotalDeposit
+                        totaldeposit={totaldeposit}
+                        currency={currency}
+                        className="mt-3" />
                 </div>
             </div>
         );

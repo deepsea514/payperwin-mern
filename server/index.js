@@ -1654,7 +1654,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             pickName += '4th Quarter: ';
             break;
         default:
-            pickName += 'Game: ';
+            pickName += 'Pick: ';
             break;
     }
     switch (type) {

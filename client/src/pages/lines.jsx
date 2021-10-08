@@ -10,6 +10,7 @@ import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import _env from '../env.json';
+import SBModal from '../components/sbmodal';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -126,24 +127,11 @@ class Lines extends Component {
                     <meta property="og:title" content={ogTitle} />
                     <meta property="og:description" content={ogDescription} />
                 </MetaTags>}
-                {sportsbookInfo && <div className="modal confirmation">
-                    <div className="background-closer bg-modal" onClick={() => this.setState({ sportsbookInfo: null })} />
-                    <div className="col-in">
-                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ sportsbookInfo: null })} />
-                        <div>
-                            <b>BET ON SPORTSBOOK</b>
-                            <hr />
-                            <p>
-                                Peer to Peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
-                            </p>
-                            <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
-                            <div className="text-right">
-                                <button className="form-button ml-2" onClick={this.addSportsbookBet}> Accept </button>
-                                <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>}
+                {sportsbookInfo && <SBModal
+                    sportsbookInfo={sportsbookInfo}
+                    onClose={() => this.setState({ sportsbookInfo: null })}
+                    onAccept={this.addSportsbookBet}
+                />}
                 {shareModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
                     <div className="col-in">

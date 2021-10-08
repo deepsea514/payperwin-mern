@@ -10,7 +10,7 @@ import { searchUsers } from "../../customers/redux/services";
 import { addWithdraw } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import config from "../../../../../../config.json";
-const PaymentMethod = config.PaymentMethod;
+const PaymentMethod = config.PaymentMethod.filter(method => method != "CREDIT");
 const FinancialStatus = config.FinancialStatus;
 
 class AddWithdraw extends React.Component {

@@ -159,24 +159,32 @@ class BetLog extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0" style={{ textTransform: "uppercase" }}>
-                    {this.getBetsType(bet)}
+                    {this.getBetStatus(bet.status)}
                 </td>
             </tr>
         ));
     }
 
-    getBetsType = (bet) => {
-        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
-        switch (type) {
-            case "moneyline":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
-            case "spread":
-                const spreads = bet.pickName.split(' ');
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
-            case "total":
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
-            default:
-                return null;
+    getBetStatus = (status) => {
+        switch (status) {
+            case "Pending":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">Pending</span>
+            case "Partial Match":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span>
+            case "Matched":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Matched</span>
+            case "Cancelled":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">Cancelled</span>
+            case "Settled - Lose":
+                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Lose</span>
+            case "Settled - Win":
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
+            case "Draw":
+                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
+            case "Accepted":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
 
@@ -220,7 +228,7 @@ class BetLog extends React.Component {
                                             <th className="p-0" >Pick</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
-                                            <th className="p-0" >Line</th>
+                                            <th className="p-0" >Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -247,7 +255,7 @@ class BetLog extends React.Component {
                                             <th className="p-0" >Pick</th>
                                             <th className="p-0" >Sport</th>
                                             <th className="p-0" >Event</th>
-                                            <th className="p-0" >Line</th>
+                                            <th className="p-0" >Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
