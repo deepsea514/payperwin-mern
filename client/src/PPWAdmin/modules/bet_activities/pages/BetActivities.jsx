@@ -96,17 +96,17 @@ class BetActivities extends React.Component {
                         <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
                             <i className="far fa-eye"></i>&nbsp; Detail
                         </Dropdown.Item>
-                        {['Pending', 'Partial Match', 'Matched', null].includes(bet.status) &&
+                        {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
                             <>
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                     <i className="fas fa-trash"></i>&nbsp; Delete
                                 </Dropdown.Item>
-                                {filter.house != 'sportsbook' && <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
-                                </Dropdown.Item>}
+                                </Dropdown.Item>
                             </>
                         }
-                        {['Pending', 'Partial Match'].includes(bet.status) &&
+                        {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
                             </Dropdown.Item>
@@ -248,7 +248,7 @@ class BetActivities extends React.Component {
     }
 
     getBetHouse = (sportsbook) => {
-        if(sportsbook) {
+        if (sportsbook) {
             return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
         }
         return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">P2P</span>
