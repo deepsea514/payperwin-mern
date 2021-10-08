@@ -178,6 +178,9 @@ class Sport extends Component {
                                         <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf">
                                             <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </Link>
+                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf mt-2 text-right">
+                                            <strong>Additional Lines +</strong>
+                                        </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
                                         <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }}>
