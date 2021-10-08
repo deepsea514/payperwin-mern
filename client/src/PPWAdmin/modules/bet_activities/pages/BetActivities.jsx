@@ -83,14 +83,13 @@ class BetActivities extends React.Component {
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
+                {/* <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td> */}
                 <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                 <td scope="col">{dateformat(bet.matchStartDate)}</td>
-                <td scope="col">{this.getBetDogFav(bet, index)}</td>
+                {/* <td scope="col">{this.getBetDogFav(bet, index)}</td> */}
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
-                <td scope="col">{this.getBetMatch(bet.status)}</td>
+                <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
-                <td scope="col">{bet.transactionID}</td>
                 <td scope="col">
                     <DropdownButton title="Actions">
                         <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
@@ -215,13 +214,13 @@ class BetActivities extends React.Component {
         }
     }
 
-    getBetMatch = (status) => {
-        switch (status) {
+    getBetMatch = (bet) => {
+        switch (bet.status) {
             case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
             case "Draw":
-                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled ({bet.homeScore} : {bet.awayScore})</span>
             case "Pending":
             case "Partial Match":
             case "Matched":
@@ -417,6 +416,21 @@ class BetActivities extends React.Component {
                                         <b>Search</b> by Max Amount
                                     </small>
                                 </div>
+                                <div className="col-lg-2 col-md-3">
+                                    <input
+                                        type="text"
+                                        value={filter.email}
+                                        className="form-control"
+                                        name="searchEmail"
+                                        placeholder="Search"
+                                        onChange={(e) => {
+                                            this.onFilterChange({ email: e.target.value });
+                                        }}
+                                    />
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Email
+                                    </small>
+                                </div>
                             </div>
                             <div className="table-responsive">
                                 <table className="table">
@@ -428,14 +442,13 @@ class BetActivities extends React.Component {
                                             <th scope="col">Wager</th>
                                             <th scope="col">Pick</th>
                                             <th scope="col">User</th>
-                                            <th scope="col">Sport</th>
+                                            {/* <th scope="col">Sport</th> */}
                                             <th scope="col">Event</th>
                                             <th scope="col">Start Date</th>
-                                            <th scope="col">Dog/Fav</th>
+                                            {/* <th scope="col">Dog/Fav</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
                                             <th scope="col">Win/Loss Amount</th>
-                                            <th scope="col">TransactionID</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>

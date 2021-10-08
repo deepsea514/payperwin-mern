@@ -1599,7 +1599,7 @@ adminRouter.get(
     limitRoles('bet_activities'),
     async (req, res) => {
         try {
-            let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage } = req.query;
+            let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage, email } = req.query;
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             if (!page) page = 1;
@@ -1677,14 +1677,45 @@ adminRouter.get(
                 searchObj = { ...searchObj, bet: amountObj }
             }
 
-            const total = await Bet.find(searchObj).count();
-            const data = await Bet.find(searchObj)
-                .sort({ createdAt: -1 })
-                .skip(page * perPage)
-                .limit(perPage)
-                .populate('userId', ['email', 'currency'])
+            if (!email) email = '';
+
+            let aggregate = [
+                { $match: searchObj },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $eq: ["$_id", "$$user_id"] }
+                            },
+                        }, {
+                            $project: {
+                                email: 1,
+                                currency: 1
+                            }
+                        }],
+                        as: 'userId',
+                    }
+                },
+                { $unwind: '$userId' },
+                {
+                    $match: { "userId.email": { "$regex": email, "$options": "i" } }
+                },
+            ]
+            const total = await Bet.aggregate([
+                ...aggregate,
+                { $count: "total" }
+            ]);
+            const data = await Bet.aggregate([
+                ...aggregate,
+                { $sort: { createdAt: -1 } },
+                { $skip: page * perPage },
+                { $limit: perPage }
+            ]);
+
             page++;
-            return res.json({ total, perPage, page, data, });
+            return res.json({ total: total.total, perPage, page, data });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
