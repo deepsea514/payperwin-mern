@@ -48,7 +48,7 @@ export default class LineDetail extends Component {
                 pickName += '4th Quarter: ';
                 break;
             default:
-                pickName += 'Game: ';
+                pickName += 'Pick: ';
                 break;
         }
 

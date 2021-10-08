@@ -7,23 +7,18 @@ class OverviewTotalWager extends React.Component {
     render() {
         const { className, totalwagers, currency } = this.props;
         return (
-            <div className={`card card-custom ${className} bg-success`}>
-                <div className="card-body d-flex flex-column text-left">
-                    <span className="symbol symbol-80 symbol-light-success mr-2">
-                        <span className="symbol-label">
-                            <span className="svg-icon svg-icon-xl svg-icon-success">
-                                <SVG
-                                    src="/media/svg/icons/Communication/Group.svg"
-                                ></SVG>
-                            </span>
-                        </span>
-                    </span>
-                    <h4 className="card-title font-weight-bolder text-white mt-5">
-                        ${numberFormat(totalwagers.toFixed(2))}&nbsp;{currency}
-                    </h4>
-                    <h3 className="card-title font-weight-bolder text-white m-0">
+            <div className={`card card-custom bg-success ${className}`}>
+                <div className="card-header border-0 pt-5">
+                    <h3 className="card-title font-weight-bolder text-white">
                         Total Wager
                     </h3>
+                    <div className="card-toolbar">
+                    </div>
+                </div>
+                <div className="card-body d-flex flex-column p-0 text-left">
+                    <h2 className="card-title font-weight-bolder text-white ml-10">
+                        ${numberFormat(totalwagers.toFixed(2))}&nbsp;{currency}
+                    </h2>
                 </div>
             </div>
         );

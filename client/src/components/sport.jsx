@@ -8,6 +8,7 @@ import calculateNewOdds from '../helpers/calculateNewOdds';
 import convertOdds from '../helpers/convertOdds';
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import _env from '../env.json';
+import SBModal from './sbmodal';
 const serverUrl = _env.appUrl;
 
 class Sport extends Component {
@@ -151,24 +152,11 @@ class Sport extends Component {
         );
         return (
             <div className="mt-2">
-                {sportsbookInfo && <div className="modal confirmation">
-                    <div className="background-closer bg-modal" onClick={() => this.setState({ sportsbookInfo: null })} />
-                    <div className="col-in">
-                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ sportsbookInfo: null })} />
-                        <div>
-                            <b>BET ON SPORTSBOOK</b>
-                            <hr />
-                            <p>
-                                Peer to Peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
-                            </p>
-                            <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
-                            <div className="text-right">
-                                <button className="form-button ml-2" onClick={this.addSportsbookBet}> Accept </button>
-                                <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>}
+                {sportsbookInfo && <SBModal
+                    sportsbookInfo={sportsbookInfo}
+                    onClose={() => this.setState({ sportsbookInfo: null })}
+                    onAccept={this.addSportsbookBet}
+                />}
                 <div className="table-title">HIGHLIGHTS</div>
                 <div className="content">
                     {leagues.map(league => {
@@ -228,7 +216,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: ${teamA}`,
+                                                                    pickName: `Pick: ${teamA}`,
                                                                     index: null,
                                                                     origin: origin,
                                                                     started: started,
@@ -268,7 +256,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: ${teamB}`,
+                                                                    pickName: `Pick: ${teamB}`,
                                                                     index: null,
                                                                     origin: origin,
                                                                     started: started,
@@ -330,7 +318,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
+                                                                    pickName: `Pick: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
                                                                     index: 0,
                                                                     origin: origin,
                                                                     started: started,
@@ -373,7 +361,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
+                                                                    pickName: `Pick: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
                                                                     index: 0,
                                                                     origin: origin,
                                                                     started: started,
@@ -436,7 +424,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: Over ${totals[0].points}`,
+                                                                    pickName: `Pick: Over ${totals[0].points}`,
                                                                     index: 0,
                                                                     origin: origin,
                                                                     started: started,
@@ -479,7 +467,7 @@ class Sport extends Component {
                                                                     sportName: sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
-                                                                    pickName: `Game: Under ${totals[0].points}`,
+                                                                    pickName: `Pick: Under ${totals[0].points}`,
                                                                     index: 0,
                                                                     origin: origin,
                                                                     started: started,

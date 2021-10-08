@@ -530,7 +530,7 @@ adminRouter.get(
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            const winloss = totaldeposit - user.balance;
+            const winloss = user.balance - totaldeposit;
             res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
         }
         catch (error) {
@@ -2085,7 +2085,7 @@ adminRouter.post(
                     pickName += '4th Quarter: ';
                     break;
                 default:
-                    pickName += 'Game: ';
+                    pickName += 'Pick: ';
                     break;
             }
             switch (bet.lineQuery.type) {

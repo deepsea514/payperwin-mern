@@ -106,7 +106,7 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            Fee
+                                            Fees To PAYPER WIN
                                         </a>
                                         <br />
                                     </div>
@@ -163,7 +163,7 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            Pending
+                                            In-Play
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
