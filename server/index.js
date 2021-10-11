@@ -49,7 +49,7 @@ const {
     isFreeWithdrawalUsed,
     checkSignupBonusPromotionEnabled,
 } = require('./libs/functions');
-const BetFee = 0.03;
+const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
@@ -953,7 +953,6 @@ expressApp.post(
             if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
             } else {
-
                 // TODO: error if match has already started
                 // TODO: prevent certain types of bets
                 if (origin == 'other') {
@@ -1231,11 +1230,11 @@ expressApp.post(
                                 errors.push(`${pickName} @${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
                                 continue;
                             }
-                            const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+                            const pickWithOverUnder = ['total', 'alternative_total'].includes(lineQuery.type) ? (pick === 'home' ? 'over' : 'under') : pick;
                             const lineOdds = line.line[pickWithOverUnder];
-                            const oddsA = type === 'total' ? line.line.over : line.line.home;
-                            const oddsB = type === 'total' ? line.line.under : line.line.away;
-                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.subtype);
+                            const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+                            const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
                             if (sportsbook) {
                                 newLineOdds = pick == 'home' ? oddsA : oddsB;
                             }
@@ -1501,14 +1500,14 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
 
     const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
 
-    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+    const pickWithOverUnder = ['total', 'alternative_total'].includes(type) ? (pick === 'home' ? 'over' : 'under') : pick;
     const lineOdds = line.line[pickWithOverUnder];
-    const oddsA = type === 'total' ? line.line.over : line.line.home;
-    const oddsB = type === 'total' ? line.line.under : line.line.away;
-    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick);
+    const oddsA = ['total', 'alternative_total'].includes(type) ? line.line.over : line.line.home;
+    const oddsB = ['total', 'alternative_total'].includes(type) ? line.line.under : line.line.away;
+    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
 
     let side = 'Underdog';
-    if (type == 'spread') {
+    if (['spread', 'alternative_spread'].includes(type)) {
         if (points > 0 && pick == 'away' || points < 0 && pick == 'home') side = 'Favorite';
     }
     else {
@@ -1526,9 +1525,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             betType = 'Moneyline';
             break;
         case 'spread':
+        case 'alternative_spread':
             betType = 'Spreads';
             break;
         case 'total':
+        case 'alternative_total':
         default:
             betType = 'Over/Under';
             break;
@@ -1653,11 +1654,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             pickName += '4th Quarter: ';
             break;
         default:
-            pickName += 'Game: ';
+            pickName += 'Pick: ';
             break;
     }
     switch (type) {
         case 'total':
+        case 'alternative_total':
             if (pick == 'home') {
                 pickName += `Over ${points}`;
                 betType += `O ${points}`;
@@ -1666,8 +1668,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 betType += `U ${points}`;
             }
             break;
-
         case 'spread':
+        case 'alternative_spread':
             if (pick == 'home') {
                 pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
                 betType += `${hdp > 0 ? '+' : ''}${hdp}`;
@@ -2007,14 +2009,15 @@ expressApp.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
+
             const betpool = await BetPool.findOne({
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,
@@ -2351,6 +2354,68 @@ expressApp.get(
             res.json(customBets);
         }
     },
+);
+
+expressApp.get(
+    '/search',
+    async (req, res) => {
+        const { param } = req.query;
+        if (!param) return res.json([]);
+        try {
+            const results = [];
+            const searchSports = await Sport.find({
+                $or: [
+                    {
+                        "leagues.name": { "$regex": param, "$options": "i" }
+                    },
+                    {
+                        "leagues.events.startDate": { $gte: new Date() },
+                        $or: [
+                            { "leagues.events.teamA": { "$regex": param, "$options": "i" } },
+                            { "leagues.events.teamB": { "$regex": param, "$options": "i" } },
+                        ]
+                    }
+                ]
+            });
+            for (const sport of searchSports) {
+                for (const league of sport.leagues) {
+                    if (league.name.toLowerCase().includes(param.toLowerCase())) {
+                        results.push({
+                            type: 'league',
+                            sportName: sport.name,
+                            leagueName: league.name,
+                            leagueId: league.originId,
+                        })
+                    }
+                    for (const event of league.events) {
+                        if (new Date(event.startDate).getTime() > new Date().getTime()) {
+                            if (event.teamA.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamA
+                                });
+                            } else if (event.teamB.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamB
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.json([]);
+        }
+    }
 )
 
 expressApp.get('/getPinnacleLogin',
@@ -2783,34 +2848,9 @@ expressApp.post(
                     console.warn("PremierPay Api is not set");
                     return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
                 }
-
-                const maxwithdraw = getMaxWithdraw(user);
-                let totalwithdraw = await FinancialLog.aggregate(
-                    {
-                        $match: {
-                            financialtype: "withdraw",
-                            user: new ObjectId(user._id),
-                        }
-                    },
-                    {
-                        $group: { _id: null, total: { $sum: "$amount" } }
-                    }
-                )
-                if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
-                else totalwithdraw = 0;
-
-                if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
-                }
-
-                if (amount + fee > user.balance) {
-                    return res.json({ success: 0, message: "Insufficient funds." });
-                }
-
-                const { payouturl, sid } = premierpayAddon.value;
+                const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
                 const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
                 const amount2 = Number(amount).toFixed(2);
-
                 const { data } = await axios.post(`${payouturl}/${sid}`,
                     {
                         "payby": "etransfer",
@@ -2838,6 +2878,36 @@ expressApp.post(
                     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 }
                 if (data.status == "APPROVED") {
+
+                    const maxwithdraw = getMaxWithdraw(user);
+
+                    let totalwithdraw = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                financialtype: "withdraw",
+                                user: new ObjectId(user._id),
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                total: {
+                                    $sum: "$amount"
+                                }
+                            }
+                        }
+                    )
+                    if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+                    else totalwithdraw = 0;
+
+                    if ((amount + totalwithdraw) > maxwithdraw) {
+                        return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                    }
+
+                    if (amount + fee > user.balance) {
+                        return res.json({ success: 0, message: "Insufficient funds." });
+                    }
+
                     const withdraw = new FinancialLog({
                         financialtype: 'withdraw',
                         uniqid: uniqid,
@@ -3702,8 +3772,9 @@ expressApp.get(
                     }
                 }
             ]);
-            if (betamount && betamount.length)
+            if (betamount && betamount.length) {
                 betamount = betamount[0].amount;
+            }
             else betamount = 0;
 
             const wincount = await Bet.find({
@@ -3712,6 +3783,25 @@ expressApp.get(
                 orgin: { $ne: 'other' },
                 status: 'Settled - Win'
             }).count();
+
+            let fee = await FinancialLog.aggregate([
+                {
+                    $match: {
+                        user: user._id,
+                        updatedAt: dateObj,
+                        financialtype: "betfee",
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$amount" },
+                    }
+                }
+            ]);
+            if (fee && fee.length) {
+                fee = fee[0].amount;
+            } else fee = 0;
 
             let winamount = await Bet.aggregate([
                 {
@@ -3725,12 +3815,13 @@ expressApp.get(
                 {
                     $group: {
                         _id: null,
-                        amount: { $sum: "$payableToWin" }
+                        amount: { $sum: "$payableToWin" },
                     }
                 }
             ]);
-            if (winamount && winamount.length)
+            if (winamount && winamount.length) {
                 winamount = winamount[0].amount;
+            }
             else winamount = 0;
 
             const losscount = await Bet.find({
@@ -3812,7 +3903,8 @@ expressApp.get(
                     },
                     winbets: {
                         count: wincount,
-                        amount: winamount
+                        amount: winamount,
+                        fee: fee
                     },
                     lossbets: {
                         count: losscount,
