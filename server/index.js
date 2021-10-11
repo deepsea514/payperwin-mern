@@ -2783,9 +2783,34 @@ expressApp.post(
                     console.warn("PremierPay Api is not set");
                     return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
                 }
-                const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
+
+                const maxwithdraw = getMaxWithdraw(user);
+                let totalwithdraw = await FinancialLog.aggregate(
+                    {
+                        $match: {
+                            financialtype: "withdraw",
+                            user: new ObjectId(user._id),
+                        }
+                    },
+                    {
+                        $group: { _id: null, total: { $sum: "$amount" } }
+                    }
+                )
+                if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+                else totalwithdraw = 0;
+
+                if ((amount + totalwithdraw) > maxwithdraw) {
+                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                }
+
+                if (amount + fee > user.balance) {
+                    return res.json({ success: 0, message: "Insufficient funds." });
+                }
+
+                const { payouturl, sid } = premierpayAddon.value;
                 const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
                 const amount2 = Number(amount).toFixed(2);
+
                 const { data } = await axios.post(`${payouturl}/${sid}`,
                     {
                         "payby": "etransfer",
@@ -2813,36 +2838,6 @@ expressApp.post(
                     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 }
                 if (data.status == "APPROVED") {
-
-                    const maxwithdraw = getMaxWithdraw(user);
-
-                    let totalwithdraw = await FinancialLog.aggregate(
-                        {
-                            $match: {
-                                financialtype: "withdraw",
-                                user: new ObjectId(user._id),
-                            }
-                        },
-                        {
-                            $group: {
-                                _id: null,
-                                total: {
-                                    $sum: "$amount"
-                                }
-                            }
-                        }
-                    )
-                    if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
-                    else totalwithdraw = 0;
-
-                    if ((amount + totalwithdraw) > maxwithdraw) {
-                        return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
-                    }
-
-                    if (amount + fee > user.balance) {
-                        return res.json({ success: 0, message: "Insufficient funds." });
-                    }
-
                     const withdraw = new FinancialLog({
                         financialtype: 'withdraw',
                         uniqid: uniqid,
