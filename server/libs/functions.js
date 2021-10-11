@@ -163,7 +163,7 @@ const isFreeWithdrawalUsed = async (user) => {
             $gte: firstDay
         },
         user: user._id,
-        type: 'withdraw'
+        financialtype: 'withdraw'
     });
 
     if (freeWithdraw && freeWithdraw.length) {
