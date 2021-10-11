@@ -2843,98 +2843,98 @@ expressApp.post(
 
             try {
                 const uniqid = `W${ID()}`;
-                // const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
-                // if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
-                //     console.warn("PremierPay Api is not set");
-                //     return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
-                // }
-                // const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
-                // const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
-                // const amount2 = Number(amount).toFixed(2);
-                // const { data } = await axios.post(`${payouturl}/${sid}`,
-                //     {
-                //         "payby": "etransfer",
-                //         "amount": amount2,
-                //         "first_name": user.firstname,
-                //         "last_name": user.lastname,
-                //         "email": user.email,
-                //         "phone": user.phone,
-                //         "address": "Artery roads",
-                //         "city": "Edmonton",
-                //         "state": "AB",
-                //         "country": "CA",
-                //         "zip_code": "T5A",
-                //         "ip_address": "159.203.4.60",
-                //         "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
-                //         "amount_shipping": 0.00,
-                //         "udf1": user._id,
-                //         "udf2": uniqid,
-                //         "signature": signature
-                //     }
-                // );
-
-                // const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-                // if (responsesignature != data.signature) {
-                //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-                // }
-                // if (data.status == "APPROVED") {
-
-                const maxwithdraw = getMaxWithdraw(user);
-
-                let totalwithdraw = await FinancialLog.aggregate(
+                const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
+                if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
+                    console.warn("PremierPay Api is not set");
+                    return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
+                }
+                const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
+                const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                const amount2 = Number(amount).toFixed(2);
+                const { data } = await axios.post(`${payouturl}/${sid}`,
                     {
-                        $match: {
-                            financialtype: "withdraw",
-                            user: new ObjectId(user._id),
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$amount"
+                        "payby": "etransfer",
+                        "amount": amount2,
+                        "first_name": user.firstname,
+                        "last_name": user.lastname,
+                        "email": user.email,
+                        "phone": user.phone,
+                        "address": "Artery roads",
+                        "city": "Edmonton",
+                        "state": "AB",
+                        "country": "CA",
+                        "zip_code": "T5A",
+                        "ip_address": "159.203.4.60",
+                        "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
+                        "amount_shipping": 0.00,
+                        "udf1": user._id,
+                        "udf2": uniqid,
+                        "signature": signature
+                    }
+                );
+
+                const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                if (responsesignature != data.signature) {
+                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                }
+                if (data.status == "APPROVED") {
+
+                    const maxwithdraw = getMaxWithdraw(user);
+
+                    let totalwithdraw = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                financialtype: "withdraw",
+                                user: new ObjectId(user._id),
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                total: {
+                                    $sum: "$amount"
+                                }
                             }
                         }
+                    )
+                    if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+                    else totalwithdraw = 0;
+
+                    if ((amount + totalwithdraw) > maxwithdraw) {
+                        return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
                     }
-                )
-                if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
-                else totalwithdraw = 0;
 
-                if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
-                }
+                    if (amount + fee > user.balance) {
+                        return res.json({ success: 0, message: "Insufficient funds." });
+                    }
 
-                if (amount + fee > user.balance) {
-                    return res.json({ success: 0, message: "Insufficient funds." });
-                }
-
-                const withdraw = new FinancialLog({
-                    financialtype: 'withdraw',
-                    uniqid: uniqid,
-                    user: user._id,
-                    amount: amount,
-                    method: method,
-                    status: FinancialStatus.pending,
-                    fee: fee
-                });
-                await withdraw.save();
-
-                if (fee > 0) {
-                    const withdrawFee = new FinancialLog({
-                        financialtype: 'withdrawfee',
-                        uniqid: `WF${ID()}`,
+                    const withdraw = new FinancialLog({
+                        financialtype: 'withdraw',
+                        uniqid: uniqid,
                         user: user._id,
-                        amount: fee,
+                        amount: amount,
                         method: method,
-                        status: FinancialStatus.success,
+                        status: FinancialStatus.pending,
+                        fee: fee
                     });
-                    await withdrawFee.save();
-                }
-                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+                    await withdraw.save();
 
-                return res.json({ success: 1, message: "Please wait until withdraw is finished." });
-                // }
-                // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+                    if (fee > 0) {
+                        const withdrawFee = new FinancialLog({
+                            financialtype: 'withdrawfee',
+                            uniqid: `WF${ID()}`,
+                            user: user._id,
+                            amount: fee,
+                            method: method,
+                            status: FinancialStatus.success,
+                        });
+                        await withdrawFee.save();
+                    }
+                    await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+
+                    return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+                }
+                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.log("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
