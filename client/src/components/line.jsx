@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LineDetail from './linedetail';
 import classnames from "classnames";
+const maximumShows = 3;
 
 const EmptyLine = () => {
     return (
@@ -42,7 +43,28 @@ const TeamNames = ({ teamA, teamB }) => {
     )
 }
 
+const ShowMoreLess = ({ show, toggleShow }) => {
+    return (
+        <li className="mb-2">
+            <div className="row mx-0">
+                <div className="col-12 cursor-pointer text-center" onClick={toggleShow}>
+                    <span>See {show ? 'less' : 'more'}</span>&nbsp;
+                    <i className={show ? "fas fa-chevron-up" : "fas fa-chevron-down"} />
+                </div>
+            </div>
+        </li>
+    )
+}
+
 export default class Line extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showMoreASpread: false,
+            showMoreATotal: false,
+        }
+    }
+
     getSubTypeName = (subtype) => {
         switch (subtype) {
             case 'first_half':
@@ -67,6 +89,8 @@ export default class Line extends Component {
             type, subtype, index, event, line, betSlip, removeBet,
             addBet, sportName, leagueId, oddsFormat,
         } = this.props;
+        const { showMoreASpread, showMoreATotal } = this.state;
+
         if (!line.line) return null;
         const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line.line;
         const { originId: eventId, teamA, teamB } = event;
@@ -157,6 +181,7 @@ export default class Line extends Component {
                         <TeamNames teamA={teamA} teamB={teamB} />
                         {alternative_spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
+                            if (index != i && !showMoreASpread && i >= maximumShows) return null;
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
                                 leagueId,
@@ -177,14 +202,22 @@ export default class Line extends Component {
                                 event={event}
                                 oddsFormat={oddsFormat} />
                         })}
+                        <ShowMoreLess
+                            show={showMoreASpread}
+                            toggleShow={() => {
+                                this.setState({ showMoreASpread: !showMoreASpread })
+                                showMoreASpread && window.scrollTo(0, 0);
+                            }}
+                        />
                     </>}
 
-                {(!type || type == 'total' && subtype == line.subtype) &&
+                {(!type || type == 'alternative_total' && subtype == line.subtype) &&
                     alternative_totals && alternative_totals.length != 0 && <>
                         <div className="line-type-header">Alternative Over/Under {this.getSubTypeName(line.subtype)}</div>
                         <TeamNames teamA={teamA} teamB={teamB} />
                         {alternative_totals.map((total, i) => {
                             if (type && index && index != i) return null;
+                            if (index != i && !showMoreATotal && i >= maximumShows) return null;
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
                                 leagueId,
@@ -205,6 +238,13 @@ export default class Line extends Component {
                                 event={event}
                                 oddsFormat={oddsFormat} />
                         })}
+                        <ShowMoreLess
+                            show={showMoreATotal}
+                            toggleShow={() => {
+                                this.setState({ showMoreATotal: !showMoreATotal });
+                                showMoreATotal && window.scrollTo(0, 0);
+                            }}
+                        />
                     </>}
             </>
         );

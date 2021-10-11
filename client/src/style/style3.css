@@ -783,7 +783,7 @@ a.log-in-btn {
     font-size: 12px;
     height: 30px;
     line-height: 30px;
-    /* margin-bottom: 5px; */
+    cursor: pointer;
 }
 
 .line-type-header+li {
