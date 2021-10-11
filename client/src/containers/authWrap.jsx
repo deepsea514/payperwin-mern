@@ -22,15 +22,8 @@ class AuthWrap extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.getUser();
-        socket.on("sportsbook-accepted", (id) => {
-            const { user } = this.state;
-            if (user && user.userId == id) {
-                window.location = '/bets';
-            }
-        });
-
-        setInterval(this.getUser.bind(this), 10 * 60 * 1000);
+        // this.getUser();
+        // setInterval(this.getUser.bind(this), 10 * 60 * 1000);
     }
 
     componentWillUnmount() {
@@ -51,13 +44,13 @@ class AuthWrap extends Component {
             setPreference(user.preference);
             this._isMounted && this.setState({ user }, () => {
                 if (callback) {
-                    callback();
+                    callback(true);
                 }
             });
         }).catch(() => {
             this._isMounted && this.setState({ user: false }, () => {
                 if (callback) {
-                    callback();
+                    callback(false);
                 }
             });
         });
@@ -78,30 +71,14 @@ class AuthWrap extends Component {
         const { user } = this.state;
         return (
             <UserContext.Provider value={{ user, getUser: this.getUser.bind(this) }}>
-                <BrowserRouter basename="">
-                    <Switch>
-                        <Route path="/someroute" render={() => (
-                            <div style={{ height: '100%' }}>
-                                Some content
-                            </div>
-                        )} />
-                        <Route path="/" render={() => (
-                            <App
-                                user={user}
-                                getUser={this.getUser}
-                                updateUser={this.updateUser}
-                            />
-                        )} />
-                    </Switch>
-                </BrowserRouter>
-            </UserContext.Provider>
+                <App
+                    user={user}
+                    getUser={this.getUser}
+                    updateUser={this.updateUser}
+                />
+            </UserContext.Provider >
         );
     }
 }
 
-const mapStateToProps = (state) => ({
-    lang: state.frontend.lang,
-    oddsFormat: state.frontend.oddsFormat,
-});
-
-export default connect(mapStateToProps, frontend.actions)(AuthWrap)
+export default connect(null, frontend.actions)(AuthWrap)
