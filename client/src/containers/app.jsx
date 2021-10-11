@@ -75,6 +75,76 @@ import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
 
+const ShowAccountLinks = [
+    '/bets',
+    '/deposit',
+    '/announcements',
+    '/deactivation',
+    '/details',
+    '/history',
+    '/inbox',
+    '/payment-options',
+    '/personal-details',
+    '/preferences',
+    '/security',
+    '/self-exclusion',
+    '/transaction-history',
+    '/withdraw',
+    '/account',
+    '/deposit-etransfer',
+    '/withdraw-etransfer',
+    '/deposit-bitcoin',
+    '/deposit-ethereum',
+    '/deposit-tether',
+    '/withdraw-bitcoin',
+    '/withdraw-ethereum',
+    '/withdraw-tether',
+    '/verification',
+    '/phone-verification',
+    '/cashback',
+    '/custom-bets',
+    '/autobet-dashboard',
+    '/autobet-settings',
+    '/loyalty',
+    '/support',
+];
+
+const exceptDarkLinks = [
+    '/articles',
+    '/signup',
+    '/bets',
+    '/deposit',
+    '/announcements',
+    '/deactivation',
+    '/details',
+    '/history',
+    '/inbox',
+    '/payment-options',
+    '/personal-details',
+    '/preferences',
+    '/security',
+    '/self-exclusion',
+    '/transaction-history',
+    '/withdraw',
+    '/account',
+    '/deposit-etransfer',
+    '/withdraw-etransfer',
+    '/deposit-bitcoin',
+    '/deposit-ethereum',
+    '/deposit-tether',
+    '/withdraw-bitcoin',
+    '/withdraw-ethereum',
+    '/withdraw-tether',
+    '/verification',
+    '/phone-verification',
+    '/cashback',
+    '/support',
+    '/custom-bets',
+    '/autobet-dashboard',
+    '/autobet-settings',
+    '/loyalty',
+];
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -90,10 +160,22 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const { setDisplayModeBasedOnSystem } = this.props;
+        const { setDisplayModeBasedOnSystem, getUser } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
+
+        getUser(this.redirectToDashboard);
+    }
+
+    redirectToDashboard = (user) => {
+        const { history, location } = this.props;
+        const { pathname } = location;
+        if (user == false) {
+            if(ShowAccountLinks.includes(pathname)) {
+                history.push('/');
+            }
+        }
     }
 
     updateScrollStatus = () => {
@@ -186,74 +268,8 @@ class App extends Component {
             dark_light,
         } = this.props;
         const { pathname } = location;
-        let sidebarShowAccountLinks = [
-            '/bets',
-            '/deposit',
-            '/announcements',
-            '/deactivation',
-            '/details',
-            '/history',
-            '/inbox',
-            '/payment-options',
-            '/personal-details',
-            '/preferences',
-            '/security',
-            '/self-exclusion',
-            '/transaction-history',
-            '/withdraw',
-            '/account',
-            '/deposit-etransfer',
-            '/withdraw-etransfer',
-            '/deposit-bitcoin',
-            '/deposit-ethereum',
-            '/deposit-tether',
-            '/withdraw-bitcoin',
-            '/withdraw-ethereum',
-            '/withdraw-tether',
-            '/verification',
-            '/phone-verification',
-            '/cashback',
-            '/custom-bets',
-            '/autobet-dashboard',
-            '/autobet-settings',
-            '/loyalty',
-            '/support',
-        ].includes(pathname);
-        const exceptDark = [
-            '/articles',
-            '/signup',
-            '/bets',
-            '/deposit',
-            '/announcements',
-            '/deactivation',
-            '/details',
-            '/history',
-            '/inbox',
-            '/payment-options',
-            '/personal-details',
-            '/preferences',
-            '/security',
-            '/self-exclusion',
-            '/transaction-history',
-            '/withdraw',
-            '/account',
-            '/deposit-etransfer',
-            '/withdraw-etransfer',
-            '/deposit-bitcoin',
-            '/deposit-ethereum',
-            '/deposit-tether',
-            '/withdraw-bitcoin',
-            '/withdraw-ethereum',
-            '/withdraw-tether',
-            '/verification',
-            '/phone-verification',
-            '/cashback',
-            '/support',
-            '/custom-bets',
-            '/autobet-dashboard',
-            '/autobet-settings',
-            '/loyalty',
-        ].filter(path => {
+        let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
+        const exceptDark = exceptDarkLinks.filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
         }).length;
