@@ -14,7 +14,7 @@ export default class SBModal extends React.Component {
                         <p>
                             Peer to Peer betting is not available for this line. This is an instant bet and can be forwarded to a Sportsbook with the following new odds.
                         </p>
-                        <b>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</b>
+                        <b>{sportsbookInfo.name}: {sportsbookInfo.pickName}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</b>
                         <div className="text-right">
                             <button className="form-button ml-2" onClick={onAccept}> Accept </button>
                             <button className="form-button ml-2" onClick={onClose}> Cancel </button>
