@@ -530,10 +530,79 @@ adminRouter.get(
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
+            let fees = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        financialtype: { $in: ["betfee", "withdrawfee"] },
+                        user: new ObjectId(id),
+                        status: FinancialStatus.success,
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            )
+            if (fees.length) fees = fees[0].total;
+            else fees = 0;
+
+            let winamount = await Bet.aggregate(
+                {
+                    $match: {
+                        status: 'Settled - Win',
+                        userId: user._id
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$payableToWin" } } }
+            );
+            if (winamount.length) winamount = winamount[0].total;
+            else winamount = 0;
+
+            let lossamount = await Bet.aggregate(
+                {
+                    $match: {
+                        status: 'Settled - Lose',
+                        userId: user._id
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$bet" } } }
+            );
+            if (lossamount.length) lossamount = lossamount[0].total;
+            else lossamount = 0;
+
             const winloss = user.balance - totaldeposit;
-            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
+            const betcount = await Bet.find({ userId: id }).count();
+            const days = Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (24 * 3600 * 1000));
+
+            const bets = await Bet.find({ userId: id });
+            let averagebetafter2loss = 0;
+            let prevBet = null;
+            for (const bet of bets) {
+                if (bet.status == 'Settled - Lose') {
+                    if (prevBet != null) {
+                        averagebetafter2loss = (prevBet + bet.bet) / 2;
+                    } else {
+                        prevBet = bet.bet;
+                    }
+                } else {
+                    prevBet = null;
+                }
+            }
+
+            res.status(200).json({
+                lastbets,
+                lastsportsbookbets,
+                totalwagers,
+                totaldeposit,
+                winloss,
+                fees,
+                averagebet: betcount > 0 ? totalwagers / betcount : 0,
+                averagebetwin: betcount > 0 ? winamount / betcount : 0,
+                averagebetloss: betcount > 0 ? lossamount / betcount : 0,
+                betsperday: days > 0 ? betcount / days : 0,
+                betsperweek: days > 0 ? betcount / days * 7 : 0,
+                averagebetafter2loss
+            });
         }
         catch (error) {
+            console.log(error)
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
         }
     }
