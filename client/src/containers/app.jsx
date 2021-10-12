@@ -172,7 +172,7 @@ class App extends Component {
         const { history, location } = this.props;
         const { pathname } = location;
         if (user == false) {
-            if(ShowAccountLinks.includes(pathname)) {
+            if (ShowAccountLinks.includes(pathname)) {
                 history.push('/');
             }
         }
@@ -208,12 +208,17 @@ class App extends Component {
     addBet = (bet) => {
         const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false } = bet;
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook };
-        const { betSlip } = this.state;
+        let { betSlip } = this.state;
+        betSlip = betSlip.filter(bet => {
+            const exists = bet.lineId === lineQuery.lineId &&
+                bet.type === lineQuery.type &&
+                bet.index === lineQuery.index &&
+                bet.subtype == lineQuery.subtype;
+            return !exists;
+        });
         this.setState({
             betSlip: update(betSlip, {
-                $push: [
-                    newBet
-                ]
+                $push: [newBet]
             })
         });
     }
