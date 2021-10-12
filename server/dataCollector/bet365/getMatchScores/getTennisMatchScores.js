@@ -1,4 +1,4 @@
-const getTableTennisMatchScores = (type, subtype, ss, scores, time_status) => {
+const getTennisMatchScores = (type, subtype, ss, scores, time_status) => {
     if (time_status == "1") return 'inplay';
     const matchResult = {
         homeScore: 0,
@@ -27,4 +27,4 @@ const getTableTennisMatchScores = (type, subtype, ss, scores, time_status) => {
     }
 }
 
-module.exports = getTableTennisMatchScores;
+module.exports = getTennisMatchScores;
