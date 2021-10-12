@@ -15,16 +15,11 @@ const serverUrl = _env.appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;
-    axios(
-        {
-            method: 'get',
-            url,
-            withCredentials: true,
-        },
-    ).then((/* d */) => {
-        getUser();
-        history.replace({ pathname: '/' });
-    });
+    axios.get(url, { withCredentials: true })
+        .then(() => {
+            getUser();
+            history.replace({ pathname: '/' });
+        });
 }
 
 class Header extends Component {

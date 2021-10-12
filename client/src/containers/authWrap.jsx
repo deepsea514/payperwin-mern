@@ -33,27 +33,21 @@ class AuthWrap extends Component {
     getUser = (callback) => {
         const { setPreference } = this.props;
         const url = `${serverUrl}/user?compress=false`;
-        axios.get(url, {
-            withCredentials: true,
-            cache: {
-                exclude: {
-                    filter: () => true,
-                },
-            },
-        }).then(({ data: user }) => {
-            setPreference(user.preference);
-            this._isMounted && this.setState({ user }, () => {
-                if (callback) {
-                    callback(true);
-                }
+        axios.get(url, { withCredentials: true })
+            .then(({ data: user }) => {
+                setPreference(user.preference);
+                this._isMounted && this.setState({ user }, () => {
+                    if (callback) {
+                        callback(user);
+                    }
+                });
+            }).catch(() => {
+                this._isMounted && this.setState({ user: false }, () => {
+                    if (callback) {
+                        callback(false);
+                    }
+                });
             });
-        }).catch(() => {
-            this._isMounted && this.setState({ user: false }, () => {
-                if (callback) {
-                    callback(false);
-                }
-            });
-        });
     }
 
     updateUser = (field, value) => {
