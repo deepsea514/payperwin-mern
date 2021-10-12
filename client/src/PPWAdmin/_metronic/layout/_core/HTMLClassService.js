@@ -95,9 +95,9 @@ export class HtmlClassService {
     getLogo() {
         const brandSkin = objectPath.get(this.config, "brand.self.theme");
         if (brandSkin === "light") {
-            return "/media/logos/payperwin-web.png";
+            return "/media/logos/logo-white.png";
         } else {
-            return "/media/logos/payperwin-web.png";
+            return "/media/logos/logo-white.png";
         }
     }
 

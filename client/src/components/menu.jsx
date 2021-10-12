@@ -16,7 +16,7 @@ class Menu extends Component {
                         <i className="fal fa-times" />
                     </button>
                     <Link to={{ pathname: '/' }} className="logo">
-                        <img src="/images/logo200.png" />
+                        <img src="/images/logo-white.png" />
                     </Link>
                     <ul className="navbar-nav">
                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
