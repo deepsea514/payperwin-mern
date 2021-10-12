@@ -71,7 +71,7 @@ class Article extends Component {
                             <div className="left articleV2">
                                 <div className="author-photo-container">
                                     <div className="author-photo">
-                                        <img src="/images/payperwin logo blue.png" />
+                                        <img src="/images/logo-blue.png" />
                                     </div>
                                 </div>
                                 <div className="author-container">

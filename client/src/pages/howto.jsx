@@ -29,7 +29,7 @@ class HowTo extends Component {
                 <div className="how-it-works">
                     <h2>
                         How
-                        <img src={dark_light == 'light' ? "/images/payperwin logo blue.png" : '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
+                        <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
                         />Works
                     </h2>
                     <div className="summary">
