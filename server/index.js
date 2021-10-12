@@ -59,7 +59,6 @@ const adminEmailAddress1 = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
-const isMultiBetpool = config.isMultiBetpool;
 const maximumWin = 2000;
 //external libraries
 const express = require('express');
@@ -962,7 +961,6 @@ expressApp.post(
                     const existingBet = await Bet.findOne({
                         userId: user._id,
                         "lineQuery.lineId": "lineId",
-                        "lineQuery.lineId": lineId,
                         "lineQuery.eventName": lineQuery,
                         "lineQuery.sportName": 'other',
                     });
@@ -1392,7 +1390,7 @@ expressApp.post(
                                             const betId = savedBet.id;
                                             const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
                                             let betpoolId = '';
-                                            if (exists && isMultiBetpool) {
+                                            if (exists) {
                                                 const docChanges = {
                                                     $push: pick === 'home' ? { homeBets: betId } : { awayBets: betId },
                                                     $inc: {},
