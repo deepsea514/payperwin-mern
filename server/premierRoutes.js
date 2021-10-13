@@ -20,6 +20,7 @@ const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const {
+    ID,
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed
 } = require('./libs/functions');
@@ -148,20 +149,16 @@ premierRouter.post('/etransfer-withdraw',
                     success: "Can't find log"
                 });
             }
+            const user = await User.findById(ObjectId(user_id));
+            if (!user) {
+                return res.json({
+                    error: "Doesn't make changes"
+                });
+            }
             if (tx_action == "PAYOUT" && status == "APPROVED") {
-                const user = await User.findById(ObjectId(user_id));
-                if (!user) {
-                    return res.json({
-                        error: "Doesn't make changes"
-                    });
-                }
                 await withdraw.update({
-                    status: "Success"
+                    status: FinancialStatus.success
                 });
-                await user.update({
-                    balance: user.balance - withdraw.amount
-                });
-
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -181,7 +178,19 @@ premierRouter.post('/etransfer-withdraw',
                 });
             } else if (status == "DECLINED") {
                 await withdraw.update({
-                    status: "On-hold"
+                    status: FinancialStatus.onhold
+                });
+                await FinancialLog.create({
+                    financialtype: 'withdrawcancel',
+                    uniqid: `WC${ID()}`,
+                    user: user._id,
+                    amount: withdraw.amount + withdraw.fee,
+                    method: withdraw.method,
+                    status: FinancialStatus.success,
+                    fee: 0
+                });
+                await user.update({
+                    $inc: { balance: withdraw.amount + withdraw.fee }
                 });
                 return res.json({
                     success: "Withdraw declined"
