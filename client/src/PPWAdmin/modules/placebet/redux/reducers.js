@@ -10,7 +10,10 @@ export const actionTypes = {
 };
 
 const initialState = {
-    PlaceBets: [],
+    placeBets: [],
+    sportLeagues: [],
+    selectedSport: 0,
+    selectedSportLeague: 0,
     total: 0,
     currentPage: 1,
     loading: false,
@@ -27,12 +30,12 @@ export const reducer = persistReducer(
                 return { ...state, ...action.data, ...{ loading: false } };
 
             case actionTypes.updatePlaceBetSuccess:
-                const PlaceBets = state.PlaceBets.map(bet => {
+                const PlaceBets = state.placeBets.map(bet => {
                     if (bet._id == action.id)
                         return action.data;
                     return bet;
                 });
-                return { ...state, ...{ PlaceBets } };
+                return { ...state, ...{ placeBets } };
 
             default:
                 return state;
@@ -49,11 +52,11 @@ export const actions = {
 export function* saga() {
     yield takeLatest(actionTypes.getPlaceBetsAction, function* getPlaceBetsSaga() {
         try {
-            const state = yield select((state) => state.PlaceBets);
+            const state = yield select((state) => state.placeBets);
             const { data } = yield getPlaceBets(state.currentPage);
-            yield put(actions.getPlaceBetsSuccess({ PlaceBets: data.data, total: data.total }));
+            yield put(actions.getPlaceBetsSuccess({ placeBets: data.data, total: data.total }));
         } catch (error) {
-            yield put(actions.getPlaceBetsSuccess({ PlaceBets: [], total: 0 }));
+            yield put(actions.getPlaceBetsSuccess({ placeBets: [], total: 0 }));
         }
     });
 }

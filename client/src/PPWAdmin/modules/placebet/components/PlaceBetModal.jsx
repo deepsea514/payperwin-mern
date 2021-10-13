@@ -3,10 +3,11 @@ import { Formik } from "formik";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
+
 import Select from 'react-select';
 import { searchUsers, searchSports } from "../../customers/redux/services";
 
-import {searchAutoBetUsers} from "../redux/services";
+import {searchAutoBetUsers, searchSportsLeague} from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import config from "../../../../../../config.json";
 const PlaceBetStatus = config.PlaceBetStatus;
@@ -53,6 +54,11 @@ export default class PlaceBetModal extends React.Component {
                 sports: Yup.object()
                     .nullable()
                     .required("Sports field is required."),
+
+                    
+                sportsLeague: Yup.object()
+                    .nullable()
+                    .required("Sports League field is required."),
                 teamA: Yup.string().required("Name of Team A field is required"),
                 teamB: Yup.string().required("Name of Team B field is required"),
                 betType: Yup.object().nullable().required("Bet type field is required"),
@@ -78,6 +84,11 @@ export default class PlaceBetModal extends React.Component {
             loadingUser: false,
             loadingAutoBetUser: false,
             loadingSports: false,
+            loadingSportsLeague: false,
+            selectedSport: '',
+            selectedSportLeague: '',
+            leagueEvents : [],
+            sportsLeague: [],
         }
     }
 
@@ -104,9 +115,6 @@ export default class PlaceBetModal extends React.Component {
         })
     }
 
-
-    
-
     getSports = (name, cb) => {
         this.setState({ loadingSports: true });
         searchSports(name).then(({ data }) => {
@@ -118,11 +126,75 @@ export default class PlaceBetModal extends React.Component {
         })
     }
 
+    getTeams = async (name) => {
+
+        const teams = this.state.sportsLeague?.leagues.filter((leagues, key) => leagues.originId == name )[0];
+        //console.log("current league", teams);
+
+
+        const result = teams.events.map(event => {
+            return {
+                value: event.teamA,
+                label: event.teamA,
+            }
+        })
+
+        console.log("teams", result);
+        
+        this.setState({ leagueEvents: result })
+
+        // this.setState({ loadingSports: true });
+        // searchSports(name).then(({ data }) => {
+        //     cb(data);
+        //     this.setState({ loadingSports: false });
+        // }).catch(() => {
+        //     cb([]);
+        //     this.setState({ loadingSports: false });
+        // })
+    }
+
+    
+
+
+/*     getSportsLeague = (name, cb) => {
+        //alert("hello getSportsLeague");
+        console.log(this.state.selectedSport);
+        this.setState({ loadingSportsLeague: true });
+        searchSportsLeague(this.state.selectedSport).then(({ data }) => {
+            cb(data);
+            this.setState({ loadingSportsLeague: false });
+        }).catch(() => {
+            cb([]);
+            this.setState({ loadingSportsLeague: false });
+        }) 
+    } */
+
+    getSportsLeague = (name) => {
+        this.setState({ loadingSportsLeague: true });
+        searchSportsLeague(name).then(({ data }) => {
+            this.setState({sportsLeague: data});
+            this.setState({ loadingSportsLeague: false });
+        }).catch(() => {
+            cb([]);
+            this.setState({ loadingSportsLeague: false });
+        }) 
+    }
+
+    renderSportsLeague = () => {
+        const leagues = this.state.sportsLeague?.leagues ? this.state.sportsLeague?.leagues : [];
+            return Object.keys(leagues).map(function (key, index) {
+                return <option key={leagues[key].originId} value={leagues[key].originId}>{leagues[key].name}</option>
+            });
+        }
+
+
+
     renderStatus = () => {
         return Object.keys(PlaceBetStatus).map(function (key, index) {
             return <option key={PlaceBetStatus[key]} value={PlaceBetStatus[key]}>{PlaceBetStatus[key]}</option>
         });
     }
+
 
     renderPeorid = () => {
         return Object.keys(PlaceBetPeorid).map(function (key, index) {
@@ -132,7 +204,7 @@ export default class PlaceBetModal extends React.Component {
 
     render() {
         const { show, onHide, onSubmit, title, edit } = this.props;
-        const { initialValues, placebetSchema, loadingUser,  loadingAutoBetUser, loadingSports } = this.state;
+        const { initialValues, placebetSchema, loadingUser,  loadingAutoBetUser, loadingSports, selectedSport, selectedSportLeague, loadingSportsLeague, leagueEvents } = this.state;
         return (
             <Modal show={show} onHide={onHide}>
                 <Modal.Header closeButton>
@@ -227,6 +299,10 @@ export default class PlaceBetModal extends React.Component {
                                             {...formik.getFieldProps("sports")}
                                             {...{
                                                 onChange: (sports) => {
+                                                    console.log(sports);
+                                                    this.setState({ selectedSport: sports.value});
+
+                                                    this.getSportsLeague(sports.value);
                                                     if (!sports) return;
                                                     formik.setFieldValue("sports", sports);
                                                     formik.setFieldTouched("sports", true);
@@ -242,9 +318,52 @@ export default class PlaceBetModal extends React.Component {
                                         ) : null}
                                     </div>
                                     
+
+                                    <div className="form-group">
+                                        <label>Sports League<span className="text-danger">*</span></label>
+                                        <select name="sportsLeague" placeholder="Choose Sports League"
+                                            className={`form-control ${getInputClasses(formik, "sportsLeague")}`}
+                                            {...formik.getFieldProps("sportsLeague")}
+
+                                            onChange={
+                                                async (e) => {
+                                                    //console.log(e.target.value);
+                                                    const leagueId = e.target.value;
+                                                    this.getTeams(leagueId);
+                                                }
+                                            }
+
+                                        >
+                                            {this.renderSportsLeague()}
+                                        </select>
+                                        {formik.touched.sportsLeague && formik.errors.sportsLeague ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.sportsLeague}
+                                            </div>
+                                        ) : null}
+                                    </div>
+
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
                                             <label>Name of Team A<span className="text-danger">*</span></label>
+
+
+
+                                            <Select
+                                                defaultValue={leagueEvents[0]}
+                                                isClearable
+                                                isSearchable={true}
+                                                name="teamA"
+                                                options={leagueEvents}
+                                            />
+
+                                      
+                                        {formik.touched.sports && formik.errors.sports ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.sports}
+                                            </div>
+                                        ) : null}
+
                                             <input name="teamA" placeholder="Name of Team A"
                                                 className={`form-control ${getInputClasses(formik, "teamA")}`}
                                                 {...formik.getFieldProps("teamA")}

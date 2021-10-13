@@ -8,7 +8,7 @@ import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
 import * as wager_feeds from "../modules/wager-feed/redux/reducers";
 import * as autobets from "../modules/autobet/redux/reducers";
-import * as placebets from "../modules/autobet/redux/reducers";
+import * as placebets from "../modules/placebet/redux/reducers";
 import * as email_templates from "../modules/email-templates/redux/reducers";
 import * as promotions from "../modules/promotions/redux/reducers";
 import * as kyc from "../modules/kyc/redux/reducers";
