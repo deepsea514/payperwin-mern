@@ -1692,7 +1692,7 @@ adminRouter.get(
             if (status && status == 'open') {
                 searchObj = {
                     ...searchObj,
-                    status: { $in: ['Pending', 'Partial Match', 'Matched'] }
+                    status: { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
                 };
             } else if (status && status == 'settled') {
                 searchObj = {
@@ -1704,13 +1704,13 @@ adminRouter.get(
             if (match && match == 'pending') {
                 searchObj = {
                     ...searchObj,
-                    matchingStatus: { $in: ['Pending', 'Partial Match'] }
+                    matchingStatus: { $in: ['Pending', 'Partial Match', 'Partial Accepted'] }
                 };
             }
             else if (match && match == 'matched') {
                 searchObj = {
                     ...searchObj,
-                    matchingStatus: 'Matched'
+                    matchingStatus: { $in: ['Matched', 'Accepted'] }
                 };
             }
 
@@ -1776,7 +1776,7 @@ adminRouter.get(
                 ...aggregate,
                 { $count: "total" }
             ]);
-            if(total.length > 0) total = total[0].total;
+            if (total.length > 0) total = total[0].total;
             else total = 0;
             const data = await Bet.aggregate([
                 ...aggregate,
