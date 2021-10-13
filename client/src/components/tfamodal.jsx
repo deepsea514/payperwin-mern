@@ -29,7 +29,11 @@ class TfaModal extends Component {
                     if (data.success) {
                         this.setState({ verifying: false });
                         require2FAAction(false);
-                        getUser();
+                        getUser((user) => {
+                            if (user.autobet) {
+                                history.push('autobet-dashboard');
+                            }
+                        });
                         if (pathname === '/login') {
                             history.replace({ pathname: '/' });
                         }

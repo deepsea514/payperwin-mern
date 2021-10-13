@@ -15,16 +15,11 @@ const serverUrl = _env.appUrl;
 
 function logout(getUser, history) {
     const url = `${serverUrl}/logout`;
-    axios(
-        {
-            method: 'get',
-            url,
-            withCredentials: true,
-        },
-    ).then((/* d */) => {
-        getUser();
-        history.replace({ pathname: '/' });
-    });
+    axios.get(url, { withCredentials: true })
+        .then(() => {
+            getUser();
+            history.replace({ pathname: '/' });
+        });
 }
 
 class Header extends Component {
@@ -105,6 +100,12 @@ class Header extends Component {
         return balance / 100;
     }
 
+    onSearch = (evt) => {
+        const { search, history } = this.props;
+        if (evt.key !== 'Enter') return;
+        history.push(`/search/${search}`);
+    }
+
     render() {
         const { userDropDownOpen,
             oddsDropDownOpen,
@@ -139,7 +140,7 @@ class Header extends Component {
                                     <span className="navbar-toggler-icon"></span>
                                 </button>
                                 <Link to={{ pathname: '/' }} className="logo">
-                                    <img src="/images/payperwin-web.png" style={{ height: 40 }} />
+                                    <img src="/images/logo-white.png" style={{ height: 70 }} />
                                 </Link>
                             </div>
                             <div className="col-7 col-sm-6 text-right">
@@ -295,7 +296,14 @@ class Header extends Component {
                             <div className="">
                                 <div className="search-box">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input className="searh-f" type="search" placeholder="Search" value={search} onChange={(evt) => setSearch(evt.target.value)} />
+                                    <input
+                                        className="searh-f"
+                                        type="search"
+                                        placeholder="Search"
+                                        value={search}
+                                        onChange={(evt) => setSearch(evt.target.value)}
+                                        onKeyDown={this.onSearch}
+                                    />
                                 </div>
                             </div>
                             <div className="">

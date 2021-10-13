@@ -20,6 +20,7 @@ const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const {
+    ID,
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed
 } = require('./libs/functions');
@@ -136,67 +137,75 @@ premierRouter.post('/etransfer-deposit',
 );
 
 
-// premierRouter.post('/etransfer-withdraw',
-//     bruteforce.prevent,
-//     signatureCheck,
-//     async (req, res) => {
-//         const { udf1: user_id, udf2: uniqid, status, tx_action } = req.body;
-//         try {
-//             const withdraw = await FinancialLog.findOne({ uniqid });
-//             if (!withdraw) {
-//                 return res.json({
-//                     success: "Can't find log"
-//                 });
-//             }
-//             if (tx_action == "PAYOUT" && status == "APPROVED") {
-//                 const user = await User.findById(ObjectId(user_id));
-//                 if (!user) {
-//                     return res.json({
-//                         error: "Doesn't make changes"
-//                     });
-//                 }
-//                 await withdraw.update({
-//                     status: "Success"
-//                 });
-//                 await user.update({
-//                     balance: user.balance - withdraw.amount
-//                 });
+premierRouter.post('/etransfer-withdraw',
+    bruteforce.prevent,
+    signatureCheck,
+    async (req, res) => {
+        const { udf1: user_id, udf2: uniqid, status, tx_action } = req.body;
+        try {
+            const withdraw = await FinancialLog.findOne({ uniqid });
+            if (!withdraw) {
+                return res.json({
+                    success: "Can't find log"
+                });
+            }
+            const user = await User.findById(ObjectId(user_id));
+            if (!user) {
+                return res.json({
+                    error: "Doesn't make changes"
+                });
+            }
+            if (tx_action == "PAYOUT" && status == "APPROVED") {
+                await withdraw.update({
+                    status: FinancialStatus.success
+                });
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: user.email,
+                    subject: 'You’ve got funds out from your account',
+                    text: `You’ve got funds out from your account`,
+                    html: simpleresponsive(
+                        `Hi <b>${user.firstname}</b>.
+                        <br><br>
+                        Just a quick reminder that you currently have funds out from your PAYPER WIN account. You can find out how much is out from
+                        your PAYPER WIN account by logging in now.
+                        <br><br>`),
+                };
+                await sgMail.send(msg);
 
-//                 const msg = {
-//                     from: `${fromEmailName} <${fromEmailAddress}>`,
-//                     to: user.email,
-//                     subject: 'You’ve got funds out from your account',
-//                     text: `You’ve got funds out from your account`,
-//                     html: simpleresponsive(
-//                         `Hi <b>${user.firstname}</b>.
-//                         <br><br>
-//                         Just a quick reminder that you currently have funds out from your PAYPER WIN account. You can find out how much is out from
-//                         your PAYPER WIN account by logging in now.
-//                         <br><br>`),
-//                 };
-//                 await sgMail.send(msg);
-
-//                 return res.json({
-//                     success: "Withdraw success"
-//                 });
-//             } else if (status == "DECLINED") {
-//                 await withdraw.update({
-//                     status: "On-hold"
-//                 });
-//                 return res.json({
-//                     success: "Withdraw declined"
-//                 });
-//             } else {
-//                 return res.json({
-//                     error: "Doesn't make changes"
-//                 });
-//             }
-//         } catch (error) {
-//             return res.json({
-//                 error: "Can't find log"
-//             });
-//         }
-//     }
-// );
+                return res.json({
+                    success: "Withdraw success"
+                });
+            } else if (status == "DECLINED") {
+                await withdraw.update({
+                    status: FinancialStatus.onhold
+                });
+                await FinancialLog.create({
+                    financialtype: 'withdrawcancel',
+                    uniqid: `WC${ID()}`,
+                    user: user._id,
+                    amount: withdraw.amount + withdraw.fee,
+                    method: withdraw.method,
+                    status: FinancialStatus.success,
+                    fee: 0
+                });
+                await user.update({
+                    $inc: { balance: withdraw.amount + withdraw.fee }
+                });
+                return res.json({
+                    success: "Withdraw declined"
+                });
+            } else {
+                return res.json({
+                    error: "Doesn't make changes"
+                });
+            }
+        } catch (error) {
+            return res.json({
+                error: "Can't find log"
+            });
+        }
+    }
+);
 
 module.exports = premierRouter;

@@ -13,7 +13,7 @@ header {
 }
 
 .main-section {
-    padding-top: 167px;
+    padding-top: 190px;
 }
 
 .form-error {
@@ -783,7 +783,18 @@ a.log-in-btn {
     font-size: 12px;
     height: 30px;
     line-height: 30px;
+    cursor: pointer;
+}
+
+.line-type-header+li {
+    margin-top: 5px;
+}
+
+.line-type-header-teams {
+    background-color: #c2c6ce;
     margin-bottom: 5px;
+    color: #707070;
+    font-size: 10px;
 }
 
 .line-type-header-moneyline {
@@ -958,7 +969,7 @@ a.log-in-btn {
         font-size: 24px;
     }
     .main-section {
-        padding-top: 150px;
+        padding-top: 175px;
     }
     .BrainhubCarousel {
         margin-bottom: 5px;
@@ -994,7 +1005,7 @@ a.log-in-btn {
         padding: 10px;
     }
     .main-section {
-        padding-top: 128px;
+        padding-top: 150px;
     }
     .filter-dropdown {
         width: 100% !important;
@@ -1230,7 +1241,7 @@ a.log-in-btn {
 }
 
 .login_modal_rightbar_logo {
-    max-width: 200px;
+    max-width: 300px;
     padding: 20px;
     display: inline-block;
 }
@@ -1522,6 +1533,10 @@ button.loginButton span {
     background-color: #273043;
 }
 
+.no-result {
+    background-color: #a75963 !important;
+}
+
 *::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
@@ -1543,4 +1558,8 @@ button.loginButton span {
 
 .tab-pane-leagues {
     background-color: #E5E5E5;
+}
+
+.label-inline {
+    white-space: nowrap;
 }

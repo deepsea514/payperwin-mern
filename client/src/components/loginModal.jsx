@@ -34,8 +34,6 @@ class LoginModal extends React.Component {
     }
 
     handleGoogleLoginFail = (googleData) => {
-        // const { errors } = this.state;
-        // this.setState({ errors: { ...errors, server: googleData.error } });
     }
 
     handleGoogleLogin = (googleData) => {
@@ -48,14 +46,7 @@ class LoginModal extends React.Component {
         }
 
         const url = `${serverUrl}/googleLogin`;
-        axios.post(
-            url, { token: googleData.tokenId },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            })
+        axios.post(url, { token: googleData.tokenId }, { withCredentials: true })
             .then(({ data }) => {
                 if (data._2fa_required == false) {
                     getUser();
@@ -76,7 +67,7 @@ class LoginModal extends React.Component {
     }
 
     handleLogin = (values, formik) => {
-        const { closeModal, require2FAAction, getUser, loginFailed, setLoginFailedAction } = this.props;
+        const { closeModal, require2FAAction, getUser, loginFailed, setLoginFailedAction, history } = this.props;
         const { errors, rcptchVerified } = this.state;
 
         if (loginFailed >= 5 && !rcptchVerified) {
@@ -86,17 +77,14 @@ class LoginModal extends React.Component {
         }
 
         const url = `${serverUrl}/login`;
-        axios.post(
-            url, values,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            })
+        axios.post(url, values, { withCredentials: true })
             .then(({ data }) => {
                 if (data._2fa_required == false) {
-                    getUser();
+                    getUser((user) => {
+                        if (user.autobet) {
+                            history.push('autobet-dashboard');
+                        }
+                    });
                 } else {
                     require2FAAction();
                 }
@@ -123,7 +111,6 @@ class LoginModal extends React.Component {
 
     recaptchaCallback = (response) => {
         const { errors } = this.state;
-        console.log('completed');
         this.setState({ rcptchVerified: true, errors: { ...errors, recaptcha: undefined } });
     }
 
@@ -189,7 +176,7 @@ class LoginModal extends React.Component {
                                                                 {...formik.getFieldProps("password")}
                                                             />
                                                             <div className="leftIcon cursor-pointer" style={{ minWidth: '30px' }} onClick={() => this.setState({ passType: passType == 'password' ? 'text' : 'password' })}>
-                                                                <i fill="currentColor" className={passType == 'password' ? "fas fa-eye": "fas fa-eye-slash"} style={{ minWidth: '30px' }} />
+                                                                <i fill="currentColor" className={passType == 'password' ? "fas fa-eye" : "fas fa-eye-slash"} style={{ minWidth: '30px' }} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -235,7 +222,7 @@ class LoginModal extends React.Component {
                                 </div>
                             </div>
                             <div className="login_modal_rightbar">
-                                <img className="login_modal_rightbar_logo" src="/images/logo200.png" alt="PAYPERWIN" />
+                                <img className="login_modal_rightbar_logo" src="/images/logo-white.png" alt="PAYPERWIN" />
                             </div>
                         </div>
                     </div>

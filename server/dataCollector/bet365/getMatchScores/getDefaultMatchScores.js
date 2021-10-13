@@ -1,22 +1,13 @@
-const getDefaultMatchScores = (type, subtype, ss, scores) => {
+const getDefaultMatchScores = (type, subtype, ss, scores, time_status) => {
+    if (time_status == "1") return 'inplay';
     const matchResult = {
         homeScore: 0,
         awayScore: 0,
     }
     try {
-        const matchScores = ss.split(',');
-        for (let match = 0; match < matchScores.length; match++) {
-            const scores = matchScores[match].split('-');
-            if (type == 'moneyline') {
-                if (Number(scores[0]) > Number(scores[1]))
-                    matchResult.homeScore++;
-                if (Number(scores[1]) > Number(scores[0]))
-                    matchResult.awayScore++;
-            } else {
-                matchResult.homeScore += Number(scores[0]);
-                matchResult.awayScore += Number(scores[1]);
-            }
-        }
+        const scores = ss.split('-');
+        matchResult.homeScore += Number(scores[0]);
+        matchResult.awayScore += Number(scores[1]);
         return matchResult;
     } catch (error) {
         console.log(error);

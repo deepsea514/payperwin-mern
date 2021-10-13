@@ -4,7 +4,7 @@ import dateformat from "dateformat";
 import { Tabs, Tab } from "react-bootstrap";
 import { Link, withRouter } from 'react-router-dom';
 
-class OverviewBet extends React.Component {
+class Wagers extends React.Component {
     getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
@@ -56,4 +56,4 @@ class OverviewBet extends React.Component {
     }
 }
 
-export default withRouter(OverviewBet);
+export default withRouter(Wagers);

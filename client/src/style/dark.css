@@ -160,6 +160,11 @@
     color: white;
 }
 
+.main-section.dark .line-type-header-teams {
+    background-color: #05162b !important;
+    color: white !important;
+}
+
 .main-section.dark .bet {
     background: #182f49;
     color: white;

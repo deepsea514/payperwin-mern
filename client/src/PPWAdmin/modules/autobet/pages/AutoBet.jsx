@@ -103,6 +103,7 @@ class AutoBet extends React.Component {
                 <td>{numberFormat(bet.budget)}</td>
                 <td>{bet.hold}</td>
                 <td>{numberFormat(bet.sportsbookBudget ? bet.sportsbookBudget : 0)}</td>
+                <td>{bet.sbhold}</td>
                 <td>{bet.userId ? numberFormat(bet.userId.balance) : null}</td>
                 <td>{bet.referral_code}</td>
                 <td>{this.getStatus(bet.status)}</td>
@@ -238,7 +239,8 @@ class AutoBet extends React.Component {
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">Budget</th>
                                             <th scope="col">Hold</th>
-                                            <th scope="col">Sportsbook Budget</th>
+                                            <th scope="col">SB Budget</th>
+                                            <th scope="col">SB Hold</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Ref Code</th>
                                             <th scope="col">Status</th>

@@ -23,11 +23,11 @@ export function HeaderMenuWrapper() {
         };
     }, [uiService]);
     const getHeaderLogo = () => {
-        let result = "payperwin-web.png";
+        let result = "logo-white.png";
         if (layoutProps.headerSelfTheme && layoutProps.headerSelfTheme !== "dark") {
-            result = "payperwin-web.png";
+            result = "logo-white.png";
         }
-        return `/media/logos/${result}`;
+        return `/images/logo-white.png`;
     };
 
     return <>
