@@ -13,7 +13,7 @@ export default function Maintenance({ maintenance, history }) {
         <div className="maintenance-container">
             <Favicon url={'/images/favicon-2.ico'} />
             <article className="maintenance-article">
-                <center><img src="/media/logos/payperwin-web-dark.png" /></center>
+                <center><img src="/images/logo-blue.png" /></center>
                 <h1 className="pt-5">We&rsquo;ll be back soon!</h1>
                 <div className="pt-3">
                     <p>Sorry for the inconvenience but we&rsquo;re performing some maintenance at the moment. We&rsquo;ll be back online shortly!</p>

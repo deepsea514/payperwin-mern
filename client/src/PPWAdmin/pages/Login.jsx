@@ -109,7 +109,7 @@ export default class Login extends Component {
                             <div className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
                                 <div className="login-form login-signin">
                                     <div className="text-center mb-10 mb-lg-20">
-                                        <img src="/media/logos/payperwin-web-dark.png" />
+                                        <img src="/images/logo-blue.png" />
                                         <h3 className="font-size-h1">Sign In</h3>
                                         {!_2fa_enabled && <p className="text-muted font-weight-bold">Enter your email and password</p>}
                                         {_2fa_enabled && <p className="text-muted font-weight-bold">We sent Two Factor Authorization code to your phone.</p>}
