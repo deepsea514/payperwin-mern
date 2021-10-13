@@ -8,14 +8,14 @@
         "http://dev.payperwin.co",
         "http://68.183.203.13",
         "http://localhost:8081",
-        "http://localhost"
+        "http://localhost:4000"
     ],
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
     "recaptchaSiteKey": "6LfKBfIbAAAAAJMnROmY0jkEGoVrbf2-0UwkV-M6",
     "mongo": {
         "username": "admin",
-        "password": "gx5a3yeZ4BBmxD3U",
-        "host": "cluster0.oojmq.mongodb.net"
+        "password": "PayPerWin777",
+        "host": "159.203.4.60:27017"
     },
     
     "CountryInfo": [

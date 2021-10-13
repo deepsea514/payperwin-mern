@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx webpack-cli --config webpack.config.js",
     "server": "node server.js",
-    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0",
+    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 4000",
     "startdev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0"
   },
   "devDependencies": {

@@ -2473,6 +2473,73 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/searchsportsleague/:sportName',
+    async (req, res) => { 
+        try {
+            const {sportName} = req.params;
+            const { name } = req.query;
+            const sports = await Sport.findOne({name : sportName});
+            res.json(sports);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t find sports league.', message: error });
+        }
+    }
+)
+
+
+
+
+adminRouter.get(
+    '/searchsportsleagueteam',
+    authenticateJWT,
+    async (req, res) => {
+        const { name } = req.query;
+        try {
+            let searchObj = {};
+            if (name) {
+                searchObj = {
+                    ...searchObj,
+                    ...{ name: { "$regex": name, "$options": "i" } }
+                }
+            }
+
+            Sport.find(searchObj)
+                .sort('createdAt')
+                .select(['name'])
+                .exec((error, data) => {
+                    if (error) {
+                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        return;
+                    }
+                    const result = data.map(sport => {
+                        return {
+                            value: sport.name,
+                            label: sport.name,
+                        }
+                    })
+                    res.status(200).json(result);
+                })
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+        }
+    }
+)
+adminRouter.get(
+    '/sportsteam',
+    async (req, res) => {
+        try {
+            
+            const sports = await Sport.find({originSportId : 91 });
+            res.json(sports);
+        } catch (error) {
+            res.status(500).json({ error: 'Can\'t find sports.', message: error });
+        }
+    }
+)
+
+
 const getTotalDeposit = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
     dateto = new Date(dateto);

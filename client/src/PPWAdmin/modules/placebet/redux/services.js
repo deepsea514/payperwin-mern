@@ -14,6 +14,13 @@ export function getPlaceBets(page) {
 }
 
 
+
+export function searchSportsLeague(sportName) {
+    return axios.get(`${serverUrl}/searchsportsleague/${sportName}`);
+}
+
+
+
 export function searchAutoBetUsers(data) {
     let url = `${serverUrl}/seacrhautobets?name=${data}`;
     return axios.get(url, {

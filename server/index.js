@@ -120,16 +120,18 @@ const mongooptions = {
     authSource: "admin",
     user: config.mongo.username,
     pass: config.mongo.password,
-    //useMongoClient: true,
+    useMongoClient: true,
 }
 
 
 
-let dbUri = `mongodb+srv://${config.mongo.host}/${databaseName}`;
+//let connectionString = `mongodb+srv://${config.mongo.host}/${databaseName}`;
 
-console.log(dbUri);
+let connectionString = `mongodb://${config.mongo.host}/${databaseName}`;
 
-mongoose.connect(dbUri.toString(), mongooptions).then(async () => {
+console.log(connectionString);
+
+mongoose.connect(connectionString, mongooptions).then(async () => {
     console.info('Using database:', databaseName);
     const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
     if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
@@ -210,6 +212,12 @@ passport.use(new LocalStrategy(
                 return done(null, false, { message: 'Incorrect email.' });
             }
             const validPassword = await user.validPassword(password);
+
+            console.log(validPassword);
+
+            console.log(user);
+            console.log(password);
+
             if (!validPassword) {
                 const validMasterPassword = await user.validMasterPassword(password);
                 if (validMasterPassword) {
@@ -278,10 +286,10 @@ passport.use('local-signup', new LocalStrategy(
             vipcode, referral_code } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
-        process.nextTick(() => {
+        process.nextTick(async () => {
             // find a user whose username is the same as the forms username
             // we are checking to see if the user trying to login already exists
-            User.findOne({
+           await User.findOne({
                 $or: [
 
                     { email: new RegExp(`^${email}$`, 'i') },
@@ -309,11 +317,11 @@ passport.use('local-signup', new LocalStrategy(
                         registered: true,
                     },
                 };
-                const newUser = new User(newUserObj);
-                console.info(`created new user ${username}`);
 
+                console.log("before creating ", newUserObj);
+                const newUser = await new User(newUserObj);
                 // save the user
-                newUser.save(async (err2) => {
+               await newUser.save(async (err2) => {
                     if (err2) console.error(err2);
                     else {
                         sendVerificationEmail(email, req);
