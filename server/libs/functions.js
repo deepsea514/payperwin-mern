@@ -5,7 +5,6 @@ const Bet = require('../models/bet');
 const EventBetPool = require('../models/eventbetpool');
 const { ObjectId } = require('mongodb');
 const config = require('../../config.json');
-const isMultiBetpool = config.isMultiBetpool;
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
