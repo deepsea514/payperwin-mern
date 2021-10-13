@@ -1772,10 +1772,12 @@ adminRouter.get(
                     $match: { "userId.email": { "$regex": email, "$options": "i" } }
                 },
             ]
-            const total = await Bet.aggregate([
+            let total = await Bet.aggregate([
                 ...aggregate,
                 { $count: "total" }
             ]);
+            if(total.length > 0) total = total[0].total;
+            else total = 0;
             const data = await Bet.aggregate([
                 ...aggregate,
                 { $sort: { createdAt: -1 } },
@@ -1784,7 +1786,7 @@ adminRouter.get(
             ]);
 
             page++;
-            return res.json({ total: total.total, perPage, page, data });
+            return res.json({ total: total, perPage, page, data });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
