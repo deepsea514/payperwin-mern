@@ -91,7 +91,6 @@ UserSchema.pre("save", async function (next) {
 
 
 
-
 UserSchema.methods.comparePassword = function (candidatePassword, callback) { // eslint-disable-line func-names
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return callback(err);

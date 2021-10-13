@@ -24,6 +24,7 @@ const initialState = {
         maxamount: '',
         house: 'p2p',
         match: '',
+        email: ''
     },
     sports: [],
 };

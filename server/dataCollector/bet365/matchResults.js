@@ -18,6 +18,7 @@ const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
+const BetFee = 0.05;
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -62,36 +63,37 @@ const matchResultsP2P = async (bet365ApiKey) => {
                     console.log('no data from api/cache for this line');
                     continue;
                 }
-                const { ss, scores, time_status, time } = results[0];
+                const { ss, scores, time_status, time, timer } = results[0];
                 let matchResult = {
                     homeScore: 0,
                     awayScore: 0,
                     cancellationReason: false
                 };
-                if (time_status == 3) { //Ended
+                if (time_status == "3" || time_status == "1") { //Ended, In Play
                     // Calculate Match Score
                     if (ss == null || ss == "") {
                         await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                         continue;
                     }
-                    const result = getMatchScores(sportName, lineType, lineSubType, ss, scores);
-                    if (result)
+                    const result = getMatchScores(sportName, lineType, lineSubType, ss, scores, timer, time_status);
+                    if (typeof result == 'object')
                         matchResult = { ...matchResult, ...result };
-                    else {
+                    else if (result == 'inplay') {
+                        continue;
+                    } else {
                         console.error("matchError:", eventId);
                         continue;
                     }
-                } else if (time_status == 4 ||
-                    time_status == 0 ||
-                    time_status == 1 ||
-                    time_status == 2) { // Postponed, Not Started, InPlay
+                } else if (time_status == "4" ||
+                    time_status == "0" ||
+                    time_status == "2") { // Postponed, Not Started
                     await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                     continue;
-                } else if (time_status == 5 ||
-                    time_status == 7 ||
-                    time_status == 8 ||
-                    time_status == 9 ||
-                    time_status == 6) { // Cancelled, Interrupted, Abandoned, Retired, Walkover
+                } else if (time_status == "5" ||
+                    time_status == "7" ||
+                    time_status == "8" ||
+                    time_status == "9" ||
+                    time_status == "6") { // Cancelled, Interrupted, Abandoned, Retired, Walkover
                     matchResult.cancellationReason = true;
                 } else {
                     matchResult.cancellationReason = true;
@@ -128,7 +130,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
                             draw = awayScore == homeScore;
-                        } else if (lineType === 'spread') {
+                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
                             const spread = {
                                 home: points,
                                 away: 0,
@@ -140,7 +142,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = pick === spreadWinner;
                             draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (lineType === 'total') {
+                        } else if (['total', 'alternative_total'].includes(lineType)) {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
@@ -171,16 +173,17 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
                             if (user) {
-                                const { balance, email } = user;
+                                const { email } = user;
+                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',
                                         credited: betAmount + payableToWin,
-                                        homeScore,
-                                        awayScore,
+                                        homeScore: homeScore,
+                                        awayScore: awayScore,
+                                        fee: betFee
                                     }
                                 }
-                                const betFee = Number((payableToWin * 0.03).toFixed(2));
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });

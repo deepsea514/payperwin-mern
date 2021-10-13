@@ -29,7 +29,7 @@ class HowTo extends Component {
                 <div className="how-it-works">
                     <h2>
                         How
-                        <img src={dark_light == 'light' ? "/images/payperwin logo blue.png" : '/images/logo200.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
+                        <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
                         />Works
                     </h2>
                     <div className="summary">
@@ -66,7 +66,7 @@ class HowTo extends Component {
                             <div className="how-it-works-info">
                                 <strong>PEER 2 PEER BETTING</strong>
                                 <p>
-                                    Here is where you beat the bookie. The odds are even and better than you will find anywhere else online. The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. PAYPER WIN will take 3% from only the winner for facilitating the transaction and making sure you get paid. PAYPER WIN gurantees all winning bets will be paid. If patience isn't your virtue, say no more; we suggest doing a Instant bet.
+                                    Here is where you beat the bookie. The odds are even and better than you will find anywhere else online. The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. PAYPER WIN will take 5% from only the winner for facilitating the transaction and making sure you get paid. PAYPER WIN gurantees all winning bets will be paid. If patience isn't your virtue, say no more; we suggest doing a Instant bet.
                                 </p>
                                 <strong>Instant Bet/ Live bet</strong>
                                 <p>

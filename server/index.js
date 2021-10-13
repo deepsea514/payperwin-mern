@@ -49,7 +49,7 @@ const {
     isFreeWithdrawalUsed,
     checkSignupBonusPromotionEnabled,
 } = require('./libs/functions');
-const BetFee = 0.03;
+const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
@@ -59,7 +59,6 @@ const adminEmailAddress1 = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
-const isMultiBetpool = config.isMultiBetpool;
 const maximumWin = 2000;
 //external libraries
 const express = require('express');
@@ -969,7 +968,6 @@ console.log( req.body);
             if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
             } else {
-
                 // TODO: error if match has already started
                 // TODO: prevent certain types of bets
                 if (origin == 'other') {
@@ -979,7 +977,6 @@ console.log( req.body);
                     const existingBet = await Bet.findOne({
                         userId: user._id,
                         "lineQuery.lineId": "lineId",
-                        "lineQuery.lineId": lineId,
                         "lineQuery.eventName": lineQuery,
                         "lineQuery.sportName": 'other',
                     });
@@ -1247,11 +1244,11 @@ console.log( req.body);
                                 errors.push(`${pickName} @${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
                                 continue;
                             }
-                            const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+                            const pickWithOverUnder = ['total', 'alternative_total'].includes(lineQuery.type) ? (pick === 'home' ? 'over' : 'under') : pick;
                             const lineOdds = line.line[pickWithOverUnder];
-                            const oddsA = type === 'total' ? line.line.over : line.line.home;
-                            const oddsB = type === 'total' ? line.line.under : line.line.away;
-                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick);
+                            const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+                            const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+                            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
                             if (sportsbook) {
                                 newLineOdds = pick == 'home' ? oddsA : oddsB;
                             }
@@ -1409,7 +1406,7 @@ console.log( req.body);
                                             const betId = savedBet.id;
                                             const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
                                             let betpoolId = '';
-                                            if (exists && isMultiBetpool) {
+                                            if (exists) {
                                                 const docChanges = {
                                                     $push: pick === 'home' ? { homeBets: betId } : { awayBets: betId },
                                                     $inc: {},
@@ -1517,14 +1514,14 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
 
     const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
 
-    const pickWithOverUnder = type === 'total' ? (pick === 'home' ? 'over' : 'under') : pick;
+    const pickWithOverUnder = ['total', 'alternative_total'].includes(type) ? (pick === 'home' ? 'over' : 'under') : pick;
     const lineOdds = line.line[pickWithOverUnder];
-    const oddsA = type === 'total' ? line.line.over : line.line.home;
-    const oddsB = type === 'total' ? line.line.under : line.line.away;
-    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick);
+    const oddsA = ['total', 'alternative_total'].includes(type) ? line.line.over : line.line.home;
+    const oddsB = ['total', 'alternative_total'].includes(type) ? line.line.under : line.line.away;
+    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
 
     let side = 'Underdog';
-    if (type == 'spread') {
+    if (['spread', 'alternative_spread'].includes(type)) {
         if (points > 0 && pick == 'away' || points < 0 && pick == 'home') side = 'Favorite';
     }
     else {
@@ -1542,9 +1539,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             betType = 'Moneyline';
             break;
         case 'spread':
+        case 'alternative_spread':
             betType = 'Spreads';
             break;
         case 'total':
+        case 'alternative_total':
         default:
             betType = 'Over/Under';
             break;
@@ -1669,11 +1668,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             pickName += '4th Quarter: ';
             break;
         default:
-            pickName += 'Game: ';
+            pickName += 'Pick: ';
             break;
     }
     switch (type) {
         case 'total':
+        case 'alternative_total':
             if (pick == 'home') {
                 pickName += `Over ${points}`;
                 betType += `O ${points}`;
@@ -1682,8 +1682,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 betType += `U ${points}`;
             }
             break;
-
         case 'spread':
+        case 'alternative_spread':
             if (pick == 'home') {
                 pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
                 betType += `${hdp > 0 ? '+' : ''}${hdp}`;
@@ -2023,14 +2023,15 @@ expressApp.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
+
             const betpool = await BetPool.findOne({
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,
@@ -2367,6 +2368,68 @@ expressApp.get(
             res.json(customBets);
         }
     },
+);
+
+expressApp.get(
+    '/search',
+    async (req, res) => {
+        const { param } = req.query;
+        if (!param) return res.json([]);
+        try {
+            const results = [];
+            const searchSports = await Sport.find({
+                $or: [
+                    {
+                        "leagues.name": { "$regex": param, "$options": "i" }
+                    },
+                    {
+                        "leagues.events.startDate": { $gte: new Date() },
+                        $or: [
+                            { "leagues.events.teamA": { "$regex": param, "$options": "i" } },
+                            { "leagues.events.teamB": { "$regex": param, "$options": "i" } },
+                        ]
+                    }
+                ]
+            });
+            for (const sport of searchSports) {
+                for (const league of sport.leagues) {
+                    if (league.name.toLowerCase().includes(param.toLowerCase())) {
+                        results.push({
+                            type: 'league',
+                            sportName: sport.name,
+                            leagueName: league.name,
+                            leagueId: league.originId,
+                        })
+                    }
+                    for (const event of league.events) {
+                        if (new Date(event.startDate).getTime() > new Date().getTime()) {
+                            if (event.teamA.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamA
+                                });
+                            } else if (event.teamB.toLowerCase().includes(param.toLowerCase())) {
+                                results.push({
+                                    type: 'team',
+                                    sportName: sport.name,
+                                    leagueName: league.name,
+                                    leagueId: league.originId,
+                                    team: event.teamB
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.json([]);
+        }
+    }
 )
 
 expressApp.get('/getPinnacleLogin',
@@ -2794,44 +2857,13 @@ expressApp.post(
 
             try {
                 const uniqid = `W${ID()}`;
-                // const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
-                // if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
-                //     console.warn("PremierPay Api is not set");
-                //     return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
-                // }
-                // const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
-                // const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
-                // const amount2 = Number(amount).toFixed(2);
-                // const { data } = await axios.post(`${payouturl}/${sid}`,
-                //     {
-                //         "payby": "etransfer",
-                //         "amount": amount2,
-                //         "first_name": user.firstname,
-                //         "last_name": user.lastname,
-                //         "email": user.email,
-                //         "phone": user.phone,
-                //         "address": "Artery roads",
-                //         "city": "Edmonton",
-                //         "state": "AB",
-                //         "country": "CA",
-                //         "zip_code": "T5A",
-                //         "ip_address": "159.203.4.60",
-                //         "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
-                //         "amount_shipping": 0.00,
-                //         "udf1": user._id,
-                //         "udf2": uniqid,
-                //         "signature": signature
-                //     }
-                // );
-
-                // const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-                // if (responsesignature != data.signature) {
-                //     return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-                // }
-                // if (data.status == "APPROVED") {
+                const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
+                if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
+                    console.warn("PremierPay Api is not set");
+                    return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
+                }
 
                 const maxwithdraw = getMaxWithdraw(user);
-
                 let totalwithdraw = await FinancialLog.aggregate(
                     {
                         $match: {
@@ -2840,12 +2872,7 @@ expressApp.post(
                         }
                     },
                     {
-                        $group: {
-                            _id: null,
-                            total: {
-                                $sum: "$amount"
-                            }
-                        }
+                        $group: { _id: null, total: { $sum: "$amount" } }
                     }
                 )
                 if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
@@ -2859,33 +2886,64 @@ expressApp.post(
                     return res.json({ success: 0, message: "Insufficient funds." });
                 }
 
-                const withdraw = new FinancialLog({
-                    financialtype: 'withdraw',
-                    uniqid: uniqid,
-                    user: user._id,
-                    amount: amount,
-                    method: method,
-                    status: FinancialStatus.pending,
-                    fee: fee
-                });
-                await withdraw.save();
+                const { payouturl, sid } = premierpayAddon.value;
+                const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
+                const amount2 = Number(amount).toFixed(2);
 
-                if (fee > 0) {
-                    const withdrawFee = new FinancialLog({
-                        financialtype: 'withdrawfee',
-                        uniqid: `WF${ID()}`,
-                        user: user._id,
-                        amount: fee,
-                        method: method,
-                        status: FinancialStatus.success,
-                    });
-                    await withdrawFee.save();
+                const { data } = await axios.post(`${payouturl}/${sid}`,
+                    {
+                        "payby": "etransfer",
+                        "amount": amount2,
+                        "first_name": user.firstname,
+                        "last_name": user.lastname,
+                        "email": user.email,
+                        "phone": user.phone,
+                        "address": "Artery roads",
+                        "city": "Edmonton",
+                        "state": "AB",
+                        "country": "CA",
+                        "zip_code": "T5A",
+                        "ip_address": "159.203.4.60",
+                        "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
+                        "amount_shipping": 0.00,
+                        "udf1": user._id,
+                        "udf2": uniqid,
+                        "signature": signature
+                    }
+                );
+
+                const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                if (responsesignature != data.signature) {
+                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
                 }
-                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+                if (data.status == "APPROVED") {
+                    const withdraw = new FinancialLog({
+                        financialtype: 'withdraw',
+                        uniqid: uniqid,
+                        user: user._id,
+                        amount: amount,
+                        method: method,
+                        status: FinancialStatus.pending,
+                        fee: fee
+                    });
+                    await withdraw.save();
 
-                return res.json({ success: 1, message: "Please wait until withdraw is finished." });
-                // }
-                // return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
+                    if (fee > 0) {
+                        const withdrawFee = new FinancialLog({
+                            financialtype: 'withdrawfee',
+                            uniqid: `WF${ID()}`,
+                            user: user._id,
+                            amount: fee,
+                            method: method,
+                            status: FinancialStatus.success,
+                        });
+                        await withdrawFee.save();
+                    }
+                    await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+
+                    return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+                }
+                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.log("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
@@ -3723,8 +3781,9 @@ expressApp.get(
                     }
                 }
             ]);
-            if (betamount && betamount.length)
+            if (betamount && betamount.length) {
                 betamount = betamount[0].amount;
+            }
             else betamount = 0;
 
             const wincount = await Bet.find({
@@ -3733,6 +3792,25 @@ expressApp.get(
                 orgin: { $ne: 'other' },
                 status: 'Settled - Win'
             }).count();
+
+            let fee = await FinancialLog.aggregate([
+                {
+                    $match: {
+                        user: user._id,
+                        updatedAt: dateObj,
+                        financialtype: "betfee",
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        amount: { $sum: "$amount" },
+                    }
+                }
+            ]);
+            if (fee && fee.length) {
+                fee = fee[0].amount;
+            } else fee = 0;
 
             let winamount = await Bet.aggregate([
                 {
@@ -3746,12 +3824,13 @@ expressApp.get(
                 {
                     $group: {
                         _id: null,
-                        amount: { $sum: "$payableToWin" }
+                        amount: { $sum: "$payableToWin" },
                     }
                 }
             ]);
-            if (winamount && winamount.length)
+            if (winamount && winamount.length) {
                 winamount = winamount[0].amount;
+            }
             else winamount = 0;
 
             const losscount = await Bet.find({
@@ -3833,7 +3912,8 @@ expressApp.get(
                     },
                     winbets: {
                         count: wincount,
-                        amount: winamount
+                        amount: winamount,
+                        fee: fee
                     },
                     lossbets: {
                         count: losscount,

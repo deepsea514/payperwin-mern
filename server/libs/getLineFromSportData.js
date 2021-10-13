@@ -37,19 +37,39 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
                             }
                             if (selectedLine) {
                                 if (type === 'spread') {
-                                    selectedLine.spreads.forEach((spread) => {
-                                        if (altLineId === spread.altLineId || (!altLineId && !spread.altLineId)) {
-                                            lineData.line = spread;
-                                        }
-                                    });
+                                    if (selectedLine.spreads) {
+                                        selectedLine.spreads.forEach((spread) => {
+                                            if (altLineId === spread.altLineId || (!altLineId && !spread.altLineId)) {
+                                                lineData.line = spread;
+                                            }
+                                        });
+                                    }
                                 } else if (type === 'total') {
-                                    selectedLine.totals.forEach((total) => {
-                                        if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
-                                            lineData.line = total;
-                                        }
-                                    });
+                                    if (selectedLine.totals) {
+                                        selectedLine.totals.forEach((total) => {
+                                            if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                lineData.line = total;
+                                            }
+                                        });
+                                    }
                                 } else if (type == 'moneyline') {
                                     lineData.line = selectedLine[type];
+                                } else if (type == 'alternative_spread') {
+                                    if (selectedLine.alternative_spreads) {
+                                        selectedLine.alternative_spreads.forEach((spread) => {
+                                            if (altLineId === spread.altLineId || (!altLineId && !spread.altLineId)) {
+                                                lineData.line = spread;
+                                            }
+                                        });
+                                    }
+                                } else if (type == 'alternative_total') {
+                                    if (selectedLine.alternative_totals) {
+                                        selectedLine.alternative_totals.forEach((total) => {
+                                            if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                lineData.line = total;
+                                            }
+                                        });
+                                    }
                                 }
                                 if (lineData.line) {
                                     found = true;

@@ -78,34 +78,34 @@ class BetActivities extends React.Component {
             if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
             return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
                 <td scope="col">{index + 1}</td>
+                <td scope="col">{this.getBetHouse(bet.sportsbook)}</td>
                 <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td>
+                {/* <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td> */}
                 <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                 <td scope="col">{dateformat(bet.matchStartDate)}</td>
-                <td scope="col">{this.getBetDogFav(bet, index)}</td>
+                {/* <td scope="col">{this.getBetDogFav(bet, index)}</td> */}
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
-                <td scope="col">{this.getBetMatch(bet.status)}</td>
+                <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
-                <td scope="col">{bet.transactionID}</td>
                 <td scope="col">
                     <DropdownButton title="Actions">
                         <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
                             <i className="far fa-eye"></i>&nbsp; Detail
                         </Dropdown.Item>
-                        {['Pending', 'Partial Match', 'Matched', null].includes(bet.status) &&
+                        {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
                             <>
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                     <i className="fas fa-trash"></i>&nbsp; Delete
                                 </Dropdown.Item>
-                                {filter.house != 'sportsbook' && <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
-                                </Dropdown.Item>}
+                                </Dropdown.Item>
                             </>
                         }
-                        {['Pending', 'Partial Match'].includes(bet.status) &&
+                        {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
                             </Dropdown.Item>
@@ -171,7 +171,7 @@ class BetActivities extends React.Component {
         const oddsA = Number(teamA.odds);
         const oddsB = Number(teamB.odds);
 
-        if (lineQuery.type == 'spread') {
+        if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
             let spreads = pickName.split(' ');
             spreads = Number(spreads[spreads.length - 1]);
             if (spreads < 0) {
@@ -189,21 +189,6 @@ class BetActivities extends React.Component {
             }
         }
         return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
-    }
-
-    getBetType = (bet) => {
-        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
-        switch (type) {
-            case "moneyline":
-                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
-            case "spread":
-                const spreads = bet.pickName.split(' ');
-                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
-            case "total":
-                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
-            default:
-                return null;
-        }
     }
 
     getBetStatus = (status) => {
@@ -229,13 +214,13 @@ class BetActivities extends React.Component {
         }
     }
 
-    getBetMatch = (status) => {
-        switch (status) {
+    getBetMatch = (bet) => {
+        switch (bet.status) {
             case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
             case "Draw":
-                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled ({bet.homeScore} : {bet.awayScore})</span>
             case "Pending":
             case "Partial Match":
             case "Matched":
@@ -259,6 +244,13 @@ class BetActivities extends React.Component {
             default:
                 return "$0 CAD";
         }
+    }
+
+    getBetHouse = (sportsbook) => {
+        if (sportsbook) {
+            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
+        }
+        return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">P2P</span>
     }
 
     onPageChange = (page) => {
@@ -386,6 +378,7 @@ class BetActivities extends React.Component {
                                         onChange={e => {
                                             this.onFilterChange({ house: e.target.value });
                                         }} >
+                                        <option value="">All</option>
                                         <option value="p2p">P2P Bets</option>
                                         <option value="sportsbook">SB Bets</option>
                                     </select>
@@ -423,24 +416,39 @@ class BetActivities extends React.Component {
                                         <b>Search</b> by Max Amount
                                     </small>
                                 </div>
+                                <div className="col-lg-2 col-md-3">
+                                    <input
+                                        type="text"
+                                        value={filter.email}
+                                        className="form-control"
+                                        name="searchEmail"
+                                        placeholder="Search"
+                                        onChange={(e) => {
+                                            this.onFilterChange({ email: e.target.value });
+                                        }}
+                                    />
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Email
+                                    </small>
+                                </div>
                             </div>
                             <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
+                                            <th scope="col">Type</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Wager</th>
                                             <th scope="col">Pick</th>
                                             <th scope="col">User</th>
-                                            <th scope="col">Sport</th>
+                                            {/* <th scope="col">Sport</th> */}
                                             <th scope="col">Event</th>
                                             <th scope="col">Start Date</th>
-                                            <th scope="col">Dog/Fav</th>
+                                            {/* <th scope="col">Dog/Fav</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
                                             <th scope="col">Win/Loss Amount</th>
-                                            <th scope="col">TransactionID</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>

@@ -65,6 +65,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
+import Search from '../pages/search';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -73,6 +74,76 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+
+const ShowAccountLinks = [
+    '/bets',
+    '/deposit',
+    '/announcements',
+    '/deactivation',
+    '/details',
+    '/history',
+    '/inbox',
+    '/payment-options',
+    '/personal-details',
+    '/preferences',
+    '/security',
+    '/self-exclusion',
+    '/transaction-history',
+    '/withdraw',
+    '/account',
+    '/deposit-etransfer',
+    '/withdraw-etransfer',
+    '/deposit-bitcoin',
+    '/deposit-ethereum',
+    '/deposit-tether',
+    '/withdraw-bitcoin',
+    '/withdraw-ethereum',
+    '/withdraw-tether',
+    '/verification',
+    '/phone-verification',
+    '/cashback',
+    '/custom-bets',
+    '/autobet-dashboard',
+    '/autobet-settings',
+    '/loyalty',
+    '/support',
+];
+
+const exceptDarkLinks = [
+    '/articles',
+    '/signup',
+    '/bets',
+    '/deposit',
+    '/announcements',
+    '/deactivation',
+    '/details',
+    '/history',
+    '/inbox',
+    '/payment-options',
+    '/personal-details',
+    '/preferences',
+    '/security',
+    '/self-exclusion',
+    '/transaction-history',
+    '/withdraw',
+    '/account',
+    '/deposit-etransfer',
+    '/withdraw-etransfer',
+    '/deposit-bitcoin',
+    '/deposit-ethereum',
+    '/deposit-tether',
+    '/withdraw-bitcoin',
+    '/withdraw-ethereum',
+    '/withdraw-tether',
+    '/verification',
+    '/phone-verification',
+    '/cashback',
+    '/support',
+    '/custom-bets',
+    '/autobet-dashboard',
+    '/autobet-settings',
+    '/loyalty',
+];
 
 class App extends Component {
     constructor(props) {
@@ -89,10 +160,22 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const { setDisplayModeBasedOnSystem } = this.props;
+        const { setDisplayModeBasedOnSystem, getUser } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
+
+        getUser(this.redirectToDashboard);
+    }
+
+    redirectToDashboard = (user) => {
+        const { history, location } = this.props;
+        const { pathname } = location;
+        if (user == false) {
+            if (ShowAccountLinks.includes(pathname)) {
+                history.push('/');
+            }
+        }
     }
 
     updateScrollStatus = () => {
@@ -125,12 +208,17 @@ class App extends Component {
     addBet = (bet) => {
         const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false } = bet;
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook };
-        const { betSlip } = this.state;
+        let { betSlip } = this.state;
+        betSlip = betSlip.filter(bet => {
+            const exists = bet.lineId === lineQuery.lineId &&
+                bet.type === lineQuery.type &&
+                bet.index === lineQuery.index &&
+                bet.subtype == lineQuery.subtype;
+            return !exists;
+        });
         this.setState({
             betSlip: update(betSlip, {
-                $push: [
-                    newBet
-                ]
+                $push: [newBet]
             })
         });
     }
@@ -185,74 +273,8 @@ class App extends Component {
             dark_light,
         } = this.props;
         const { pathname } = location;
-        let sidebarShowAccountLinks = [
-            '/bets',
-            '/deposit',
-            '/announcements',
-            '/deactivation',
-            '/details',
-            '/history',
-            '/inbox',
-            '/payment-options',
-            '/personal-details',
-            '/preferences',
-            '/security',
-            '/self-exclusion',
-            '/transaction-history',
-            '/withdraw',
-            '/account',
-            '/deposit-etransfer',
-            '/withdraw-etransfer',
-            '/deposit-bitcoin',
-            '/deposit-ethereum',
-            '/deposit-tether',
-            '/withdraw-bitcoin',
-            '/withdraw-ethereum',
-            '/withdraw-tether',
-            '/verification',
-            '/phone-verification',
-            '/cashback',
-            '/custom-bets',
-            '/autobet-dashboard',
-            '/autobet-settings',
-            '/loyalty',
-            '/support',
-        ].includes(pathname);
-        const exceptDark = [
-            '/articles',
-            '/signup',
-            '/bets',
-            '/deposit',
-            '/announcements',
-            '/deactivation',
-            '/details',
-            '/history',
-            '/inbox',
-            '/payment-options',
-            '/personal-details',
-            '/preferences',
-            '/security',
-            '/self-exclusion',
-            '/transaction-history',
-            '/withdraw',
-            '/account',
-            '/deposit-etransfer',
-            '/withdraw-etransfer',
-            '/deposit-bitcoin',
-            '/deposit-ethereum',
-            '/deposit-tether',
-            '/withdraw-bitcoin',
-            '/withdraw-ethereum',
-            '/withdraw-tether',
-            '/verification',
-            '/phone-verification',
-            '/cashback',
-            '/support',
-            '/custom-bets',
-            '/autobet-dashboard',
-            '/autobet-settings',
-            '/loyalty',
-        ].filter(path => {
+        let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
+        const exceptDark = exceptDarkLinks.filter(path => {
             if (pathname.startsWith(path)) return true;
             else return false;
         }).length;
@@ -333,6 +355,22 @@ class App extends Component {
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} /></ErrorBoundary>
                                                 } />
+                                                <Route path="/sport/:name/league/:league/team/:team" render={(props) => {
+                                                    const { match } = props;
+                                                    const name = resObjPath(match, 'params.name');
+                                                    const league = resObjPath(match, 'params.league');
+                                                    const team = resObjPath(match, 'params.team');
+                                                    return (
+                                                        <ErrorBoundary>
+                                                            <React.Fragment>
+                                                                <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} sportName={name}
+                                                                    league={league} team={team}
+                                                                />
+                                                            </React.Fragment>
+                                                        </ErrorBoundary>
+                                                    );
+                                                }} />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
@@ -478,6 +516,9 @@ class App extends Component {
                                                 } />
                                                 <Route path="/loyalty" render={(props) =>
                                                     <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
+                                                } />
+                                                <Route path="/search/:param" render={(props) =>
+                                                    <ErrorBoundary><Search {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route exact path="/" render={(props) =>
                                                     <ErrorBoundary>

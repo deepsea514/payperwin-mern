@@ -82,8 +82,19 @@ class OpenBets extends Component {
             });
     }
 
-    capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+    getBetType = (type) => {
+        switch (type) {
+            case 'moneyline':
+                return 'Moneyline';
+            case 'total':
+            case 'alternative_total':
+                return 'Total';
+            case 'spread':
+            case 'alternative_spread':
+                return 'Spread';
+            default:
+                return null;
+        }
     }
 
     checkEventStarted = (matchStartDate) => {
@@ -94,7 +105,7 @@ class OpenBets extends Component {
 
     shareLink = (lineQuery, matchStartDate) => () => {
         const { type, sportName, leagueId, eventId, index, subtype } = lineQuery;
-        const generatedLineUrl = `${window.location.origin}/sport/${sportName}/league/${leagueId}/event/${eventId}`;
+        const generatedLineUrl = `${window.location.origin}/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
         this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
         axios.put(
             `${serverUrl}/share-line`,
@@ -364,7 +375,7 @@ class OpenBets extends Component {
                                         <div className="open-bets-col">
                                             <strong>Bet Type</strong>
                                             <div>
-                                                {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                                {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                             </div>
                                             <div>
                                                 {pickName}
@@ -378,10 +389,10 @@ class OpenBets extends Component {
                                         </div>
                                         <div className="open-bets-col">
                                             <strong>To win</strong>
-                                            {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
+                                            {matchingStatus === 'Partial Match' && <div>
                                                 {toWin.toFixed(2)}
                                                 <br />
-                                                {payableToWin.toFixed(2)} {sportsbook ? 'Accepted' : 'Matched'}
+                                                {payableToWin.toFixed(2)} Accepted
                                                 <br />
                                                 {(toWin - payableToWin).toFixed(2)} Pending
                                             </div>}
@@ -454,7 +465,7 @@ class OpenBets extends Component {
                                     <div className="open-bets-col">
                                         <strong>Bet Type</strong>
                                         <div>
-                                            {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                            {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                         <div>
                                             {pickName}
@@ -468,14 +479,14 @@ class OpenBets extends Component {
                                     </div>
                                     <div className="open-bets-col">
                                         <strong>To win</strong>
-                                        {matchingStatus === 'Partial Match' && <div>
+                                        {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
                                             {toWin.toFixed(2)}
                                             <br />
-                                            {payableToWin.toFixed(2)} Matched
+                                            {payableToWin.toFixed(2)} {sportsbook ? 'Accepted' : 'Matched'}
                                             <br />
                                             {(toWin - payableToWin).toFixed(2)} Pending
                                         </div>}
-                                        {matchingStatus !== 'Partial Match' && <div>
+                                        {['Partial Match', 'Partial Accepted'].includes(matchingStatus) == false && <div>
                                             {toWin.toFixed(2)} {matchingStatus}
                                         </div>}
                                     </div>

@@ -10,6 +10,7 @@ import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import _env from '../env.json';
+import SBModal from '../components/sbmodal';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -34,7 +35,7 @@ class Lines extends Component {
             index: index,
             ogTitle: '',
             ogDescription: '',
-            showAll: false,
+            showAll: type != null || subtype != null || index != null || true,
         };
     }
 
@@ -90,9 +91,9 @@ class Lines extends Component {
     addBet = (bet) => {
         const { data: { started } } = this.state;
         const { addBet } = this.props;
-        const { type, odds, originOdds, pick } = bet;
+        const { type, odds, originOdds, pick, subtype } = bet;
         if (started) return;
-        if (checkOddsAvailable(originOdds, odds, pick, type)) {
+        if (checkOddsAvailable(originOdds, odds, pick, type, subtype)) {
             return addBet(bet);
         }
         this.setState({ sportsbookInfo: bet });
@@ -107,7 +108,7 @@ class Lines extends Component {
 
     render() {
         const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
-        const { sportName, leagueId, eventId } = match.params;
+        const { sportName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, ogTitle, ogDescription, showAll
         } = this.state;
@@ -126,24 +127,11 @@ class Lines extends Component {
                     <meta property="og:title" content={ogTitle} />
                     <meta property="og:description" content={ogDescription} />
                 </MetaTags>}
-                {sportsbookInfo && <div className="modal confirmation">
-                    <div className="background-closer bg-modal" onClick={() => this.setState({ sportsbookInfo: null })} />
-                    <div className="col-in">
-                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ sportsbookInfo: null })} />
-                        <div>
-                            <b>BET ON SPORTSBOOK</b>
-                            <hr />
-                            <p>
-                                Peer to Peer betting is not available for this line but you can forward your bet to the PAYPER WIN Sportsbook with the following odds:
-                            </p>
-                            <p>{sportsbookInfo.name}: {sportsbookInfo.type}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</p>
-                            <div className="text-right">
-                                <button className="form-button ml-2" onClick={this.addSportsbookBet}> Accept </button>
-                                <button className="form-button ml-2" onClick={() => this.setState({ sportsbookInfo: null })}> Cancel </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>}
+                {sportsbookInfo && <SBModal
+                    sportsbookInfo={sportsbookInfo}
+                    onClose={() => this.setState({ sportsbookInfo: null })}
+                    onAccept={this.addSportsbookBet}
+                />}
                 {shareModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
                     <div className="col-in">
@@ -201,14 +189,18 @@ class Lines extends Component {
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {
-                        const { spreads, originId: lineId, moneyline, totals,
-                            first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter } = line;
+                        const {
+                            spreads, moneyline, totals, alternative_spreads, alternative_totals,
+                            first_half, second_half,
+                            first_quarter, second_quarter,
+                            third_quarter, forth_quarter
+                        } = line;
                         if (i > 0 && !spreads && !moneyline && !totals) {
                             return null;
                         }
 
                         let lines = [
-                            { line: { moneyline, totals, spreads }, subtype: null },
+                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals }, subtype: null },
                             { line: first_half, subtype: "first_half" },
                             { line: second_half, subtype: "second_half" },
                             { line: first_quarter, subtype: "first_quarter" },

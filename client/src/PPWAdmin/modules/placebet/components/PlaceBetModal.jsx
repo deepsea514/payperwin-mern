@@ -335,7 +335,7 @@ export default class PlaceBetModal extends React.Component {
 
                                         >
                                             {this.renderSportsLeague()}
-                                        </select>
+                                        </select> 
                                         {formik.touched.sportsLeague && formik.errors.sportsLeague ? (
                                             <div className="invalid-feedback">
                                                 {formik.errors.sportsLeague}
@@ -347,32 +347,32 @@ export default class PlaceBetModal extends React.Component {
                                         <div className="form-group col-md-6">
                                             <label>Name of Team A<span className="text-danger">*</span></label>
 
-
-
                                             <Select
-                                                defaultValue={leagueEvents[0]}
-                                                isClearable
-                                                isSearchable={true}
-                                                name="teamA"
-                                                options={leagueEvents}
-                                            />
+                                            className={`basic-single ${getInputClasses(formik, "teamA")}`}
+                                            classNamePrefix="select"
+                                            name="teamA"
+                                            options={leagueEvents}
+                                            value={formik.values.teamA}
+                                            {...formik.getFieldProps("teamA")}
+                                            {...{
+                                                onChange: (teamA) => {
+                                                    if (!teamA) return;
+                                                    formik.setFieldValue("teamA", teamA[0]);
+                                                    formik.setFieldTouched("teamA", true);
+                                                    formik.setFieldError("teamA", false);
+                                                },
 
-                                      
-                                        {formik.touched.sports && formik.errors.sports ? (
+                                            }}
+                                        />
+                                        {formik.touched.teamA && formik.errors.teamA ? (
                                             <div className="invalid-feedback">
-                                                {formik.errors.sports}
+                                                {formik.errors.teamA}
                                             </div>
                                         ) : null}
 
-                                            <input name="teamA" placeholder="Name of Team A"
-                                                className={`form-control ${getInputClasses(formik, "teamA")}`}
-                                                {...formik.getFieldProps("teamA")}
-                                            />
-                                            {formik.touched.teamA && formik.errors.teamA ? (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.teamA}
-                                                </div>
-                                            ) : null}
+                                            
+
+                                        
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label>Name of Team B<span className="text-danger">*</span></label>
@@ -399,6 +399,7 @@ export default class PlaceBetModal extends React.Component {
                                             {...formik.getFieldProps("betType")}
                                             {...{
                                                 onChange: (betType) => {
+                                                    console.log(betType);
                                                     if (!betType) return;
                                                     formik.setFieldValue("betType", betType);
                                                     formik.setFieldTouched("betType", true);

@@ -11,7 +11,7 @@ import { addDeposit } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
 import config from "../../../../../../config.json";
-const PaymentMethod = config.PaymentMethod;
+const PaymentMethod = config.PaymentMethod.filter(method => method != "DEBIT");
 const FinancialStatus = config.FinancialStatus;
 
 class AddDeposit extends React.Component {

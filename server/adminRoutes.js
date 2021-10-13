@@ -65,7 +65,7 @@ const {
     calculateBetsStatus,
     calculateToWinFromBet
 } = require('./libs/functions');
-const BetFee = 0.03;
+const BetFee = 0.05;
 const loyaltyPerBet = 25;
 
 Date.prototype.addHours = function (h) {
@@ -530,10 +530,79 @@ adminRouter.get(
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
 
-            const winloss = totaldeposit - user.balance;
-            res.status(200).json({ lastbets, lastsportsbookbets, totalwagers, totaldeposit, winloss });
+            let fees = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        financialtype: { $in: ["betfee", "withdrawfee"] },
+                        user: new ObjectId(id),
+                        status: FinancialStatus.success,
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            )
+            if (fees.length) fees = fees[0].total;
+            else fees = 0;
+
+            let winamount = await Bet.aggregate(
+                {
+                    $match: {
+                        status: 'Settled - Win',
+                        userId: user._id
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$payableToWin" } } }
+            );
+            if (winamount.length) winamount = winamount[0].total;
+            else winamount = 0;
+
+            let lossamount = await Bet.aggregate(
+                {
+                    $match: {
+                        status: 'Settled - Lose',
+                        userId: user._id
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$bet" } } }
+            );
+            if (lossamount.length) lossamount = lossamount[0].total;
+            else lossamount = 0;
+
+            const winloss = user.balance - totaldeposit;
+            const betcount = await Bet.find({ userId: id }).count();
+            const days = Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (24 * 3600 * 1000));
+
+            const bets = await Bet.find({ userId: id });
+            let averagebetafter2loss = 0;
+            let prevBet = null;
+            for (const bet of bets) {
+                if (bet.status == 'Settled - Lose') {
+                    if (prevBet != null) {
+                        averagebetafter2loss = (prevBet + bet.bet) / 2;
+                    } else {
+                        prevBet = bet.bet;
+                    }
+                } else {
+                    prevBet = null;
+                }
+            }
+
+            res.status(200).json({
+                lastbets,
+                lastsportsbookbets,
+                totalwagers,
+                totaldeposit,
+                winloss,
+                fees,
+                averagebet: betcount > 0 ? totalwagers / betcount : 0,
+                averagebetwin: betcount > 0 ? winamount / betcount : 0,
+                averagebetloss: betcount > 0 ? lossamount / betcount : 0,
+                betsperday: days > 0 ? betcount / days : 0,
+                betsperweek: days > 0 ? betcount / days * 7 : 0,
+                averagebetafter2loss
+            });
         }
         catch (error) {
+            console.log(error)
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
         }
     }
@@ -1599,184 +1668,125 @@ adminRouter.get(
     limitRoles('bet_activities'),
     async (req, res) => {
         try {
-            let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage } = req.query;
+            let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage, email } = req.query;
             if (!perPage) perPage = 25;
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
-            if (!house || house == 'p2p') {
-                let searchObj = {
+            let searchObj = {};
+            if (house == 'p2p') {
+                searchObj = {
+                    ...searchObj,
                     $or: [
                         { sportsbook: { $exists: false } },
                         { sportsbook: false }
                     ]
                 };
-                if (status && status == 'open') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Pending', 'Partial Match', 'Matched'] } }
-                    };
-                } else if (status && status == 'settled') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
-                    };
-                }
-
-                if (match && match == 'pending') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ matchingStatus: { $in: ['Pending', 'Partial Match'] } }
-                    };
-                }
-                else if (match && match == 'matched') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ matchingStatus: 'Matched' }
-                    };
-                }
-
-                if (datefrom || dateto) {
-                    let dateObj = {};
-                    if (datefrom) {
-                        datefrom = new Date(datefrom);
-                        if (!isNaN(datefrom.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $gte: datefrom }
-                            }
-                        }
-                    }
-                    if (dateto) {
-                        dateto = new Date(dateto);
-                        if (!isNaN(dateto.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $lte: dateto }
-                            }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ createdAt: dateObj }
-                    }
-                }
-
-                if (sport) {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ "lineQuery.sportId": parseInt(sport) }
-                    }
-                }
-
-                if (minamount || maxamount) {
-                    let amountObj = {}
-                    if (minamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $gte: parseInt(minamount) }
-                        }
-                    }
-                    if (maxamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $lte: parseInt(maxamount) }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ bet: amountObj }
-                    }
-                }
-
-                const total = await Bet.find(searchObj).count();
-                const data = await Bet.find(searchObj)
-                    .sort({ createdAt: -1 })
-                    .skip(page * perPage)
-                    .limit(perPage)
-                    .populate('userId', ['email', 'currency'])
-                page++;
-                return res.json({ total, perPage, page, data, });
             } else if (house == 'sportsbook') {
-                let searchObj = { sportsbook: true };
-                if (status && status == 'open') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: null }
-                    };
-                } else if (status && status == 'settled') {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] } }
-                    };
-                }
-
-                if (datefrom || dateto) {
-                    let dateObj = {};
-                    if (datefrom) {
-                        datefrom = new Date(datefrom);
-                        if (!isNaN(datefrom.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $gte: datefrom }
-                            }
-                        }
-                    }
-                    if (dateto) {
-                        dateto = new Date(dateto);
-                        if (!isNaN(dateto.getTime())) {
-                            dateObj = {
-                                ...dateObj,
-                                ...{ $lte: dateto }
-                            }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ createdAt: dateObj }
-                    }
-                }
-
-                if (sport) {
-                    searchObj = {
-                        ...searchObj,
-                        ...{ "lineQuery.sportId": parseInt(sport) }
-                    }
-                }
-
-                if (minamount || maxamount) {
-                    let amountObj = {}
-                    if (minamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $gte: parseInt(minamount) }
-                        }
-                    }
-                    if (maxamount) {
-                        amountObj = {
-                            ...amountObj,
-                            ...{ $lte: parseInt(maxamount) }
-                        }
-                    }
-                    searchObj = {
-                        ...searchObj,
-                        ...{ bet: amountObj }
-                    }
-                }
-
-                const total = await Bet.find(searchObj).count();
-                const data = await Bet.find(searchObj)
-                    .sort({ createdAt: -1 })
-                    .skip(page * perPage)
-                    .limit(perPage)
-                    .populate('userId', ['email', 'currency'])
-                page++;
-                return res.json({ total, perPage, page, data, });
-            } else {
-                return res.status(404).json({ error: 'Can\'t find bets on house.' });
+                searchObj = {
+                    ...searchObj,
+                    sportsbook: true
+                };
             }
 
+            if (status && status == 'open') {
+                searchObj = {
+                    ...searchObj,
+                    status: { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
+                };
+            } else if (status && status == 'settled') {
+                searchObj = {
+                    ...searchObj,
+                    status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
+                };
+            }
 
+            if (match && match == 'pending') {
+                searchObj = {
+                    ...searchObj,
+                    matchingStatus: { $in: ['Pending', 'Partial Match', 'Partial Accepted'] }
+                };
+            }
+            else if (match && match == 'matched') {
+                searchObj = {
+                    ...searchObj,
+                    matchingStatus: { $in: ['Matched', 'Accepted'] }
+                };
+            }
+
+            if (datefrom || dateto) {
+                let dateObj = {};
+                if (datefrom) {
+                    datefrom = new Date(datefrom);
+                    if (!isNaN(datefrom.getTime())) {
+                        dateObj = { ...dateObj, $gte: datefrom }
+                    }
+                }
+                if (dateto) {
+                    dateto = new Date(dateto);
+                    if (!isNaN(dateto.getTime())) {
+                        dateObj = { ...dateObj, $lte: dateto }
+                    }
+                }
+                searchObj = { ...searchObj, createdAt: dateObj }
+            }
+
+            if (sport) {
+                searchObj = { ...searchObj, "lineQuery.sportId": parseInt(sport) }
+            }
+
+            if (minamount || maxamount) {
+                let amountObj = {}
+                if (minamount) {
+                    amountObj = { ...amountObj, $gte: parseInt(minamount) }
+                }
+                if (maxamount) {
+                    amountObj = { ...amountObj, $lte: parseInt(maxamount) }
+                }
+                searchObj = { ...searchObj, bet: amountObj }
+            }
+
+            if (!email) email = '';
+
+            let aggregate = [
+                { $match: searchObj },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $eq: ["$_id", "$$user_id"] }
+                            },
+                        }, {
+                            $project: {
+                                email: 1,
+                                currency: 1
+                            }
+                        }],
+                        as: 'userId',
+                    }
+                },
+                { $unwind: '$userId' },
+                {
+                    $match: { "userId.email": { "$regex": email, "$options": "i" } }
+                },
+            ]
+            let total = await Bet.aggregate([
+                ...aggregate,
+                { $count: "total" }
+            ]);
+            if (total.length > 0) total = total[0].total;
+            else total = 0;
+            const data = await Bet.aggregate([
+                ...aggregate,
+                { $sort: { createdAt: -1 } },
+                { $skip: page * perPage },
+                { $limit: perPage }
+            ]);
+
+            page++;
+            return res.json({ total: total, perPage, page, data });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
@@ -1810,12 +1820,12 @@ adminRouter.delete(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpool = await BetPool.findOne({
@@ -1856,12 +1866,12 @@ adminRouter.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
             const betpoolQuery = {
@@ -1929,7 +1939,7 @@ adminRouter.post(
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
                             draw = awayScore == homeScore;
-                        } else if (lineType === 'spread') {
+                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
                             const spread = {
                                 home: Number(points),
                                 away: 0,
@@ -1941,7 +1951,7 @@ adminRouter.post(
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = pick === spreadWinner;
                             draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (lineType === 'total') {
+                        } else if (['total', 'alternative_total'].includes(lineType)) {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
@@ -1965,18 +1975,19 @@ adminRouter.post(
                         if (betWin === true) {
                             // TODO: credit back bet ammount
                             const user = await User.findById(userId);
+                            const betFee = Number((payableToWin * BetFee).toFixed(2));
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Win',
                                     credited: betAmount + payableToWin,
-                                    homeScore,
-                                    awayScore,
+                                    homeScore: homeScore,
+                                    awayScore: awayScore,
+                                    fee: betFee
                                 }
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                             if (user) {
                                 const { email } = user;
-                                const betFee = Number((payableToWin * 0.03).toFixed(2));
                                 if (payableToWin > 0) {
                                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                                     await FinancialLog.create({
@@ -2114,12 +2125,12 @@ adminRouter.post(
             }
             const lineQuery = bet.lineQuery;
             let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type.toLowerCase() == 'moneyline') {
+            if (lineQuery.type == 'moneyline') {
                 linePoints = null;
-            } else if (lineQuery.type.toLowerCase() == 'spread') {
+            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
                 if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (lineQuery.type.toLowerCase() == 'total') {
+            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                 linePoints = Number(linePoints[linePoints.length - 1]);
             }
 
@@ -2149,7 +2160,7 @@ adminRouter.post(
             }
 
             const pick = bet.pick == 'home' ? 'away' : 'home';
-            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick);
+            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
             const betAfterFee = amount;
             const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
             const fee = Number((betAfterFee * BetFee).toFixed(2));
@@ -2176,11 +2187,12 @@ adminRouter.post(
                     pickName += '4th Quarter: ';
                     break;
                 default:
-                    pickName += 'Game: ';
+                    pickName += 'Pick: ';
                     break;
             }
             switch (bet.lineQuery.type) {
                 case 'total':
+                case 'alternative_total':
                     if (pick == 'home') {
                         pickName += `Over ${linePoints}`;
                         betType += `O ${linePoints}`;
@@ -2190,6 +2202,7 @@ adminRouter.post(
                     }
                     break;
                 case 'spread':
+                case 'alternative_spread':
                     if (pick == 'home') {
                         pickName += `${bet.teamA.name} ${linePoints > 0 ? '+' : ''}${linePoints}`;
                         betType += `${linePoints > 0 ? '+' : ''}${linePoints}`;
@@ -2905,6 +2918,24 @@ adminRouter.get(
                 },
                 {
                     $lookup: {
+                        from: 'autobetlogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $gte: ["$createdAt", fromTime] },
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$type", "sportsbook"] }
+                                    ]
+                                }
+                            },
+                        }],
+                        as: 'sbautobetlogs',
+                    }
+                },
+                {
+                    $lookup: {
                         from: 'users',
                         let: { user_id: "$userId" },
                         pipeline: [{
@@ -2932,6 +2963,7 @@ adminRouter.get(
                         budget: 1,
                         sportsbookBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
+                        sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },
                         referral_code: 1,
                         status: 1,
                         createdAt: 1
@@ -3751,16 +3783,17 @@ const matchResults = async (eventId, matchResult) => {
 
                     if (betWin === true) {
                         const user = await User.findById(userId);
-                        const { balance, email } = user;
+                        const { email } = user;
+                        const betFee = Number((payableToWin * BetFee).toFixed(2));
                         const betChanges = {
                             $set: {
                                 status: 'Settled - Win',
                                 credited: betAmount + payableToWin,
-                                homeScore,
-                                awayScore,
+                                homeScore: homeScore,
+                                awayScore: awayScore,
+                                fee: betFee
                             }
                         }
-                        const betFee = Number((payableToWin * 0.03).toFixed(2));
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                         await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
                         await FinancialLog.create({

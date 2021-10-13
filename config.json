@@ -144,7 +144,6 @@
         }
     },
     "isDstObserved": true,
-    "isMultiBetpool": true,
     "TimeZones": [
         {
             "name": "Eniwetok, Kwajalein",

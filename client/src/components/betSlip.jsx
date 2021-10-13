@@ -45,36 +45,27 @@ class BetSlip extends Component {
             return;
         }
 
-        axios({
-            method: 'post',
-            url,
-            data: {
-                betSlip,
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        }).then(({ data: { balance, errors } }) => {
-            const successCount = betSlip.length - (errors ? errors.length : 0);
-            const stateChanges = {};
-            if (successCount) {
-                updateUser('balance', balance);
-                removeBet(null, null, null, null, null, true);
-                stateChanges.confirmationOpen = true;
-            }
-            if (errors && errors.length) stateChanges.errors = errors;
-            if (successCount || errors) {
-                this.setState(stateChanges);
-            }
-        }).catch((err) => {
-            if (err.response && err.response.data) {
-                const { error } = err.response.data;
-                this.setState({ formError: error });
-            } else {
-                this.setState({ errors: ['Can\'t place bet.'] });
-            }
-        });
+        axios.post(url, { betSlip }, { withCredentials: true })
+            .then(({ data: { balance, errors } }) => {
+                const successCount = betSlip.length - (errors ? errors.length : 0);
+                const stateChanges = {};
+                if (successCount) {
+                    updateUser('balance', balance);
+                    removeBet(null, null, null, null, null, true);
+                    stateChanges.confirmationOpen = true;
+                }
+                if (errors && errors.length) stateChanges.errors = errors;
+                if (successCount || errors) {
+                    this.setState(stateChanges);
+                }
+            }).catch((err) => {
+                if (err.response && err.response.data) {
+                    const { error } = err.response.data;
+                    this.setState({ formError: error });
+                } else {
+                    this.setState({ errors: ['Can\'t place bet.'] });
+                }
+            });
     }
 
     render() {
@@ -97,27 +88,24 @@ class BetSlip extends Component {
         });
         return (
             <div className={`bet-slip-contain ${className} ${openBetSlipMenu ? 'full-fixed' : ''}`}>
-                {
-                    confirmationOpen ? (
-                        <div className="modal confirmation">
-                            <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
-                            <div className="col-in">
-                                <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
-                                <div>
-                                    <center>
-                                        Your bet has been submitted.
-                                        <br />
-                                        <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
-                                    </center>
-                                </div>
+                {confirmationOpen ? (
+                    <div className="modal confirmation">
+                        <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
+                        <div className="col-in">
+                            <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
+                            <div>
+                                <center>
+                                    Your bet has been submitted.
+                                    <br />
+                                    <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
+                                </center>
                             </div>
                         </div>
-                    ) : null
-                }
+                    </div>
+                ) : null}
                 <div
                     className={`bet-slip ${betSlip.length > 0 ? '' : 'empty'}`}
-                    onClick={() => toggleField('openBetSlipMenu')}
-                >
+                    onClick={() => toggleField('openBetSlipMenu')}>
                     BET SLIP
                     {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
                     <i className="fas fa-minus" />
@@ -135,8 +123,7 @@ class BetSlip extends Component {
                                         <Link
                                             type="button"
                                             className="deposit-btn text-center"
-                                            to="/deposit"
-                                        >
+                                            to="/deposit">
                                             Deposit
                                         </Link>
                                     </div>
@@ -147,10 +134,8 @@ class BetSlip extends Component {
                                             bet={bet}
                                             removeBet={removeBet}
                                             updateBet={updateBet}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`}
-                                        />)}
-                                    </React.Fragment>
-                                ) :
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)}
+                                    </React.Fragment>) :
                                     (
                                         <div className="no-bets">
                                             <h4>There are no bets on your ticket.</h4>
@@ -181,15 +166,13 @@ class BetSlip extends Component {
                                 <button
                                     type="button"
                                     className="total-btn"
-                                    onClick={
-                                        user
-                                            ? this.placeBets
-                                            : () => {
-                                                showLoginModalAction(true);
-                                                toggleField('openBetSlipMenu');
-                                            }
-                                    }
-                                >
+                                    onClick={user
+                                        ? this.placeBets
+                                        : () => {
+                                            showLoginModalAction(true);
+                                            toggleField('openBetSlipMenu');
+                                        }
+                                    }>
                                     {user ? 'Place All Bets' : 'Log in and Place Bets'}
                                 </button>
                             </div>
