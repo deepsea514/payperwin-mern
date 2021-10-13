@@ -13,7 +13,7 @@ header {
 }
 
 .main-section {
-    padding-top: 167px;
+    padding-top: 190px;
 }
 
 .form-error {
@@ -969,7 +969,7 @@ a.log-in-btn {
         font-size: 24px;
     }
     .main-section {
-        padding-top: 150px;
+        padding-top: 175px;
     }
     .BrainhubCarousel {
         margin-bottom: 5px;
@@ -1005,7 +1005,7 @@ a.log-in-btn {
         padding: 10px;
     }
     .main-section {
-        padding-top: 128px;
+        padding-top: 150px;
     }
     .filter-dropdown {
         width: 100% !important;
