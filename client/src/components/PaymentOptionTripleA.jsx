@@ -141,7 +141,7 @@ class PaymentOptionTripleA extends Component {
                             <li>Enter the deposit amount.</li>
                             <li>After you click “Submit”, you will be presented with payment information, including a QR code that you can scan and a payment amount and address to send your {currency} to.</li>
                             <li>Please follow the steps in your {currency} wallet to confirm the payment.</li>
-                            <li>If your deposit is successful, the funds will be added to your Pinnacle account within 30-60 minutes.</li>
+                            <li>If your deposit is successful, the funds will be added to your PAYPERWIN account within 30-60 minutes.</li>
                         </ul>
                     </div>
                     <br />
