@@ -5,8 +5,9 @@ const getIceHockeyMatchScores = (type, subtype, ss, scores, timer, time_status) 
         awayScore: 0,
     }
     try {
-        matchResult.homeScore = parseInt(scores["5"].home);
-        matchResult.awayScore = parseInt(scores["5"].away);
+        const scores = ss.split('-');
+        matchResult.homeScore += Number(scores[0]);
+        matchResult.awayScore += Number(scores[1]);
         return matchResult;
     } catch (error) {
         console.log(error);
