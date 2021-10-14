@@ -4,6 +4,7 @@ import Customers from "./Customers";
 import CustomerDetail from "./CustomerDetail";
 import CustomerEdit from "./CustomerEdit";
 import CUstomerProfile from "./CustomerProfile";
+import BetDetail from "../../bet_activities/pages/BetDetail";
 
 export default class CustomerModule extends Component {
     render() {
@@ -14,6 +15,8 @@ export default class CustomerModule extends Component {
                     {/* <Route path="/:id/edit" component={CustomerEdit} /> */}
                     {/* <Route path="/:id/detail" component={CustomerDetail} /> */}
                     <Route path="/users/:id/profile" component={CUstomerProfile} />
+                    <Route path="/bet-activities/:id/detail" component={BetDetail} />
+
                 </Switch>
             </BrowserRouter>
         )

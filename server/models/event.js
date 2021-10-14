@@ -125,7 +125,8 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
             console.info(`created new bet`);
             const savedBet = await newBet.save();
 
-            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+            //TODO: Uncomment this code in when bet_accepted status email and sms need 
+           /*  if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
@@ -154,7 +155,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     });
                 });
 
-            }
+            } 
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
                 sendSMS(`This is to advise you that your bet for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
                 Wager: $${betAfterFee.toFixed(2)}
@@ -162,6 +163,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 Platform: PAYPER WIN Peer-to Peer`, user.phone);
             }
 
+            */
             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -201,7 +203,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     }
                 });
             });
-
+            
             const betId = savedBet.id;
             // add betId to betPool
             const exists = await EventBetPool.findOne({ eventId: event._id });

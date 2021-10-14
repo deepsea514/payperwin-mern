@@ -1041,6 +1041,8 @@ console.log( req.body);
                                         }
                                         const timeString = convertTimeLineDate(new Date(), timezone);
 
+                                         //TODO: Uncomment this code in when bet_accepted status email and sms need 
+                                        /* 
                                         if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                                             const msg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -1077,6 +1079,7 @@ console.log( req.body);
                                             Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}
                                             Platform: PAYPER WIN Peer-to Peer`, user.phone);
                                         }
+                                         */
 
                                         const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                                         let adminMsg = {
@@ -1307,7 +1310,7 @@ console.log( req.body);
                                                 timezone = preference.timezone;
                                             }
                                             const timeString = convertTimeLineDate(new Date(), timezone);
-
+/* 
                                             if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                                                 const msg = {
                                                     from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -1343,7 +1346,7 @@ console.log( req.body);
                                                         Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                                                         Platform: PAYPER WIN ${sportsbook ? 'Peer-to Peer' : 'Sportsbook'}`, user.phone);
                                             }
-
+ */
                                             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                                             let betType = '';
                                             switch (type) {
@@ -1762,8 +1765,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 timezone = preference.timezone;
             }
             const timeString = convertTimeLineDate(new Date(), timezone);
-
-            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
+                 //TODO: Uncomment this code in when bet_accepted status email and sms need 
+            /* if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: selectedauto.userId.email,
@@ -1797,7 +1800,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     Wager: $${betAfterFee.toFixed(2)}
                     Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                     Platform: PAYPER WIN ${bet.sportsbook ? 'Sportsbook' : 'Peer-to Peer'}(Autobet)`, selectedauto.userId.phone);
-            }
+            } */
 
             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
             let adminMsg = {

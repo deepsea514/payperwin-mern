@@ -19,9 +19,12 @@ class Wagers extends React.Component {
                             onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
                             className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer"
                         >
+                            
+                           
                             {bet.origin == 'other' && bet.lineQuery.eventName}
                             {bet.teamA ? bet.teamA.name : null} vs {bet.teamB ? bet.teamB.name : null} ({bet.lineQuery.sportName})
-                        </a>
+                            </a>
+                        
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
                     </div>
                     <span className="label label-lg label-light-primary label-inline">

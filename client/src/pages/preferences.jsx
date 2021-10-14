@@ -373,7 +373,7 @@ class Preferences extends Component {
                                                             </center>
                                                         </td>
                                                     </tr>
-                                                    <tr >
+                                                    {/* <tr >
                                                         <td className="gray-cell">
                                                             Bet Accepted
                                                         </td>
@@ -401,7 +401,7 @@ class Preferences extends Component {
                                                                 />
                                                             </center>
                                                         </td>
-                                                    </tr>
+                                                    </tr> */}
                                                     <tr >
                                                         <td className="gray-cell">
                                                             No Match Found
