@@ -1262,7 +1262,7 @@ console.log( req.body);
                                 if (toWin > maximumWin) {
                                     errors.push(`${pickName} @${odds[pick]} wager could not be placed. Exceed maximum win amount.`);
                                 } else {
-                                    const fee = Number((toWin * BetFee).toFixed(2));
+                                    const fee = sportsbook ? 0 : Number((toWin * BetFee).toFixed(2));
                                     const balanceChange = toBet * -1;
                                     const newBalance = user.balance ? user.balance + balanceChange : 0 + balanceChange;
                                     if (newBalance >= 0) {
@@ -1716,7 +1716,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         betAmount -= bettable;
         const betAfterFee = bettable;
         const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-        const fee = Number((bettable * BetFee).toFixed(2));
+        const fee = bet.sportsbook ? 0: Number((bettable * BetFee).toFixed(2));
 
         // insert bet doc to bets table
         const newBetObj = {
@@ -3650,7 +3650,7 @@ expressApp.get(
                     $match: {
                         status: "Settled - Lose",
                         userId: user._id,
-                        sportsbook: false,
+                        sportsbook: true,
                         createdAt: {
                             $gte: new Date(year, month - 1, 0),
                             $lte: new Date(year, month, 0),
@@ -3663,7 +3663,7 @@ expressApp.get(
             const lossBetHistory = await Bet.find({
                 status: "Settled - Lose",
                 userId: user._id,
-                sportsbook: false,
+                sportsbook: true,
                 createdAt: {
                     $gte: new Date(year, month - 1, 0),
                     $lte: new Date(year, month, 0),

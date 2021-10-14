@@ -108,7 +108,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
                     const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
                     for (const bet of bets) {
-                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
+                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status, sportsbook } = bet;
 
                         if (payableToWin <= 0 || status == 'Pending') {
                             const { _id, userId, bet: betAmount } = bet;
@@ -174,7 +174,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             const user = await User.findById(userId);
                             if (user) {
                                 const { email } = user;
-                                const betFee = Number((payableToWin * BetFee).toFixed(2));
+                                const betFee = sportsbook ? 0 : Number((payableToWin * BetFee).toFixed(2));
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',

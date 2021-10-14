@@ -2163,7 +2163,7 @@ adminRouter.post(
             const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
             const betAfterFee = amount;
             const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-            const fee = Number((betAfterFee * BetFee).toFixed(2));
+            const fee = bet.sportsbook ? 0 : Number((betAfterFee * BetFee).toFixed(2));
 
             let pickName = '';
             let betType = '';
