@@ -6,7 +6,8 @@
         "https://payperwin.co",
         "https://www.payperwin.co",
         "http://dev.payperwin.co",
-        "http://68.183.203.13"
+        "http://68.183.203.13",
+        "http://localhost"
     ],
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
     "serverHostToClientHost": {
