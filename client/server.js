@@ -5,7 +5,6 @@ const fs = require("fs");
 const https = require("https");
 const axios = require("axios");
 const datefomart = require("dateformat");
-require("dotenv").config();
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
 const config = require("../config.json");
