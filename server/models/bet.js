@@ -14,7 +14,6 @@ const BetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         lineQuery: Object,
-        lineId: String,
         teamA: {
             name: String,
             odds: String,
@@ -23,7 +22,6 @@ const BetSchema = new Schema(
             name: String,
             odds: String,
         },
-        sportName: String,
         pick: String,
         pickName: String,
         pickOdds: String,
