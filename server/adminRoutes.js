@@ -2259,7 +2259,8 @@ adminRouter.post(
                 timezone = preference.timezone;
             }
             const timeString = convertTimeLineDate(new Date(), timezone);
-
+             //TODO: Uncomment this code in when bet_accepted status email and sms need 
+            /* 
             if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -2294,7 +2295,8 @@ adminRouter.post(
                         Wager: $${betAfterFee.toFixed(2)}
                         Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                         Platform: PAYPER WIN Peer-to Peer`, user.phone);
-            }
+            } 
+            */
 
             const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
             let adminMsg = {
