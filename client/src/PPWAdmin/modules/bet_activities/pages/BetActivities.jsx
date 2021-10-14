@@ -329,7 +329,6 @@ class BetActivities extends React.Component {
                                     <select
                                         className="form-control"
                                         value={filter.sport}
-                                        disabled={filter.house == 'pinnacle'}
                                         onChange={e => {
                                             this.onFilterChange({ sport: e.target.value });
                                         }} >
@@ -344,7 +343,6 @@ class BetActivities extends React.Component {
                                     <select
                                         className="form-control"
                                         value={filter.match}
-                                        disabled={filter.house == 'pinnacle'}
                                         onChange={e => {
                                             this.onFilterChange({ match: e.target.value });
                                         }} >
