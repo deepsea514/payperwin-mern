@@ -140,7 +140,7 @@ class Header extends Component {
                                     <span className="navbar-toggler-icon"></span>
                                 </button>
                                 <Link to={{ pathname: '/' }} className="logo">
-                                    <img src="/images/logo-white.png" style={{ height: 70 }} />
+                                    <img src="/images/logo-white.png" />
                                 </Link>
                             </div>
                             <div className="col-7 col-sm-6 text-right">
