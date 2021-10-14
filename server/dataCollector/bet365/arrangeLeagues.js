@@ -15,6 +15,7 @@ const getTopLeagueInSport = (sport) => {
             case "Snooker":
             case "Darts":
             case "Ice Hockey":
+                return 'NHL'
             case "Rugby League":
             case "Australian Rules":
             case "Bowls":
