@@ -173,7 +173,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                 }
             }
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
     next();

@@ -10,7 +10,7 @@ const getDefaultMatchScores = (type, subtype, ss, scores, time_status) => {
         matchResult.awayScore += Number(scores[1]);
         return matchResult;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }

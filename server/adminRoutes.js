@@ -144,7 +144,6 @@ const getTwoFactorAuthenticationCode = (email) => {
 
 const verifyTwoFactorAuthenticationCode = (twoFactorAuthenticationCode, token, time) => {
     const token1 = speakeasy.time({ secret: twoFactorAuthenticationCode, encoding: 'base32' });
-    console.log(token1, token);
     return speakeasy.totp.verify({
         secret: twoFactorAuthenticationCode,
         encoding: 'base32',
@@ -247,7 +246,7 @@ adminRouter.post(
                 return;
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find admin.' });
             return;
         }
@@ -602,7 +601,7 @@ adminRouter.get(
             });
         }
         catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
         }
     }
@@ -811,7 +810,7 @@ adminRouter.delete(
                 const customer = await User.deleteMany({ _id: id });
                 res.status(200).json(customer);
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
             }
         }
@@ -943,7 +942,7 @@ adminRouter.post(
             }
             res.json(deposit);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ error: 'Can\'t save deposit.', result: error });
         }
     }
@@ -1025,7 +1024,7 @@ adminRouter.get(
                 .populate('user', ['email', 'currency']).populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get deposits.', result: error });
         }
     }
@@ -1078,7 +1077,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1125,7 +1124,7 @@ adminRouter.patch(
 
             res.json(result);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t update deposit.', result: error });
         }
     }
@@ -1300,7 +1299,7 @@ adminRouter.get(
             const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1353,7 +1352,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1506,7 +1505,7 @@ adminRouter.patch(
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
         }
     }
@@ -1619,7 +1618,7 @@ adminRouter.get(
             res.status(200).json(results);
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
@@ -1847,7 +1846,7 @@ adminRouter.delete(
             await Bet.deleteMany({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2054,7 +2053,7 @@ adminRouter.post(
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
-                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
                         await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
@@ -2099,7 +2098,7 @@ adminRouter.post(
 
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2355,7 +2354,7 @@ adminRouter.post(
             await calculateBetsStatus(betpool.uid);
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2789,7 +2788,7 @@ adminRouter.post(
                 categories,
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t read data.', message: error });
         }
     }
@@ -2978,7 +2977,7 @@ adminRouter.get(
             ]);
             return res.json({ total, perPage, page: page + 1, data: autobets });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(500).json({ success: false });
         }
     }
@@ -3280,7 +3279,7 @@ adminRouter.post(
 
             res.send("User verified successfully.");
         } catch (error) {
-            console.log("accept Error => ", error);
+            console.error("accept Error => ", error);
             res.status(400).send("Can't verify user.");
         }
     }
@@ -3334,7 +3333,7 @@ adminRouter.post(
 
             res.send("User declined.");
         } catch (error) {
-            console.log("declined Error => ", error);
+            console.error("declined Error => ", error);
             res.status(400).send("Can't decline user.");
         }
     }
@@ -3376,7 +3375,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: tickets });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find verifications.' });
         }
     }
@@ -3463,7 +3462,7 @@ adminRouter.delete(
             await Ticket.deleteMany({ _id: id });
             res.json({ message: 'success' });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(400).json({ error: 'Can\'t delete ticket.' });
         }
     }
@@ -3604,7 +3603,7 @@ adminRouter.delete(
             await FAQItem.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t delete item.' });
         }
     }
@@ -3631,7 +3630,7 @@ adminRouter.put(
             await faq_item.save();
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t update item.' });
         }
     }
@@ -3661,7 +3660,7 @@ adminRouter.post(
             await Event.create({ name, startDate, teamA, teamB });
             res.json({ success: "Event created." });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t create Event.' });
         }
     }
@@ -3680,7 +3679,7 @@ adminRouter.get(
             }
             res.status(200).json(event);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -3724,7 +3723,7 @@ adminRouter.put(
             await event.save();
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3864,13 +3863,13 @@ const matchResults = async (eventId, matchResult) => {
                         }
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                     } else {
-                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                        console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
                 }
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.error(error);
         }
     } else {
         matchCancelled = true;
@@ -3937,7 +3936,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3964,7 +3963,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -4004,7 +4003,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: events, pending_total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -4079,7 +4078,6 @@ adminRouter.post(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
-                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4249,7 +4247,6 @@ adminRouter.put(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
-                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4435,7 +4432,7 @@ adminRouter.put(
             }
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json("Can't save meta data.");
         }
     }
@@ -4488,7 +4485,7 @@ adminRouter.post(
             await Article.create(articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4528,7 +4525,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: articles });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4544,7 +4541,7 @@ adminRouter.get(
             const article = await Article.findById(id);
             res.json(article);
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4566,7 +4563,7 @@ adminRouter.put(
             await Article.findByIdAndUpdate(id, articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4582,7 +4579,7 @@ adminRouter.delete(
             await Article.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({ success: false });
         }
     }
@@ -4623,7 +4620,7 @@ adminRouter.delete(
             await ArticleCategory.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({ success: false });
         }
     }
@@ -4726,7 +4723,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: admins });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4795,7 +4792,7 @@ adminRouter.put(
             await admin.save();
             return res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({
                 message: "Admin update failed. Please try with new credentials."
             });
@@ -4839,7 +4836,7 @@ adminRouter.get(
             }
 
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4864,7 +4861,7 @@ adminRouter.get(
             const user = await User.findById(user_id);
             res.json({ history: history, user });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4922,7 +4919,7 @@ adminRouter.get(
             res.json({ total, perPage, page: page + 1, data: profits });
 
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4981,7 +4978,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -5039,7 +5036,7 @@ adminRouter.get(
             else total = 0;
             res.json({ data: errorlogs, total: total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }

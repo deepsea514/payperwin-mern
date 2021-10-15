@@ -22,7 +22,7 @@ const getBadmintonMatchScores = (type, subtype, ss, scores, time_status) => {
         }
         return matchResult;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
