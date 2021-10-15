@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const SportsDirSchema = new Schema(
     {
-        origin: { type: String, default: 'pinnacle' },
+        origin: { type: String, default: 'bet365' },
         sports: Object,
     },
     {

@@ -36,58 +36,23 @@ const UserSchema = new Schema(
         timestamps: true,
     },
 );
-/* 
-UserSchema.pre('save', async function (next) { // eslint-disable-line func-names
-    //const user = this;
-    // check if phone changed.
-    if (this.isModified('phone'))
-        this.roles.phone_verified = false;
-    // only hash the password if it has been modified (or is new)
-    if (!this.isModified('password')) return next();
-    // generate a salt
-    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-        console.log("gen salt");
-        console.log(salt);
-        if (err)
-            return next(err);
-        // hash the password using our new salt
-        
-        bcrypt.hash(this.password, salt, (err2, hash) => {
-            console.log("gen hashing password");
-
-            if (err2)
-                return next(err2);
-            // override the cleartext password with the hashed one
-            console.log("before hash user pass", this.password);
-
-            this.password = salt;
-            console.log("salt user pass", salt);
-            console.log("after hash user pass", this.password);
-
-            next();
-        });
-       
-    });
-});  */
-
-
 
 UserSchema.pre("save", async function (next) {
-  // eslint-disable-line func-names
-  try {
-    // check if phone changed.
-    if (this.isModified("phone")) this.roles.phone_verified = false;
-    // only hash the password if it has been modified (or is new)
-    if (!this.isModified("password")) return next();
-    // generate a salt
-    const genSalt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-    // generate a hash string and update user password with hash
-    this.password = await bcrypt.hash(this.password, genSalt);
-    next();
-  } catch (err) {
-    next(err);
-  }
-}); 
+    // eslint-disable-line func-names
+    try {
+        // check if phone changed.
+        if (this.isModified("phone")) this.roles.phone_verified = false;
+        // only hash the password if it has been modified (or is new)
+        if (!this.isModified("password")) return next();
+        // generate a salt
+        const genSalt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+        // generate a hash string and update user password with hash
+        this.password = await bcrypt.hash(this.password, genSalt);
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 
 

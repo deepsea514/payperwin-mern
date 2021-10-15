@@ -251,13 +251,13 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
-                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
                         await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
                 }
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.error(error);
             }
         } else {
             matchCancelled = true;

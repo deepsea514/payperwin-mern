@@ -260,7 +260,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 try {
                     await newBetPool.save();
                 } catch (err) {
-                    console.log('can\'t save newBetPool => ' + err);
+                    console.error('can\'t save newBetPool => ' + err);
                 }
             }
 
