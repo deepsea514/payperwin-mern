@@ -88,21 +88,19 @@ class BetSlip extends Component {
         });
         return (
             <div className={`bet-slip-contain ${className} ${openBetSlipMenu ? 'full-fixed' : ''}`}>
-                {confirmationOpen ? (
-                    <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
-                        <div className="col-in">
-                            <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
-                            <div>
-                                <center>
-                                    Your bet has been submitted.
-                                    <br />
-                                    <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
-                                </center>
-                            </div>
+                {confirmationOpen && <div className="modal confirmation">
+                    <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
+                    <div className="col-in">
+                        <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
+                        <div>
+                            <center>
+                                Your bet has been submitted.
+                                <br />
+                                <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
+                            </center>
                         </div>
                     </div>
-                ) : null}
+                </div>}
                 <div
                     className={`bet-slip ${betSlip.length > 0 ? '' : 'empty'}`}
                     onClick={() => toggleField('openBetSlipMenu')}>
