@@ -18,7 +18,6 @@
         "password": "PayPerWin777",
         "host": "159.203.4.60:27017"
     },
-    
     "CountryInfo": [
         {
             "country": "Canada",
@@ -49,7 +48,6 @@
     "AutoBetPeorid": {
         "daily": "Daily"
     },
-
     "PlaceBetStatus": {
         "active": "Active",
         "inActive": "Inactive"
@@ -57,7 +55,6 @@
     "PlaceBetPeorid": {
         "daily": "Daily"
     },
-
     "PromotionTypes": {
         "straightCredit": {
             "name": "Straight Credit",
