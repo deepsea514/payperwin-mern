@@ -24,8 +24,7 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getRugbyMatchScores(type, subtype, ss, scores, time_status);
             case "Tennis":
                 return getTennisMatchScores(type, subtype, ss, scores, time_status);
-            case "Ice Hockey":
-                return getIceHockeyMatchScores(type, subtype, ss, scores, time_status);
+            // return getIceHockeyMatchScores(type, subtype, ss, scores, time_status);
             case "Handball":
                 return getHandballMatchScores(type, subtype, ss, scores, time_status);
             case "Volleyball":
@@ -50,6 +49,7 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
             case "Darts":
             case "Cricket":
             case "Boxing-UFC":
+            case "Ice Hockey":
             // Not sure
             case "Baseball":
                 return getDefaultMatchScores(type, subtype, ss, scores, time_status);
