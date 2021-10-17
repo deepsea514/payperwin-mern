@@ -41,6 +41,8 @@ const BetSchema = new Schema(
         origin: { type: String, default: 'bet365' },
         notifySent: Date,
         sportsbook: { type: Boolean, default: false },
+        isParlay: { type: Boolean, default: false },
+        parlayQuery: { type: Array, default: null },
     },
     {
         timestamps: true,

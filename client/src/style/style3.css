@@ -208,7 +208,7 @@ a.log-in-btn {
 .bet-parlay {
     padding: 15px 0 5px 0;
     font-size: 12px;
-    background-image: linear-gradient(to right, black 75%, rgba(255, 255, 255, 0) 0%);
+    background-image: linear-gradient(to right, black 75%, #FFF0 0%);
     background-position: bottom;
     background-size: 6px 1px;
     background-repeat: repeat-x;
@@ -505,9 +505,13 @@ a.log-in-btn {
 }
 
 .open-bets-event {
-    margin-top: 17px;
-    padding: 0 17px;
+    margin: 10px 20px;
+    padding: 10px 0 0 0;
     font-size: 12px;
+    background-image: linear-gradient(to right, black 75%, #FFF0 0%);
+    background-position: top;
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
 }
 
 .open-bets-event i {

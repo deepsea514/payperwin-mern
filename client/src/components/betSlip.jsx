@@ -14,7 +14,7 @@ class BetSlip extends Component {
         this.state = {
             errors: [],
             confirmationOpen: false,
-            single: false,
+            single: true,
             parlayWin: '',
             parlayStake: '',
         };
