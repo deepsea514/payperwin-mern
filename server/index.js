@@ -142,17 +142,11 @@ mongoose.connect(connectionString, mongooptions).then(async () => {
 // Server
 const expressApp = express();
 var store = new MongoDBStore({
-    uri: `mongodb://${config.mongo.host}`,
+    uri: config.mongo.username ?
+        `mongodb://${config.mongo.username}:${config.mongo.password}@${config.mongo.host}` :
+        `mongodb://${config.mongo.host}`,
     databaseName: databaseName,
     collection: 'sessions',
-    connectionOptions: {
-        auth: config.mongo.username ? {
-            user: config.mongo.username,
-            pass: config.mongo.password,
-        } : undefined,
-        authSource: "admin",
-        useUnifiedTopology: true
-    },
 });
 
 store.on('error', function (error) {
