@@ -146,6 +146,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
+                            draw = totalPoints == points;
                         }
 
                         if (draw) {
