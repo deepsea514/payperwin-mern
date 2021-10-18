@@ -34,7 +34,6 @@ import ChangePassword from './ChangePassword';
 import AdminModule from "../modules/admin/pages";
 import CashbackModule from "../modules/cashback/pages";
 import ErrorLogsModule from "../modules/errorlogs/pages";
-import PlaceBet from "../modules/placebet/pages/PlaceBet";
 import ErrorBoundary from '../../libs/ErrorBoundary';
 
 class App extends Component {
@@ -129,10 +128,6 @@ class App extends Component {
                     {this.isAvailable('autobet') && <Route path="/autobet" render={(props) =>
                         <ErrorBoundary><AutoBet {...props} /></ErrorBoundary>
                     } />}
-
-                     {/* Placebet */}
-                     {this.isAvailable('placebet') && <Route path="/placebet" component={PlaceBet} />}
-
 
                     {/* email templates */}
                     {this.isAvailable('email_templates') && <Route path="/email-templates" render={(props) =>

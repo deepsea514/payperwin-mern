@@ -1,3 +1,5 @@
+const { __esModule } = require("redux-persist/lib/storage/createWebStorage");
+
 function convertOdds(odd, oddsFormat) {
     switch (oddsFormat) {
         case 'decimal':

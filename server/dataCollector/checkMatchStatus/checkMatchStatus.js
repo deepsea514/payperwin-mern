@@ -158,7 +158,7 @@ const checkCashBack = async () => {
         {
             $match: {
                 status: "Settled - Lose",
-                sportsbook: true,
+                sportsbook: false,
                 createdAt: {
                     $gte: new Date(year, month - 1, 0),
                     $lte: new Date(year, month, 0),

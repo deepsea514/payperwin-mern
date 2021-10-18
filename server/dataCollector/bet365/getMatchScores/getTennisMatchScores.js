@@ -22,7 +22,7 @@ const getTennisMatchScores = (type, subtype, ss, scores, time_status) => {
         }
         return matchResult;
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return null;
     }
 }

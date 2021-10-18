@@ -43,7 +43,7 @@ const getAmericanFootballMatchScores = (type, subtype, ss, scores, timer, time_s
         }
         return matchResult;
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return null;
     }
 }

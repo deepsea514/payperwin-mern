@@ -6,8 +6,7 @@
   "scripts": {
     "build": "npx webpack-cli --config webpack.config.js",
     "server": "node server.js",
-    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8081",
-    "startdev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0"
+    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -60,7 +59,7 @@
     "immutability-helper": "^3.0.0",
     "jodit-react": "^1.0.74",
     "js-cookie": "^2.2.0",
-    "node-sass": "^6.0.1",
+    "node-sass": "^4.13.1",
     "object-path": "^0.11.5",
     "perfect-scrollbar": "^1.5.0",
     "prop-types": "^15.6.1",

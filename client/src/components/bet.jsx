@@ -79,10 +79,8 @@ class Bet extends Component {
                         <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
                     </div>
                     <div className="bet-type-league">{type} - {league}</div>
-                    <div className="d-flex justify-content-between">
-                        <span className="bet-pick">{pickName}</span>
-                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
-                    </div>
+                    <span className="bet-pick">{pickName}</span>
+                    <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
                     <div>
                         <input
                             className="bet-stake"

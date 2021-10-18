@@ -7,16 +7,24 @@
         "https://www.payperwin.co",
         "http://dev.payperwin.co",
         "http://68.183.203.13",
-        "http://localhost:8081",
-        "http://localhost:4000",
         "http://localhost"
     ],
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
+    "serverHostToClientHost": {
+        "production": {
+            "appUrl": "https://api.payperwin.co",
+            "appAdminUrl": "https://api.payperwin.co/admin"
+        },
+        "development": {
+            "appUrl": "http://dev.payperwin.co:8080",
+            "appAdminUrl": "http://dev.payperwin.co:8080/admin"
+        }
+    },
     "recaptchaSiteKey": "6LfKBfIbAAAAAJMnROmY0jkEGoVrbf2-0UwkV-M6",
     "mongo": {
         "username": "admin",
         "password": "PayPerWin777",
-        "host": "159.203.4.60:27017"
+        "host": "159.203.4.60"
     },
     "CountryInfo": [
         {
@@ -46,13 +54,6 @@
         "inActive": "Inactive"
     },
     "AutoBetPeorid": {
-        "daily": "Daily"
-    },
-    "PlaceBetStatus": {
-        "active": "Active",
-        "inActive": "Inactive"
-    },
-    "PlaceBetPeorid": {
         "daily": "Daily"
     },
     "PromotionTypes": {
@@ -103,7 +104,6 @@
             "withdraw_logs": true,
             "deposit_logs": true,
             "autobet": true,
-            "placebet": true,
             "custom-events": true,
             "frontend": true,
             "email_templates": true,
@@ -127,7 +127,6 @@
             "withdraw_logs": true,
             "deposit_logs": true,
             "autobet": false,
-            "placebet": false,
             "custom-events": true,
             "frontend": false,
             "email_templates": false,

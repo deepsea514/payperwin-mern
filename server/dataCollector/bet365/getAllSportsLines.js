@@ -192,7 +192,7 @@ const getAllSportsLines = async () => {
             }
             console.log(`Finished getting odds for ${sport.name}`);
         } catch (error) {
-            console.error(error);
+            console.log(error);
         }
 
     }

@@ -144,6 +144,7 @@ const getTwoFactorAuthenticationCode = (email) => {
 
 const verifyTwoFactorAuthenticationCode = (twoFactorAuthenticationCode, token, time) => {
     const token1 = speakeasy.time({ secret: twoFactorAuthenticationCode, encoding: 'base32' });
+    console.log(token1, token);
     return speakeasy.totp.verify({
         secret: twoFactorAuthenticationCode,
         encoding: 'base32',
@@ -246,7 +247,7 @@ adminRouter.post(
                 return;
             }
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t find admin.' });
             return;
         }
@@ -601,7 +602,7 @@ adminRouter.get(
             });
         }
         catch (error) {
-            console.error(error)
+            console.log(error)
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
         }
     }
@@ -810,7 +811,7 @@ adminRouter.delete(
                 const customer = await User.deleteMany({ _id: id });
                 res.status(200).json(customer);
             } catch (error) {
-                console.error(error);
+                console.log(error);
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
             }
         }
@@ -942,7 +943,7 @@ adminRouter.post(
             }
             res.json(deposit);
         } catch (error) {
-            console.error(error)
+            console.log(error)
             res.status(500).json({ error: 'Can\'t save deposit.', result: error });
         }
     }
@@ -1024,7 +1025,7 @@ adminRouter.get(
                 .populate('user', ['email', 'currency']).populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t get deposits.', result: error });
         }
     }
@@ -1077,7 +1078,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1124,7 +1125,7 @@ adminRouter.patch(
 
             res.json(result);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t update deposit.', result: error });
         }
     }
@@ -1299,7 +1300,7 @@ adminRouter.get(
             const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1352,7 +1353,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1505,7 +1506,7 @@ adminRouter.patch(
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
         }
     }
@@ -1618,7 +1619,7 @@ adminRouter.get(
             res.status(200).json(results);
         }
         catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
@@ -1846,7 +1847,7 @@ adminRouter.delete(
             await Bet.deleteMany({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2053,7 +2054,7 @@ adminRouter.post(
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
-                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
                         await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
@@ -2098,7 +2099,7 @@ adminRouter.post(
 
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2162,7 +2163,7 @@ adminRouter.post(
             const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
             const betAfterFee = amount;
             const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-            const fee = bet.sportsbook ? 0 : Number((betAfterFee * BetFee).toFixed(2));
+            const fee = Number((betAfterFee * BetFee).toFixed(2));
 
             let pickName = '';
             let betType = '';
@@ -2258,8 +2259,7 @@ adminRouter.post(
                 timezone = preference.timezone;
             }
             const timeString = convertTimeLineDate(new Date(), timezone);
-             //TODO: Uncomment this code in when bet_accepted status email and sms need 
-            /* 
+
             if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -2294,8 +2294,7 @@ adminRouter.post(
                         Wager: $${betAfterFee.toFixed(2)}
                         Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
                         Platform: PAYPER WIN Peer-to Peer`, user.phone);
-            } 
-            */
+            }
 
             const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
             let adminMsg = {
@@ -2354,7 +2353,7 @@ adminRouter.post(
             await calculateBetsStatus(betpool.uid);
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2486,73 +2485,6 @@ adminRouter.get(
         }
     }
 )
-
-adminRouter.get(
-    '/searchsportsleague/:sportName',
-    async (req, res) => { 
-        try {
-            const {sportName} = req.params;
-            const { name } = req.query;
-            const sports = await Sport.findOne({name : sportName});
-            res.json(sports);
-        } catch (error) {
-            res.status(500).json({ error: 'Can\'t find sports league.', message: error });
-        }
-    }
-)
-
-
-
-
-adminRouter.get(
-    '/searchsportsleagueteam',
-    authenticateJWT,
-    async (req, res) => {
-        const { name } = req.query;
-        try {
-            let searchObj = {};
-            if (name) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ name: { "$regex": name, "$options": "i" } }
-                }
-            }
-
-            Sport.find(searchObj)
-                .sort('createdAt')
-                .select(['name'])
-                .exec((error, data) => {
-                    if (error) {
-                        res.status(404).json({ error: 'Can\'t find customers.' });
-                        return;
-                    }
-                    const result = data.map(sport => {
-                        return {
-                            value: sport.name,
-                            label: sport.name,
-                        }
-                    })
-                    res.status(200).json(result);
-                })
-        }
-        catch (error) {
-            res.status(500).json({ error: 'Can\'t find customers.', message: error });
-        }
-    }
-)
-adminRouter.get(
-    '/sportsteam',
-    async (req, res) => {
-        try {
-            
-            const sports = await Sport.find({originSportId : 91 });
-            res.json(sports);
-        } catch (error) {
-            res.status(500).json({ error: 'Can\'t find sports.', message: error });
-        }
-    }
-)
-
 
 const getTotalDeposit = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);
@@ -2788,7 +2720,7 @@ adminRouter.post(
                 categories,
             });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ error: 'Can\'t read data.', message: error });
         }
     }
@@ -2977,7 +2909,7 @@ adminRouter.get(
             ]);
             return res.json({ total, perPage, page: page + 1, data: autobets });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return res.status(500).json({ success: false });
         }
     }
@@ -3024,61 +2956,6 @@ adminRouter.delete(
         }
     }
 )
-
-
-adminRouter.get(
-    '/seacrhautobets',
-    authenticateJWT,
-    async (req, res) => {
-        let { name } = req.query;
-
-        try {
-            let searchObj = {};
-            if (name) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ email: { "$regex": name, "$options": "i" } }
-                }
-            
-    
-        AutoBet.find({})
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'userId',
-                match:searchObj,
-                select: ['username', 'balance', 'email', 'firstname', 'lastname']
-            })
-            .exec((error, data) => {
-                if (error) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
-
-                if (!data[0].userId) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
-
-                const result = data.map(autoBetUser => {
-                    return {
-                        value: autoBetUser._id,
-                        label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
-                        budget: autoBetUser.budget,
-                        maxBudget: autoBetUser.maxBudget
-                    }
-                })
-                res.status(200).json(result);
-            });
-        }
-        }
-        catch(error) {
-            res.status(500).json({ error: 'Can\'t find customers.', message: error });
-        }
-    }
-)
-
 
 adminRouter.post(
     '/promotion',
@@ -3279,7 +3156,7 @@ adminRouter.post(
 
             res.send("User verified successfully.");
         } catch (error) {
-            console.error("accept Error => ", error);
+            console.log("accept Error => ", error);
             res.status(400).send("Can't verify user.");
         }
     }
@@ -3333,7 +3210,7 @@ adminRouter.post(
 
             res.send("User declined.");
         } catch (error) {
-            console.error("declined Error => ", error);
+            console.log("declined Error => ", error);
             res.status(400).send("Can't decline user.");
         }
     }
@@ -3375,7 +3252,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: tickets });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t find verifications.' });
         }
     }
@@ -3462,7 +3339,7 @@ adminRouter.delete(
             await Ticket.deleteMany({ _id: id });
             res.json({ message: 'success' });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(400).json({ error: 'Can\'t delete ticket.' });
         }
     }
@@ -3603,7 +3480,7 @@ adminRouter.delete(
             await FAQItem.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             return res.status(400).json({ error: 'Can\'t delete item.' });
         }
     }
@@ -3630,7 +3507,7 @@ adminRouter.put(
             await faq_item.save();
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return res.status(400).json({ error: 'Can\'t update item.' });
         }
     }
@@ -3660,7 +3537,7 @@ adminRouter.post(
             await Event.create({ name, startDate, teamA, teamB });
             res.json({ success: "Event created." });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return res.status(400).json({ error: 'Can\'t create Event.' });
         }
     }
@@ -3679,7 +3556,7 @@ adminRouter.get(
             }
             res.status(200).json(event);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -3723,7 +3600,7 @@ adminRouter.put(
             await event.save();
             res.status(200).json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3863,13 +3740,13 @@ const matchResults = async (eventId, matchResult) => {
                         }
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                     } else {
-                        console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
                 }
             }
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            console.log(e);
         }
     } else {
         matchCancelled = true;
@@ -3936,7 +3813,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3963,7 +3840,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -4003,7 +3880,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: events, pending_total });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -4078,6 +3955,7 @@ adminRouter.post(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4247,6 +4125,7 @@ adminRouter.put(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
+                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4432,7 +4311,7 @@ adminRouter.put(
             }
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json("Can't save meta data.");
         }
     }
@@ -4485,7 +4364,7 @@ adminRouter.post(
             await Article.create(articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4525,7 +4404,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: articles });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4541,7 +4420,7 @@ adminRouter.get(
             const article = await Article.findById(id);
             res.json(article);
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4563,7 +4442,7 @@ adminRouter.put(
             await Article.findByIdAndUpdate(id, articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4579,7 +4458,7 @@ adminRouter.delete(
             await Article.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(400).json({ success: false });
         }
     }
@@ -4620,7 +4499,7 @@ adminRouter.delete(
             await ArticleCategory.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(400).json({ success: false });
         }
     }
@@ -4723,7 +4602,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: admins });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4792,7 +4671,7 @@ adminRouter.put(
             await admin.save();
             return res.json({ success: true });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(400).json({
                 message: "Admin update failed. Please try with new credentials."
             });
@@ -4836,7 +4715,7 @@ adminRouter.get(
             }
 
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4861,7 +4740,7 @@ adminRouter.get(
             const user = await User.findById(user_id);
             res.json({ history: history, user });
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4919,7 +4798,7 @@ adminRouter.get(
             res.json({ total, perPage, page: page + 1, data: profits });
 
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -4978,7 +4857,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.error(error);
+            console.log(error)
             res.status(500).json({ success: false });
         }
     }
@@ -5036,7 +4915,7 @@ adminRouter.get(
             else total = 0;
             res.json({ data: errorlogs, total: total });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             res.status(500).json({ success: false });
         }
     }

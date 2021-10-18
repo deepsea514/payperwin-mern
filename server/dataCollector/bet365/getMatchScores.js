@@ -55,7 +55,7 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getDefaultMatchScores(type, subtype, ss, scores, time_status);
         }
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return null;
     }
 }
