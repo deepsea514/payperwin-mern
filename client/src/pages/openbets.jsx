@@ -205,12 +205,7 @@ class OpenBets extends Component {
         const { name: field, checked: value } = event.target;
         const { filter } = this.state;
         if (value) {
-            await this.setState({
-                filter: {
-                    ...filter,
-                    [field]: true
-                }
-            });
+            await this.setState({ filter: { ...filter, [field]: true } });
         }
         else {
             let nextFilter = { ...filter };
