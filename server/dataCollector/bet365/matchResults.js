@@ -108,7 +108,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
                     const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
                     for (const bet of bets) {
-                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status, sportsbook } = bet;
+                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
 
                         if (payableToWin <= 0 || status == 'Pending') {
                             const { _id, userId, bet: betAmount } = bet;
@@ -146,6 +146,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
+                            draw = totalPoints == points;
                         }
 
                         if (draw) {
@@ -174,7 +175,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             const user = await User.findById(userId);
                             if (user) {
                                 const { email } = user;
-                                const betFee = sportsbook ? 0 : Number((payableToWin * BetFee).toFixed(2));
+                                const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Win',
@@ -251,13 +252,13 @@ const matchResultsP2P = async (bet365ApiKey) => {
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
-                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
                         await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+                console.log(e);
             }
         } else {
             matchCancelled = true;

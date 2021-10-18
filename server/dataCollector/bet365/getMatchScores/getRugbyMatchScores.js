@@ -9,7 +9,7 @@ const getRugbyMatchScores = (type, subtype, ss, scores, timer, time_status) => {
         matchResult.awayScore = parseInt(scores["4"].away);
         return matchResult;
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return null;
     }
 }

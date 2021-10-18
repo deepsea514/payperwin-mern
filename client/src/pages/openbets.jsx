@@ -14,31 +14,6 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
-const StatusPopOver = (
-    <Popover>
-        <div className="m-2" style={{ fontFamily: "'Roboto', sans-serif", fontSize: '12px' }}>
-            <h6>Bet Status</h6>
-            <div className="verification-proof-list">
-                <ul>
-                    <li>
-                        <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
-                    </li>
-                    <li>
-                        <b>Matched:</b> Your entire bet was matched and you wager is in play.
-                    </li>
-                    <li>
-                        <b>Partially Match:</b> Only a portion of your wager was matched with another user.
-                        The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
-                    </li>
-                    <li>
-                        <b>Settled:</b> The game is over and the winner has been paid.
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </Popover>
-)
-
 class OpenBets extends Component {
     constructor(props) {
         super(props);
@@ -173,7 +148,7 @@ class OpenBets extends Component {
         }
     }
 
-    getStatusName = (status, sportsbook = false) => {
+    getStatusName = (status, sportsbook) => {
         switch (status) {
             case 'Pending':
                 if (sportsbook) return 'WAITING TO ACCEPT';
@@ -383,7 +358,7 @@ class OpenBets extends Component {
                         const {
                             _id, teamA, teamB, bet, toWin, matchStartDate, pickName, pickOdds,
                             createdAt, status, credited, homeScore, awayScore, payableToWin,
-                            matchingStatus, lineQuery, origin, sportsbook, isParlay, parlayQuery
+                            matchingStatus, lineQuery, origin, sportsbook,
                         } = betObj;
                         if (origin == "other") {
                             const type = "moneyline";
@@ -430,7 +405,30 @@ class OpenBets extends Component {
                                             <OverlayTrigger
                                                 trigger="click"
                                                 placement={'left'}
-                                                overlay={StatusPopOver}
+                                                overlay={
+                                                    <Popover>
+                                                        <Popover.Body>
+                                                            <h6>Bet Status</h6>
+                                                            <div className="verification-proof-list">
+                                                                <ul>
+                                                                    <li>
+                                                                        <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
+                                                                    </li>
+                                                                    <li>
+                                                                        <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                                                                    </li>
+                                                                    <li>
+                                                                        <b>Partially Match:</b> Only a portion of your wager was matched with another user.
+                                                                        The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                                                                    </li>
+                                                                    <li>
+                                                                        <b>Settled:</b> The game is over and the winner has been paid.
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </Popover.Body>
+                                                    </Popover>
+                                                }
                                             >
                                                 <button className={this.getStatusClass(status) + ' cursor-pointer'}>
                                                     {status ? status : 'Accepted'}
@@ -453,78 +451,8 @@ class OpenBets extends Component {
                             );
                         }
 
-                        if (isParlay) {
-                            return <div className={`open-bets`} key={_id}>
-                                <div className="open-bets-flex">
-                                    <div className="open-bets-col">
-                                        <strong>Bet</strong>
-                                        <div>
-                                            {dayjs(createdAt).format('YYYY/M/D HH:mm')}
-                                        </div>
-                                    </div>
-                                    <div className="open-bets-col">
-                                        <strong>Bet Type</strong>
-                                        <div>
-                                            Multiples @{`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
-                                        </div>
-                                    </div>
-                                    <div className="open-bets-col">
-                                        <strong>Risk</strong>
-                                        <div>
-                                            {bet.toFixed(2)}
-                                        </div>
-                                    </div>
-                                    <div className="open-bets-col">
-                                        <strong>To win</strong>
-                                        {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
-                                            {toWin.toFixed(2)}
-                                            <br />
-                                            {payableToWin.toFixed(2)} Matched
-                                            <br />
-                                            {(toWin - payableToWin).toFixed(2)} Pending
-                                        </div>}
-                                        {['Partial Match', 'Partial Accepted'].includes(matchingStatus) == false && <div>
-                                            {toWin.toFixed(2)} {matchingStatus}
-                                        </div>}
-                                    </div>
-                                    <div className="open-bets-col status">
-                                        <strong>Status</strong>
-                                        <OverlayTrigger
-                                            trigger="click"
-                                            placement={'bottom'}
-                                            rootClose={true}
-                                            overlay={StatusPopOver}
-                                        >
-                                            <div className={this.getStatusClass(status) + ' cursor-pointer'}>
-                                                {this.getStatusName(status)}
-                                            </div>
-                                        </OverlayTrigger>
-                                    </div>
-                                </div>
-                                {parlayQuery.map((query, index) => {
-                                    const { teamA, teamB, lineQuery, homeScore, awayScore, pickName, matchStartDate } = query;
-                                    const { sportName } = lineQuery
-                                    return (
-                                        <div className="open-bets-event" key={index}>
-                                            <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
-                                            {`${teamA.name} vs ${teamB.name}`}
-                                            <div>{pickName}</div>
-                                            <div>
-                                                Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                            </div>
-                                            {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
-                                        </div>
-                                    );
-                                })}
-                                {settledBets && <div>
-                                    {status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                    {status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
-                                    {['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
-                                </div>}
-                            </div>
-                        }
-
                         const { type, sportName } = lineQuery;
+
                         return (
                             <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook' : ''}`} key={_id}>
                                 <div className="open-bets-flex">
@@ -568,9 +496,32 @@ class OpenBets extends Component {
                                             trigger="click"
                                             placement={'bottom'}
                                             rootClose={true}
-                                            overlay={StatusPopOver}
+                                            overlay={
+                                                <Popover>
+                                                    <div className="m-2" style={{ fontFamily: "'Roboto', sans-serif", fontSize: '12px' }}>
+                                                        <h6>Bet Status</h6>
+                                                        <div className="verification-proof-list">
+                                                            <ul>
+                                                                <li>
+                                                                    <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Partially Match:</b> Only a portion of your wager was matched with another user.
+                                                                    The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                                                                </li>
+                                                                <li>
+                                                                    <b>Settled:</b> The game is over and the winner has been paid.
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </Popover>
+                                            }
                                         >
-                                            <div className={this.getStatusClass(status) + ' cursor-pointer'}>
+                                            <div className={this.getStatusClass(status, sportsbook) + ' cursor-pointer'}>
                                                 {this.getStatusName(status, sportsbook)}
                                             </div>
                                         </OverlayTrigger>
@@ -579,6 +530,7 @@ class OpenBets extends Component {
                                 <div className="open-bets-event">
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                     {`${teamA.name} vs ${teamB.name}`}
+                                    {homeScore && awayScore ? <div>{pickName}</div> : null}
                                     <div>
                                         Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                         {sportsbook && <strong className="float-right bg-info px-2 py-1 text-white">Sportsbook</strong>}
@@ -588,6 +540,7 @@ class OpenBets extends Component {
                                     {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                     {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                    {/* {openBets && status != "Matched" && <Link to={{ pathname: `/sportsbook` }} className="form-button">Forward To Sportsbook</Link>} */}
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&

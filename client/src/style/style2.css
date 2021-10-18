@@ -390,7 +390,6 @@ footer ul li a i {
     margin: 0;
     line-height: 1;
     font-weight: bold;
-    padding: 0 10px
 }
 
 .no-bets {
@@ -419,24 +418,6 @@ footer ul li a i {
     font-size: 13px;
     padding: 11px 10px;
     border-radius: 3px 3px 0px 0;
-}
-
-.bet-slip-type-container {
-    background-color: #54575e;
-    color: white;
-    border-bottom: none !important;
-}
-
-.bet-slip-type {
-    padding: 5px 5px 5px 10px;
-}
-
-.bet-slip-type:nth-child(2) {
-    border-left: 1px solid rgb(170, 170, 170);
-}
-
-.bet-slip-type.active {
-    border-bottom: 2px solid #ED254E !important;
 }
 
 .navbar-toggler.responsive-cat {

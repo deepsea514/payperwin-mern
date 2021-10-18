@@ -8,7 +8,6 @@ import * as withdrawlog from "../modules/withdrawlogs/redux/reducers";
 import * as dashboard from "../modules/dashboard/redux/reducers";
 import * as wager_feeds from "../modules/wager-feed/redux/reducers";
 import * as autobets from "../modules/autobet/redux/reducers";
-import * as placebets from "../modules/placebet/redux/reducers";
 import * as email_templates from "../modules/email-templates/redux/reducers";
 import * as promotions from "../modules/promotions/redux/reducers";
 import * as kyc from "../modules/kyc/redux/reducers";
@@ -35,7 +34,6 @@ export const rootReducer = combineReducers({
     dashboard: dashboard.reducer,
     wager_feeds: wager_feeds.reducer,
     autobets: autobets.reducer,
-    placebets: placebets.reducer,
     email_templates: email_templates.reducer,
     promotions: promotions.reducer,
     kyc: kyc.reducer,
@@ -64,7 +62,6 @@ export function* rootSaga() {
         dashboard.saga(),
         wager_feeds.saga(),
         autobets.saga(),
-        placebets.saga(),
         email_templates.saga(),
         promotions.saga(),
         kyc.saga(),

@@ -37,24 +37,26 @@ const UserSchema = new Schema(
     },
 );
 
-UserSchema.pre("save", async function (next) {
-    // eslint-disable-line func-names
-    try {
-        // check if phone changed.
-        if (this.isModified("phone")) this.roles.phone_verified = false;
-        // only hash the password if it has been modified (or is new)
-        if (!this.isModified("password")) return next();
-        // generate a salt
-        const genSalt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-        // generate a hash string and update user password with hash
-        this.password = await bcrypt.hash(this.password, genSalt);
-        next();
-    } catch (err) {
-        next(err);
-    }
+UserSchema.pre('save', async function (next) { // eslint-disable-line func-names
+    const user = this;
+    // check if phone changed.
+    if (user.isModified('phone'))
+        user.roles.phone_verified = false;
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+        if (err) return next(err);
+
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, (err2, hash) => {
+            if (err2) return next(err2);
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
 });
-
-
 
 UserSchema.methods.comparePassword = function (candidatePassword, callback) { // eslint-disable-line func-names
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {

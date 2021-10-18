@@ -9,6 +9,7 @@ const seededRandomString = (string, idLength = 6, charSetOverride) => {
         seedNumber = seedrandom(seedNumber)();
         const randomCharSetIndex = Math.floor(seedNumber * charSet.length);
         const character = charSet[randomCharSetIndex];
+        // console.log(seedNumber, randomCharSetIndex, character);
         outputString += character;
     }
     return outputString;
