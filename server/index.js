@@ -2056,16 +2056,20 @@ expressApp.post(
             let orCon = [];
             if (filter.p2p) {
                 orCon.push({
-                    sportsbook: { $exists: false },
-                });
-                orCon.push({
-                    sportsbook: false,
+                    sportsbook: { $in: [null, false] },
+                    isParlay: { $in: [null, false] },
                 });
             }
             if (filter.sportsbook) {
                 orCon.push({
                     sportsbook: true,
+                    isParlay: { $in: [null, false] },
                 });
+            }
+            if (filter.parlay) {
+                orCon.push({
+                    isParlay: true,
+                })
             }
             searchObj = {
                 ...searchObj,

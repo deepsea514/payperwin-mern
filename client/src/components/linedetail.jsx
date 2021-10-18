@@ -74,7 +74,7 @@ export default class LineDetail extends Component {
         const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet } = this.props;
         const { teamA, teamB, leagueName, origin, started } = event;
         const { home, away } = originOdds;
-        const { newHome, newAway } = lineQuery.subtype == null ? calculateNewOdds(home, away) : { newHome: home, newAway: away };
+        const { newHome, newAway } = lineQuery.subtype == null ? calculateNewOdds(home, away, lineQuery.type, lineQuery.subtype) : { newHome: home, newAway: away };
         const homeExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         const awayExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         return (

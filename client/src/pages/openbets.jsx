@@ -54,7 +54,8 @@ class OpenBets extends Component {
             loading: false,
             filter: {
                 p2p: true,
-                sportsbook: true
+                sportsbook: true,
+                parlay: true,
             },
             showFilter: false,
             noMore: false,
@@ -214,8 +215,8 @@ class OpenBets extends Component {
         else {
             let nextFilter = { ...filter };
             nextFilter[field] = false;
-            let { p2p, sportsbook } = nextFilter;
-            await this.setState({ filter: { p2p, sportsbook } });
+            let { p2p, sportsbook, parlay } = nextFilter;
+            await this.setState({ filter: { p2p, sportsbook, parlay } });
         }
     }
 
@@ -367,6 +368,14 @@ class OpenBets extends Component {
                                                     onChange={this.changeFilter}
                                                     name="sportsbook" />}
                                                 label="Sportsbook Bets"
+                                                className="p-0 mb-0"
+                                            />
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={filter.parlay}
+                                                    onChange={this.changeFilter}
+                                                    name="parlay" />}
+                                                label="Parlay Bets"
                                                 className="p-0 mb-0"
                                             />
                                         </FormGroup>

@@ -190,7 +190,7 @@ class Sport extends Component {
                                     <React.Fragment key={lineId}>
                                         {moneyline ? (
                                             (() => {
-                                                const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away);
+                                                const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
                                                 const lineQuery = {
                                                     sportName: sportName.replace("_", " "),
                                                     leagueId,
@@ -290,7 +290,7 @@ class Sport extends Component {
                                         ) : emptyBoxLine}
                                         {spreads && spreads[0] ? (
                                             (() => {
-                                                const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away);
+                                                const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
                                                 const lineQuery = {
                                                     sportName: sportName.replace("_", " "),
                                                     leagueId,
@@ -396,7 +396,7 @@ class Sport extends Component {
                                         ) : emptyBoxLine}
                                         {totals && totals[0] ? (
                                             (() => {
-                                                const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under);
+                                                const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
                                                 const lineQuery = {
                                                     sportName: sportName.replace("_", " "),
                                                     leagueId,

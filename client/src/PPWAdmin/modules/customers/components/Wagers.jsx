@@ -17,14 +17,13 @@ class Wagers extends React.Component {
                     <div className="d-flex flex-column flex-grow-1 font-weight-bold text-left">
                         <a
                             onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
-                            className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer"
-                        >
-                            
-                           
-                            {bet.origin == 'other' && bet.lineQuery.eventName}
-                            {bet.teamA ? bet.teamA.name : null} vs {bet.teamB ? bet.teamB.name : null} ({bet.lineQuery.sportName})
-                            </a>
-                        
+                            className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer">
+                            {bet.isParlay ? 'Parlay' :
+                                bet.origin == 'other' ? 'Other - ' : bet.lineQuery.sportName + ' - '}
+                            {bet.isParlay ? '' :
+                                bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                        </a>
+
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
                     </div>
                     <span className="label label-lg label-light-primary label-inline">
