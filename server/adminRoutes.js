@@ -1676,15 +1676,19 @@ adminRouter.get(
             if (house == 'p2p') {
                 searchObj = {
                     ...searchObj,
-                    $or: [
-                        { sportsbook: { $exists: false } },
-                        { sportsbook: false }
-                    ]
+                    sportsbook: { $in: [null, false] },
+                    isParlay: { $in: [null, false] },
                 };
             } else if (house == 'sportsbook') {
                 searchObj = {
                     ...searchObj,
-                    sportsbook: true
+                    sportsbook: true,
+                    isParlay: { $in: [null, false] },
+                };
+            } else if (house == 'parlay') {
+                searchObj = {
+                    ...searchObj,
+                    isParlay: true,
                 };
             }
 
@@ -2257,45 +2261,6 @@ adminRouter.post(
             if (preference && preference.timezone) {
                 timezone = preference.timezone;
             }
-            const timeString = convertTimeLineDate(new Date(), timezone);
-             //TODO: Uncomment this code in when bet_accepted status email and sms need 
-            /* 
-            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'Your bet is waiting for a match',
-                    text: `Your bet is waiting for a match`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.email}</b>.
-                        <br><br>
-                        This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                        <br><br>
-                        <ul>
-                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Platform: PAYPER WIN Peer-to Peer</li>
-                            </ul>
-                        `),
-                };
-                sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
-                });
-            }
-            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                        Wager: $${betAfterFee.toFixed(2)}
-                        Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                        Platform: PAYPER WIN Peer-to Peer`, user.phone);
-            } 
-            */
 
             const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
             let adminMsg = {
@@ -2443,8 +2408,8 @@ adminRouter.get(
                     bet.sportsbook ? 'Sportsbook' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
-                    bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
-                    bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`,
+                    bet.isParlay ? 'Parlay' : bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
+                    bet.isParlay ? '' : bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`,
                     `$ ${bet.bet}`,
                     Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
                     results,
@@ -2489,11 +2454,11 @@ adminRouter.get(
 
 adminRouter.get(
     '/searchsportsleague/:sportName',
-    async (req, res) => { 
+    async (req, res) => {
         try {
-            const {sportName} = req.params;
+            const { sportName } = req.params;
             const { name } = req.query;
-            const sports = await Sport.findOne({name : sportName});
+            const sports = await Sport.findOne({ name: sportName });
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports league.', message: error });
@@ -2544,8 +2509,8 @@ adminRouter.get(
     '/sportsteam',
     async (req, res) => {
         try {
-            
-            const sports = await Sport.find({originSportId : 91 });
+
+            const sports = await Sport.find({ originSportId: 91 });
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports.', message: error });
@@ -3039,41 +3004,41 @@ adminRouter.get(
                     ...searchObj,
                     ...{ email: { "$regex": name, "$options": "i" } }
                 }
-            
-    
-        AutoBet.find({})
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'userId',
-                match:searchObj,
-                select: ['username', 'balance', 'email', 'firstname', 'lastname']
-            })
-            .exec((error, data) => {
-                if (error) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
 
-                if (!data[0].userId) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
 
-                const result = data.map(autoBetUser => {
-                    return {
-                        value: autoBetUser._id,
-                        label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
-                        budget: autoBetUser.budget,
-                        maxBudget: autoBetUser.maxBudget
-                    }
-                })
-                res.status(200).json(result);
-            });
+                AutoBet.find({})
+                    .sort({ createdAt: -1 })
+                    .populate({
+                        path: 'userId',
+                        match: searchObj,
+                        select: ['username', 'balance', 'email', 'firstname', 'lastname']
+                    })
+                    .exec((error, data) => {
+                        if (error) {
+                            res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                            //res.status(404).json({ error });
+                            return;
+                        }
+
+                        if (!data[0].userId) {
+                            res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                            //res.status(404).json({ error });
+                            return;
+                        }
+
+                        const result = data.map(autoBetUser => {
+                            return {
+                                value: autoBetUser._id,
+                                label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
+                                budget: autoBetUser.budget,
+                                maxBudget: autoBetUser.maxBudget
+                            }
+                        })
+                        res.status(200).json(result);
+                    });
+            }
         }
-        }
-        catch(error) {
+        catch (error) {
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }

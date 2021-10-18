@@ -32,7 +32,7 @@ class BetDetail extends React.Component {
     }
 
     getBetDogFav = (bet, pick) => {
-        const { teamA, teamB, pickName, lineQuery } = bet;
+        const { teamA, teamB, pickName, lineQuery, isParlay } = bet;
         if (!teamA) return;
         const oddsA = Number(teamA.odds);
         const oddsB = Number(teamB.odds);
@@ -58,16 +58,17 @@ class BetDetail extends React.Component {
     }
 
     getBetType = (bet) => {
+        if (bet.isParlay) {
+            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">parlay</span>
+        }
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
             case "spread":
-            case 'alternative_spread':
                 const spreads = bet.pickName.split(' ');
                 return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
-            case 'alternative_total':
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
             default:
                 return null;
@@ -116,7 +117,6 @@ class BetDetail extends React.Component {
 
     render() {
         const { loading, bet } = this.state;
-        const { newHome, newAway } = bet ? calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds)) : {};
 
         return (
             <div className="row">
@@ -142,48 +142,73 @@ class BetDetail extends React.Component {
                                             <th>User</th>
                                             <td>{bet.userId.email}</td>
                                             <th>House</th>
-                                            <td>{bet.sportsbook ? 'Sportsbook' : 'Peer to Peer'}</td>
+                                            <td>{bet.isParlay ? 'Parlay' : bet.sportsbook ? 'Sportsbook' : 'Peer to Peer'}</td>
                                         </tr>
                                         <tr>
                                             <th>Amount</th>
                                             <td>${numberFormat(bet.bet.toFixed(2))} {bet.userId.currency} (${numberFormat(bet.toWin.toFixed(2))})</td>
-                                            {!bet.sportsbook && <>
-                                                <th>Matched Amount</th>
-                                                <td>${numberFormat(bet.payableToWin.toFixed(2))} {bet.userId.currency}</td>
-                                            </>}
+                                            <th>Matched Amount</th>
+                                            <td>${numberFormat(bet.payableToWin ? bet.payableToWin.toFixed(2) : 0)} {bet.userId.currency}</td>
+                                        </tr>
+                                        <tr>
                                             <th>Line</th>
                                             <td style={{ textTransform: "uppercase" }}>{this.getBetType(bet)}</td>
                                         </tr>
-                                        <tr>
-                                            <th>Pick Name</th>
-                                            <td>{bet.pickName} @{Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds} {this.getBetDogFav(bet, bet.pick)}</td>
-                                            <th>Sport</th>
-                                            <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Match Start Date</th>
-                                            <td>{this.getDate(bet.matchStartDate)}</td>
-                                            <th>Event</th>
-                                            <td>{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Team A</th>
-                                            <td>{bet.teamA.name} {this.getBetDogFav(bet, 'home')}</td>
-                                            <th>Odd</th>
-                                            <td>
-                                                {!bet.sportsbook && <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>}
-                                                {bet.sportsbook && <span>{bet.teamA.odds}</span>}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Team B</th>
-                                            <td>{bet.teamB.name} {this.getBetDogFav(bet, 'away')}</td>
-                                            <th>Odd</th>
-                                            <td>
-                                                {!bet.sportsbook && <span><del>{bet.teamB.odds}</del> <span>{newAway}</span></span>}
-                                                {bet.sportsbook && <span>{bet.teamB.odds}</span>}
-                                            </td>
-                                        </tr>
+                                        {(() => {
+                                            if (bet.isParlay) {
+                                                return <tr>
+                                                    <th>Detail</th>
+                                                    <td>
+                                                        {bet.parlayQuery.map((query, index) => {
+                                                            const { newHome, newAway } = calculateNewOdds(Number(query.teamA.odds), Number(query.teamB.odds), query.lineQuery.type, query.lineQuery.subtype);
+                                                            return (
+                                                                <ul key={index}>
+                                                                    <li><b>Line {index + 1}</b></li>
+                                                                    <li>Pick Name: {query.pickName}</li>
+                                                                    <li>Sport: <img src={sportNameImage(query.lineQuery.sportName)} width="16" height="16" />&nbsp;{query.lineQuery.sportName}</li>
+                                                                    <li>Match Date: {this.getDate(query.matchStartDate)}</li>
+                                                                    <li>Team A: {query.teamA.name} @{newHome} {this.getBetDogFav(query, 'home')}</li>
+                                                                    <li>Team B: {query.teamB.name} @{newAway} {this.getBetDogFav(query, 'away')}</li>
+                                                                </ul>
+                                                            )
+                                                        })}
+                                                    </td>
+                                                </tr>
+                                            }
+                                            const { newHome, newAway } = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), bet.lineQuery.type, bet.lineQuery.subtype);
+                                            return <>
+                                                <tr>
+                                                    <th>Pick Name</th>
+                                                    <td>{bet.pickName} @{Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds} {this.getBetDogFav(bet, bet.pick)}</td>
+                                                    <th>Sport</th>
+                                                    <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Match Start Date</th>
+                                                    <td>{this.getDate(bet.matchStartDate)}</td>
+                                                    <th>Event</th>
+                                                    <td>{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Team A</th>
+                                                    <td>{bet.teamA.name} {this.getBetDogFav(bet, 'home')}</td>
+                                                    <th>Odd</th>
+                                                    <td>
+                                                        {!bet.sportsbook && <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>}
+                                                        {bet.sportsbook && <span>{bet.teamA.odds}</span>}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Team B</th>
+                                                    <td>{bet.teamB.name} {this.getBetDogFav(bet, 'away')}</td>
+                                                    <th>Odd</th>
+                                                    <td>
+                                                        {!bet.sportsbook && <span><del>{bet.teamB.odds}</del> <span>{newAway}</span></span>}
+                                                        {bet.sportsbook && <span>{bet.teamB.odds}</span>}
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        })()}
                                         <tr>
                                             <th>Status</th>
                                             <td scope="col">{this.getBetStatus(bet.status)}</td>

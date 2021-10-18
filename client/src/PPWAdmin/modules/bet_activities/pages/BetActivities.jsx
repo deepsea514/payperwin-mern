@@ -78,15 +78,16 @@ class BetActivities extends React.Component {
             if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
             return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
                 <td scope="col">{index + 1}</td>
-                <td scope="col">{this.getBetHouse(bet.sportsbook)}</td>
+                <td scope="col">{this.getBetHouse(bet.isParlay, bet.sportsbook)}</td>
                 <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                {/* <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td> */}
-                <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                <td scope="col">
+                    {bet.isParlay ? '' :
+                        bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                </td>
                 <td scope="col">{dateformat(bet.matchStartDate)}</td>
-                {/* <td scope="col">{this.getBetDogFav(bet, index)}</td> */}
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
                 <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
@@ -100,16 +101,14 @@ class BetActivities extends React.Component {
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                     <i className="fas fa-trash"></i>&nbsp; Delete
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
-                                </Dropdown.Item>
-                            </>
-                        }
-                        {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
+                                </Dropdown.Item>}
+                            </>}
+                        {!bet.isParlay && ['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
-                            </Dropdown.Item>
-                        }
+                            </Dropdown.Item>}
                     </DropdownButton>
                 </td>
             </tr>
@@ -246,7 +245,9 @@ class BetActivities extends React.Component {
         }
     }
 
-    getBetHouse = (sportsbook) => {
+    getBetHouse = (isParlay, sportsbook) => {
+        if (isParlay)
+            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">Parlay</span>
         if (sportsbook) {
             return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
         }
@@ -379,6 +380,7 @@ class BetActivities extends React.Component {
                                         <option value="">All</option>
                                         <option value="p2p">P2P Bets</option>
                                         <option value="sportsbook">SB Bets</option>
+                                        <option value="parlay">Parlay Bets</option>
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by House

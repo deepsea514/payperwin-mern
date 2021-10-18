@@ -150,12 +150,14 @@ class BetLog extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
+                        {bet.isParlay ? 'Parlay' :
+                            bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                        {bet.isParlay ? '' :
+                            bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                     </span>
                 </td>
                 <td className="pl-0" style={{ textTransform: "uppercase" }}>
@@ -264,8 +266,8 @@ class BetLog extends React.Component {
                                 </table>
                                 <CustomPagination
                                     className="pagination pull-right"
-                                    currentPage={pagePPW - 1}
-                                    totalPages={totalPPWPages}
+                                    currentPage={pageSportsBook - 1}
+                                    totalPages={totalSportsBookPages}
                                     showPages={7}
                                     onChangePage={(page) => this.onPageChange(page + 1)}
                                 />

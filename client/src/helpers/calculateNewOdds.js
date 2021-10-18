@@ -1,8 +1,14 @@
-function calculateNewOdds(home, away) {
+function calculateNewOdds(home, away, type, subtype = null) {
+    if (subtype || subtype != null && ['alternative_total', 'alternative_spread'].includes(type)) {
+        return {
+            newHome: parseInt(home),
+            newAway: parseInt(away),
+        }
+    }
     const moneylineDifference = Math.abs(Math.abs(home) - Math.abs(away)) / 2;
     let bigHome = 1;
 
-    if (home == away && home < 0 ) {
+    if (home == away && home < 0) {
         if (home + 11 > -100) {
             return {
                 newHome: 200 + parseInt(home) + 11,

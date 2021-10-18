@@ -21,7 +21,7 @@ class AdminDashboard extends React.Component {
         const {
             history,
             lastbets, loadingbets,
-            lastsportsbookbets, loadingportsbookbets,
+            lastsportsbookbets, loadingsportsbookbets,
             lastwithdraws,
             loadingwithdraws,
             lastdeposits, loadingdeposits,
@@ -92,7 +92,7 @@ class AdminDashboard extends React.Component {
                                             loadingbets={loadingbets}
                                             lastbets={lastbets}
                                             lastsportsbookbets={lastsportsbookbets}
-                                            loadingportsbookbets={loadingportsbookbets}
+                                            loadingsportsbookbets={loadingsportsbookbets}
                                             className="card-stretch gutter-b" />}
                                     />
                                     <Route path="/fees"
@@ -118,7 +118,7 @@ const mapStateToProps = (state) => ({
     lastbets: state.dashboard.lastbets,
     loadingbets: state.dashboard.loadingbets,
     lastsportsbookbets: state.dashboard.lastsportsbookbets,
-    loadingportsbookbets: state.dashboard.loadingportsbookbets,
+    loadingsportsbookbets: state.dashboard.loadingsportsbookbets,
     lastwithdraws: state.dashboard.lastwithdraws,
     loadingwithdraws: state.dashboard.loadingwithdraws,
     lastdeposits: state.dashboard.lastdeposits,
