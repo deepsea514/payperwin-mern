@@ -247,7 +247,7 @@ class BetActivities extends React.Component {
 
     getBetHouse = (isParlay, sportsbook) => {
         if (isParlay)
-            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">Parlay</span>
+            return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">Parlay</span>
         if (sportsbook) {
             return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
         }

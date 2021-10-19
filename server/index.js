@@ -4,6 +4,7 @@ const LoginLog = require("./models/loginlog");
 const Sport = require('./models/sport');
 const Bet = require('./models/bet');
 const BetPool = require('./models/betpool');
+const ParlayBetPool = require('./models/parlaybetpool');
 const SportsDir = require('./models/sportsDir');
 const AutoBet = require("./models/autobet");
 const AutoBetLog = require("./models/autobetlog");
@@ -46,6 +47,8 @@ const {
     calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
     checkSignupBonusPromotionEnabled,
+    calculateParlayBetsStatus,
+    asyncFilter,
 } = require('./libs/functions');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -1302,7 +1305,7 @@ expressApp.post(
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
                                                 );
-                                                await checkAutoBet(bet, exists, user, sportData, line);
+                                                await checkAutoBet(savedBet, exists, user, sportData, line);
                                                 betpoolId = exists.uid;
                                             } else {
                                                 console.log('creating betpool');
@@ -1338,7 +1341,7 @@ expressApp.post(
 
                                                 try {
                                                     await newBetPool.save();
-                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
+                                                    await checkAutoBet(savedBet, newBetPool, user, sportData, line);
                                                     betpoolId = newBetPool.uid;
                                                 } catch (err) {
                                                     console.error('can\'t save newBetPool => ' + err);
@@ -1541,9 +1544,9 @@ expressApp.post(
                     errors,
                 });
             }
-            const betAfterFee = toWin * BetFee;
+            const fee = toWin * BetFee;
             const bet_id = ID();
-            await Bet.create({
+            const parlayBet = await Bet.create({
                 userId: user._id,
                 pick: 'home',
                 pickName: 'Parlay Bet',
@@ -1551,8 +1554,8 @@ expressApp.post(
                 oldOdds: parlayOdds,
                 bet: totalStake,
                 toWin: toWin,
-                fee: betAfterFee,
-                matchStartDate: new Date(),
+                fee: fee,
+                matchStartDate: lastMatchStartTime,
                 status: 'Pending',
                 matchingStatus: 'Pending',
                 transactionID: `B${bet_id}`,
@@ -1587,7 +1590,7 @@ expressApp.post(
                     `<ul>
                         <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
                         ${eventsDetail}
-                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
+                        <li>Wager: $${fee.toFixed(2)}</li>
                         <li>Odds: ${parlayOdds > 0 ? ('+' + parlayOdds) : parlayOdds}</li>
                         <li>Win: $${toWin.toFixed(2)}</li>
                     </ul>`),
@@ -1615,6 +1618,34 @@ expressApp.post(
                 });
             });
 
+            const parlayBetPool = await ParlayBetPool.create({
+                parlayQuery: parlayQuery,
+                teamA: {
+                    odds: parlayOdds,
+                    betTotal: totalStake,
+                    toWinTotal: totalWin
+                },
+                teamB: {
+                    odds: -Number(parlayOdds),
+                    betTotal: 0,
+                    toWinTotal: 0
+                },
+                matchStartDate: lastMatchStartTime,
+                homeBets: [parlayBet._id],
+                awayBets: [],
+                origin: parlayBet.origin
+            });
+            try {
+                await checkAutobetForParlay(parlayBet, parlayBetPool, user);
+                await calculateParlayBetsStatus(parlayBetPool._id);
+            } catch (error) {
+                console.error(error);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+
         } catch (error) {
             console.error(error);
             errors.push(`Bet can't be placed. Internal Server Error.`);
@@ -1627,10 +1658,212 @@ expressApp.post(
     }
 );
 
+const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
+    const { AutoBetStatus } = config;
+    const { toWin: toBet, parlayQuery, matchStartDate, pickOdds } = parlayBet;
+
+    //Find autobet
+    let orCon = [];
+    if (user.bet_referral_code) {
+        orCon.push({
+            referral_code: user.bet_referral_code
+        })
+    }
+    let autobets = await AutoBet
+        .find({ $or: orCon })
+        .populate('userId');
+
+    autobets = JSON.parse(JSON.stringify(autobets));
+    let timezoneOffset = -8;
+    if (isDstObserved) timezoneOffset = -7;
+    const today = new Date().addHours(timezoneOffset);
+    today.addHours(today.getTimezoneOffset() / 60);
+    timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+    const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+
+    let autobetusers = await asyncFilter(autobets, async (autobet) => {
+        try {
+            if (!autobet.userId) return false;
+            const logs = await AutoBetLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(autobet.userId._id),
+                            createdAt: { $gte: fromTime },
+                            type: 'parlay',
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            let bettedamount = 0;
+            if (logs && logs.length)
+                bettedamount = logs[0].amount;
+            let budget = autobet.parlayBudget;
+            if (autobet.rollOver) { // If Roll Over
+                // Add win amount.
+                const logs = await FinancialLog
+                    .aggregate([
+                        {
+                            $match: {
+                                user: new ObjectId(autobet.userId._id),
+                                financialtype: 'betwon',
+                                createdAt: { $gte: fromTime }
+                            }
+                        },
+                        { $group: { _id: null, amount: { $sum: "$amount" } } }
+                    ]);
+                if (logs && logs.length)
+                    budget += logs[0].amount;
+            }
+            autobet.bettable = budget - bettedamount;
+            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+                return (
+                    autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                    autobet.status == AutoBetStatus.active &&                   //Check active status
+                    autobet.userId.balance > 0 &&                               //Check Balance
+                    autobet.bettable > 0 &&                                     //Check bettable
+                    true
+                );
+            }
+            return (
+                autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                autobet.status == AutoBetStatus.active &&                   //Check active status
+                autobet.userId.balance > 0 &&                               //Check Balance
+                autobet.bettable > 0 &&                                     //Check bettable
+                true
+            );
+        } catch (error) {
+            console.error('filter => ', error);
+            return false;
+        }
+    });
+
+    if (autobetusers.length == 0) return;
+    autobetusers.sort((a, b) => {
+        if (a.referral_code == user.bet_referral_code) return -1;
+        if (b.referral_code == user.bet_referral_code) return 1;
+        return (a.priority > b.priority) ? -1 : 1;
+    });
+
+    let betAmount = toBet;
+    const newLineOdds = -Number(pickOdds);
+    for (let i = 0; i < autobetusers.length; i++) {
+        const selectedauto = autobetusers[i];
+        if (betAmount <= 0) return;
+        let bettable = Math.min(betAmount, selectedauto.maxRisk, selectedauto.userId.balance, selectedauto.bettable);
+        betAmount -= bettable;
+        const betAfterFee = bettable;
+        const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+        const fee = Number((toWin * BetFee).toFixed(2));
+
+        const bet_id = ID();
+        const newBetObj = {
+            userId: selectedauto.userId._id,
+            pick: 'away',
+            pickName: 'Parlay Bet',
+            pickOdds: newLineOdds,
+            oldOdds: newLineOdds,
+            bet: betAfterFee,
+            toWin: toWin,
+            fee: fee,
+            matchStartDate: matchStartDate,
+            status: 'Pending',
+            matchingStatus: 'Pending',
+            transactionID: `B${bet_id}`,
+            origin: 'bet365',
+            isParlay: true,
+            parlayQuery: parlayQuery,
+        };
+        const newBet = new Bet(newBetObj);
+        console.info(`created new auto bet`);
+
+        try {
+            const savedBet = await newBet.save();
+            await LoyaltyLog.create({
+                user: selectedauto.userId._id,
+                point: bettable * loyaltyPerBet
+            })
+
+            await AutoBetLog.create({
+                user: selectedauto.userId._id,
+                amount: betAfterFee,
+                type: 'parlay'
+            });
+
+            const betId = savedBet.id;
+            // add betId to betPool
+            const docChanges = {
+                $push: { awayBets: betId },
+                $inc: {
+                    "teamB.betTotal": betAfterFee,
+                    "teamB.toWinTotal": toWin
+                },
+            };
+            await parlayBetPool.update(docChanges);
+
+            try {
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${bet_id}`,
+                    user: selectedauto.userId._id,
+                    amount: bettable,
+                    method: 'bet',
+                    status: FinancialStatus.success,
+                });
+                await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
+            } catch (err) {
+                console.error('selectedauto.userId =>' + err);
+            }
+
+            let amount = 0;
+            const logs = await AutoBetLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(selectedauto.userId._id),
+                            createdAt: { $gte: fromTime },
+                            type: 'parlay',
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            if (logs && logs.length)
+                amount = logs[0].amount;
+            const usage = parseInt(amount / (selectedauto.parlayBudget) * 100);
+            if (usage >= 80) {
+                let msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: selectedauto.userId.email,
+                    subject: `PPW Alert: Usage at ${usage}%`,
+                    text: `PPW Alert: Usage at ${usage}% `,
+                    html: simpleresponsive(
+                        `<h3>Usage Limit Alert</H3>
+                        <p>
+                            This is a notification that your have exceeded ${usage}% ($${amount} / $${selectedauto.parlayBudget}) of your daily risk limit.
+                        </p>`,
+                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                }
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+            }
+        } catch (e2) {
+            if (e2) console.error('newBetError', e2);
+        }
+    }
+}
+
 const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const { AutoBetStatus } = config;
-    let { pick: originPick, win: toBet, lineQuery } = bet;
-    pick = originPick == 'home' ? "away" : "home";
+    let { pick: originPick, toWin: toBet, lineQuery } = bet;
+    const pick = originPick == 'home' ? "away" : "home";
 
     const { type, subtype } = lineQuery;
 
@@ -1674,34 +1907,27 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             break;
     }
 
-    let orCon = [
-        {
-            side: side,
-            betType: betType,
-        }
-    ]
+    let orCon = [{
+        side: side,
+        betType: betType,
+    }]
     if (user.bet_referral_code) {
         orCon.push({
             referral_code: user.bet_referral_code
         })
     }
     let autobets = await AutoBet
-        .find({
-            $or: orCon
-        })
+        .find({ $or: orCon })
         .populate('userId');
     autobets = JSON.parse(JSON.stringify(autobets));
 
-    const asyncFilter = async (arr, predicate) => {
-        const results = await Promise.all(arr.map(predicate));
-        return arr.filter((_v, index) => results[index]);
-    }
     let timezoneOffset = -8;
     if (isDstObserved) timezoneOffset = -7;
     const today = new Date().addHours(timezoneOffset);
     today.addHours(today.getTimezoneOffset() / 60);
     timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
     const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
         try {
             if (!autobet.userId) return false;
@@ -1711,7 +1937,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         $match: {
                             user: new ObjectId(autobet.userId._id),
                             createdAt: { $gte: fromTime },
-                            type: bet.sportsbook ? 'sportsbook' : { $ne: 'sportsbook' },
+                            type: bet.sportsbook ? 'sportsbook' : { $in: [null, 'p2p'] },
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
@@ -1743,8 +1969,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     autobet.status == AutoBetStatus.active &&                   //Check active status
                     autobet.userId.balance > 0 &&                               //Check Balance
                     autobet.bettable > 0 &&                                     //Check bettable
-                    // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                    // (bettedamount < (budget - toBet))                           //Check Budget
                     true
                 );
             }
@@ -1753,9 +1977,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 autobet.status == AutoBetStatus.active &&                   //Check active status
                 autobet.userId.balance > 0 &&                               //Check Balance
                 autobet.bettable > 0 &&                                     //Check bettable
-                // autobet.maxRisk >= toBet &&                                  //Check Max.Risk
-                // (bettedamount < (budget - toBet)) &&                         //Check Budget
-                !autobet.sports.find((sport) => sport == lineQuery.sportName)   // Check Sports
+                !autobet.sports.find((sport) => sport == lineQuery.sportName) &&  // Check Sports
+                true
             );
         } catch (error) {
             console.error('filter => ', error);
@@ -1838,12 +2061,13 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         betAmount -= bettable;
         const betAfterFee = bettable;
         const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-        const fee = bet.sportsbook ? 0 : Number((bettable * BetFee).toFixed(2));
+        const fee = bet.sportsbook ? 0 : Number((toWin * BetFee).toFixed(2));
 
+        const bet_id = ID();
         // insert bet doc to bets table
         const newBetObj = {
             userId: selectedauto.userId._id,
-            transactionID: `B${ID()}`,
+            transactionID: `B${bet_id}`,
             teamA: {
                 name: teamA,
                 odds: home,
@@ -1934,7 +2158,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             try {
                 await FinancialLog.create({
                     financialtype: 'bet',
-                    uniqid: `BP${ID()}`,
+                    uniqid: `BP${bet_id}`,
                     user: selectedauto.userId._id,
                     amount: bettable,
                     method: 'bet',
@@ -1952,7 +2176,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         $match: {
                             user: new ObjectId(selectedauto.userId._id),
                             createdAt: { $gte: fromTime },
-                            type: bet.sportsbook ? 'sportsbook' : { $ne: 'sportsbook' },
+                            type: bet.sportsbook ? 'sportsbook' : { $in: [null, 'p2p'] },
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
@@ -2157,7 +2381,7 @@ expressApp.post(
 
             await checkAutoBet(bet, betpool, user, { originSportId: bet.lineQuery.sportId },
                 {
-                    teamA: bet.teama.name,
+                    teamA: bet.teamA.name,
                     teamB: bet.teamB.name,
                     startDate: bet.matchStartDate,
                     line: {
