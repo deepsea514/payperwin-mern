@@ -10,6 +10,7 @@ const AutoBetSchema = new Schema(
         maxRisk: Number,
         budget: Number,
         sportsbookBudget: Number,
+        parlayBudget: Number,
         status: String,
         sports: { type: Array, default: [] },
         side: { type: Array, default: [] },

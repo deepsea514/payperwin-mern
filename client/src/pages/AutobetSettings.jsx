@@ -40,6 +40,8 @@ class AutobetSettings extends Component {
                 sportsbookBudget: Yup.number()
                     .moreThan(0, "Sportsbook Budget should be more than 0")
                     .required("Sportsbook Budget field is required"),
+                parlayBudget: Yup.number()
+                    .required("Parlay Budget field is required"),
                 maxRisk: Yup.number()
                     .moreThan(0, "Max Risk should be more than 0")
                     .required("Max Risk field is required."),
@@ -141,31 +143,25 @@ class AutobetSettings extends Component {
                             initialValues={initialValues}
                             validationSchema={autobetSchema}
                             onSubmit={this.onSubmit}>
-                            {
-                                (formik) => {
-                                    return <form onSubmit={formik.handleSubmit}>
+                            {(formik) => {
+                                return (
+                                    <form onSubmit={formik.handleSubmit}>
                                         {submitError && (
-                                            <div
-                                                className="alert alert-custom alert-light-danger fade show mb-10"
-                                                role="alert"
-                                            >
+                                            <div className="alert alert-custom alert-light-danger fade show mb-10"
+                                                role="alert">
                                                 <div className="alert-icon">
                                                     <span className="svg-icon svg-icon-3x svg-icon-danger">
-                                                        <SVG
-                                                            src={"/media/svg/icons/Code/Info-circle.svg"}
-                                                        ></SVG>{" "}
+                                                        <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
                                                     Can't save settings
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ submitError: false })}>
-                                                    <button
-                                                        type="button"
+                                                    <button type="button"
                                                         className="close"
                                                         data-dismiss="alert"
-                                                        aria-label="Close"
-                                                    >
+                                                        aria-label="Close">
                                                         <span aria-hidden="true">
                                                             <i className="ki ki-close"></i>
                                                         </span>
@@ -176,25 +172,20 @@ class AutobetSettings extends Component {
                                         {submitSuccess && (
                                             <div
                                                 className="alert alert-custom alert-light-success fade show mb-10"
-                                                role="alert"
-                                            >
+                                                role="alert">
                                                 <div className="alert-icon">
                                                     <span className="svg-icon svg-icon-3x svg-icon-success">
-                                                        <SVG
-                                                            src={"/media/svg/icons/Code/Info-circle.svg"}
-                                                        ></SVG>{" "}
+                                                        <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
                                                     Successfully Saved.
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ submitSuccess: false })}>
-                                                    <button
-                                                        type="button"
+                                                    <button type="button"
                                                         className="close"
                                                         data-dismiss="alert"
-                                                        aria-label="Close"
-                                                    >
+                                                        aria-label="Close">
                                                         <span aria-hidden="true">
                                                             <i className="ki ki-close"></i>
                                                         </span>
@@ -235,6 +226,18 @@ class AutobetSettings extends Component {
                                                 {formik.touched.sportsbookBudget && formik.errors.sportsbookBudget ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.sportsbookBudget}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label>Daily Max Parlay Budget<span className="text-danger">*</span></label>
+                                                <input name="parlayBudget" placeholder="Enter Parlay Budget"
+                                                    className={`form-control ${getInputClasses(formik, "parlayBudget")}`}
+                                                    {...formik.getFieldProps("parlayBudget")}
+                                                />
+                                                {formik.touched.parlayBudget && formik.errors.parlayBudget ? (
+                                                    <div className="invalid-feedback">
+                                                        {formik.errors.parlayBudget}
                                                     </div>
                                                 ) : null}
                                             </div>
@@ -338,8 +341,8 @@ class AutobetSettings extends Component {
                                             Save
                                         </Button>
                                     </form>
-                                }
-                            }
+                                )
+                            }}
                         </Formik>}
                     </div>
                 </div>
