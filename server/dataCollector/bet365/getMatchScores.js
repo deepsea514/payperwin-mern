@@ -4,7 +4,6 @@ const getTableTennisMatchScores = require('./getMatchScores/getTableTennisMatchS
 const getSoccerMatchScores = require('./getMatchScores/getSoccerMatchScores');
 const getRugbyMatchScores = require('./getMatchScores/getRugbyMatchScores');
 const getTennisMatchScores = require('./getMatchScores/getTennisMatchScores');
-const getIceHockeyMatchScores = require('./getMatchScores/getIceHockeyMatchScores');
 const getHandballMatchScores = require('./getMatchScores/getHandballMatchScores');
 const getVolleyballMatchScores = require('./getMatchScores/getVolleyballMatchScores');
 const getBadmintonMatchScores = require('./getMatchScores/getBadmintonMatchScores');
@@ -24,7 +23,6 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getRugbyMatchScores(type, subtype, ss, scores, time_status);
             case "Tennis":
                 return getTennisMatchScores(type, subtype, ss, scores, time_status);
-            // return getIceHockeyMatchScores(type, subtype, ss, scores, time_status);
             case "Handball":
                 return getHandballMatchScores(type, subtype, ss, scores, time_status);
             case "Volleyball":
