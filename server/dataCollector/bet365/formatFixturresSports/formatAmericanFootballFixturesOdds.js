@@ -97,7 +97,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
 
         //First Quarter
-        let _1st_quarter_lines_2_way = main.sp["1st_quarter_lines_2_way"].odds;
+        let _1st_quarter_lines_2_way = [];
         if (main.sp["1st_quarter_lines_2_way"]) {
             _1st_quarter_lines_2_way = main.sp["1st_quarter_lines_2_way"].odds;
         }
@@ -110,7 +110,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
 
         //Second Quarter
-        let _2nd_quarter_lines_2_way = main.sp["2nd_quarter_lines_2_way"].odds;
+        let _2nd_quarter_lines_2_way = [];
         if (main.sp["2nd_quarter_lines_2_way"]) {
             _2nd_quarter_lines_2_way = main.sp["2nd_quarter_lines_2_way"].odds;
         }
@@ -123,7 +123,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
 
         //Third Quarter
-        let _3rd_quarter_lines_2_way = main.sp["3rd_quarter_lines_2_way"].odds;
+        let _3rd_quarter_lines_2_way = [];
         if (main.sp["3rd_quarter_lines_2_way"]) {
             _3rd_quarter_lines_2_way = main.sp["3rd_quarter_lines_2_way"].odds;
         }
@@ -136,7 +136,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
 
         //Forth Quarter
-        let _4th_quarter_lines_2_way = main.sp["4th_quarter_lines_2_way"].odds;
+        let _4th_quarter_lines_2_way = [];
         if (main.sp["4th_quarter_lines_2_way"]) {
             _4th_quarter_lines_2_way = main.sp["4th_quarter_lines_2_way"].odds;
         }
