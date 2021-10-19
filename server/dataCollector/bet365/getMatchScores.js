@@ -38,11 +38,11 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
             case "Basketball":
             case "Rugby League":
             case "Bowls":
-            case "Snooker":
             case "Beach Volleyball":
             case "Squash":
-            case "Water Polo":
             // Match Result
+            case "Water Polo":
+            case "Snooker":
             case "E-sports":
             case "Floorball":
             case "Futsal":
