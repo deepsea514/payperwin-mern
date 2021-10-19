@@ -1213,6 +1213,7 @@ expressApp.post(
                                             fee: fee,
                                             matchStartDate: startDate,
                                             status: 'Pending',
+                                            matchingStatus: 'Pending',
                                             lineQuery,
                                             lineId: lineId,
                                             origin: origin,
@@ -1770,7 +1771,7 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
             status: 'Pending',
             matchingStatus: 'Pending',
             transactionID: `B${bet_id}`,
-            origin: 'bet365',
+            origin: parlayBet.origin,
             isParlay: true,
             parlayQuery: parlayQuery,
         };
@@ -2105,46 +2106,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 type: bet.sportsbook ? 'sportsbook' : 'p2p'
             });
 
-            const matchTimeString = convertTimeLineDate(new Date(startDate), null);
-            let adminMsg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: adminEmailAddress1,
-                subject: 'New Bet',
-                text: `New Bet`,
-                html: simpleresponsive(
-                    `<ul>
-                            <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
-                            <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                            <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
-                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Pick: ${pickName}</li>
-                            <li>Date: ${matchTimeString}</li>
-                            <li>Win: $${toWin.toFixed(2)}</li>
-                        </ul>`),
-            }
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-            adminMsg.to = supportEmailAddress;
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-
             const betId = savedBet.id;
             // add betId to betPool
             const docChanges = {
@@ -2258,11 +2219,11 @@ expressApp.post(
             userId: _id,
         };
         if (openBets) {
-            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted', null] };
+            searchObj.status = { $in: [null, 'Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted', null] };
         } else if (settledBets) {
             searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
         } else if (custom) {
-            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
+            searchObj.status = { $in: [null, 'Pending', 'Partial Match', 'Matched'] };
             searchObj.origin = 'other';
         }
 
