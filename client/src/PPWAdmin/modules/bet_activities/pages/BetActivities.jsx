@@ -105,7 +105,7 @@ class BetActivities extends React.Component {
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
                             </>}
-                        {!bet.isParlay && ['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
+                        {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
                             </Dropdown.Item>}
