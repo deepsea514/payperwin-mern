@@ -9,6 +9,7 @@ const getVolleyballMatchScores = require('./getMatchScores/getVolleyballMatchSco
 const getBadmintonMatchScores = require('./getMatchScores/getBadmintonMatchScores');
 const getAustralianRulesMatchScores = require('./getMatchScores/getAustralianRulesMatchScores');
 const getGaelicSportsMatchScores = require('./getMatchScores/getGaelicSportsMatchScores');
+const getCricketMatchScores = require('./getMatchScores/getCricketMatchScores');
 
 const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) => {
     try {
@@ -33,12 +34,13 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getAustralianRulesMatchScores(type, subtype, ss, scores, time_status);
             case "Gaelic Sports":
                 return getGaelicSportsMatchScores(type, subtype, ss, scores, time_status);
+            case "Cricket":
+                return getCricketMatchScores(type, subtype, ss, scores, time_status);
             case "Basketball":
             case "Rugby League":
             case "Bowls":
             case "Beach Volleyball":
             case "Squash":
-            case "Cricket":
             // Match Result
             case "Water Polo":
             case "Snooker":
