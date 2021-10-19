@@ -1890,7 +1890,7 @@ adminRouter.post(
             };
             const betpool = await BetPool.findOne(betpoolQuery);
             if (!betpool) {
-                return res.status(404).json({ error: 'Betpool not found' });
+                return res.status(404).json({ error: 'BetPool not found' });
             }
             const {
                 homeBets,
@@ -2150,7 +2150,7 @@ adminRouter.post(
             });
 
             if (!betpool) {
-                return res.json({ success: false, error: 'Betpool not found.' });
+                return res.json({ success: false, error: 'BetPool not found.' });
             }
 
             const user = await User.findById(data.user);

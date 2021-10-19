@@ -3,6 +3,7 @@ const FinancialLog = require('../models/financiallog');
 const BetPool = require('../models/betpool');
 const Bet = require('../models/bet');
 const EventBetPool = require('../models/eventbetpool');
+const ParlayBetPool = require('../models/parlaybetpool');
 const { ObjectId } = require('mongodb');
 const config = require('../../config.json');
 
@@ -51,19 +52,11 @@ const calculateToWinFromBet = (bet, americanOdds) => {
 const calculateBetsStatus = async (betpoolUid) => {
     const betpool = await BetPool.findOne({ uid: new RegExp(`^${betpoolUid}$`, 'i') });
     if (!betpool) {
-        console.log('Betpool not found.');
+        console.log('BetPool not found.');
         return;
     }
     const { homeBets, awayBets, teamA, teamB } = betpool;
-    const bets = await Bet.find({
-        _id:
-        {
-            $in: [
-                ...homeBets,
-                ...awayBets,
-            ]
-        }
-    });
+    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
     const payPool = {
         home: teamB.betTotal,
         away: teamA.betTotal,
@@ -110,15 +103,7 @@ const calculateCustomBetsStatus = async (eventId) => {
     const betpool = await EventBetPool.findOne({ eventId: eventId });
     const { homeBets, awayBets, teamA, teamB } = betpool;
 
-    const bets = await Bet.find({
-        _id:
-        {
-            $in: [
-                ...homeBets,
-                ...awayBets,
-            ]
-        }
-    });
+    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
 
     const payPool = {
         home: teamB.betTotal,
@@ -152,6 +137,46 @@ const calculateCustomBetsStatus = async (eventId) => {
     }
 }
 
+const calculateParlayBetsStatus = async (id) => {
+    const betpool = await ParlayBetPool.findById(id);
+    if (!betpool) {
+        console.log('BetPool not found.');
+        return;
+    }
+    const { homeBets, awayBets, teamA, teamB } = betpool;
+    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
+    const payPool = {
+        home: teamB.betTotal,
+        away: teamA.betTotal,
+    }
+    const betAmounts = {
+        home: teamA.betTotal,
+        away: teamB.betTotal,
+    }
+    for (const bet of bets) {
+        const { _id, bet: betAmount, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
+        let payableToWin = 0;
+        if (payPool[pick] && payPool[pick] > 0 && betAmounts[pick]) {
+            const rate = betAmount / betAmounts[pick];
+            payableToWin = Number((payPool[pick] * rate).toFixed(2));
+        }
+        let matchingStatus;
+        if (payableToWin >= toWin) matchingStatus = 'Matched';
+        else if (payableToWin === 0) matchingStatus = 'Pending';
+        else matchingStatus = 'Partial Match';
+        const betChanges = {
+            $set: {
+                payableToWin,
+                matchingStatus,
+                status: matchingStatus,
+            }
+        };
+        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
+            await Bet.findOneAndUpdate({ _id }, betChanges);
+        }
+    }
+}
+
 const isFreeWithdrawalUsed = async (user) => {
     const date = new Date();
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -170,13 +195,20 @@ const isFreeWithdrawalUsed = async (user) => {
     return false;
 }
 
+const asyncFilter = async (arr, predicate) => {
+    const results = await Promise.all(arr.map(predicate));
+    return arr.filter((_v, index) => results[index]);
+}
+
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
     ID,
     calculateToWinFromBet,
     calculateBetsStatus,
+    calculateParlayBetsStatus,
     get2FACode,
     calculateCustomBetsStatus,
-    isFreeWithdrawalUsed
+    isFreeWithdrawalUsed,
+    asyncFilter
 }

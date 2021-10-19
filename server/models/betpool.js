@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const BetpoolSchema = new Schema(
+const BetPoolSchema = new Schema(
     {
         uid: { type: String, index: { unique: true } },
         sportId: String,
@@ -40,6 +40,6 @@ const BetpoolSchema = new Schema(
     },
 );
 
-const Betpool = mongoose.model('Betpool', BetpoolSchema);
+const BetPool = mongoose.model('BetPool', BetPoolSchema);
 
-module.exports = Betpool;
+module.exports = BetPool;

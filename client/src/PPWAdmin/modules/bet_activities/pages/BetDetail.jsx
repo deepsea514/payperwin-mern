@@ -59,7 +59,7 @@ class BetDetail extends React.Component {
 
     getBetType = (bet) => {
         if (bet.isParlay) {
-            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">parlay</span>
+            return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">parlay</span>
         }
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
