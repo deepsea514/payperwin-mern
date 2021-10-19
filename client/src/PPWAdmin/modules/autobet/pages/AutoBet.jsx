@@ -100,10 +100,9 @@ class AutoBet extends React.Component {
                 <td>{this.getRollOver(bet.rollOver)}</td>
                 <td>{bet.priority}</td>
                 <td>{numberFormat(bet.maxRisk)}</td>
-                <td>{numberFormat(bet.budget)}</td>
-                <td>{bet.hold}</td>
-                <td>{numberFormat(bet.sportsbookBudget ? bet.sportsbookBudget : 0)}</td>
-                <td>{bet.sbhold}</td>
+                <td>{numberFormat(bet.budget)} / {bet.hold}</td>
+                <td>{numberFormat(bet.sportsbookBudget ? bet.sportsbookBudget : 0)} / {numberFormat(bet.sbhold ? bet.sbhold : 0)}</td>
+                <td>{numberFormat(bet.parlayBudget ? bet.parlayBudget : 0)} / {numberFormat(bet.parlayhold ? bet.parlayhold : 0)}</td>
                 <td>{bet.userId ? numberFormat(bet.userId.balance) : null}</td>
                 <td>{bet.referral_code}</td>
                 <td>{this.getStatus(bet.status)}</td>
@@ -237,10 +236,9 @@ class AutoBet extends React.Component {
                                             <th scope="col">Roll Over</th>
                                             <th scope="col">Priority</th>
                                             <th scope="col">Max.Risk</th>
-                                            <th scope="col">Budget</th>
-                                            <th scope="col">Hold</th>
-                                            <th scope="col">SB Budget</th>
-                                            <th scope="col">SB Hold</th>
+                                            <th scope="col">P2P&nbsp;Budget / Hold</th>
+                                            <th scope="col">SB&nbsp;Budget / Hold</th>
+                                            <th scope="col">Parlay&nbsp;Budget / Hold</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Ref Code</th>
                                             <th scope="col">Status</th>

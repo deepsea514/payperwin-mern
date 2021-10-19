@@ -2874,7 +2874,12 @@ adminRouter.get(
                                     $and: [
                                         { $gte: ["$createdAt", fromTime] },
                                         { $eq: ["$user", "$$user_id"] },
-                                        { $ne: ["$type", "sportsbook"] }
+                                        {
+                                            $or: [
+                                                { $ne: ["$type", "p2p"] },
+                                                { $eq: ["$type", null] }
+                                            ]
+                                        }
                                     ]
                                 }
                             },
@@ -2898,6 +2903,24 @@ adminRouter.get(
                             },
                         }],
                         as: 'sbautobetlogs',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'autobetlogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $gte: ["$createdAt", fromTime] },
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$type", "parlay"] }
+                                    ]
+                                }
+                            },
+                        }],
+                        as: 'parlayautobetlogs',
                     }
                 },
                 {
@@ -2928,8 +2951,10 @@ adminRouter.get(
                         maxRisk: 1,
                         budget: 1,
                         sportsbookBudget: 1,
+                        parlayBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
                         sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },
+                        parlayhold: { $subtract: ["$parlayBudget", { $sum: '$parlayautobetlogs.amount' }] },
                         referral_code: 1,
                         status: 1,
                         createdAt: 1
