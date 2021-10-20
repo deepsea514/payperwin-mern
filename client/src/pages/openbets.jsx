@@ -506,7 +506,8 @@ class OpenBets extends Component {
                                     </div>
                                 </div>
                                 {parlayQuery.map((query, index) => {
-                                    const { teamA, teamB, lineQuery, homeScore, awayScore, pickName, matchStartDate } = query;
+                                    console.log(query)
+                                    const { teamA, teamB, lineQuery, homeScore, awayScore, cancelled, pickName, matchStartDate } = query;
                                     const { sportName } = lineQuery
                                     return (
                                         <div className="open-bets-event" key={index}>
@@ -516,11 +517,12 @@ class OpenBets extends Component {
                                             <div>
                                                 Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                             </div>
-                                            {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
+                                            {settledBets && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
+                                            {cancelled && <div><strong>Cancelled</strong></div>}
                                         </div>
                                     );
                                 })}
-                                {settledBets && <div>
+                                {settledBets && <div className="open-bets-event">
                                     {status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                     {status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
@@ -588,7 +590,7 @@ class OpenBets extends Component {
                                         {sportsbook && <strong className="float-right bg-info px-2 py-1 text-white">Sportsbook</strong>}
                                         {!sportsbook && <strong className="float-right bg-primary px-2 py-1 text-white">Peer To Peer</strong>}
                                     </div>
-                                    {homeScore && awayScore ? (<div><strong>Final Score: {homeScore} - {awayScore}</strong></div>) : null}
+                                    {settledBets && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
                                     {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                     {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}

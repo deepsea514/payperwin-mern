@@ -200,6 +200,18 @@ const asyncFilter = async (arr, predicate) => {
     return arr.filter((_v, index) => results[index]);
 }
 
+const getLinePoints = (pickName, pick, lineQuery) => {
+    let linePoints = pickName.split(' ');
+    if (lineQuery.type == 'moneyline') {
+        linePoints = null;
+    } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
+        linePoints = Number(linePoints[linePoints.length - 1]);
+        if (pick == 'away') linePoints = -linePoints;
+    } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
+        linePoints = Number(linePoints[linePoints.length - 1]);
+    }
+}
+
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
@@ -210,5 +222,6 @@ module.exports = {
     get2FACode,
     calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
-    asyncFilter
+    asyncFilter,
+    getLinePoints
 }

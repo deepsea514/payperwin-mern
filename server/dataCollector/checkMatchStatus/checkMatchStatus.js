@@ -17,6 +17,7 @@ const {
     ID,
     calculateBetsStatus,
     calculateParlayBetsStatus,
+    getLinePoints,
 } = require('../../libs/functions');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
@@ -249,15 +250,8 @@ const checkBetWithoutBetPool = async () => {
     bets.forEach(async bet => {
         if (bet.origin == 'other') return;
         const lineQuery = bet.lineQuery;
-        let linePoints = bet.pickName.split(' ');
-        if (lineQuery.type == 'moneyline') {
-            linePoints = null;
-        } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-            linePoints = Number(linePoints[linePoints.length - 1]);
-            if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-        } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-            linePoints = Number(linePoints[linePoints.length - 1]);
-        }
+        const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
         const uid = JSON.stringify(bet.lineQuery);
         const exists = await BetPool.findOne({
             sportId: bet.lineQuery.sportId,
