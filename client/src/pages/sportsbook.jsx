@@ -21,7 +21,6 @@ class SportsBook extends Component {
         var pinnacleOrigin = '.oreo88.com';
         window.addEventListener("message", (event) => {
             // check pinnacle origin
-            console.log(event.data);
             if (event.origin && event.origin.toLowerCase().endsWith(pinnacleOrigin)) {
                 var postData = event.data;
                 switch (postData.action) {
@@ -69,7 +68,6 @@ class SportsBook extends Component {
             .then(({ data }) => {
                 const { loginInfo } = data;
                 const { loginUrl } = loginInfo;
-                // console.log(data);
                 this.setState({ loading: false, loginUrl });
             })
             .catch(() => {

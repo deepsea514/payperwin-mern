@@ -9,8 +9,9 @@ const ErrorLog = require('../../models/errorlog');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
-const { ID, getLinePoints } = require('../../libs/functions');
+const { ID, getLinePoints, calculateToWinFromBet, calculateParlayBetsStatus } = require('../../libs/functions');
 const getMatchScores = require('./getMatchScores');
+const convertOdds = require('../../libs/convertOdds');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
@@ -181,23 +182,97 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                         betWin = pick === overUnderWinner;
                     }
-
                     homeWin = homeWin && betWin;
                 }
-
                 delete query.result;
             }
-
             if (breaked) {
                 continue;
             }
+
             if (cancelledEvents.length > 0) {
                 // Adjust wallet and odds
                 if (cancelledEvents.length == resultQuery.length) {
                     cancelBetPool(betpool);
                     continue;
                 }
-                console.log(cancelledEvents);
+
+                let parlayOdds = 1;
+                for (const query of parlayQuery) {
+                    const { pickOdds, lineQuery: { eventId } } = query;
+                    const cancelled = cancelledEvents.find(event => event == eventId);
+                    if (cancelled) continue;
+                    parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+                }
+                if (parlayOdds >= 2) {
+                    parlayOdds = parseInt((parlayOdds - 1) * 100);
+                } else {
+                    parlayOdds = parseInt(-100 / (parlayOdds - 1));
+                }
+
+                const teamA = { odds: parlayOdds, betTotal: 0, toWinTotal: 0 };
+                const teamB = { odds: -parlayOdds, betTotal: 0, toWinTotal: 0 };
+                const newHomeBets = [];
+                const newAwayBets = [];
+                for (const bet_id of homeBets) {
+                    const bet = await Bet.findById(bet_id);
+                    if (bet) {
+                        newHomeBets.push(bet._id);
+                        const { bet: betAmount } = bet;
+                        const toWin = calculateToWinFromBet(betAmount, parlayOdds);
+                        teamA.betTotal = betAmount;
+                        teamA.toWinTotal = toWin;
+                        await bet.update({
+                            toWin: toWin,
+                            payableToWin: 0,
+                            pickOdds: parlayOdds
+                        });
+                    } else {
+                        console.log('bet not found', bet_id);
+                    }
+                }
+
+                const totalAwayBet = teamA.toWinTotal;
+                const prevTotalAwayBet = betpool.teamB.betTotal;
+                if (totalAwayBet == 0 || prevTotalAwayBet <= 0) {
+                    await cancelBetPool(betpool);
+                    continue;
+                }
+
+                for (const bet_id of awayBets) {
+                    const bet = await Bet.findById(bet_id);
+                    if (bet) {
+                        newAwayBets.push(bet._id);
+                        const { userId, bet: betAmount } = bet;
+                        let newBetAmount = betAmount;
+                        if (totalAwayBet < prevTotalAwayBet) {
+                            const rate = betAmount / prevTotalAwayBet;
+                            newBetAmount = totalAwayBet * rate;
+                        }
+                        const toWin = calculateToWinFromBet(newBetAmount, -parlayOdds);
+                        teamB.betTotal += newBetAmount;
+                        teamB.toWinTotal += toWin;
+                        await bet.update({
+                            bet: newBetAmount,
+                            toWin: toWin,
+                            payableToWin: 0,
+                            pickOdds: -parlayOdds
+                        });
+                        if (newBetAmount < betAmount) {
+                            await FinancialLog.create({
+                                financialtype: 'betrefund',
+                                uniqid: `BF${ID()}`,
+                                user: userId,
+                                amount: betAmount - newBetAmount,
+                                method: 'betrefund',
+                                status: FinancialStatus.success,
+                            });
+                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount - newBetAmount } });
+                        }
+                    }
+                }
+                await betpool.update({ teamA, teamB, homeBets: newHomeBets, awayBets: newAwayBets });
+                await calculateParlayBetsStatus(betpool._id);
             }
             const winBets = homeWin ? homeBets : awayBets;
             const lossBets = homeWin ? awayBets : homeBets;

@@ -223,7 +223,6 @@ class OpenBets extends Component {
         const { forwardBet, bets } = this.state;
         axios.post(`${serverUrl}/bets/${forwardBet._id}/forward`, null, { withCredentials: true })
             .then(({ data }) => {
-                console.log(data)
                 this.setState({
                     bets: bets.map(bet => {
                         if (bet._id == data._id) return data;
