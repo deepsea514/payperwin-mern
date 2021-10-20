@@ -199,7 +199,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 }
                 console.log(cancelledEvents);
             }
-
             const winBets = homeWin ? homeBets : awayBets;
             const lossBets = homeWin ? awayBets : homeBets;
             for (const bet_id of winBets) {
