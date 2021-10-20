@@ -7,7 +7,7 @@ const getTableTennisMatchScores = (type, subtype, ss, scores, time_status) => {
     try {
         const sets = Object.keys(scores);
         for (let i = 0; i < sets.length; i++) {
-            if (type == 'total') {
+            if (['total', 'alternative_total'].includes(type)) {
                 matchResult.homeScore += parseInt(scores[sets[i]].home);
                 matchResult.awayScore += parseInt(scores[sets[i]].away);
             } else if (type == 'moneyline') {
@@ -15,7 +15,7 @@ const getTableTennisMatchScores = (type, subtype, ss, scores, time_status) => {
                     matchResult.homeScore++;
                 if (parseInt(scores[sets[i]].home) < parseInt(scores[sets[i]].away))
                     matchResult.awayScore++;
-            } else if (type == 'handicap') {
+            } else if (['spread', 'alternative_spread'].includes(type)) {
                 matchResult.homeScore += parseInt(scores[sets[i]].home);
                 matchResult.awayScore += parseInt(scores[sets[i]].away);
             }
