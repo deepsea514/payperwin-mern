@@ -210,6 +210,7 @@ const getLinePoints = (pickName, pick, lineQuery) => {
     } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
         linePoints = Number(linePoints[linePoints.length - 1]);
     }
+    return linePoints;
 }
 
 module.exports = {
