@@ -9,7 +9,7 @@ const getHandballMatchScores = (type, subtype, ss, scores, timer, time_status) =
         matchResult.awayScore = parseInt(scores["4"].away);
         return matchResult;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
