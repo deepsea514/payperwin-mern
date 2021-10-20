@@ -39,8 +39,8 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
 
     const lineInterval = 1000 * 60 * 10;
-    getAllSportsLines();
-    setInterval(getAllSportsLines, lineInterval);
+    // getAllSportsLines();
+    // setInterval(getAllSportsLines, lineInterval);
 
     const resultInterval = 10 * 60 * 1000;
     matchResults();

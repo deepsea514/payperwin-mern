@@ -65,7 +65,8 @@ const {
     isFreeWithdrawalUsed,
     calculateBetsStatus,
     calculateToWinFromBet,
-    calculateParlayBetsStatus
+    calculateParlayBetsStatus,
+    getLinePoints
 } = require('./libs/functions');
 const BetFee = 0.05;
 const loyaltyPerBet = 25;
@@ -1863,15 +1864,8 @@ adminRouter.post(
                 return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
-            let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type == 'moneyline') {
-                linePoints = null;
-            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-            }
+            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
             const betpoolQuery = {
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,
@@ -1904,15 +1898,7 @@ adminRouter.post(
                     let moneyLineWinner = null;
                     if (homeScore > awayScore) moneyLineWinner = 'home';
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
-                    const bets = await Bet.find({
-                        _id:
-                        {
-                            $in: [
-                                ...homeBets,
-                                ...awayBets,
-                            ]
-                        }
-                    });
+                    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
 
                     for (const bet of bets) {
                         const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
@@ -2049,6 +2035,14 @@ adminRouter.post(
                             if (unplayableBet) {
                                 betChanges.$set.credited = unplayableBet;
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                                await FinancialLog.create({
+                                    financialtype: 'betrefund',
+                                    uniqid: `BF${ID()}`,
+                                    user: userId,
+                                    amount: unplayableBet,
+                                    method: 'betrefund',
+                                    status: FinancialStatus.success,
+                                });
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
@@ -2205,15 +2199,7 @@ adminRouter.post(
                 await calculateParlayBetsStatus(betpool._id);
             } else {
                 const lineQuery = bet.lineQuery;
-                let linePoints = bet.pickName.split(' ');
-                if (lineQuery.type == 'moneyline') {
-                    linePoints = null;
-                } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                    linePoints = Number(linePoints[linePoints.length - 1]);
-                    if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-                } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                    linePoints = Number(linePoints[linePoints.length - 1]);
-                }
+                const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
                 let betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
                 if (!betpool) {
