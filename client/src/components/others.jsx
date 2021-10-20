@@ -30,7 +30,6 @@ class Others extends Component {
         axios.get(url, { params: { id } })
             .then(({ data }) => {
                 if (data) {
-                    console.log(data);
                     this.setState({ data })
                 }
             })

@@ -114,7 +114,7 @@ class TransactionHistory extends Component {
             case 'bet':
                 return '1 Bet(s) placed.';
             case 'betrefund':
-                return 'Bet refund from Partial Match';
+                return 'Bet Refund';
             default:
                 return '';
         }
