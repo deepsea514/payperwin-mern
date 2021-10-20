@@ -5,7 +5,6 @@ const getTotal = (score) => {
 
 const getCricketMatchScores = (type, subtype, ss, scores, time_status) => {
     if (time_status == "1") return 'inplay';
-    //107/3(15.1)-106/10(20)
     const matchResult = {
         homeScore: 0,
         awayScore: 0,

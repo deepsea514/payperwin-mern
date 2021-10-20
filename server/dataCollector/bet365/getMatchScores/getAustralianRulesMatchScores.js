@@ -4,7 +4,6 @@ const getTotal = (score) => {
 
 const getAustralianRulesMatchScores = (type, subtype, ss, scores, time_status) => {
     if (time_status == "1") return 'inplay';
-    //108546537 13.7(85)-5.11(41)
     const matchResult = {
         homeScore: 0,
         awayScore: 0,
