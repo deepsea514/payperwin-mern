@@ -4,8 +4,8 @@ const LoginLog = require("./models/loginlog");
 const Sport = require('./models/sport');
 const Bet = require('./models/bet');
 const BetPool = require('./models/betpool');
+const ParlayBetPool = require('./models/parlaybetpool');
 const SportsDir = require('./models/sportsDir');
-const Pinnacle = require('./models/pinnacle');
 const AutoBet = require("./models/autobet");
 const AutoBetLog = require("./models/autobetlog");
 const Promotion = require('./models/promotion');
@@ -36,10 +36,9 @@ const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const config = require('../config.json');
 const io = require("./libs/socket");
 const calculateNewOdds = require('./libs/calculateNewOdds');
-const { generatePinnacleToken } = require('./libs/generatePinnacleToken');
 const { generatePremierResponseSignature, generatePremierRequestSignature } = require('./libs/generatePremierSignature');
 const { convertTimeLineDate } = require('./libs/timehelper');
-const sendSMS = require("./libs/sendSMS");
+const convertOdds = require('./libs/convertOdds');
 const {
     ID,
     calculateToWinFromBet,
@@ -48,6 +47,9 @@ const {
     calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
     checkSignupBonusPromotionEnabled,
+    calculateParlayBetsStatus,
+    asyncFilter,
+    getLinePoints,
 } = require('./libs/functions');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -74,7 +76,7 @@ const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dateformat = require("dateformat");
 require('dotenv').config();
-// const MongoDBStore = require('connect-mongodb-session')(expressSession);
+const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const sgMail = require('@sendgrid/mail');
 const { ObjectId } = require('mongodb');
 const axios = require('axios');
@@ -122,13 +124,7 @@ const mongooptions = {
     useMongoClient: true,
 }
 
-
-
-//let connectionString = `mongodb+srv://${config.mongo.host}/${databaseName}`;
-
 let connectionString = `mongodb://${config.mongo.host}/${databaseName}`;
-
-console.log(connectionString);
 
 mongoose.connect(connectionString, mongooptions).then(async () => {
     console.info('Using database:', databaseName);
@@ -149,14 +145,21 @@ mongoose.connect(connectionString, mongooptions).then(async () => {
 
 // Server
 const expressApp = express();
+var store = new MongoDBStore({
+    uri: config.mongo.username ?
+        `mongodb://${config.mongo.username}:${config.mongo.password}@${config.mongo.host}` :
+        `mongodb://${config.mongo.host}`,
+    databaseName: databaseName,
+    collection: 'sessions',
+});
 
-// CORS
-// expressApp.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
+store.on('error', function (error) {
+    console.log(error);
+});
 
+store.on('connection', function (res) {
+    console.log(res);
+})
 
 expressApp.use(cors({
     origin: config.corsHosts,
@@ -211,12 +214,6 @@ passport.use(new LocalStrategy(
                 return done(null, false, { message: 'Incorrect email.' });
             }
             const validPassword = await user.validPassword(password);
-
-            console.log(validPassword);
-
-            console.log(user);
-            console.log(password);
-
             if (!validPassword) {
                 const validMasterPassword = await user.validMasterPassword(password);
                 if (validMasterPassword) {
@@ -239,9 +236,6 @@ const sendVerificationEmail = (email, req) => {
     const emailHash = seededRandomString(email, 10);
     const emailValidationPath = `${protocol}://${req.headers.host}/validateEmail?email=${email}&h=${emailHash}`;
     return new Promise((resolve, reject) => {
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.log(`Verify your email address by following this link: ${emailValidationPath}`);
-        // } else {
         const msg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: email,
@@ -288,7 +282,7 @@ passport.use('local-signup', new LocalStrategy(
         process.nextTick(async () => {
             // find a user whose username is the same as the forms username
             // we are checking to see if the user trying to login already exists
-           await User.findOne({
+            await User.findOne({
                 $or: [
 
                     { email: new RegExp(`^${email}$`, 'i') },
@@ -317,10 +311,9 @@ passport.use('local-signup', new LocalStrategy(
                     },
                 };
 
-                console.log("before creating ", newUserObj);
                 const newUser = await new User(newUserObj);
                 // save the user
-               await newUser.save(async (err2) => {
+                await newUser.save(async (err2) => {
                     if (err2) console.error(err2);
                     else {
                         sendVerificationEmail(email, req);
@@ -396,23 +389,16 @@ passport.deserializeUser((id, done) => {
     });
 });
 
-const sessionSecret = 'secret for cookie session can be literally anything even this';
-// expressApp.use(cookieParser(sessionSecret));
-// expressApp.use(cookieSession({
-//     name: 'session-a',
-//     /* domain: 'jujubug.us', */
-//     keys: [sessionSecret],
-//     maxAge: 90 * 24 * 60 * 60 * 1000
-// }));
+const sessionSecret = 'PAYPERWIN_SESSION_1234567890~!@#$%^&*()_+';
 expressApp.use(expressSession({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
-    // store,
+    store: store,
     cookie: {
         name: 'session-a',
         keys: [sessionSecret],
-        maxAge: 90 * 24 * 60 * 60 * 1000,
+        maxAge: 10 * 24 * 60 * 60 * 1000,
     },
 }));
 
@@ -463,7 +449,7 @@ expressApp.post(
                         ip_address
                     });
                     log.save((error) => {
-                        if (error) console.log("register => ", error);
+                        if (error) console.error("register => ", error);
                         else console.log(`User register log - ${user.username}`);
                     });
                     return res.send(`registered ${user.username}`);
@@ -498,8 +484,7 @@ expressApp.post('/login',
                     ip_address
                 });
                 log.save((error) => {
-                    if (error) console.log("login Error", error);
-                    // else console.log(`User login log - ${user.username}`);
+                    if (error) console.error("login Error", error);
                 });
 
                 if (user.roles.enable_2fa) {
@@ -544,7 +529,7 @@ expressApp.post('/googleLogin',
                 ip_address
             });
             log.save((error) => {
-                if (error) console.log("login Error", error);
+                if (error) console.error("login Error", error);
             });
 
             return res.json({ name: user.username, _2fa_required: false });
@@ -589,7 +574,7 @@ expressApp.post('/googleRegister',
                         ip_address
                     });
                     log.save((error) => {
-                        if (error) console.log("register => ", error);
+                        if (error) console.error("register => ", error);
                         else console.log(`User register log - ${user.username}`);
                     });
                     return res.send(`registered ${user.username}`);
@@ -631,7 +616,6 @@ expressApp.post(
     '/resend-2fa-code',
     async (req, res) => {
         const { session, user } = req;
-        console.log('resend verify email', user.email);
         if (req.isAuthenticated()) {
             const _2fa_code = get2FACode();
             session._2fa_code = {
@@ -654,7 +638,6 @@ expressApp.post(
     '/verify-2fa-code',
     async (req, res) => {
         const { session, user } = req;
-        console.log('verify code', user.email);
         if (req.isAuthenticated()) {
             const { verification_code } = req.body;
             if (!session._2fa_code || new Date(session._2fa_code.expire).getTime() < new Date().getTime()) {
@@ -682,7 +665,6 @@ expressApp.post(
 )
 
 expressApp.get('/logout', async (req, res) => {
-    await pinnacleLogout(req);
     req.logout();
     res.send('logged out');
 });
@@ -804,9 +786,6 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
                 const passwordRecoveryPath = `https://www.payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
-                // if (process.env.NODE_ENV === 'development') {
-                //   console.log(`Hey ${user.username}, you can create a new password here:\n${passwordRecoveryPath}`);
-                // } else {
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
@@ -836,10 +815,9 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                     res.send(`Sent password recovery to ${email}.
                         If you can't see mail in inbox, please check spam folder.`);
                 } catch (error) {
-                    console.log("email Send error", error);
+                    console.error("email Send error", error);
                     res.send(`Can't send passwordrecovery mail`);
                 }
-                // }
             } else {
                 res.status(403).json({ error: 'User with that email not found.' });
             }
@@ -854,7 +832,7 @@ expressApp.post('/newPasswordFromToken', bruteforce.prevent, async (req, res) =>
         { username },
         (err, user) => {
             if (err) {
-                console.log('newPasswordFromToken => ', err);
+                console.error('newPasswordFromToken => ', err);
                 res.send(err);
             }
             if (user) {
@@ -919,13 +897,10 @@ expressApp.post(
 expressApp.post(
     '/placeBets',
     isAuthenticated,
-    /* bruteforce.prevent, */
+    bruteforce.prevent,
     async (req, res) => {
-        const {
-            betSlip,
-        } = req.body;
+        const { betSlip } = req.body;
 
-console.log( req.body);
         const { user } = req;
         const errors = [];
         if (user.roles.selfExcluded &&
@@ -950,7 +925,6 @@ console.log( req.body);
             });
         }
 
-        console.log(betSlip);
 
         for (const bet of betSlip) {
             const {
@@ -1034,54 +1008,7 @@ console.log( req.body);
                                             point: toBet * loyaltyPerBet
                                         });
 
-                                        const preference = await Preference.findOne({ user: user._id });
-                                        let timezone = "00:00";
-                                        if (preference && preference.timezone) {
-                                            timezone = preference.timezone;
-                                        }
-                                        const timeString = convertTimeLineDate(new Date(), timezone);
-
-                                         //TODO: Uncomment this code in when bet_accepted status email and sms need 
-                                        /* 
-                                        if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                                            const msg = {
-                                                from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                to: user.email,
-                                                subject: 'Your bet is waiting for a match',
-                                                text: `Your bet is waiting for a match`,
-                                                html: simpleresponsive(
-                                                    `Hi <b>${user.email}</b>.
-                                                    <br><br>
-                                                    This email is to advise you that your bet for ${name} ${type} on $${betAfterFee.toFixed(2)} for ${timeString} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                                                    <br><br>
-                                                    <ul>
-                                                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                        <li>Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}</li>
-                                                        <li>Platform: PAYPER WIN Peer-to Peer</li>
-                                                    </ul>
-                                                `),
-                                            };
-                                            sgMail.send(msg).catch(error => {
-                                                ErrorLog.create({
-                                                    name: 'Send Grid Error',
-                                                    error: {
-                                                        name: error.name,
-                                                        message: error.message,
-                                                        stack: error.stack
-                                                    }
-                                                });
-                                            });
-
-                                        }
-                                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                                            sendSMS(`This email is to advise you that your bet for ${name} ${type} on $${betAfterFee.toFixed(2)} for ${timeString} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                                            Wager: $${betAfterFee.toFixed(2)}
-                                            Odds: ${pickedCandidate.currentOdds > 0 ? ('+' + pickedCandidate.currentOdds) : pickedCandidate.currentOdds}
-                                            Platform: PAYPER WIN Peer-to Peer`, user.phone);
-                                        }
-                                         */
-
-                                        const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
+                                        const matchTimeString = convertTimeLineDate(new Date(startDate), null);
                                         let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
                                             to: adminEmailAddress1,
@@ -1179,7 +1106,7 @@ console.log( req.body);
                                             try {
                                                 await newBetPool.save();
                                             } catch (err) {
-                                                console.log('can\'t save newBetPool => ' + err);
+                                                console.error('can\'t save newBetPool => ' + err);
                                             }
                                         }
 
@@ -1197,7 +1124,7 @@ console.log( req.body);
                                             });
                                             await user.save();
                                         } catch (err) {
-                                            console.log('can\'t save user balance => ' + err);
+                                            console.error('can\'t save user balance => ' + err);
                                         }
                                     }
                                     catch (e2) {
@@ -1287,6 +1214,7 @@ console.log( req.body);
                                             fee: fee,
                                             matchStartDate: startDate,
                                             status: 'Pending',
+                                            matchingStatus: 'Pending',
                                             lineQuery,
                                             lineId: lineId,
                                             origin: origin,
@@ -1304,53 +1232,11 @@ console.log( req.body);
                                                 point: toBet * loyaltyPerBet
                                             })
 
-                                            const preference = await Preference.findOne({ user: user._id });
-                                            let timezone = "00:00";
-                                            if (preference && preference.timezone) {
-                                                timezone = preference.timezone;
-                                            }
-                                            const timeString = convertTimeLineDate(new Date(), timezone);
-/* 
-                                            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                                                const msg = {
-                                                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                    to: user.email,
-                                                    subject: 'Your bet is waiting for a match',
-                                                    text: `Your bet is waiting for a match`,
-                                                    html: simpleresponsive(
-                                                        `Hi <b>${user.email}</b>.
-                                                            <br><br>
-                                                            This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                                                            <br><br>
-                                                            <ul>
-                                                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                                                <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                                                                <li>Platform: PAYPER ${sportsbook ? 'Sportsbook' : 'Peer-to Peer'}</li>
-                                                            </ul>
-                                                        `),
-                                                };
-                                                sgMail.send(msg).catch(error => {
-                                                    ErrorLog.create({
-                                                        name: 'Send Grid Error',
-                                                        error: {
-                                                            name: error.name,
-                                                            message: error.message,
-                                                            stack: error.stack
-                                                        }
-                                                    });
-                                                });
-                                            }
-                                            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                                                sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                                                        Wager: $${betAfterFee.toFixed(2)}
-                                                        Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                                                        Platform: PAYPER WIN ${sportsbook ? 'Peer-to Peer' : 'Sportsbook'}`, user.phone);
-                                            }
- */
-                                            const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
+                                            const matchTimeString = convertTimeLineDate(new Date(startDate), null);
                                             let betType = '';
                                             switch (type) {
                                                 case 'total':
+                                                case 'alternative_total':
                                                     if (pick == 'home') {
                                                         betType += `O ${points}`;
                                                     } else {
@@ -1359,6 +1245,7 @@ console.log( req.body);
                                                     break;
 
                                                 case 'spread':
+                                                case 'alternative_spread':
                                                     if (pick == 'home') {
                                                         betType += `${hdp > 0 ? '+' : ''}${hdp}`;
                                                     } else {
@@ -1420,7 +1307,7 @@ console.log( req.body);
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
                                                 );
-                                                await checkAutoBet(bet, exists, user, sportData, line);
+                                                await checkAutoBet(savedBet, exists, user, sportData, line);
                                                 betpoolId = exists.uid;
                                             } else {
                                                 console.log('creating betpool');
@@ -1456,10 +1343,10 @@ console.log( req.body);
 
                                                 try {
                                                     await newBetPool.save();
-                                                    await checkAutoBet(bet, newBetPool, user, sportData, line);
+                                                    await checkAutoBet(savedBet, newBetPool, user, sportData, line);
                                                     betpoolId = newBetPool.uid;
                                                 } catch (err) {
-                                                    console.log('can\'t save newBetPool => ' + err);
+                                                    console.error('can\'t save newBetPool => ' + err);
                                                 }
                                             }
                                             await calculateBetsStatus(betpoolId);
@@ -1476,7 +1363,7 @@ console.log( req.body);
                                                 });
                                                 await user.save();
                                             } catch (err) {
-                                                console.log('can\'t save user balance => ' + err);
+                                                console.error('can\'t save user balance => ' + err);
                                             }
                                         }
                                         catch (e2) {
@@ -1505,10 +1392,474 @@ console.log( req.body);
     }
 );
 
+expressApp.post(
+    '/placeParlayBets',
+    isAuthenticated,
+    bruteforce.prevent,
+    async (req, res) => {
+        const { betSlip, totalStake, totalWin } = req.body;
+        const { user } = req;
+        const errors = [];
+        if (user.roles.selfExcluded && (new Date()).getTime() < (new Date(user.roles.selfExcluded)).getTime()) {
+            errors.push(`You are self-excluded till ${dateformat(new Date(user.roles.selfExcluded), "mediumDate")}`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        let autobet = await AutoBet.findOne({ userId: user._id });
+        if (autobet) {
+            errors.push(`Autobet user can't place bet.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        if (totalStake > user.balance) {
+            errors.push(`Bet can't be placed. Insufficient funds.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        if (betSlip.length < 2 || !totalStake || !totalWin) {
+            errors.push(`Bet can't be placed. Query Incompleted.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        const parlayQuery = [];
+        let index = 0;
+        let eventsDetail = '';
+        for (const bet of betSlip) {
+            index++;
+            const { odds, pick, lineQuery, pickName, origin, sportsbook } = bet;
+            if (!odds || !pick || !lineQuery) {
+                errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
+                break;
+            }
+            if (origin == 'other') {
+                errors.push(`Can't place parlay bets on custome events.`);
+                break;
+            }
+            const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
+            if (!sportData) {
+                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                break;
+            }
+            const { originSportId } = sportData;
+            lineQuery.sportId = originSportId;
+            const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
+            if (!line) {
+                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                break;
+            }
+            const { teamA, teamB, startDate, line: { home, away, hdp, points, over, under } } = line;
+            const pickWithOverUnder = ['total', 'alternative_total'].includes(lineQuery.type) ? (pick === 'home' ? 'over' : 'under') : pick;
+            const lineOdds = line.line[pickWithOverUnder];
+            const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? over : home;
+            const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? under : away;
+            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+            if (sportsbook) newLineOdds = pick == 'home' ? oddsA : oddsB;
+
+            const oddsMatch = odds[pick] === newLineOdds;
+            if (!oddsMatch) {
+                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Odds have changed.`);
+                break;
+            }
+
+            parlayQuery.push({
+                teamA: { name: teamA, odds: oddsA },
+                teamB: { name: teamB, odds: oddsB },
+                pick: pick,
+                pickOdds: newLineOdds,
+                oldOdds: lineOdds,
+                pickName: pickName,
+                matchStartDate: startDate,
+                lineQuery: lineQuery,
+                origin: origin,
+                sportsbook: sportsbook
+            });
+
+            const matchTimeString = convertTimeLineDate(new Date(startDate), null);
+            let betType = '';
+            switch (type) {
+                case 'total':
+                case 'alternative_total':
+                    if (pick == 'home') {
+                        betType += `O ${points}`;
+                    } else {
+                        betType += `U ${points}`;
+                    }
+                    break;
+
+                case 'spread':
+                case 'alternative_spread':
+                    if (pick == 'home') {
+                        betType += `${hdp > 0 ? '+' : ''}${hdp}`;
+                    } else {
+                        betType += `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                    }
+                    break;
+            }
+            eventsDetail += `<li>
+                <p>Event ${index}: ${teamA} vs ${teamB}(${lineQuery.sportName})</p>
+                <p>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</p>
+                <p>Date: ${matchTimeString}</p>
+            </li>`;
+        }
+
+        if (parlayQuery.length != betSlip.length) {
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        try {
+            let parlayOdds = 1;
+            let lastMatchStartTime = new Date();
+            for (const parlay of parlayQuery) {
+                const { pickOdds } = parlay;
+                parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+
+                const matchStartDate = new Date(parlay.matchStartDate);
+                if (matchStartDate.getTime() > lastMatchStartTime.getTime())
+                    lastMatchStartTime = matchStartDate;
+            }
+
+            if (parlayOdds >= 2) {
+                parlayOdds = parseInt((parlayOdds - 1) * 100);
+            } else {
+                parlayOdds = parseInt(-100 / (parlayOdds - 1));
+            }
+            const toWin = calculateToWinFromBet(totalStake, parlayOdds);
+            if (toWin != totalWin) {
+                errors.push(`Bet can't be placed. Win Amount mismatch.`);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+
+            if (toWin > maximumWin) {
+                errors.push(`Bet can't be placed. Exceed maximum win amount.`);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+            const fee = toWin * BetFee;
+            const bet_id = ID();
+            const parlayBet = await Bet.create({
+                userId: user._id,
+                pick: 'home',
+                pickName: 'Parlay Bet',
+                pickOdds: parlayOdds,
+                oldOdds: parlayOdds,
+                bet: totalStake,
+                toWin: toWin,
+                fee: fee,
+                matchStartDate: lastMatchStartTime,
+                status: 'Pending',
+                matchingStatus: 'Pending',
+                transactionID: `B${bet_id}`,
+                origin: 'bet365',
+                isParlay: true,
+                parlayQuery: parlayQuery
+            });
+
+            await FinancialLog.create({
+                financialtype: 'bet',
+                uniqid: `BP${bet_id}`,
+                user: user._id,
+                amount: totalStake,
+                method: 'bet',
+                status: FinancialStatus.success,
+            });
+
+            user.balance -= totalStake;
+            await user.save();
+
+            await LoyaltyLog.create({
+                user: user._id,
+                point: totalStake * loyaltyPerBet
+            });
+
+            let adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: adminEmailAddress1,
+                subject: 'New Parlay Bet',
+                text: `New Parlay Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                        ${eventsDetail}
+                        <li>Wager: $${fee.toFixed(2)}</li>
+                        <li>Odds: ${parlayOdds > 0 ? ('+' + parlayOdds) : parlayOdds}</li>
+                        <li>Win: $${toWin.toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            adminMsg.to = supportEmailAddress;
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            const parlayBetPool = await ParlayBetPool.create({
+                parlayQuery: parlayQuery,
+                teamA: {
+                    odds: parlayOdds,
+                    betTotal: totalStake,
+                    toWinTotal: totalWin
+                },
+                teamB: {
+                    odds: -Number(parlayOdds),
+                    betTotal: 0,
+                    toWinTotal: 0
+                },
+                matchStartDate: lastMatchStartTime,
+                homeBets: [parlayBet._id],
+                awayBets: [],
+                origin: parlayBet.origin
+            });
+            try {
+                await checkAutobetForParlay(parlayBet, parlayBetPool, user);
+                await calculateParlayBetsStatus(parlayBetPool._id);
+            } catch (error) {
+                console.error(error);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            errors.push(`Bet can't be placed. Internal Server Error.`);
+        }
+
+        res.json({
+            balance: user.balance,
+            errors,
+        });
+    }
+);
+
+const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
+    const { AutoBetStatus } = config;
+    const { toWin: toBet, parlayQuery, matchStartDate, pickOdds } = parlayBet;
+
+    //Find autobet
+    let autobets = await AutoBet
+        .find()
+        .populate('userId');
+
+    autobets = JSON.parse(JSON.stringify(autobets));
+    let timezoneOffset = -8;
+    if (isDstObserved) timezoneOffset = -7;
+    const today = new Date().addHours(timezoneOffset);
+    today.addHours(today.getTimezoneOffset() / 60);
+    timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
+    const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+
+    let autobetusers = await asyncFilter(autobets, async (autobet) => {
+        try {
+            if (!autobet.userId) return false;
+            const logs = await AutoBetLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(autobet.userId._id),
+                            createdAt: { $gte: fromTime },
+                            type: 'parlay',
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            let bettedamount = 0;
+            if (logs && logs.length)
+                bettedamount = logs[0].amount;
+            let budget = autobet.parlayBudget;
+            if (autobet.rollOver) { // If Roll Over
+                // Add win amount.
+                const logs = await FinancialLog
+                    .aggregate([
+                        {
+                            $match: {
+                                user: new ObjectId(autobet.userId._id),
+                                financialtype: 'betwon',
+                                createdAt: { $gte: fromTime }
+                            }
+                        },
+                        { $group: { _id: null, amount: { $sum: "$amount" } } }
+                    ]);
+                if (logs && logs.length)
+                    budget += logs[0].amount;
+            }
+            autobet.bettable = budget - bettedamount;
+            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+                return (
+                    autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                    autobet.status == AutoBetStatus.active &&                   //Check active status
+                    autobet.userId.balance > 0 &&                               //Check Balance
+                    autobet.bettable > 0 &&                                     //Check bettable
+                    true
+                );
+            }
+            return (
+                autobet.userId._id.toString() != user._id.toString() &&     //Not same user
+                autobet.status == AutoBetStatus.active &&                   //Check active status
+                autobet.userId.balance > 0 &&                               //Check Balance
+                autobet.bettable > 0 &&                                     //Check bettable
+                true
+            );
+        } catch (error) {
+            console.error('filter => ', error);
+            return false;
+        }
+    });
+
+    if (autobetusers.length == 0) return;
+    autobetusers.sort((a, b) => {
+        if (a.referral_code == user.bet_referral_code) return -1;
+        if (b.referral_code == user.bet_referral_code) return 1;
+        return (a.priority > b.priority) ? -1 : 1;
+    });
+
+    let betAmount = toBet;
+    const newLineOdds = -Number(pickOdds);
+    for (let i = 0; i < autobetusers.length; i++) {
+        const selectedauto = autobetusers[i];
+        if (betAmount <= 0) return;
+        let bettable = Math.min(betAmount, selectedauto.maxRisk, selectedauto.userId.balance, selectedauto.bettable);
+        betAmount -= bettable;
+        const betAfterFee = bettable;
+        const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+        const fee = Number((toWin * BetFee).toFixed(2));
+
+        const bet_id = ID();
+        const newBetObj = {
+            userId: selectedauto.userId._id,
+            pick: 'away',
+            pickName: 'Parlay Bet',
+            pickOdds: newLineOdds,
+            oldOdds: newLineOdds,
+            bet: betAfterFee,
+            toWin: toWin,
+            fee: fee,
+            matchStartDate: matchStartDate,
+            status: 'Pending',
+            matchingStatus: 'Pending',
+            transactionID: `B${bet_id}`,
+            origin: parlayBet.origin,
+            isParlay: true,
+            parlayQuery: parlayQuery,
+        };
+        const newBet = new Bet(newBetObj);
+        console.info(`created new auto bet`);
+
+        try {
+            const savedBet = await newBet.save();
+            await LoyaltyLog.create({
+                user: selectedauto.userId._id,
+                point: bettable * loyaltyPerBet
+            })
+
+            await AutoBetLog.create({
+                user: selectedauto.userId._id,
+                amount: betAfterFee,
+                type: 'parlay'
+            });
+
+            const betId = savedBet.id;
+            // add betId to betPool
+            const docChanges = {
+                $push: { awayBets: betId },
+                $inc: {
+                    "teamB.betTotal": betAfterFee,
+                    "teamB.toWinTotal": toWin
+                },
+            };
+            await parlayBetPool.update(docChanges);
+
+            try {
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${bet_id}`,
+                    user: selectedauto.userId._id,
+                    amount: bettable,
+                    method: 'bet',
+                    status: FinancialStatus.success,
+                });
+                await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
+            } catch (err) {
+                console.error('selectedauto.userId =>' + err);
+            }
+
+            let amount = 0;
+            const logs = await AutoBetLog
+                .aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(selectedauto.userId._id),
+                            createdAt: { $gte: fromTime },
+                            type: 'parlay',
+                        }
+                    },
+                    { $group: { _id: null, amount: { $sum: "$amount" } } }
+                ]);
+            if (logs && logs.length)
+                amount = logs[0].amount;
+            const usage = parseInt(amount / (selectedauto.parlayBudget) * 100);
+            if (usage >= 80) {
+                let msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: selectedauto.userId.email,
+                    subject: `PPW Alert: Usage at ${usage}%`,
+                    text: `PPW Alert: Usage at ${usage}% `,
+                    html: simpleresponsive(
+                        `<h3>Usage Limit Alert</H3>
+                        <p>
+                            This is a notification that your have exceeded ${usage}% ($${amount} / $${selectedauto.parlayBudget}) of your daily risk limit.
+                        </p>`,
+                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                }
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+            }
+        } catch (e2) {
+            if (e2) console.error('newBetError', e2);
+        }
+    }
+}
+
 const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const { AutoBetStatus } = config;
-    let { pick: originPick, win: toBet, lineQuery } = bet;
-    pick = originPick == 'home' ? "away" : "home";
+    let { pick: originPick, toWin: toBet, lineQuery } = bet;
+    const pick = originPick == 'home' ? "away" : "home";
 
     const { type, subtype } = lineQuery;
 
@@ -1552,34 +1903,27 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             break;
     }
 
-    let orCon = [
-        {
-            side: side,
-            betType: betType,
-        }
-    ]
+    let orCon = [{
+        side: side,
+        betType: betType,
+    }]
     if (user.bet_referral_code) {
         orCon.push({
             referral_code: user.bet_referral_code
         })
     }
     let autobets = await AutoBet
-        .find({
-            $or: orCon
-        })
+        .find({ $or: orCon })
         .populate('userId');
     autobets = JSON.parse(JSON.stringify(autobets));
 
-    const asyncFilter = async (arr, predicate) => {
-        const results = await Promise.all(arr.map(predicate));
-        return arr.filter((_v, index) => results[index]);
-    }
     let timezoneOffset = -8;
     if (isDstObserved) timezoneOffset = -7;
     const today = new Date().addHours(timezoneOffset);
     today.addHours(today.getTimezoneOffset() / 60);
     timezoneOffset = timezoneOffset + today.getTimezoneOffset() / 60;
     const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).addHours(-timezoneOffset);
+
     let autobetusers = await asyncFilter(autobets, async (autobet) => {
         try {
             if (!autobet.userId) return false;
@@ -1589,7 +1933,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         $match: {
                             user: new ObjectId(autobet.userId._id),
                             createdAt: { $gte: fromTime },
-                            type: bet.sportsbook ? 'sportsbook' : { $ne: 'sportsbook' },
+                            type: bet.sportsbook ? 'sportsbook' : { $in: [null, 'p2p'] },
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
@@ -1621,8 +1965,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     autobet.status == AutoBetStatus.active &&                   //Check active status
                     autobet.userId.balance > 0 &&                               //Check Balance
                     autobet.bettable > 0 &&                                     //Check bettable
-                    // autobet.maxRisk >= toBet &&                                 //Check Max.Risk
-                    // (bettedamount < (budget - toBet))                           //Check Budget
                     true
                 );
             }
@@ -1631,12 +1973,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 autobet.status == AutoBetStatus.active &&                   //Check active status
                 autobet.userId.balance > 0 &&                               //Check Balance
                 autobet.bettable > 0 &&                                     //Check bettable
-                // autobet.maxRisk >= toBet &&                                  //Check Max.Risk
-                // (bettedamount < (budget - toBet)) &&                         //Check Budget
-                !autobet.sports.find((sport) => sport == lineQuery.sportName)   // Check Sports
+                !autobet.sports.find((sport) => sport == lineQuery.sportName) &&  // Check Sports
+                true
             );
         } catch (error) {
-            console.log('filter => ', error);
+            console.error('filter => ', error);
             return false;
         }
     });
@@ -1716,12 +2057,13 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         betAmount -= bettable;
         const betAfterFee = bettable;
         const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-        const fee = bet.sportsbook ? 0: Number((bettable * BetFee).toFixed(2));
+        const fee = bet.sportsbook ? 0 : Number((toWin * BetFee).toFixed(2));
 
+        const bet_id = ID();
         // insert bet doc to bets table
         const newBetObj = {
             userId: selectedauto.userId._id,
-            transactionID: `B${ID()}`,
+            transactionID: `B${bet_id}`,
             teamA: {
                 name: teamA,
                 odds: home,
@@ -1759,89 +2101,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 type: bet.sportsbook ? 'sportsbook' : 'p2p'
             });
 
-            const preference = await Preference.findOne({ user: selectedauto.userId._id.toString() });
-            let timezone = "00:00";
-            if (preference && preference.timezone) {
-                timezone = preference.timezone;
-            }
-            const timeString = convertTimeLineDate(new Date(), timezone);
-                 //TODO: Uncomment this code in when bet_accepted status email and sms need 
-            /* if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: selectedauto.userId.email,
-                    subject: 'Your bet is waiting for a match',
-                    text: `Your bet is waiting for a match`,
-                    html: simpleresponsive(
-                        `Hi <b>${selectedauto.userId.email}</b>.
-                            <br><br>
-                            This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                            <br><br>
-                            <ul>
-                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                                <li>Platform: PAYPER WIN ${bet.sportsbook ? 'Sportsbook' : 'Peer-to Peer'}(Autobet)</li>
-                            </ul>
-                            `),
-                };
-                sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
-                });
-            }
-            if (selectedauto.userId.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.\n 
-                    Wager: $${betAfterFee.toFixed(2)}
-                    Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                    Platform: PAYPER WIN ${bet.sportsbook ? 'Sportsbook' : 'Peer-to Peer'}(Autobet)`, selectedauto.userId.phone);
-            } */
-
-            const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
-            let adminMsg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: adminEmailAddress1,
-                subject: 'New Bet',
-                text: `New Bet`,
-                html: simpleresponsive(
-                    `<ul>
-                            <li>Customer: ${selectedauto.userId.email} (${selectedauto.userId.firstname} ${selectedauto.userId.lastname})</li>
-                            <li>Event: ${teamA} vs ${teamB}(${lineQuery.sportName})</li>
-                            <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
-                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Pick: ${pickName}</li>
-                            <li>Date: ${matchTimeString}</li>
-                            <li>Win: $${toWin.toFixed(2)}</li>
-                        </ul>`),
-            }
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-            adminMsg.to = supportEmailAddress;
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-
             const betId = savedBet.id;
             // add betId to betPool
             const docChanges = {
@@ -1855,7 +2114,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             try {
                 await FinancialLog.create({
                     financialtype: 'bet',
-                    uniqid: `BP${ID()}`,
+                    uniqid: `BP${bet_id}`,
                     user: selectedauto.userId._id,
                     amount: bettable,
                     method: 'bet',
@@ -1863,7 +2122,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 });
                 await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
             } catch (err) {
-                console.log('selectedauto.userId =>' + err);
+                console.error('selectedauto.userId =>' + err);
             }
 
             let amount = 0;
@@ -1873,7 +2132,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         $match: {
                             user: new ObjectId(selectedauto.userId._id),
                             createdAt: { $gte: fromTime },
-                            type: bet.sportsbook ? 'sportsbook' : { $ne: 'sportsbook' },
+                            type: bet.sportsbook ? 'sportsbook' : { $in: [null, 'p2p'] },
                         }
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
@@ -1955,11 +2214,11 @@ expressApp.post(
             userId: _id,
         };
         if (openBets) {
-            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted', null] };
+            searchObj.status = { $in: [null, 'Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted', null] };
         } else if (settledBets) {
             searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
         } else if (custom) {
-            searchObj.status = { $in: ['Pending', 'Partial Match', 'Matched'] };
+            searchObj.status = { $in: [null, 'Pending', 'Partial Match', 'Matched'] };
             searchObj.origin = 'other';
         }
 
@@ -1977,16 +2236,20 @@ expressApp.post(
             let orCon = [];
             if (filter.p2p) {
                 orCon.push({
-                    sportsbook: { $exists: false },
-                });
-                orCon.push({
-                    sportsbook: false,
+                    sportsbook: { $in: [null, false] },
+                    isParlay: { $in: [null, false] },
                 });
             }
             if (filter.sportsbook) {
                 orCon.push({
                     sportsbook: true,
+                    isParlay: { $in: [null, false] },
                 });
+            }
+            if (filter.parlay) {
+                orCon.push({
+                    isParlay: true,
+                })
             }
             searchObj = {
                 ...searchObj,
@@ -2025,45 +2288,39 @@ expressApp.post(
                 return res.status(400).json({ error: 'Forward is for only pending bets.' });
             }
             const lineQuery = bet.lineQuery;
-            let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type == 'moneyline') {
-                linePoints = null;
-            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
+            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
+            let betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+
+            if (!betpool) {
+                betpool = await BetPool.create({
+                    uid: JSON.stringify(lineQuery),
+                    sportId: lineQuery.sportId,
+                    leagueId: lineQuery.leagueId,
+                    eventId: lineQuery.eventId,
+                    lineId: lineQuery.lineId,
+                    teamA: {
+                        name: bet.teamA.name,
+                        odds: bet.teamA.odds,
+                        betTotal: bet.pick === 'home' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'home' ? bet.toWin : 0,
+                    },
+                    teamB: {
+                        name: bet.teamB.name,
+                        odds: bet.teamB.odds,
+                        betTotal: bet.pick === 'away' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'away' ? bet.toWin : 0,
+                    },
+                    sportName: lineQuery.sportName,
+                    matchStartDate: bet.matchStartDate,
+                    lineType: lineQuery.type,
+                    lineSubType: lineQuery.subtype,
+                    points: linePoints,
+                    homeBets: bet.pick === 'home' ? [bet._id] : [],
+                    awayBets: bet.pick === 'away' ? [bet._id] : [],
+                    origin: bet.origin
+                })
             }
-
-            const betpool = await BetPool.findOne({
-                sportId: lineQuery.sportId,
-                leagueId: lineQuery.leagueId,
-                eventId: lineQuery.eventId,
-                lineId: lineQuery.lineId,
-                lineType: lineQuery.type,
-                lineSubType: lineQuery.subtype,
-                sportName: lineQuery.sportName,
-                origin: bet.origin,
-                points: linePoints
-            });
-
-            // if (betpool) {
-            //     if (bet.pick == 'home' && betpool.homeBets.length > 0) {
-            //         betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
-            //         betpool.teamA.betTotal -= bet.bet;
-            //         betpool.teamA.toWinTotal -= bet.toWin;
-            //     } else if (bet.pick == 'away' && betpool.awayBets.length > 0) {
-            //         betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
-            //         betpool.teamB.betTotal -= bet.bet;
-            //         betpool.teamB.toWinTotal -= bet.toWin;
-            //     }
-            //     if (betpool.homeBets.length == 0 && betpool.awayBets.length == 0) {
-            //         await BetPool.deleteOne({ _id: betpool._id });
-            //     } else {
-            //         await betpool.save();
-            //         await calculateBetsStatus(betpool.uid);
-            //     }
-            // }
 
             bet.pickOdds = bet.oldOdds;
             bet.status = null;
@@ -2074,7 +2331,7 @@ expressApp.post(
 
             await checkAutoBet(bet, betpool, user, { originSportId: bet.lineQuery.sportId },
                 {
-                    teamA: bet.teama.name,
+                    teamA: bet.teamA.name,
                     teamB: bet.teamB.name,
                     startDate: bet.matchStartDate,
                     line: {
@@ -2090,7 +2347,7 @@ expressApp.post(
 
             res.json(bet);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: error.stack });
         }
     }
@@ -2429,132 +2686,11 @@ expressApp.get(
             }
             res.json(results);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.json([]);
         }
     }
 )
-
-expressApp.get('/getPinnacleLogin',
-    // bruteforce.prevent,
-    isAuthenticated,
-    async (req, res) => {
-        const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
-        if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
-            console.warn("Pinnacel Sandbox Api is not set");
-            return res.status(400).json({
-                error: "Can't create pinnacle user."
-            });
-        }
-        const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
-        let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-        const token = generatePinnacleToken(agentCode, agentKey, secretKey);
-        if (!pinnacle) {
-            try {
-                const { data } = await axios.post(`${sandboxUrl}/player/create`, {}, {
-                    headers: {
-                        userCode: agentCode,
-                        token
-                    },
-                })
-                pinnacle = await Pinnacle.create({ ...data, ...{ user: req.user._id } });
-            } catch (error) {
-                return res.status(400).json({
-                    error: "Can't create pinnacle user."
-                });
-            }
-        }
-        let loginInfo = null;
-        try {
-            const { data } = await axios.post(`${sandboxUrl}/player/loginV2?view=EURO`, {
-                loginId: pinnacle.loginId
-            }, {
-                headers: {
-                    userCode: agentCode,
-                    token
-                }
-            });
-
-            loginInfo = data;
-        } catch (error) {
-            // console.log("getPinnacleLogin1 => ", error);
-            return res.status(400).json({
-                error: "Pinnacle login failed."
-            });
-        }
-
-        let userInfo = null;
-        try {
-            const { data } = await axios.get(`${sandboxUrl}/player/info?userCode=${pinnacle.userCode}`, {
-                headers: {
-                    userCode: agentCode,
-                    token
-                }
-            });
-
-            userInfo = data;
-        } catch (error) {
-            // console.log("getPinnacleLogin2 => ", error);
-            return res.status(400).json({
-                error: "Pinnacle login failed."
-            });
-        }
-
-        return res.json({
-            loginInfo,
-            userInfo,
-        })
-    }
-);
-
-const pinnacleLogout = async (req) => {
-    const pinnacleSandboxAddon = await Addon.findOne({ name: 'pinnacle sandbox' });
-    if (!pinnacleSandboxAddon || !pinnacleSandboxAddon.value || !pinnacleSandboxAddon.value.sandboxUrl) {
-        console.warn("Pinnacel Sandbox Api is not set");
-        return false;
-    }
-    const { sandboxUrl, agentCode, agentKey, secretKey } = pinnacleSandboxAddon.value;
-    if (req.user) {
-        let pinnacle = await Pinnacle.findOne({ user: new ObjectId(req.user._id) });
-        const token = generatePinnacleToken(agentCode, agentKey, secretKey);
-        if (!pinnacle) {
-            return false;
-        }
-        try {
-            await axios.post(`${sandboxUrl}/player/logout?userCode=${pinnacle.userCode}`, {}, {
-                headers: {
-                    userCode: agentCode,
-                    token
-                }
-            });
-
-        } catch (error) {
-            // console.log('/logout error', error)
-            return false;
-        }
-        return true;
-    }
-    return false;
-}
-
-expressApp.get('/pinnacleLogout',
-    // bruteforce.prevent,
-    isAuthenticated,
-    async (req, res) => {
-        try {
-            const result = pinnacleLogout(req);
-            if (result) {
-                return res.json({ message: 'succes' });
-            }
-            return res.status(400).json({
-                error: "Pinnacle logout failed."
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(400).json({ error: "Pinnacle logout failed." });
-        }
-    }
-);
 
 expressApp.get('/vipCodeExist', async (req, res) => {
     const { vipcode } = req.query;
@@ -2588,7 +2724,7 @@ expressApp.get('/referralCodeExist', async (req, res) => {
         }
         return res.json({ success: 0, message: "Can't find Autobet User." });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.json({ success: 0, message: "Can't find Autobet User." });
     }
 });
@@ -2770,7 +2906,7 @@ expressApp.post('/deposit',
                     }
                     return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
                 } catch (error) {
-                    console.log("deposit => ", error);
+                    console.error("deposit => ", error);
                     return res.status(400).json({ success: 0, message: "Failed to create deposit." });
                 }
             } catch (error) {
@@ -2948,7 +3084,7 @@ expressApp.post(
                 }
                 return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
-                console.log("withdraw => ", error);
+                console.error("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
             }
         } else if (method == "Bitcoin" || method == "Ethereum" || method == "Tether") {
@@ -3017,7 +3153,7 @@ expressApp.post(
 
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
             } catch (error) {
-                console.log("withdraw => ", error);
+                console.error("withdraw => ", error);
                 return res.json({ success: 0, message: "Failed to create withdraw." });
             }
         } else {
@@ -3106,7 +3242,7 @@ expressApp.post(
                 .limit(perPage);
             res.json(financials);
         } catch (error) {
-            console.log("transactions => ", error);
+            console.error("transactions => ", error);
             res.status(400).json({ success: 0, message: "can't load data" });
         }
     }
@@ -3311,7 +3447,7 @@ expressApp.post(
 
             res.json({ message: "success" });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(400).json({ success: 0, message: "can't save image" });
         }
     }
@@ -3437,7 +3573,7 @@ expressApp.get(
             const categories = await ArticleCategory.find({});
             res.json(categories);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ success: false });
         }
     }
@@ -3465,7 +3601,7 @@ expressApp.get(
                 .sort({ published_at: -1 })
             res.json(articles);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ success: false });
         }
     }
@@ -3554,7 +3690,7 @@ expressApp.post(
                     const TwilioService = await twilioClient.verify.services.create({ friendlyName: 'PAYPER WIN Phone Verification' });
                     service = await Service.create({ name: 'twilio_verify', value: JSON.parse(JSON.stringify(TwilioService)) });
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                     return res.status(500).json({ success: false, error: "Can't create verification service." });
                 }
             }
@@ -3565,7 +3701,7 @@ expressApp.post(
                     .create({ to: phone, channel: 'sms' });
                 res.json({ success: true });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 return res.status(500).json({ success: false, error: "Can't send verification code." });
             }
 
@@ -3592,7 +3728,7 @@ expressApp.post(
                 })
                 res.json({ success: true });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.json({ success: false });
             }
 
@@ -3620,7 +3756,7 @@ expressApp.put(
             });
             res.json(newSharedLine);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ success: false });
         }
     }
@@ -3684,7 +3820,7 @@ expressApp.get(
                 cashbackHistory
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.json(null);
         }
 
@@ -3931,7 +4067,7 @@ expressApp.get(
                 sports
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -3984,7 +4120,7 @@ expressApp.post(
                 await autobet.update(req.body);
                 res.json({ success: true });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ success: false });
             }
         } else {
@@ -4015,7 +4151,7 @@ expressApp.get(
                 res.json({ success: true, used: false });
             }
         } catch (erorr) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4144,7 +4280,7 @@ expressApp.post(
             }
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }

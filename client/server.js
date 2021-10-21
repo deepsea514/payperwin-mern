@@ -5,7 +5,6 @@ const fs = require("fs");
 const https = require("https");
 const axios = require("axios");
 const datefomart = require("dateformat");
-require("dotenv").config();
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
 const config = require("../config.json");
@@ -54,7 +53,7 @@ app.get("/*", (req, res) => {
                     description = metaDescription;
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         } else {
             if (path.startsWith("/sport")) {
@@ -99,7 +98,7 @@ app.get("/*", (req, res) => {
                                                 description = `${event.teamA} vs ${event.teamB} - ${leagueName}(${sportName}) Odds | ${event.teamA} vs ${event.teamB} - ${leagueName}(${sportName}) Betting`;
                                             }
                                         } catch (error) {
-                                            console.log(error);
+                                            console.error(error);
                                         }
                                     } else {
                                         title = `Bet on ${event.teamA} vs ${event.teamB} - ${leagueName}(${sportName}).`;
@@ -113,7 +112,7 @@ app.get("/*", (req, res) => {
                             }
                         }
                     } catch (error) {
-                        console.log(error);
+                        console.error(error);
                     }
                 } else {
                     // Sport

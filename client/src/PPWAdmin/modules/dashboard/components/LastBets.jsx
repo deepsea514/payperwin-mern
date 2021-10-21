@@ -4,12 +4,15 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
 import { Tabs, Tab } from "react-bootstrap";
 
-export function LastBets({ className, loadingbets, lastbets, roothistory, lastsportsbookbets, loadingportsbookbets, }) {
+export function LastBets({ className, loadingbets, lastbets, roothistory, lastsportsbookbets, loadingsportsbookbets, }) {
     const getDate = (date) => {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
 
-    const getPPWBetType = (bet) => {
+    const getBetType = (bet) => {
+        if (bet.isParlay) {
+            return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">parlay</span>
+        }
         const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
@@ -24,8 +27,17 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         }
     }
 
-    const tableBody = () => {
-        if (loadingbets)
+    const tableBody = (sportsbook) => {
+        let loading = false;
+        let bets = [];
+        if (sportsbook) {
+            loading = loadingsportsbookbets;
+            bets = lastsportsbookbets
+        } else {
+            loading = loadingbets;
+            bets = lastbets;
+        }
+        if (loading)
             return (
                 <tr>
                     <td colSpan="5" align="center">
@@ -37,7 +49,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                 </tr>
             )
-        if (lastbets.length == 0) {
+        if (bets.length == 0) {
             return (
                 <tr>
                     <td colSpan="5" align="center">
@@ -47,7 +59,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
             );
         }
 
-        return lastbets.map((bet, index) => {
+        return bets.map((bet, index) => {
             if (!bet.userId) return null;
             return (
                 <tr key={index} onClick={gotoBet} style={{ cursor: "pointer" }} className="text-hover-primary">
@@ -68,76 +80,18 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
+                            {bet.isParlay ? 'Parlay' :
+                                bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                            {bet.isParlay ? '' :
+                                bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </span>
                     </td>
                     <td className="pl-0">
-                        {getPPWBetType(bet)}
-                    </td>
-                </tr>
-            )
-        })
-    }
-
-    const tableSportsBookBody = () => {
-        if (loadingportsbookbets)
-            return (
-                <tr>
-                    <td colSpan="5" align="center">
-                        <Preloader use={ThreeDots}
-                            size={100}
-                            strokeWidth={10}
-                            strokeColor="#F0AD4E"
-                            duration={800} />
-                    </td>
-                </tr>
-            )
-        if (lastsportsbookbets.length == 0) {
-            return (
-                <tr>
-                    <td colSpan="5" align="center">
-                        <h3>No Bets</h3>
-                    </td>
-                </tr>
-            );
-        }
-
-        return lastsportsbookbets.map((bet, index) => {
-            if (!bet.userId) return null;
-            return (
-                <tr key={index} onClick={gotoBet} style={{ cursor: "pointer" }} className="text-hover-primary">
-                    <td className="pl-0">
-                        <span className="font-weight-bolder text-hover-primary mb-1 font-size-lg">
-                            {getDate(bet.createdAt)}
-                        </span>
-                    </td>
-                    <td className="pl-0">
-                        <span className="font-weight-bolder d-block font-size-lg">
-                            {bet.userId ? bet.userId.email : null}
-                        </span>
-                    </td>
-                    <td className="pl-0">
-                        <span className=" font-weight-500">
-                            {bet.bet} {bet.userId ? bet.userId.currency : 'CAD'}
-                        </span>
-                    </td>
-                    <td className="pl-0">
-                        <span className=" font-weight-500">
-                            {bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
-                        </span>
-                    </td>
-                    <td className="pl-0">
-                        <span className=" font-weight-500">
-                            {bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
-                        </span>
-                    </td>
-                    <td className="pl-0">
-                        {getPPWBetType(bet)}
+                        {getBetType(bet)}
                     </td>
                 </tr>
             )
@@ -180,7 +134,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableBody()}
+                                    {tableBody(false)}
                                 </tbody>
                             </table>
                         </div>
@@ -199,7 +153,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableSportsBookBody()}
+                                    {tableBody(true)}
                                 </tbody>
                             </table>
                         </div>

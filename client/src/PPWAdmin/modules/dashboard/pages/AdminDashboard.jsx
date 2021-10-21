@@ -21,7 +21,7 @@ class AdminDashboard extends React.Component {
         const {
             history,
             lastbets, loadingbets,
-            lastsportsbookbets, loadingportsbookbets,
+            lastsportsbookbets, loadingsportsbookbets,
             lastwithdraws,
             loadingwithdraws,
             lastdeposits, loadingdeposits,
@@ -65,45 +65,45 @@ class AdminDashboard extends React.Component {
                                 <div className="flex-row-fluid ml-lg-8">
                                     <Switch>
                                         <Redirect from="/" exact={true} to="/lastdeposits" />
+                                        <Route
+                                            path="/lastdeposits"
+                                            render={(props) => <LastDeposits
+                                                {...props}
+                                                roothistory={history}
+                                                lastdeposits={lastdeposits}
+                                                loadingdeposits={loadingdeposits}
+                                                className="card-stretch gutter-b" />}
+                                        />
+                                        <Route
+                                            path="/lastwithdraws"
+                                            render={(props) => <LastWithdraws
+                                                {...props}
+                                                roothistory={history}
+                                                lastwithdraws={lastwithdraws}
+                                                loadingwithdraws={loadingwithdraws}
+                                                className="card-stretch gutter-b" />}
+                                        />
+                                        <Route
+                                            path="/lastbets"
+                                            render={(props) => <LastBets
+                                                {...props}
+                                                roothistory={history}
+                                                loadingbets={loadingbets}
+                                                lastbets={lastbets}
+                                                lastsportsbookbets={lastsportsbookbets}
+                                                loadingsportsbookbets={loadingsportsbookbets}
+                                                className="card-stretch gutter-b" />}
+                                        />
+                                        <Route path="/fees"
+                                            render={(props) => <FeesCollected
+                                                loadingdashboarddata={loadingdashboarddata}
+                                                categories={categories}
+                                                dashboardfees={dashboardfees}
+                                                symbolShape="circle"
+                                                baseColor="warning"
+                                            />}
+                                        />
                                     </Switch>
-                                    <Route
-                                        path="/lastdeposits"
-                                        render={(props) => <LastDeposits
-                                            {...props}
-                                            roothistory={history}
-                                            lastdeposits={lastdeposits}
-                                            loadingdeposits={loadingdeposits}
-                                            className="card-stretch gutter-b" />}
-                                    />
-                                    <Route
-                                        path="/lastwithdraws"
-                                        render={(props) => <LastWithdraws
-                                            {...props}
-                                            roothistory={history}
-                                            lastwithdraws={lastwithdraws}
-                                            loadingwithdraws={loadingwithdraws}
-                                            className="card-stretch gutter-b" />}
-                                    />
-                                    <Route
-                                        path="/lastbets"
-                                        render={(props) => <LastBets
-                                            {...props}
-                                            roothistory={history}
-                                            loadingbets={loadingbets}
-                                            lastbets={lastbets}
-                                            lastsportsbookbets={lastsportsbookbets}
-                                            loadingportsbookbets={loadingportsbookbets}
-                                            className="card-stretch gutter-b" />}
-                                    />
-                                    <Route path="/fees"
-                                        render={(props) => <FeesCollected
-                                            loadingdashboarddata={loadingdashboarddata}
-                                            categories={categories}
-                                            dashboardfees={dashboardfees}
-                                            symbolShape="circle"
-                                            baseColor="warning"
-                                        />}
-                                    />
                                 </div>
                             </BrowserRouter>
                         </div>
@@ -118,7 +118,7 @@ const mapStateToProps = (state) => ({
     lastbets: state.dashboard.lastbets,
     loadingbets: state.dashboard.loadingbets,
     lastsportsbookbets: state.dashboard.lastsportsbookbets,
-    loadingportsbookbets: state.dashboard.loadingportsbookbets,
+    loadingsportsbookbets: state.dashboard.loadingsportsbookbets,
     lastwithdraws: state.dashboard.lastwithdraws,
     loadingwithdraws: state.dashboard.loadingwithdraws,
     lastdeposits: state.dashboard.lastdeposits,

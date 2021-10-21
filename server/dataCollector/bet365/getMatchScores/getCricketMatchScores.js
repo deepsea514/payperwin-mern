@@ -1,8 +1,9 @@
 const getTotal = (score) => {
-    return score.slice(score.indexOf('(') + 1, score.indexOf(')'));
+    score = score.split('/');
+    return score[0];
 }
 
-const getAustralianRulesMatchScores = (type, subtype, ss, scores, time_status) => {
+const getCricketMatchScores = (type, subtype, ss, scores, time_status) => {
     if (time_status == "1") return 'inplay';
     const matchResult = {
         homeScore: 0,
@@ -19,4 +20,4 @@ const getAustralianRulesMatchScores = (type, subtype, ss, scores, time_status) =
     }
 }
 
-module.exports = getAustralianRulesMatchScores;
+module.exports = getCricketMatchScores;

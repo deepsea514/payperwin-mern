@@ -33,7 +33,7 @@ const getTopLeagueInSport = (sport) => {
                 return null;
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 

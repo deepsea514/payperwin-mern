@@ -7,6 +7,7 @@ const FinancialLog = require('../../models/financiallog');
 const SharedLine = require('../../models/sharedline');
 const BetPool = require('../../models/betpool');
 const ErrorLog = require('../../models/errorlog');
+const ParlayBetPool = require("../../models/parlaybetpool");
 //local helpers
 const config = require('../../../config.json');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
@@ -15,6 +16,8 @@ const sendSMS = require("../../libs/sendSMS");
 const {
     ID,
     calculateBetsStatus,
+    calculateParlayBetsStatus,
+    getLinePoints,
 } = require('../../libs/functions');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.co';
@@ -73,11 +76,11 @@ const checkTimerOne = async () => {
 }
 
 const checkTimerTwo = async () => {
-    // Check Betpool status
+    // Check BetPool status
     calculateBetPoolsStatus();
 
     // Check bet without betpool
-    // checkBetWithoutBetpool();
+    // checkBetWithoutBetPool();
 }
 
 const checkMatchStatus = async () => {
@@ -97,7 +100,7 @@ const checkMatchStatus = async () => {
         if (bet.origin == 'other') {
             eventName = bet.lineQuery.eventName;
         } else {
-            eventName = `${bet.teamA.name} vs ${bet.teamB.name} (${bet.lineQuery.sportName})`;
+            eventName = bet.isParlay ? 'Parlay Bet' : `${bet.teamA.name} vs ${bet.teamB.name} (${bet.lineQuery.sportName})`;
         }
 
         const preference = await Preference.findOne({ user: user._id });
@@ -220,38 +223,37 @@ const calculateBetPoolsStatus = async () => {
 
     await BetPool.deleteMany({
         result: { $exists: true }
-    })
+    });
+
+    const parlayBetPools = await ParlayBetPool.find({
+        origin: 'bet365',
+        result: { $exists: false }
+    });
+
+    parlayBetPools.forEach(async parlayBetpool => {
+        try {
+            calculateParlayBetsStatus(parlayBetpool._id);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    await ParlayBetPool.deleteMany({
+        result: { $exists: true }
+    });
 }
 
-const checkBetWithoutBetpool = async () => {
+const checkBetWithoutBetPool = async () => {
     const bets = await Bet.find({
         status: 'Pending'
     });
     bets.forEach(async bet => {
         if (bet.origin == 'other') return;
         const lineQuery = bet.lineQuery;
-        let linePoints = bet.pickName.split(' ');
-        if (lineQuery.type == 'moneyline') {
-            linePoints = null;
-        } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-            linePoints = Number(linePoints[linePoints.length - 1]);
-            if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-        } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-            linePoints = Number(linePoints[linePoints.length - 1]);
-        }
+        const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
         const uid = JSON.stringify(bet.lineQuery);
-        const exists = await BetPool.findOne({
-            sportId: bet.lineQuery.sportId,
-            leagueId: bet.lineQuery.leagueId,
-            eventId: bet.lineQuery.eventId,
-            lineId: bet.lineQuery.lineId,
-            sportName: bet.lineQuery.sportName,
-            matchStartDate: bet.matchStartDate,
-            lineType: bet.lineQuery.type,
-            lineSubType: bet.lineQuery.subtype,
-            points: linePoints,
-            origin: bet.origin
-        });
+        const exists = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
         if (exists) return;
         try {
             await BetPool.create(

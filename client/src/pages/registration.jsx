@@ -262,7 +262,6 @@ class Registration extends Component {
                         }
                     )
                         .then((/* { data } */) => {
-                            console.log("success");
                             getUser();
                             history.replace({ pathname: '/' });
                         })

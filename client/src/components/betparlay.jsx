@@ -1,87 +1,70 @@
 import React, { Component } from 'react';
-// import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
 
-class Bet extends Component {
+class BetParlay extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            stake: '',
-            win: '',
-        };
+    }
+
+    getParlayOdds = () => {
+        const { betSlip } = this.props;
+        let parlayDdds = 1;
+        for (const bet of betSlip) {
+            const { odds, pick } = bet;
+            parlayDdds *= Number(convertOdds(odds[pick], 'decimal'));
+        }
+        if (parlayDdds >= 2) {
+            parlayDdds = parseInt((parlayDdds - 1) * 100);
+        } else {
+            parlayDdds = parseInt(-100 / (parlayDdds - 1));
+        }
+        return parlayDdds;
     }
 
     handleChange = (e) => {
-        const { target: { name, value } } = e
+        const { setParlayBet } = this.props;
+        const { target: { name, value } } = e;
         const stateChange = {};
-        const { bet, updateBet } = this.props
-        const { odds, pick, lineId, sportsbook } = bet;
+        const { } = this.props
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
-            stateChange[name] = stake;
-            // calc win
-            const americanOdds = odds[pick];
+            stateChange.parlayStake = stake;
+            const americanOdds = this.getParlayOdds();
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
-            const calculateWin = (stake * 1) * decimalOdds;
+            const calculateWin = stake * decimalOdds;
             const roundToPennies = Number((calculateWin).toFixed(2));
-            const win = roundToPennies
-            stateChange.win = win;
-            updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
-            );
+            const win = roundToPennies;
+            stateChange.parlayWin = win;
         } else if (name === 'win') {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
-            stateChange[name] = win;
-            // calc stake
-            const americanOdds = odds[pick];
+            stateChange.parlayWin = win;
+            const americanOdds = this.getParlayOdds();
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : - (100 / americanOdds);
             const calculateStake = (win / 1) / decimalOdds;
             const roundToPennies = Number((calculateStake).toFixed(2));
             const stake = roundToPennies;
-            stateChange.stake = stake;
-            updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
-            );
-        } else {
-            stateChange[name] = value;
+            stateChange.parlayStake = stake;
         }
-        this.setState(stateChange);
+        setParlayBet(stateChange);
     }
 
     render() {
-        const { stake, win } = this.state;
-        const { bet, removeBet, oddsFormat } = this.props;
-        const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
+        const { betSlip, oddsFormat, stake, win } = this.props;
+        const odds = this.getParlayOdds();
+
         return (
-            <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
-                {win > 2000 && <div className="bet-warn-message">
+            <>
+                {win > 2000 && <div className="bet-parlay-warn-message">
                     <div><b>Above Maximum Stake</b></div>
                     Please enter a new amount that payout does not exceed CAD 2,000.
                 </div>}
-                <div className={`bet ${win > 2000 ? 'bet-warn' : ''}`}>
-                    <div>
-                        {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
-                        <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
-                        {` ${name}`}
-                        <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
-                    </div>
-                    <div className="bet-type-league">{type} - {league}</div>
+                <div className={`bet-parlay-container ${win > 2000 ? 'bet-warn': ''}`}>
                     <div className="d-flex justify-content-between">
-                        <span className="bet-pick">{pickName}</span>
-                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
+                        <span className="bet-pick">1's x {betSlip.length}</span>
+                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
                     </div>
                     <div>
                         <input
@@ -106,8 +89,22 @@ class Bet extends Component {
                         />
                     </div>
                     <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 2000 } })}>CAD 2,000</span></div>
+                    <div className='bet-divider' />
+                    {betSlip.map((bet, index) => {
+                        const { name, type, league, sportName, pickName } = bet;
+                        return (
+                            <div key={index} className="bet-parlay">
+                                <div>
+                                    <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
+                                    {name}
+                                </div>
+                                <div className="bet-type-league">{type} - {league}</div>
+                                <span className="bet-pick">{pickName}</span>
+                            </div>
+                        )
+                    })}
                 </div>
-            </div>
+            </>
         )
     }
 }
@@ -117,4 +114,4 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
 });
 
-export default connect(mapStateToProps, frontend.actions)(Bet)
+export default connect(mapStateToProps, frontend.actions)(BetParlay)

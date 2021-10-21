@@ -54,6 +54,23 @@ class AutobetHistory extends Component {
                     <div className="card-body pt-4">
                         <div className="timeline timeline-6 mt-3">
                             {histories.map(history => {
+                                if (history.isParlay) {
+                                    return (
+                                        <div className="timeline-item align-items-start" key={history._id}>
+                                            <div className="timeline-label font-weight-bolder text-dark-75 font-size-sm">
+                                                {dateformat(history.updatedAt, "mm/dd")}
+                                            </div>
+
+                                            <div className="timeline-badge">
+                                                <i className={`fa fa-genderless ${this.getIconColor(history.status)} icon-xl`}></i>
+                                            </div>
+
+                                            <div className="font-weight-mormal font-size-sm timeline-content text-dark pl-3">
+                                                {this.getBetStatus(history.status)}{` $${(history.status == 'Settled - Win' ? history.payableToWin : history.bet).toFixed(2)} @ ${history.pickOdds > 0 ? '+' + history.pickOdds : history.pickOdds} - Parlay Bets`}
+                                            </div>
+                                        </div>
+                                    )
+                                }
                                 if (!history.lineQuery.type) {
                                     return null;
                                 }

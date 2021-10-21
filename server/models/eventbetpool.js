@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const EventBetpoolSchema = new Schema(
+const EventBetPoolSchema = new Schema(
     {
         eventId: { type: Schema.Types.ObjectId, ref: "Event" },
         teamA: {
@@ -30,6 +30,6 @@ const EventBetpoolSchema = new Schema(
     },
 );
 
-const EventBetpool = mongoose.model('EventBetpool', EventBetpoolSchema);
+const EventBetPool = mongoose.model('EventBetPool', EventBetPoolSchema);
 
-module.exports = EventBetpool;
+module.exports = EventBetPool;

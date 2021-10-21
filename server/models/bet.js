@@ -14,7 +14,6 @@ const BetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         lineQuery: Object,
-        lineId: String,
         teamA: {
             name: String,
             odds: String,
@@ -23,7 +22,6 @@ const BetSchema = new Schema(
             name: String,
             odds: String,
         },
-        sportName: String,
         pick: String,
         pickName: String,
         pickOdds: String,
@@ -43,6 +41,8 @@ const BetSchema = new Schema(
         origin: { type: String, default: 'bet365' },
         notifySent: Date,
         sportsbook: { type: Boolean, default: false },
+        isParlay: { type: Boolean, default: false },
+        parlayQuery: { type: Array, default: null },
     },
     {
         timestamps: true,
@@ -175,7 +175,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                 }
             }
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
     next();

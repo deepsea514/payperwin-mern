@@ -65,7 +65,9 @@ const {
     get2FACode,
     isFreeWithdrawalUsed,
     calculateBetsStatus,
-    calculateToWinFromBet
+    calculateToWinFromBet,
+    calculateParlayBetsStatus,
+    getLinePoints
 } = require('./libs/functions');
 
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -151,7 +153,6 @@ const getTwoFactorAuthenticationCode = (email) => {
 
 const verifyTwoFactorAuthenticationCode = (twoFactorAuthenticationCode, token, time) => {
     const token1 = speakeasy.time({ secret: twoFactorAuthenticationCode, encoding: 'base32' });
-    console.log(token1, token);
     return speakeasy.totp.verify({
         secret: twoFactorAuthenticationCode,
         encoding: 'base32',
@@ -254,7 +255,7 @@ adminRouter.post(
                 return;
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find admin.' });
             return;
         }
@@ -609,7 +610,7 @@ adminRouter.get(
             });
         }
         catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ error: 'Can\'t find customer.', result: error });
         }
     }
@@ -818,7 +819,7 @@ adminRouter.delete(
                 const customer = await User.deleteMany({ _id: id });
                 res.status(200).json(customer);
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ error: 'Can\'t Update customer.', result: error });
             }
         }
@@ -950,7 +951,7 @@ adminRouter.post(
             }
             res.json(deposit);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ error: 'Can\'t save deposit.', result: error });
         }
     }
@@ -1032,7 +1033,7 @@ adminRouter.get(
                 .populate('user', ['email', 'currency']).populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get deposits.', result: error });
         }
     }
@@ -1085,7 +1086,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1132,7 +1133,7 @@ adminRouter.patch(
 
             res.json(result);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t update deposit.', result: error });
         }
     }
@@ -1307,7 +1308,7 @@ adminRouter.get(
             const pending_total = await FinancialLog.find({}).count({ financialtype: 'withdraw', status: FinancialStatus.pending });
             res.json({ perPage, total, page: page + 1, data: withdraws, pending_total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1360,7 +1361,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t get withdrawa.', result: error });
         }
     }
@@ -1513,7 +1514,7 @@ adminRouter.patch(
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
         }
     }
@@ -1626,7 +1627,7 @@ adminRouter.get(
             res.status(200).json(results);
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
@@ -1684,22 +1685,26 @@ adminRouter.get(
             if (house == 'p2p') {
                 searchObj = {
                     ...searchObj,
-                    $or: [
-                        { sportsbook: { $exists: false } },
-                        { sportsbook: false }
-                    ]
+                    sportsbook: { $in: [null, false] },
+                    isParlay: { $in: [null, false] },
                 };
             } else if (house == 'sportsbook') {
                 searchObj = {
                     ...searchObj,
-                    sportsbook: true
+                    sportsbook: true,
+                    isParlay: { $in: [null, false] },
+                };
+            } else if (house == 'parlay') {
+                searchObj = {
+                    ...searchObj,
+                    isParlay: true,
                 };
             }
 
             if (status && status == 'open') {
                 searchObj = {
                     ...searchObj,
-                    status: { $in: ['Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
+                    status: { $in: [null, 'Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
                 };
             } else if (status && status == 'settled') {
                 searchObj = {
@@ -1711,7 +1716,7 @@ adminRouter.get(
             if (match && match == 'pending') {
                 searchObj = {
                     ...searchObj,
-                    matchingStatus: { $in: ['Pending', 'Partial Match', 'Partial Accepted'] }
+                    matchingStatus: { $in: [null, 'Pending', 'Partial Match', 'Partial Accepted'] }
                 };
             }
             else if (match && match == 'matched') {
@@ -1761,16 +1766,10 @@ adminRouter.get(
                     $lookup: {
                         from: 'users',
                         let: { user_id: "$userId" },
-                        pipeline: [{
-                            $match: {
-                                $expr: { $eq: ["$_id", "$$user_id"] }
-                            },
-                        }, {
-                            $project: {
-                                email: 1,
-                                currency: 1
-                            }
-                        }],
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                            { $project: { email: 1, currency: 1 } }
+                        ],
                         as: 'userId',
                     }
                 },
@@ -1825,36 +1824,35 @@ adminRouter.delete(
                     status: FinancialStatus.success,
                 });
             }
-            const lineQuery = bet.lineQuery;
-            let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type == 'moneyline') {
-                linePoints = null;
-            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-            }
-            const betpool = await BetPool.findOne({
-                sportId: lineQuery.sportId,
-                leagueId: lineQuery.leagueId,
-                eventId: lineQuery.eventId,
-                lineId: lineQuery.lineId,
-                lineType: lineQuery.type,
-                lineSubType: lineQuery.subtype,
-                sportName: lineQuery.sportName,
-                origin: bet.origin,
-                points: linePoints
-            });
-            if (betpool) {
-                betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
-                betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
-                calculateBetsStatus(betpool.uid);
+            if (bet.isParlay) {
+                const betpool = await ParlayBetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+                if (betpool) {
+                    const docChanges = {
+                        $pull: { homeBets: id, awayBets: id },
+                        $inc: {}
+                    };
+                    docChanges.$inc[`${bet.pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = -bet.bet;
+                    docChanges.$inc[`${bet.pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = -bet.toWin;
+                    await betpool.update(docChanges);
+                    calculateParlayBetsStatus(betpool._id);
+                }
+            } else {
+                const betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+                if (betpool) {
+                    const docChanges = {
+                        $pull: { homeBets: id, awayBets: id },
+                        $inc: {}
+                    };
+                    docChanges.$inc[`${bet.pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = -bet.bet;
+                    docChanges.$inc[`${bet.pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = -bet.toWin;
+                    await betpool.update(docChanges);
+                    calculateBetsStatus(betpool.uid);
+                }
             }
             await Bet.deleteMany({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -1868,19 +1866,12 @@ adminRouter.post(
         try {
             const { id } = req.params;
             const bet = await Bet.findById(id);
-            if (!bet || bet.origin == 'other') {
+            if (!bet || bet.origin == 'other' || bet.isParlay) {
                 return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
-            let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type == 'moneyline') {
-                linePoints = null;
-            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-            }
+            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
             const betpoolQuery = {
                 sportId: lineQuery.sportId,
                 leagueId: lineQuery.leagueId,
@@ -1894,7 +1885,7 @@ adminRouter.post(
             };
             const betpool = await BetPool.findOne(betpoolQuery);
             if (!betpool) {
-                return res.status(404).json({ error: 'Betpool not found' });
+                return res.status(404).json({ error: 'BetPool not found' });
             }
             const {
                 homeBets,
@@ -1913,15 +1904,7 @@ adminRouter.post(
                     let moneyLineWinner = null;
                     if (homeScore > awayScore) moneyLineWinner = 'home';
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
-                    const bets = await Bet.find({
-                        _id:
-                        {
-                            $in: [
-                                ...homeBets,
-                                ...awayBets,
-                            ]
-                        }
-                    });
+                    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
 
                     for (const bet of bets) {
                         const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
@@ -2058,10 +2041,18 @@ adminRouter.post(
                             if (unplayableBet) {
                                 betChanges.$set.credited = unplayableBet;
                                 await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                                await FinancialLog.create({
+                                    financialtype: 'betrefund',
+                                    uniqid: `BF${ID()}`,
+                                    user: userId,
+                                    amount: unplayableBet,
+                                    method: 'betrefund',
+                                    status: FinancialStatus.success,
+                                });
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
                         } else {
-                            console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
                         await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
                     }
@@ -2106,7 +2097,7 @@ adminRouter.post(
 
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2130,239 +2121,237 @@ adminRouter.post(
             if (bet.status != 'Pending') {
                 return res.json({ success: false, error: 'Only pending bets are acceptable.' });
             }
-            const lineQuery = bet.lineQuery;
-            let linePoints = bet.pickName.split(' ');
-            if (lineQuery.type == 'moneyline') {
-                linePoints = null;
-            } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-                if (bet.pick == 'away' || bet.pick == 'under') linePoints = -linePoints;
-            } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
-                linePoints = Number(linePoints[linePoints.length - 1]);
-            }
 
-            const betpool = await BetPool.findOne({
-                sportId: lineQuery.sportId,
-                leagueId: lineQuery.leagueId,
-                eventId: lineQuery.eventId,
-                lineId: lineQuery.lineId,
-                lineType: lineQuery.type,
-                lineSubType: lineQuery.subtype,
-                sportName: lineQuery.sportName,
-                origin: bet.origin,
-                points: linePoints
-            });
-
-            if (!betpool) {
-                return res.json({ success: false, error: 'Betpool not found.' });
-            }
-
-            const user = await User.findById(data.user);
-            if (!user) {
-                return res.json({ success: false, error: 'User not found.' });
-            }
-            const amount = Number(data.amount);
-            if (amount > user.balance) {
-                return res.json({ success: false, error: 'Insufficient Funds.' });
-            }
-
-            const pick = bet.pick == 'home' ? 'away' : 'home';
-            const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
-            const betAfterFee = amount;
-            const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
-            const fee = bet.sportsbook ? 0 : Number((betAfterFee * BetFee).toFixed(2));
-
-            let pickName = '';
-            let betType = '';
-            switch (bet.lineQuery.subtype) {
-                case 'first_half':
-                    pickName += '1st Half: ';
-                    break;
-                case 'second_half':
-                    pickName += '2nd Half: ';
-                    break;
-                case 'first_quarter':
-                    pickName += '1st Quarter: ';
-                    break;
-                case 'second_quarter':
-                    pickName += '2nd Quarter: ';
-                    break;
-                case 'third_quarter':
-                    pickName += '3rd Quarter: ';
-                    break;
-                case 'forth_quarter':
-                    pickName += '4th Quarter: ';
-                    break;
-                default:
-                    pickName += 'Pick: ';
-                    break;
-            }
-            switch (bet.lineQuery.type) {
-                case 'total':
-                case 'alternative_total':
-                    if (pick == 'home') {
-                        pickName += `Over ${linePoints}`;
-                        betType += `O ${linePoints}`;
-                    } else {
-                        pickName += `Under ${linePoints}`;
-                        betType += `U ${linePoints}`;
-                    }
-                    break;
-                case 'spread':
-                case 'alternative_spread':
-                    if (pick == 'home') {
-                        pickName += `${bet.teamA.name} ${linePoints > 0 ? '+' : ''}${linePoints}`;
-                        betType += `${linePoints > 0 ? '+' : ''}${linePoints}`;
-                    } else {
-                        pickName += `${bet.teamB.name} ${-1 * linePoints > 0 ? '+' : ''}${-1 * linePoints}`;
-                        betType += `${-1 * linePoints > 0 ? '+' : ''}${-1 * linePoints}`;
-                    }
-                    break;
-                case 'moneyline':
-                    if (pick == 'home') {
-                        pickName += bet.teamA.name;
-                    } else {
-                        pickName += bet.teamB.name;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            const newBet = await Bet.create({
-                userId: user._id,
-                transactionID: `B${ID()}`,
-                teamA: bet.teamA,
-                teamB: bet.teamB,
-                pick: pick,
-                pickOdds: newLineOdds,
-                oldOdds: pick == 'home' ? bet.teamA.odds : bet.teamB.odds,
-                pickName: pickName,
-                bet: betAfterFee,
-                toWin: toWin,
-                fee: fee,
-                matchStartDate: bet.matchStartDate,
-                status: 'Pending',
-                lineQuery: bet.lineQuery,
-                origin: bet.origin,
-                sportsbook: bet.sportsbook,
-            });
-            await FinancialLog.create({
-                financialtype: 'bet',
-                uniqid: `BP${ID()}`,
-                user: user._id,
-                amount: betAfterFee,
-                method: 'bet',
-                status: FinancialStatus.success,
-            });
-            await LoyaltyLog.create({
-                user: user._id,
-                point: betAfterFee * loyaltyPerBet
-            })
-
-            const preference = await Preference.findOne({ user: user._id });
-            let timezone = "00:00";
-            if (preference && preference.timezone) {
-                timezone = preference.timezone;
-            }
-            const timeString = convertTimeLineDate(new Date(), timezone);
-             //TODO: Uncomment this code in when bet_accepted status email and sms need 
-            /* 
-            if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'Your bet is waiting for a match',
-                    text: `Your bet is waiting for a match`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.email}</b>.
-                        <br><br>
-                        This email is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                        <br><br>
-                        <ul>
-                            <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                            <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                            <li>Platform: PAYPER WIN Peer-to Peer</li>
-                            </ul>
-                        `),
-                };
-                sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
+            if (bet.isParlay) {
+                const { parlayQuery, pickOdds: parlayOdds, bet: totalStake, toWin: totalWin, matchStartDate } = bet;
+                let betpool = await ParlayBetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+                if (!betpool) {
+                    betpool = await ParlayBetPool.create({
+                        parlayQuery: parlayQuery,
+                        teamA: {
+                            odds: parlayOdds,
+                            betTotal: totalStake,
+                            toWinTotal: totalWin
+                        },
+                        teamB: {
+                            odds: -Number(parlayOdds),
+                            betTotal: 0,
+                            toWinTotal: 0
+                        },
+                        matchStartDate: matchStartDate,
+                        homeBets: [bet._id],
+                        awayBets: [],
+                        origin: bet.origin
                     });
+                }
+
+                const user = await User.findById(data.user);
+                if (!user) {
+                    return res.json({ success: false, error: 'User not found.' });
+                }
+                const amount = Number(data.amount);
+                if (amount > user.balance) {
+                    return res.json({ success: false, error: 'Insufficient Funds.' });
+                }
+
+                const pick = 'away';
+                const newLineOdds = -Number(parlayOdds);
+                const betAfterFee = amount;
+                const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+                const fee = Number((betAfterFee * BetFee).toFixed(2));
+                const bet_id = ID();
+
+                const newBet = await Bet.create({
+                    userId: user._id,
+                    pick: 'away',
+                    pickName: 'Parlay Bet',
+                    pickOdds: newLineOdds,
+                    oldOdds: newLineOdds,
+                    bet: betAfterFee,
+                    toWin: toWin,
+                    fee: fee,
+                    matchStartDate: matchStartDate,
+                    status: 'Pending',
+                    matchingStatus: 'Pending',
+                    transactionID: `B${bet_id}`,
+                    origin: bet.origin,
+                    isParlay: true,
+                    parlayQuery: parlayQuery,
                 });
+
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${bet_id}`,
+                    user: user._id,
+                    amount: betAfterFee,
+                    method: 'bet',
+                    status: FinancialStatus.success,
+                });
+                await LoyaltyLog.create({
+                    user: user._id,
+                    point: betAfterFee * loyaltyPerBet
+                })
+
+                const docChanges = {
+                    $push: pick === 'home' ? { homeBets: newBet._id } : { awayBets: newBet._id },
+                    $inc: {
+                        "teamB.betTotal": betAfterFee,
+                        "teamB.toWinTotal": toWin
+                    },
+                };
+                await betpool.update(docChanges);
+                await user.update({ $inc: { balance: -amount } });
+
+                await calculateParlayBetsStatus(betpool._id);
+            } else {
+                const lineQuery = bet.lineQuery;
+                const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+
+                let betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+                if (!betpool) {
+                    betpool = await BetPool.create({
+                        uid: JSON.stringify(lineQuery),
+                        sportId: lineQuery.sportId,
+                        leagueId: lineQuery.leagueId,
+                        eventId: lineQuery.eventId,
+                        lineId: lineQuery.lineId,
+                        teamA: {
+                            name: bet.teamA.name,
+                            odds: bet.teamA.odds,
+                            betTotal: bet.pick === 'home' ? bet.bet : 0,
+                            toWinTotal: bet.pick === 'home' ? bet.toWin : 0,
+                        },
+                        teamB: {
+                            name: bet.teamB.name,
+                            odds: bet.teamB.odds,
+                            betTotal: bet.pick === 'away' ? bet.bet : 0,
+                            toWinTotal: bet.pick === 'away' ? bet.toWin : 0,
+                        },
+                        sportName: lineQuery.sportName,
+                        matchStartDate: bet.matchStartDate,
+                        lineType: lineQuery.type,
+                        lineSubType: lineQuery.subtype,
+                        points: linePoints,
+                        homeBets: bet.pick === 'home' ? [bet._id] : [],
+                        awayBets: bet.pick === 'away' ? [bet._id] : [],
+                        origin: bet.origin
+                    })
+                }
+
+                const user = await User.findById(data.user);
+                if (!user) {
+                    return res.json({ success: false, error: 'User not found.' });
+                }
+                const amount = Number(data.amount);
+                if (amount > user.balance) {
+                    return res.json({ success: false, error: 'Insufficient Funds.' });
+                }
+
+                const pick = bet.pick == 'home' ? 'away' : 'home';
+                const newLineOdds = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), pick, lineQuery.type, lineQuery.subtype);
+                const betAfterFee = amount;
+                const toWin = calculateToWinFromBet(betAfterFee, newLineOdds);
+                const fee = bet.sportsbook ? 0 : Number((betAfterFee * BetFee).toFixed(2));
+
+                let pickName = '';
+                switch (bet.lineQuery.subtype) {
+                    case 'first_half':
+                        pickName += '1st Half: ';
+                        break;
+                    case 'second_half':
+                        pickName += '2nd Half: ';
+                        break;
+                    case 'first_quarter':
+                        pickName += '1st Quarter: ';
+                        break;
+                    case 'second_quarter':
+                        pickName += '2nd Quarter: ';
+                        break;
+                    case 'third_quarter':
+                        pickName += '3rd Quarter: ';
+                        break;
+                    case 'forth_quarter':
+                        pickName += '4th Quarter: ';
+                        break;
+                    default:
+                        pickName += 'Pick: ';
+                        break;
+                }
+                switch (bet.lineQuery.type) {
+                    case 'total':
+                    case 'alternative_total':
+                        if (pick == 'home') {
+                            pickName += `Over ${linePoints}`;
+                        } else {
+                            pickName += `Under ${linePoints}`;
+                        }
+                        break;
+                    case 'spread':
+                    case 'alternative_spread':
+                        if (pick == 'home') {
+                            pickName += `${bet.teamA.name} ${linePoints > 0 ? '+' : ''}${linePoints}`;
+                        } else {
+                            pickName += `${bet.teamB.name} ${-1 * linePoints > 0 ? '+' : ''}${-1 * linePoints}`;
+                        }
+                        break;
+                    case 'moneyline':
+                        if (pick == 'home') {
+                            pickName += bet.teamA.name;
+                        } else {
+                            pickName += bet.teamB.name;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                const bet_id = ID();
+                const newBet = await Bet.create({
+                    userId: user._id,
+                    transactionID: `B${bet_id}`,
+                    teamA: bet.teamA,
+                    teamB: bet.teamB,
+                    pick: pick,
+                    pickOdds: newLineOdds,
+                    oldOdds: pick == 'home' ? bet.teamA.odds : bet.teamB.odds,
+                    pickName: pickName,
+                    bet: betAfterFee,
+                    toWin: toWin,
+                    fee: fee,
+                    matchStartDate: bet.matchStartDate,
+                    status: 'Pending',
+                    matchingStatus: 'Pending',
+                    lineQuery: bet.lineQuery,
+                    origin: bet.origin,
+                    sportsbook: bet.sportsbook,
+                });
+                await FinancialLog.create({
+                    financialtype: 'bet',
+                    uniqid: `BP${bet_id}`,
+                    user: user._id,
+                    amount: betAfterFee,
+                    method: 'bet',
+                    status: FinancialStatus.success,
+                });
+                await LoyaltyLog.create({
+                    user: user._id,
+                    point: betAfterFee * loyaltyPerBet
+                })
+
+                const docChanges = {
+                    $push: pick === 'home' ? { homeBets: newBet._id } : { awayBets: newBet._id },
+                    $inc: {},
+                };
+                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
+                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+                await betpool.update(docChanges);
+                await user.update({ $inc: { balance: -amount } });
+
+                await calculateBetsStatus(betpool.uid);
             }
-            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise you that your bet for ${lineQuery.sportName} ${lineQuery.type} on ${timeString} for ${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. \n 
-                        Wager: $${betAfterFee.toFixed(2)}
-                        Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}
-                        Platform: PAYPER WIN Peer-to Peer`, user.phone);
-            } 
-            */
-
-            const matchTimeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
-            let adminMsg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: adminEmailAddress1,
-                subject: 'New Bet',
-                text: `New Bet`,
-                html: simpleresponsive(
-                    `<ul>
-                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
-                        <li>Event: ${bet.teamA.name} vs ${bet.teamB.name}(${lineQuery.sportName})</li>
-                        <li>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</li>
-                        <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
-                        <li>Pick: ${pickName}</li>
-                        <li>Date: ${matchTimeString}</li>
-                        <li>Win: $${toWin.toFixed(2)}</li>
-                    </ul>`),
-            }
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-
-            adminMsg.to = supportEmailAddress;
-            sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-
-            const docChanges = {
-                $push: pick === 'home' ? {
-                    homeBets: newBet._id,
-                } : {
-                    awayBets: newBet._id,
-                },
-                $inc: {},
-            };
-            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
-            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
-            await betpool.update(docChanges);
-            await user.update({ $inc: { balance: -amount } });
-
-            await calculateBetsStatus(betpool.uid);
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -2451,8 +2440,8 @@ adminRouter.get(
                     bet.sportsbook ? 'Sportsbook' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
-                    bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
-                    bet.origin == 'other' ? bet.lineQuery : `${bet.teamA.name} vs ${bet.teamB.name}`,
+                    bet.isParlay ? 'Parlay' : bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
+                    bet.isParlay ? '' : bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`,
                     `$ ${bet.bet}`,
                     Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
                     results,
@@ -2497,11 +2486,11 @@ adminRouter.get(
 
 adminRouter.get(
     '/searchsportsleague/:sportName',
-    async (req, res) => { 
+    async (req, res) => {
         try {
-            const {sportName} = req.params;
+            const { sportName } = req.params;
             const { name } = req.query;
-            const sports = await Sport.findOne({name : sportName});
+            const sports = await Sport.findOne({ name: sportName });
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports league.', message: error });
@@ -2552,8 +2541,8 @@ adminRouter.get(
     '/sportsteam',
     async (req, res) => {
         try {
-            
-            const sports = await Sport.find({originSportId : 91 });
+
+            const sports = await Sport.find({ originSportId: 91 });
             res.json(sports);
         } catch (error) {
             res.status(500).json({ error: 'Can\'t find sports.', message: error });
@@ -2796,7 +2785,7 @@ adminRouter.post(
                 categories,
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ error: 'Can\'t read data.', message: error });
         }
     }
@@ -2917,7 +2906,12 @@ adminRouter.get(
                                     $and: [
                                         { $gte: ["$createdAt", fromTime] },
                                         { $eq: ["$user", "$$user_id"] },
-                                        { $ne: ["$type", "sportsbook"] }
+                                        {
+                                            $or: [
+                                                { $ne: ["$type", "p2p"] },
+                                                { $eq: ["$type", null] }
+                                            ]
+                                        }
                                     ]
                                 }
                             },
@@ -2941,6 +2935,24 @@ adminRouter.get(
                             },
                         }],
                         as: 'sbautobetlogs',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'autobetlogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $gte: ["$createdAt", fromTime] },
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$type", "parlay"] }
+                                    ]
+                                }
+                            },
+                        }],
+                        as: 'parlayautobetlogs',
                     }
                 },
                 {
@@ -2971,8 +2983,10 @@ adminRouter.get(
                         maxRisk: 1,
                         budget: 1,
                         sportsbookBudget: 1,
+                        parlayBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
                         sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },
+                        parlayhold: { $subtract: ["$parlayBudget", { $sum: '$parlayautobetlogs.amount' }] },
                         referral_code: 1,
                         status: 1,
                         createdAt: 1
@@ -2985,7 +2999,7 @@ adminRouter.get(
             ]);
             return res.json({ total, perPage, page: page + 1, data: autobets });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(500).json({ success: false });
         }
     }
@@ -3047,41 +3061,41 @@ adminRouter.get(
                     ...searchObj,
                     ...{ email: { "$regex": name, "$options": "i" } }
                 }
-            
-    
-        AutoBet.find({})
-            .sort({ createdAt: -1 })
-            .populate({
-                path: 'userId',
-                match:searchObj,
-                select: ['username', 'balance', 'email', 'firstname', 'lastname']
-            })
-            .exec((error, data) => {
-                if (error) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
 
-                if (!data[0].userId) {
-                    res.status(404).json({ error: 'Can\'t find autobet customers.' });
-                    //res.status(404).json({ error });
-                    return;
-                }
 
-                const result = data.map(autoBetUser => {
-                    return {
-                        value: autoBetUser._id,
-                        label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
-                        budget: autoBetUser.budget,
-                        maxBudget: autoBetUser.maxBudget
-                    }
-                })
-                res.status(200).json(result);
-            });
+                AutoBet.find({})
+                    .sort({ createdAt: -1 })
+                    .populate({
+                        path: 'userId',
+                        match: searchObj,
+                        select: ['username', 'balance', 'email', 'firstname', 'lastname']
+                    })
+                    .exec((error, data) => {
+                        if (error) {
+                            res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                            //res.status(404).json({ error });
+                            return;
+                        }
+
+                        if (!data[0].userId) {
+                            res.status(404).json({ error: 'Can\'t find autobet customers.' });
+                            //res.status(404).json({ error });
+                            return;
+                        }
+
+                        const result = data.map(autoBetUser => {
+                            return {
+                                value: autoBetUser._id,
+                                label: `${autoBetUser.userId.email} (${autoBetUser.userId.firstname} ${autoBetUser.userId.lastname})`,
+                                budget: autoBetUser.budget,
+                                maxBudget: autoBetUser.maxBudget
+                            }
+                        })
+                        res.status(200).json(result);
+                    });
+            }
         }
-        }
-        catch(error) {
+        catch (error) {
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
@@ -3287,7 +3301,7 @@ adminRouter.post(
 
             res.send("User verified successfully.");
         } catch (error) {
-            console.log("accept Error => ", error);
+            console.error("accept Error => ", error);
             res.status(400).send("Can't verify user.");
         }
     }
@@ -3341,7 +3355,7 @@ adminRouter.post(
 
             res.send("User declined.");
         } catch (error) {
-            console.log("declined Error => ", error);
+            console.error("declined Error => ", error);
             res.status(400).send("Can't decline user.");
         }
     }
@@ -3383,7 +3397,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: tickets });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find verifications.' });
         }
     }
@@ -3470,7 +3484,7 @@ adminRouter.delete(
             await Ticket.deleteMany({ _id: id });
             res.json({ message: 'success' });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(400).json({ error: 'Can\'t delete ticket.' });
         }
     }
@@ -3611,7 +3625,7 @@ adminRouter.delete(
             await FAQItem.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t delete item.' });
         }
     }
@@ -3638,7 +3652,7 @@ adminRouter.put(
             await faq_item.save();
             res.json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t update item.' });
         }
     }
@@ -3668,7 +3682,7 @@ adminRouter.post(
             await Event.create({ name, startDate, teamA, teamB });
             res.json({ success: "Event created." });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return res.status(400).json({ error: 'Can\'t create Event.' });
         }
     }
@@ -3687,7 +3701,7 @@ adminRouter.get(
             }
             res.status(200).json(event);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -3731,7 +3745,7 @@ adminRouter.put(
             await event.save();
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3871,13 +3885,13 @@ const matchResults = async (eventId, matchResult) => {
                         }
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                     } else {
-                        console.log('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
+                        console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
                 }
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.error(error);
         }
     } else {
         matchCancelled = true;
@@ -3944,7 +3958,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -3971,7 +3985,7 @@ adminRouter.post(
 
             res.status(200).json({ success: true });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
@@ -4011,7 +4025,7 @@ adminRouter.get(
 
             res.status(200).json({ total, perPage, page: page + 1, data: events, pending_total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(404).json({ error: 'Can\'t find events.' });
         }
     }
@@ -4086,7 +4100,6 @@ adminRouter.post(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
-                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4256,7 +4269,6 @@ adminRouter.put(
                 //         ])
                 //     .find({ createdAt: { $lte: new Date(last_online_before) } })
                 //     .populate('user');
-                //     console.log(JSON.parse(JSON.stringify(online_before_login_log)));
 
                 // }
 
@@ -4442,7 +4454,7 @@ adminRouter.put(
             }
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json("Can't save meta data.");
         }
     }
@@ -4495,7 +4507,7 @@ adminRouter.post(
             await Article.create(articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4535,7 +4547,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: articles });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4551,7 +4563,7 @@ adminRouter.get(
             const article = await Article.findById(id);
             res.json(article);
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4573,7 +4585,7 @@ adminRouter.put(
             await Article.findByIdAndUpdate(id, articleObj);
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4589,7 +4601,7 @@ adminRouter.delete(
             await Article.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({ success: false });
         }
     }
@@ -4630,7 +4642,7 @@ adminRouter.delete(
             await ArticleCategory.deleteOne({ _id: id });
             res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({ success: false });
         }
     }
@@ -4733,7 +4745,7 @@ adminRouter.get(
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: admins });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4802,7 +4814,7 @@ adminRouter.put(
             await admin.save();
             return res.json({ success: true });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(400).json({
                 message: "Admin update failed. Please try with new credentials."
             });
@@ -4846,7 +4858,7 @@ adminRouter.get(
             }
 
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4871,7 +4883,7 @@ adminRouter.get(
             const user = await User.findById(user_id);
             res.json({ history: history, user });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4929,7 +4941,7 @@ adminRouter.get(
             res.json({ total, perPage, page: page + 1, data: profits });
 
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -4988,7 +5000,7 @@ adminRouter.get(
             })
             res.send(csvbody);
         } catch (error) {
-            console.log(error)
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
@@ -5046,7 +5058,7 @@ adminRouter.get(
             else total = 0;
             res.json({ data: errorlogs, total: total });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
