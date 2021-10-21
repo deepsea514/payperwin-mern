@@ -2290,17 +2290,7 @@ expressApp.post(
             const lineQuery = bet.lineQuery;
             const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
-            const betpool = await BetPool.findOne({
-                sportId: lineQuery.sportId,
-                leagueId: lineQuery.leagueId,
-                eventId: lineQuery.eventId,
-                lineId: lineQuery.lineId,
-                lineType: lineQuery.type,
-                lineSubType: lineQuery.subtype,
-                sportName: lineQuery.sportName,
-                origin: bet.origin,
-                points: linePoints
-            });
+            const betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
 
             // if (betpool) {
             //     if (bet.pick == 'home' && betpool.homeBets.length > 0) {
