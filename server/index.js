@@ -2290,25 +2290,37 @@ expressApp.post(
             const lineQuery = bet.lineQuery;
             const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
-            const betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
+            let betpool = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
 
-            // if (betpool) {
-            //     if (bet.pick == 'home' && betpool.homeBets.length > 0) {
-            //         betpool.homeBets = betpool.homeBets.filter(bet => bet.toString() != id);
-            //         betpool.teamA.betTotal -= bet.bet;
-            //         betpool.teamA.toWinTotal -= bet.toWin;
-            //     } else if (bet.pick == 'away' && betpool.awayBets.length > 0) {
-            //         betpool.awayBets = betpool.awayBets.filter(bet => bet.toString() != id);
-            //         betpool.teamB.betTotal -= bet.bet;
-            //         betpool.teamB.toWinTotal -= bet.toWin;
-            //     }
-            //     if (betpool.homeBets.length == 0 && betpool.awayBets.length == 0) {
-            //         await BetPool.deleteOne({ _id: betpool._id });
-            //     } else {
-            //         await betpool.save();
-            //         await calculateBetsStatus(betpool.uid);
-            //     }
-            // }
+            if (!betpool) {
+                betpool = await BetPool.create({
+                    uid: JSON.stringify(lineQuery),
+                    sportId: lineQuery.sportId,
+                    leagueId: lineQuery.leagueId,
+                    eventId: lineQuery.eventId,
+                    lineId: lineQuery.lineId,
+                    teamA: {
+                        name: bet.teamA.name,
+                        odds: bet.teamA.odds,
+                        betTotal: bet.pick === 'home' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'home' ? bet.toWin : 0,
+                    },
+                    teamB: {
+                        name: bet.teamB.name,
+                        odds: bet.teamB.odds,
+                        betTotal: bet.pick === 'away' ? bet.bet : 0,
+                        toWinTotal: bet.pick === 'away' ? bet.toWin : 0,
+                    },
+                    sportName: lineQuery.sportName,
+                    matchStartDate: bet.matchStartDate,
+                    lineType: lineQuery.type,
+                    lineSubType: lineQuery.subtype,
+                    points: linePoints,
+                    homeBets: bet.pick === 'home' ? [bet._id] : [],
+                    awayBets: bet.pick === 'away' ? [bet._id] : [],
+                    origin: bet.origin
+                })
+            }
 
             bet.pickOdds = bet.oldOdds;
             bet.status = null;
