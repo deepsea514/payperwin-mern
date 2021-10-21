@@ -1665,14 +1665,8 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
     const { toWin: toBet, parlayQuery, matchStartDate, pickOdds } = parlayBet;
 
     //Find autobet
-    let orCon = [];
-    if (user.bet_referral_code) {
-        orCon.push({
-            referral_code: user.bet_referral_code
-        })
-    }
     let autobets = await AutoBet
-        .find({ $or: orCon })
+        .find()
         .populate('userId');
 
     autobets = JSON.parse(JSON.stringify(autobets));
