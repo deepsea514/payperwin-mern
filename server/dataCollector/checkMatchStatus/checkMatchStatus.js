@@ -253,18 +253,7 @@ const checkBetWithoutBetPool = async () => {
         const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
         const uid = JSON.stringify(bet.lineQuery);
-        const exists = await BetPool.findOne({
-            sportId: bet.lineQuery.sportId,
-            leagueId: bet.lineQuery.leagueId,
-            eventId: bet.lineQuery.eventId,
-            lineId: bet.lineQuery.lineId,
-            sportName: bet.lineQuery.sportName,
-            matchStartDate: bet.matchStartDate,
-            lineType: bet.lineQuery.type,
-            lineSubType: bet.lineQuery.subtype,
-            points: linePoints,
-            origin: bet.origin
-        });
+        const exists = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
         if (exists) return;
         try {
             await BetPool.create(
