@@ -505,8 +505,7 @@ class OpenBets extends Component {
                                     </div>
                                 </div>
                                 {parlayQuery.map((query, index) => {
-                                    console.log(query)
-                                    const { teamA, teamB, lineQuery, homeScore, awayScore, cancelled, pickName, matchStartDate } = query;
+                                    const { teamA, teamB, lineQuery, homeScore, awayScore, status, pickName, matchStartDate } = query;
                                     const { sportName } = lineQuery
                                     return (
                                         <div className="open-bets-event" key={index}>
@@ -516,8 +515,8 @@ class OpenBets extends Component {
                                             <div>
                                                 Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                             </div>
-                                            {settledBets && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
-                                            {cancelled && <div><strong>Cancelled</strong></div>}
+                                            {settledBets && status != 'Cancelled' && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
+                                            {settledBets && <div><strong>{status}</strong></div>}
                                         </div>
                                     );
                                 })}
@@ -589,7 +588,7 @@ class OpenBets extends Component {
                                         {sportsbook && <strong className="float-right bg-info px-2 py-1 text-white">Sportsbook</strong>}
                                         {!sportsbook && <strong className="float-right bg-primary px-2 py-1 text-white">Peer To Peer</strong>}
                                     </div>
-                                    {settledBets && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
+                                    {settledBets && status != 'Cancelled' && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
                                     {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
                                     {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}

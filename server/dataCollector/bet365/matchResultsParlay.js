@@ -157,7 +157,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 const { homeScore, awayScore, cancellationReason } = matchResult;
                 if (cancellationReason) {
                     cancelledEvents.push(lineQuery.eventId);
-                    query.cancelled = true;
+                    query.status = 'Cancelled';
                 } else {
                     query.homeScore = homeScore;
                     query.awayScore = awayScore;
@@ -183,6 +183,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         betWin = pick === overUnderWinner;
                     }
                     homeWin = homeWin && betWin;
+                    query.status = betWin ? 'Win' : 'Lose';
                 }
                 delete query.result;
             }
