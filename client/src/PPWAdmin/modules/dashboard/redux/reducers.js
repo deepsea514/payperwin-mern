@@ -25,7 +25,7 @@ const initialState = {
     lastbets: [],
     loadingbets: false,
     lastsportsbookbets: [],
-    loadingportsbookbets: [],
+    loadingsportsbookbets: [],
     lastwithdraws: [],
     loadingwithdraws: false,
     lastdeposits: [],
@@ -66,10 +66,10 @@ export const reducer = persistReducer(
                 return { ...state, ...{ loadingbets: false, lastbets: action.data } };
 
             case actionTypes.getLastSportsBookBets:
-                return { ...state, ...{ loadingportsbookbets: true } };
+                return { ...state, ...{ loadingsportsbookbets: true } };
 
             case actionTypes.getLastSportsBookBetsSuccess:
-                return { ...state, ...{ loadingportsbookbets: false, lastsportsbookbets: action.data } };
+                return { ...state, ...{ loadingsportsbookbets: false, lastsportsbookbets: action.data } };
 
             case actionTypes.getLastWithdraws:
                 return { ...state, ...{ loadingwithdraws: true } };

@@ -70,98 +70,112 @@ const formatAmericanFootballFixturesOdds = (event) => {
             line = { ...line, ...whole_line };
         }
 
+        //First Half
+        let _1st_half_lines_2_way = [];
         if (main.sp["1st_half_lines_2_way"]) {
-            let _1st_half_lines_2_way = main.sp["1st_half_lines_2_way"].odds;
-            if (_1st_half_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["1st_half_lines_2_way"]);
-                if (other) _1st_half_lines_2_way = other.sp["1st_half_lines_2_way"].odds;
-            }
-            if (_1st_half_lines_2_way.length) {
-                line.first_half = gotLineToOdds(_1st_half_lines_2_way);
-            }
+            _1st_half_lines_2_way = main.sp["1st_half_lines_2_way"].odds;
+        }
+        if (_1st_half_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["1st_half_lines_2_way"]);
+            if (other) _1st_half_lines_2_way = other.sp["1st_half_lines_2_way"].odds;
+        }
+        if (_1st_half_lines_2_way.length) {
+            line.first_half = gotLineToOdds(_1st_half_lines_2_way);
         }
 
+        //Second Half
+        let _2nd_half_lines_2_way = [];
         if (main.sp["2nd_half_lines_2_way"]) {
-            let _2nd_half_lines_2_way = main.sp["2nd_half_lines_2_way"].odds;
-            if (_2nd_half_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["2nd_half_lines_2_way"]);
-                if (other) _2nd_half_lines_2_way = other.sp["2nd_half_lines_2_way"].odds;
-            }
-            if (_2nd_half_lines_2_way.length) {
-                line.second_half = gotLineToOdds(_2nd_half_lines_2_way);
-            }
+            _2nd_half_lines_2_way = main.sp["2nd_half_lines_2_way"].odds;
+        }
+        if (_2nd_half_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["2nd_half_lines_2_way"]);
+            if (other) _2nd_half_lines_2_way = other.sp["2nd_half_lines_2_way"].odds;
+        }
+        if (_2nd_half_lines_2_way.length) {
+            line.second_half = gotLineToOdds(_2nd_half_lines_2_way);
         }
 
+        //First Quarter
+        let _1st_quarter_lines_2_way = [];
         if (main.sp["1st_quarter_lines_2_way"]) {
-            let _1st_quarter_lines_2_way = main.sp["1st_quarter_lines_2_way"].odds;
-            if (_1st_quarter_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["1st_quarter_lines_2_way"]);
-                if (other) _1st_quarter_lines_2_way = other.sp["1st_quarter_lines_2_way"].odds;
-            }
-            if (_1st_quarter_lines_2_way.length) {
-                line.first_quarter = gotLineToOdds(_1st_quarter_lines_2_way);
-            }
+            _1st_quarter_lines_2_way = main.sp["1st_quarter_lines_2_way"].odds;
+        }
+        if (_1st_quarter_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["1st_quarter_lines_2_way"]);
+            if (other) _1st_quarter_lines_2_way = other.sp["1st_quarter_lines_2_way"].odds;
+        }
+        if (_1st_quarter_lines_2_way.length) {
+            line.first_quarter = gotLineToOdds(_1st_quarter_lines_2_way);
         }
 
+        //Second Quarter
+        let _2nd_quarter_lines_2_way = [];
         if (main.sp["2nd_quarter_lines_2_way"]) {
-            let _2nd_quarter_lines_2_way = main.sp["2nd_quarter_lines_2_way"].odds;
-            if (_2nd_quarter_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["2nd_quarter_lines_2_way"]);
-                if (other) _2nd_quarter_lines_2_way = other.sp["2nd_quarter_lines_2_way"].odds;
-            }
-            if (_2nd_quarter_lines_2_way.length) {
-                line.second_quarter = gotLineToOdds(_2nd_quarter_lines_2_way);
-            }
+            _2nd_quarter_lines_2_way = main.sp["2nd_quarter_lines_2_way"].odds;
+        }
+        if (_2nd_quarter_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["2nd_quarter_lines_2_way"]);
+            if (other) _2nd_quarter_lines_2_way = other.sp["2nd_quarter_lines_2_way"].odds;
+        }
+        if (_2nd_quarter_lines_2_way.length) {
+            line.second_quarter = gotLineToOdds(_2nd_quarter_lines_2_way);
         }
 
+        //Third Quarter
+        let _3rd_quarter_lines_2_way = [];
         if (main.sp["3rd_quarter_lines_2_way"]) {
-            let _3rd_quarter_lines_2_way = main.sp["3rd_quarter_lines_2_way"].odds;
-            if (_3rd_quarter_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["3rd_quarter_lines_2_way"]);
-                if (other) _3rd_quarter_lines_2_way = other.sp["3rd_quarter_lines_2_way"].odds;
-            }
-            if (_3rd_quarter_lines_2_way.length) {
-                line.third_quarter = gotLineToOdds(_3rd_quarter_lines_2_way);
-            }
+            _3rd_quarter_lines_2_way = main.sp["3rd_quarter_lines_2_way"].odds;
+        }
+        if (_3rd_quarter_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["3rd_quarter_lines_2_way"]);
+            if (other) _3rd_quarter_lines_2_way = other.sp["3rd_quarter_lines_2_way"].odds;
+        }
+        if (_3rd_quarter_lines_2_way.length) {
+            line.third_quarter = gotLineToOdds(_3rd_quarter_lines_2_way);
         }
 
+        //Forth Quarter
+        let _4th_quarter_lines_2_way = [];
         if (main.sp["4th_quarter_lines_2_way"]) {
-            let _4th_quarter_lines_2_way = main.sp["4th_quarter_lines_2_way"].odds;
-            if (_4th_quarter_lines_2_way.length == 0) {
-                let other = others.find(other => other.sp && other.sp["4th_quarter_lines_2_way"]);
-                if (other) _4th_quarter_lines_2_way = other.sp["4th_quarter_lines_2_way"].odds;
-            }
-            if (_4th_quarter_lines_2_way.length) {
-                line.forth_quarter = gotLineToOdds(_4th_quarter_lines_2_way);
-            }
+            _4th_quarter_lines_2_way = main.sp["4th_quarter_lines_2_way"].odds;
+        }
+        if (_4th_quarter_lines_2_way.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["4th_quarter_lines_2_way"]);
+            if (other) _4th_quarter_lines_2_way = other.sp["4th_quarter_lines_2_way"].odds;
+        }
+        if (_4th_quarter_lines_2_way.length) {
+            line.forth_quarter = gotLineToOdds(_4th_quarter_lines_2_way);
         }
 
         // Alternative spreads and totals
-        let other = others.find(other => other.sp && other.sp["alternative_point_spread_2_way"]);
-        const alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
-        if (alternative_point_spread_2_way.length > 0) {
-            const count = alternative_point_spread_2_way.length / 2;
-            for (let i = 0; i < count; i++) {
-                line.alternative_spreads.push({
-                    altLineId: alternative_point_spread_2_way[i].id,
-                    hdp: Number(alternative_point_spread_2_way[i].handicap),
-                    home: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i].odds),
-                    away: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i + count].odds),
-                });
+        if (others) {
+            let other = others.find(other => other.sp && other.sp["alternative_point_spread_2_way"]);
+            const alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
+            if (alternative_point_spread_2_way.length > 0) {
+                const count = alternative_point_spread_2_way.length / 2;
+                for (let i = 0; i < count; i++) {
+                    line.alternative_spreads.push({
+                        altLineId: alternative_point_spread_2_way[i].id,
+                        hdp: Number(alternative_point_spread_2_way[i].handicap),
+                        home: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i].odds),
+                        away: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i + count].odds),
+                    });
+                }
             }
-        }
 
-        other = others.find(other => other.sp && other.sp["alternative_total_2_way"]);
-        const alternative_total_2_way = other ? other.sp["alternative_total_2_way"].odds : [];
-        if (alternative_total_2_way.length > 0) {
-            const count = alternative_total_2_way.length / 2;
-            for (let i = 0; i < count; i++) {
-                line.alternative_totals.push({
-                    altLineId: alternative_total_2_way[i].id,
-                    points: Number(alternative_total_2_way[i].name),
-                    over: convertDecimalToAmericanOdds(alternative_total_2_way[i].odds),
-                    under: convertDecimalToAmericanOdds(alternative_total_2_way[i + count].odds),
-                });
+            other = others.find(other => other.sp && other.sp["alternative_total_2_way"]);
+            const alternative_total_2_way = other ? other.sp["alternative_total_2_way"].odds : [];
+            if (alternative_total_2_way.length > 0) {
+                const count = alternative_total_2_way.length / 2;
+                for (let i = 0; i < count; i++) {
+                    line.alternative_totals.push({
+                        altLineId: alternative_total_2_way[i].id,
+                        points: Number(alternative_total_2_way[i].name),
+                        over: convertDecimalToAmericanOdds(alternative_total_2_way[i].odds),
+                        under: convertDecimalToAmericanOdds(alternative_total_2_way[i + count].odds),
+                    });
+                }
             }
         }
     }

@@ -114,7 +114,6 @@ export default class Cashback extends Component {
         this.setState({ loading: true });
         axios.get(`${serverUrl}/cashback`, { withCredentials: true })
             .then(({ data }) => {
-                console.log(data);
                 this.setState({ loading: false, data });
             })
             .catch((error) => {

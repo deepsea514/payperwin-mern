@@ -4,12 +4,12 @@ const getTableTennisMatchScores = require('./getMatchScores/getTableTennisMatchS
 const getSoccerMatchScores = require('./getMatchScores/getSoccerMatchScores');
 const getRugbyMatchScores = require('./getMatchScores/getRugbyMatchScores');
 const getTennisMatchScores = require('./getMatchScores/getTennisMatchScores');
-const getIceHockeyMatchScores = require('./getMatchScores/getIceHockeyMatchScores');
 const getHandballMatchScores = require('./getMatchScores/getHandballMatchScores');
 const getVolleyballMatchScores = require('./getMatchScores/getVolleyballMatchScores');
 const getBadmintonMatchScores = require('./getMatchScores/getBadmintonMatchScores');
 const getAustralianRulesMatchScores = require('./getMatchScores/getAustralianRulesMatchScores');
 const getGaelicSportsMatchScores = require('./getMatchScores/getGaelicSportsMatchScores');
+const getCricketMatchScores = require('./getMatchScores/getCricketMatchScores');
 
 const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) => {
     try {
@@ -24,8 +24,6 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getRugbyMatchScores(type, subtype, ss, scores, time_status);
             case "Tennis":
                 return getTennisMatchScores(type, subtype, ss, scores, time_status);
-            case "Ice Hockey":
-                return getIceHockeyMatchScores(type, subtype, ss, scores, time_status);
             case "Handball":
                 return getHandballMatchScores(type, subtype, ss, scores, time_status);
             case "Volleyball":
@@ -36,26 +34,28 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
                 return getAustralianRulesMatchScores(type, subtype, ss, scores, time_status);
             case "Gaelic Sports":
                 return getGaelicSportsMatchScores(type, subtype, ss, scores, time_status);
+            case "Cricket":
+                return getCricketMatchScores(type, subtype, ss, scores, time_status);
             case "Basketball":
             case "Rugby League":
             case "Bowls":
-            case "Snooker":
             case "Beach Volleyball":
             case "Squash":
-            case "Water Polo":
             // Match Result
+            case "Water Polo":
+            case "Snooker":
             case "E-sports":
             case "Floorball":
             case "Futsal":
             case "Darts":
-            case "Cricket":
             case "Boxing-UFC":
+            case "Ice Hockey":
             // Not sure
             case "Baseball":
                 return getDefaultMatchScores(type, subtype, ss, scores, time_status);
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }

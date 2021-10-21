@@ -79,21 +79,9 @@ class TransactionHistory extends Component {
             case "prize":
                 return '+';
             case 'bet':
-                switch (method) {
-                    case 'bet':
-                        return '-';
-                    case 'bet - BETTED':
-                    case 'bet - UNSETTLED':
-                        return '-';
-                    case 'bet - SETTLED':
-                    case 'bet - REJECTED':
-                    case 'bet - CANCELLED':
-                    case 'bet - ROLLBACKED':
-                        return '';
-                    default:
-                        return '';
-
-                }
+                return '-';
+            case 'betrefund':
+                return '+';
             default:
                 return '';
         }
@@ -124,24 +112,9 @@ class TransactionHistory extends Component {
             case 'betdraw':
                 return 'Bet Draw';
             case 'bet':
-                switch (method) {
-                    case 'bet':
-                        return '1 Bet(s) placed.';
-                    case 'bet - BETTED':
-                        return '1 Bet(s) placed in sportsbook.';
-                    case 'bet - UNSETTLED':
-                        return '1 Bet(s) unsettled in sportsbook.';
-                    case 'bet - SETTLED':
-                        return '1 Bet(s) settled in sportsbook.';
-                    case 'bet - REJECTED':
-                        return '1 Bet(s) rejected in sportsbook.';
-                    case 'bet - CANCELLED':
-                        return '1 Bet(s) canceled in sportsbook.';
-                    case 'bet - ROLLBACKED':
-                        return '1 Bet(s) rollbacked in sportsbook.';
-                    default:
-                        return '';
-                }
+                return '1 Bet(s) placed.';
+            case 'betrefund':
+                return 'Bet Refund';
             default:
                 return '';
         }
@@ -170,10 +143,7 @@ class TransactionHistory extends Component {
                 await this.setState({
                     filter: {
                         ...filter,
-                        ...{
-                            all: false,
-                            [field]: true
-                        }
+                        ...{ all: false, [field]: true }
                     }
                 });
             }
@@ -219,59 +189,58 @@ class TransactionHistory extends Component {
                         </li>
                         <li>
                             <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> Filter </a>
-                            {showFilter &&
-                                <>
-                                    <div className="background-closer bg-modal" onClick={() => this.setState({ showFilter: false })} />
-                                    <div className="filter-dropdown">
-                                        <FormGroup>
-                                            <FormControlLabel
-                                                control={<Checkbox
-                                                    checked={filter.all}
-                                                    onChange={this.changeFilter}
-                                                    name="all" />}
-                                                label="All"
-                                                className="p-0 mb-0"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox
-                                                    checked={filter.betwon}
-                                                    onChange={this.changeFilter}
-                                                    name="betwon" />}
-                                                label="Bet Won"
-                                                className="p-0 mb-0"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox
-                                                    checked={filter.placebet}
-                                                    onChange={this.changeFilter}
-                                                    name="placebet" />}
-                                                label="Bet Placed"
-                                                className="p-0 mb-0"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox
-                                                    checked={filter.deposit}
-                                                    onChange={this.changeFilter}
-                                                    name="deposit" />}
-                                                label="Deposit"
-                                                className="p-0 mb-0"
-                                            />
-                                            <FormControlLabel
-                                                control={<Checkbox
-                                                    checked={filter.withdraw}
-                                                    onChange={this.changeFilter}
-                                                    name="withdraw" />}
-                                                label="Withdraw"
-                                                className="p-0 mb-0"
-                                            />
-                                        </FormGroup>
-                                        <Button variant="outlined" color="primary" onClick={() => {
-                                            this.getHistory();
-                                            this.setState({ showFilter: false })
-                                        }}>Apply</Button>
-                                        <Button variant="outlined" color="secondary" className="ml-2" onClick={() => this.setState({ showFilter: false })}>Cancel</Button>
-                                    </div>
-                                </>}
+                            {showFilter && <>
+                                <div className="background-closer bg-modal" onClick={() => this.setState({ showFilter: false })} />
+                                <div className="filter-dropdown">
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.all}
+                                                onChange={this.changeFilter}
+                                                name="all" />}
+                                            label="All"
+                                            className="p-0 mb-0"
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.betwon}
+                                                onChange={this.changeFilter}
+                                                name="betwon" />}
+                                            label="Bet Won"
+                                            className="p-0 mb-0"
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.placebet}
+                                                onChange={this.changeFilter}
+                                                name="placebet" />}
+                                            label="Bet Placed"
+                                            className="p-0 mb-0"
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.deposit}
+                                                onChange={this.changeFilter}
+                                                name="deposit" />}
+                                            label="Deposit"
+                                            className="p-0 mb-0"
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.withdraw}
+                                                onChange={this.changeFilter}
+                                                name="withdraw" />}
+                                            label="Withdraw"
+                                            className="p-0 mb-0"
+                                        />
+                                    </FormGroup>
+                                    <Button variant="outlined" color="primary" onClick={() => {
+                                        this.getHistory();
+                                        this.setState({ showFilter: false })
+                                    }}>Apply</Button>
+                                    <Button variant="outlined" color="secondary" className="ml-2" onClick={() => this.setState({ showFilter: false })}>Cancel</Button>
+                                </div>
+                            </>}
                         </li>
                     </ul>
                     <div className="amount-dtails">
@@ -281,9 +250,6 @@ class TransactionHistory extends Component {
                             <div className="col-sm-2 text-right">
                                 <strong> AMOUNT </strong>
                             </div>
-                            {/* <div className="col-sm-2 text-right">
-                                <strong> BALANCE </strong>
-                            </div> */}
                         </div>
                         {transactions.map((transaction, index) => (
                             <div className="row amount-col bg-color-box" key={index}>
@@ -294,9 +260,6 @@ class TransactionHistory extends Component {
                                 <div className="col-sm-2 text-right">
                                     <small>{this.getInOut(transaction.financialtype, transaction.method) + this.getFormattedAmount(transaction.amount)}</small>
                                 </div>
-                                {/* <div className="col-sm-2 text-right">
-                                    <small>{user ? this.getFormattedAmount(user.balance) : null}</small>
-                                </div> */}
                             </div>
                         ))}
                     </div>

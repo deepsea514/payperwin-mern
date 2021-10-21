@@ -8,7 +8,8 @@
         "http://dev.payperwin.co",
         "http://68.183.203.13",
         "http://localhost:8081",
-        "http://localhost:4000"
+        "http://localhost:4000",
+        "http://localhost"
     ],
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
     "recaptchaSiteKey": "6LfKBfIbAAAAAJMnROmY0jkEGoVrbf2-0UwkV-M6",
@@ -17,7 +18,6 @@
         "password": "PayPerWin777",
         "host": "159.203.4.60:27017"
     },
-    
     "CountryInfo": [
         {
             "country": "Canada",
@@ -48,7 +48,6 @@
     "AutoBetPeorid": {
         "daily": "Daily"
     },
-
     "PlaceBetStatus": {
         "active": "Active",
         "inActive": "Inactive"
@@ -56,7 +55,6 @@
     "PlaceBetPeorid": {
         "daily": "Daily"
     },
-
     "PromotionTypes": {
         "straightCredit": {
             "name": "Straight Credit",

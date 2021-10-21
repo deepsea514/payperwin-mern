@@ -10,7 +10,7 @@ class AutobetChart extends Component {
                 width: '100%',
                 type: 'pie',
             },
-            labels: sports ? sports.map(sport => sport._id) : [],
+            labels: sports ? sports.map(sport => sport._id ? sport._id : 'Parlay Bets') : [],
             theme: {
                 monochrome: {
                     enabled: true

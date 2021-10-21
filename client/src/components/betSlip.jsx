@@ -5,6 +5,7 @@ import Bet from "./bet";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import _env from '../env.json';
+import BetParlay from './betparlay';
 const serverUrl = _env.appUrl;
 
 class BetSlip extends Component {
@@ -13,7 +14,18 @@ class BetSlip extends Component {
         this.state = {
             errors: [],
             confirmationOpen: false,
+            single: true,
+            parlayWin: '',
+            parlayStake: '',
         };
+    }
+
+    componentDidUpdate(prevProps) {
+        const { betSlip } = this.props;
+        const { betSlip: prevBetSlip } = prevProps;
+        if (JSON.stringify(betSlip) != JSON.stringify(prevBetSlip)) {
+            this.setState({ parlayStake: '', parlayWin: '' });
+        }
     }
 
     toggleField = (fieldName, forceState) => {
@@ -24,9 +36,8 @@ class BetSlip extends Component {
         }
     }
 
-    placeBets = () => {
+    placeSingleBets = () => {
         const { updateUser, user, betSlip, removeBet } = this.props;
-        const url = `${serverUrl}/placeBets`;
         this.setState({ errors: [] });
 
         let totalStake = 0;
@@ -45,7 +56,7 @@ class BetSlip extends Component {
             return;
         }
 
-        axios.post(url, { betSlip }, { withCredentials: true })
+        axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
                 const successCount = betSlip.length - (errors ? errors.length : 0);
                 const stateChanges = {};
@@ -68,41 +79,74 @@ class BetSlip extends Component {
             });
     }
 
+    placeParlayBets = () => {
+        const { updateUser, user, betSlip, removeBet } = this.props;
+        const { parlayStake, parlayWin } = this.state;
+        this.setState({ errors: [] });
+        let totalWin = parlayWin ? parlayWin : 0;
+        let totalStake = parlayStake ? parlayStake : 0;
+        if (user && totalStake > user.balance) {
+            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
+            return;
+        }
+        if (totalWin > 2000) {
+            this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
+            return;
+        }
+        axios.post(`${serverUrl}/placeParlayBets`, { betSlip, totalStake, totalWin }, { withCredentials: true })
+            .then(({ data: { balance, errors } }) => {
+                if (errors.length == 0) {
+                    updateUser('balance', balance);
+                    removeBet(null, null, null, null, null, true);
+                    this.setState({ confirmationOpen: true });
+                } else {
+                    this.setState({ errors });
+                }
+            }).catch((err) => {
+                this.setState({ errors: ['Can\'t place bet.'] });
+            });
+    }
+
+    placeBets = () => {
+        const { single } = this.state;
+        single ? this.placeSingleBets() : this.placeParlayBets();
+    }
+
     render() {
-        const { errors, confirmationOpen } = this.state;
+        const { errors, confirmationOpen, single, parlayWin, parlayStake } = this.state;
         const {
-            betSlip,
-            openBetSlipMenu,
-            toggleField,
-            removeBet,
-            updateBet,
-            user,
-            className,
-            showLoginModalAction
+            betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
+            className, showLoginModalAction
         } = this.props;
+
         let totalStake = 0;
         let totalWin = 0;
-        betSlip.forEach(b => {
-            totalStake += b.stake;
-            totalWin += b.win;
-        });
+        if (single) {
+            betSlip.forEach(b => {
+                totalStake += b.stake;
+                totalWin += b.win;
+            });
+        } else {
+            totalWin = parlayWin ? parlayWin : 0;
+            totalStake = parlayStake ? parlayStake : 0;
+        }
+        const sportsBetSlip = betSlip.filter(bet => bet.origin != 'other');
+
         return (
             <div className={`bet-slip-contain ${className} ${openBetSlipMenu ? 'full-fixed' : ''}`}>
-                {confirmationOpen ? (
-                    <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
-                        <div className="col-in">
-                            <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
-                            <div>
-                                <center>
-                                    Your bet has been submitted.
-                                    <br />
-                                    <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
-                                </center>
-                            </div>
+                {confirmationOpen && <div className="modal confirmation">
+                    <div className="background-closer bg-modal" onClick={() => this.toggleField('confirmationOpen')} />
+                    <div className="col-in">
+                        <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
+                        <div>
+                            <center>
+                                Your bet has been submitted.
+                                <br />
+                                <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
+                            </center>
                         </div>
                     </div>
-                ) : null}
+                </div>}
                 <div
                     className={`bet-slip ${betSlip.length > 0 ? '' : 'empty'}`}
                     onClick={() => toggleField('openBetSlipMenu')}>
@@ -113,7 +157,17 @@ class BetSlip extends Component {
                 <div className="bet-slip-content">
                     <div className="tab-content" id="myTabContent">
                         <div className="tab-pane fade show active" id="Singles" role="tabpanel" aria-labelledby="home-tab">
-                            <div className="bet-slip-list">
+                            <div className="row bet-slip-type-container mx-0 shadow-sm">
+                                <div className={`col-6 cursor-pointer bet-slip-type ${single ? 'active' : ''}`}
+                                    onClick={() => this.setState({ single: true })}>
+                                    Single Bets
+                                </div>
+                                <div className={`col-6 cursor-pointer bet-slip-type ${!single ? 'active' : ''}`}
+                                    onClick={() => this.setState({ single: false })}>
+                                    Parlay
+                                </div>
+                            </div>
+                            {single && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> Insufficient Funds</b></div>
@@ -128,21 +182,44 @@ class BetSlip extends Component {
                                         </Link>
                                     </div>
                                 </div>}
-                                {betSlip.length > 0 ? (
-                                    <React.Fragment>
-                                        {betSlip.map(bet => <Bet
-                                            bet={bet}
-                                            removeBet={removeBet}
-                                            updateBet={updateBet}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)}
-                                    </React.Fragment>) :
-                                    (
-                                        <div className="no-bets">
-                                            <h4>There are no bets on your ticket.</h4>
-                                            <small>Click the odds to add a bet</small>
-                                        </div>
-                                    )}
-                            </div>
+                                {betSlip.length > 0 ?
+                                    betSlip.map(bet => <Bet
+                                        bet={bet}
+                                        removeBet={removeBet}
+                                        updateBet={updateBet}
+                                        key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
+                                    : <div className="no-bets">
+                                        <h4>There are no bets on your ticket.</h4>
+                                        <small>Click the odds to add a bet</small>
+                                    </div>}
+                            </div>}
+                            {!single && <div className="bet-slip-list">
+                                {user && user.balance < totalStake && <div className="bet p-0">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> Insufficient Funds</b></div>
+                                        <div>You do not have sufficient funds to place these bets. Please deposit now to continue betting.</div>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link
+                                            type="button"
+                                            className="deposit-btn text-center"
+                                            to="/deposit">
+                                            Deposit
+                                        </Link>
+                                    </div>
+                                </div>}
+                                {sportsBetSlip.length > 1 ?
+                                    <BetParlay
+                                        betSlip={sportsBetSlip}
+                                        stake={parlayStake}
+                                        win={parlayWin}
+                                        setParlayBet={(data) => this.setState(data)}
+                                    /> :
+                                    <div className="no-bets">
+                                        <h4>To place a Multiples bet you need a minimum of two bets on your Bet Slip. Alternatively, you can place a Singles bet.</h4>
+                                        <small>Click the odds to add a bet</small>
+                                    </div>}
+                            </div>}
                             <div className="total">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
@@ -175,18 +252,6 @@ class BetSlip extends Component {
                                     }>
                                     {user ? 'Place All Bets' : 'Log in and Place Bets'}
                                 </button>
-                            </div>
-                        </div>
-                        <div className="tab-pane fade" id="Multiples" role="tabpanel" aria-labelledby="profile-tab">
-                            <div className="no-bets">
-                                <h4>There are no bets on your ticket.</h4>
-                                <small>Click the odds to add a bet</small>
-                            </div>
-                        </div>
-                        <div className="tab-pane fade" id="Teasers" role="tabpanel" aria-labelledby="contact-tab">
-                            <div className="no-bets">
-                                <h4>There are no bets on your ticket.</h4>
-                                <small>Click the odds to add a bet</small>
                             </div>
                         </div>
                     </div>

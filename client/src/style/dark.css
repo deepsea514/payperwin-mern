@@ -99,6 +99,23 @@
     background: #182f49;
 }
 
+.main-section.dark .bet-slip-type-container {
+    background: #334d6b;
+}
+
+.main-section.dark .bet-parlay-container {
+    background-color: #182f49;
+    color: white;
+}
+
+.main-section.dark .bet-parlay {
+    background-image: linear-gradient(to right, white 75%, rgba(255, 255, 255, 0) 0%);
+}
+
+.main-section.dark .bet-parlay-container .bet-divider {
+    background-color: white;
+}
+
 .main-section.dark .total {
     background: #182f49;
 }

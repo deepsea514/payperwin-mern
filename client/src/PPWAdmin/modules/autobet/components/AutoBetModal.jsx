@@ -30,6 +30,7 @@ export default class AutoBetModal extends React.Component {
                 rollOver: false,
                 budget: 0,
                 sportsbookBudget: 0,
+                parlayBudget: 0,
                 maxRisk: 0,
                 priority: 0,
                 sports: [],
@@ -48,6 +49,8 @@ export default class AutoBetModal extends React.Component {
                 sportsbookBudget: Yup.number()
                     .moreThan(0, "Sportsbook Budget should be more than 0")
                     .required("Sportsbook Budget field is required"),
+                parlayBudget: Yup.number()
+                    .required("Parlay Budget field is required"),
                 maxRisk: Yup.number()
                     .moreThan(0, "Max Risk should be more than 0")
                     .required("Max Risk field is required."),
@@ -107,9 +110,9 @@ export default class AutoBetModal extends React.Component {
                     initialValues={initialValues}
                     validationSchema={autobetSchema}
                     onSubmit={onSubmit}>
-                    {
-                        (formik) => {
-                            return <form onSubmit={formik.handleSubmit}>
+                    {(formik) => {
+                        return (
+                            <form onSubmit={formik.handleSubmit}>
                                 <Modal.Body>
                                     <div className="form-group">
                                         <label>User<span className="text-danger">*</span></label>
@@ -177,6 +180,18 @@ export default class AutoBetModal extends React.Component {
                                             {formik.touched.sportsbookBudget && formik.errors.sportsbookBudget ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.sportsbookBudget}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group col-md-6">
+                                            <label>Parlay Budget<span className="text-danger">*</span></label>
+                                            <input name="parlayBudget" placeholder="Enter Parlay Budget"
+                                                className={`form-control ${getInputClasses(formik, "parlayBudget")}`}
+                                                {...formik.getFieldProps("parlayBudget")}
+                                            />
+                                            {formik.touched.parlayBudget && formik.errors.parlayBudget ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.parlayBudget}
                                                 </div>
                                             ) : null}
                                         </div>
@@ -324,8 +339,8 @@ export default class AutoBetModal extends React.Component {
                                     </Button>
                                 </Modal.Footer>
                             </form>
-                        }
-                    }
+                        )
+                    }}
                 </Formik>}
             </Modal>
         );
