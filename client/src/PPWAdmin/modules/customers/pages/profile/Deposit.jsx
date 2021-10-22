@@ -5,12 +5,15 @@ import { getCustomerDeposits } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
 import config from "../../../../../../../config.json";
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 const FinancialStatus = config.FinancialStatus;
 
 class Deposit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: props.customer._id,
             loading: true,
             deposits: [],
             total: 0,
@@ -133,7 +136,7 @@ class Deposit extends React.Component {
 
     render() {
         const { className } = this.props;
-        const { perPage, page, total } = this.state;
+        const { perPage, page, total, id } = this.state;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
         return (
             <div className={`card card-custom ${className}`}>
@@ -148,6 +151,17 @@ class Deposit extends React.Component {
                         </span>
                     </h3>
                     <div className="card-toolbar">
+                        <Dropdown className="dropdown-inline" drop="down" alignRight>
+                            <Dropdown.Toggle
+                                id="dropdown-toggle-top2"
+                                variant="transparent"
+                                className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                                View:
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                <DropdownMenuCustomer id={id} />
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div>
                 {/* Body */}

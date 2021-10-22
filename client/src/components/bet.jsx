@@ -18,7 +18,7 @@ class Bet extends Component {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
-        const { odds, pick, lineId, sportsbook } = bet;
+        const { odds, pick, lineQuery } = bet;
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
@@ -30,12 +30,8 @@ class Bet extends Component {
             const win = roundToPennies
             stateChange.win = win;
             updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
+                lineQuery, pick,
+                { win: { $set: win }, stake: { $set: stake } },
             );
         } else if (name === 'win') {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
@@ -48,12 +44,8 @@ class Bet extends Component {
             const stake = roundToPennies;
             stateChange.stake = stake;
             updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
+                lineQuery, pick,
+                { win: { $set: win }, stake: { $set: stake } },
             );
         } else {
             stateChange[name] = value;
@@ -67,13 +59,12 @@ class Bet extends Component {
         const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
         return (
             <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
-                {win > 2000 && <div className="bet-warn-message">
+                {win > 5000 && <div className="bet-warn-message">
                     <div><b>Above Maximum Stake</b></div>
-                    Please enter a new amount that payout does not exceed CAD 2,000.
+                    Please enter a new amount that win amount does not exceed CAD 5,000.
                 </div>}
-                <div className={`bet ${win > 2000 ? 'bet-warn' : ''}`}>
+                <div className={`bet ${win > 5000 ? 'bet-warn' : ''}`}>
                     <div>
-                        {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
                         <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
@@ -105,7 +96,7 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 2000 } })}>CAD 2,000</span></div>
+                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 2,000</span></div>
                 </div>
             </div>
         )

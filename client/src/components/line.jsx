@@ -79,6 +79,8 @@ export default class Line extends Component {
                 return '- 3rd Quarter';
             case 'forth_quarter':
                 return '- 4th Quarter';
+            case 'fifth_innings': 
+                return ' - 5th Innings';
             default:
                 return '- Game';
         }

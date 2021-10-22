@@ -34,6 +34,9 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
                                 case 'forth_quarter':
                                     selectedLine = line.forth_quarter;
                                     break;
+                                case 'fifth_innings':
+                                    selectedLine = line.fifth_innings;
+                                    break;
                             }
                             if (selectedLine) {
                                 if (type === 'spread') {

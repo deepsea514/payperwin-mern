@@ -191,7 +191,7 @@ class Lines extends Component {
                     {lines ? lines.map((line, i) => {
                         const {
                             spreads, moneyline, totals, alternative_spreads, alternative_totals,
-                            first_half, second_half,
+                            first_half, second_half, fifth_innings,
                             first_quarter, second_quarter,
                             third_quarter, forth_quarter
                         } = line;
@@ -207,6 +207,7 @@ class Lines extends Component {
                             { line: second_quarter, subtype: "second_quarter" },
                             { line: third_quarter, subtype: "third_quarter" },
                             { line: forth_quarter, subtype: "forth_quarter" },
+                            { line: fifth_innings, subtype: "fifth_innings" }
                         ]
                         return lines.slice(0, showAll ? lines.length : 1)
                             .map((line, idx) =>
