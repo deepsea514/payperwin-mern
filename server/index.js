@@ -57,7 +57,7 @@ const adminEmailAddress1 = 'hello@payperwin.co';
 const supportEmailAddress = 'support@payperwin.co';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
-const maximumWin = 2000;
+const maximumWin = 5000;
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');

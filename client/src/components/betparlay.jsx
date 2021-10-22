@@ -57,11 +57,11 @@ class BetParlay extends Component {
 
         return (
             <>
-                {win > 2000 && <div className="bet-parlay-warn-message">
+                {win > 5000 && <div className="bet-parlay-warn-message">
                     <div><b>Above Maximum Stake</b></div>
-                    Please enter a new amount that payout does not exceed CAD 2,000.
+                    Please enter a new amount that win amount does not exceed CAD 2,000.
                 </div>}
-                <div className={`bet-parlay-container ${win > 2000 ? 'bet-warn': ''}`}>
+                <div className={`bet-parlay-container ${win > 5000 ? 'bet-warn': ''}`}>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">1's x {betSlip.length}</span>
                         <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
@@ -88,7 +88,7 @@ class BetParlay extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 2000 } })}>CAD 2,000</span></div>
+                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 2,000</span></div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
                         const { name, type, league, sportName, pickName } = bet;
