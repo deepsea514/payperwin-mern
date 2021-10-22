@@ -17,7 +17,7 @@ const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
 const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
 const BetFee = 0.05;
 
 Date.prototype.addHours = function (h) {
@@ -211,13 +211,13 @@ const matchResultsP2P = async (bet365ApiKey) => {
                                         from: `${fromEmailName} <${fromEmailAddress}>`,
                                         to: email,
                                         subject: 'You won a wager!',
-                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
                                         html: simpleresponsive(`
                                             <p>
                                                 Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                             </p>
                                             `,
-                                            { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {

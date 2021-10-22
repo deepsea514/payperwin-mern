@@ -15,7 +15,7 @@ const ErrorLog = require('./models/errorlog');
 //local helpers
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
