@@ -2,6 +2,8 @@
 import React from "react";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
+import { Dropdown } from 'react-bootstrap';
+import { DropdownMenuDashboard } from "./DropdownMenuDashboard";
 import config from "../../../../../../config.json";
 const FinancialStatus = config.FinancialStatus;
 
@@ -96,6 +98,17 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, root
                     </span>
                 </h3>
                 <div className="card-toolbar">
+                    <Dropdown className="dropdown-inline" drop="down" alignRight>
+                        <Dropdown.Toggle
+                            id="dropdown-toggle-top2"
+                            variant="transparent"
+                            className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                            Go to:
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                            <DropdownMenuDashboard />
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
             </div>
             {/* Body */}
