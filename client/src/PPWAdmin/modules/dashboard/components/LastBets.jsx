@@ -2,7 +2,8 @@
 import React from "react";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
-import { Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab, Dropdown } from "react-bootstrap";
+import { DropdownMenuDashboard } from "./DropdownMenuDashboard";
 
 export function LastBets({ className, loadingbets, lastbets, roothistory, lastsportsbookbets, loadingsportsbookbets, }) {
     const getDate = (date) => {
@@ -115,6 +116,17 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </span>
                 </h3>
                 <div className="card-toolbar">
+                    <Dropdown className="dropdown-inline" drop="down" alignRight>
+                        <Dropdown.Toggle
+                            id="dropdown-toggle-top2"
+                            variant="transparent"
+                            className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                            Go to:
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                            <DropdownMenuDashboard />
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
             </div>
             {/* Body */}

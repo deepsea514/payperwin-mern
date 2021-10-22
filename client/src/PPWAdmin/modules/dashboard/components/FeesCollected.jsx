@@ -8,6 +8,8 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
 import * as reports from "../../reports/redux/reducers";
 import { connect } from "react-redux";
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuDashboard } from "./DropdownMenuDashboard";
 
 function FeesCollected({
     className,
@@ -229,16 +231,32 @@ function FeesCollected({
 
     return (
         <div className={`card card-custom ${className}`}>
+            <div className="card-header border-0 pt-5">
+                <h3 className="card-title align-items-start flex-column">
+                    <span className="card-label font-weight-bolder text-dark">
+                        Fees Collected
+                    </span>
+                </h3>
+                <div className="card-toolbar">
+                    <Dropdown className="dropdown-inline" drop="down" alignRight>
+                        <Dropdown.Toggle
+                            id="dropdown-toggle-top2"
+                            variant="transparent"
+                            className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                            Go to:
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                            <DropdownMenuDashboard />
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+            </div>
             <div className="card-body p-0">
                 <div className="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                    <span
-                        className={`symbol ${symbolShape} symbol-50 symbol-light-${baseColor} mr-2`}
-                    >
+                    <span className={`symbol ${symbolShape} symbol-50 symbol-light-${baseColor} mr-2`}>
                         <span className="symbol-label">
                             <span className={`svg-icon svg-icon-xl svg-icon-${baseColor}`}>
-                                <SVG
-                                    src="/media/svg/icons/Layout/Layout-4-blocks.svg"
-                                ></SVG>
+                                <SVG src="/media/svg/icons/Layout/Layout-4-blocks.svg" />
                             </span>
                         </span>
                     </span>
