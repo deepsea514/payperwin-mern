@@ -59,7 +59,6 @@ const getAllSportsLines = async () => {
         return;
     }
     const { bet365ApiKey } = bet365Addon.value;
-    // const bet365ApiKey = "93744-14OHbIxqh3sRxS";
 
     let sportsDir = await SportsDir.findOne({ origin: "bet365" });
     if (!sportsDir) {
