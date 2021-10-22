@@ -183,7 +183,7 @@ class WithdrawETransfer extends Component {
                             <p>
                                 Your withdrawal request has been sent for manual processing.
                                 You will receive an email as verification when the withdrawal is complete.
-                                Please contact our Customer Service Department for more information at support@payperwin.co.
+                                Please contact our Customer Service Department for more information at support@payperwin.com.
                             </p>
                             <p>
                                 For more information on withdrawing with Interac e-Transfer please click here

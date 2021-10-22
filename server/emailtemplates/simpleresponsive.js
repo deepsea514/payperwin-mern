@@ -130,7 +130,7 @@ module.exports = (body, link) => `
                             <td class="wrapper"
                                 style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;">
                                 <!-- Logo -->
-                                <img src="http://payperwin.co/images/logo-blue.png" alt="hello"
+                                <img src="http://payperwin.com/images/logo-blue.png" alt="hello"
                                     width="200" height="49">
                                 <br></br>
                                 <table border="0" cellpadding="0" cellspacing="0"
@@ -185,7 +185,7 @@ module.exports = (body, link) => `
                                         style="color: #999999; font-size: 12px; text-align: center;">PAYPER WIN</span>
                                     <br> 
                                     <p>Help & Support</p>
-                                    <a href="mailto:hello@payperwin.co">hello@payperwin.co</a>
+                                    <a href="mailto:hello@payperwin.com">hello@payperwin.com</a>
                                 </td>
                             </tr>
                         </table>

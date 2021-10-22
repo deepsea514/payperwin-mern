@@ -111,16 +111,16 @@ app.get("/*", (req, res) => {
 
         <meta itemprop="name" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta itemprop="description" content="${description}">
-        <meta itemprop="image" content="https://www.payperwin.co/images/PPW Meta.jpg">
+        <meta itemprop="image" content="https://www.payperwin.com/images/PPW Meta.jpg">
 
         <meta property="og:type" content="website">
         <meta property="og:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta property="og:description" content="${description}">
-        <meta property="og:image" content="https://www.payperwin.co/images/PPW Meta.jpg">
+        <meta property="og:image" content="https://www.payperwin.com/images/PPW Meta.jpg">
 
         <meta name="twitter:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta name="twitter:description" content="${description}">
-        <meta name="twitter:image" content="https://www.payperwin.co/images/PPW Meta.jpg">
+        <meta name="twitter:image" content="https://www.payperwin.com/images/PPW Meta.jpg">
         `;
 
         // TODO inject meta tags
