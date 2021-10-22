@@ -218,9 +218,9 @@ const calculateBetPoolsStatus = async () => {
         }
     });
 
-    await BetPool.deleteMany({
-        result: { $exists: true }
-    })
+    // await BetPool.deleteMany({
+    //     result: { $exists: true }
+    // })
 }
 
 const checkBetWithoutBetpool = async () => {
