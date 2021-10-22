@@ -18,7 +18,7 @@ class Bet extends Component {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
-        const { odds, pick, lineId, sportsbook } = bet;
+        const { odds, pick, lineQuery } = bet;
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
@@ -30,12 +30,8 @@ class Bet extends Component {
             const win = roundToPennies
             stateChange.win = win;
             updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
+                lineQuery, pick,
+                { win: { $set: win }, stake: { $set: stake } },
             );
         } else if (name === 'win') {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
@@ -48,12 +44,8 @@ class Bet extends Component {
             const stake = roundToPennies;
             stateChange.stake = stake;
             updateBet(
-                lineId,
-                pick,
-                {
-                    win: { $set: win },
-                    stake: { $set: stake },
-                },
+                lineQuery, pick,
+                { win: { $set: win }, stake: { $set: stake } },
             );
         } else {
             stateChange[name] = value;
@@ -73,7 +65,6 @@ class Bet extends Component {
                 </div>}
                 <div className={`bet ${win > 2000 ? 'bet-warn' : ''}`}>
                     <div>
-                        {/* <i className={`${sportNameIcon(sportName) || 'fas fa-trophy'}`} /> */}
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
                         <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
