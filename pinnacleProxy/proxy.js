@@ -26,7 +26,7 @@ var server = http.createServer((req, res) => {
     proxy.web(req, res, options);
   } else {
     res.writeHead(403);
-    res.end(`Access Denied. Ask webmaster to have your ip -> (${ip}) whitelisted for this Pinnacle API proxy.`);
+    res.end(`Access Denied. Ask webmaster to have your ip -> (${ip}) whitelisted for this PAYPERWIN API proxy.`);
   }
 });
 server.listen(80);

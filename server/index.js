@@ -1212,7 +1212,10 @@ expressApp.post(
                                             matchStartDate: startDate,
                                             status: 'Pending',
                                             matchingStatus: 'Pending',
-                                            lineQuery,
+                                            lineQuery: {
+                                                ...lineQuery,
+                                                points: hdp ? hdp : points ? points : null,
+                                            },
                                             lineId: lineId,
                                             origin: origin,
                                             sportsbook: sportsbook
@@ -1470,7 +1473,10 @@ expressApp.post(
                 oldOdds: lineOdds,
                 pickName: pickName,
                 matchStartDate: startDate,
-                lineQuery: lineQuery,
+                lineQuery: {
+                    ...lineQuery,
+                    points: hdp ? hdp : points ? points : null,
+                },
                 origin: origin,
                 sportsbook: sportsbook
             });
