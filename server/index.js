@@ -55,10 +55,10 @@ const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
-const adminEmailAddress = 'admin@payperwin.co';
-const adminEmailAddress1 = 'hello@payperwin.co';
-const supportEmailAddress = 'support@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
+const adminEmailAddress = 'admin@payperwin.com';
+const adminEmailAddress1 = 'hello@payperwin.com';
+const supportEmailAddress = 'support@payperwin.com';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
 const maximumWin = 5000;
@@ -783,7 +783,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
-                const passwordRecoveryPath = `https://www.payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
+                const passwordRecoveryPath = `https://www.payperwin.com/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
@@ -1840,7 +1840,7 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                         <p>
                             This is a notification that your have exceeded ${usage}% ($${amount} / $${selectedauto.parlayBudget}) of your daily risk limit.
                         </p>`,
-                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                        { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
@@ -2157,7 +2157,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         <p>
                             This is a notification that your have exceeded ${usage}% ($${amount} / $${bet.sportsbook ? selectedauto.sportsbookBudget : selectedauto.budget}) of your daily risk limit.
                         </p>`,
-                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                        { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
@@ -2779,7 +2779,7 @@ const depositTripleA = async (req, res, data) => {
         "order_currency": "CAD",
         "order_amount": amount,
         "notify_email": email,
-        "notify_url": "https://api.payperwin.co/triplea/deposit",
+        "notify_url": "https://api.payperwin.com/triplea/deposit",
         "notify_secret": notify_secret,
         "payer_id": user._id,
         "payer_name": user.username,
@@ -2875,7 +2875,7 @@ expressApp.post('/deposit',
                                         "sku": uniqid
                                     }
                                 ],
-                                "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
+                                "notification_url": "https://api.payperwin.com/premier/etransfer-deposit",
                                 "amount_shipping": 0.00,
                                 "udf1": user._id,
                                 "udf2": uniqid,

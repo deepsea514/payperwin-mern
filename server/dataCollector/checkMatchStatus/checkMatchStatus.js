@@ -20,7 +20,7 @@ const {
     getLinePoints,
 } = require('../../libs/functions');
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
 const FinancialStatus = config.FinancialStatus;
 //external libraries
 const mongoose = require('mongoose');
@@ -121,7 +121,7 @@ const checkMatchStatus = async () => {
                     <br><br>
                     Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
                     <br><br>
-                `, { href: "https://www.payperwin.co/bets", name: 'View Open Bets' }),
+                `, { href: "https://www.payperwin.com/bets", name: 'View Open Bets' }),
             };
             sgMail.send(msg).catch(error => {
                 ErrorLog.create({
