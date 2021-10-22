@@ -51,9 +51,9 @@ const AdminRoles = config.AdminRoles;
 const isDstObserved = config.isDstObserved;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
-const adminEmailAddress1 = 'hello@payperwin.co';
-const supportEmailAddress = 'support@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
+const adminEmailAddress1 = 'hello@payperwin.com';
+const supportEmailAddress = 'support@payperwin.com';
 const calculateNewOdds = require('./libs/calculateNewOdds');
 const { convertTimeLineDate } = require('./libs/timehelper');
 const {
@@ -1426,7 +1426,7 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         "withdraw_amount": withdrawamount,
         "crypto_currency": crypto_currency,
         "remarks": "Bitcoin Withdraw |" + withdraw._id,
-        "notify_url": "https://api.payperwin.co/triplea/withdraw",
+        "notify_url": "https://api.payperwin.com/triplea/withdraw",
         "notify_secret": notify_secret
     };
     let payout_reference = null;
@@ -2014,13 +2014,13 @@ adminRouter.post(
                                         from: `${fromEmailName} <${fromEmailAddress}>`,
                                         to: email,
                                         subject: 'You won a wager!',
-                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
                                         html: simpleresponsive(`
                                                 <p>
                                                     Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                                 </p>
                                                 `,
-                                            { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {
@@ -3698,13 +3698,13 @@ const matchResults = async (eventId, matchResult) => {
                                 from: `${fromEmailName} <${fromEmailAddress}>`,
                                 to: email,
                                 subject: 'You won a wager!',
-                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
                                 html: simpleresponsive(`
                                             <p>
                                                 Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                             </p>
                                             `,
-                                    { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                    { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
                                 ),
                             };
                             sgMail.send(msg).catch(error => {
