@@ -923,7 +923,6 @@ expressApp.post(
             });
         }
 
-
         for (const bet of betSlip) {
             const {
                 odds,

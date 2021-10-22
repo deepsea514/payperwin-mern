@@ -241,9 +241,14 @@ class App extends Component {
         }
     }
 
-    updateBet = (lineId, pick, propUpdates, index) => {
+    updateBet = (lineQuery, pick, propUpdates, index) => {
         const { betSlip } = this.state;
-        const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && (typeof index === 'number' ? b.index === index : true));
+        const indexOfBet = betSlip.findIndex((b) =>
+            b.lineQuery.eventId === lineQuery.eventId &&
+            b.lineQuery.type === lineQuery.type &&
+            b.lineQuery.subtype === lineQuery.subtype &&
+            b.pick === pick &&
+            (typeof index === 'number' ? b.index === index : true));
         if (typeof indexOfBet === 'number') {
             this.setState({
                 betSlip: update(betSlip, {
