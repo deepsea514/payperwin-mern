@@ -180,10 +180,10 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
     }
 
-    line.spreads = line.spreads.length ? line.spreads : null;
-    line.totals = line.totals.length ? line.totals : null;
-    line.alternative_spreads = line.alternative_spreads.length ? line.alternative_spreads : null;
-    line.alternative_totals = line.alternative_totals.length ? line.alternative_totals : null;
+    line.spreads = line.spreads && line.spreads.length ? line.spreads : null;
+    line.totals = line.totals && line.totals.length ? line.totals : null;
+    line.alternative_spreads = line.alternative_spreads && line.alternative_spreads.length ? line.alternative_spreads : null;
+    line.alternative_totals = line.alternative_totals && line.alternative_totals.length ? line.alternative_totals : null;
     return line;
 
 }

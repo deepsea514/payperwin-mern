@@ -6,11 +6,14 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
 import { Tabs, Tab } from "react-bootstrap";
 import convertOdds from '../../../../../helpers/convertOdds.js';
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 
 class BetLog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: props.customer._id,
             perPage: 10,
             p2pBets: {
                 bets: [],
@@ -196,7 +199,7 @@ class BetLog extends React.Component {
 
     render() {
         const { className } = this.props;
-        const { perPage, p2pBets, sportsbookBets } = this.state;
+        const { perPage, p2pBets, sportsbookBets, id } = this.state;
         const { page: pagePPW, total: totalPPW } = p2pBets;
         const { page: pageSportsBook, total: totalSportsBook } = sportsbookBets;
         const totalPPWPages = totalPPW ? (Math.floor((totalPPW - 1) / perPage) + 1) : 1;
@@ -214,6 +217,17 @@ class BetLog extends React.Component {
                         </span>
                     </h3>
                     <div className="card-toolbar">
+                        <Dropdown className="dropdown-inline" drop="down" alignRight>
+                            <Dropdown.Toggle
+                                id="dropdown-toggle-top2"
+                                variant="transparent"
+                                className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                                View:
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                <DropdownMenuCustomer id={id} />
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div>
                 {/* Body */}

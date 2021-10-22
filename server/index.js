@@ -55,13 +55,13 @@ const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
-const adminEmailAddress = 'admin@payperwin.co';
-const adminEmailAddress1 = 'hello@payperwin.co';
-const supportEmailAddress = 'support@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
+const adminEmailAddress = 'admin@payperwin.com';
+const adminEmailAddress1 = 'hello@payperwin.com';
+const supportEmailAddress = 'support@payperwin.com';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
-const maximumWin = 2000;
+const maximumWin = 5000;
 //external libraries
 const express = require('express');
 const ExpressBrute = require('express-brute');
@@ -71,8 +71,6 @@ const compression = require('compression');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-// const cookieSession = require('cookie-session');
 const expressSession = require('express-session');
 const dateformat = require("dateformat");
 require('dotenv').config();
@@ -785,7 +783,7 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
 
             if (user) {
                 const changePasswordHash = seededRandomString(user.password, 20);
-                const passwordRecoveryPath = `https://www.payperwin.co/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
+                const passwordRecoveryPath = `https://www.payperwin.com/newPasswordFromToken?username=${user.username}&h=${changePasswordHash}`;
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: email, // An array if you have multiple recipients.
@@ -924,7 +922,6 @@ expressApp.post(
                 errors,
             });
         }
-
 
         for (const bet of betSlip) {
             const {
@@ -1215,7 +1212,10 @@ expressApp.post(
                                             matchStartDate: startDate,
                                             status: 'Pending',
                                             matchingStatus: 'Pending',
-                                            lineQuery,
+                                            lineQuery: {
+                                                ...lineQuery,
+                                                points: hdp ? hdp : points ? points : null,
+                                            },
                                             lineId: lineId,
                                             origin: origin,
                                             sportsbook: sportsbook
@@ -1473,7 +1473,10 @@ expressApp.post(
                 oldOdds: lineOdds,
                 pickName: pickName,
                 matchStartDate: startDate,
-                lineQuery: lineQuery,
+                lineQuery: {
+                    ...lineQuery,
+                    points: hdp ? hdp : points ? points : null,
+                },
                 origin: origin,
                 sportsbook: sportsbook
             });
@@ -1837,7 +1840,7 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                         <p>
                             This is a notification that your have exceeded ${usage}% ($${amount} / $${selectedauto.parlayBudget}) of your daily risk limit.
                         </p>`,
-                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                        { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
@@ -2011,6 +2014,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         case 'forth_quarter':
             pickName += '4th Quarter: ';
             break;
+        case 'fifth_innings':
+            pickName += '5th Innings: ';
+            break;
         default:
             pickName += 'Pick: ';
             break;
@@ -2151,7 +2157,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         <p>
                             This is a notification that your have exceeded ${usage}% ($${amount} / $${bet.sportsbook ? selectedauto.sportsbookBudget : selectedauto.budget}) of your daily risk limit.
                         </p>`,
-                        { href: 'https://www.payperwin.co/autobet-settings', name: 'Increase daily limit' }),
+                        { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
                     ErrorLog.create({
@@ -2773,7 +2779,7 @@ const depositTripleA = async (req, res, data) => {
         "order_currency": "CAD",
         "order_amount": amount,
         "notify_email": email,
-        "notify_url": "https://api.payperwin.co/triplea/deposit",
+        "notify_url": "https://api.payperwin.com/triplea/deposit",
         "notify_secret": notify_secret,
         "payer_id": user._id,
         "payer_name": user.username,
@@ -2869,7 +2875,7 @@ expressApp.post('/deposit',
                                         "sku": uniqid
                                     }
                                 ],
-                                "notification_url": "https://api.payperwin.co/premier/etransfer-deposit",
+                                "notification_url": "https://api.payperwin.com/premier/etransfer-deposit",
                                 "amount_shipping": 0.00,
                                 "udf1": user._id,
                                 "udf2": uniqid,
@@ -2996,11 +3002,6 @@ expressApp.post(
 
             try {
                 const uniqid = `W${ID()}`;
-                const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
-                if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
-                    console.warn("PremierPay Api is not set");
-                    return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
-                }
 
                 const maxwithdraw = getMaxWithdraw(user);
                 let totalwithdraw = await FinancialLog.aggregate(
@@ -3010,9 +3011,7 @@ expressApp.post(
                             user: new ObjectId(user._id),
                         }
                     },
-                    {
-                        $group: { _id: null, total: { $sum: "$amount" } }
-                    }
+                    { $group: { _id: null, total: { $sum: "$amount" } } }
                 )
                 if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
                 else totalwithdraw = 0;
@@ -3025,63 +3024,32 @@ expressApp.post(
                     return res.json({ success: 0, message: "Insufficient funds." });
                 }
 
-                const { payouturl, sid } = premierpayAddon.value;
-                const signature = await generatePremierRequestSignature(user.email, amount, user._id, uniqid);
-                const amount2 = Number(amount).toFixed(2);
+                const withdraw = new FinancialLog({
+                    financialtype: 'withdraw',
+                    uniqid: uniqid,
+                    user: user._id,
+                    amount: amount,
+                    method: method,
+                    status: FinancialStatus.pending,
+                    fee: fee
+                });
+                await withdraw.save();
 
-                const { data } = await axios.post(`${payouturl}/${sid}`,
-                    {
-                        "payby": "etransfer",
-                        "amount": amount2,
-                        "first_name": user.firstname,
-                        "last_name": user.lastname,
-                        "email": user.email,
-                        "phone": user.phone,
-                        "address": "Artery roads",
-                        "city": "Edmonton",
-                        "state": "AB",
-                        "country": "CA",
-                        "zip_code": "T5A",
-                        "ip_address": "159.203.4.60",
-                        "notification_url": "https://api.payperwin.co/premier/etransfer-withdraw",
-                        "amount_shipping": 0.00,
-                        "udf1": user._id,
-                        "udf2": uniqid,
-                        "signature": signature
-                    }
-                );
-
-                const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
-                if (responsesignature != data.signature) {
-                    return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
-                }
-                if (data.status == "APPROVED") {
-                    const withdraw = new FinancialLog({
-                        financialtype: 'withdraw',
-                        uniqid: uniqid,
+                if (fee > 0) {
+                    const withdrawFee = new FinancialLog({
+                        financialtype: 'withdrawfee',
+                        uniqid: `WF${ID()}`,
                         user: user._id,
-                        amount: amount,
+                        amount: fee,
                         method: method,
-                        status: FinancialStatus.pending,
-                        fee: fee
+                        status: FinancialStatus.success,
                     });
-                    await withdraw.save();
-
-                    if (fee > 0) {
-                        const withdrawFee = new FinancialLog({
-                            financialtype: 'withdrawfee',
-                            uniqid: `WF${ID()}`,
-                            user: user._id,
-                            amount: fee,
-                            method: method,
-                            status: FinancialStatus.success,
-                        });
-                        await withdrawFee.save();
-                    }
-                    await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
-
-                    return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+                    await withdrawFee.save();
                 }
+                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+
+                return res.json({ success: 1, message: "Please wait until withdraw is finished." });
+                // }
                 return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.error("withdraw => ", error);

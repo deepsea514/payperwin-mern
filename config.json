@@ -1,11 +1,11 @@
 {
-    "serverHostUrl": "https://payperwin.co",
+    "serverHostUrl": "https://www.payperwin.com",
     "serverPort": 8080,
     "clientPort": 80,
     "corsHosts": [
-        "https://payperwin.co",
-        "https://www.payperwin.co",
-        "http://dev.payperwin.co",
+        "https://payperwin.com",
+        "https://www.payperwin.com",
+        "http://dev.payperwin.com",
         "http://68.183.203.13",
         "http://localhost:8081",
         "http://localhost:4000",

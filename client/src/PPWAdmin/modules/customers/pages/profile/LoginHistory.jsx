@@ -3,11 +3,14 @@ import dateformat from "dateformat";
 import { getCustomerLoginHistory } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 
 class LoginHistory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: props.customer._id,
             loading: true,
             loginHistory: [],
             total: 0,
@@ -97,14 +100,29 @@ class LoginHistory extends React.Component {
         return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
     };
     render() {
-        const { perPage, page, total } = this.state;
+        const { perPage, page, total, id } = this.state;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
         return (
             <div className="row">
                 <div className="col-lg-12">
                     <div className="card card-custom card-stretch">
                         <div className="card-header border-0">
-                            <h3 className="card-title font-weight-bolder text-dark">Login History</h3>
+                            <div className="card-title align-items-start flex-column">
+                                <h3 className="card-title font-weight-bolder text-dark">Login History</h3>
+                            </div>
+                            <div className="card-toolbar">
+                                <Dropdown className="dropdown-inline" drop="down" alignRight>
+                                    <Dropdown.Toggle
+                                        id="dropdown-toggle-top2"
+                                        variant="transparent"
+                                        className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                                        View:
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                        <DropdownMenuCustomer id={id} />
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                         </div>
                         <div className="card-body pt-3 pb-0">
                             <div className="">

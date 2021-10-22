@@ -47,17 +47,13 @@ const _ = require("lodash");
 const sendSMS = require("./libs/sendSMS");
 const config = require("../config.json");
 const FinancialStatus = config.FinancialStatus;
-const CountryInfo = config.CountryInfo;
 const EventStatus = config.EventStatus;
 const AdminRoles = config.AdminRoles;
 const isDstObserved = config.isDstObserved;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
-const adminEmailAddress1 = 'hello@payperwin.co';
-const supportEmailAddress = 'support@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
 const calculateNewOdds = require('./libs/calculateNewOdds');
-const { convertTimeLineDate } = require('./libs/timehelper');
 const {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
@@ -1246,58 +1242,34 @@ adminRouter.get(
             if (minamount || maxamount) {
                 let amountObj = {}
                 if (minamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $gte: parseInt(minamount) }
-                    }
+                    amountObj = { ...amountObj, $gte: parseInt(minamount) }
                 }
                 if (maxamount) {
-                    amountObj = {
-                        ...amountObj,
-                        ...{ $lte: parseInt(maxamount) }
-                    }
+                    amountObj = { ...amountObj, $lte: parseInt(maxamount) }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ amount: amountObj }
-                }
+                searchObj = { ...searchObj, amount: amountObj }
             }
             if (status) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ status }
-                }
+                searchObj = { ...searchObj, status }
             }
             if (method) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ method }
-                }
+                searchObj = { ...searchObj, method }
             }
             if (datefrom || dateto) {
                 let dateObj = {};
                 if (datefrom) {
                     datefrom = new Date(datefrom);
                     if (!isNaN(datefrom.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $gte: datefrom }
-                        }
+                        dateObj = { ...dateObj, $gte: datefrom }
                     }
                 }
                 if (dateto) {
                     dateto = new Date(dateto);
                     if (!isNaN(dateto.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $lte: dateto }
-                        }
+                        dateObj = { ...dateObj, $lte: dateto }
                     }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ createdAt: dateObj }
-                }
+                searchObj = { ...searchObj, createdAt: dateObj }
             }
             const total = await FinancialLog.find(searchObj).count();
             const withdraws = await FinancialLog.find(searchObj)
@@ -1327,25 +1299,16 @@ adminRouter.get(
                 if (datefrom) {
                     datefrom = new Date(datefrom);
                     if (!isNaN(datefrom.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $gte: datefrom }
-                        }
+                        dateObj = { ...dateObj, $gte: datefrom }
                     }
                 }
                 if (dateto) {
                     dateto = new Date(dateto);
                     if (!isNaN(dateto.getTime())) {
-                        dateObj = {
-                            ...dateObj,
-                            ...{ $lte: dateto }
-                        }
+                        dateObj = { ...dateObj, $lte: dateto }
                     }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ createdAt: dateObj }
-                }
+                searchObj = { ...searchObj, createdAt: dateObj }
             }
             const withdraws = await FinancialLog.find(searchObj)
                 .sort({ createdAt: -1 })
@@ -1369,12 +1332,7 @@ adminRouter.get(
 
 const tripleAWithdraw = async (req, res, data, user, withdraw) => {
     const amount = data.amount ? data.amount : withdraw.amount;
-    // const prebalance = parseInt(user.balance);
     const withdrawamount = parseInt(amount);
-    // if (prebalance < withdrawamount + fee) {
-    //     res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-    //     return false;
-    // }
 
     const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
     if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
@@ -1434,7 +1392,7 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         "withdraw_amount": withdrawamount,
         "crypto_currency": crypto_currency,
         "remarks": "Bitcoin Withdraw |" + withdraw._id,
-        "notify_url": "https://api.payperwin.co/triplea/withdraw",
+        "notify_url": "https://api.payperwin.com/triplea/withdraw",
         "notify_secret": notify_secret
     };
     let payout_reference = null;
@@ -1469,14 +1427,7 @@ adminRouter.patch(
     verifyTwoFactorAuthenticationCodeMiddleware,
     async (req, res) => {
         try {
-            // const admin = await Admin.findById(req.user._id);
             let { id, data } = req.body;
-            // const { _2fa_code } = data;
-            // if (!_2fa_code) return res.status(403).json({ error: 'Authentication failed.' });
-            // const isCodeValid = await verifyTwoFactorAuthenticationCode(admin.twoFactorAuthenticationCode, _2fa_code);
-            // if (!isCodeValid) {
-            //     return res.status(403).json({ error: 'Invalid Code.' });
-            // }
 
             const withdraw = await FinancialLog.findById(id);
             if (withdraw.status == FinancialStatus.success) {
@@ -1489,17 +1440,6 @@ adminRouter.patch(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
-            // if (data.status == FinancialStatus.success) {
-            //     const amount = data.amount ? data.amount : withdraw.amount;
-            //     const prebalance = parseInt(user.balance);
-            //     const withdrawamount = parseInt(amount);
-            //     if (prebalance < withdrawamount + fee) {
-            //         res.status(400).json({ error: 'Withdraw amount overflows balance.' });
-            //         return;
-            //     }
-            //     user.balance = parseInt(user.balance) - parseInt(amount) - fee;
-            // }
 
             if (data.status == FinancialStatus.inprogress) {
                 if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
@@ -1507,10 +1447,54 @@ adminRouter.patch(
                     if (!result)
                         return;
                 }
+                if (withdraw.method == 'eTransfer') {
+                    const premierpayAddon = await Addon.findOne({ name: 'premierpay' });
+                    if (!premierpayAddon || !premierpayAddon.value || !premierpayAddon.value.sid) {
+                        console.warn("PremierPay Api is not set");
+                        return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
+                    }
+                    const { payouturl, sid } = premierpayAddon.value;
+                    const signature = await generatePremierRequestSignature(user.email, withdraw.amount, user._id, withdraw.uniqid);
+                    const amount2 = Number(withdraw.amount).toFixed(2);
+
+                    try {
+                        const { data } = await axios.post(`${payouturl}/${sid}`,
+                            {
+                                "payby": "etransfer",
+                                "amount": amount2,
+                                "first_name": user.firstname,
+                                "last_name": user.lastname,
+                                "email": user.email,
+                                "phone": user.phone,
+                                "address": "Artery roads",
+                                "city": "Edmonton",
+                                "state": "AB",
+                                "country": "CA",
+                                "zip_code": "T5A",
+                                "ip_address": "159.203.4.60",
+                                "notification_url": "https://api.payperwin.com/premier/etransfer-withdraw",
+                                "amount_shipping": 0.00,
+                                "udf1": user._id,
+                                "udf2": withdraw.uniqid,
+                                "signature": signature
+                            }
+                        );
+
+                        const responsesignature = await generatePremierResponseSignature(data.txid, data.status, data.descriptor, data.udf1, data.udf2);
+                        if (responsesignature != data.signature) {
+                            return res.status(400).json({ success: 0, message: "Failed to create etransfer. Signatuer mismatch" });
+                        }
+
+                        if (data.status != "APPROVED") {
+                            return res.status(400).json({ success: 0, message: "Failed to create etransfer. Not approved" });
+                        }
+                    } catch (error) {
+                        return res.status(500).json({ error: 'Can\'t update withdraw.', result: error });
+                    }
+                }
             }
 
             await withdraw.update(data, { new: true }).exec();
-            // await user.save();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
@@ -2004,13 +1988,13 @@ adminRouter.post(
                                         from: `${fromEmailName} <${fromEmailAddress}>`,
                                         to: email,
                                         subject: 'You won a wager!',
-                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
                                         html: simpleresponsive(`
                                                 <p>
                                                     Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                                 </p>
                                                 `,
-                                            { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
                                         ),
                                     };
                                     sgMail.send(msg).catch(error => {
@@ -2272,6 +2256,9 @@ adminRouter.post(
                         break;
                     case 'forth_quarter':
                         pickName += '4th Quarter: ';
+                        break;
+                    case 'fifth_innings':
+                        pickName += '5th Innings: ';
                         break;
                     default:
                         pickName += 'Pick: ';
@@ -3844,13 +3831,13 @@ const matchResults = async (eventId, matchResult) => {
                                 from: `${fromEmailName} <${fromEmailAddress}>`,
                                 to: email,
                                 subject: 'You won a wager!',
-                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.co/history`,
+                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
                                 html: simpleresponsive(`
                                             <p>
                                                 Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
                                             </p>
                                             `,
-                                    { href: 'https://www.payperwin.co/history', name: 'View Settled Bets' }
+                                    { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
                                 ),
                             };
                             sgMail.send(msg).catch(error => {

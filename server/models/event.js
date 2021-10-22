@@ -16,9 +16,9 @@ const {
 const sgMail = require('@sendgrid/mail');
 const config = require('../../config.json');
 const fromEmailName = 'PAYPER WIN';
-const fromEmailAddress = 'donotreply@payperwin.co';
-const adminEmailAddress = 'hello@payperwin.co';
-const supportEmailAddress = 'support@payperwin.co';
+const fromEmailAddress = 'donotreply@payperwin.com';
+const adminEmailAddress = 'hello@payperwin.com';
+const supportEmailAddress = 'support@payperwin.com';
 const FinancialStatus = config.FinancialStatus;
 const { Schema } = mongoose;
 
@@ -61,7 +61,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
         }
         const timeString = convertTimeLineDate(new Date(), timezone);
         // Approve notification
-        const betLink = `https://www.payperwin.co/others/${event._id}`;
+        const betLink = `https://www.payperwin.com/others/${event._id}`;
         if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
             const msg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,

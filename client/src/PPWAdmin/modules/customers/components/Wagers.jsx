@@ -40,7 +40,7 @@ class Wagers extends React.Component {
             <>
                 <div className={`card card-custom ${className}`}>
                     <div className="card-header border-0">
-                        <h3 className="card-title font-weight-bolder text-dark">Lastest Bets</h3>
+                        <h4 className="card-title font-weight-bolder text-dark">Lastest Bets</h4>
                     </div>
                     <div className="card-body pt-2">
                         <Tabs>

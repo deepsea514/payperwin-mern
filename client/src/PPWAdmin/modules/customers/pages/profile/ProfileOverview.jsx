@@ -12,12 +12,15 @@ import { BetsPerDay } from "../../components/BetsPerDay";
 import { BetsPerWeek } from "../../components/BetsPerWeek";
 import { AverageBetAfter2Loss } from '../../components/AverageBetAfter2Loss';
 import { getCustomerOverview } from "../../redux/services";
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 
 class ProfileOverview extends React.Component {
     constructor(props) {
         super(props);
         const { customer } = props;
         this.state = {
+            id: customer._id,
             lastbets: [],
             lastsportsbookbets: [],
             totalwagers: 0,
@@ -80,89 +83,110 @@ class ProfileOverview extends React.Component {
         const {
             lastbets, lastsportsbookbets, totalwagers, totaldeposit,
             balance, currency, winloss, fees, averagebet, averagebetwin,
-            averagebetloss, betsperday, betsperweek,averagebetafter2loss
+            averagebetloss, betsperday, betsperweek, averagebetafter2loss, id
         } = this.state;
         return (
-            <>
-                <div className="row">
-                    <div className="col-md-4">
-                        <Balance
-                            balance={Number(balance).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <WinLoss
-                            className="mt-2"
-                            winloss={winloss} />
-                    </div>
-                    <div className="col-md-4">
-                        <TotalWager
-                            totalwagers={totalwagers}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <TotalDeposit
-                            totaldeposit={totaldeposit}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <Fees
-                            fees={fees}
-                            currency={currency}
-                            className="mt-2" />
+            <div className="card card-custom">
+                <div className="card-header border-0 pt-5">
+                    <h3 className="card-title align-items-start flex-column">
+                        Customer Overview
+                    </h3>
+                    <div className="card-toolbar">
+                        <Dropdown className="dropdown-inline" drop="down" alignRight>
+                            <Dropdown.Toggle
+                                id="dropdown-toggle-top2"
+                                variant="transparent"
+                                className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                                View:
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                <DropdownMenuCustomer id={id} />
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-4">
-                        <AverageBet
-                            averagebet={Number(averagebet).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-4">
+                            <Balance
+                                balance={Number(balance).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <WinLoss
+                                className="mt-2"
+                                winloss={winloss} />
+                        </div>
+                        <div className="col-md-4">
+                            <TotalWager
+                                totalwagers={totalwagers}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <TotalDeposit
+                                totaldeposit={totaldeposit}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <Fees
+                                fees={fees}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
                     </div>
-                    <div className="col-md-4">
-                        <AverageBetWin
-                            averagebetwin={Number(averagebetwin).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
+                    <div className="row">
+                        <div className="col-md-4">
+                            <AverageBet
+                                averagebet={Number(averagebet).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <AverageBetWin
+                                averagebetwin={Number(averagebetwin).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <AverageBetLoss
+                                averagebetloss={Number(averagebetloss).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <BetsPerDay
+                                betsperday={Number(betsperday).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <BetsPerWeek
+                                betsperweek={Number(betsperweek).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <AverageBetAfter2Loss
+                                averagebetafter2loss={Number(averagebetafter2loss).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
                     </div>
-                    <div className="col-md-4">
-                        <AverageBetLoss
-                            averagebetloss={Number(averagebetloss).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <BetsPerDay
-                            betsperday={Number(betsperday).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <BetsPerWeek
-                            betsperweek={Number(betsperweek).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
-                    </div>
-                    <div className="col-md-4">
-                        <AverageBetAfter2Loss
-                            averagebetafter2loss={Number(averagebetafter2loss).toFixed(2)}
-                            currency={currency}
-                            className="mt-2" />
+                    <hr />
+                    <div className="row">
+                        <div className="col-md-12">
+                            <Wagers
+                                lastbets={lastbets}
+                                lastsportsbookbets={lastsportsbookbets}
+                                currency={currency}
+                                className="mt-3 card-stretch gutter-b" />
+                        </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <Wagers
-                            lastbets={lastbets}
-                            lastsportsbookbets={lastsportsbookbets}
-                            currency={currency}
-                            className="mt-3 card-stretch gutter-b" />
-                    </div>
-                </div>
-            </>
+            </div>
         );
     }
 }

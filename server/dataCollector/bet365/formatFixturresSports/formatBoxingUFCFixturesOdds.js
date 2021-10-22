@@ -6,8 +6,8 @@ const formatBoxingUFCFixturesOdds = (event) => {
         endDate: new Date(parseInt(event.time) * 1000),
         status: 1,
         moneyline: null,
-        spreads: [],
-        totals: [],
+        spreads: null,
+        totals: null,
     }
 
     if (main && main.sp && main.sp.to_win_fight) {
@@ -21,8 +21,6 @@ const formatBoxingUFCFixturesOdds = (event) => {
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
         line.moneyline = null
     }
-    line.spreads = line.spreads.length ? line.spreads : null;
-    line.totals = line.totals.length ? line.totals : null;
 
     if (line.moneyline || line.spreads || line.totals)
         return line;

@@ -13,6 +13,7 @@ class BetSlip extends Component {
         super(props);
         this.state = {
             errors: [],
+            submitting: true,
             confirmationOpen: false,
             single: true,
             parlayWin: '',
@@ -46,7 +47,7 @@ class BetSlip extends Component {
             const b = betSlip[i];
             totalStake += b.stake;
             totalWin += b.win;
-            if (b.win > 2000) {
+            if (b.win > 5000) {
                 this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
                 return;
             }
@@ -55,7 +56,7 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
-
+        this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
                 const successCount = betSlip.length - (errors ? errors.length : 0);
@@ -76,6 +77,8 @@ class BetSlip extends Component {
                 } else {
                     this.setState({ errors: ['Can\'t place bet.'] });
                 }
+            }).finally(() => {
+                this.setState({ submitting: false });
             });
     }
 
@@ -89,10 +92,11 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
-        if (totalWin > 2000) {
+        if (totalWin > 5000) {
             this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
             return;
         }
+        this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeParlayBets`, { betSlip, totalStake, totalWin }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
                 if (errors.length == 0) {
@@ -104,6 +108,8 @@ class BetSlip extends Component {
                 }
             }).catch((err) => {
                 this.setState({ errors: ['Can\'t place bet.'] });
+            }).finally(() => {
+                this.setState({ submitting: false });
             });
     }
 
@@ -113,7 +119,7 @@ class BetSlip extends Component {
     }
 
     render() {
-        const { errors, confirmationOpen, single, parlayWin, parlayStake } = this.state;
+        const { errors, confirmationOpen, single, parlayWin, parlayStake, submitting } = this.state;
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
             className, showLoginModalAction
@@ -241,6 +247,7 @@ class BetSlip extends Component {
                                     {errors.map(e => <div key={e}>{e}</div>)}
                                 </div>
                                 <button
+                                    disabled={submitting}
                                     type="button"
                                     className="total-btn"
                                     onClick={user
