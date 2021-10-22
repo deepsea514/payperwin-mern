@@ -5,7 +5,7 @@
     "corsHosts": [
         "https://payperwin.com",
         "https://www.payperwin.com",
-        "http://dev.payperwin.co",
+        "http://dev.payperwin.com",
         "http://68.183.203.13",
         "http://localhost:8081",
         "http://localhost:4000",
