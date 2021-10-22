@@ -107,7 +107,7 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                             id="dropdown-toggle-top2"
                             variant="transparent"
                             className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
-                            Go to:
+                            View:
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                             <DropdownMenuDashboard />
