@@ -221,9 +221,9 @@ const calculateBetPoolsStatus = async () => {
         }
     });
 
-    await BetPool.deleteMany({
-        result: { $exists: true }
-    });
+    // await BetPool.deleteMany({
+    //     result: { $exists: true }
+    // });
 
     const parlayBetPools = await ParlayBetPool.find({
         origin: 'bet365',
@@ -238,9 +238,9 @@ const calculateBetPoolsStatus = async () => {
         }
     });
 
-    await ParlayBetPool.deleteMany({
-        result: { $exists: true }
-    });
+    // await ParlayBetPool.deleteMany({
+    //     result: { $exists: true }
+    // });
 }
 
 const checkBetWithoutBetPool = async () => {
