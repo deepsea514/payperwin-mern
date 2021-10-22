@@ -6,6 +6,8 @@ import { RegionDropdown } from 'react-country-region-selector';
 import { updateCustomer } from "../../redux/services";
 import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../../helpers/getInputClasses";
+import { Dropdown } from "react-bootstrap";
+import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 
 class PersonaInformation extends React.Component {
     constructor(props) {
@@ -57,19 +59,17 @@ class PersonaInformation extends React.Component {
     };
 
     render() {
-        const { initialValues, Schema, saving, isError, isSuccess } = this.state;
+        const { initialValues, Schema, saving, isError, isSuccess, id } = this.state;
 
-        return (<Formik
-            initialValues={initialValues}
-            validationSchema={Schema}
-            onSubmit={this.saveCustomer}
-        >
-            {
-                (formik) => (
+        return (
+            <Formik
+                initialValues={initialValues}
+                validationSchema={Schema}
+                onSubmit={this.saveCustomer}>
+                {(formik) => (
                     <form
                         className="card card-custom card-stretch"
-                        onSubmit={(e) => formik.handleSubmit(e)}
-                    >
+                        onSubmit={(e) => formik.handleSubmit(e)}>
                         {saving && <ModalProgressBar />}
 
                         {/* begin::Header */}
@@ -83,16 +83,17 @@ class PersonaInformation extends React.Component {
                                 </span>
                             </div>
                             <div className="card-toolbar">
-                                <button
-                                    type="submit"
-                                    className="btn btn-success mr-2"
-                                    disabled={
-                                        formik.isSubmitting || (formik.touched && !formik.isValid)
-                                    }
-                                >
-                                    Save Changes
-                                    {formik.isSubmitting}
-                                </button>
+                                <Dropdown className="dropdown-inline" drop="down" alignRight>
+                                    <Dropdown.Toggle
+                                        id="dropdown-toggle-top2"
+                                        variant="transparent"
+                                        className="btn btn-light-primary btn-sm font-weight-bolder dropdown-toggle">
+                                        View:
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                        <DropdownMenuCustomer id={id} />
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </div>
                         </div>
                         {/* end::Header */}
@@ -101,15 +102,11 @@ class PersonaInformation extends React.Component {
                             {/* begin::Body */}
                             <div className="card-body ml-10">
                                 {isError && (
-                                    <div
-                                        className="alert alert-custom alert-light-danger fade show mb-10"
-                                        role="alert"
-                                    >
+                                    <div className="alert alert-custom alert-light-danger fade show mb-10"
+                                        role="alert">
                                         <div className="alert-icon">
                                             <span className="svg-icon svg-icon-3x svg-icon-danger">
-                                                <SVG
-                                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                                ></SVG>{" "}
+                                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                                             </span>
                                         </div>
                                         <div className="alert-text font-weight-bold">
@@ -120,8 +117,7 @@ class PersonaInformation extends React.Component {
                                                 type="button"
                                                 className="close"
                                                 data-dismiss="alert"
-                                                aria-label="Close"
-                                            >
+                                                aria-label="Close">
                                                 <span aria-hidden="true">
                                                     <i className="ki ki-close"></i>
                                                 </span>
@@ -130,15 +126,11 @@ class PersonaInformation extends React.Component {
                                     </div>
                                 )}
                                 {isSuccess && (
-                                    <div
-                                        className="alert alert-custom alert-light-success fade show mb-10"
-                                        role="alert"
-                                    >
+                                    <div className="alert alert-custom alert-light-success fade show mb-10"
+                                        role="alert">
                                         <div className="alert-icon">
                                             <span className="svg-icon svg-icon-3x svg-icon-success">
-                                                <SVG
-                                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                                ></SVG>{" "}
+                                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                                             </span>
                                         </div>
                                         <div className="alert-text font-weight-bold">
@@ -149,8 +141,7 @@ class PersonaInformation extends React.Component {
                                                 type="button"
                                                 className="close"
                                                 data-dismiss="alert"
-                                                aria-label="Close"
-                                            >
+                                                aria-label="Close">
                                                 <span aria-hidden="true">
                                                     <i className="ki ki-close"></i>
                                                 </span>
@@ -158,22 +149,6 @@ class PersonaInformation extends React.Component {
                                         </div>
                                     </div>
                                 )}
-                                {/* <div className="form-group row">
-                                    <label className="text-left col-xl-3 col-lg-3 col-form-label">Avatar</label>
-                                    <div className="col-lg-9 col-xl-6">
-                                        <div
-                                            className="image-input image-input-outline"
-                                            id="kt_profile_avatar"
-                                            style={{
-                                                backgroundImage: `url(/media/users/300_10.jpg)`,
-                                            }}
-                                        >
-                                            <div
-                                                className="image-input-wrapper"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> */}
 
                                 <div className="form-group row">
                                     <label className="text-left col-xl-3 col-lg-3 col-form-label">
@@ -356,19 +331,24 @@ class PersonaInformation extends React.Component {
                                         ) : null}
                                     </div>
                                 </div>
-
                             </div>
                             {/* end::Body */}
+                            <div className="card-footer float-left">
+                                <button
+                                    type="submit"
+                                    className="btn btn-success mr-2"
+                                    disabled={formik.isSubmitting || (formik.touched && !formik.isValid)}>
+                                    Save Changes
+                                    {formik.isSubmitting}
+                                </button>
+                            </div>
                         </div>
                         {/* end::Form */}
                     </form >
-                )
-            }
-
-        </Formik>)
+                )}
+            </Formik>
+        )
     }
-
-
 }
 
 export default PersonaInformation;
