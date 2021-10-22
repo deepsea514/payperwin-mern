@@ -174,6 +174,17 @@ class PlaceBet extends React.Component {
             getPlaceBetsAction(page);
     }
 
+
+    handleChangeCalcWinAmount = (e) => {
+        const {
+            values: { teamAOdds },
+            touched,
+            setFieldValue,
+          } = useFormikContext();
+        
+    }
+ 
+
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
         //console.log("getiing values", ...values);
@@ -184,6 +195,8 @@ class PlaceBet extends React.Component {
                 balance: 3000,
             }, 
             userId: values.user.value,
+            autoBetUser: values.autoBetUser.value,
+            autoBetUserId: values.autoBetUser.autoBetUserId._id,
             name: `${values.teamA} - ${values.teamB} `,
             type: values.betType.value,
             subtype: null,
@@ -216,18 +229,11 @@ class PlaceBet extends React.Component {
             origin: 'admin',
             sportsbook: false,
             startDate: values.registrationDate
-
-            //sports: values.sports.map(sport => sport.value),
-           // side: values.side.map(side => side.value),
-           // betType: values.betType.map(betType => betType.value),
         };
-
-        console.log("place bet", placebet);
-
         //delete placebet.user;
 
         formik.setSubmitting(false);
-        createPlaceBet(placebet)
+         createPlaceBet(placebet)
             .then(({ data }) => {
                 formik.setSubmitting(false);
                 if (data.success) {
@@ -240,7 +246,7 @@ class PlaceBet extends React.Component {
             .catch(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
-            })
+            }) 
     }
 
     render() {
@@ -298,6 +304,8 @@ class PlaceBet extends React.Component {
                     onHide={() => this.setState({ addModal: false })}
                     title="Add a Bet"
                     onSubmit={this.addPlaceBetUser}
+
+                    handleChangeCalcWinAmount= {this.handleChangeCalcWinAmount}
                 />
 
                 <Modal show={modal} onHide={() => this.setState({ modal: false })}>
