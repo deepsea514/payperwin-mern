@@ -13,18 +13,11 @@ const formatSquashFixturesOdds = (event) => {
         totals: [],
     }
 
-    // if (schedule && schedule.sp.main) {
-    //     line.moneyline = {
-    //         home: convertDecimalToAmericanOdds(schedule.sp.main[0].odds),
-    //         away: convertDecimalToAmericanOdds(schedule.sp.main[1].odds)
-    //     };
-    // }
-
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
         line.moneyline = null
     }
-    line.spreads = line.spreads.length ? line.spreads : null;
-    line.totals = line.totals.length ? line.totals : null;
+    line.spreads = line.spreads && line.spreads.length ? line.spreads : null;
+    line.totals = line.totals && line.totals.length ? line.totals : null;
 
     if (line.moneyline || line.spreads || line.totals)
         return line;
