@@ -2008,6 +2008,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         case 'forth_quarter':
             pickName += '4th Quarter: ';
             break;
+        case 'fifth_innings':
+            pickName += '5th Innings: ';
+            break;
         default:
             pickName += 'Pick: ';
             break;

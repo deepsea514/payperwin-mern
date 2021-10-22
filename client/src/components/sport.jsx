@@ -70,10 +70,19 @@ class Sport extends Component {
                                         if (i === 0) {
                                             const {
                                                 moneyline, spreads, totals, alternative_spreads, alternative_totals,
-                                                first_half, second_half,
+                                                first_half, second_half, fifth_innings,
                                                 first_quarter, second_quarter, third_quarter, forth_quarter
                                             } = line;
-                                            let mline = [{ moneyline, spreads, totals, alternative_spreads, alternative_totals }, first_half, second_half, first_quarter, second_quarter, third_quarter, forth_quarter];
+                                            let mline = [
+                                                { moneyline, spreads, totals, alternative_spreads, alternative_totals },
+                                                first_half,
+                                                second_half,
+                                                first_quarter,
+                                                second_quarter,
+                                                third_quarter,
+                                                forth_quarter,
+                                                fifth_innings
+                                            ];
                                             mline.forEach(line => {
                                                 if (!line) return;
                                                 const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line;
