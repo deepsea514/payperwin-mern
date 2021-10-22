@@ -46,7 +46,7 @@ class BetSlip extends Component {
             const b = betSlip[i];
             totalStake += b.stake;
             totalWin += b.win;
-            if (b.win > 2000) {
+            if (b.win > 5000) {
                 this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
                 return;
             }
@@ -89,7 +89,7 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
-        if (totalWin > 2000) {
+        if (totalWin > 5000) {
             this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
             return;
         }
