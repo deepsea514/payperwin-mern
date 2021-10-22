@@ -1265,7 +1265,10 @@ expressApp.post(
                                             fee: fee,
                                             matchStartDate: startDate,
                                             status: 'Pending',
-                                            lineQuery,
+                                            lineQuery: {
+                                                ...lineQuery,
+                                                points: hdp ? hdp : points ? points : null,
+                                            },
                                             lineId: lineId,
                                             origin: origin,
                                             sportsbook: sportsbook
