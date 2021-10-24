@@ -13,7 +13,7 @@ class BetSlip extends Component {
         super(props);
         this.state = {
             errors: [],
-            submitting: true,
+            submitting: false,
             confirmationOpen: false,
             single: true,
             parlayWin: '',
