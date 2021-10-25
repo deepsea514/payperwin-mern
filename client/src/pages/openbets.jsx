@@ -250,7 +250,7 @@ class OpenBets extends Component {
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                             <div>
-                                <b>Share This Link</b>
+                                <b>Share Bet</b>
                                 <hr />
                                 {loadingUrl && <center>
                                     <Preloader use={ThreeDots}
@@ -593,7 +593,7 @@ class OpenBets extends Component {
                                     {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
-                                        <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share This Line</button>}
+                                        <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
                                         <button className="form-button ml-2" onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
                                 </div>
