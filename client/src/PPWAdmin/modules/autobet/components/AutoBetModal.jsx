@@ -23,13 +23,15 @@ const betTypeOptions = [
 export default class AutoBetModal extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log("props.initialValues", props.initialValues)
         this.state = {
             initialValues: props.initialValues ? props.initialValues : {
                 user: null,
+                usersExcluded: [],
                 rollOver: false,
                 budget: 0,
                 sportsbookBudget: 0,
+                acceptParlay: false,
                 parlayBudget: 0,
                 maxRisk: 0,
                 priority: 0,
@@ -42,6 +44,7 @@ export default class AutoBetModal extends React.Component {
                 user: Yup.object()
                     .nullable()
                     .required("User field is required."),
+                usersExcluded: Yup.array().of(Yup.object()),
                 rollOver: Yup.boolean().default(false),
                 budget: Yup.number()
                     .moreThan(0, "Budget should be more than 0")
@@ -49,6 +52,7 @@ export default class AutoBetModal extends React.Component {
                 sportsbookBudget: Yup.number()
                     .moreThan(0, "Sportsbook Budget should be more than 0")
                     .required("Sportsbook Budget field is required"),
+                acceptParlay: Yup.boolean().default(false),
                 parlayBudget: Yup.number()
                     .required("Parlay Budget field is required"),
                 maxRisk: Yup.number()
@@ -70,7 +74,7 @@ export default class AutoBetModal extends React.Component {
         }
     }
 
-    getOptions = (name, cb) => {
+    getUsers = (name, cb) => {
         this.setState({ loadingUser: true });
         searchUsers(name).then(({ data }) => {
             cb(data);
@@ -121,7 +125,7 @@ export default class AutoBetModal extends React.Component {
                                             classNamePrefix="select"
                                             isSearchable={true}
                                             name="user"
-                                            loadOptions={this.getOptions}
+                                            loadOptions={this.getUsers}
                                             noOptionsMessage={() => "No Users"}
                                             value={formik.values.user}
                                             isLoading={loadingUser}
@@ -147,9 +151,40 @@ export default class AutoBetModal extends React.Component {
                                             </div>
                                         ) : null}
                                     </div>
+                                    <div className="form-group">
+                                        <label>Users to Exclude<span className="text-danger">*</span></label>
+                                        <AsyncSelect
+                                            className={`basic-single ${getInputClasses(formik, "usersExcluded")}`}
+                                            classNamePrefix="select"
+                                            isSearchable={true}
+                                            name="usersExcluded"
+                                            loadOptions={this.getUsers}
+                                            noOptionsMessage={() => "No Users"}
+                                            value={formik.values.usersExcluded}
+                                            isLoading={loadingUser}
+                                            isMulti
+                                            {...formik.getFieldProps("usersExcluded")}
+                                            {...{
+                                                onChange: (users) => {
+                                                    if (!users) return;
+                                                    formik.setFieldValue("usersExcluded", users);
+                                                    formik.setFieldTouched("usersExcluded", true);
+                                                    formik.setFieldError("usersExcluded", false);
+                                                },
+                                            }}
+                                        />
+                                        {formik.touched.usersExcluded && formik.errors.usersExcluded ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.usersExcluded}
+                                            </div>
+                                        ) : null}
+                                    </div>
                                     <div className="form-row form-group">
                                         <div className="col-md-12">
-                                            <input type="checkbox" id="rollOver" name="rollOver" {...formik.getFieldProps("rollOver")} />
+                                            <input type="checkbox" id="rollOver" name="rollOver"
+                                                {...formik.getFieldProps("rollOver")}
+                                                checked={formik.values.rollOver}
+                                            />
                                             <label htmlFor="rollOver"> &nbsp;&nbsp;Roll over wins into the daily budget</label>
                                             {formik.touched.rollOver && formik.errors.rollOver ? (
                                                 <div className="invalid-feedback">
@@ -180,6 +215,19 @@ export default class AutoBetModal extends React.Component {
                                             {formik.touched.sportsbookBudget && formik.errors.sportsbookBudget ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.sportsbookBudget}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <input type="checkbox" id="acceptParlay" name="acceptParlay"
+                                                {...formik.getFieldProps("acceptParlay")}
+                                                checked={formik.values.acceptParlay} />
+                                            <label htmlFor="acceptParlay"> &nbsp;&nbsp;Accept Pralay</label>
+                                            {formik.touched.acceptParlay && formik.errors.acceptParlay ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.acceptParlay}
                                                 </div>
                                             ) : null}
                                         </div>

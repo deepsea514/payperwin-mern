@@ -13,6 +13,7 @@ import CreditModal from "../components/CreditModal";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import numberFormat from "../../../../helpers/numberFormat";
 
 class Customers extends React.Component {
     constructor(props) {
@@ -87,17 +88,12 @@ class Customers extends React.Component {
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td><Link to={`/users/${customer._id}/profile`}>{customer.email}</Link></td>
                     <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
-                    <td className="">{Number(customer.balance).toFixed(2)} {customer.currency}</td>
+                    <td className="">{numberFormat(Number(customer.balance).toFixed(2))} {customer.currency}</td>
+                    <td className="">{numberFormat(Number(customer.inplay).toFixed(2))} {customer.currency}</td>
                     <td className="">{customer.totalBetCount}</td>
-                    <td className="">{Number(customer.totalWager).toFixed(2)} {customer.currency}</td>
+                    <td className="">{numberFormat(Number(customer.totalWager).toFixed(2))} {customer.currency}</td>
                     <td className="text-right">
                         <DropdownButton title="Actions">
-                            {/* <Dropdown.Item as={Link} to={`/${customer._id}/edit`}>
-                                <i className="fas fa-edit"></i>&nbsp; Edit
-                            </Dropdown.Item> */}
-                            {/* <Dropdown.Item as={Link} to={`/${customer._id}/detail`}>
-                                <i className="far fa-eye"></i>&nbsp; Detail
-                            </Dropdown.Item> */}
                             <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
                             <Dropdown.Item as={Link} to={`/users/${customer._id}/profile`}>
                                 <i className="far fa-user"></i>&nbsp; Profile
@@ -274,7 +270,6 @@ class Customers extends React.Component {
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                {/* <th scope="col">#</th> */}
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
                                                 <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'joined_date' })}>
@@ -291,6 +286,7 @@ class Customers extends React.Component {
                                                         {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
                                                     </>}
                                                 </th>
+                                                <th scope="col">In-Play</th>
                                                 <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'num_bets' })}>
                                                     # of Bets&nbsp;
                                                     {filter.sortby == 'num_bets' && <>

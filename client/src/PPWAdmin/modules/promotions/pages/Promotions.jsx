@@ -119,8 +119,8 @@ class Promotions extends React.Component {
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Type</th>
-                                            <th scope="col">Number of Usage</th>
-                                            <th scope="col">Usage Limit</th>
+                                            <th scope="col">Usage per Same Customer</th>
+                                            <th scope="col">No. of Unique Redemptions</th>
                                             <th scope="col">Usage For</th>
                                             <th scope="col">Details</th>
                                         </tr>

@@ -17,7 +17,7 @@ class SidebarSports extends Component {
                     </div>
                 </div> */}
                 <h3 className="cat-heading">TOP SPORTS</h3>
-                <SportsList showleagues={true} />
+                <SportsList showleagues={true} topSports={true} />
                 <h3 className="cat-heading">A-Z SPORTS</h3>
                 <SportsList showNoEvents={true} showleagues={false} />
             </div>

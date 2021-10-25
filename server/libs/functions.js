@@ -195,6 +195,60 @@ const isFreeWithdrawalUsed = async (user) => {
     return false;
 }
 
+const getMaxWithdraw = async (user) => {
+    let totalwagers = await Bet.aggregate(
+        { $match: { userId: new ObjectId(user._id), } },
+        { $group: { _id: null, total: { $sum: "$bet" } } }
+    );
+    if (totalwagers.length) totalwagers = totalwagers[0].total;
+    else totalwagers = 0;
+
+    let totalwinbet = await Bet.aggregate(
+        {
+            $match: {
+                userId: new ObjectId(user._id),
+                status: "Settled - Win",
+            }
+        },
+        { $group: { _id: null, total: { $sum: "$credited" } } }
+    );
+    if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
+    else totalwinbet = 0;
+
+    let totaldeposit = await FinancialLog.aggregate(
+        { $match: { financialtype: "deposit" } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+    )
+    if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
+    else totaldeposit = 0;
+
+    let signupBonusAmount = 0;
+    const signUpBonusEnabled = await checkSignupBonusPromotionEnabled(user._id);
+    if (signUpBonusEnabled) {
+        const signUpBonus = await FinancialLog.findOne({
+            user: user._id,
+            financialtype: 'signupbonus'
+        });
+        if (signUpBonus) {
+            signupBonusAmount = signUpBonus.amount;
+        }
+    }
+
+    let maxwithdraw = 0;
+    if (signupBonusAmount) {
+        if (totalwagers >= (signupBonusAmount * 8 + totaldeposit * 5)) {
+            maxwithdraw = totalwinbet;
+        }
+    } else {
+        if (totalwagers >= totaldeposit * 5) {
+            maxwithdraw = totalwinbet
+        }
+    }
+
+    maxwithdraw = Number(maxwithdraw.toFixed(2));
+    return maxwithdraw;
+}
+
 const asyncFilter = async (arr, predicate) => {
     const results = await Promise.all(arr.map(predicate));
     return arr.filter((_v, index) => results[index]);
@@ -224,5 +278,6 @@ module.exports = {
     calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
     asyncFilter,
-    getLinePoints
+    getLinePoints,
+    getMaxWithdraw
 }

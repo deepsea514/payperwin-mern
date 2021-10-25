@@ -39,7 +39,9 @@
         "Ethereum",
         "Tether",
         "CREDIT",
-        "DEBIT"
+        "DEBIT",
+        "Credit - Loan",
+        "Credit - Promotion"
     ],
     "AutoBetStatus": {
         "active": "Active",
