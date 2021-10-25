@@ -69,7 +69,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                     awayScore: 0,
                     cancellationReason: false
                 };
-                if (time_status == "3" || time_status == "1") { //Ended, In Play
+                if (time_status == "3") { //Ended
                     // Calculate Match Score
                     if (ss == null || ss == "") {
                         await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
@@ -86,7 +86,7 @@ const matchResultsP2P = async (bet365ApiKey) => {
                     }
                 } else if (time_status == "4" ||
                     time_status == "0" ||
-                    time_status == "2") { // Postponed, Not Started
+                    time_status == "2" || time_status == "1") { // Postponed, Not Started, In Play
                     await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                     continue;
                 } else if (time_status == "5" ||
