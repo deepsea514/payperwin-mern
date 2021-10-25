@@ -50,6 +50,7 @@ const {
     calculateParlayBetsStatus,
     asyncFilter,
     getLinePoints,
+    getMaxWithdraw,
 } = require('./libs/functions');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -333,6 +334,14 @@ passport.use('local-signup', new LocalStrategy(
                                         if (enable) {
                                             newUser.balance = 50;
                                             await newUser.save();
+                                            await FinancialLog.create({
+                                                financialtype: 'signupbonus',
+                                                uniqid: `SB${ID()}`,
+                                                user: newUser._id,
+                                                amount: 50,
+                                                method: 'signupbonus',
+                                                status: FinancialStatus.success
+                                            });
                                             await PromotionLog.create({
                                                 user: newUser._id,
                                                 promotion: promotion._id,
@@ -2937,47 +2946,6 @@ expressApp.post('/deposit',
         }
     }
 );
-
-const getMaxWithdraw = async (user) => {
-    let totalwagers = await Bet.aggregate(
-        { $match: { userId: new ObjectId(user._id), } },
-        { $group: { _id: null, total: { $sum: "$bet" } } }
-    );
-    if (totalwagers.length) totalwagers = totalwagers[0].total;
-    else totalwagers = 0;
-
-    let totalwinbet = await Bet.aggregate(
-        {
-            $match: {
-                userId: new ObjectId(user._id),
-                status: "Settled - Win",
-            }
-        },
-        { $group: { _id: null, total: { $sum: "$credited" } } }
-    );
-    if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
-    else totalwinbet = 0;
-
-    let signupBonusAmount = 0;
-    const signUpBonusEnabled = await checkSignupBonusPromotionEnabled(user._id);
-    if (signUpBonusEnabled) {
-        const signUpBonus = await FinancialLog.findOne({
-            user: user._id,
-            financialtype: 'signupbonus'
-        });
-        if (signUpBonus) {
-            signupBonusAmount = signUpBonus.amount;
-        }
-    }
-
-    let maxwithdraw = totalwagers / 8 + totalwinbet;
-    if (signupBonusAmount > 0) {
-        if (totalwagers >= signupBonusAmount * 5)
-            maxwithdraw += signupBonusAmount;
-    }
-    maxwithdraw = Number(maxwithdraw.toFixed(2));
-    return maxwithdraw;
-}
 
 expressApp.get(
     '/freeWithdraw',
