@@ -1167,7 +1167,7 @@ adminRouter.post(
     limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
-            let { user: userId, amount, method, status } = req.body;
+            let { user: userId, amount, method, status, note } = req.body;
             if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             amount = Number(amount);
@@ -1211,6 +1211,7 @@ adminRouter.post(
                     user: user._id,
                     amount: fee,
                     method: method,
+                    note: note,
                     status: FinancialStatus.success,
                 });
             }
@@ -1222,6 +1223,7 @@ adminRouter.post(
                 amount: amount,
                 method: method,
                 status: status,
+                note: note,
                 fee: fee,
             });
 
