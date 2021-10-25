@@ -53,6 +53,7 @@ const formatBasketballFixturesOdds = (event) => {
         alternative_spreads: [],
         alternative_totals: [],
         first_half: null,
+        second_half: null,
         first_quarter: null,
         second_quarter: null,
         third_quarter: null,
@@ -78,6 +79,19 @@ const formatBasketballFixturesOdds = (event) => {
         }
         if (_1st_half.length) {
             line.first_half = gotLineToOdds(_1st_half);
+        }
+
+        //Second Half
+        let _2nd_half = [];
+        if (main.sp["2nd_half"]) {
+            _2nd_half = main.sp["2nd_half"].odds;
+        }
+        if (_2nd_half.length == 0 && others) {
+            let other = others.find(other => other.sp && other.sp["2nd_half"]);
+            if (other) _2nd_half = other.sp["2nd_half"].odds;
+        }
+        if (_2nd_half.length) {
+            line.second_half = gotLineToOdds(_2nd_half);
         }
 
         //First Quarter
