@@ -245,10 +245,6 @@ const getMaxWithdraw = async (user) => {
         }
     }
 
-    if (signupBonusAmount > 0) {
-        if (totalwagers >= signupBonusAmount * 5)
-            maxwithdraw += signupBonusAmount;
-    }
     maxwithdraw = Number(maxwithdraw.toFixed(2));
     return maxwithdraw;
 }
