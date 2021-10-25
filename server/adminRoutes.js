@@ -574,6 +574,7 @@ adminRouter.get(
             const days = Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (24 * 3600 * 1000));
 
             const bets = await Bet.find({ userId: id });
+            let winbets = 0;
             let averagebetafter2loss = 0;
             let prevBet = null;
             for (const bet of bets) {
@@ -586,8 +587,12 @@ adminRouter.get(
                 } else {
                     prevBet = null;
                 }
+                if (bet.status == 'Settled - Win') {
+                    winbets++;
+                }
             }
 
+            const wins = (winbets / (bets.length ? bets.length : 1) * 100).toFixed(2);
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -600,7 +605,8 @@ adminRouter.get(
                 averagebetloss: betcount > 0 ? lossamount / betcount : 0,
                 betsperday: days > 0 ? betcount / days : 0,
                 betsperweek: days > 0 ? betcount / days * 7 : 0,
-                averagebetafter2loss
+                averagebetafter2loss,
+                wins
             });
         }
         catch (error) {
