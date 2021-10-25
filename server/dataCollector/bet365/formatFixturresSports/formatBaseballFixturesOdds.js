@@ -82,7 +82,7 @@ const formatBaseballFixturesOdds = (event) => {
         // Alternative spreads and totals
         let alternative_run_line = [];
         if (main_props.sp["alternative_run_line"]) {
-            alternative_run_line = main.sp["alternative_run_line"].odds;
+            alternative_run_line = main_props.sp["alternative_run_line"].odds;
         }
         if (alternative_run_line.length == 0 && others) {
             let other = others.find(other => other.sp && other.sp["alternative_run_line"]);
@@ -102,7 +102,7 @@ const formatBaseballFixturesOdds = (event) => {
 
         let alternative_game_total = [];
         if (main_props.sp["alternative_game_total"]) {
-            alternative_game_total = main.sp["alternative_game_total"].odds;
+            alternative_game_total = main_props.sp["alternative_game_total"].odds;
         }
         if (alternative_game_total.length == 0 && others) {
             let other = others.find(other => other.sp && other.sp["alternative_game_total"]);
