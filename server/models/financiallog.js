@@ -16,12 +16,16 @@ const FinancialLogSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "DepositReason"
         },
+        betId: {
+            type: Schema.Types.ObjectId,
+            ref: "Bet",
+        },
         amount: { type: Number, required: true },
         method: { type: String, required: true },
         note: { type: String, default: null },
         status: { type: String, default: FinancialStatus.pending },
         fee: { type: Number, default: 0 },
-    },
+    }, 
     {
         timestamps: true,
     },
