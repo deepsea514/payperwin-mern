@@ -83,6 +83,7 @@ class WithdrawLog extends React.Component {
                     <td>{log.method}</td>
                     <td>{this.getFinancialStatus(log.status)}</td>
                     <td>{log.uniqid}</td>
+                    <td>{log.note}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>
                         {log.status !== FinancialStatus.success && <DropdownButton title="Actions">
@@ -290,6 +291,7 @@ class WithdrawLog extends React.Component {
                                                 <th scope="col">Method</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Withdraw ID</th>
+                                                <th scope="col">Note</th>
                                                 <th scope="col">Date</th>
                                                 <th scope="col"></th>
                                             </tr>

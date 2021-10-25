@@ -25,18 +25,19 @@ class AddWithdraw extends React.Component {
                 amount: 0,
                 method: "",
                 status: '',
+                note: '',
             },
             withdrawSchema: Yup.object().shape({
                 user: Yup.object()
                     .nullable(),
                 amount: Yup.number()
                     .min(1, "Amount shouldn't be 0.")
-                    // .max(withdrawmax, `Amount shouldn't be bigger than ${withdrawmax}.`)
                     .required("Amount field is required."),
                 method: Yup.string()
                     .required("Method field is required"),
                 status: Yup.string()
                     .required("Status field is required."),
+                note: Yup.string()
             }),
         }
     }
@@ -65,6 +66,7 @@ class AddWithdraw extends React.Component {
             amount: values.amount,
             method: values.method,
             status: values.status,
+            note: values.note
         };
         addWithdraw(withdraw).then(() => {
             this.setState({ isSuccess: true });
@@ -229,6 +231,18 @@ class AddWithdraw extends React.Component {
                                             {formik.touched.method && formik.errors.method ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.method}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Note<span className="text-danger">*</span></label>
+                                            <input name="note" placeholder="Enter Note"
+                                                className={`form-control ${getInputClasses(formik, "note")}`}
+                                                {...formik.getFieldProps("note")}
+                                            />
+                                            {formik.touched.note && formik.errors.note ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.note}
                                                 </div>
                                             ) : null}
                                         </div>
