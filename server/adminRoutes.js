@@ -2960,9 +2960,30 @@ adminRouter.get(
                             $project: {
                                 email: 1,
                                 balance: 1,
+                                firstname: 1,
+                                lastname: 1
                             }
                         }],
                         as: 'userId',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { usersExcluded: "$usersExcluded" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $in: ["$_id", "$$usersExcluded"] }
+                            },
+                        }, {
+                            $project: {
+                                email: 1,
+                                balance: 1,
+                                firstname: 1,
+                                lastname: 1
+                            }
+                        }],
+                        as: 'usersExcluded',
                     }
                 },
                 {
@@ -2976,6 +2997,8 @@ adminRouter.get(
                         maxRisk: 1,
                         budget: 1,
                         sportsbookBudget: 1,
+                        usersExcluded: 1,
+                        acceptParlay: 1,
                         parlayBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
                         sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },

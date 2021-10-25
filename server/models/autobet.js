@@ -5,11 +5,13 @@ const { Schema } = mongoose;
 const AutoBetSchema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
+        usersExcluded: [{ type: Schema.Types.ObjectId, ref: "User" }],
         priority: Number,
-        rollOver: { type: Boolean, default: 'false' },
+        rollOver: { type: Boolean, default: false },
         maxRisk: Number,
         budget: Number,
         sportsbookBudget: Number,
+        acceptParlay: { type: Boolean, default: false },
         parlayBudget: Number,
         status: String,
         sports: { type: Array, default: [] },

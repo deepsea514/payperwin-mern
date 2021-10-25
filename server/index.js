@@ -1670,7 +1670,10 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 
     //Find autobet
     let autobets = await AutoBet
-        .find()
+        .find({
+            acceptParlay: 1,
+            usersExcluded: { $ne: ObjectId(user._id) }
+        })
         .populate('userId');
 
     autobets = JSON.parse(JSON.stringify(autobets));
@@ -1917,7 +1920,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         })
     }
     let autobets = await AutoBet
-        .find({ $or: orCon })
+        .find({
+            $or: orCon,
+            usersExcluded: { $ne: ObjectId(user._id) }
+        })
         .populate('userId');
     autobets = JSON.parse(JSON.stringify(autobets));
 
