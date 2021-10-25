@@ -13,3 +13,11 @@ export function getPromotions(page) {
 export function getPromotionDetail(id) {
     return axios.get(`${serverUrl}/promotion/${id}`, { withCredentials: true });
 }
+
+export function deletePromotion(id) {
+    return axios.delete(`${serverUrl}/promotion/${id}`);
+}
+
+export function updatePromotion(id, data) {
+    return axios.patch(`${serverUrl}/promotion/${id}`, data);
+}
