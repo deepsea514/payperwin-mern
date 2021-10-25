@@ -6,6 +6,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
 import * as placebets from "../redux/reducers";
 import dateformat from "dateformat";
+import numberFormat from "../../../../helpers/numberFormat";
 import "react-datepicker/dist/react-datepicker.css";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import PlaceBetModal from "../components/PlaceBetModal";
@@ -39,30 +40,74 @@ class PlaceBet extends React.Component {
         getPlaceBetsAction();
     }
 
+
+    getBetStatus = (status) => {
+        switch (status) {
+            case "Pending":
+                return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">Pending</span>
+            case "Partial Match":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial&nbsp;Match</span>
+            case "Matched":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Matched</span>
+            case "Cancelled":
+                return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">Cancelled</span>
+            case "Settled - Lose":
+                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Lose</span>
+            case "Settled - Win":
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
+            case "Draw":
+                return <span className="label label-lg label-warning label-inline font-weight-lighter mr-2">Draw</span>
+            case "Accepted":
+                return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
+            case "Partial Accepted":
+                return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
+        }
+    }
+
+
+    getBetMatch = (bet) => {
+        switch (bet.status) {
+            case "Cancelled":
+            case "Settled - Lose":
+            case "Settled - Win":
+            case "Draw":
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled ({bet.homeScore} : {bet.awayScore})</span>
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+            case "Accepted":
+            case "Partial Accepted":
+            default:
+                return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
+        }
+    }
+
+    getWinLoss = (bet) => {
+        switch (bet.status) {
+            case "Settled - Lose":
+                return `- $${bet.bet.toFixed(2)} CAD`;
+            case "Settled - Win":
+                return `+ $${(bet.payableToWin).toFixed(2)} CAD`
+            case "Pending":
+            case "Partial Match":
+            case "Matched":
+            case "Cancelled":
+            default:
+                return "$0 CAD";
+        }
+    }
+
+    getBetHouse = (sportsbook) => {
+        if (sportsbook) {
+            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">SB</span>
+        }
+        return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">P2P</span>
+    }
+
     getDateFormat = (date) => {
         return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
     }
 
-    setEditId = (bet) => {
-        this.setState({
-            editId: bet._id,
-            initialValues: {
-                user: {
-                    value: bet.userId._id,
-                    label: `${bet.userId.email} (${bet.userId.firstname} ${bet.userId.lastname})`
-                },
-                budget: bet.budget,
-                maxRisk: bet.maxRisk,
-                peorid: bet.peorid,
-                priority: bet.priority,
-                sports: bet.sports.map(sport => ({ value: sport, label: sport })),
-                side: bet.side.map(side => ({ value: side, label: side })),
-                betType: bet.betType.map(betType => ({ value: betType, label: betType })),
-                status: bet.status,
-                referral_code: bet.referral_code
-            }
-        })
-    }
 
     tableBody = () => {
         const { placebets, loading } = this.props;
@@ -70,7 +115,7 @@ class PlaceBet extends React.Component {
         if (loading) {
             return (
                 <tr>
-                    <td colSpan="9" align="center">
+                    <td colSpan="12" align="center">
                         <Preloader use={ThreeDots}
                             size={100}
                             strokeWidth={10}
@@ -83,36 +128,32 @@ class PlaceBet extends React.Component {
         if (placebets.length == 0) {
             return (
                 <tr>
-                    <td colSpan="9" align="center">
-                        <h3>No Info</h3>
+                    <td colSpan="12" align="center">
+                        <h3>No Bet Place by Admin</h3>
                     </td>
                 </tr>
             );
         }
 
-        return placebets.map((bet, index) => (
-            <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{bet.userId ? <Link to={`/users/${bet.userId._id}/profile/overview`}>{bet.userId.email}</Link> : null}</td>
-                <td>{bet.sports.join(', ')}</td>
-                <td>{bet.side.join(', ')}</td>
-                <td>{bet.betType.join(', ')}</td>
-                <td>{this.getRollOver(bet.rollOver)}</td>
-                <td>{bet.priority}</td>
-                <td>{bet.maxRisk}</td>
-                <td>{bet.budget}</td>
-                <td>{bet.userId ? bet.userId.balance : null}</td>
-                <td>{bet.referral_code}</td>
-                <td>{this.getStatus(bet.status)}</td>
-                <td>{this.getDateFormat(bet.createdAt)}</td>
-                <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item onClick={() => this.setEditId(bet)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}><i className="fas fa-trash"></i>&nbsp; Delete Autobet</Dropdown.Item>
-                    </DropdownButton>
-                </td>
+        return placebets.map((bet, index) => {
+            let isAutobet = false;
+            //if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
+            return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
+                <td scope="col">{index + 1}</td>
+                <td scope="col">{this.getBetHouse(bet.sportsbook)}</td>
+                <td scope="col">{this.getDateFormat(bet.createdAt)}</td>
+                <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
+                <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
+                <td scope="col">{bet.userId ? bet.userId.email : null}</td>
+                {/* <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td> */}
+                <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                <td scope="col">{dateformat(bet.matchStartDate)}</td>
+                {/* <td scope="col">{this.getBetDogFav(bet, index)}</td> */}
+                {/* <td scope="col">{this.getBetStatus(bet.status)}</td>
+                <td scope="col">{this.getBetMatch(bet)}</td>
+                <td scope="col">{this.getWinLoss(bet)}</td> */}
             </tr>
-        ));
+        });
     }
 
     getStatus = (status) => {
@@ -133,17 +174,66 @@ class PlaceBet extends React.Component {
             getPlaceBetsAction(page);
     }
 
+
+    handleChangeCalcWinAmount = (e) => {
+        const {
+            values: { teamAOdds },
+            touched,
+            setFieldValue,
+          } = useFormikContext();
+        
+    }
+ 
+
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
+        //console.log("getiing values", ...values);
         const placebet = {
-            ...values,
+            //...values,
+             user: {
+                _id: values.user.value,
+                balance: 3000,
+            }, 
             userId: values.user.value,
-            sports: values.sports.map(sport => sport.value),
-            side: values.side.map(side => side.value),
-            betType: values.betType.map(betType => betType.value),
+            autoBetUser: values.autoBetUser.value,
+            autoBetUserId: values.autoBetUser.autoBetUserId._id,
+            name: `${values.teamA} - ${values.teamB} `,
+            type: values.betType.value,
+            subtype: null,
+            league: 'ITF W15 Antalya',
+            teamBOdds: values.teamBOdds,
+            teamAOdds: values.teamAOdds,
+            odds: { home: values.teamAOdds, away: values.teamBOdds },
+            pick: 'home',
+            stake: values.wager,
+            //win: 30.3,
+            win: values.teamToWin,
+            home: values.teamA,
+            away: values.teamB,
+            teamA: values.teamA,
+            teamB: values.teamB,
+            sportName: values.sports.value,
+            lineId: '0',
+            lineQuery: {
+                sportName: values.sports.value,
+                leagueId: '0',
+                eventId: '0',
+                lineId: '0',
+                type: values.betType.value,
+                subtype: null,
+                index: null
+              },
+
+            pickName: `Pick: ${values.teamA}`,
+            index: null,
+            origin: 'admin',
+            sportsbook: false,
+            startDate: values.registrationDate
         };
-        delete placebet.user;
-        createPlaceBet(placebet)
+        //delete placebet.user;
+
+        formik.setSubmitting(false);
+         createPlaceBet(placebet)
             .then(({ data }) => {
                 formik.setSubmitting(false);
                 if (data.success) {
@@ -156,49 +246,7 @@ class PlaceBet extends React.Component {
             .catch(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
-            })
-    }
-
-    editPlaceBetUser = (values, formik) => {
-        const placebet = {
-            ...values,
-            sports: values.sports.map(sport => sport.value),
-            side: values.side.map(side => side.value),
-            betType: values.betType.map(betType => betType.value),
-        };
-        delete placebet.user;
-
-        const { editId: editId } = this.state;
-        const { updatePlaceBetSuccess } = this.props;
-        updatePlaceBet(editId, placebet)
-            .then(({ data }) => {
-                formik.setSubmitting(false);
-                updatePlaceBetSuccess(editId, data);
-                this.setState({ modal: true, editId: null, resMessage: "Successfully changed!", modalvariant: "success" });
-            })
-            .catch(() => {
-                formik.setSubmitting(false);
-                this.setState({ modal: true, editId: null, resMessage: "Modification Failed!", modalvariant: "danger" });
-            })
-    }
-
-    renderStatus = () => {
-        return Object.keys(PlaceBetStatus).map(function (key, index) {
-            return <option key={PlaceBetStatus[key]} value={PlaceBetStatus[key]}>{PlaceBetStatus[key]}</option>
-        });
-    }
-
-    deletePlaceBet = () => {
-        const { deleteId } = this.state;
-        const { getPlaceBetsAction } = this.props;
-        deletePlaceBet(deleteId)
-            .then(() => {
-                this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
-                getPlaceBetsAction();
-            })
-            .catch(() => {
-                this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
-            })
+            }) 
     }
 
     render() {
@@ -223,27 +271,27 @@ class PlaceBet extends React.Component {
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
-                                <table className="table">
+                            <table className="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Customer</th>
-                                            <th scope="col">AutoBet.User</th>
-                                            <th scope="col">Sports</th>
-                                            <th scope="col">Team.A</th>
-                                            <th scope="col">Team.B</th>
-                                            <th scope="col">BetType</th>
-                                            <th scope="col">Team.A.Odds</th>
-                                            <th scope="col">Team B Odds</th>
-                                            <th scope="col">Max.Risk</th>
-                                            <th scope="col">Budget</th>
-                                            <th scope="col">Reg. date</th>
-                                            <th scope="col">Created At</th>
-                                            <th scope="col"></th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Wager</th>
+                                            <th scope="col">Pick</th>
+                                            <th scope="col">User</th>
+                                            {/* <th scope="col">Sport</th> */}
+                                            <th scope="col">Event</th>
+                                            <th scope="col">Start Date</th>
+                                            {/* <th scope="col">Dog/Fav</th> */}
+                                            {/* <th scope="col">Status</th>
+                                            <th scope="col">Match</th>
+                                            <th scope="col">Win/Loss Amount</th> */}
+
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        {this.tableBody()} 
                                     </tbody>
                                 </table>
                             </div>
@@ -255,7 +303,45 @@ class PlaceBet extends React.Component {
                     show={addModal}
                     onHide={() => this.setState({ addModal: false })}
                     title="Add a Bet"
+                    onSubmit={this.addPlaceBetUser}
+
+                    handleChangeCalcWinAmount= {this.handleChangeCalcWinAmount}
                 />
+
+                <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{resMessage}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                {editId && <PlaceBetModal
+                    show={editId != null}
+                    onHide={() => this.setState({ editId: null })}
+                    title="Edit AutoBet User"
+                    edit={true}
+                    initialValues={initialValues}
+                    onSubmit={this.editAutoBetUser}
+                />}
+
+                <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to delete this log?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={this.deleteAutoBet}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
             </div>
         );
     }
