@@ -57,8 +57,9 @@ const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
 const adminEmailAddress = 'admin@payperwin.com';
-const adminEmailAddress1 = 'hello@payperwin.com';
+const helloEmailAddress = 'hello@payperwin.com';
 const supportEmailAddress = 'support@payperwin.com';
+const alertEmailAddress = 'alerts@payperwin.com';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
 const maximumWin = 5000;
@@ -1008,7 +1009,7 @@ expressApp.post(
                                         const matchTimeString = convertTimeLineDate(new Date(startDate), null);
                                         let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: adminEmailAddress1,
+                                            to: helloEmailAddress,
                                             subject: 'New Bet',
                                             text: `New Bet`,
                                             html: simpleresponsive(
@@ -1255,7 +1256,7 @@ expressApp.post(
                                             }
                                             let adminMsg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                to: adminEmailAddress1,
+                                                to: helloEmailAddress,
                                                 subject: 'New Bet',
                                                 text: `New Bet`,
                                                 html: simpleresponsive(
@@ -1588,7 +1589,7 @@ expressApp.post(
 
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: adminEmailAddress1,
+                to: helloEmailAddress,
                 subject: 'New Parlay Bet',
                 text: `New Parlay Bet`,
                 html: simpleresponsive(
@@ -3048,9 +3049,27 @@ expressApp.post(
                 }
                 await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
 
+                const msg = {
+                    to: alertEmailAddress,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    subject: "A withdraw has been requested",
+                    text: `A withdraw has been requested`,
+                    html: simpleresponsive(
+                        `${user.email} has requested a withdraw of ${amount} by eTransfer. Please log into admin to review the request`,
+                    ),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
-                // }
-                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.error("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
@@ -3118,7 +3137,25 @@ expressApp.post(
                 }
 
                 await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
-
+                const msg = {
+                    to: alertEmailAddress,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    subject: "A withdraw has been requested",
+                    text: `A withdraw has been requested`,
+                    html: simpleresponsive(
+                        `${user.email} has requested a withdraw of ${amount} by ${method}. Please log into admin to review the request`,
+                    ),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
             } catch (error) {
                 console.error("withdraw => ", error);
