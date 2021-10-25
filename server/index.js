@@ -2963,7 +2963,7 @@ const getMaxWithdraw = async (user) => {
         }
     }
 
-    let maxwithdraw = totalwagers / 3 + totalwinbet;
+    let maxwithdraw = totalwagers / 8 + totalwinbet;
     if (signupBonusAmount > 0) {
         if (totalwagers >= signupBonusAmount * 5)
             maxwithdraw += signupBonusAmount;

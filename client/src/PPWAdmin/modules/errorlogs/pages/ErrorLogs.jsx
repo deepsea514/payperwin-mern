@@ -3,12 +3,8 @@ import * as errorlogs from "../redux/reducers";
 import { connect } from "react-redux";
 import dateformat from "dateformat";
 import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
-import * as Yup from "yup";
-import { Formik } from "formik";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { deleteErrorLog } from "../redux/services";
 
@@ -55,9 +51,11 @@ class ErrorLogs extends React.Component {
         }
 
         return errorlogs.map((record, index) => {
+            console.log(record);
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>
+                    <td>{dateformat(new Date(record.createdAt), "yyyy-mm-dd HH:MM")}</td>
                     <td>{record.name}</td>
                     <td>{record.stack}</td>
                     <td>
@@ -129,6 +127,7 @@ class ErrorLogs extends React.Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
+                                                <th scope="col">Time</th>
                                                 <th scope="col">Name</th>
                                                 <th scope="col">Stack</th>
                                                 <th scope="col"></th>
