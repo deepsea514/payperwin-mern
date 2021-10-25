@@ -5014,6 +5014,7 @@ adminRouter.get(
                     {
                         $group: {
                             _id: "$error.stack",
+                            createdAt: { "$first": "$createdAt" },
                             stack: { "$first": "$error.stack" },
                             name: { "$first": "$name" },
                             id: { "$first": "$_id" }
