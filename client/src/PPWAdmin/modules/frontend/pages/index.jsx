@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FeaturedSports from "../components/FeaturedSports";
 import Maintenance from "../components/Maintenance";
+import TopSports from "../components/TopSports";
 
 export default class FrontendManageModule extends Component {
     render() {
@@ -14,6 +15,8 @@ export default class FrontendManageModule extends Component {
                             </div>
                         </div>
                         <div className="card-body">
+                            <TopSports />
+                            <hr />
                             <FeaturedSports />
                             <hr />
                             <Maintenance />

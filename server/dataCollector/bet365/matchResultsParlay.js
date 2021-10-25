@@ -127,7 +127,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     awayScore: 0,
                     cancellationReason: false
                 };
-                if (time_status == "3" || time_status == "1") { //Ended, In Play
+                if (time_status == "3") { //Ended, In Play
                     // Calculate Match Score
                     const result = getMatchScores(lineQuery.sportName, lineQuery.type, lineQuery.subtype, ss, scores, timer, time_status);
                     if (typeof result == 'object')
@@ -142,7 +142,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     }
                 } else if (time_status == "4" ||
                     time_status == "0" ||
-                    time_status == "2") { // Postponed, Not Started
+                    time_status == "2" || time_status == "1") { // Postponed, Not Started
                     breaked = true;
                     break;
                 } else if (time_status == "5" ||

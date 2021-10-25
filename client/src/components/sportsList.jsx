@@ -6,10 +6,15 @@ import sportNameImage from "../helpers/sportNameImage";
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
-const sportNameSpanStyle = {
-    float: 'initial',
-    textOverflow: 'no-wrap'
-};
+const defaultTopSports = [
+    'American Football',
+    'Baseball',
+    'Ice Hockey',
+    'Basketball',
+    'Soccer',
+    'E-sports',
+    'Tennis'
+]
 
 class SportsList extends Component {
     constructor(props) {
@@ -28,20 +33,24 @@ class SportsList extends Component {
     }
 
     getSports() {
-        const url = `${serverUrl}/sportsdir`;
-        axios({
-            method: 'get',
-            url,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(({ data }) => {
-            if (data) {
-                this._isMounted && this.setState({ sports: data })
-            }
-        }).catch((err) => {
-            this._isMounted && this.setState({ error: err });
-        });
+        const { topSports } = this.props;
+        axios.get(`${serverUrl}/sportsdir`)
+            .then(({ data }) => {
+                if (data) {
+                    if (topSports) {
+                        const sports = defaultTopSports.map((sport) => {
+                            const sportData = data.find(data => data.name == sport);
+                            return sportData ? sportData : null;
+                        }).filter(sport => sport);
+                        this._isMounted && this.setState({ sports: sports })
+                    } else {
+                        this._isMounted && this.setState({ sports: data })
+                    }
+                }
+            })
+            .catch((err) => {
+                this._isMounted && this.setState({ error: err });
+            });
     }
 
     componentWillUnmount() {
@@ -52,18 +61,11 @@ class SportsList extends Component {
         evt.stopPropagation();
         const { leaguesData } = this.state;
         const newLeaguesData = leaguesData.filter(league => league.name != name);
-        const url = `${serverUrl}/sportleague?name=${name}`;
-        axios({
-            method: 'get',
-            url,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(({ data }) => {
-            newLeaguesData.push({ name, leagues: data.slice(0, 6) })
-            this.setState({ leaguesData: newLeaguesData });
-        });
-
+        axios(`${serverUrl}/sportleague?name=${name}`)
+            .then(({ data }) => {
+                newLeaguesData.push({ name, leagues: data.slice(0, 6) })
+                this.setState({ leaguesData: newLeaguesData });
+            });
     }
 
     removeLeagues = (evt, name) => {
@@ -89,7 +91,7 @@ class SportsList extends Component {
                 {sports.sort((a, b) => b.eventCount - a.eventCount).map(sport => {
                     const { name, eventCount } = sport;
                     const hasEvents = eventCount > 0;
-                    return hasEvents || showNoEvents ? (
+                    return (hasEvents || showNoEvents) && (
                         name == "Other" ?
                             (
                                 <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
@@ -160,9 +162,8 @@ class SportsList extends Component {
                                     </li>
                                 )
                             )
-                    ) : null
-                })
-                }
+                    )
+                })}
             </ul >
         )
     }

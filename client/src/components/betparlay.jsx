@@ -88,7 +88,7 @@ class BetParlay extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 2,000</span></div>
+                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
                         const { name, type, league, sportName, pickName } = bet;

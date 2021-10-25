@@ -81,9 +81,9 @@ class PromotionDetail extends React.Component {
                                             <td>{this.getDate(promotion.expiration_date)}</td>
                                         </tr>
                                         <tr>
-                                            <th>Number Of Usage</th>
+                                            <th>Usage per Same Customer</th>
                                             <td>{promotion.number_of_usage == -1 ? "Infinitive" : (promotion.number_of_usage + " times")}</td>
-                                            <th>Usage Limit</th>
+                                            <th>No. of Unique Redemptions</th>
                                             <td>{promotion.usage_limit} times Per User</td>
                                         </tr>
                                         <tr>

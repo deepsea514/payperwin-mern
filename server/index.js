@@ -50,6 +50,7 @@ const {
     calculateParlayBetsStatus,
     asyncFilter,
     getLinePoints,
+    getMaxWithdraw,
 } = require('./libs/functions');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -57,8 +58,9 @@ const EventStatus = config.EventStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
 const adminEmailAddress = 'admin@payperwin.com';
-const adminEmailAddress1 = 'hello@payperwin.com';
+const helloEmailAddress = 'hello@payperwin.com';
 const supportEmailAddress = 'support@payperwin.com';
+const alertEmailAddress = 'alerts@payperwin.com';
 const isDstObserved = config.isDstObserved;
 const loyaltyPerBet = 25;
 const maximumWin = 5000;
@@ -332,6 +334,14 @@ passport.use('local-signup', new LocalStrategy(
                                         if (enable) {
                                             newUser.balance = 50;
                                             await newUser.save();
+                                            await FinancialLog.create({
+                                                financialtype: 'signupbonus',
+                                                uniqid: `SB${ID()}`,
+                                                user: newUser._id,
+                                                amount: 50,
+                                                method: 'signupbonus',
+                                                status: FinancialStatus.success
+                                            });
                                             await PromotionLog.create({
                                                 user: newUser._id,
                                                 promotion: promotion._id,
@@ -1008,7 +1018,7 @@ expressApp.post(
                                         const matchTimeString = convertTimeLineDate(new Date(startDate), null);
                                         let adminMsg = {
                                             from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: adminEmailAddress1,
+                                            to: helloEmailAddress,
                                             subject: 'New Bet',
                                             text: `New Bet`,
                                             html: simpleresponsive(
@@ -1255,7 +1265,7 @@ expressApp.post(
                                             }
                                             let adminMsg = {
                                                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                                                to: adminEmailAddress1,
+                                                to: helloEmailAddress,
                                                 subject: 'New Bet',
                                                 text: `New Bet`,
                                                 html: simpleresponsive(
@@ -1588,7 +1598,7 @@ expressApp.post(
 
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: adminEmailAddress1,
+                to: helloEmailAddress,
                 subject: 'New Parlay Bet',
                 text: `New Parlay Bet`,
                 html: simpleresponsive(
@@ -1669,7 +1679,10 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 
     //Find autobet
     let autobets = await AutoBet
-        .find()
+        .find({
+            acceptParlay: 1,
+            usersExcluded: { $ne: ObjectId(user._id) }
+        })
         .populate('userId');
 
     autobets = JSON.parse(JSON.stringify(autobets));
@@ -1916,7 +1929,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         })
     }
     let autobets = await AutoBet
-        .find({ $or: orCon })
+        .find({
+            $or: orCon,
+            usersExcluded: { $ne: ObjectId(user._id) }
+        })
         .populate('userId');
     autobets = JSON.parse(JSON.stringify(autobets));
 
@@ -2931,47 +2947,6 @@ expressApp.post('/deposit',
     }
 );
 
-const getMaxWithdraw = async (user) => {
-    let totalwagers = await Bet.aggregate(
-        { $match: { userId: new ObjectId(user._id), } },
-        { $group: { _id: null, total: { $sum: "$bet" } } }
-    );
-    if (totalwagers.length) totalwagers = totalwagers[0].total;
-    else totalwagers = 0;
-
-    let totalwinbet = await Bet.aggregate(
-        {
-            $match: {
-                userId: new ObjectId(user._id),
-                status: "Settled - Win",
-            }
-        },
-        { $group: { _id: null, total: { $sum: "$credited" } } }
-    );
-    if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
-    else totalwinbet = 0;
-
-    let signupBonusAmount = 0;
-    const signUpBonusEnabled = await checkSignupBonusPromotionEnabled(user._id);
-    if (signUpBonusEnabled) {
-        const signUpBonus = await FinancialLog.findOne({
-            user: user._id,
-            financialtype: 'signupbonus'
-        });
-        if (signUpBonus) {
-            signupBonusAmount = signUpBonus.amount;
-        }
-    }
-
-    let maxwithdraw = totalwagers / 3 + totalwinbet;
-    if (signupBonusAmount > 0) {
-        if (totalwagers >= signupBonusAmount * 5)
-            maxwithdraw += signupBonusAmount;
-    }
-    maxwithdraw = Number(maxwithdraw.toFixed(2));
-    return maxwithdraw;
-}
-
 expressApp.get(
     '/freeWithdraw',
     isAuthenticated,
@@ -3048,9 +3023,27 @@ expressApp.post(
                 }
                 await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
 
+                const msg = {
+                    to: alertEmailAddress,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    subject: "A withdraw has been requested",
+                    text: `A withdraw has been requested`,
+                    html: simpleresponsive(
+                        `${user.email} has requested a withdraw of ${amount} by eTransfer. Please log into admin to review the request`,
+                    ),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
+
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
-                // }
-                return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
             } catch (error) {
                 console.error("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
@@ -3118,7 +3111,25 @@ expressApp.post(
                 }
 
                 await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
-
+                const msg = {
+                    to: alertEmailAddress,
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    subject: "A withdraw has been requested",
+                    text: `A withdraw has been requested`,
+                    html: simpleresponsive(
+                        `${user.email} has requested a withdraw of ${amount} by ${method}. Please log into admin to review the request`,
+                    ),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
             } catch (error) {
                 console.error("withdraw => ", error);

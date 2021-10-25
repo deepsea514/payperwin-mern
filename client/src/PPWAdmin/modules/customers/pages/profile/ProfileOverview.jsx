@@ -14,6 +14,7 @@ import { AverageBetAfter2Loss } from '../../components/AverageBetAfter2Loss';
 import { getCustomerOverview } from "../../redux/services";
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
+import { WinPercentage } from "../../components/WinPercentage";
 
 class ProfileOverview extends React.Component {
     constructor(props) {
@@ -34,7 +35,8 @@ class ProfileOverview extends React.Component {
             averagebetloss: 0,
             betsperday: 0,
             betsperweek: 0,
-            averagebetafter2loss: 0
+            averagebetafter2loss: 0,
+            wins: 0
         };
         this._Mounted = false;
     }
@@ -56,7 +58,8 @@ class ProfileOverview extends React.Component {
                     averagebetloss,
                     betsperday,
                     betsperweek,
-                    averagebetafter2loss
+                    averagebetafter2loss,
+                    wins
                 } = data;
                 this._Mounted && this.setState({
                     lastbets,
@@ -70,7 +73,8 @@ class ProfileOverview extends React.Component {
                     averagebetloss,
                     betsperday,
                     betsperweek,
-                    averagebetafter2loss
+                    averagebetafter2loss,
+                    wins
                 });
             })
     }
@@ -83,7 +87,7 @@ class ProfileOverview extends React.Component {
         const {
             lastbets, lastsportsbookbets, totalwagers, totaldeposit,
             balance, currency, winloss, fees, averagebet, averagebetwin,
-            averagebetloss, betsperday, betsperweek, averagebetafter2loss, id
+            averagebetloss, betsperday, betsperweek, averagebetafter2loss, id, wins
         } = this.state;
         return (
             <div className="card card-custom">
@@ -134,6 +138,11 @@ class ProfileOverview extends React.Component {
                             <Fees
                                 fees={fees}
                                 currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <WinPercentage
+                                wins={wins}
                                 className="mt-2" />
                         </div>
                     </div>

@@ -344,45 +344,27 @@ adminRouter.get(
             page--;
             let searchObj = {};
             if (email) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ email: { "$regex": email, "$options": "i" } }
-                }
+                searchObj = { ...searchObj, email: { "$regex": email, "$options": "i" } }
             }
             if (name) {
                 searchObj = {
                     ...searchObj,
-                    ...{
-                        $or: [
-                            {
-                                firstname: { "$regex": name, "$options": "i" }
-                            },
-                            {
-                                lastname: { "$regex": name, "$options": "i" }
-                            }
-                        ]
-                    }
+                    $or: [
+                        { firstname: { "$regex": name, "$options": "i" } },
+                        { lastname: { "$regex": name, "$options": "i" } }
+                    ]
                 }
             }
             if (balancemin || balancemax) {
                 let balanceObj = {
                 }
                 if (balancemin) {
-                    balanceObj = {
-                        ...balanceObj,
-                        ...{ $gte: parseInt(balancemin) }
-                    }
+                    balanceObj = { ...balanceObj, $gte: parseInt(balancemin) }
                 }
                 if (balancemax) {
-                    balanceObj = {
-                        ...balanceObj,
-                        ...{ $lte: parseInt(balancemax) }
-                    }
+                    balanceObj = { ...balanceObj, $lte: parseInt(balancemax) }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ balance: balanceObj }
-                }
+                searchObj = { ...searchObj, balance: balanceObj }
             }
             const total = await User.find(searchObj).count();
             let sortObj = {
@@ -427,6 +409,23 @@ adminRouter.get(
                         }
                     },
                     {
+                        $lookup: {
+                            from: 'bets',
+                            let: { user_id: "$_id" },
+                            pipeline: [{
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$userId", "$$user_id"] },
+                                            { $in: ["$status", ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"]] }
+                                        ]
+                                    },
+                                },
+                            }],
+                            as: 'pendingBets'
+                        }
+                    },
+                    {
                         $project: {
                             username: 1,
                             email: 1,
@@ -437,6 +436,7 @@ adminRouter.get(
                             roles: 1,
                             totalBetCount: { '$size': '$betHistory' },
                             totalWager: { $sum: '$betHistory.bet' },
+                            inplay: { $sum: '$pendingBets.bet' },
                             createdAt: 1
                         }
                     },
@@ -446,6 +446,7 @@ adminRouter.get(
                 ],
                 (error, data) => {
                     if (error) {
+                        console.error(error);
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
                     }
@@ -454,6 +455,7 @@ adminRouter.get(
             )
         }
         catch (error) {
+            console.error(error);
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
@@ -576,6 +578,7 @@ adminRouter.get(
             const days = Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (24 * 3600 * 1000));
 
             const bets = await Bet.find({ userId: id });
+            let winbets = 0;
             let averagebetafter2loss = 0;
             let prevBet = null;
             for (const bet of bets) {
@@ -588,8 +591,12 @@ adminRouter.get(
                 } else {
                     prevBet = null;
                 }
+                if (bet.status == 'Settled - Win') {
+                    winbets++;
+                }
             }
 
+            const wins = (winbets / (bets.length ? bets.length : 1) * 100).toFixed(2);
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -602,7 +609,8 @@ adminRouter.get(
                 averagebetloss: betcount > 0 ? lossamount / betcount : 0,
                 betsperday: days > 0 ? betcount / days : 0,
                 betsperweek: days > 0 ? betcount / days * 7 : 0,
-                averagebetafter2loss
+                averagebetafter2loss,
+                wins
             });
         }
         catch (error) {
@@ -1161,7 +1169,7 @@ adminRouter.post(
     limitRoles('withdraw_logs'),
     async (req, res) => {
         try {
-            let { user: userId, amount, method, status } = req.body;
+            let { user: userId, amount, method, status, note } = req.body;
             if (!userId) res.status(400).json({ error: 'User field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             amount = Number(amount);
@@ -1205,6 +1213,7 @@ adminRouter.post(
                     user: user._id,
                     amount: fee,
                     method: method,
+                    note: note,
                     status: FinancialStatus.success,
                 });
             }
@@ -1216,6 +1225,7 @@ adminRouter.post(
                 amount: amount,
                 method: method,
                 status: status,
+                note: note,
                 fee: fee,
             });
 
@@ -2954,9 +2964,30 @@ adminRouter.get(
                             $project: {
                                 email: 1,
                                 balance: 1,
+                                firstname: 1,
+                                lastname: 1
                             }
                         }],
                         as: 'userId',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { usersExcluded: "$usersExcluded" },
+                        pipeline: [{
+                            $match: {
+                                $expr: { $in: ["$_id", "$$usersExcluded"] }
+                            },
+                        }, {
+                            $project: {
+                                email: 1,
+                                balance: 1,
+                                firstname: 1,
+                                lastname: 1
+                            }
+                        }],
+                        as: 'usersExcluded',
                     }
                 },
                 {
@@ -2970,6 +3001,8 @@ adminRouter.get(
                         maxRisk: 1,
                         budget: 1,
                         sportsbookBudget: 1,
+                        usersExcluded: 1,
+                        acceptParlay: 1,
                         parlayBudget: 1,
                         hold: { $subtract: ["$budget", { $sum: '$autobetlogs.amount' }] },
                         sbhold: { $subtract: ["$sportsbookBudget", { $sum: '$sbautobetlogs.amount' }] },
@@ -5017,6 +5050,7 @@ adminRouter.get(
                     {
                         $group: {
                             _id: "$error.stack",
+                            createdAt: { "$first": "$createdAt" },
                             stack: { "$first": "$error.stack" },
                             name: { "$first": "$name" },
                             id: { "$first": "$_id" }

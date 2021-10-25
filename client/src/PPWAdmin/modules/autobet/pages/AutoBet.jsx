@@ -10,7 +10,6 @@ import CustomPagination from "../../../components/CustomPagination.jsx";
 import AutoBetModal from "../components/AutoBetModal";
 import { createAutoBet, deleteAutoBet, updateAutoBet } from "../redux/services";
 import * as Yup from "yup";
-import { Formik } from "formik";
 import numberFormat from "../../../../helpers/numberFormat";
 import config from "../../../../../../config.json";
 const AutoBetStatus = config.AutoBetStatus;
@@ -59,7 +58,14 @@ class AutoBet extends React.Component {
                 side: bet.side.map(side => ({ value: side, label: side })),
                 betType: bet.betType.map(betType => ({ value: betType, label: betType })),
                 status: bet.status,
-                referral_code: bet.referral_code
+                referral_code: bet.referral_code ? bet.referral_code : '',
+                rollOver: bet.rollOver,
+                acceptParlay: bet.acceptParlay ? bet.acceptParlay : false,
+                parlayBudget: bet.parlayBudget ? bet.parlayBudget : 0,
+                usersExcluded: bet.usersExcluded ? bet.usersExcluded.map(user => ({
+                    value: user._id,
+                    label: `${user.email} (${user.firstname} ${user.lastname})`
+                })) : [],
             }
         })
     }
@@ -102,6 +108,7 @@ class AutoBet extends React.Component {
                 <td>{numberFormat(bet.maxRisk)}</td>
                 <td>{numberFormat(bet.budget)} / {bet.hold}</td>
                 <td>{numberFormat(bet.sportsbookBudget ? bet.sportsbookBudget : 0)} / {numberFormat(bet.sbhold ? bet.sbhold : 0)}</td>
+                <td>{this.getRollOver(bet.acceptParlay)}</td>
                 <td>{numberFormat(bet.parlayBudget ? bet.parlayBudget : 0)} / {numberFormat(bet.parlayhold ? bet.parlayhold : 0)}</td>
                 <td>{bet.userId ? numberFormat(bet.userId.balance) : null}</td>
                 <td>{bet.referral_code}</td>
@@ -140,6 +147,7 @@ class AutoBet extends React.Component {
         const autobet = {
             ...values,
             userId: values.user.value,
+            usersExcluded: values.user.usersExcluded.map(user => user.value),
             sports: values.sports.map(sport => sport.value),
             side: values.side.map(side => side.value),
             betType: values.betType.map(betType => betType.value),
@@ -167,6 +175,7 @@ class AutoBet extends React.Component {
             sports: values.sports.map(sport => sport.value),
             side: values.side.map(side => side.value),
             betType: values.betType.map(betType => betType.value),
+            usersExcluded: values.usersExcluded.map(user => user.value),
         };
         delete autobet.user;
 
@@ -238,6 +247,7 @@ class AutoBet extends React.Component {
                                             <th scope="col">Max.Risk</th>
                                             <th scope="col">P2P&nbsp;Budget / Hold</th>
                                             <th scope="col">SB&nbsp;Budget / Hold</th>
+                                            <th scope="col">Accept Parlay</th>
                                             <th scope="col">Parlay&nbsp;Budget / Hold</th>
                                             <th scope="col">Balance</th>
                                             <th scope="col">Ref Code</th>

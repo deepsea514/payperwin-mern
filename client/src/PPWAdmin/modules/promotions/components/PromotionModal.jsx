@@ -35,11 +35,11 @@ export default class PromotionModal extends React.Component {
                 type: Yup.string()
                     .required("Type field is required."),
                 number_of_usage: Yup.number()
-                    .notOneOf([0], "Number Of Usage field should be -1 or positive integer")
-                    .required("Number Of Usage field is required"),
+                    .notOneOf([0], "This field should be -1 or positive integer")
+                    .required("This field is required"),
                 usage_limit: Yup.number()
-                    .moreThan(0, "Usage Limit field should be more than 0")
-                    .required("Usage Limit field is required"),
+                    .moreThan(0, "This field should be more than 0")
+                    .required("This field is required"),
                 usage_for: Yup.string()
                     .required("Use For field is required."),
                 value: Yup.number()
@@ -143,8 +143,8 @@ export default class PromotionModal extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group col-md-6">
-                                            <label>Number Of Usage<span className="text-danger">*</span></label>
-                                            <input name="number_of_usage" placeholder="Enter Number Of Usage"
+                                            <label>Usage per Same Customer<span className="text-danger">*</span></label>
+                                            <input name="number_of_usage" placeholder=""
                                                 className={`form-control ${getInputClasses(formik, "number_of_usage")}`}
                                                 {...formik.getFieldProps("number_of_usage")}
                                             />
@@ -157,8 +157,8 @@ export default class PromotionModal extends React.Component {
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
-                                            <label>Usage Limit<span className="text-danger">*</span></label>
-                                            <input name="usage_limit" placeholder="Enter Usage Limit"
+                                            <label>No. of Unique Redemptions<span className="text-danger">*</span></label>
+                                            <input name="usage_limit" placeholder=""
                                                 className={`form-control ${getInputClasses(formik, "usage_limit")}`}
                                                 {...formik.getFieldProps("usage_limit")}
                                             />
