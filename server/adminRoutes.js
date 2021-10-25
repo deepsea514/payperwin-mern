@@ -342,45 +342,27 @@ adminRouter.get(
             page--;
             let searchObj = {};
             if (email) {
-                searchObj = {
-                    ...searchObj,
-                    ...{ email: { "$regex": email, "$options": "i" } }
-                }
+                searchObj = { ...searchObj, email: { "$regex": email, "$options": "i" } }
             }
             if (name) {
                 searchObj = {
                     ...searchObj,
-                    ...{
-                        $or: [
-                            {
-                                firstname: { "$regex": name, "$options": "i" }
-                            },
-                            {
-                                lastname: { "$regex": name, "$options": "i" }
-                            }
-                        ]
-                    }
+                    $or: [
+                        { firstname: { "$regex": name, "$options": "i" } },
+                        { lastname: { "$regex": name, "$options": "i" } }
+                    ]
                 }
             }
             if (balancemin || balancemax) {
                 let balanceObj = {
                 }
                 if (balancemin) {
-                    balanceObj = {
-                        ...balanceObj,
-                        ...{ $gte: parseInt(balancemin) }
-                    }
+                    balanceObj = { ...balanceObj, $gte: parseInt(balancemin) }
                 }
                 if (balancemax) {
-                    balanceObj = {
-                        ...balanceObj,
-                        ...{ $lte: parseInt(balancemax) }
-                    }
+                    balanceObj = { ...balanceObj, $lte: parseInt(balancemax) }
                 }
-                searchObj = {
-                    ...searchObj,
-                    ...{ balance: balanceObj }
-                }
+                searchObj = { ...searchObj, balance: balanceObj }
             }
             const total = await User.find(searchObj).count();
             let sortObj = {
@@ -425,6 +407,23 @@ adminRouter.get(
                         }
                     },
                     {
+                        $lookup: {
+                            from: 'bets',
+                            let: { user_id: "$_id" },
+                            pipeline: [{
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$userId", "$$user_id"] },
+                                            { $in: ["$status", ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"]] }
+                                        ]
+                                    },
+                                },
+                            }],
+                            as: 'pendingBets'
+                        }
+                    },
+                    {
                         $project: {
                             username: 1,
                             email: 1,
@@ -435,6 +434,7 @@ adminRouter.get(
                             roles: 1,
                             totalBetCount: { '$size': '$betHistory' },
                             totalWager: { $sum: '$betHistory.bet' },
+                            inplay: { $sum: '$pendingBets.bet' },
                             createdAt: 1
                         }
                     },
@@ -444,6 +444,7 @@ adminRouter.get(
                 ],
                 (error, data) => {
                     if (error) {
+                        console.error(error);
                         res.status(404).json({ error: 'Can\'t find customers.' });
                         return;
                     }
@@ -452,6 +453,7 @@ adminRouter.get(
             )
         }
         catch (error) {
+            console.error(error);
             res.status(500).json({ error: 'Can\'t find customers.', message: error });
         }
     }
