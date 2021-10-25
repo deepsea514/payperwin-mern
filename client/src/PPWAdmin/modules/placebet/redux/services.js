@@ -3,17 +3,15 @@ import _env from '../../../../env.json';
 const serverUrl = _env.appAdminUrl;
 
 export function createPlaceBet(data) {
-    return axios.post(`${serverUrl}/autobet`, data, { withCredentials: true });
+    return axios.post(`${serverUrl}/placeBets`, data, { withCredentials: true });
 }
 
 export function getPlaceBets(page) {
-    let url = `${serverUrl}/autobet?page=${page}`;
+    let url = `${serverUrl}/placebetsbyadmin?page=${page}`;
     return axios.get(url, {
         withCredentials: true
     });
 }
-
-
 
 export function searchSportsLeague(sportName) {
     return axios.get(`${serverUrl}/searchsportsleague/${sportName}`);
