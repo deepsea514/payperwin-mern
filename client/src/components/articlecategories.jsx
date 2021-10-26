@@ -42,7 +42,7 @@ class ArticleCategories extends Component {
             <div>
                 <div className="category-intro-container">
                     <div className="global-width">
-                        <h1 className="default">Category</h1>
+                        <h1 className="default"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY"/></h1>
                         <div className="archive-anchors">
                             <nav className="anchors">
                                 <ul className="list">

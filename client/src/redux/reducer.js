@@ -4,6 +4,7 @@ import { put, takeLatest, select } from "redux-saga/effects";
 import { setPreferences } from "./services";
 import Cookie from 'js-cookie';
 import timeHelper from "../helpers/timehelper";
+import { setLanguage } from '../PPWAdmin/_metronic/i18n/Metronici18n';
 
 export const actionTypes = {
     setPreference: "[Set Preference Action]",
@@ -146,5 +147,14 @@ export function* saga() {
             yield put(actions.setPreference({ dark_light }));
         } catch (error) {
         }
-    })
+    });
+
+    yield takeLatest(actionTypes.setLanguage, function* setLanguageSaga() {
+        const lang = yield select((state) => state.frontend.lang);
+        try {
+            yield setPreferences({ lang });
+        } catch (error) {
+        }
+        setLanguage(lang);
+    });
 }
