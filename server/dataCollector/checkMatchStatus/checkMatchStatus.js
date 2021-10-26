@@ -110,7 +110,9 @@ const checkMatchStatus = async () => {
         }
         const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
-        if (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.email) {
+        //Comment: disable this email and SMS message since there should always be a match now.
+       /*  
+       if (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.email) {
             const msg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 to: user.email,
@@ -136,7 +138,8 @@ const checkMatchStatus = async () => {
         }
         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
             sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
-        }
+        } 
+        */
 
     }
     console.log("Sent mails.")
