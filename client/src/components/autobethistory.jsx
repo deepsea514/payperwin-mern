@@ -44,9 +44,9 @@ class AutobetHistory extends Component {
                     {/* Header */}
                     <div className="card-header align-items-center border-0 mt-4">
                         <h3 className="card-title align-items-start flex-column">
-                            <span className="font-weight-bolder text-dark">Recent Matches</span>
+                            <span className="font-weight-bolder text-dark"><FormattedMessage id="COMPONENTS.AUTOBET.RECENTMATCHES" /></span>
                             <span className="text-muted mt-3 font-weight-bold font-size-sm">
-                                {histories.length} Matches
+                                {histories.length} <FormattedMessage id="COMPONENTS.AUTOBET.MATCHES" />
                             </span>
                         </h3>
                     </div>

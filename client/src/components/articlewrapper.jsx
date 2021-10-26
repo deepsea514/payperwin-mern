@@ -45,14 +45,14 @@ class ArticleWrapper extends Component {
                                     </div>
                                     <div className="cta-wrapper">
                                         <Link to={`/articles/${article.permalink}/${article._id}`} className="read-more-link">
-                                            Read more&nbsp;&nbsp;<i className="fas fa-caret-down" />
+                                            <FormattedMessage id="COMPONENTS.ARTICLE.READMORE" />&nbsp;&nbsp;<i className="fas fa-caret-down" />
                                         </Link>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    {showMore && <Link className="center-block-see-more mt-5" to="/articles/category">See more articles</Link>}
+                    {showMore && <Link className="center-block-see-more mt-5" to="/articles/category"><FormattedMessage id="COMPONENTS.ARTICLE.SEEMORE" /></Link>}
                     {showCategories && categories && categories.length > 0 && <div className="archive-anchors lower mt-5">
                         <nav className="anchors">
                             <ul className="list">

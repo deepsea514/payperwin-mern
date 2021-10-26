@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
@@ -53,7 +52,9 @@ class Article extends Component {
         const { article, categories } = this.state;
         if (!article) {
             return (
-                <center><h3>No data available.</h3></center>
+                <center><h3>
+                    <FormattedMessage id="COMPONENTS.ARTICLE.NODATA"/>
+                    </h3></center>
             )
         }
         return (
@@ -61,7 +62,7 @@ class Article extends Component {
                 <div className="social-bar article social-bar-area">
                     <Link to="/articles" className="back-to-help-wrap">
                         <i className="fas fa-chevron-left" /> &nbsp;
-                        <span className="back-to-help-text">Back to Home</span>
+                        <span className="back-to-help-text"><FormattedMessage id="COMPONENTS.ARTICLE.BACK"/></span>
                     </Link>
                 </div>
 
@@ -108,7 +109,7 @@ class Article extends Component {
                                 <div className="article-divider" />
                                 <div className="lower-button-container social-bar-area">
                                     <ul className="tags">
-                                        <li className="tag-list-header">Category:</li>
+                                        <li className="tag-list-header"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY"/>:</li>
                                         {article.categories.map((category, index) => (
                                             <li key={index} className="category-tags-item">
                                                 <Link to={`/articles/category/${category}`}>
@@ -121,7 +122,7 @@ class Article extends Component {
                                         <Link to="/articles" className="br-home-link">
                                             <div className="br-home-button">
                                                 <i className="fas fa-chevron-left" /> &nbsp;
-                                                <span className="br-home-label">Article Home</span>
+                                                <span className="br-home-label"><FormattedMessage id="COMPONENTS.ARTICLE.HOME"/></span>
                                             </div>
                                         </Link>
                                     </div>

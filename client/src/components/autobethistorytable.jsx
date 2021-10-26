@@ -121,13 +121,13 @@ class AutobetHistoryTable extends Component {
                 <div className="card card-custom">
                     <div className="card-header align-items-center border-0 mt-4">
                         <h3 className="card-title align-items-start flex-column">
-                            <span className="font-weight-bolder text-dark">Recent Matches</span>
+                            <span className="font-weight-bolder text-dark"><FormattedMessage id="COMPONENTS.AUTOBET.RECENTMATCHES" /></span>
                         </h3>
                         <div className="card-toolbar">
                             <a
                                 style={{ cursor: 'pointer', fontSize: 16 }}
                                 onClick={cancel}>
-                                <strong><i className="fas fa-chevron-left"></i> Back</strong>
+                                <strong><i className="fas fa-chevron-left"></i> <FormattedMessage id="PAGES.BACK" /></strong>
                             </a>
                         </div>
                     </div>
