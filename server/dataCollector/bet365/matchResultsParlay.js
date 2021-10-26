@@ -35,7 +35,7 @@ const cancelBetPool = async (betpool) => {
     for (const betId of [...homeBets, ...awayBets]) {
         const bet = await Bet.findById(betId);
         if (bet) {
-            const { userId, bet: betAmount } = bet;
+            const { _id, userId, bet: betAmount } = bet;
             // refund user
             await bet.update({ status: 'Cancelled' });
             await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
@@ -43,6 +43,7 @@ const cancelBetPool = async (betpool) => {
                 financialtype: 'betcancel',
                 uniqid: `BC${ID()}`,
                 user: userId,
+                betId: _id,
                 amount: betAmount,
                 method: 'betcancel',
                 status: FinancialStatus.success,
@@ -280,7 +281,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
             for (const bet_id of winBets) {
                 const bet = await Bet.findById(bet_id);
                 if (bet) {
-                    const { userId, bet: betAmount, payableToWin } = bet;
+                    const { _id, userId, bet: betAmount, payableToWin } = bet;
                     const user = await User.findById(userId);
                     if (user) {
                         const { email } = user;
@@ -300,6 +301,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                                 financialtype: 'betwon',
                                 uniqid: `BW${ID()}`,
                                 user: userId,
+                                betId: _id,
                                 amount: betAmount + payableToWin,
                                 method: 'betwon',
                                 status: FinancialStatus.success,

@@ -116,6 +116,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                 financialtype: 'betcancel',
                                 uniqid: `BC${ID()}`,
                                 user: userId,
+                                betId: _id,
                                 amount: betAmount,
                                 method: 'betcancel',
                                 status: FinancialStatus.success,
@@ -160,6 +161,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                 financialtype: 'betdraw',
                                 uniqid: `BD${ID()}`,
                                 user: userId,
+                                betId: _id,
                                 amount: betAmount,
                                 method: 'betdraw',
                                 status: FinancialStatus.success,
@@ -190,6 +192,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                         financialtype: 'betwon',
                                         uniqid: `BW${ID()}`,
                                         user: userId,
+                                        betId: _id,
                                         amount: betAmount + payableToWin,
                                         method: 'betwon',
                                         status: FinancialStatus.success,
@@ -274,7 +277,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
             for (const betId of [...homeBets, ...awayBets]) {
                 const bet = await Bet.findById(betId);
                 if (bet) {
-                    const { userId, bet: betAmount } = bet;
+                    const {_id, userId, bet: betAmount } = bet;
                     // refund user
                     await bet.update({ status: 'Cancelled' });
                     await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
@@ -282,6 +285,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                         financialtype: 'betcancel',
                         uniqid: `BC${ID()}`,
                         user: userId,
+                        betId: _id,
                         amount: betAmount,
                         method: 'betcancel',
                         status: FinancialStatus.success,

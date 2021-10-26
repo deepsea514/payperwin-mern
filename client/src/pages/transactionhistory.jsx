@@ -46,6 +46,8 @@ class TransactionHistory extends Component {
         this.setState({ loading: true, noMore: false });
         axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
             .then(({ data }) => {
+
+                console.log(data);
                 this.setState({ transactions: clear ? data : [...transactions, ...data], page, noMore: data.length == 0 });
             }).finally(() => this.setState({ loading: false }));
     }
@@ -255,6 +257,7 @@ class TransactionHistory extends Component {
                             <div className="row amount-col bg-color-box" key={index}>
                                 <div className="col-sm-8">
                                     <span>{this.getDate(transaction.updatedAt)}</span>
+                                    {transaction.betDetails && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div> }
                                     <small>{this.getFormattedString(transaction.financialtype, transaction.method)}</small>
                                 </div>
                                 <div className="col-sm-2 text-right">
