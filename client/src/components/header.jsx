@@ -349,7 +349,7 @@ class Header extends Component {
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>English
                                                         </li>
                                                         <li onClick={() => { }}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Chinese
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Spanish
                                                         </li>
                                                         <li onClick={() => { }}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Korean
