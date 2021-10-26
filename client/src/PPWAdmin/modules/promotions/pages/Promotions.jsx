@@ -7,7 +7,7 @@ import * as promotions from "../redux/reducers";
 import dateformat from "dateformat";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import PromotionModal from "../components/PromotionModal";
-import { createPromotion } from "../redux/services";
+import { createPromotion, deletePromotion, updatePromotion } from "../redux/services";
 import config from "../../../../../../config.json";
 const PromotionTypes = config.PromotionTypes;
 const PromotionFor = config.PromotionFor;
@@ -20,7 +20,10 @@ class Promotions extends React.Component {
             addModal: false,
             modal: false,
             resMessage: '',
-            modalvariant: ''
+            modalvariant: '',
+            deleteId: null,
+            editId: null,
+            initialValues: null,
         }
     }
 
@@ -67,9 +70,31 @@ class Promotions extends React.Component {
                 <td>{promotion.number_of_usage}</td>
                 <td>{promotion.usage_limit}</td>
                 <td>{PromotionFor[promotion.usage_for]}</td>
-                <td><Link to={`/${promotion._id}/detail`} ><i className="fas fa-eye"></i></Link></td>
+                <td>
+                    <DropdownButton title="Actions">
+                        <Dropdown.Item as={Link} to={`/${promotion._id}/detail`} ><i className="fas fa-eye" />&nbsp; Detail</Dropdown.Item>
+                        <Dropdown.Item onClick={() => this.setEditId(promotion)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => this.setState({ deleteId: promotion._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
+                    </DropdownButton>
+                </td>
             </tr>
         ));
+    }
+
+    setEditId = (promotion) => {
+        this.setState({
+            editId: promotion._id,
+            initialValues: {
+                name: promotion.name,
+                description: promotion.description,
+                expiration_date: new Date(promotion.expiration_date),
+                type: promotion.type,
+                number_of_usage: promotion.number_of_usage,
+                usage_limit: promotion.usage_limit,
+                usage_for: promotion.usage_for,
+                value: promotion.value,
+            }
+        });
     }
 
     onPageChange = (page) => {
@@ -92,8 +117,36 @@ class Promotions extends React.Component {
             });
     }
 
+    updatePromotion = (values, formik) => {
+        const { getPromotionsAction } = this.props;
+        const { editId } = this.state;
+        updatePromotion(editId, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, editId: null, resMessage: "Successfully saved!", modalvariant: "success" });
+                getPromotionsAction();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, editId: null, resMessage: "Upgrade Failed!", modalvariant: "danger" });
+            });
+    }
+
+    deletePromotion = () => {
+        const { deleteId } = this.state;
+        const { getPromotionsAction } = this.props;
+        deletePromotion(deleteId)
+            .then(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
+                getPromotionsAction();
+            })
+            .catch(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { perPage, addModal, modal, modalvariant, resMessage } = this.state;
+        const { perPage, addModal, modal, modalvariant, resMessage, deleteId, editId, initialValues } = this.state;
         const { total, currentPage } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -122,7 +175,7 @@ class Promotions extends React.Component {
                                             <th scope="col">Usage per Same Customer</th>
                                             <th scope="col">No. of Unique Redemptions</th>
                                             <th scope="col">Usage For</th>
-                                            <th scope="col">Details</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -156,6 +209,28 @@ class Promotions extends React.Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+
+                <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to delete this log?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={this.deletePromotion}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                {editId && <PromotionModal
+                    show={editId != null}
+                    onHide={() => this.setState({ editId: null })}
+                    title="Edit Promotion"
+                    initialValues={initialValues}
+                    onSubmit={this.updatePromotion}
+                />}
             </div>
         );
     }
