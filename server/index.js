@@ -1121,11 +1121,12 @@ expressApp.post(
 
                                         user.balance = newBalance;
                                         try {
+                                            console.log("place savedBet", betId);
                                             await FinancialLog.create({
                                                 financialtype: 'bet',
                                                 uniqid: `BP${ID()}`,
                                                 user: user._id,
-                                                betId: newBet.id,
+                                                betId: betId,
                                                 amount: toBet,
                                                 method: 'bet',
                                                 status: FinancialStatus.success,
@@ -1368,6 +1369,7 @@ expressApp.post(
                                                     financialtype: 'bet',
                                                     uniqid: `BP${ID()}`,
                                                     user: user._id,
+                                                    betId: betId,
                                                     amount: toBet,
                                                     method: 'bet',
                                                     status: FinancialStatus.success,
@@ -1584,6 +1586,7 @@ expressApp.post(
                 financialtype: 'bet',
                 uniqid: `BP${bet_id}`,
                 user: user._id,
+                betId: parlayBet._id,
                 amount: totalStake,
                 method: 'bet',
                 status: FinancialStatus.success,
@@ -1819,6 +1822,7 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                     financialtype: 'bet',
                     uniqid: `BP${bet_id}`,
                     user: selectedauto.userId._id,
+                    betId: betId,
                     amount: bettable,
                     method: 'bet',
                     status: FinancialStatus.success,
@@ -2133,13 +2137,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
             await betpool.update(docChanges);
-
             try {
                 await FinancialLog.create({
                     financialtype: 'bet',
                     uniqid: `BP${bet_id}`,
                     user: selectedauto.userId._id,
-                    betId: newBet.id,
+                    betId: betId,
                     amount: bettable,
                     method: 'bet',
                     status: FinancialStatus.success,
