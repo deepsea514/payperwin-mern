@@ -10,6 +10,10 @@ const getBasketballMatchScores = (type, subtype, ss, scores, timer, time_status)
                 matchResult.homeScore = parseInt(scores["3"].home);
                 matchResult.awayScore = parseInt(scores["3"].away);
                 break;
+            case 'second_half':
+                matchResult.homeScore = parseInt(scores["7"].home) - parseInt(scores["3"].home);
+                matchResult.awayScore = parseInt(scores["7"].away) - parseInt(scores["3"].away);
+                break;
             case 'first_quarter':
                 matchResult.homeScore = parseInt(scores["1"].home);
                 matchResult.awayScore = parseInt(scores["1"].away);
