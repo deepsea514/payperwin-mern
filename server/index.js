@@ -1125,6 +1125,7 @@ expressApp.post(
                                                 financialtype: 'bet',
                                                 uniqid: `BP${ID()}`,
                                                 user: user._id,
+                                                betId: newBet.id,
                                                 amount: toBet,
                                                 method: 'bet',
                                                 status: FinancialStatus.success,
@@ -2138,6 +2139,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     financialtype: 'bet',
                     uniqid: `BP${bet_id}`,
                     user: selectedauto.userId._id,
+                    betId: newBet.id,
                     amount: bettable,
                     method: 'bet',
                     status: FinancialStatus.success,
@@ -3215,11 +3217,26 @@ expressApp.post(
                 }
             }
             const perPage = 20;
-            const financials = await FinancialLog.find(searchObj)
-                .sort({ createdAt: -1 })
-                .skip(perPage * page)
-                .limit(perPage);
+            const financials = await FinancialLog.aggregate([
+                {
+                    $lookup: {
+                        from: 'bets',
+                        localField: 'betId',
+                        foreignField: '_id',
+                        as: 'betDetails'
+                    }
+                },
+                { $unwind: {path: "$betDetails", preserveNullAndEmptyArrays: true  }},
+                {
+                    $match: searchObj
+                },
+                { $sort: { "createdAt": -1 } },
+                { $skip: perPage * page },
+                { $limit: 20 }
+            ]);
+
             res.json(financials);
+
         } catch (error) {
             console.error("transactions => ", error);
             res.status(400).json({ success: 0, message: "can't load data" });
