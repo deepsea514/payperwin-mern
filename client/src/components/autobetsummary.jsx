@@ -16,7 +16,7 @@ class AutobetSummary extends Component {
             <div className={`card card-custom bg-white rounded-top`}>
                 {/* Header */}
                 <div className="card-header border-0 bg-primary py-3">
-                    <h3 className="card-title font-weight-bolder text-white">Summary</h3>
+                    <h3 className="card-title font-weight-bolder text-white"><FormattedMessage id="COMPONENTS.AUTOBET.SUMMARY" /></h3>
                 </div>
                 {/* Body */}
                 <div className="card-body p-0 position-relative overflow-hidden">
@@ -25,7 +25,7 @@ class AutobetSummary extends Component {
                         className="card-rounded-bottom bg-primary text-center"
                         style={{ height: "140px" }}
                     >
-                        <label className="font-weight-bolder text-white bg-primary">Your balance</label>
+                        <label className="font-weight-bolder text-white bg-primary"><FormattedMessage id="COMPONENTS.AUTOBET.YOURBALANCE" /></label>
                         <h3 className="font-weight-bolder text-white bg-primary p-0 m-0"> ${numberFormat(this.balanceString(user.balance))}</h3>
                     </div>
 
@@ -46,11 +46,11 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder"                                            >
-                                            Bets
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.BETS" />
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
-                                            {totalbets.count} bets
+                                            {totalbets.count} <FormattedMessage id="COMPONENTS.AUTOBET.BETS" />
                                         </a>
                                     </div>
                                 </div>
@@ -76,11 +76,11 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            Wins
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.WINS" />
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
-                                            {winbets.count} wins
+                                            {winbets.count} <FormattedMessage id="COMPONENTS.AUTOBET.WINS" />
                                         </a>
                                     </div>
                                 </div>

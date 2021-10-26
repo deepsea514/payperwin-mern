@@ -40,7 +40,7 @@ class AutobetChart extends Component {
                     {/* Header */}
                     <div className="card-header align-items-center border-0 mt-4">
                         <h3 className="card-title align-items-start flex-column">
-                            <span className="font-weight-bolder text-dark">Bets per Sports</span>
+                            <span className="font-weight-bolder text-dark"><FormattedMessage id="COMPONENTS.AUTOBET.BETSPERSPORTS" /></span>
                         </h3>
                     </div>
                     {/* Body */}

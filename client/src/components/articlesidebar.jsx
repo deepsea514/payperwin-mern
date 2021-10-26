@@ -76,11 +76,11 @@ class ArticleSidebar extends Component {
                         <ul className="article-sidebar-tab">
                             <li className={`popular-tab ${active_tab == 'popular' ? 'active' : ''}`}
                                 onClick={() => this.setState({ active_tab: 'popular' })}>
-                                <span>Popular</span>
+                                <span><FormattedMessage id="COMPONENTS.ARTICLE.POPULAR" /></span>
                             </li>
                             <li className={`recent-tab ${active_tab == 'recent' ? 'active' : ''}`}
                                 onClick={() => this.setState({ active_tab: 'recent' })}>
-                                <span>Recent</span>
+                                <span><FormattedMessage id="COMPONENTS.ARTICLE.RECENT" /></span>
                             </li>
                         </ul>
 
@@ -101,7 +101,7 @@ class ArticleSidebar extends Component {
                                 ))}
                                 <li className="sidebar-tab-more">
                                     <Link to={`/articles/category`}>
-                                        More articles&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
+                                        <FormattedMessage id="COMPONENTS.ARTICLE.MORE" />&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
                                     </Link>
                                 </li>
                             </ul>
@@ -126,7 +126,7 @@ class ArticleSidebar extends Component {
 
                                     <li className="sidebar-tab-more">
                                         <Link to={`/articles/category`}>
-                                            More articles&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
+                                            <FormattedMessage id="COMPONENTS.ARTICLE.MORE" />&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
                                         </Link>
                                     </li>
                                 </ul>
@@ -137,11 +137,11 @@ class ArticleSidebar extends Component {
 
                 {relatedArticle && <div className="sidebar-block mt-2">
                     <div className="recent-popular-related">
-                        <h6><span>Related Articles</span></h6>
+                        <h6><span><FormattedMessage id="COMPONENTS.ARTICLE.RELATED" /></span></h6>
                         <ul className="hover-li">
                             {relatedArticles.length == 0 && <li>
                                 <div className="details">
-                                    <span className="date">No Related Articles</span>
+                                    <span className="date"><FormattedMessage id="COMPONENTS.ARTICLE.NORELATED" /></span>
                                 </div>
                             </li>}
                             {relatedArticles.length > 0 && relatedArticles.map(article => (
@@ -159,7 +159,7 @@ class ArticleSidebar extends Component {
                             ))}
                             <li className="sidebar-tab-more">
                                 <Link to={`/articles/category`}>
-                                    More articles&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
+                                    <FormattedMessage id="COMPONENTS.ARTICLE.MORE" />&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
                                 </Link>
                             </li>
                         </ul>
@@ -194,7 +194,7 @@ class ArticleSidebar extends Component {
                 ))}
 
                 {categories && <div className="sidebar-block tags-categories">
-                    <h6>Categories</h6>
+                    <h6><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY" /></h6>
                     <ul className="hover-li">
                         {categories.slice(0, 10).map(category => (
                             <li key={category._id}>
@@ -211,8 +211,8 @@ class ArticleSidebar extends Component {
                         ))}
                     </ul>}
                     <div className="see-all">
-                        {!see_more && <span onClick={() => this.setState({ see_more: true })}>See all + </span>}
-                        {see_more && <span onClick={() => this.setState({ see_more: false })}>See less - </span>}
+                        {!see_more && <span onClick={() => this.setState({ see_more: true })}><FormattedMessage id="COMPONENTS.ARTICLE.SEEALL" /> + </span>}
+                        {see_more && <span onClick={() => this.setState({ see_more: false })}><FormattedMessage id="COMPONENTS.ARTICLE.SEELESS" /> - </span>}
                     </div>
                 </div>}
             </>

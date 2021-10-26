@@ -95,6 +95,12 @@ class Header extends Component {
         setDisplayMode(display_mode);
     }
 
+    setLanguage = (lang) => {
+        const { setLanguage } = this.props;
+        setLanguage(lang);
+        this._isMounted && this.setState({ langDropDownOpen: false });
+    }
+
     balanceString = (balance) => {
         balance = parseInt(balance * 100);
         return balance / 100;
@@ -116,6 +122,7 @@ class Header extends Component {
             user,
             location,
             search,
+            lang,
             setSearch,
             acceptCookie,
             acceptCookieAction,
@@ -126,6 +133,7 @@ class Header extends Component {
             showLoginModalAction,
             showForgotPasswordModalAction
         } = this.props;
+        console.log(lang);
         const { pathname } = location;
         return (
             <header className="header">
@@ -227,13 +235,6 @@ class Header extends Component {
                                                 </Link>
                                             </center>
                                         </li>
-                                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                    <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
-                                                </Link>
-                                            </center>
-                                        </li> */}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
@@ -264,11 +265,6 @@ class Header extends Component {
                                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
                                         </li>
-                                        {/* <li className={`nav-item ${pathname === '/sportsbook' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/sportsbook' }} className="nav-link">
-                                                <i className="fas fa-futbol"></i>LIVE&nbsp;CENTER
-                                            </Link>
-                                        </li> */}
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                 <i className="fas fa-info"></i>HOW IT WORKS
@@ -336,22 +332,21 @@ class Header extends Component {
                                                 </div>
                                             </React.Fragment>
                                         ) : null}
-
                                     </li>
                                     <li>
-                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>En <i className="fa fa-caret-down" aria-hidden="true"></i></a>
+                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>{lang} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
                                         {langDropDownOpen ? (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
                                                 <div className="odds-dropdown">
                                                     <ul>
-                                                        <li onClick={() => { }}>
+                                                        <li onClick={() => this.setLanguage('en')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>English
                                                         </li>
-                                                        <li onClick={() => { }}>
+                                                        <li onClick={() => this.setLanguage('es')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Spanish
                                                         </li>
-                                                        <li onClick={() => { }}>
+                                                        <li onClick={() => this.setLanguage('ko')}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Korean
                                                         </li>
                                                     </ul>
@@ -425,6 +420,7 @@ const mapStateToProps = (state) => ({
     dark_light: state.frontend.dark_light,
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
+    lang: state.frontend.lang,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Header)
