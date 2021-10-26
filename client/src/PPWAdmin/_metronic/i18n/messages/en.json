@@ -1,9 +1,9 @@
 {
     "COMPONENTS.ARTICLE.NODATA": "No data available.",
     "COMPONENTS.ARTICLE.BACK": "Back to Home",
-    "COMPONENTS.ARTICLE.CATEGORY": "Category:",
-    "COMPONENTS.ARTICLE.HOME": "Article Home:",
-    "COMPONENTS.ARTICLE.EXPLOREPOPULARTAG": "Explore popular tags for this category or",
+    "COMPONENTS.ARTICLE.CATEGORY": "Category",
+    "COMPONENTS.ARTICLE.HOME": "Article Home",
+    "COMPONENTS.ARTICLE.EXPLOREPOPULARTAG": "Explore popular tags for this category or {search}",
     "COMPONENTS.ARTICLE.SEARCHCATEGORY": "Search for other categories",
     "COMPONENTS.ARTICLE.POPULAR": "Popular",
     "COMPONENTS.ARTICLE.RECENT": "Recent",

@@ -59,7 +59,10 @@ class ArticleCategory extends Component {
                     <div className="global-width">
                         <h1 className="default">{categoryname}</h1>
                         <p data-nsfw-filter-status="swf">
-                            Explore popular tags for this category or  <Link to="/articles/category">Search for other categories</Link>
+                            <FormattedMessage id="COMPONENTS.ARTICLE.EXPLOREPOPULARTAG" values={{
+                                search:
+                                    <Link to="/articles/category"><FormattedMessage id="COMPONENTS.ARTICLE.SEARCHCATEGORY" /></Link>
+                            }} />
                         </p>
                     </div>
                 </div>
