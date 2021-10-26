@@ -15,8 +15,7 @@ const Footer = (props) => {
                                 <li><Link to={{ pathname: '/sport/Basketball' }}>Basketball betting</Link></li>
                                 <li><Link to={{ pathname: '/sport/Baseball' }}>Baseball betting</Link></li>
                                 <li><Link to={{ pathname: '/sport/Football' }}>Football betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Table%20Tennis' }}>Table Tennis betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Mixed%20Martial%20Arts' }}>Mixed Martial Arts betting</Link></li>
+                                <li><Link to={{ pathname: '/sport/Table_Tennis' }}>Table Tennis betting</Link></li>
                                 <li><Link to={{ pathname: '/sport/Boxing' }}>Boxing betting</Link></li>
                             </ul>
                         </div>

@@ -224,7 +224,7 @@ export default class AutoBetModal extends React.Component {
                                             <input type="checkbox" id="acceptParlay" name="acceptParlay"
                                                 {...formik.getFieldProps("acceptParlay")}
                                                 checked={formik.values.acceptParlay} />
-                                            <label htmlFor="acceptParlay"> &nbsp;&nbsp;Accept Pralay</label>
+                                            <label htmlFor="acceptParlay"> &nbsp;&nbsp;Accept Pralay Bets</label>
                                             {formik.touched.acceptParlay && formik.errors.acceptParlay ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.acceptParlay}

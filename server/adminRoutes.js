@@ -3146,6 +3146,40 @@ adminRouter.post(
     }
 )
 
+adminRouter.delete(
+    '/promotion/:id',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await Promotion.deleteMany({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find promotion.' });
+        }
+    }
+)
+
+adminRouter.patch(
+    '/promotion/:id',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const promotion = await Promotion.findById(id);
+            if (!promotion) {
+                return res.status(404).json({ error: 'Can\'t find promotion.' });
+            }
+            await promotion.update(req.body);
+            res.json({ success: true });
+        } catch (error) {
+            res.status(404).json({ error: 'Can\'t find promotion.' });
+        }
+    }
+)
+
 adminRouter.get(
     '/promotions',
     authenticateJWT,

@@ -3,15 +3,17 @@ import { useLang } from "./Metronici18n";
 import { IntlProvider } from "react-intl";
 import "@formatjs/intl-relativetimeformat/polyfill";
 import "@formatjs/intl-relativetimeformat/dist/locale-data/en";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/zh";
-// import "@formatjs/intl-relativetimeformat/dist/locale-data/ko";
+import "@formatjs/intl-relativetimeformat/dist/locale-data/es";
+import "@formatjs/intl-relativetimeformat/dist/locale-data/ko";
 
 import enMessages from "./messages/en";
-import zhMessages from "./messages/zh";
+import esMessages from "./messages/es";
+import koMessages from "./messages/ko";
 
 const allMessages = {
     en: enMessages,
-    zh: zhMessages
+    es: esMessages,
+    ko: koMessages
 };
 
 export function I18nProvider({ children }) {

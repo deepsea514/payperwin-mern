@@ -317,7 +317,6 @@ class Header extends Component {
                                             <div className="lightmode_switch"></div>
                                         </div>
                                     </li>
-                                    {/* <li><a href="#"><i className="fa fa-info-circle" aria-hidden="true"></i></a><a href="#">Single Odds</a> <a href="#">Multiple Odds</a></li> */}
                                     <li>
                                         <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
                                             <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddsFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
@@ -350,7 +349,7 @@ class Header extends Component {
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>English
                                                         </li>
                                                         <li onClick={() => { }}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Chinese
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Spanish
                                                         </li>
                                                         <li onClick={() => { }}>
                                                             <i className="fa fa-info-circle" aria-hidden="true"></i>Korean

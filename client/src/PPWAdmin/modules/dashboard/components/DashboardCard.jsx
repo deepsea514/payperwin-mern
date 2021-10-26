@@ -6,7 +6,7 @@ import SVG from "react-inlinesvg";
 class DashboardCard extends React.Component {
     render() {
         return (
-            <div className="flex-row-auto offcanvas-mobile offcanvas-mobile-on w-250px w-xxl-350px"
+            <div className="flex-row-auto offcanvas-mobile w-250px w-xxl-350px"
                 id="kt_profile_aside">
                 <div className="card card-custom card-stretch">
                     <div className="card-body pt-8">
