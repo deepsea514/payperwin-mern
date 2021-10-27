@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import * as frontend from "../redux/reducer";
 import axios from 'axios';
 import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -64,7 +65,7 @@ class ForgotPasswordModal extends React.Component {
                             <div className="login_modal_context">
                                 <div className="login_modal_leftbar">
                                     <i className="fal fa-times float-right" style={{ cursor: 'pointer', fontSize: '22px' }} onClick={closeModal} />
-                                    <h1 className="loginTitle"><span>Password Recovery</span></h1>
+                                    <h1 className="loginTitle"><span><FormattedMessage id="COMPONENTS.PASSWORD_RECOVERY" /></span></h1>
                                     <Formik
                                         initialValues={initialValues}
                                         validationSchema={forgotSchema}
@@ -73,7 +74,7 @@ class ForgotPasswordModal extends React.Component {
                                             return <form onSubmit={formik.handleSubmit}>
                                                 <div className="loginFormWrapper">
                                                     <div className="formField medium primary">
-                                                        <label className="formFieldLabel"><span>Email</span></label>
+                                                        <label className="formFieldLabel"><span><FormattedMessage id="PAGES.PROFILE.EMAIL" /></span></label>
                                                         <div className="formElementWrap">
                                                             <div className="leftIcon">
                                                                 <i fill="currentColor" style={{ display: 'inline-block' }}>
@@ -86,7 +87,6 @@ class ForgotPasswordModal extends React.Component {
                                                                 maxLength="200"
                                                                 type="email"
                                                                 name="email"
-                                                                placeholder="Email"
                                                                 className="formElement"
                                                                 autoComplete="off"
                                                                 {...formik.getFieldProps("email")}
@@ -94,7 +94,7 @@ class ForgotPasswordModal extends React.Component {
                                                         </div>
                                                     </div>
                                                     <p className="loginForgotPasswordWrapper">
-                                                        <span>Back to <a onClick={backToLogin} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>Login</span></span></a></span>
+                                                        <span><FormattedMessage id="PAGES.INBOX.BACKTOLOGIN" values={{ login: <a onClick={backToLogin} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span><FormattedMessage id="COMPONENTS.LOGIN" /></span></span></a> }} /></span>
                                                     </p>
                                                     {errors.server ? <div className="form-error">{errors.server}</div>
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
@@ -106,7 +106,7 @@ class ForgotPasswordModal extends React.Component {
                                                             className="loginButton fullWidthButton ellipsis mediumButton dead-center secondaryButton"
                                                             type="submit"
                                                             disabled={formik.touched.email && formik.errors.email || formik.isSubmitting}>
-                                                            <span>Submit</span>
+                                                            <span><FormattedMessage id="COMPONENTS.SUBMIT" /></span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -126,4 +126,4 @@ class ForgotPasswordModal extends React.Component {
     }
 }
 
-export default connect(null, frontend.actions)(withRouter(ForgotPasswordModal));
+export default connect(null, frontend.actions)(withRouter(injectIntl(ForgotPasswordModal)));

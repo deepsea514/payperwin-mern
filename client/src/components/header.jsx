@@ -74,13 +74,13 @@ class Header extends Component {
     }
 
     getOddsFormatString = () => {
-        const { oddsFormat } = this.props;
+        const { oddsFormat, intl } = this.props;
         switch (oddsFormat) {
             case 'decimal':
-                return "Decimal Odds";
+                return intl.formatMessage({ id: "COMPONENTS.DECIMAL.ODDS" });
             case 'american':
             default:
-                return 'American Odds';
+                return intl.formatMessage({ id: "COMPONENTS.AMERICAN.ODDS" });
         }
     }
 
@@ -133,7 +133,6 @@ class Header extends Component {
             showLoginModalAction,
             showForgotPasswordModalAction
         } = this.props;
-        console.log(lang);
         const { pathname } = location;
         return (
             <header className="header">
@@ -166,12 +165,12 @@ class Header extends Component {
                                             </li>}
                                             <li className="not-mobile">
                                                 <Link to={{ pathname: '/deposit' }} className="deposit">
-                                                    <span>Deposit</span>
+                                                    <span>{<FormattedMessage id="COMPONENTS.DEPOSIT" />}</span>
                                                 </Link>
                                             </li>
                                             <li>
                                                 <a className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
-                                                    <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan">My Account</span>&nbsp;<i className="fa fa-caret-down not-mobile" />
+                                                    <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan"><FormattedMessage id="COMPONENTS.MY.ACCOUNT" /></span>&nbsp;<i className="fa fa-caret-down not-mobile" />
                                                 </a>
                                             </li>
                                         </ul>
@@ -181,28 +180,28 @@ class Header extends Component {
                                                 <div className="login-dropdown">
                                                     <ul>
                                                         <li className="mobile username">
-                                                            My Account
+                                                            <FormattedMessage id="COMPONENTS.MY.ACCOUNT" />
                                                         </li>
                                                         <li className="mobile" onClick={() => toggleField('accountMenuMobileOpen')}>
-                                                            My Account
+                                                            <FormattedMessage id="COMPONENTS.MY.ACCOUNT" />
                                                         </li>
                                                         {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/preferences' }}>Preferences</Link>
+                                                            <Link to={{ pathname: '/preferences' }}><FormattedMessage id="COMPONENTS.PREFERENCES" /></Link>
                                                         </li>}
                                                         {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/deposit' }}>Deposit</Link>
+                                                            <Link to={{ pathname: '/deposit' }}><FormattedMessage id="COMPONENTS.DEPOSIT" /></Link>
                                                         </li>}
                                                         {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/withdraw' }}>Withdraw</Link>
+                                                            <Link to={{ pathname: '/withdraw' }}><FormattedMessage id="COMPONENTS.WITHDRAW" /></Link>
                                                         </li>}
                                                         {user.autobet && <li>
-                                                            <Link to={{ pathname: '/autobet-dashboard' }}>Dashboard</Link>
+                                                            <Link to={{ pathname: '/autobet-dashboard' }}><FormattedMessage id="COMPONENTS.HEADER.DASHBOARD" /></Link>
                                                         </li>}
                                                         <li>
-                                                            <Link to={{ pathname: '/bets' }}>Open bets</Link>
+                                                            <Link to={{ pathname: '/bets' }}><FormattedMessage id="COMPONENTS.OPENBETS" /></Link>
                                                         </li>
                                                         <li>
-                                                            <button onClick={this.logout}>Logout<i className="fap fa-sign-out" /></button>
+                                                            <button onClick={this.logout}><FormattedMessage id="COMPONENTS.LOGOUT" /><i className="fap fa-sign-out" /></button>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -225,7 +224,7 @@ class Header extends Component {
                                         <span className="navbar-toggler-icon"></span>
                                         <span className="navbar-toggler-icon"></span>
                                         <span className="navbar-toggler-icon"></span>
-                                        A-Z Sports
+                                        <FormattedMessage id="COMPONENTS.AZ.SPORTS" />
                                     </button>
                                     <ul className="navbar-nav-mobile navbar-nav">
                                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
@@ -238,21 +237,21 @@ class Header extends Component {
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                    <i className="fas fa-info"></i>How It Works
+                                                    <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
                                                 </Link>
                                             </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/faq' }} className="nav-link">
-                                                    <i className="fas fa-question"></i>FAQ
+                                                    <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
                                                 </Link>
                                             </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/articles' }} className="nav-link">
-                                                    <i className="fas fa-newspaper"></i>ARTICLES
+                                                    <i className="fas fa-newspaper"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
                                                 </Link>
                                             </center>
                                         </li>
@@ -267,17 +266,17 @@ class Header extends Component {
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                <i className="fas fa-info"></i>HOW IT WORKS
+                                                <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/faq' }} className="nav-link">
-                                                <i className="fas fa-question"></i>FAQ
+                                                <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
                                             </Link>
                                         </li>
                                         <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/articles' }} className="nav-link">
-                                                <i className="fas fa-newspaper"></i>ARTICLES
+                                                <i className="fas fa-newspaper"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
                                             </Link>
                                         </li>
                                     </ul>
@@ -323,10 +322,10 @@ class Header extends Component {
                                                 <div className="odds-dropdown">
                                                     <ul>
                                                         <li onClick={() => this.setOddsFormat('american')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>American Odds
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.AMERICAN.ODDS" />
                                                         </li>
                                                         <li onClick={() => this.setOddsFormat('decimal')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Decimal Odds
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.DECIMAL.ODDS" />
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -334,20 +333,20 @@ class Header extends Component {
                                         ) : null}
                                     </li>
                                     <li>
-                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>{lang} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
+                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>{lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
                                         {langDropDownOpen ? (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
                                                 <div className="odds-dropdown">
                                                     <ul>
                                                         <li onClick={() => this.setLanguage('en')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>English
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.ENGLISH" />
                                                         </li>
                                                         <li onClick={() => this.setLanguage('es')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Spanish
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.SPANISH" />
                                                         </li>
                                                         <li onClick={() => this.setLanguage('ko')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i>Korean
+                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.KOREAN" />
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -355,41 +354,12 @@ class Header extends Component {
                                         ) : null}
                                     </li>
                                     <li>{timeString}</li>
-                                    <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> Help </Link></li>
+                                    <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> <FormattedMessage id="COMPONENTS.HELP" /> </Link></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>}
-                <div className="modal fade" id="myModal" role="dialog" style={{ display: 'none' }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close-header" data-dismiss="modal">×</button>
-                            </div>
-                            <div className="modal-body">
-                                <h2>Log in</h2>
-                                <form>
-                                    <div className="form-group">
-                                        <input type="text" name="user" className="form-control" placeholder="Username" />
-                                    </div>
-                                    <div className="form-group">
-                                        <input type="password" className="form-control" name="pass" placeholder="Password" />
-                                    </div>
-                                    <div className="form-group">
-                                        <input type="submit" name="login" className="login loginmodal-submit" value="Login" />
-                                    </div>
-                                </form>
-                                <div className="login-help">
-                                    <a href="#">Register</a> - <a href="#">Forgot Password</a>
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">×</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {!user && showLoginModal && <LoginModal
                     closeModal={() => {
                         showLoginModalAction(false)
@@ -423,4 +393,4 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
 });
 
-export default connect(mapStateToProps, frontend.actions)(Header)
+export default connect(mapStateToProps, frontend.actions)(injectIntl(Header))

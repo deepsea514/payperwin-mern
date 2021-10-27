@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import axios from 'axios';
 import _env from '../env.json';
+import { FormattedMessage, injectIntl } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 const WhiteRadio = withStyles({
@@ -423,4 +424,4 @@ class CreateCustomBetModal extends React.Component {
     }
 }
 
-export default CreateCustomBetModal;
+export default injectIntl(CreateCustomBetModal);

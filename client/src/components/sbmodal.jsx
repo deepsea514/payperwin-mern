@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from 'react-intl';
 
 export default class SBModal extends React.Component {
     render() {
@@ -9,10 +10,10 @@ export default class SBModal extends React.Component {
                 <div className="col-in">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
-                        <b>BET ON SPORTSBOOK</b>
+                        <b><FormattedMessage id="COMPONENTS.SPORTSBOOK.TITLE" /></b>
                         <hr />
                         <p>
-                            Peer to Peer betting is not available for this line. This is an instant bet and can be forwarded to a Sportsbook with the following new odds.
+                            <FormattedMessage id="COMPONENTS.SPORTSBOOK.CONTENT" />
                         </p>
                         <b>{sportsbookInfo.name}: {sportsbookInfo.pickName}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</b>
                         <div className="text-right">

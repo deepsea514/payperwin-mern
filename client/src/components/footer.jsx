@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 const Footer = (props) => {
     const { user, display_mode } = props;
@@ -8,57 +9,37 @@ const Footer = (props) => {
             <div className="container">
                 <div className="foooter-main">
                     <div className="d-flex flex-wr justify-content-between">
-                        <div className="footer-inner" style={{ display: 'none' }}>
-                            <h3 className="footer-heading">Sports Betting </h3>
+                        <div className="footer-inner">
+                            <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.ABOUT.PPW" /> </h3>
                             <ul>
-                                <li><Link to={{ pathname: '/sport/Soccer' }}>Soccer betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Basketball' }}>Basketball betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Baseball' }}>Baseball betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Football' }}>Football betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Table_Tennis' }}>Table Tennis betting</Link></li>
-                                <li><Link to={{ pathname: '/sport/Boxing' }}>Boxing betting</Link></li>
+                                <li><Link to="/privacy-policy"><FormattedMessage id="COMPONENTS.PRIVACY_POLICY" /> </Link></li>
+                                <li><Link to="/terms-and-conditions"><FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" /> </Link></li>
                             </ul>
                         </div>
                         <div className="footer-inner">
-                            <h3 className="footer-heading">About PAYPER WIN </h3>
+                            <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.HELP" /></h3>
                             <ul>
-                                <li><Link to="/privacy-policy">Privacy Policy </Link></li>
-                                <li><Link to="/terms-and-conditions">Terms & Conditions </Link></li>
-                            </ul>
-                        </div>
-                        <div className="footer-inner" style={{ display: 'none' }}>
-                            <h3 className="footer-heading">Policies</h3>
-                            <ul>
-                                <li><a href="#">Responsible Gaming </a></li>
-                                <li><a href="#">Terms &amp; Conditions </a></li>
-                                <li><a href="#">Privacy Policy </a></li>
-                                <li><a href="#">Cookie Policy </a></li>
-                            </ul>
-                        </div>
-                        <div className="footer-inner">
-                            <h3 className="footer-heading">Help</h3>
-                            <ul>
-                                <li><Link to="/payment-options">Payment Options </Link></li>
-                                <li><Link to="/betting-rules">Betting Rules </Link></li>
-                                <li><Link to="/support">Contact Us</Link></li>
-                                <li><Link to="/faq">FAQ </Link></li>
+                                <li><Link to="/payment-options"><FormattedMessage id="COMPONENTS.PAYMENT.OPTIONS" /> </Link></li>
+                                <li><Link to="/betting-rules"><FormattedMessage id="COMPONENTS.BETTING.RULES" /> </Link></li>
+                                <li><Link to="/support"><FormattedMessage id="COMPONENTS.CONTACTUS" /></Link></li>
+                                <li><Link to="/faq"><FormattedMessage id="COMPONENTS.CASHBACK.FAQ" /> </Link></li>
                             </ul>
                         </div>
                         {user && <div className="footer-inner">
-                            <h3 className="footer-heading">Support </h3>
+                            <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.SUPPORT" /> </h3>
                             <ul>
                                 <li><a href="https://wa.me/message/TICMRPXRFQRCN1" target="_blank"><i className="fab fa-whatsapp"></i> WhatsApp </a></li>
                             </ul>
                         </div>}
                         <div className="footer-inner">
-                            <h3 className="footer-heading">Social </h3>
+                            <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.SOCIAL" /> </h3>
                             <ul>
-                                <li><a href="https://www.instagram.com/payperwin/?hl=en"><i className="fab fa-instagram"></i>Instagram</a></li>
+                                <li><a href="https://www.instagram.com/payperwin/?hl=en"><i className="fab fa-instagram"></i><FormattedMessage id="COMPONENTS.INSTAGRAM" /></a></li>
                             </ul>
                         </div>
                     </div>
                     <div className="glambing">
-                        <a href="#" className="min-age">18+</a>Gambling can be addictive. Please know your limits and gamble responsibly.
+                        <a href="#" className="min-age">18+</a><FormattedMessage id="COMPONENTS.GAMBLING.CANBE.ADDICTIVE" />
                     </div>
                     <div className="payment_container">
                         <span><img alt="Visa, Master Card" title="Visa, Master Card" src="/images/credit-card-gray.png" /></span>
@@ -88,4 +69,4 @@ const Footer = (props) => {
     );
 };
 
-export default Footer;
+export default injectIntl(Footer);
