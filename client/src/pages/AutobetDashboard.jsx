@@ -7,6 +7,7 @@ import AutobetHistoryTable from "../components/autobethistorytable"
 import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -77,14 +78,14 @@ class AutobetDashboard extends Component {
             <React.Fragment>
                 <div className="col-in">
                     <div className="my-3 ml-5 d-flex justify-content-between">
-                        <span className="main-heading-in">Autobet Dashboard</span>
+                        <span className="main-heading-in"><FormattedMessage id="PAGES.AUTOBET.DASHBOARD" /></span>
                         <div className="">
                             <DateRangePicker
                                 initialSettings={daterange}
                                 onApply={this.handleChangeDate}
                             >
                                 <div className="rangepicker-container">
-                                    <i className="fas fa-calendar-week"></i> Date Range
+                                    <i className="fas fa-calendar-week"></i> <FormattedMessage id="PAGES.DATE_RANGE" />
                                 </div>
                             </DateRangePicker>
                         </div>
@@ -97,7 +98,7 @@ class AutobetDashboard extends Component {
                                 strokeColor="#F0AD4E"
                                 duration={800} />
                         </center>}
-                        {error && <p>Error...</p>}
+                        {error && <p><FormattedMessage id="PAGES.LINE.ERROR" /></p>}
                         {!loading && data && <div className="row">
                             <div className="col-md-7">
                                 <AutobetHistory histories={data.histories} />
