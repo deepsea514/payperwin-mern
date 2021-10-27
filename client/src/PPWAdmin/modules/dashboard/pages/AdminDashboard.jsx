@@ -7,6 +7,7 @@ import FeesCollected from "../components/FeesCollected";
 import { LastDeposits } from "../components/LastDeposits";
 import { LastWithdraws } from "../components/LastWithdraws";
 import { LastBets } from "../components/LastBets";
+import { BotOverview } from '../components/BotOverview';
 import { connect } from "react-redux";
 import * as dashboard from "../redux/reducers";
 import DashboardCard from "../components/DashboardCard";
@@ -22,9 +23,9 @@ class AdminDashboard extends React.Component {
             history,
             lastbets, loadingbets,
             lastsportsbookbets, loadingsportsbookbets,
-            lastwithdraws,
-            loadingwithdraws,
+            lastwithdraws, loadingwithdraws,
             lastdeposits, loadingdeposits,
+            bots, loadingbots,
             loadingdashboarddata, categories,
             dashboarddeposit, dashboardwager, dashboardwagersportsbook,
             dashboardplayer, dashboardfees
@@ -94,13 +95,21 @@ class AdminDashboard extends React.Component {
                                                 loadingsportsbookbets={loadingsportsbookbets}
                                                 className="card-stretch gutter-b" />}
                                         />
+                                        <Route path="/bots"
+                                            render={(props) => <BotOverview
+                                                {...props}
+                                                loadingbots={loadingbots}
+                                                bots={bots}
+                                                symbolShape="card-stretch gutter-b"
+                                            />}
+                                        />
                                         <Route path="/fees"
                                             render={(props) => <FeesCollected
+                                                {...props}
                                                 loadingdashboarddata={loadingdashboarddata}
                                                 categories={categories}
                                                 dashboardfees={dashboardfees}
                                                 symbolShape="circle"
-                                                baseColor="warning"
                                             />}
                                         />
                                     </Switch>
@@ -131,6 +140,8 @@ const mapStateToProps = (state) => ({
     dashboardplayer: state.dashboard.dashboardplayer,
     dashboardactiveplayer: state.dashboard.dashboardactiveplayer,
     dashboardfees: state.dashboard.dashboardfees,
+    bots: state.dashboard.bots,
+    loadingbots: state.dashboard.loadingbots,
 })
 
 export default connect(mapStateToProps, dashboard.actions)(AdminDashboard)

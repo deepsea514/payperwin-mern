@@ -72,3 +72,7 @@ export function getDashboardData(range) {
             withCredentials: true
         });
 }
+
+export function getBots() {
+    return axios.get(`${serverUrl}/autobets/overview`);
+}
