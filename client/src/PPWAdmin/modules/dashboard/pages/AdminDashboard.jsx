@@ -59,6 +59,14 @@ class AdminDashboard extends React.Component {
                         dashboardplayer={dashboardplayer}
                         className="card-stretch gutter-b"
                     />
+                    <div className="col-lg-6 col-xl-4 col-xxl-4">
+                        <FeesCollected
+                            loadingdashboarddata={loadingdashboarddata}
+                            categories={categories}
+                            dashboardfees={dashboardfees}
+                            symbolShape="circle"
+                        />
+                    </div>
                     <div className="col-lg-12 col-md-12 col-xxl-12 order-2 order-xxl-1">
                         <div className="d-flex flex-row">
                             <BrowserRouter basename={`/RP1021/dashboard`}>
@@ -101,15 +109,6 @@ class AdminDashboard extends React.Component {
                                                 loadingbots={loadingbots}
                                                 bots={bots}
                                                 symbolShape="card-stretch gutter-b"
-                                            />}
-                                        />
-                                        <Route path="/fees"
-                                            render={(props) => <FeesCollected
-                                                {...props}
-                                                loadingdashboarddata={loadingdashboarddata}
-                                                categories={categories}
-                                                dashboardfees={dashboardfees}
-                                                symbolShape="circle"
                                             />}
                                         />
                                     </Switch>
