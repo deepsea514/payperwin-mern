@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-export default class BetStatus extends Component {
+class BetStatus extends Component {
     render() {
         return (
             <div className="verification-proof-container shadow">
-                <h6>Bet Status</h6>
+                <h6><FormattedMessage id="PAGES.OPENBETS.BETSTATUS" /></h6>
                 <div className="verification-proof-list">
                     <ul>
                         <li>
-                            <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
+                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b>
+                            &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT" />
                         </li>
                         <li>
-                            <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED" />:</b>
+                            &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED_CONTENT" />
                         </li>
                         <li>
-                            <b>Partially Match:</b> Only a portion of your wager was matched with another user.
-                            The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED" />:</b>
+                            &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT" />
                         </li>
                         <li>
-                            <b>Settled:</b> The game is over and the winner has been paid.
+                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED" />:</b>
+                            &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED_CONTENT" />
                         </li>
                     </ul>
                 </div>
@@ -27,3 +30,5 @@ export default class BetStatus extends Component {
         );
     }
 }
+
+export default injectIntl(BetStatus);

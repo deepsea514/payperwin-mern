@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LineDetail from './linedetail';
 import classnames from "classnames";
+import { FormattedMessage } from 'react-intl';
 const maximumShows = 3;
 
 const EmptyLine = () => {
@@ -48,7 +49,7 @@ const ShowMoreLess = ({ show, toggleShow }) => {
         <li className="mb-2">
             <div className="row mx-0">
                 <div className="col-12 cursor-pointer text-center" onClick={toggleShow}>
-                    <span>See {show ? 'less' : 'more'}</span>&nbsp;
+                    <span>{show ? <FormattedMessage id="COMPONENTS.LINE.SEELESS" /> : <FormattedMessage id="COMPONENTS.LINE.SEEMORE" />}</span>&nbsp;
                     <i className={show ? "fas fa-chevron-up" : "fas fa-chevron-down"} />
                 </div>
             </div>
@@ -79,10 +80,10 @@ export default class Line extends Component {
                 return '- 3rd Quarter';
             case 'forth_quarter':
                 return '- 4th Quarter';
-            case 'fifth_innings': 
+            case 'fifth_innings':
                 return ' - 5th Innings';
             default:
-                return '- Game';
+                return '- Pick';
         }
     }
 
@@ -110,7 +111,7 @@ export default class Line extends Component {
         return (
             <>
                 {(!type || type == 'moneyline' && subtype == line.subtype) && <>
-                    <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}>Moneyline {this.getSubTypeName(line.subtype)}</div>
+                    <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}><FormattedMessage id="PAGES.LINE.MONEYLINE" /> {this.getSubTypeName(line.subtype)}</div>
                     {moneyline ? <LineDetail
                         originOdds={moneyline}
                         betSlip={betSlip}
@@ -123,7 +124,7 @@ export default class Line extends Component {
                 </>}
 
                 {(!type || type == 'spread' && subtype == line.subtype) && <>
-                    <div className="line-type-header">Spreads {this.getSubTypeName(line.subtype)}</div>
+                    <div className="line-type-header"><FormattedMessage id="PAGES.LINE.SPREADS" /> {this.getSubTypeName(line.subtype)}</div>
                     <TeamNames teamA={teamA} teamB={teamB} />
                     {spreads && spreads.length != 0 ?
                         spreads.map((spread, i) => {
@@ -151,7 +152,7 @@ export default class Line extends Component {
                 </>}
 
                 {(!type || type == 'total' && subtype == line.subtype) && <>
-                    <div className="line-type-header">Over/Under {this.getSubTypeName(line.subtype)}</div>
+                    <div className="line-type-header"><FormattedMessage id="PAGES.LINE.OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
                     <TeamNames teamA={teamA} teamB={teamB} />
                     {totals && totals.length != 0 ? totals.map((total, i) => {
                         if (type && index && index != i) return null;
@@ -179,7 +180,7 @@ export default class Line extends Component {
 
                 {(!type || type == 'alternative_spread' && subtype == line.subtype) &&
                     alternative_spreads && alternative_spreads.length != 0 && <>
-                        <div className="line-type-header">Alternative Spreads {this.getSubTypeName(line.subtype)}</div>
+                        <div className="line-type-header"><FormattedMessage id="PAGES.LINE.ALTER_SPREAD" /> {this.getSubTypeName(line.subtype)}</div>
                         <TeamNames teamA={teamA} teamB={teamB} />
                         {alternative_spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
@@ -215,7 +216,7 @@ export default class Line extends Component {
 
                 {(!type || type == 'alternative_total' && subtype == line.subtype) &&
                     alternative_totals && alternative_totals.length != 0 && <>
-                        <div className="line-type-header">Alternative Over/Under {this.getSubTypeName(line.subtype)}</div>
+                        <div className="line-type-header"><FormattedMessage id="PAGES.LINE.ALTER_OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
                         <TeamNames teamA={teamA} teamB={teamB} />
                         {alternative_totals.map((total, i) => {
                             if (type && index && index != i) return null;

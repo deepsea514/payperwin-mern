@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-// import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class Bet extends Component {
     constructor(props) {
@@ -60,8 +60,8 @@ class Bet extends Component {
         return (
             <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
                 {win > 5000 && <div className="bet-warn-message">
-                    <div><b>Above Maximum Stake</b></div>
-                    Please enter a new amount that win amount does not exceed CAD 5,000.
+                    <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" />
                 </div>}
                 <div className={`bet ${win > 5000 ? 'bet-warn' : ''}`}>
                     <div>
@@ -96,7 +96,7 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
+                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
                 </div>
             </div>
         )
@@ -108,4 +108,4 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
 });
 
-export default connect(mapStateToProps, frontend.actions)(Bet)
+export default connect(mapStateToProps, frontend.actions)(injectIntl(Bet))

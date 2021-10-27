@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 import numberFormat from '../helpers/numberFormat';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class AutobetSummary extends Component {
     balanceString = (balance) => {
@@ -106,7 +107,7 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            Fees To PAYPER WIN
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.FEES" />
                                         </a>
                                         <br />
                                     </div>
@@ -133,11 +134,11 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            Loss
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.LOSS" />
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
-                                            {lossbets.count} losses
+                                            {lossbets.count} <FormattedMessage id="COMPONENTS.AUTOBET.LOSS" />
                                         </a>
                                     </div>
                                 </div>
@@ -163,11 +164,11 @@ class AutobetSummary extends Component {
                                 <div className="d-flex align-items-start mx-2">
                                     <div>
                                         <a className="text-dark-75 text-hover-primary font-weight-bolder">
-                                            In-Play
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.INPLAY" />
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
-                                            {pendingbets.count} bets
+                                            {pendingbets.count} <FormattedMessage id="COMPONENTS.AUTOBET.BETS" />
                                         </a>
                                     </div>
                                 </div>
@@ -197,7 +198,7 @@ class AutobetSummary extends Component {
                                         </a>
                                         <br />
                                         <a className="text-muted font-weight-bold mt-1">
-                                            Profit and Loss
+                                            <FormattedMessage id="COMPONENTS.AUTOBET.PL" />
                                         </a>
                                     </div>
                                 </div>
@@ -227,4 +228,4 @@ class AutobetSummary extends Component {
     }
 }
 
-export default AutobetSummary;
+export default injectIntl(AutobetSummary);

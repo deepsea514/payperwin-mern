@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class CookieAccept extends Component {
     render() {
@@ -8,9 +9,7 @@ class CookieAccept extends Component {
                 <div className="cookieBanner_main cookieBanner_main1">
                     <div className="cookieBanner_content">
                         <span>
-                            Welcome to PAYPER WIN.
-                            We use cookies to provide you with the most relevant experience.
-                            To change your cookie settings or for more information on cookies, see our <a href="https://www.payperwin.com/privacy-policy#cookie-policy" target="_blank" rel="noopener noreferrer">cookie policy</a>.
+                            <FormattedMessage id="COMPONENTS.COOKIE.CONTENT" values={{ cookie_policy: <a href="https://www.payperwin.com/privacy-policy#cookie-policy" target="_blank" rel="noopener noreferrer"><FormattedMessage id="COMPONENTS.COOKIE.POLICY" /></a> }} />
                         </span>
                     </div>
                     <button className="cookieBanner_button cookieBanner_small dead-center cookieBanner_dark" onClick={acceptCookieAction}>
@@ -22,4 +21,4 @@ class CookieAccept extends Component {
     }
 }
 
-export default CookieAccept;
+export default injectIntl(CookieAccept);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 class SidebarAccount extends Component {
     render() {
@@ -9,24 +10,21 @@ class SidebarAccount extends Component {
                 style={accountMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('accountMenuMobileOpen', false)}>
                 {(!user || !user.autobet) && <>
-                    <h3 className="cat-heading">MESSAGE CENTER</h3>
+                    <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.SIDEBAR.MESSAGECENTER" /></h3>
                     <ul className="left-cat top-cls-sport">
                         <li>
-                            <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i>Inbox</Link>
+                            <Link to={{ pathname: '/inbox' }}><i className="fas fa-envelope"></i><FormattedMessage id="COMPONENTS.SIDEBAR.INBOX" /></Link>
                         </li>
-                        {/* <li>
-                        <Link to={{ pathname: '/announcements' }}><i className="fas fa-bell"></i>Announcements </Link>
-                    </li> */}
                     </ul>
                 </>}
 
-                <h3 className="cat-heading">MY BETS</h3>
+                <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.SIDEBAR.MYBETS" /></h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
-                        <Link to={{ pathname: '/bets' }}><i className="fas fa-gamepad"></i>Open bets</Link>
+                        <Link to={{ pathname: '/bets' }}><i className="fas fa-gamepad"></i><FormattedMessage id="COMPONENTS.SIDEBAR.OPENBETS" /></Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i>Betting History</Link>
+                        <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i><FormattedMessage id="COMPONENTS.SIDEBAR.BETTING_HISTORY" /></Link>
                     </li>
                     {/* <li>
                         <Link to={{ pathname: '/custom-bets' }}><i className="fas fa-user-clock"></i>Custom Bets</Link>
@@ -34,25 +32,25 @@ class SidebarAccount extends Component {
                 </ul>
 
                 {(!user || !user.autobet) && <>
-                    <h3 className="cat-heading">CASHIER</h3>
+                    <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.SIDEBAR.CASHIER" /></h3>
                     <ul className="left-cat top-cls-sport">
                         <li>
-                            <Link to={{ pathname: '/deposit' }}><i className="fas fa-money-check"></i>Deposit </Link>
+                            <Link to={{ pathname: '/deposit' }}><i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.SIDEBAR.DEPOSIT" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/withdraw' }}><i className="fas fa-money-check-alt"></i>Withdraw </Link>
+                            <Link to={{ pathname: '/withdraw' }}><i className="fas fa-money-check-alt"></i><FormattedMessage id="COMPONENTS.SIDEBAR.WITHDRAW" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i>Transactions history </Link>
+                            <Link to={{ pathname: '/transaction-history' }}><i className="fas fa-list"></i><FormattedMessage id="COMPONENTS.SIDEBAR.TRANSACTION_HISTORY" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i>Payment methods </Link>
+                            <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i><FormattedMessage id="COMPONENTS.SIDEBAR.PAYMENT_METHODS" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/cashback' }}><i className="fas fa-comment-dollar"></i> Cashback </Link>
+                            <Link to={{ pathname: '/cashback' }}><i className="fas fa-comment-dollar"></i> <FormattedMessage id="COMPONENTS.SIDEBAR.CASHBACK" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/loyalty' }}><i className="fas fa-file-invoice-dollar"></i> Loyalty </Link>
+                            <Link to={{ pathname: '/loyalty' }}><i className="fas fa-file-invoice-dollar"></i> <FormattedMessage id="COMPONENTS.SIDEBAR.LOYALTY" /> </Link>
                         </li>
                     </ul>
                 </>}
@@ -94,12 +92,9 @@ class SidebarAccount extends Component {
                         <li>
                             <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i>Self exclusion</Link>
                         </li>
-                        {/* <li>
-                        <Link to={{ pathname: '/deactivation' }}><i className="far fa-user-circle"></i>Account deactivation</Link>
-                    </li> */}
                     </ul>
                 </>}
-            </div >
+            </div>
         );
     }
 }

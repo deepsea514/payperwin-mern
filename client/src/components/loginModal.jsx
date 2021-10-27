@@ -9,12 +9,14 @@ import { connect } from "react-redux";
 import Recaptcha from 'react-recaptcha';
 import config from '../../../config.json';
 import _env from '../env.json';
+import { FormattedMessage, injectIntl } from 'react-intl';
 const serverUrl = _env.appUrl;
 const recaptchaSiteKey = config.recaptchaSiteKey;
 
 class LoginModal extends React.Component {
     constructor(props) {
         super(props);
+        const { intl } = props;
         this.state = {
             initialValues: {
                 email: '',
@@ -23,10 +25,10 @@ class LoginModal extends React.Component {
             rcptchVerified: false,
             loginSchema: Yup.object().shape({
                 email: Yup.string()
-                    .email("Wrong email format")
-                    .required("Email is required"),
+                    .email(intl.formatMessage({ id: 'PAGES.PROFILE.WTONGEMAIL' }))
+                    .required(intl.formatMessage({ id: 'PAGES.PROFILE.EMAILREQUIRED' })),
                 password: Yup.string()
-                    .required("Password is required."),
+                    .required(intl.formatMessage({ id: 'PAGES.PROFILE.PASSWORDREQUIRED' })),
             }),
             errors: {},
             passType: 'password',
@@ -115,7 +117,7 @@ class LoginModal extends React.Component {
     }
 
     render() {
-        const { closeModal, forgotPassword, loginFailed } = this.props;
+        const { closeModal, forgotPassword, loginFailed, intl } = this.props;
         const { initialValues, loginSchema, errors, passType } = this.state;
 
         return (
@@ -127,7 +129,7 @@ class LoginModal extends React.Component {
                             <div className="login_modal_context">
                                 <div className="login_modal_leftbar">
                                     <i className="fal fa-times float-right" style={{ cursor: 'pointer', fontSize: '22px' }} onClick={closeModal} />
-                                    <h1 className="loginTitle"><span>Log in</span></h1>
+                                    <h1 className="loginTitle"><span><FormattedMessage id="COMPONENTS.LOGIN" /></span></h1>
                                     <Formik
                                         initialValues={initialValues}
                                         validationSchema={loginSchema}
@@ -136,7 +138,7 @@ class LoginModal extends React.Component {
                                             return <form onSubmit={formik.handleSubmit}>
                                                 <div className="loginFormWrapper">
                                                     <div className="formField medium primary">
-                                                        <label className="formFieldLabel"><span>Email</span></label>
+                                                        <label className="formFieldLabel"><span><FormattedMessage id="PAGES.PROFILE.EMAIL" /></span></label>
                                                         <div className="formElementWrap">
                                                             <div className="leftIcon">
                                                                 <i fill="currentColor" style={{ display: 'inline-block' }}>
@@ -157,7 +159,7 @@ class LoginModal extends React.Component {
                                                         </div>
                                                     </div>
                                                     <div className="formField medium primary">
-                                                        <label className="formFieldLabel"><span>Password</span></label>
+                                                        <label className="formFieldLabel"><span><FormattedMessage id="PAGES.REGISTRATION.PASSWORD" /></span></label>
                                                         <div className="formElementWrap">
                                                             <div className="leftIcon">
                                                                 <i fill="currentColor" style={{ display: 'inline-block' }}>
@@ -181,7 +183,7 @@ class LoginModal extends React.Component {
                                                         </div>
                                                     </div>
                                                     <p className="loginForgotPasswordWrapper">
-                                                        <span>Forgot <a onClick={forgotPassword} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span>password</span></span></a>?</span>
+                                                        <span><FormattedMessage id="COMPONENTS.FORGOT.PASSWORD" values={{ password: <a onClick={forgotPassword} style={{ cursor: 'pointer', textDecoration: 'underline' }}><span style={{ textDecoration: 'underline', cursor: 'pointer' }}><span><FormattedMessage id="PAGES.REGISTRATION.PASSWORD" /></span></span></a> }} />?</span>
                                                     </p>
                                                     {errors.server ? <div className="form-error">{errors.server}</div>
                                                         : errors.email ? <div className="form-error">{errors.email}</div>
@@ -199,13 +201,13 @@ class LoginModal extends React.Component {
                                                             className="loginButton fullWidthButton ellipsis mediumButton dead-center secondaryButton"
                                                             type="submit"
                                                             disabled={formik.touched.email && formik.errors.email || formik.touched.password && formik.errors.password || formik.isSubmitting}>
-                                                            <span>Log in</span>
+                                                            <span><FormattedMessage id="COMPONENTS.LOGIN" /></span>
                                                         </button>
                                                     </div>
                                                     <div>
                                                         <GoogleLogin
                                                             clientId={config.googleClientID}
-                                                            buttonText="Log in with Google"
+                                                            buttonText={intl.formatMessage({ id: "COMPONENTS.LOGIN.GOOGLE" })}
                                                             onSuccess={this.handleGoogleLogin}
                                                             onFailure={this.handleGoogleLoginFail}
                                                             cookiePolicy={'single_host_origin'}
@@ -213,7 +215,7 @@ class LoginModal extends React.Component {
                                                         />
                                                     </div>
                                                     <p className="registerParaWrapper">
-                                                        <span>Not a member yet? <a onClick={() => this.goTo('/signup')} style={{ cursor: 'pointer', color: '#ED254E' }}><span>Join PAYPER WIN</span></a>.</span>
+                                                        <span><FormattedMessage id="COMPONENTS.LOGIN.NOTMEMBER" /> <a onClick={() => this.goTo('/signup')} style={{ cursor: 'pointer', color: '#ED254E' }}><span><FormattedMessage id="COMPONENTS.JOIN.PPW" /></span></a>.</span>
                                                     </p>
                                                 </div>
                                             </form>
@@ -237,4 +239,4 @@ const mapStateToProps = (state) => ({
 });
 
 
-export default connect(mapStateToProps, frontend.actions)(withRouter(LoginModal));
+export default connect(mapStateToProps, frontend.actions)(withRouter(injectIntl(LoginModal)));
