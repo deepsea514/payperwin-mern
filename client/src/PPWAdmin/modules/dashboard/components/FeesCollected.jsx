@@ -13,21 +13,21 @@ function FeesCollected({
     dashboardfees,
 }) {
     return (
-        <div className={`card card-custom ${className} bg-white`}>
+        <div className={`card card-custom ${className} bg-danger`}>
             <div className="card-body p-0">
                 <div className="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                    <span className={`symbol symbol-50 symbol-light-success mr-2`}>
+                    <span className={`symbol symbol-50 symbol-light-danger mr-2`}>
                         <span className="symbol-label">
-                            <span className={`svg-icon svg-icon-xl svg-icon-success`}>
+                            <span className={`svg-icon svg-icon-xl svg-icon-danger`}>
                                 <SVG src="/media/svg/icons/Layout/Layout-4-blocks.svg" />
                             </span>
                         </span>
                     </span>
                     <div className="d-flex flex-column">
-                        <span className="text-dark font-weight-bolder font-size-h2">
+                        <span className="text-white font-weight-bolder font-size-h2">
                             + ${dashboardfees.totalfees}
                         </span>
-                        <span className="text-dark font-weight-bold mt-2 font-size-h3">
+                        <span className="text-white font-weight-bold mt-2 font-size-h3">
                             Fees Collected
                         </span>
                     </div>
