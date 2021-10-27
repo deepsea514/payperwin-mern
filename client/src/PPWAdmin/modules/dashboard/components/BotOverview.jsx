@@ -5,14 +5,11 @@ import dateformat from "dateformat";
 import { Dropdown } from "react-bootstrap";
 import config from "../../../../../../config.json";
 import { DropdownMenuDashboard } from "./DropdownMenuDashboard";
-const FinancialStatus = config.FinancialStatus;
+import numberFormat from "../../../../helpers/numberFormat";
 
-export function LastDeposits({ className, lastdeposits, loadingdeposits, roothistory }) {
-    const getDate = (date) => {
-        return dateformat(new Date(date), "mmm dd yyyy HH:MM:ss");
-    };
+export function BotOverview({ className, bots, loadingbots, roothistory }) {
     const tableBody = () => {
-        if (loadingdeposits)
+        if (loadingbots)
             return (
                 <tr>
                     <td colSpan="6" align="center">
@@ -24,69 +21,52 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                     </td>
                 </tr>
             )
-        if (lastdeposits.length == 0) {
+        if (bots.length == 0) {
             return (
                 <tr>
                     <td colSpan="6" align="center">
-                        <h3>No Deposits</h3>
+                        <h3>No Bots</h3>
                     </td>
                 </tr>
             );
         }
-
-        return lastdeposits.map((deposit, index) => {
+        console.log(bots)
+        return bots.map((bot, index) => {
             return (
-                <tr key={index} onClick={gotoDeposit} style={{ cursor: "pointer" }} className="text-hover-primary">
+                <tr key={index} className="text-hover-primary">
                     <td className="pl-0">
                         <span className=" font-weight-bolder text-hover-primary mb-1 font-size-lg">
-                            {getDate(deposit.createdAt)}
+                            {index + 1}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-bolder d-block font-size-lg">
-                            {deposit.user ? deposit.user.email : null}
+                            {bot.userId ? bot.userId.email : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.amount} {deposit.user ? deposit.user.currency : null}
+                            {bot.userId ? '$' + numberFormat(bot.userId.balance) : null}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.reason ? deposit.reason.title : null}
+                            ${numberFormat(bot.inplay)}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {deposit.method}
+                            {bot.profit > 0 ? '' : '-'} ${numberFormat(bot.profit > 0 ? bot.profit : -bot.profit)}
                         </span>
                     </td>
                     <td className="pl-0">
-                        {getFinancialStatus(deposit.status)}
+                        <span className=" font-weight-500">
+                            ${numberFormat(bot.fee)}
+                        </span>
                     </td>
                 </tr>
             );
         });
-    }
-
-    const getFinancialStatus = (status) => {
-        switch (status) {
-            case FinancialStatus.pending:
-                return <span className="label label-lg label-light-primary label-inline">{status}</span>
-            case FinancialStatus.success:
-                return <span className="label label-lg label-light-success label-inline">{status}</span>
-            case FinancialStatus.onhold:
-                return <span className="label label-lg label-light-warning label-inline">{status}</span>
-            case FinancialStatus.inprogress:
-            default:
-                return <span className="label label-lg label-light-info label-inline">{status}</span>
-
-        }
-    }
-
-    const gotoDeposit = () => {
-        roothistory.push("/deposit-log");
     }
 
     return (
@@ -95,10 +75,7 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
             <div className="card-header border-0 pt-5">
                 <h3 className="card-title align-items-start flex-column">
                     <span className="card-label font-weight-bolder text-dark">
-                        Last 10 deposits
-                    </span>
-                    <span className="text-muted mt-3 font-weight-bold font-size-sm">
-                        More than 400+ new deposits
+                        Autobet Bot Overview
                     </span>
                 </h3>
                 <div className="card-toolbar">
@@ -121,12 +98,12 @@ export function LastDeposits({ className, lastdeposits, loadingdeposits, roothis
                     <table className="table table-vertical-center">
                         <thead>
                             <tr>
-                                <th className="p-0">Time</th>
-                                <th className="p-0">Customer</th>
-                                <th className="p-0">Amount</th>
-                                <th className="p-0">Reason</th>
-                                <th className="p-0">Method</th>
-                                <th className="p-0">Status</th>
+                                <th className="p-0">#</th>
+                                <th className="p-0">User</th>
+                                <th className="p-0">Balance</th>
+                                <th className="p-0">In play</th>
+                                <th className="p-0">P/L</th>
+                                <th className="p-0">Fees Paid</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -137,12 +137,12 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                             <table className="table table-vertical-center">
                                 <thead>
                                     <tr>
-                                        <th className="p-0" style={{ minWidth: "200px" }} >Time</th>
-                                        <th className="p-0" style={{ minWidth: "125px" }} >Customer</th>
-                                        <th className="p-0" style={{ minWidth: "100px" }} >Amount</th>
-                                        <th className="p-0" style={{ minWidth: "100px" }} >Sport</th>
-                                        <th className="p-0" style={{ minWidth: "110px" }} >Event</th>
-                                        <th className="p-0" style={{ minWidth: "150px" }} >Line</th>
+                                        <th className="p-0">Time</th>
+                                        <th className="p-0">Customer</th>
+                                        <th className="p-0">Amount</th>
+                                        <th className="p-0">Sport</th>
+                                        <th className="p-0">Event</th>
+                                        <th className="p-0">Line</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,12 +156,12 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                             <table className="table table-vertical-center">
                                 <thead>
                                     <tr>
-                                        <th className="p-0" style={{ minWidth: "200px" }} >Time</th>
-                                        <th className="p-0" style={{ minWidth: "125px" }} >Customer</th>
-                                        <th className="p-0" style={{ minWidth: "100px" }} >Amount</th>
-                                        <th className="p-0" style={{ minWidth: "100px" }} >Sport</th>
-                                        <th className="p-0" style={{ minWidth: "110px" }} >Event</th>
-                                        <th className="p-0" style={{ minWidth: "150px" }} >Line</th>
+                                        <th className="p-0">Time</th>
+                                        <th className="p-0">Customer</th>
+                                        <th className="p-0">Amount</th>
+                                        <th className="p-0">Sport</th>
+                                        <th className="p-0">Event</th>
+                                        <th className="p-0">Line</th>
                                     </tr>
                                 </thead>
                                 <tbody>

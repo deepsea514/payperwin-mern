@@ -4,12 +4,14 @@ import { put, takeLatest, select } from "redux-saga/effects";
 import { getBetActivities } from "../../bet_activities/redux/services";
 import { getDepositLog } from "../../depositlogs/redux/services";
 import { getWithdrawLog } from "../../withdrawlogs/redux/services";
-import { getDashboardData } from "./services";
+import { getBots, getDashboardData } from "./services";
 
 export const actionTypes = {
     getDashboardData: "Get Dashboard Data Action",
     getLastBets: "Get Last Bets Action",
     getLastBetsSuccess: "Get Last Bets Success",
+    getBots: "Get Bots Action",
+    getBotsSuccess: "Get Bots Success",
     getLastSportsBookBets: "Get Last SportsBook Bets Action",
     getLastSportsBookBetsSuccess: "Get Last SportsBook Bets Success",
     getLastWithdraws: "Get Last Withdraws Action",
@@ -30,6 +32,8 @@ const initialState = {
     loadingwithdraws: false,
     lastdeposits: [],
     loadingdeposits: false,
+    bots: [],
+    loadingbots: false,
     selectedDate: 'today',
     loadingdashboarddata: false,
     categories: [],
@@ -92,6 +96,12 @@ export const reducer = persistReducer(
             case actionTypes.getDashboardDataDetailsSuccess:
                 return { ...state, ...{ loadingdashboarddata: false }, ...action.data };
 
+            case actionTypes.getBots:
+                return { ...state, ...{ loadingbots: true } };
+
+            case actionTypes.getBotsSuccess:
+                return { ...state, ...{ loadingbots: false, bots: action.data } };
+
             default:
                 return state;
         }
@@ -108,6 +118,8 @@ export const actions = {
     getLastWithdrawsSuccess: (data) => ({ type: actionTypes.getLastWithdrawsSuccess, data }),
     getLastDeposits: () => ({ type: actionTypes.getLastDeposits }),
     getLastDepositsSuccess: (data) => ({ type: actionTypes.getLastDepositsSuccess, data }),
+    getBots: () => ({ type: actionTypes.getBots }),
+    getBotsSuccess: (data) => ({ type: actionTypes.getBotsSuccess, data }),
     changeDateRange: (range) => ({ type: actionTypes.changeDateRange, range }),
     getDashboardDataDetails: () => ({ type: actionTypes.getDashboardDataDetails }),
     getDashboardDataDetailsSuccess: (data) => ({ type: actionTypes.getDashboardDataDetailsSuccess, data }),
@@ -120,6 +132,7 @@ export function* saga() {
         yield put(actions.getLastWithdraws());
         yield put(actions.getLastDeposits());
         yield put(actions.getDashboardDataDetails());
+        yield put(actions.getBots());
     });
 
     yield takeLatest(actionTypes.getLastBets, function* getLastBetsSaga() {
@@ -155,6 +168,15 @@ export function* saga() {
             yield put(actions.getLastDepositsSuccess(data.data));
         } catch (error) {
             yield put(actions.getLastDepositsSuccess([]));
+        }
+    });
+
+    yield takeLatest(actionTypes.getBots, function* getBotsSaga() {
+        try {
+            const { data } = yield getBots(1, {}, 10);
+            yield put(actions.getBotsSuccess(data.data));
+        } catch (error) {
+            yield put(actions.getBotsSuccess([]));
         }
     });
 
