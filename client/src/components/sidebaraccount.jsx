@@ -56,41 +56,41 @@ class SidebarAccount extends Component {
                 </>}
 
                 {user && user.autobet && <>
-                    <h3 className="cat-heading">AUTOBET</h3>
+                    <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.SIDEBAR.AUTOBET" /></h3>
                     <ul className="left-cat top-cls-sport">
                         <li>
-                            <Link to={{ pathname: '/autobet-dashboard' }}><i className="fas fa-chart-bar"></i>Dashboard </Link>
+                            <Link to={{ pathname: '/autobet-dashboard' }}><i className="fas fa-chart-bar"></i><FormattedMessage id="COMPONENTS.SIDEBAR.AUTOBET_DASHBOARD" /> </Link>
                         </li>
                         <li>
-                            <Link to={{ pathname: '/autobet-settings' }}><i className="fas fa-tools"></i>Settings </Link>
+                            <Link to={{ pathname: '/autobet-settings' }}><i className="fas fa-tools"></i><FormattedMessage id="PAGES.AUTOBET.SETTINGS" /> </Link>
                         </li>
                     </ul>
                 </>}
 
-                <h3 className="cat-heading">MY ACCOUNT</h3>
+                <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.SIDEBAR.MYACCOUNT" /></h3>
                 <ul className="left-cat top-cls-sport">
                     <li>
-                        <Link to={{ pathname: '/account' }}><i className="fas fa-info-circle i-color"></i>Personal details </Link>
+                        <Link to={{ pathname: '/account' }}><i className="fas fa-info-circle i-color"></i><FormattedMessage id="COMPONENTS.PERSONAL.DETAILS" /> </Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/preferences' }}><i className="fas fa-asterisk"></i>Preferences </Link>
+                        <Link to={{ pathname: '/preferences' }}><i className="fas fa-asterisk"></i><FormattedMessage id="COMPONENTS.PREFERENCES" /> </Link>
                     </li>
                     <li>
-                        <Link to={{ pathname: '/security' }}><i className="fas fa-baseball-ball"></i>Password and security </Link>
+                        <Link to={{ pathname: '/security' }}><i className="fas fa-baseball-ball"></i><FormattedMessage id="COMPONENTS.PASSWORD.SECURITY" /> </Link>
                     </li>
                     {user && !user.roles.verified && !user.autobet && <li>
-                        <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i>Verification</Link>
+                        <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i><FormattedMessage id="COMPONENTS.SIDEBAR.VERIFICATION" /></Link>
                     </li>}
                     {user && !user.roles.phone_verified && !user.autobet && <li>
-                        <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i>Phone Verification</Link>
+                        <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i><FormattedMessage id="Phone Verification" /></Link>
                     </li>}
                 </ul>
 
                 {(!user || !user.autobet) && <>
-                    <h3 className="cat-heading">RESPONSIBLE GAMING</h3>
+                    <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.RESPONSIBLE.GAMING" /></h3>
                     <ul className="left-cat top-cls-sport">
                         <li>
-                            <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i>Self exclusion</Link>
+                            <Link to={{ pathname: '/self-exclusion' }}><i className="fas fa-user-times"></i><FormattedMessage id="COMPONENTS.SIDEBAR.SELF_EXCLUSION" /></Link>
                         </li>
                     </ul>
                 </>}

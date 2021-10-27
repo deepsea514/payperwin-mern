@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import SportsList from './sportsList';
+import { FormattedMessage } from 'react-intl';
 
 class SidebarSports extends Component {
     render() {
@@ -16,9 +16,9 @@ class SidebarSports extends Component {
                         <Link to={{ pathname: '/signup' }}>Join</Link> to change your <br />favorites.
                     </div>
                 </div> */}
-                <h3 className="cat-heading">TOP SPORTS</h3>
+                <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.TOP.SPORTS" /></h3>
                 <SportsList showleagues={true} topSports={true} />
-                <h3 className="cat-heading">A-Z SPORTS</h3>
+                <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.AZ.SPORTS" /></h3>
                 <SportsList showNoEvents={true} showleagues={false} />
             </div>
         );
