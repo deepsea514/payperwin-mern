@@ -30,7 +30,6 @@ export function BotOverview({ className, bots, loadingbots, roothistory }) {
                 </tr>
             );
         }
-        console.log(bots)
         return bots.map((bot, index) => {
             if (!bot.userId) return null;
             const profit = bot.userId.balance - bot.deposit + bot.withdraw;
