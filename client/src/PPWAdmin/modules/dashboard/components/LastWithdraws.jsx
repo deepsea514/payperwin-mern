@@ -117,11 +117,11 @@ export function LastWithdraws({ className, lastwithdraws, loadingwithdraws, root
                     <table className="table table-vertical-center">
                         <thead>
                             <tr>
-                                <th className="p-0" style={{ minWidth: "200px" }} >Time</th>
-                                <th className="p-0" style={{ minWidth: "125px" }} >Customer</th>
-                                <th className="p-0" style={{ minWidth: "100px" }} >Amount</th>
-                                <th className="p-0" style={{ minWidth: "110px" }} >Method</th>
-                                <th className="p-0" style={{ minWidth: "150px" }} >Status</th>
+                                <th className="p-0">Time</th>
+                                <th className="p-0">Customer</th>
+                                <th className="p-0">Amount</th>
+                                <th className="p-0">Method</th>
+                                <th className="p-0">Status</th>
                             </tr>
                         </thead>
                         <tbody>
