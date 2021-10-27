@@ -9,7 +9,7 @@ export default class BetActivityModule extends Component {
             <BrowserRouter basename="/RP1021/bet-activities">
                 <Switch>
                     <Route exact path="/" component={BetActivities} />
-                    
+                    <Route path="/:id/detail" component={BetDetail} />
                 </Switch>
             </BrowserRouter>
         )

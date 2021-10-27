@@ -179,7 +179,7 @@ class BetDetail extends React.Component {
                                             return <>
                                                 <tr>
                                                     <th>Pick Name</th>
-                                                    <td>{bet.pickName} @{Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds} {this.getBetDogFav(bet, bet.pick)}</td>
+                                                    <td>{bet.pickName} @{Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                                                     <th>Sport</th>
                                                     <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
                                                 </tr>
@@ -191,7 +191,7 @@ class BetDetail extends React.Component {
                                                 </tr>
                                                 <tr>
                                                     <th>Team A</th>
-                                                    <td>{bet.teamA.name} {this.getBetDogFav(bet, 'home')}</td>
+                                                    <td>{bet.teamA.name} </td>
                                                     <th>Odd</th>
                                                     <td>
                                                         {!bet.sportsbook && <span><del>{bet.teamA.odds}</del> <span>{newHome}</span></span>}
@@ -200,7 +200,7 @@ class BetDetail extends React.Component {
                                                 </tr>
                                                 <tr>
                                                     <th>Team B</th>
-                                                    <td>{bet.teamB.name} {this.getBetDogFav(bet, 'away')}</td>
+                                                    <td>{bet.teamB.name} </td>
                                                     <th>Odd</th>
                                                     <td>
                                                         {!bet.sportsbook && <span><del>{bet.teamB.odds}</del> <span>{newAway}</span></span>}
