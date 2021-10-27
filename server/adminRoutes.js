@@ -501,15 +501,21 @@ adminRouter.get(
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            const lastsportsbookbets = await Bet.find({
-                userId: id,
-                sportsbook: true
-            })
-                .sort({ createdAt: -1 }).limit(8);
+            const lastsportsbookbets = await Bet
+                .find({
+                    userId: id,
+                    sportsbook: true
+                })
+                .sort({ createdAt: -1 })
+                .limit(8);
+
             let totalwagers = await Bet.aggregate(
                 { $match: { userId: new ObjectId(id) } },
                 { $group: { _id: null, total: { $sum: "$bet" } } }
             );
+            if (totalwagers.length) totalwagers = totalwagers[0].total;
+            else totalwagers = 0;
+
             const lastbets = await Bet.find({
                 userId: id,
                 $or: [
@@ -529,12 +535,20 @@ adminRouter.get(
                 },
                 { $group: { _id: null, total: { $sum: "$amount" } } }
             )
-
-            if (totalwagers.length) totalwagers = totalwagers[0].total;
-            else totalwagers = 0;
-
             if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
             else totaldeposit = 0;
+
+            let totalwithdraw = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        financialtype: "withdraw",
+                        user: new ObjectId(id),
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            )
+            if (totalwithdraw.length) totalwithdraw = totalwithdraw[0].total;
+            else totalwithdraw = 0;
 
             let fees = await FinancialLog.aggregate(
                 {
@@ -573,7 +587,7 @@ adminRouter.get(
             if (lossamount.length) lossamount = lossamount[0].total;
             else lossamount = 0;
 
-            const winloss = user.balance - totaldeposit;
+            const winloss = user.balance + totalwithdraw - totaldeposit;
             const betcount = await Bet.find({ userId: id }).count();
             const days = Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (24 * 3600 * 1000));
 
@@ -3026,6 +3040,133 @@ adminRouter.get(
                 { $limit: perPage }
             ]);
             return res.json({ total, perPage, page: page + 1, data: autobets });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/autobets/overview',
+    authenticateJWT,
+    limitRoles('autobet'),
+    async (req, res) => {
+        try {
+            const autobets = await AutoBet.aggregate([
+                {
+                    $lookup: {
+                        from: 'bets',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$userId", "$$user_id"] },
+                                            { $in: ["$status", ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"]] }
+                                        ]
+                                    },
+                                },
+                            },
+                            {
+                                $project: { bet: 1 }
+                            }
+                        ],
+                        as: 'inplaybets',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$user", "$$user_id"] },
+                                            { $eq: ["$financialtype", "betfee"] }
+                                        ]
+                                    },
+                                },
+                            },
+                            {
+                                $project: { amount: 1 }
+                            }
+                        ],
+                        as: 'fees',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$user", "$$user_id"] },
+                                            { $eq: ["$financialtype", "deposit"] },
+                                            { $eq: ["$status", FinancialStatus.success] }
+                                        ]
+                                    },
+                                },
+                            },
+                            {
+                                $project: { amount: 1 }
+                            }
+                        ],
+                        as: 'deposit',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$user", "$$user_id"] },
+                                            { $eq: ["$financialtype", "withdraw"] },
+                                        ]
+                                    },
+                                },
+                            },
+                            {
+                                $project: { amount: 1 }
+                            }
+                        ],
+                        as: 'withdraw',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                            { $project: { email: 1, balance: 1 } }
+                        ],
+                        as: 'userId',
+                    }
+                },
+                {
+                    $project: {
+                        userId: 1,
+                        createdAt: 1,
+                        inplay: { $sum: "$inplaybets.bet" },
+                        fee: { $sum: "$fees.amount" },
+                        profit: { $subtract: [{ $sum: [{ $sum: "$withdraw.amount" }, "$userId.balance"] }, { $sum: "$deposit.amount" }] }
+                    }
+                },
+                { $unwind: "$userId" },
+                { $sort: { "createdAt": -1 } },
+            ]);
+            return res.json({ data: autobets });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ success: false });
