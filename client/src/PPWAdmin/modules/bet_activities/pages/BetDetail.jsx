@@ -175,7 +175,7 @@ class BetDetail extends React.Component {
                                                     </td>
                                                 </tr>
                                             }
-                                            const { newHome, newAway } = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), bet.lineQuery.type, bet.lineQuery.subtype);
+                                            const { newHome, newAway } = calculat   eNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), bet.lineQuery.type, bet.lineQuery.subtype);
                                             return <>
                                                 <tr>
                                                     <th>Pick Name</th>
