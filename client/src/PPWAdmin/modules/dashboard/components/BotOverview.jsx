@@ -32,6 +32,8 @@ export function BotOverview({ className, bots, loadingbots, roothistory }) {
         }
         console.log(bots)
         return bots.map((bot, index) => {
+            if (!bot.userId) return null;
+            const profit = bot.userId.balance - bot.deposit + bot.withdraw;
             return (
                 <tr key={index} className="text-hover-primary">
                     <td className="pl-0">
@@ -56,7 +58,7 @@ export function BotOverview({ className, bots, loadingbots, roothistory }) {
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bot.profit > 0 ? '' : '-'} ${numberFormat(bot.profit > 0 ? bot.profit : -bot.profit)}
+                            {profit >= 0 ? '' : '-'} ${numberFormat(profit >= 0 ? profit : -profit)}
                         </span>
                     </td>
                     <td className="pl-0">
