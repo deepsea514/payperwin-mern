@@ -60,8 +60,8 @@ class Dashboard extends Component {
                                 The odds are better than anywhere else online, the only catch is you will need some patience.
                                 You will need to wait for a peer to bet against you to make the bet complete.
                                 PAYPER WIN will take 5% fee from the winner for facilitating the transaction and making sure you get paid.
-                                PAYPER WIN Guarantees all winning bets will be paid.
-                                If patience is not your virture, say no more; we suggest doing a instant bet and forward to the sportsbook for instant acceptance.
+                                PAYPER WIN guarantees all winning bets will be paid.
+                                If patience is not your virtue, say no more; we suggest doing an instant bet and forward to the sportsbook for instant acceptance.
                             </p>
                             <div className="text-right">
                                 <button className="form-button" onClick={this.dontShowModal}> Don't show again </button>
