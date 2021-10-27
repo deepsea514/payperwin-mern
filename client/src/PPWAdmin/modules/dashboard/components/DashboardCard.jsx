@@ -51,6 +51,19 @@ class DashboardCard extends React.Component {
                                 </NavLink>
                             </div>
                             <div className="navi-item mb-2">
+                                <NavLink to="/bots"
+                                    className="navi-link py-4 non-border-bottom">
+                                    <span className="navi-icon mr-2">
+                                        <span className="svg-icon">
+                                            <SVG src="/media/svg/icons/Design/Layers.svg" />{" "}
+                                        </span>
+                                    </span>
+                                    <span className="text-left navi-text font-size-lg">
+                                        Autobet Bot Overview
+                                    </span>
+                                </NavLink>
+                            </div>
+                            <div className="navi-item mb-2">
                                 <NavLink to="/fees"
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">

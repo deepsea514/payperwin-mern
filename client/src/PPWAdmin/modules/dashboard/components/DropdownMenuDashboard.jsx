@@ -24,6 +24,12 @@ export function DropdownMenuDashboard() {
                 </Link>
             </li>
             <li className="navi-item">
+                <Link to="/bots" className="navi-link">
+                    <span className="navi-icon"><SVG src="/media/svg/icons/Design/Layers.svg" /></span>
+                    <span className="navi-text">Bot Overview</span>
+                </Link>
+            </li>
+            <li className="navi-item">
                 <Link to="/fees" className="navi-link">
                     <span className="navi-icon"><SVG src="/media/svg/icons/Design/Layers.svg" /></span>
                     <span className="navi-text">Fees Collected</span>
