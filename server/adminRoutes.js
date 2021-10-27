@@ -3160,7 +3160,8 @@ adminRouter.get(
                         createdAt: 1,
                         inplay: { $sum: "$inplaybets.bet" },
                         fee: { $sum: "$fees.amount" },
-                        profit: { $subtract: [{ $sum: [{ $sum: "$withdraw.amount" }, "$userId.balance"] }, { $sum: "$deposit.amount" }] }
+                        deposit: { $sum: "$deposit.amount" },
+                        withdraw: { $sum: "$withdraw.amount" },
                     }
                 },
                 { $unwind: "$userId" },
