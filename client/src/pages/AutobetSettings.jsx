@@ -4,12 +4,11 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { Form, Button } from "react-bootstrap";
 import { getInputClasses } from "../helpers/getInputClasses";
-import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@material-ui/core";
-import { Link } from "react-router-dom";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import axios from 'axios';
 import SVG from "react-inlinesvg";
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -351,4 +350,4 @@ class AutobetSettings extends Component {
     }
 }
 
-export default AutobetSettings;
+export default injectIntl(AutobetSettings);
