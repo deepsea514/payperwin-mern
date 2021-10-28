@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-
+import { FormattedMessage } from 'react-intl';
 
 class Withdraw extends Component {
     constructor(props) {
@@ -18,13 +18,13 @@ class Withdraw extends Component {
     render() {
         return (
             <div className="col-in">
-                <h3>Withdraw</h3>
+                <h3><FormattedMessage id="COMPONENTS.WITHDRAW" /></h3>
                 <div className="main-cnt">
                     <p className="dpsit">
-                        Select a withdrawal method. To find out more about our different Payment Methods, please check our payment methods page.
+                        <FormattedMessage id="PAGES.WITHDRAW.SUMMARY" />
                     </p>
                     <div className="deposit-in bg-color-box pad10">
-                        <h4 className="header-i4">SELECT WITHDRAWAL METHOD</h4>
+                        <h4 className="header-i4"><FormattedMessage id="PAGES.WITHDRAW.SELECTMETHOD" /></h4>
                         <ul className="diposit-list d-flex flex-wrap justify-content-space">
                             <li>
                                 <Link to={{ pathname: '/withdraw-etransfer' }}>
@@ -61,10 +61,10 @@ class Withdraw extends Component {
                         </ul>
                     </div>
                     <p className="dpsit">
-                        PAYPER WIN make every effort to ensure our payment processing rules strike a balance between being fair to you the customer, and free of fees, while also enabling us to keep offering the best value odds online. Whenever possible we absorb transaction fees, however failure to meet our industry standard deposit roll-over threshold (three times deposit amount) will incur any applicable withdrawal fee.
+                        <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.1" />
                         <br />
                         <br />
-                        Please see the payment methods pages of the site for more information on fees.
+                        <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.2" />
                     </p>
                 </div>
             </div>

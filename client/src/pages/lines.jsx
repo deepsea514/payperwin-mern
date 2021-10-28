@@ -11,6 +11,7 @@ import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import _env from '../env.json';
 import SBModal from '../components/sbmodal';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -113,10 +114,10 @@ class Lines extends Component {
             type, subtype, index, ogTitle, ogDescription, showAll
         } = this.state;
         if (error) {
-            return <div>Error</div>;
+            return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
         if (!data) {
-            return <div>Loading...</div>;
+            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
 
         const { teamA, teamB, startDate, lines } = data;
@@ -137,7 +138,7 @@ class Lines extends Component {
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                         <div>
-                            <b>Share This Link</b>
+                            <b><FormattedMessage id="PAGES.LINES.SHARE" /></b>
                             <hr />
                             <div className="row">
                                 <div className="col input-group mb-3">
@@ -233,7 +234,7 @@ class Lines extends Component {
 
                 {!showAll && <div className="d-flex flex-wr justify-content-center mt-3">
                     <div className="show-allmarkets-button" onClick={() => this.setState({ showAll: true })}>
-                        Show All markets&nbsp;&nbsp;<i className="fas fa-caret-down" />
+                        <FormattedMessage id="COMPONENTS.LINES.SHOWALLMARKET" />&nbsp;&nbsp;<i className="fas fa-caret-down" />
                     </div>
                 </div>}
             </div>

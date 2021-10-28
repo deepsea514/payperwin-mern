@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { FormattedMessage } from 'react-intl';
 
 import { getInputClasses } from "../helpers/getInputClasses";
 import _env from '../env.json';
@@ -64,8 +65,8 @@ class PhoneVerification extends Component {
                 this.setState({
                     status: 'codeSentSuccess',
                     msg: <>
-                        <p>We sent verification code to your phone: {values.phone}</p>
-                        <p>Didn't receive code? <a style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.sendVerificationCode(values, formik)}>Resend Code</a></p>
+                        <p><FormattedMessage id="PAGES.PHONEVERIFY.SENTNUMBER" />: {values.phone}</p>
+                        <p><FormattedMessage id="PAGES.PHONEVERIFY.NOTRECEIVE" /> <a style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.sendVerificationCode(values, formik)}><FormattedMessage id="PAGES.PHONEVERIFY.RESEND" /></a></p>
                     </>
                 });
             })
@@ -88,8 +89,8 @@ class PhoneVerification extends Component {
             .catch(() => {
                 this.setState({
                     msg: <>
-                        <p>Verification failed. Please try again.</p>
-                        <p>Or <a style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.sendVerificationCode(values, formik)}>Resend Code</a></p>
+                        <p><FormattedMessage id="PAGES.PHONEVERIFY.FAILED" /></p>
+                        <p><a style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.sendVerificationCode(values, formik)}><FormattedMessage id="PAGES.PHONEVERIFY.RESEND" /></a></p>
                     </>
                 });
             })
@@ -103,23 +104,23 @@ class PhoneVerification extends Component {
         };
         return (
             <div className="col-in">
-                <h3>Phone Verification</h3>
+                <h3><FormattedMessage id="PAGES.PHONEVERIFY" /></h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         <Link
                             style={{ cursor: 'pointer', fontSize: 16 }}
                             to="/preferences">
-                            <strong><i className="fas fa-chevron-left"></i> Back To Preferences</strong>
+                            <strong><i className="fas fa-chevron-left"></i> <FormattedMessage id="PAGES.PHONEVERIFY.BACKTO" /></strong>
                         </Link>
                         {(() => {
                             if (!user)
                                 return <></>;
                             if (user.roles.phone_verified)
-                                return (<h4 className="mt-2">Your phone number has been verified</h4>)
+                                return (<h4 className="mt-2"><FormattedMessage id="PAGES.PHONEVERIFY.VERIFIED" /></h4>)
                             return (
                                 <div className={`mt-2 ${classes.formContent}`}>
-                                    <p className="dpsit">Please confirm the information below is correct.</p>
-                                    {status == 'codeSentError' && <p className="text-danger">Can't send verification code. Please try again later</p>}
+                                    <p className="dpsit"><FormattedMessage id="PAGES.PHONEVERIFY.CONFIRM" /></p>
+                                    {status == 'codeSentError' && <p className="text-danger"><FormattedMessage id="PAGES.PHONEVERIFY.CANNOTSEND" /></p>}
                                     {user && <Formik
                                         initialValues={initialValues}
                                         validationSchema={phoneVerificationSchema}
@@ -127,7 +128,7 @@ class PhoneVerification extends Component {
                                         {(formik) => {
                                             return <form onSubmit={formik.handleSubmit}>
                                                 <Form.Group>
-                                                    <Form.Label>Phone Number</Form.Label>
+                                                    <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" /></Form.Label>
                                                     <PhoneInput
                                                         type="text"
                                                         name="phone"
@@ -176,7 +177,7 @@ class PhoneVerification extends Component {
                                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ status: 'initial' })} />
                                             <div>
                                                 <br />
-                                                <b>Please input verification code.</b>
+                                                <b><FormattedMessage id="PAGES.PHONEVERIFY.INPUT" /></b>
                                                 <hr />
                                                 {msg}
                                                 <input
@@ -185,8 +186,8 @@ class PhoneVerification extends Component {
                                                     onChange={(evt) => this.setState({ verification_code: evt.target.value })}
                                                 />
                                                 <div className="text-right">
-                                                    <button className="form-button" onClick={this.verifyCode} disabled={veryfing}> Verify Phone Number </button>
-                                                    <button className="form-button ml-2" onClick={() => this.setState({ status: 'initial' })} disabled={veryfing}> Cancel </button>
+                                                    <button className="form-button" onClick={this.verifyCode} disabled={veryfing}> <FormattedMessage id="PAGES.PHONEVERIFY.VERIFY" /> </button>
+                                                    <button className="form-button ml-2" onClick={() => this.setState({ status: 'initial' })} disabled={veryfing}> <FormattedMessage id="PAGES.TRANSACTIONHISTORY.CANCEL" /> </button>
                                                 </div>
                                             </div>
                                         </div>

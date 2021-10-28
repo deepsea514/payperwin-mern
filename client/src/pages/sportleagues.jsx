@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
+import { FormattedMessage } from 'react-intl';
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -65,7 +66,7 @@ class SportsLeagues extends Component {
         return (
             <>
                 <div className="highlights">
-                    <div className="bet-slip-header">TOP LEAGUES</div>
+                    <div className="bet-slip-header"><FormattedMessage id="PAGES.LEAGUES.TOPLEAGUES" /></div>
                     <div className="content">
                         {leagues && leagues.length != 0 && <ul className="leagues-list">
                             {leagues.slice(0, 6).map(league => (

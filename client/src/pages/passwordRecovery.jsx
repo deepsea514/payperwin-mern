@@ -10,6 +10,7 @@ import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import _env from '../env.json';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 const Form = ({
@@ -52,7 +53,7 @@ const Form = ({
                         fullWidth
                         onClick={handleSubmit}
                     >
-                        Submit
+                        <FormattedMessage id="COMPONENTS.SUBMIT" />
                     </Button>
                 </CardActions>
             </Card>

@@ -31,7 +31,6 @@ import TransactionHistory from "../pages/transactionhistory";
 import Security from "../pages/security";
 import SelfExcusion from "../pages/selfexcusion";
 import Deactivation from "../pages/deactivation";
-import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
@@ -304,8 +303,6 @@ class App extends Component {
                     {require_2fa && <TfaModal getUser={getUser} />}
                     <div className="container">
                         <Switch>
-                            <Route path="/sportsbook" render={(props) =>
-                                <ErrorBoundary><SportsBook {...props} user={user} /></ErrorBoundary>} />
                             <Route path="/signup" render={(props) =>
                                 <ErrorBoundary><Registration getUser={getUser} {...props} /></ErrorBoundary>} />
                             <Route path="/faq" render={(props) => <ErrorBoundary><Faq {...props} /></ErrorBoundary>} />
