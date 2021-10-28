@@ -4,6 +4,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { Link } from "react-router-dom";
 import _env from '../env.json';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class InboxDetail extends Component {
@@ -48,7 +49,7 @@ class InboxDetail extends Component {
                         <Link
                             style={{ cursor: 'pointer', fontSize: 16 }}
                             to="/">
-                            <strong><i className="fas fa-chevron-left"></i> Back to inbox</strong>
+                            <strong><i className="fas fa-chevron-left"></i> <FormattedMessage id="PAGES.INBOX.BACKTOINBOX" /></strong>
                         </Link>
                         {error && <div><span className="card-name">{error}</span></div>}
                         {!error && message && <div>

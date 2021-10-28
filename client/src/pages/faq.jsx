@@ -45,12 +45,12 @@ class Faq extends Component {
                     <div className="hc-search">
                         <div className="hc-search-c">
                             <div className="heading">
-                                <h2>How can we help you today?</h2>
+                                <h2><FormattedMessage id="PAGES.FAQ" /></h2>
                             </div>
                             <center>
                                 <form className="hc-search-form" autoComplete="off" id="hc-search-form" action="/faq/search">
                                     <div className="hc-search-input">
-                                        <label htmlFor="support-search-input" className="hide">Enter your search term here...</label>
+                                        <label htmlFor="support-search-input" className="hide"><FormattedMessage id="PAGES.FAQ.ENTER_SEARCH" /></label>
                                         <input placeholder="Enter your search term here..." type="text" name="term" className="special ui-autoComplete-input" rel="page-search" id="support-search-input" autoComplete="off" />
                                     </div>
                                     <div className="hc-search-button" id="help_pages_search_button">

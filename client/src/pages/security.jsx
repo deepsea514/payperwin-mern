@@ -4,6 +4,7 @@ import { FormControl, FormControlLabel, RadioGroup, Radio, Button } from "@mater
 import axios from 'axios';
 import { Form, InputGroup } from "react-bootstrap";
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -138,7 +139,7 @@ class Security extends Component {
         } = this.state;
         return (
             <div className="col-in">
-                <h1 className="main-heading-in">Password and security</h1>
+                <h1 className="main-heading-in"><FormattedMessage id="COMPONENTS.PASSWORD.SECURITY" /></h1>
                 <div className="main-cnt">
                     <div className="row">
                         <div className="col-12">
@@ -157,9 +158,9 @@ class Security extends Component {
                                 <div className="tab-content" id="myTabContent">
                                     <div className="tab-pane fade show active p-3" id="one" role="tabpanel" aria-labelledby="one-tab">
                                         <form onSubmit={this.handleSubmit}>
-                                            <h4 className="h4">PASSWORD</h4>
+                                            <h4 className="h4"><FormattedMessage id="PAGES.SECURITY.PASSWORD" /></h4>
                                             <Form.Group>
-                                                <Form.Label>Old Password</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.SECURITY.CURRENTPASSWORD" /></Form.Label>
                                                 <InputGroup>
                                                     <Form.Control
                                                         type={showOldPass ? "text" : "password"}
@@ -178,7 +179,7 @@ class Security extends Component {
                                                 {errors.oldPassword ? <div className="registration-feedback">{errors.oldPassword}</div> : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Password</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.SECURITY.NEWPASSWORD" /></Form.Label>
                                                 <InputGroup>
                                                     <Form.Control
                                                         type={showPass ? "text" : "password"}
@@ -197,7 +198,7 @@ class Security extends Component {
                                                 {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Password Confirmation</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.SECURITY.CONFIRMPASSWORD" /></Form.Label>
                                                 <InputGroup>
                                                     <Form.Control
                                                         type={showPassConfirm ? "text" : "password"}
@@ -224,7 +225,7 @@ class Security extends Component {
                                         <br />
                                         <br />
 
-                                        <h4 className="h4">Enable Two-Factor Authorization</h4>
+                                        <h4 className="h4"><FormattedMessage id="PAGES.SECURITY.ENABLE2FA" /></h4>
                                         <FormControl component="fieldset">
                                             <RadioGroup aria-label="gender" name="gender1" value={enable_2fa} onChange={this.handle2FAChange}>
                                                 <FormControlLabel value="true" control={<Radio />} label="Yes" />

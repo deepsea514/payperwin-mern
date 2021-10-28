@@ -4,7 +4,7 @@ import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { Link } from 'react-router-dom';
 import Highlights from '../components/highlights';
-
+import { FormattedMessage } from 'react-intl';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -53,18 +53,13 @@ class Dashboard extends Component {
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
                         <div>
-                            <b>PEER 2 PEER BETTING</b>
+                            <b><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" /></b>
                             <hr />
                             <p>
-                                Here is where you beat the bookie.
-                                The odds are better than anywhere else online, the only catch is you will need some patience.
-                                You will need to wait for a peer to bet against you to make the bet complete.
-                                PAYPER WIN will take 5% fee from the winner for facilitating the transaction and making sure you get paid.
-                                PAYPER WIN guarantees all winning bets will be paid.
-                                If patience is not your virtue, say no more; we suggest doing an instant bet and forward to the sportsbook for instant acceptance.
+                                <FormattedMessage id="PAGES.DASHBOARD.MODAL.CONTENT" />
                             </p>
                             <div className="text-right">
-                                <button className="form-button" onClick={this.dontShowModal}> Don't show again </button>
+                                <button className="form-button" onClick={this.dontShowModal}> <FormattedMessage id="COMPONENTS.DONOTSHOW" /> </button>
                                 <button className="form-button ml-2" onClick={() => this.setState({ showModal: false })}> OK </button>
                             </div>
                         </div>

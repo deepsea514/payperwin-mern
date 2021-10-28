@@ -7,6 +7,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, } from 'react-bootstrap';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -185,14 +186,14 @@ export default class Cashback extends Component {
 
         return (
             <div className="col-in px-3">
-                <h3>Cashback Program</h3>
+                <h3><FormattedMessage id="PAGES.CASHBACK.PROGRAM" /></h3>
                 {loading && <center><Preloader use={ThreeDots}
                     size={100}
                     strokeWidth={10}
                     strokeColor="#F0AD4E"
                     duration={800} />
                 </center>}
-                {error && <p>Error...</p>}
+                {error && <p><FormattedMessage id="PAGES.LINE.ERROR" /></p>}
                 {data && <div className="row">
                     <div className="col-md-5">
                         <ReactApexChart options={chartOptions} series={[this.getCashbackPercentageForGraph(data.lossThisMonth)]} type="radialBar" />
@@ -201,9 +202,9 @@ export default class Cashback extends Component {
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Cashback</th>
-                                    <th>Minumum</th>
-                                    <th>Level</th>
+                                    <th><FormattedMessage id="PAGES.CASHBACK" /></th>
+                                    <th><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /></th>
+                                    <th><FormattedMessage id="PAGES.CASHBACK.LEVEL" /></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -211,25 +212,25 @@ export default class Cashback extends Component {
                                     <td>1</td>
                                     <td>0.5%</td>
                                     <td>$0</td>
-                                    <td>Beginner</td>
+                                    <td><FormattedMessage id="PAGES.CASHBACK.BEGINNER" /></td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td>1.0%</td>
                                     <td>$500</td>
-                                    <td>Journalist</td>
+                                    <td><FormattedMessage id="PAGES.CASHBACK.JOURNALIST" /></td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td>2.0%</td>
                                     <td>$3000</td>
-                                    <td>Fan</td>
+                                    <td><FormattedMessage id="PAGES.CASHBACK.FAN" /></td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td>3.0%</td>
                                     <td>$7000</td>
-                                    <td>Enthusiast</td>
+                                    <td><FormattedMessage id="PAGES.CASHBACK.ENTHUSIAST" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -273,9 +274,9 @@ export default class Cashback extends Component {
                                                     </span>
                                                 </div>
                                                 <div className="d-flex flex-column flex-grow-1 font-weight-bold" style={{ fontSize: '13px' }}>
-                                                    <span className="text-success mb-1 font-size-lg">Cashback Bonus</span>
+                                                    <span className="text-success mb-1 font-size-lg"><FormattedMessage id="PAGES.CASHBACK.BONUS" /></span>
                                                     <span className="text-muted">{dateformat(cashback.createdAt, "mediumDate")}</span>
-                                                    <span className="text-muted">Earned ${cashback.amount.toFixed(2)}</span>
+                                                    <span className="text-muted"><FormattedMessage id="PAGES.CASHBACK.EARNED" /> ${cashback.amount.toFixed(2)}</span>
                                                 </div>
                                                 <span style={{ fontSize: '16px' }}>{this.getCashbackPercentage(cashback.fee)}</span>
                                             </div>

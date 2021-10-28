@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-
+import { FormattedMessage } from 'react-intl';
 
 class TermsAndConditions extends Component {
     constructor(props) {

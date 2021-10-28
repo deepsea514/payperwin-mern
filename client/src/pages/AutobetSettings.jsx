@@ -136,7 +136,7 @@ class AutobetSettings extends Component {
         return (
             <React.Fragment>
                 <div className="col-in">
-                    <h1 className="main-heading-in">Autobet Settings</h1>
+                    <h1 className="main-heading-in"><FormattedMessage id="PAGES.AUTOBET.SETTINGS" /></h1>
                     <div className="main-cnt mx-2 p-3">
                         {initialValues && <Formik
                             initialValues={initialValues}
@@ -154,7 +154,7 @@ class AutobetSettings extends Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Can't save settings
+                                                    <FormattedMessage id="PAGES.AUTOBET.CANNOT_SAVE" />
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ submitError: false })}>
                                                     <button type="button"
@@ -178,7 +178,7 @@ class AutobetSettings extends Component {
                                                     </span>
                                                 </div>
                                                 <div className="alert-text font-weight-bold">
-                                                    Successfully Saved.
+                                                    <FormattedMessage id="PAGES.AUTOBET.SAVED" />
                                                 </div>
                                                 <div className="alert-close" onClick={() => this.setState({ submitSuccess: false })}>
                                                     <button type="button"
@@ -195,7 +195,7 @@ class AutobetSettings extends Component {
                                         <div className="form-row form-group">
                                             <div className="col-md-12">
                                                 <input type="checkbox" id="rollOver" name="rollOver" {...formik.getFieldProps("rollOver")} />
-                                                <label htmlFor="rollOver" style={{ display: 'initial' }}> &nbsp;&nbsp;Roll over wins into the daily budget</label>
+                                                <label htmlFor="rollOver" style={{ display: 'initial' }}> &nbsp;&nbsp;<FormattedMessage id="PAGES.AUTOBET.ROLLOVER" /></label>
                                                 {formik.touched.rollOver && formik.errors.rollOver ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.rollOver}
@@ -205,7 +205,7 @@ class AutobetSettings extends Component {
                                         </div>
                                         <div className="form-row">
                                             <div className="form-group col-md-6">
-                                                <label>Daily Max Budget<span className="text-danger">*</span></label>
+                                                <label><FormattedMessage id="PAGES.AUTOBET.MAXBUDGET" /><span className="text-danger">*</span></label>
                                                 <input name="budget" placeholder="Enter Budget"
                                                     className={`form-control ${getInputClasses(formik, "budget")}`}
                                                     {...formik.getFieldProps("budget")}
@@ -217,7 +217,7 @@ class AutobetSettings extends Component {
                                                 ) : null}
                                             </div>
                                             <div className="form-group col-md-6">
-                                                <label>Daily Max Sportsbook Budget<span className="text-danger">*</span></label>
+                                                <label><FormattedMessage id="PAGES.AUTOBET.SBMAXBUDGET" /><span className="text-danger">*</span></label>
                                                 <input name="sportsbookBudget" placeholder="Enter Sportsbook Budget"
                                                     className={`form-control ${getInputClasses(formik, "sportsbookBudget")}`}
                                                     {...formik.getFieldProps("sportsbookBudget")}
@@ -229,7 +229,7 @@ class AutobetSettings extends Component {
                                                 ) : null}
                                             </div>
                                             <div className="form-group col-md-6">
-                                                <label>Daily Max Parlay Budget<span className="text-danger">*</span></label>
+                                                <label><FormattedMessage id="PAGES.AUTOBET.PARLAYMAXBUDGET" /><span className="text-danger">*</span></label>
                                                 <input name="parlayBudget" placeholder="Enter Parlay Budget"
                                                     className={`form-control ${getInputClasses(formik, "parlayBudget")}`}
                                                     {...formik.getFieldProps("parlayBudget")}
@@ -243,7 +243,7 @@ class AutobetSettings extends Component {
                                         </div>
                                         <div className="form-row">
                                             <div className="form-group col-md-6">
-                                                <label>Max.Risk (per bet)<span className="text-danger">*</span></label>
+                                                <label><FormattedMessage id="PAGES.AUTOBET.MAXRISK" /><span className="text-danger">*</span></label>
                                                 <input name="maxRisk" placeholder="Enter Max.Risk"
                                                     className={`form-control ${getInputClasses(formik, "maxRisk")}`}
                                                     {...formik.getFieldProps("maxRisk")}
@@ -256,7 +256,7 @@ class AutobetSettings extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label>Sports to exclude<span className="text-danger">*</span></label>
+                                            <label><FormattedMessage id="PAGES.AUTOBET.SPORTS_EXCLUDE" /><span className="text-danger">*</span></label>
                                             <AsyncSelect
                                                 className={`basic-single ${getInputClasses(formik, "sports")}`}
                                                 classNamePrefix="select"
@@ -285,7 +285,7 @@ class AutobetSettings extends Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group">
-                                            <label>Side<span className="text-danger">*</span></label>
+                                            <label><FormattedMessage id="PAGES.AUTOBET.SIDE" /><span className="text-danger">*</span></label>
                                             <Select
                                                 className={`basic-single ${getInputClasses(formik, "side")}`}
                                                 classNamePrefix="select"
@@ -311,7 +311,7 @@ class AutobetSettings extends Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group">
-                                            <label>Bet Type<span className="text-danger">*</span></label>
+                                            <label><FormattedMessage id="PAGES.AUTOBET.TYPE" /><span className="text-danger">*</span></label>
                                             <Select
                                                 className={`basic-single ${getInputClasses(formik, "betType")}`}
                                                 classNamePrefix="select"
@@ -337,7 +337,7 @@ class AutobetSettings extends Component {
                                             ) : null}
                                         </div>
                                         <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
-                                            Save
+                                            <FormattedMessage id="PAGES.SECURITY.SAVE" />
                                         </Button>
                                     </form>
                                 )
