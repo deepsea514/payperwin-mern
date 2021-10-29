@@ -47,6 +47,12 @@ export function DropdownMenuCustomer({ id }) {
                     <span className="navi-text">Bet Log</span>
                 </Link>
             </li>
+            <li className="navi-item">
+                <Link to={`/users/${id}/profile/tier`} className="navi-link">
+                <span className="navi-icon"><SVG src="/media/svg/icons/General/Settings-1.svg" /></span>
+                    <span className="navi-text">Custmoer Tier</span>
+                </Link>
+            </li>
         </ul>
     </>
 }

@@ -43,7 +43,8 @@ const PreferenceSchema = new Schema(
                 email: { type: Boolean, default: true },
                 sms: { type: Boolean, default: true },
             },
-        }
+        },
+        maxBetLimitTier: { type: String, default: '2000' },
     },
     {
         timestamps: true,

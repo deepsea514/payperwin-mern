@@ -12,7 +12,7 @@ import Deposit from "./profile/Deposit";
 import Withdraw from "./profile/Withdraw";
 import BetLog from "./profile/BetLog";
 import Preference from "./profile/Preference";
-
+import CustomerTier from "./profile/CustomerTier";
 class CustomerProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -81,6 +81,10 @@ class CustomerProfile extends React.Component {
                                             <Route
                                                 path={`/users/${id}/profile/bet-log`}
                                                 component={(props) => <BetLog {...props} customer={customer} />}
+                                            />
+                                            <Route
+                                                path={`/users/${id}/profile/tier`}
+                                                component={(props) => <CustomerTier {...props} customer={customer} />}
                                             />
                                             <Redirect
                                                 // from="*"
