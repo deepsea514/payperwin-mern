@@ -2696,7 +2696,8 @@ expressApp.get(
                                     sportName: sport.name,
                                     leagueName: league.name,
                                     leagueId: league.originId,
-                                    team: event.teamA
+                                    team: event.teamA,
+                                    eventId: event.originId,
                                 });
                             } else if (event.teamB.toLowerCase().includes(param.toLowerCase())) {
                                 results.push({
@@ -2704,7 +2705,8 @@ expressApp.get(
                                     sportName: sport.name,
                                     leagueName: league.name,
                                     leagueId: league.originId,
-                                    team: event.teamB
+                                    team: event.teamB,
+                                    eventId: event.originId,
                                 });
                             }
                         }
@@ -3229,7 +3231,7 @@ expressApp.post(
                         as: 'betDetails'
                     }
                 },
-                { $unwind: {path: "$betDetails", preserveNullAndEmptyArrays: true  }},
+                { $unwind: { path: "$betDetails", preserveNullAndEmptyArrays: true } },
                 {
                     $match: searchObj
                 },

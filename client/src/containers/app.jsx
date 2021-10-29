@@ -63,6 +63,7 @@ import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
 import Search from '../pages/search';
+import SportsBreadcrumb from '../components/sportsbreadcrumb';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -273,6 +274,7 @@ class App extends Component {
             location,
             require_2fa,
             dark_light,
+            showLoginModalAction
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
@@ -323,6 +325,8 @@ class App extends Component {
                                                 toggleField={this.toggleField}
                                                 sportsMenuMobileOpen={sportsMenuMobileOpen}
                                                 sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                                showLoginModal={() => showLoginModalAction(true)}
+                                                user={user}
                                             />
                                         </ErrorBoundary>
                                         <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
@@ -355,22 +359,6 @@ class App extends Component {
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:name/league/:league/team/:team" render={(props) => {
-                                                    const { match } = props;
-                                                    const name = resObjPath(match, 'params.name');
-                                                    const league = resObjPath(match, 'params.league');
-                                                    const team = resObjPath(match, 'params.team');
-                                                    return (
-                                                        <ErrorBoundary>
-                                                            <React.Fragment>
-                                                                <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                    removeBet={this.removeBet} sportName={name}
-                                                                    league={league} team={team}
-                                                                />
-                                                            </React.Fragment>
-                                                        </ErrorBoundary>
-                                                    );
-                                                }} />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
@@ -392,6 +380,7 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
+                                                                <SportsBreadcrumb sportName={name} />
                                                                 <SportsLeagues sportName={name} />
                                                             </React.Fragment>
                                                         </ErrorBoundary>

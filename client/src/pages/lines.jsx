@@ -12,6 +12,7 @@ import QRCode from "react-qr-code";
 import _env from '../env.json';
 import SBModal from '../components/sbmodal';
 import { FormattedMessage } from 'react-intl';
+import LinesBreadcrumb from '../components/linesbreadcrumb';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -73,11 +74,7 @@ class Lines extends Component {
         if (sportName) {
             axios.get(`${serverUrl}/sport`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
                 .then(({ data }) => {
-                    if (data) {
-                        this.setState({
-                            data: data,
-                        })
-                    }
+                    if (data) { this.setState({ data: data }) }
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ error: err });
@@ -120,9 +117,15 @@ class Lines extends Component {
             return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
 
-        const { teamA, teamB, startDate, lines } = data;
+        const { teamA, teamB, startDate, lines, leagueName } = data;
+        console.log(data);
         return (
             <div className="content detailed-lines mb-5">
+                <LinesBreadcrumb sportName={sportName}
+                    league={{ name: leagueName, leagueId: leagueId }}
+                    teams={{ teamA, teamB }}
+                    time={timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
+                />
                 {ogTitle && <MetaTags>
                     <meta property="og:type" content="article" />
                     <meta property="og:title" content={ogTitle} />
@@ -175,7 +178,7 @@ class Lines extends Component {
                         </div>
                     </div>
                 </div>}
-                <center>
+                {/* <center>
                     <div className="line-name">
                         {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
                         <div className="float-right">
@@ -186,7 +189,7 @@ class Lines extends Component {
                         </div>
                     </div>
                     <strong className="line-name">{teamA} VS {teamB}</strong>
-                </center>
+                </center> */}
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {

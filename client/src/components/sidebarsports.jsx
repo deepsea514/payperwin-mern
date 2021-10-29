@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import SportsList from './sportsList';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import Favorites from './favorites';
 
 class SidebarSports extends Component {
     render() {
-        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen } = this.props;
+        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen, user, showLoginModal } = this.props;
         return (
             <div className={`col-md-2 col-sm-6 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
                 style={sportsMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('sportsMenuMobileOpen', false)}>
-                {/* <div className="fabrt-d">
+                <div className="fabrt-d">
                     <h3 className="cat-heading">Favorites</h3>
-                    <div className="fabrte">
-                        <Link to={{ pathname: '/login' }}>Log in</Link> or
-                        <Link to={{ pathname: '/signup' }}>Join</Link> to change your <br />favorites.
-                    </div>
-                </div> */}
+                    {!user && <div className="favorites">
+                        <a className="cursor-pointer fav-link" onClick={showLoginModal}><b>Log in</b></a> or <Link to={{ pathname: '/signup' }} className="fav-link"><b>Join</b></Link> to change your <br />favorites.
+                    </div>}
+                    {user && <Favorites user={user} />}
+                </div>
                 <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.TOP.SPORTS" /></h3>
                 <SportsList showleagues={true} topSports={true} />
                 <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.AZ.SPORTS" /></h3>

@@ -72,11 +72,13 @@ class SportsLeagues extends Component {
                             {leagues.slice(0, 6).map(league => (
                                 <li key={league.name}
                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                    <Link
-                                        to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}
-                                    >
-                                        <span style={sportNameSpanStyle}>{league.name}</span>
-                                        <span>{league.eventCount}</span>
+                                    <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                        <span style={sportNameSpanStyle}>
+                                            <b className="mr-3">{league.name}</b> {league.eventCount}
+                                        </span>
+                                        <span>
+                                            <img src="/images/sports/star-unselected.svg" alt="Favourite" style={{ filter: 'invert(0.5)' }} />
+                                        </span>
                                     </Link>
                                 </li>
                             ))}
@@ -94,10 +96,13 @@ class SportsLeagues extends Component {
                                     {filteredLeagues.map(league => (
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                            <Link
-                                                to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
-                                                <span style={sportNameSpanStyle}>{league.name}</span>
-                                                <span>{league.eventCount}</span>
+                                            <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                                <span style={sportNameSpanStyle}>
+                                                    <b className="mr-3">{league.name}</b> {league.eventCount}
+                                                </span>
+                                                <span>
+                                                    <img src="/images/sports/star-unselected.svg" alt="Favourite" style={{ filter: 'invert(0.5)' }} />
+                                                </span>
                                             </Link>
                                         </li>
                                     ))}
