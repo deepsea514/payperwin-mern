@@ -60,7 +60,7 @@ class BetParlay extends Component {
             <>
                 {win > maxBetLimitTier && <div className="bet-parlay-warn-message">
                     <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
-                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" />
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{max_win_limit: maxBetLimitTier}} />
                 </div>}
                 <div className={`bet-parlay-container ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div className="d-flex justify-content-between">
