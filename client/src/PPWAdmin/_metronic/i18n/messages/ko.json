@@ -26,7 +26,7 @@
     "COMPONENTS.AUTOBET.INPLAY": "재생 중",
     "COMPONENTS.AUTOBET.PL": "수익과 손실",
     "COMPONENTS.BET.ABOVEMAXIMUM": "최대 지분 초과",
-    "COMPONENTS.BET.INPUTNOTEXCEED": "지불액이 CAD $5,000을 초과하지 않는 새 금액을 입력하십시오",
+    "COMPONENTS.BET.INPUTNOTEXCEED": "지불액이 CAD ${max_win_limit}을 초과하지 않는 새 금액을 입력하십시오",
     "COMPONENTS.BET.MAXWIN": "최대 승",
     "COMPONENTS.BET.SUBMITTED": "귀하의 베팅이 제출되었습니다",
     "COMPONENTS.BET.VIEWOPENBETS": "공개된 베팅 보기",

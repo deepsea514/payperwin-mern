@@ -55,15 +55,16 @@ class Bet extends Component {
 
     render() {
         const { stake, win } = this.state;
-        const { bet, removeBet, oddsFormat } = this.props;
+        const { bet, removeBet, oddsFormat, maxBetLimitTier } = this.props;
+        console.log(this.props);
         const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
         return (
             <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
-                {win > 5000 && <div className="bet-warn-message">
+                {win > maxBetLimitTier && <div className="bet-warn-message">
                     <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
-                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" />
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{max_win_limit: maxBetLimitTier}} />
                 </div>}
-                <div className={`bet ${win > 5000 ? 'bet-warn' : ''}`}>
+                <div className={`bet ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div>
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
@@ -96,7 +97,7 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
+                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
                 </div>
             </div>
         )
@@ -106,6 +107,7 @@ class Bet extends Component {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    maxBetLimitTier: state.frontend.maxBetLimitTier || 2000,
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(Bet))
