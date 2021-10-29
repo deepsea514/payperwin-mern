@@ -57,6 +57,8 @@ class Sport extends Component {
                         // Remove moneyline with draw
                         data.leagues.forEach(league => {
                             const { events } = league;
+
+                            console.log("events",events);
                             events.forEach(event => {
                                 const { lines, startDate } = event;
                                 if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
