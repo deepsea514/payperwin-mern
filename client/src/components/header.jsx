@@ -391,6 +391,7 @@ const mapStateToProps = (state) => ({
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,
+    maxBetLimitTier: state.frontend.maxBetLimitTier || 2000,
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(Header))
