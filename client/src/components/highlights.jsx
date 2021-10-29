@@ -72,6 +72,7 @@ export default class Highlights extends Component {
                         betSlip={betSlip}
                         removeBet={removeBet}
                         sportName={sports[sportIndex]}
+                        hideBreacrumb={true}
                     />)}
             </div>
         );

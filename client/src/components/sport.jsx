@@ -10,6 +10,7 @@ import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import _env from '../env.json';
 import SBModal from './sbmodal';
 import { FormattedMessage } from 'react-intl';
+import SportsBreadcrumb from './sportsbreadcrumb';
 const serverUrl = _env.appUrl;
 
 class Sport extends Component {
@@ -137,7 +138,7 @@ class Sport extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, sportName, timezone, oddsFormat, team } = this.props;
+        const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb } = this.props;
         const { data, error, sportsbookInfo } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -160,8 +161,14 @@ class Sport extends Component {
                 </span>
             </li>
         );
+        const selectedLeague = leagues.find(league => league.originId == leagueId);
         return (
-            <div className="mt-2">
+            <div>
+                {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
+                    league={selectedLeague ? {
+                        name: selectedLeague.name,
+                        leagueId: selectedLeague.originId
+                    } : null} />}
                 {sportsbookInfo && <SBModal
                     sportsbookInfo={sportsbookInfo}
                     onClose={() => this.setState({ sportsbookInfo: null })}

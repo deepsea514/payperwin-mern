@@ -1616,3 +1616,213 @@ button.loginButton span {
 .label-inline {
     white-space: nowrap;
 }
+
+a.fav-link {
+    color: black;
+}
+
+a.fav-link:hover {
+    color: #ED254E !important;
+}
+
+.contentBlock {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background-size: cover;
+    background-position: top !important;
+    z-index: 1;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    background: white;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard_breadcrumb {
+    font-size: 14px;
+    padding: 3px 15px;
+    clear: both;
+    width: 100%;
+    position: relative;
+    color: #0b1422;
+    overflow: hidden;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    height: 35px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard_breadcrumb ul {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+
+.dashboard_breadcrumb li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard_breadcrumb li,
+.dashboard_breadcrumb ul {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+
+.dashboard_breadcrumb a {
+    font-weight: 700;
+    color: #0b1422;
+    display: block;
+    padding: 3px 0;
+}
+
+.dashboard_breadcrumb .dashboard_breadcrumb_textLabel {
+    display: block;
+    padding: 3px 0;
+}
+
+.dashboard_breadcrumb_separator {
+    color: #ED254E;
+    padding: 3px 5px;
+}
+
+.dashboard_title {
+    padding-left: 15px;
+    padding-bottom: 10px;
+    font-size: 22px;
+    margin-top: auto;
+    position: relative;
+}
+
+.dashboard_title h3 {
+    color: #0b1422;
+    font-weight: 700;
+    float: left;
+}
+
+.dashboard_togglefav {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+
+.dashboard_starimg {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding: 0 12px !important;
+    width: 44px;
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    transition: all .1s;
+    cursor: pointer;
+}
+
+.line_breadcrumb_favorite .dashboard_starimg {
+    width: 40px;
+}
+
+.dashboard_starimg_light .dashboard_starimg_unselect {
+    -webkit-filter: invert(.5);
+    filter: invert(.6);
+}
+
+.dashboard_starimg img {
+    width: 24px;
+    height: 24px;
+}
+
+.contentBlock_line {
+    background-color: #182f49;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+    color: white;
+}
+
+.contentBlock_line .dashboard_breadcrumb {
+    color: white;
+}
+
+.line_breadcrumb {
+    background: #122740 !important;
+    font-size: 12px !important;
+    margin-bottom: -1px !important;
+    z-index: 2;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.line_breadcrumb_participant_container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: relative;
+    margin-bottom: 0;
+}
+
+.line_breadcrumb_participant_row {
+    border-top: 1 px solid #364a61;
+    color: #fff;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    width: 100%;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    border-top: 1px solid #888;
+    padding: 2px 0;
+}
+
+.line_breadcrumb_participant {
+    padding: var(--matchupHeader-row-padding);
+    padding-left: 0;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.line_breadcrumb_participantWrapper {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.line_breadcrumb_favorite{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.line_breadcrumb_participantName {
+    font-weight: 700;
+}
+
+.line_breadcrumb a {
+    color: white;
+}
+
+.line_breadcrumb_time {
+    min-height: 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

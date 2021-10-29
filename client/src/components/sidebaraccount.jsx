@@ -82,7 +82,7 @@ class SidebarAccount extends Component {
                         <Link to={{ pathname: '/verification' }}><i className="far fa-check-double"></i><FormattedMessage id="COMPONENTS.SIDEBAR.VERIFICATION" /></Link>
                     </li>}
                     {user && !user.roles.phone_verified && !user.autobet && <li>
-                        <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i><FormattedMessage id="Phone Verification" /></Link>
+                        <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i><FormattedMessage id="COMPONENTS.SIDEBAR.PHONE_VERIFICATION" /></Link>
                     </li>}
                 </ul>
 

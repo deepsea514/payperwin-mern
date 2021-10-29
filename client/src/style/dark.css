@@ -56,6 +56,16 @@
     color: white;
 }
 
+.main-section.dark .favorites {
+    background: #082242;
+    border-color: #082242;
+    color: white;
+}
+
+.main-section.dark a.fav-link {
+    color: white;
+}
+
 .main-section.dark .sport-desktop-list li.active>a, .main-section.dark .sport-desktop-list li:hover>a {
     background: #25364b;
 }
