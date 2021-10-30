@@ -2,7 +2,7 @@ import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { ModalProgressBar } from "../../../../_metronic/_partials/controls";
-import { getCustomerPreference, updateCustomerPreference } from "../../redux/services";
+import { getCustomerDetail, updateCustomer } from "../../redux/services";
 import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../../helpers/getInputClasses";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
@@ -32,7 +32,7 @@ class CustomerTier extends React.Component {
     componentDidMount() {
         const { id } = this.state;
         this.setState({ loading: true });
-        getCustomerPreference(id)
+        getCustomerDetail(id)
             .then(({ data }) => {
                 this.setState({
                     loading: false, initialValues: {
@@ -48,7 +48,7 @@ class CustomerTier extends React.Component {
     saveCustomerTier = (values, formik) => {
         this.setState({ saving: true, isSuccess: false, isError: false });
         const { id } = this.state;
-        updateCustomerPreference(id, values).then(() => {
+        updateCustomer(id, values).then(() => {
             formik.setSubmitting(false);
             this.setState({ saving: false, isSuccess: true });
         }).catch(() => {

@@ -277,7 +277,7 @@ class BetSlip extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    maxBetLimitTier: state.frontend.maxBetLimitTier || 2000,
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
 });
 
 

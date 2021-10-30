@@ -113,7 +113,7 @@ class BetParlay extends Component {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
-    maxBetLimitTier: state.frontend.maxBetLimitTier || 2000,
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(BetParlay))
