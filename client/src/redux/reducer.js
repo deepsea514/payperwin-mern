@@ -21,6 +21,7 @@ export const actionTypes = {
     showLoginModalAction: "[Show Login Modal Action]",
     showForgotPasswordModalAction: "[Show Forgot Password Modal Action]",
     setDisplayModeBasedOnSystem: "[Set Display Mode Based On System]",
+    setMaxBetLimitTierAction: "[Set Max Bet Limit Tier Action]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -48,6 +49,7 @@ const initialState = {
     },
     showLoginModal: false,
     showForgotPasswordModal: false,
+    maxBetLimitTier: 2000,
 };
 
 export const reducer = persistReducer(
@@ -97,6 +99,11 @@ export const reducer = persistReducer(
             case actionTypes.showForgotPasswordModalAction:
                 return { ...state, showForgotPasswordModal: action.showForgotPasswordModal };
 
+            case actionTypes.setMaxBetLimitTierAction:
+                console.log("maxBetLimitTierAction called");
+                console.log("maxBetLimitTier", action.maxBetLimitTier);
+                    return { ...state, maxBetLimitTier: action.maxBetLimitTier };
+
             default:
                 return state;
         }
@@ -117,7 +124,8 @@ export const actions = {
     setLoginFailedAction: (times) => ({ type: actionTypes.setLoginFailedAction, times }),
     showLoginModalAction: (showLoginModal) => ({ type: actionTypes.showLoginModalAction, showLoginModal }),
     showForgotPasswordModalAction: (showForgotPasswordModal) => ({ type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal }),
-    setDisplayModeBasedOnSystem: () => ({ type: actionTypes.setDisplayModeBasedOnSystem })
+    setDisplayModeBasedOnSystem: () => ({ type: actionTypes.setDisplayModeBasedOnSystem }),
+    setMaxBetLimitTierAction: (maxBetLimitTier) => ({ type: actionTypes.setMaxBetLimitTierAction, maxBetLimitTier }),
 };
 
 export function* saga() {
@@ -156,5 +164,15 @@ export function* saga() {
         } catch (error) {
         }
         setLanguage(lang);
+    });
+
+
+    yield takeLatest(actionTypes.setMaxBetLimitTierAction, function* setMaxBetLimitTierSaga() {
+        const maxBetLimitTier = yield select((state) => state.frontend.maxBetLimitTier);
+        try {
+            yield setMaxBetLimitTierAction({ maxBetLimitTier });
+        } catch (error) {
+        }
+        setMaxBetLimitTierAction(maxBetLimitTier);
     });
 }

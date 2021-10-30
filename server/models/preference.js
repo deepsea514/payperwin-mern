@@ -44,7 +44,6 @@ const PreferenceSchema = new Schema(
                 sms: { type: Boolean, default: true },
             },
         },
-        maxBetLimitTier: { type: String, default: '2000' },
     },
     {
         timestamps: true,
