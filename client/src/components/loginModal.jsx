@@ -124,7 +124,7 @@ class LoginModal extends React.Component {
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={closeModal} />
                 <div className="dead-center login_modal_container">
-                    <div className="contentBlock overflow-hidden dead-center login_modal_content">
+                    <div className="contentBlock_modal overflow-hidden dead-center login_modal_content">
                         <div className="login_modal_main">
                             <div className="login_modal_context">
                                 <div className="login_modal_leftbar">

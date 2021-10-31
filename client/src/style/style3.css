@@ -1219,7 +1219,7 @@ a.log-in-btn {
     overflow: hidden !important;
 }
 
-.contentBlock {
+.contentBlock_modal {
     border-radius: 3px;
     margin-bottom: 15px;
     background: #081a30;
