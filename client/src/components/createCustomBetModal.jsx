@@ -200,7 +200,7 @@ class CreateCustomBetModal extends React.Component {
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={closeModal} />
                 <div className="dead-center create_bet_modal_container">
-                    <div className="contentBlock overflow-hidden dead-center create_bet_modal_content">
+                    <div className="contentBlock_modal overflow-hidden dead-center create_bet_modal_content">
                         <div className="create_bet_modal_main">
                             <div className="login_modal_rightbar">
                                 <img className="login_modal_rightbar_logo" src="/images/logo-white.png" alt="PAYPERWIN" />
