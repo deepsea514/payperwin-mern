@@ -905,7 +905,7 @@ expressApp.post(
 expressApp.post(
     '/placeBets',
     isAuthenticated,
-    bruteforce.prevent,
+    // bruteforce.prevent,
     async (req, res) => {
         const { betSlip } = req.body;
 
