@@ -327,6 +327,7 @@ class App extends Component {
                                                 sidebarShowAccountLinks={sidebarShowAccountLinks}
                                                 showLoginModal={() => showLoginModalAction(true)}
                                                 user={user}
+                                                getUser={getUser}
                                             />
                                         </ErrorBoundary>
                                         <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
@@ -368,7 +369,7 @@ class App extends Component {
                                                             <React.Fragment>
                                                                 <Sport addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet} sportName={name}
-                                                                    league={league}
+                                                                    league={league} user={user} getUser={getUser}
                                                                 />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
@@ -380,8 +381,8 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <SportsBreadcrumb sportName={name} />
-                                                                <SportsLeagues sportName={name} />
+                                                                <SportsBreadcrumb sportName={name} user={user} />
+                                                                <SportsLeagues sportName={name} user={user} getUser={getUser} />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
                                                     );

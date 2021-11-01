@@ -5,3 +5,7 @@ const serverUrl = _env.appUrl;
 export function setPreferences(preference) {
     return axios.post(`${serverUrl}/preferences`, preference, { withCredentials: true })
 }
+
+export function toggleFavorites(data) {
+    return axios.post(`${serverUrl}/favorites/toggle`, data, { withCredentials: true })
+}

@@ -1,8 +1,30 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import { toggleFavorites } from '../redux/services';
 
 class SportsBreadcrumb extends Component {
+    getFavoritesSelected = (league) => {
+        const { user } = this.props;
+        const unSelectedImage = <img src="/images/sports/star-unselected.svg" alt="Favourite" className="dashboard_starimg_unselect" />;
+        if (!user) return unSelectedImage;
+        if (!user.favorites) return unSelectedImage;
+        const fav = user.favorites.find(fav => fav.originId == league.leagueId);
+        if (fav)
+            return <img src="/images/sports/star-selected.svg" alt="Favourite" />
+        return unSelectedImage;
+    }
+
+    toggleFavoriteLeague = (evt) => {
+        const { user, getUser, sportName, league } = this.props;
+        evt.preventDefault();
+        if (!user) return;
+        toggleFavorites({ sport: sportName, type: 'league', name: league.name })
+            .then(() => {
+                getUser();
+            })
+    }
+
     render() {
         const { sportName, league } = this.props;
         const displaySportName = sportName ? sportName.replace("_", " ") : ""
@@ -30,8 +52,8 @@ class SportsBreadcrumb extends Component {
                     </h3>
                     {league && <div className="dashboard_togglefav">
                         <div>
-                            <a className="dashboard_starimg dashboard_starimg_light">
-                                <img src="/images/sports/star-unselected.svg" alt="Favorite" className="dashboard_starimg_unselect" />
+                            <a className="dashboard_starimg dashboard_starimg_light" onClick={(evt) => this.toggleFavoriteLeague(evt)}>
+                                {this.getFavoritesSelected(league)}
                             </a>
                         </div>
                     </div>}

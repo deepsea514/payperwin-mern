@@ -6,7 +6,7 @@ import Favorites from './favorites';
 
 class SidebarSports extends Component {
     render() {
-        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen, user, showLoginModal } = this.props;
+        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen, user, getUser, showLoginModal } = this.props;
         return (
             <div className={`col-md-2 col-sm-6 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
                 style={sportsMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
@@ -16,7 +16,7 @@ class SidebarSports extends Component {
                     {!user && <div className="favorites">
                         <a className="cursor-pointer fav-link" onClick={showLoginModal}><b>Log in</b></a> or <Link to={{ pathname: '/signup' }} className="fav-link"><b>Join</b></Link> to change your <br />favorites.
                     </div>}
-                    {user && <Favorites user={user} />}
+                    {user && <Favorites user={user} getUser={getUser} />}
                 </div>
                 <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.TOP.SPORTS" /></h3>
                 <SportsList showleagues={true} topSports={true} />
