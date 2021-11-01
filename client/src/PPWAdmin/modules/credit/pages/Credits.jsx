@@ -2,14 +2,23 @@ import React from "react"
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import * as credits from "../redux/reducers";
-import dateformat from "dateformat";
 import CustomPagination from "../../../components/CustomPagination.jsx";
+import CreditModal from "../components/CreditModal";
+import { Button, Modal, DropdownButton, Dropdown } from 'react-bootstrap';
+import { setCredit } from "../redux/services";
+import { Link } from 'react-router-dom';
 
 class Credits extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             perPage: 25,
+            addModal: false,
+            modal: false,
+            resMessage: '',
+            modalvariant: '',
+            adjustId: null,
+            initialValues: null,
         }
     }
 
@@ -44,9 +53,30 @@ class Credits extends React.Component {
             );
         }
 
-        // return wager_feeds.map((bet, index) => (
-        //     return 
-        // ));
+        return credits.map((user, index) => (
+            <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{user.email}</td>
+                <td>{user.credit}</td>
+                <td>
+                    <DropdownButton title="Actions">
+                        <Dropdown.Item onClick={() => this.setAdjustId(user)}><i className="fas fa-edit"></i>&nbsp; Adjust Credit</Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/${user._id}/detail`}><i className="fas fa-eye"></i>&nbsp; Detail</Dropdown.Item>
+                    </DropdownButton>
+                </td>
+            </tr>
+        ));
+    }
+
+    setAdjustId = (user) => {
+        this.setState({
+            adjustId: user._id,
+            initialValues: {
+                user: { value: user._id, label: `${user.email} (${user.firstname} ${user.lastname})` },
+                type: '',
+                amount: 0
+            }
+        })
     }
 
     onPageChange = (page) => {
@@ -54,8 +84,30 @@ class Credits extends React.Component {
         getCreditsAction(page);
     }
 
+    setCredit = (values, formik) => {
+        const { getCreditsAction } = this.props;
+        const data = {
+            ...values,
+            user: values.user.value,
+        };
+        setCredit(data)
+            .then(({ data }) => {
+                formik.setSubmitting(false);
+                if (data.success) {
+                    this.setState({ modal: true, addModal: false, adjustId: null, resMessage: "Successfully added!", modalvariant: "success" });
+                    getCreditsAction();
+                } else {
+                    this.setState({ modal: true, addModal: false, adjustId: null, resMessage: data.message, modalvariant: "danger" });
+                }
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { perPage } = this.state;
+        const { perPage, addModal, modal, resMessage, modalvariant, adjustId, initialValues } = this.state;
         const { total, currentPage } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -68,7 +120,9 @@ class Credits extends React.Component {
                                 <h3 className="card-label">Line of Credits</h3>
                             </div>
                             <div className="card-toolbar">
-                                
+                                <Button className="btn btn-success font-weight-bolder font-size-sm" onClick={() => this.setState({ addModal: true })}>
+                                    <i className="fas fa-users"></i>&nbsp; Add Credit
+                                </Button>
                             </div>
                         </div>
                         <div className="card-body">
@@ -96,6 +150,32 @@ class Credits extends React.Component {
                             />
                         </div>
                     </div>
+                    <CreditModal
+                        show={addModal}
+                        onHide={() => this.setState({ addModal: false })}
+                        title="Add Credit"
+                        onSubmit={this.setCredit}
+                    />
+
+                    {adjustId && <CreditModal
+                        show={adjustId != null}
+                        onHide={() => this.setState({ adjustId: null })}
+                        title="Adjust Credit"
+                        edit
+                        initialValues={initialValues}
+                        onSubmit={this.setCredit}
+                    />}
+
+                    <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{resMessage}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Footer>
+                            <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             </div>
         );

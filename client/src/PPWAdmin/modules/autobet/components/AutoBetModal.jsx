@@ -23,7 +23,6 @@ const betTypeOptions = [
 export default class AutoBetModal extends React.Component {
     constructor(props) {
         super(props);
-        console.log("props.initialValues", props.initialValues)
         this.state = {
             initialValues: props.initialValues ? props.initialValues : {
                 user: null,

@@ -687,6 +687,35 @@ adminRouter.get(
 )
 
 adminRouter.get(
+    '/customer-credits',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 10;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        page--;
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const data = await FinancialLog.find(searchObj)
+                .skip(page * perPage)
+                .limit(perPage)
+            res.json({ total: total, data: data });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find Credits.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
     '/customer-deposits',
     authenticateJWT,
     limitRoles('users'),
@@ -5565,6 +5594,7 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
 
 adminRouter.post(
     '/placeBets',
+    authenticateJWT,
     /* bruteforce.prevent, */
     async (req, res) => {
         const betSlip = req.body;
@@ -5713,7 +5743,7 @@ adminRouter.post(
                             if (preference && preference.timezone) {
                                 timezone = preference.timezone;
                             }
-                           // const timeString = convertTimeLineDate(new Date(), timezone);
+                            // const timeString = convertTimeLineDate(new Date(), timezone);
 
                             //const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                             let betType = '';
@@ -5833,10 +5863,9 @@ adminRouter.post(
     }
 );
 
-
-
 adminRouter.get(
     '/placebetsbyadmin',
+    authenticateJWT,
     async (req, res) => {
         try {
             let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage, email } = req.query;
@@ -5897,7 +5926,134 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/credits',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page--;
 
+        try {
+            let searchObj = { credit: { $gt: 0 } };
+            const total = await User.find(searchObj).count();
+            const users = await User.find(searchObj).skip(page * perPage).limit(perPage);
+            res.json({ total: total, data: users });
+        } catch (error) {
+            console.error(error);
+            res.json({ total: 0, data: [] });
+        }
+    }
+)
 
+adminRouter.post(
+    '/credits',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        const data = req.body;
+        const { user: user_id, type, amount } = data;
+        if (!user_id || !type || !amount) {
+            return res.json({ success: false, message: 'Please input all the required fields.' });
+        }
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                return res.json({ success: false, message: 'User not found.' });
+            }
+            switch (type) {
+                case 'issue':
+                    if (amount <= 0)
+                        return res.json({ success: false, message: 'Amount should at least 0.' });
+                    await FinancialLog.create({
+                        financialtype: 'credit',
+                        uniqid: `C${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ credit: amount });
+                    break;
+                case 'transfer-in':
+                    if (amount > user.balance)
+                        return res.json({ success: false, message: 'Cannot transfer in credit. Out of user balance.' });
+                    await FinancialLog.create({
+                        financialtype: 'transfer-in',
+                        uniqid: `TI${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({
+                        $inc: {
+                            balance: -amount,
+                            credit: amount
+                        }
+                    })
+                    break;
+                case 'transfer-out':
+                    if (amount > user.credit)
+                        return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
+                    await FinancialLog.create({
+                        financialtype: 'transfer-out',
+                        uniqid: `TO${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({
+                        $inc: {
+                            balance: amount,
+                            credit: -amount
+                        }
+                    })
+                    break;
+                default:
+                    return res.json({ success: false, message: 'Unknown type.' });
+            }
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, message: 'Internal server error' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/credits/:id',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        const { id } = req.params;
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page--;
+
+        try {
+            const user = await User.findById(id);
+            if (!user) {
+                return res.json({ user: null, data: [], total: 0 })
+            }
+            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const data = await FinancialLog.find(searchObj)
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['email'])
+            res.json({ total: total, data: data, user: user });
+        } catch (error) {
+            console.error(error);
+            res.json({ total: 0, data: [] });
+        }
+    }
+)
 
 module.exports = adminRouter;
