@@ -17,12 +17,10 @@ class ProfileCard extends React.Component {
             <div className="flex-row-auto offcanvas-mobile w-250px w-xxl-350px"
                 id="kt_profile_aside">
                 <div className="card card-custom card-stretch">
-                    {/* begin::Body */}
                     <div className="card-body pt-8">
                         <div className="d-flex justify-content-start">
                             <Button onClick={this.goToBack} className="btn btn-secondary mr-2"> Back </Button>
                         </div>
-                        {/* begin::User */}
                         <div className="d-flex align-items-center my-4">
                             <div>
                                 <span className="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary">
@@ -30,8 +28,6 @@ class ProfileCard extends React.Component {
                                 </span>
                             </div>
                         </div>
-                        {/* end::User */}
-                        {/* begin::Nav */}
                         <div className="navi navi-bold navi-hover navi-active navi-link-rounded">
                             <div className="navi-item mb-2">
                                 <NavLink exact
@@ -67,7 +63,7 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/General/Settings-1.svg"/>
+                                            <SVG src="/media/svg/icons/General/Settings-1.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -81,7 +77,7 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/Code/Compiling.svg"/>
+                                            <SVG src="/media/svg/icons/Code/Compiling.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -91,11 +87,25 @@ class ProfileCard extends React.Component {
                             </div>
                             <div className="navi-item mb-2">
                                 <NavLink
+                                    to={`/users/${id}/profile/credit`}
+                                    className="navi-link py-4 non-border-bottom">
+                                    <span className="navi-icon mr-2">
+                                        <span className="svg-icon">
+                                            <SVG src="/media/svg/icons/Shopping/Wallet2.svg" />
+                                        </span>
+                                    </span>
+                                    <span className="text-left navi-text font-size-lg">
+                                        Line of Credit
+                                    </span>
+                                </NavLink>
+                            </div>
+                            <div className="navi-item mb-2">
+                                <NavLink
                                     to={`/users/${id}/profile/deposit`}
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/Communication/Shield-user.svg"/>
+                                            <SVG src="/media/svg/icons/Communication/Shield-user.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -109,7 +119,7 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/Communication/Mail-opened.svg"/>
+                                            <SVG src="/media/svg/icons/Communication/Mail-opened.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -123,7 +133,7 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg"/>
+                                            <SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -132,9 +142,7 @@ class ProfileCard extends React.Component {
                                 </NavLink>
                             </div>
                         </div>
-                        {/* end::Nav */}
                     </div>
-                    {/* end::Body */}
                 </div>
             </div>
         );
