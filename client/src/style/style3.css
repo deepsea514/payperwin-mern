@@ -1631,13 +1631,11 @@ a.fav-link:hover {
     display: flex;
     -ms-flex-direction: column;
     flex-direction: column;
-    background-size: cover;
-    background-position: top !important;
     z-index: 1;
     border-radius: 3px;
     margin-bottom: 15px;
-    background: white;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+    background-color: #182f49;
 }
 
 .dashboard_breadcrumb {
@@ -1646,7 +1644,7 @@ a.fav-link:hover {
     clear: both;
     width: 100%;
     position: relative;
-    color: #0b1422;
+    color: white;
     overflow: hidden;
     display: -ms-flexbox;
     display: flex;
@@ -1656,7 +1654,7 @@ a.fav-link:hover {
     flex-wrap: nowrap;
     height: 35px;
     margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.5);
+    background: #122740 !important;
 }
 
 .dashboard_breadcrumb ul {
@@ -1678,7 +1676,7 @@ a.fav-link:hover {
 
 .dashboard_breadcrumb a {
     font-weight: 700;
-    color: #0b1422;
+    color: white;
     display: block;
     padding: 3px 0;
 }
@@ -1696,13 +1694,13 @@ a.fav-link:hover {
 .dashboard_title {
     padding-left: 15px;
     padding-bottom: 10px;
+    margin-top: 15px;
     font-size: 22px;
-    margin-top: auto;
     position: relative;
 }
 
 .dashboard_title h3 {
-    color: #0b1422;
+    color: white;
     font-weight: 700;
     float: left;
 }

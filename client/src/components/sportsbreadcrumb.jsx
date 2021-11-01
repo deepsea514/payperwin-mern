@@ -30,7 +30,7 @@ class SportsBreadcrumb extends Component {
         const displaySportName = sportName ? sportName.replace("_", " ") : ""
 
         return (
-            <div className="contentBlock hide-mobile" style={{ background: 'url("/images/sports/soccer.jpg")' }}>
+            <div className="contentBlock hide-mobile">
                 <div className="dashboard_breadcrumb">
                     <div>
                         <ul>
