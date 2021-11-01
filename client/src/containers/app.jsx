@@ -358,7 +358,7 @@ class App extends Component {
                                                 } />
                                                 <Route path="/sport/:sportName/league/:leagueId/event/:eventId" render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} /></ErrorBoundary>
+                                                        removeBet={this.removeBet} {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
@@ -370,6 +370,21 @@ class App extends Component {
                                                                 <Sport addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet} sportName={name}
                                                                     league={league} user={user} getUser={getUser}
+                                                                />
+                                                            </React.Fragment>
+                                                        </ErrorBoundary>
+                                                    );
+                                                }} />
+                                                <Route path="/sport/:name/team/:team" render={(props) => {
+                                                    const { match } = props;
+                                                    const sportName = resObjPath(match, 'params.name');
+                                                    const team = resObjPath(match, 'params.team');
+                                                    return (
+                                                        <ErrorBoundary>
+                                                            <React.Fragment>
+                                                                <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} sportName={sportName}
+                                                                    user={user} getUser={getUser} team={team}
                                                                 />
                                                             </React.Fragment>
                                                         </ErrorBoundary>

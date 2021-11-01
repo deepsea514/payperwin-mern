@@ -47,8 +47,6 @@ class TransactionHistory extends Component {
         this.setState({ loading: true, noMore: false });
         axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
             .then(({ data }) => {
-
-                console.log(data);
                 this.setState({ transactions: clear ? data : [...transactions, ...data], page, noMore: data.length == 0 });
             }).finally(() => this.setState({ loading: false }));
     }

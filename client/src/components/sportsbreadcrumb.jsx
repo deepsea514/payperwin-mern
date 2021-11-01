@@ -26,7 +26,7 @@ class SportsBreadcrumb extends Component {
     }
 
     render() {
-        const { sportName, league } = this.props;
+        const { sportName, league, team } = this.props;
         const displaySportName = sportName ? sportName.replace("_", " ") : ""
 
         return (
@@ -36,19 +36,24 @@ class SportsBreadcrumb extends Component {
                         <ul>
                             <li><Link className="dashboard_breadcrumb_textLabel" to="/">Home</Link></li>
                             <span className="dashboard_breadcrumb_separator">/</span>
-                            {!league && <li><span className="dashboard_breadcrumb_textLabel">{displaySportName}</span></li>}
-                            {league && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${sportName}`}>{displaySportName}</Link></li>}
+                            {!league && !team && <li><span className="dashboard_breadcrumb_textLabel">{displaySportName}</span></li>}
+                            {(league || team) && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${sportName}`}>{displaySportName}</Link></li>}
                             {league && <>
                                 <span className="dashboard_breadcrumb_separator">/</span>
                                 <li><span className="dashboard_breadcrumb_textLabel">{league.name}</span></li>
+                            </>}
+                            {team && <>
+                                <span className="dashboard_breadcrumb_separator">/</span>
+                                <li><span className="dashboard_breadcrumb_textLabel">{team}</span></li>
                             </>}
                         </ul>
                     </div>
                 </div>
                 <div className="dashboard_title">
                     <h3>
-                        {!league && <span>{displaySportName} Odds</span>}
+                        {!league && !team && <span>{displaySportName} Odds</span>}
                         {league && <span>{league.name} Odds</span>}
+                        {team && <span>{team} Odds</span>}
                     </h3>
                     {league && <div className="dashboard_togglefav">
                         <div>

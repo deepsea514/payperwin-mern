@@ -168,7 +168,7 @@ class Sport extends Component {
                     league={selectedLeague ? {
                         name: selectedLeague.name,
                         leagueId: selectedLeague.originId
-                    } : null} user={user} getUser={getUser} />}
+                    } : null} user={user} getUser={getUser} team={team} />}
                 {sportsbookInfo && <SBModal
                     sportsbookInfo={sportsbookInfo}
                     onClose={() => this.setState({ sportsbookInfo: null })}
