@@ -24,7 +24,7 @@ class Favorites extends Component {
                         <Link
                             to={favorite.type == 'league' ?
                                 `/sport/${favorite.sport.replace(" ", "_")}/league/${favorite.originId}` :
-                                ''
+                                `/sport/${favorite.sport.replace(" ", "_")}/team/${favorite.name}`
                             }
                             className="sport-list-compact"
                         >

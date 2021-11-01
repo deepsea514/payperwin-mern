@@ -4326,8 +4326,27 @@ expressApp.post(
                         _id: exist._id
                     });
                 }
-            } else {
-
+            } else if (type == 'team') {
+                const exist = await Favorites.findOne({
+                    user: user._id,
+                    name: name,
+                    type: 'team',
+                    originId: sportData.originSportId,
+                    sport: sport
+                })
+                if (!exist) {
+                    await Favorites.create({
+                        user: user._id,
+                        name: name,
+                        type: 'team',
+                        originId: sportData.originSportId,
+                        sport: sport
+                    })
+                } else {
+                    await Favorites.deleteMany({
+                        _id: exist._id
+                    });
+                }
             }
             res.json({ success: true });
         } catch (error) {

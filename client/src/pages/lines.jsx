@@ -105,7 +105,7 @@ class Lines extends Component {
     }
 
     render() {
-        const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
+        const { match, betSlip, removeBet, timezone, oddsFormat, user, getUser } = this.props;
         const { sportName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, ogTitle, ogDescription, showAll
@@ -118,13 +118,14 @@ class Lines extends Component {
         }
 
         const { teamA, teamB, startDate, lines, leagueName } = data;
-        console.log(data);
         return (
             <div className="content detailed-lines mb-5">
                 <LinesBreadcrumb sportName={sportName}
                     league={{ name: leagueName, leagueId: leagueId }}
                     teams={{ teamA, teamB }}
                     time={timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
+                    user={user}
+                    getUser={getUser}
                 />
                 {ogTitle && <MetaTags>
                     <meta property="og:type" content="article" />
