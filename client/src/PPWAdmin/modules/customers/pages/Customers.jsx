@@ -55,6 +55,20 @@ class Customers extends React.Component {
         getReason();
     }
 
+    getCustomerTier = (MaxWinLimitAmount) => {
+        switch (MaxWinLimitAmount) {
+            case "2000":
+                return "0 (default)";
+            case "3000":
+                return "1";    
+            case "5000":
+                return "2";
+            case "10000":
+                return "3";
+            default:
+                return "0";
+        }
+    }
     tableBody = () => {
         const { customers, loading } = this.props;
 
@@ -87,6 +101,7 @@ class Customers extends React.Component {
                     {/* <td>{index + 1}</td> */}
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td><Link to={`/users/${customer._id}/profile`}>{customer.email}</Link></td>
+                     <td className="">{this.getCustomerTier(customer.maxBetLimitTier || "2000")}</td> 
                     <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
                     <td className="">{numberFormat(Number(customer.balance).toFixed(2))} {customer.currency}</td>
                     <td className="">{numberFormat(Number(customer.inplay).toFixed(2))} {customer.currency}</td>
@@ -272,6 +287,7 @@ class Customers extends React.Component {
                                             <tr>
                                                 <th scope="col">Full Name</th>
                                                 <th scope="col">Email</th>
+                                                <th scope="col">Tier</th>
                                                 <th scope="col" className="sort-header" onClick={() => this.onFilterChange({ sortby: 'joined_date' })}>
                                                     Date Joined&nbsp;
                                                     {filter.sortby == 'joined_date' && <>

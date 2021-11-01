@@ -437,6 +437,7 @@ adminRouter.get(
                             totalBetCount: { '$size': '$betHistory' },
                             totalWager: { $sum: '$betHistory.bet' },
                             inplay: { $sum: '$pendingBets.bet' },
+                            maxBetLimitTier: 1,
                             createdAt: 1
                         }
                     },

@@ -31,11 +31,12 @@ class AuthWrap extends Component {
     }
 
     getUser = (callback) => {
-        const { setPreference } = this.props;
+        const { setPreference, setMaxBetLimitTierAction } = this.props;
         const url = `${serverUrl}/user?compress=false`;
         axios.get(url, { withCredentials: true })
             .then(({ data: user }) => {
                 setPreference(user.preference);
+                setMaxBetLimitTierAction(user.maxBetLimitTier);
                 this._isMounted && this.setState({ user }, () => {
                     if (callback) {
                         callback(user);
