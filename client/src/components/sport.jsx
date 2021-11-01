@@ -138,7 +138,7 @@ class Sport extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb } = this.props;
+        const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb, user, getUser } = this.props;
         const { data, error, sportsbookInfo } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -168,7 +168,7 @@ class Sport extends Component {
                     league={selectedLeague ? {
                         name: selectedLeague.name,
                         leagueId: selectedLeague.originId
-                    } : null} />}
+                    } : null} user={user} getUser={getUser} />}
                 {sportsbookInfo && <SBModal
                     sportsbookInfo={sportsbookInfo}
                     onClose={() => this.setState({ sportsbookInfo: null })}

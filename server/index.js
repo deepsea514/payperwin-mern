@@ -29,6 +29,7 @@ const SharedLine = require('./models/sharedline');
 const PrizeLog = require('./models/prizelog');
 const LoyaltyLog = require('./models/loyaltylog');
 const ErrorLog = require('./models/errorlog');
+const Favorites = require('./models/favorites');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -2392,15 +2393,13 @@ expressApp.get(
                 preference = await Preference.create({ user: userId });
             }
             const messages = await Message
-                .find({
-                    published_at: { $ne: null },
-                    userFor: userId,
-                })
+                .find({ published_at: { $ne: null }, userFor: userId })
                 .count();
             const autobet = await AutoBet.findOne({
                 userId: userId
             });
-            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages, autobet };
+            const favorites = await Favorites.find({ user: userId })
+            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages, autobet, favorites };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
@@ -4287,26 +4286,65 @@ expressApp.post(
     }
 )
 
+expressApp.post(
+    '/favorites/toggle',
+    isAuthenticated,
+    async (req, res) => {
+        const user = req.user;
+        const data = req.body;
+        const { name, type, sport } = data;
+        if (!name || !type || !sport) {
+            return res.status(400).json({ success: false, error: 'Please input all fields required.' });
+        }
+        try {
+            const sportData = await Sport.findOne({ name: sport });
+            if (!sportData) {
+                return res.status(404).json({ success: false, error: 'Sports Data not found.' });
+            }
+            if (type == 'league') {
+                const league = sportData.leagues.find(league => league.name == name);
+                if (!league) {
+                    return res.status(404).json({ success: false, error: 'Sports Data not found.' });
+                }
+                const exist = await Favorites.findOne({
+                    user: user._id,
+                    name: league.name,
+                    type: 'league',
+                    originId: league.originId,
+                    sport: sport
+                })
+                if (!exist) {
+                    await Favorites.create({
+                        user: user._id,
+                        name: league.name,
+                        type: 'league',
+                        originId: league.originId,
+                        sport: sport
+                    })
+                } else {
+                    await Favorites.deleteMany({
+                        _id: exist._id
+                    });
+                }
+            } else {
+
+            }
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
 
 // Admin
 expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 
-// if (sslPort) {
-//   // Https
-//   const pathToCerts = '';
-//   const key = fs.readFileSync(`${pathToCerts}cert.key`);
-//   const cert = fs.readFileSync(`${pathToCerts}cert.cer`);
-//   https.createServer({
-//     key,
-//     cert,
-//   }, expressApp).listen(sslPort, () => console.info(`API Server listening on port ${sslPort}`));
-//   expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
-// } else {
-// Http
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
-// }
+
 const options = {
     cors: {
         origin: config.corsHosts,
