@@ -39,7 +39,7 @@ class BetSlip extends Component {
     }
 
     placeSingleBets = () => {
-        const { updateUser, user, betSlip, removeBet } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
         this.setState({ errors: [] });
 
         let totalStake = 0;
@@ -48,11 +48,17 @@ class BetSlip extends Component {
             const b = betSlip[i];
             totalStake += b.stake;
             totalWin += b.win;
-            if (b.win > 5000) {
+            if (b.win > maxBetLimitTier) {
                 this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
                 return;
             }
         }
+
+        if (totalWin > maxBetLimitTier) {
+            this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
+            return;
+        }
+
         if (user && totalStake > user.balance) {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
@@ -93,7 +99,7 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
-        if (totalWin > 5000) {
+        if (totalWin > maxBetLimitTier) {
             this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
             return;
         }
@@ -270,4 +276,9 @@ class BetSlip extends Component {
     }
 }
 
-export default connect(null, frontend.actions)(injectIntl(BetSlip));
+const mapStateToProps = (state) => ({
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
+});
+
+
+export default connect(mapStateToProps, frontend.actions)(injectIntl(BetSlip));

@@ -39,7 +39,7 @@ class Header extends Component {
     componentDidMount() {
         this._isMounted = true;
         const timerInterval = setInterval(this.headerTimer.bind(this), 1000);
-        this._isMounted && this.setState({ timerInterval })
+        this._isMounted && this.setState({ timerInterval });
     }
 
     headerTimer = () => {
@@ -377,6 +377,10 @@ class Header extends Component {
                         showForgotPasswordModalAction(false);
                         showLoginModalAction(true);
                     }} />}
+
+                    {
+                        
+                    }
             </header>
         );
     }
@@ -391,6 +395,7 @@ const mapStateToProps = (state) => ({
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(Header))
