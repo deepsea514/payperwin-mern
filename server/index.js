@@ -3201,6 +3201,11 @@ expressApp.post(
                             // status: FinancialStatus.success
                         });
                     }
+                    if (filter.credit) {
+                        orCon.push({
+                            financialtype: { $in: ["transfer-in", "transfer-out"] },
+                        });
+                    }
                     searchObj = {
                         ...searchObj,
                         $or: orCon
@@ -3210,13 +3215,13 @@ expressApp.post(
                         ...searchObj,
                         $or: [
                             {
-                                financialtype: { $ne: "withdraw" },
+                                financialtype: { $nin: ["withdraw", "credit"] },
                                 status: FinancialStatus.success
                             },
                             {
                                 financialtype: "withdraw",
                             }
-                        ]
+                        ],
                     }
                 }
             }
