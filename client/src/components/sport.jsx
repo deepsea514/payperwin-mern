@@ -9,7 +9,8 @@ import convertOdds from '../helpers/convertOdds';
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import _env from '../env.json';
 import SBModal from './sbmodal';
-import SportsBreadcrumb from './sportsbreadcrumb'
+import SportsBreadcrumb from './sportsbreadcrumb';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class Sport extends Component {
@@ -140,10 +141,10 @@ class Sport extends Component {
         const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb, user, getUser } = this.props;
         const { data, error, sportsbookInfo } = this.state;
         if (error) {
-            return <div>Error</div>;
+            return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
         if (!data) {
-            return <div>Loading...</div>;
+            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
         const { leagues, origin } = data;
         const emptyBoxLine = (
@@ -160,6 +161,7 @@ class Sport extends Component {
                 </span>
             </li>
         );
+        const selectedLeague = leagues.find(league => league.originId == leagueId);
         return (
             <div>
                 {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
@@ -172,7 +174,7 @@ class Sport extends Component {
                     onClose={() => this.setState({ sportsbookInfo: null })}
                     onAccept={this.addSportsbookBet}
                 />}
-                <div className="table-title">HIGHLIGHTS</div>
+                <div className="table-title"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
                 <div className="content">
                     {leagues.map(league => {
                         const { name: leagueName, originId: leagueId } = league;
@@ -194,7 +196,7 @@ class Sport extends Component {
                                             <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </Link>
                                         <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf mt-2 text-right">
-                                            <strong>Additional Lines +</strong>
+                                            <strong><FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /></strong>
                                         </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
@@ -532,9 +534,9 @@ class Sport extends Component {
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                         <li className="detailed-lines-link mobile"></li>
-                                        <li>MONEY LINE</li>
-                                        <li>HANDICAP</li>
-                                        <li>OVER UNDER</li>
+                                        <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
+                                        <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
+                                        <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
                                         <li className="detailed-lines-link not-mobile"></li>
                                     </ul>
                                     {events}

@@ -80,14 +80,12 @@ export const reducer = persistReducer(
                 return { ...state, search: action.search };
 
             case actionTypes.acceptCookieAction:
-                Cookie.set('acceptCookie', true);
                 return { ...state, acceptCookie: true };
 
             case actionTypes.require2FAAction:
                 return { ...state, require_2fa: action.require_2fa };
 
             case actionTypes.hideTourAction:
-                Cookie.set('showedTourTimes', state.showedTourTimes + 1);
                 return { ...state, showedTourTimes: state.showedTourTimes + 1, showTour: false };
 
             case actionTypes.setLoginFailedAction:
@@ -100,8 +98,6 @@ export const reducer = persistReducer(
                 return { ...state, showForgotPasswordModal: action.showForgotPasswordModal };
 
             case actionTypes.setMaxBetLimitTierAction:
-                console.log("maxBetLimitTierAction called");
-                console.log("maxBetLimitTier", action.maxBetLimitTier);
                     return { ...state, maxBetLimitTier: action.maxBetLimitTier };
 
             default:
@@ -173,6 +169,6 @@ export function* saga() {
             yield setMaxBetLimitTierAction({ maxBetLimitTier });
         } catch (error) {
         }
-        setMaxBetLimitTierAction(maxBetLimitTier);
+        actions.setMaxBetLimitTierAction(maxBetLimitTier);
     });
 }

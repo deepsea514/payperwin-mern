@@ -56,7 +56,6 @@ class Bet extends Component {
     render() {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat, maxBetLimitTier } = this.props;
-        console.log(this.props);
         const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
         return (
             <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>

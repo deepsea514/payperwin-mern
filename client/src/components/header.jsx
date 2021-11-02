@@ -377,10 +377,6 @@ class Header extends Component {
                         showForgotPasswordModalAction(false);
                         showLoginModalAction(true);
                     }} />}
-
-                    {
-                        
-                    }
             </header>
         );
     }
