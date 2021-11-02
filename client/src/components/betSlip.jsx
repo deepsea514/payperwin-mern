@@ -156,7 +156,7 @@ class BetSlip extends Component {
                                 <FormattedMessage id="COMPONENTS.BET.SUBMITTED" />
                                 <br />
                                 <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button"><FormattedMessage id="COMPONENTS.BET.VIEWOPENBETS" /></Link>
-                                <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}><FormattedMessage id="PAGES.BACK" /></button>
+                                <button className="form-button ml-2" onClick={() => this.toggleField('confirmationOpen')}><FormattedMessage id="PAGES.BACK" /></button>
                             </center>
                         </div>
                     </div>
