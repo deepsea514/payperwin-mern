@@ -9,7 +9,7 @@ class LinesBreadcrumb extends Component {
         const unSelectedImage = <img src="/images/sports/star-unselected.svg" alt="Favourite" />;
         if (!user) return unSelectedImage;
         if (!user.favorites) return unSelectedImage;
-        const fav = user.favorites.find(fav => fav.sport == sportName && fav.name == team);
+        const fav = user.favorites.find(fav => fav.sport == sportName.replace("_", " ") && fav.name == team);
         if (fav)
             return <img src="/images/sports/star-selected.svg" alt="Favourite" />
         return unSelectedImage;
