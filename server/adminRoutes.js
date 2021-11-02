@@ -612,6 +612,19 @@ adminRouter.get(
             }
 
             const wins = (winbets / (bets.length ? bets.length : 1) * 100).toFixed(2);
+
+            let usedCredit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(user._id),
+                        financialtype: 'transfer-out'
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            );
+            if (usedCredit.length) usedCredit = usedCredit[0].total;
+            else usedCredit = 0;
+
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -625,7 +638,8 @@ adminRouter.get(
                 betsperday: days > 0 ? betcount / days : 0,
                 betsperweek: days > 0 ? betcount / days * 7 : 0,
                 averagebetafter2loss,
-                wins
+                wins,
+                usedCredit
             });
         }
         catch (error) {
@@ -5939,10 +5953,55 @@ adminRouter.get(
         page--;
 
         try {
-            let searchObj = { credit: { $gt: 0 } };
-            const total = await User.find(searchObj).count();
-            const users = await User.find(searchObj).skip(page * perPage).limit(perPage);
-            res.json({ total: total, data: users });
+            const filterQuery = [
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "transfer-out"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'creditUsed'
+                    }
+                },
+                {
+                    $project: {
+                        email: 1,
+                        credit: 1,
+                        creditUsed: { $sum: "$creditUsed.amount" }
+                    }
+                },
+                {
+                    $match: {
+                        $or: [
+                            { creditUsed: { $gt: 0 } },
+                            { credit: { $gt: 0 } }
+                        ]
+                    }
+                }
+            ];
+            const total = await User.aggregate(
+                [
+                    ...filterQuery,
+                    { $count: "total" }
+                ]
+            )
+
+            const users = await User.aggregate(
+                [
+                    ...filterQuery,
+                    { $skip: page * perPage },
+                    { $limit: perPage }
+                ]
+            );
+            res.json({ total: total.total, data: users });
         } catch (error) {
             console.error(error);
             res.json({ total: 0, data: [] });
@@ -5993,12 +6052,22 @@ adminRouter.post(
                     await user.update({
                         $inc: {
                             balance: -amount,
-                            credit: amount
                         }
                     })
                     break;
                 case 'transfer-out':
-                    if (amount > user.credit)
+                    let usedAmount = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                user: new ObjectId(user._id),
+                                financialtype: 'transfer-out'
+                            }
+                        },
+                        { $group: { _id: null, total: { $sum: "$amount" } } }
+                    );
+                    if (usedAmount.length) usedAmount = usedAmount[0].total;
+                    else usedAmount = 0;
+                    if (usedAmount + Number(amount) > user.credit)
                         return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
                     await FinancialLog.create({
                         financialtype: 'transfer-out',
@@ -6011,7 +6080,6 @@ adminRouter.post(
                     await user.update({
                         $inc: {
                             balance: amount,
-                            credit: -amount
                         }
                     })
                     break;
