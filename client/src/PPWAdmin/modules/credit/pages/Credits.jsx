@@ -57,7 +57,7 @@ class Credits extends React.Component {
             <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{user.email}</td>
-                <td>{user.credit}</td>
+                <td>{user.creditUsed} / {user.credit}</td>
                 <td>
                     <DropdownButton title="Actions">
                         <Dropdown.Item onClick={() => this.setAdjustId(user)}><i className="fas fa-edit"></i>&nbsp; Adjust Credit</Dropdown.Item>
@@ -132,7 +132,7 @@ class Credits extends React.Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Customer</th>
-                                            <th scope="col">Credit Available</th>
+                                            <th scope="col">Credit Used</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
