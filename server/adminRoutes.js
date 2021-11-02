@@ -1657,8 +1657,8 @@ adminRouter.get(
                         from: 'users',
                         let: { user_id: "$userId" },
                         pipeline: [{
-                            $exists: true,
-                            $ne: null,
+                            // $exists: true,
+                            // $ne: null,
                             $match: {
                                 $expr: { $eq: ["$_id", "$$user_id"] },
                             },
@@ -1667,9 +1667,7 @@ adminRouter.get(
                     }
                 },
                 { $unwind: "$userId" },
-                {
-                    $match: searchObj
-                },
+                { $match: searchObj },
                 { $sort: { "createdAt": -1 } },
                 { $limit: 20 }
             ]);
@@ -5665,7 +5663,7 @@ adminRouter.post(
                 lineId,
                 type,
                 subtype,
-                altLineId, 
+                altLineId,
                 points,
             } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
@@ -5698,10 +5696,10 @@ adminRouter.post(
 
                 //
                 //TOASK: Snowman Why its calculated by 10 times
-             /*   let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-                   if (sportsbook) {
-                       newLineOdds = pick == 'home' ? oddsA : oddsB;
-                   }  */
+                /*   let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+                      if (sportsbook) {
+                          newLineOdds = pick == 'home' ? oddsA : oddsB;
+                      }  */
 
                 newLineOdds = pick == 'home' ? oddsA : oddsB;
 
@@ -5821,7 +5819,7 @@ adminRouter.post(
                                         matchStartDate: startDate,
                                         lineType: type,
                                         lineSubType: subtype,
-                                         points: points,
+                                        points: points,
                                         points: null,
                                         homeBets: pick === 'home' ? [betId] : [],
                                         awayBets: pick === 'away' ? [betId] : [],
@@ -5870,7 +5868,7 @@ adminRouter.post(
         }
 
         res.json({
-            success:true,
+            success: true,
             balance: 3000,//user.balance,
             errors,
         });
