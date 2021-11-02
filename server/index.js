@@ -4297,7 +4297,7 @@ expressApp.post(
             return res.status(400).json({ success: false, error: 'Please input all fields required.' });
         }
         try {
-            const sportData = await Sport.findOne({ name: sport });
+            const sportData = await Sport.findOne({ name: sport.replace('_', ' ') });
             if (!sportData) {
                 return res.status(404).json({ success: false, error: 'Sports Data not found.' });
             }
