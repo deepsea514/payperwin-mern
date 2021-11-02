@@ -63,6 +63,8 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
+
+        console.log(betSlip);
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
@@ -123,6 +125,7 @@ class BetSlip extends Component {
     placeBets = () => {
         const { single } = this.state;
         single ? this.placeSingleBets() : this.placeParlayBets();
+
     }
 
     render() {
