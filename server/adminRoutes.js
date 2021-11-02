@@ -5331,8 +5331,6 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
         const id = betId;
         const betAmout = toWin;
 
-        console.log("placeAutoBet", autoBetUserID);
-
         const bet = await Bet.findById(id);
 
         if (bet.isParlay) {
@@ -5653,7 +5651,8 @@ adminRouter.post(
                 lineId,
                 type,
                 subtype,
-                altLineId,
+                altLineId, 
+                points,
             } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
             if (sportData) {
@@ -5685,10 +5684,10 @@ adminRouter.post(
 
                 //
                 //TOASK: Snowman Why its calculated by 10 times
-                /*    let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+             /*   let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
                    if (sportsbook) {
                        newLineOdds = pick == 'home' ? oddsA : oddsB;
-                   } */
+                   }  */
 
                 newLineOdds = pick == 'home' ? oddsA : oddsB;
 
@@ -5759,9 +5758,9 @@ adminRouter.post(
 
                                 case 'spread':
                                     if (pick == 'home') {
-                                        betType += `${hdp > 0 ? '+' : ''}${hdp}`;
+                                        betType += `${points > 0 ? '+' : ''}${points}`;
                                     } else {
-                                        betType += `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                                        betType += `${-1 * points > 0 ? '+' : ''}${-1 * points}`;
                                     }
                                     break;
                             }
@@ -5808,7 +5807,7 @@ adminRouter.post(
                                         matchStartDate: startDate,
                                         lineType: type,
                                         lineSubType: subtype,
-                                        // points: hdp ? hdp : points ? points : null,
+                                         points: points,
                                         points: null,
                                         homeBets: pick === 'home' ? [betId] : [],
                                         awayBets: pick === 'away' ? [betId] : [],
@@ -5828,7 +5827,6 @@ adminRouter.post(
                             }
                             await calculateBetsStatus(betpoolId);
 
-                            console.log(savedBet);
                             user.balance = newBalance;
                             try {
                                 await FinancialLog.create({
@@ -5858,6 +5856,7 @@ adminRouter.post(
         }
 
         res.json({
+            success:true,
             balance: 3000,//user.balance,
             errors,
         });
