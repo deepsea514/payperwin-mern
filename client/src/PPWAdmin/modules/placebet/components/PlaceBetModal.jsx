@@ -21,9 +21,9 @@ const sideOptions = [
 ]
 
 const betTypeOptions = [
-    { value: 'Moneyline', label: 'Moneyline' },
-    { value: 'Spreads', label: 'Spreads' },
-    { value: 'Over/Under', label: 'Over/Under' },
+    { value: 'moneyline', label: 'Moneyline' },
+    { value: 'spread', label: 'Spreads' },
+    { value: 'total', label: 'Over/Under' },
 ]
 
 export default class PlaceBetModal extends React.Component {
@@ -44,7 +44,9 @@ export default class PlaceBetModal extends React.Component {
                 maxRisk: 0,
                 teamToWin: '',
                 registrationDate: '',
-                status: PlaceBetStatus.active
+                status: PlaceBetStatus.active,
+                points: 0,
+                placeBetOnTeamB: false
             },
             placebetSchema: Yup.object().shape({
                 user: Yup.object()
@@ -53,34 +55,20 @@ export default class PlaceBetModal extends React.Component {
                autoBetUser: Yup.object()
                     .nullable()
                     .required("Autobet User field is required."),
-                    wager: Yup.number()
-                    .moreThan(0, "wager should be more than 0")
-                    .required("wager field is required"),   
-               /* sports: Yup.object()
-                    .nullable()
-                    .required("Sports field is required."),
-
-
-                sportsLeague: Yup.object()
-                    .nullable()
-                    .required("Sports League field is required."),
+                wager: Yup.number()
+                    .moreThan(0, "Wager should be more than 0")
+                    .required("Wager field is required"),   
                 teamA: Yup.string().required("Name of Team A field is required"),
                 teamB: Yup.string().required("Name of Team B field is required"),
                 betType: Yup.object().nullable().required("Bet type field is required"),
-
-                teamAOdds: Yup.number()
-                    .moreThan(0, "Team A Odds should be more than 0")
+                sports: Yup.object()
+                    .nullable()
+                    .required("Sports field is required."),
+                    teamAOdds: Yup.number()
                     .required("Team A Odds field is required"),
                 teamBOdds: Yup.number()
-                    .moreThan(0, "Team B Odds should be more than 0")
                     .required("Team B Odds field is required"),
-
-             
-                maxRisk: Yup.number()
-                    .moreThan(0, "Max Risk should be more than 0")
-                    .required("Max Risk field is required."),
-                
-                teamToWin: Yup.string().required("Team to Win field is required"), */
+                    teamToWin: Yup.string().required("Team to Win field is required"),
                 registrationDate: Yup.string().nullable()
 
             }),
@@ -333,8 +321,6 @@ export default class PlaceBetModal extends React.Component {
                                                     {formik.errors.teamA}
                                                 </div>
                                             ) : null}
-                                            
-
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label>Name of Team B<span className="text-danger">*</span></label>
@@ -377,6 +363,21 @@ export default class PlaceBetModal extends React.Component {
                                             </div>
                                         ) : null}
                                     </div>
+                                    {formik.values.betType?.label != "Moneyline" && formik.values.betType &&  
+                                    <div className="form-group">
+                                    <label>{formik.values.betType?.label}  Points<span className="text-danger">*</span></label>
+                                            <input name="points" placeholder={`Enter ${formik.values.betType?.label} Points` }
+                                                className={`form-control ${getInputClasses(formik, "points")}`}
+                                                {...formik.getFieldProps("points")}
+                                            />
+                                            {formik.touched.points && formik.errors.points ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.points}
+                                                </div>
+                                            ) : null}
+
+                                    </div>
+                                    }
 
                                     <div className="form-row">
 
@@ -409,7 +410,20 @@ export default class PlaceBetModal extends React.Component {
                                             ) : null}
                                         </div>
                                     </div>
-
+                                    <div className="form-row form-group">
+                                        <div className="col-md-12">
+                                            <input type="checkbox" id="placeBetOnTeamB" name="placeBetOnTeamB"
+                                                {...formik.getFieldProps("placeBetOnTeamB")}
+                                                checked={formik.values.placeBetOnTeamB}
+                                            />
+                                            <label htmlFor="placeBetOnTeamB"> &nbsp;&nbsp; Check to Place bet on Team B</label>
+                                            {formik.touched.placeBetOnTeamB && formik.errors.placeBetOnTeamB ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.placeBetOnTeamB}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
 
                                     <div className="form-group">
 
@@ -426,8 +440,11 @@ export default class PlaceBetModal extends React.Component {
             const stake = e.target.value
 
             formik.setFieldValue("wager", stake);
+            const placeOnTeamB = formik.getFieldProps("placeBetOnTeamB").value;
             const teamAOdd = formik.getFieldProps("teamAOdds").value;
-            const americanOdds = Math.abs(Number(Number(teamAOdd).toFixed(2)));
+            const teamBOdd = formik.getFieldProps("teamBOdds").value;
+            const odd = placeOnTeamB ? teamBOdd : teamAOdd;
+            const americanOdds = Math.abs(Number(Number(odd).toFixed(2)));
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
             const calculateWin = stake * decimalOdds;
             const roundToPennies = Number((calculateWin).toFixed(2));
@@ -437,7 +454,6 @@ export default class PlaceBetModal extends React.Component {
             //formik.setFieldValue("wager", wager.value);
             formik.setFieldTouched("wager", true);
             formik.setFieldError("wager", false);
-
         }
         } // pass the setFieldValue property from formik 
       />
