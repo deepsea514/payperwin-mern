@@ -4292,12 +4292,13 @@ expressApp.post(
     async (req, res) => {
         const user = req.user;
         const data = req.body;
-        const { name, type, sport } = data;
+        let { name, type, sport } = data;
         if (!name || !type || !sport) {
             return res.status(400).json({ success: false, error: 'Please input all fields required.' });
         }
         try {
-            const sportData = await Sport.findOne({ name: sport.replace('_', ' ') });
+            sport = sport.replace('_', ' ');
+            const sportData = await Sport.findOne({ name: sport });
             if (!sportData) {
                 return res.status(404).json({ success: false, error: 'Sports Data not found.' });
             }
