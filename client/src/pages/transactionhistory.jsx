@@ -21,7 +21,8 @@ class TransactionHistory extends Component {
                 betwon: false,
                 placebet: false,
                 deposit: false,
-                withdraw: false
+                withdraw: false,
+                credit: false,
             },
             daterange: null,
             page: 1,
@@ -83,6 +84,10 @@ class TransactionHistory extends Component {
                 return '-';
             case 'betrefund':
                 return '+';
+            case 'transfer-out':
+                return '+';
+            case 'transfer-in':
+                return '-';
             default:
                 return '';
         }
@@ -116,6 +121,10 @@ class TransactionHistory extends Component {
                 return '1 Bet(s) placed.';
             case 'betrefund':
                 return 'Bet Refund';
+            case 'transfer-out':
+                return 'Transfer out from the credit';
+            case 'transfer-in':
+                return 'Transfer in to the credit';
             default:
                 return '';
         }
@@ -134,7 +143,8 @@ class TransactionHistory extends Component {
                     betwon: false,
                     placebet: false,
                     deposit: false,
-                    withdraw: false
+                    withdraw: false,
+                    credit: false,
                 }
             });
         }
@@ -151,12 +161,10 @@ class TransactionHistory extends Component {
             else {
                 let nextFilter = { ...filter };
                 nextFilter[field] = false;
-                let { betwon, placebet, deposit, withdraw } = nextFilter;
-                let all = !betwon && !placebet && !deposit && !withdraw;
+                let { betwon, placebet, deposit, withdraw, credit } = nextFilter;
+                let all = !betwon && !placebet && !deposit && !withdraw && !credit;
                 await this.setState({
-                    filter: {
-                        betwon, placebet, deposit, withdraw, all
-                    }
+                    filter: { credit, betwon, placebet, deposit, withdraw, all }
                 });
             }
         }
@@ -232,6 +240,14 @@ class TransactionHistory extends Component {
                                                 onChange={this.changeFilter}
                                                 name="withdraw" />}
                                             label="Withdraw"
+                                            className="p-0 mb-0"
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.credit}
+                                                onChange={this.changeFilter}
+                                                name="credit" />}
+                                            label="Credit"
                                             className="p-0 mb-0"
                                         />
                                     </FormGroup>
