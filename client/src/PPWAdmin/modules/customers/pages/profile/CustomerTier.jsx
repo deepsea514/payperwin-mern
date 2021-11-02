@@ -168,9 +168,9 @@ class CustomerTier extends React.Component {
                                             {...formik.getFieldProps("maxBetLimitTier")}
                                         >
                                         <option value="2000">Tier 0 (max. $2,000)</option>
-                                        <option value="3000">Tier 2 (max. $3,000)</option>
-                                        <option value="5000">Tier 3 (max. $5,000)</option>
-                                        <option value="10000">Tier 4 (max. $10,000)</option>
+                                        <option value="3000">Tier 1 (max. $3,000)</option>
+                                        <option value="5000">Tier 2 (max. $5,000)</option>
+                                        <option value="10000">Tier 3 (max. $10,000)</option>
                                         </select>
                                         {formik.touched.maxBetLimitTier && formik.errors.maxBetLimitTier ? (
                                             <div className="invalid-feedback">
