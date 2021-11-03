@@ -91,7 +91,7 @@ class BetSlip extends Component {
     }
 
     placeParlayBets = () => {
-        const { updateUser, user, betSlip, removeBet } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
         const { parlayStake, parlayWin } = this.state;
         this.setState({ errors: [] });
         let totalWin = parlayWin ? parlayWin : 0;

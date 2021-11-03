@@ -53,7 +53,7 @@ class BetParlay extends Component {
     }
 
     render() {
-        const { betSlip, oddsFormat, stake, win } = this.props;
+        const { betSlip, oddsFormat, stake, win, maxBetLimitTier } = this.props;
         const odds = this.getParlayOdds();
 
         return (
