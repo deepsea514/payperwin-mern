@@ -9,3 +9,7 @@ export function setPreferences(preference) {
 export function toggleFavorites(data) {
     return axios.post(`${serverUrl}/favorites/toggle`, data, { withCredentials: true })
 }
+
+export function getUser() {
+    return axios.get(`${serverUrl}/user?compress=false`, { withCredentials: true });
+}

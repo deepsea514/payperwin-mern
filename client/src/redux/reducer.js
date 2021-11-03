@@ -1,12 +1,15 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
-import { setPreferences } from "./services";
+import { setPreferences, getUser } from "./services";
 import Cookie from 'js-cookie';
 import timeHelper from "../helpers/timehelper";
 import { setLanguage } from '../PPWAdmin/_metronic/i18n/Metronici18n';
 
 export const actionTypes = {
+    getUser: "[Get User Action]",
+    getUserSuccess: "[Get User Success]",
+    updateUser: "[Update User Action]",
     setPreference: "[Set Preference Action]",
     setLanguage: "[Set Language Action]",
     setOddsFormat: "[Set Odd Format Action]",
@@ -25,6 +28,7 @@ export const actionTypes = {
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
+    user: null,
     lang: 'en',
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
@@ -53,7 +57,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed'] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed', 'user'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -98,7 +102,13 @@ export const reducer = persistReducer(
                 return { ...state, showForgotPasswordModal: action.showForgotPasswordModal };
 
             case actionTypes.setMaxBetLimitTierAction:
-                    return { ...state, maxBetLimitTier: action.maxBetLimitTier };
+                return { ...state, maxBetLimitTier: action.maxBetLimitTier };
+
+            case actionTypes.getUserSuccess:
+                return { ...state, user: action.user };
+
+            case actionTypes.updateUser:
+                return { ...state, user: { ...user, ...action.payload } };
 
             default:
                 return state;
@@ -122,9 +132,24 @@ export const actions = {
     showForgotPasswordModalAction: (showForgotPasswordModal) => ({ type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal }),
     setDisplayModeBasedOnSystem: () => ({ type: actionTypes.setDisplayModeBasedOnSystem }),
     setMaxBetLimitTierAction: (maxBetLimitTier) => ({ type: actionTypes.setMaxBetLimitTierAction, maxBetLimitTier }),
+    getUser: (callback) => ({ type: actionTypes.getUser, callback }),
+    getUserSuccess: (user) => ({ type: actionTypes.getUserSuccess, user }),
+    updateUser: (field, value) => ({ type: actionTypes.updateUser, payload: { [field]: value } })
 };
 
 export function* saga() {
+    yield takeLatest(actionTypes.getUser, function* getUserSaga(action) {
+        try {
+            const { data: user } = yield getUser();
+            if (action.callback) {
+                action.callback(user);
+            }
+            yield put(actions.getUserSuccess(user))
+        } catch (error) {
+
+        }
+    })
+
     yield takeLatest(actionTypes.setOddsFormat, function* setOddsFormatSaga() {
         try {
             const oddsFormat = yield select((state) => state.frontend.oddsFormat);
@@ -162,13 +187,13 @@ export function* saga() {
         setLanguage(lang);
     });
 
-
     yield takeLatest(actionTypes.setMaxBetLimitTierAction, function* setMaxBetLimitTierSaga() {
         const maxBetLimitTier = yield select((state) => state.frontend.maxBetLimitTier);
         try {
             yield setMaxBetLimitTierAction({ maxBetLimitTier });
+            actions.setMaxBetLimitTierAction(maxBetLimitTier);
         } catch (error) {
         }
-        actions.setMaxBetLimitTierAction(maxBetLimitTier);
     });
+
 }

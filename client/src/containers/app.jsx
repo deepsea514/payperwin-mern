@@ -270,7 +270,6 @@ class App extends Component {
         const { user,
             getUser,
             history,
-            updateUser,
             location,
             require_2fa,
             dark_light,
@@ -339,10 +338,10 @@ class App extends Component {
                                                     <ErrorBoundary><PasswordRecovery {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/deposit" render={(props) =>
-                                                    <ErrorBoundary><Deposit updateUser={updateUser} {...props} /></ErrorBoundary>
+                                                    <ErrorBoundary><Deposit {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/withdraw" render={(props) =>
-                                                    <ErrorBoundary><Withdrawal updateUser={updateUser} {...props} /></ErrorBoundary>
+                                                    <ErrorBoundary><Withdrawal {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/bets" render={(props) =>
                                                     <ErrorBoundary><OpenBets openBets={true} {...props} /></ErrorBoundary>
@@ -548,7 +547,6 @@ class App extends Component {
                                                         removeBet={this.removeBet}
                                                         updateBet={this.updateBet}
                                                         user={user}
-                                                        updateUser={updateUser}
                                                         history={history}
                                                     />}
                                                 {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
@@ -574,7 +572,6 @@ class App extends Component {
                         removeBet={this.removeBet}
                         updateBet={this.updateBet}
                         user={user}
-                        updateUser={updateUser}
                         history={history}
                     />}
             </div>
@@ -587,6 +584,7 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,
+    user: state.frontend.user
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))
