@@ -6051,7 +6051,7 @@ adminRouter.post(
                         method: 'Line of Credit',
                         status: FinancialStatus.success
                     });
-                    await user.update({ credit: amount });
+                    await user.update({ $inc: { credit: amount } });
                     break;
                 case 'transfer-in':
                     if (amount > user.balance)
