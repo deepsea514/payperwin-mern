@@ -6084,7 +6084,7 @@ adminRouter.post(
                     const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
                     usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
 
-                    if (usedAmount + Number(amount) > user.credit)
+                    if (usedCredit + Number(amount) > user.credit)
                         return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
                     await FinancialLog.create({
                         financialtype: 'transfer-out',
