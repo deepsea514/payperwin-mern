@@ -3,6 +3,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { Button } from '@material-ui/core';
 import axios from 'axios';
 import dateformat from "dateformat";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -55,39 +56,31 @@ class SelfExcusion extends Component {
 
         return (
             <div className="col-in">
-                <h1 className="main-heading-in">Self exclusion</h1>
+                <h1 className="main-heading-in"><FormattedMessage id="PAGES.SELFEXCLUSION" /></h1>
                 {user && selfExcluded && <p className="text-t"><i className="fa fa-info-circle"
-                    aria-hidden={true}></i> Your account is
-                    self-excluded till {selfExcluded}. </p>}
+                    aria-hidden={true} /><FormattedMessage id="PAGES.SELFEXCLUSION.TILL" value={{ selfExcluded }} />. </p>}
                 {user && !selfExcluded && <div className="main-cnt redio-sec ml-3">
                     <p className="text-t"><i className="fa fa-info-circle"
-                        aria-hidden={true}></i> Your account is
-                        currently above zero. We recommend you withdraw
-                        remaining funds in your account before you
-                        self-exclude. Withdraw funds here. </p>
+                        aria-hidden={true}></i> <FormattedMessage id="PAGES.SELFEXCLUSION.BALANCENOTZERO" /> </p>
                     <p>
-                        If you need to take a break from gambling to prevent
-                        or control a possible gambling addiction, we
-                        recommend you withdraw funds in your account and
-                        make your account inaccesible by excluding yourself
-                        either temporarily or permanently.
+                        <FormattedMessage id="PAGES.SELFEXCLUSION.RECOMMEND" />
                     </p>
 
                     {readMore && <>
                         <p>
-                            When the exclusion period has passed, we will notify you by email so that you may request to reopen your account. Note that a permanently excluded account cannot be reopened. Please read our Terms and Conditions regarding self-exclusion carefully.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.PASSED" />
                         </p>
                         <p>
-                            We also recommend you
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.WERECOMMEND" />
                             <ul>
                                 <li>
-                                    • Request self-exclusion with other gambling operators.
+                                    • <FormattedMessage id="PAGES.SELFEXCLUSION.WERECOMMEND_1" />
                                 </li>
                                 <li>
-                                    • Install software that blocks access to internet gambling.
+                                    • <FormattedMessage id="PAGES.SELFEXCLUSION.WERECOMMEND_2" />
                                 </li>
                                 <li>
-                                    • Unlike/Unfollow any gambling related social media accounts.
+                                    • <FormattedMessage id="PAGES.SELFEXCLUSION.WERECOMMEND_3" />
                                 </li>
                             </ul>
                         </p>
@@ -95,68 +88,68 @@ class SelfExcusion extends Component {
                     <a className="read-more" style={{ cursor: 'pointer' }} onClick={() => this.setState({ readMore: !readMore })}>{readMore ? 'Read less' : 'Read more'} </a>
 
                     {step == 1 && <div>
-                        <h4 className="h4">How long would you like to self-exclude?</h4>
+                        <h4 className="h4"><FormattedMessage id="PAGES.SELFEXCLUSION.HOWLONG" /></h4>
                         <form onSubmit={this.next}>
                             <p>
                                 <input type="radio" id="time-6-months"
                                     name="radio-group" required onChange={(evt) => this.onChoosePeorid(evt, '6 months')} />
-                                <label htmlFor="time-6-months">6 months</label>
+                                <label htmlFor="time-6-months"><FormattedMessage id="PAGES.SELFEXCLUSION.6M" /></label>
                             </p>
                             <p>
                                 <input type="radio" id="time-1-year"
                                     name="radio-group" required onChange={(evt) => this.onChoosePeorid(evt, '1 year')} />
-                                <label htmlFor="time-1-year">1 year</label>
+                                <label htmlFor="time-1-year"><FormattedMessage id="PAGES.SELFEXCLUSION.1Y" /></label>
                             </p>
                             <p>
                                 <input type="radio" id="time-3-years"
                                     name="radio-group" required onChange={(evt) => this.onChoosePeorid(evt, '3 years')} />
-                                <label htmlFor="time-3-years">3 years</label>
+                                <label htmlFor="time-3-years"><FormattedMessage id="PAGES.SELFEXCLUSION.3Y" /></label>
                             </p>
                             <p>
                                 <input type="radio" id="time-5-years"
                                     name="radio-group" required onChange={(evt) => this.onChoosePeorid(evt, '5 years')} />
-                                <label htmlFor="time-5-years">5 years</label>
+                                <label htmlFor="time-5-years"><FormattedMessage id="PAGES.SELFEXCLUSION.5Y" /></label>
                             </p>
                             <p>
                                 <input type="radio" id="time-permanent"
                                     name="radio-group" required onChange={(evt) => this.onChoosePeorid(evt, 'permanent')} />
-                                <label htmlFor="time-permanent">Permanent</label>
+                                <label htmlFor="time-permanent"><FormattedMessage id="PAGES.SELFEXCLUSION.PERMANENT" /></label>
                             </p>
                             {/* <button type="submit" className="btn-primary clr-t-l mar30">Next</button> */}
                             <Button type="submit" variant="contained" color="secondary">Next</Button>
                         </form>
                     </div>}
                     {step == 2 && <div>
-                        <h4 className="h4">Terms And Conditions</h4>
+                        <h4 className="h4"><FormattedMessage id="PAGES.SELFEXCLUSION.TERMS" /></h4>
                         <p>
-                            By submitting this self-exclusion notice you acknowledge that you have read and understand our self-exclusion method, as described on our Responsible Gaming Page, and agree to the following:
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_1" />
                         </p>
                         <p>
-                            You authorize PAYPER WIN to prevent you from undertaking wagering activities on the selected product(s) for the indicated duration effective immediately.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_2" />
                         </p>
                         <p>
-                            You understand that this exclusion is voluntary and does not place any obligation, duty or responsibility on any other person or body other than yourself.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_3" />
                         </p>
                         <p>
-                            During the period of self-exclusion chosen by you we will use reasonable endeavours to prevent you gambling with us, including as applicable closing your account/blocking access to our products and attempting to identify any existing or duplicate accounts opened or operated by you.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_4" />
                         </p>
                         <p>
-                            However, you agree that you have an equal obligation not to seek to circumvent your self-exclusion.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_5" />
                         </p>
                         <p>
-                            You accept that we have no liability to you if you seek to breach your self-exclusion and gamble by opening further accounts or changing your registration details.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_6" />
                         </p>
                         <p>
-                            Once your self-exclusion has commenced, the decision is irreversible until the end of the period you have chosen.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_7" />
                         </p>
                         <p>
-                            Upon entry into a permanent self-exclusion you will need to contact Customer Services to return your remaining account balance in accordance with our withdrawal policy.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_8" />
                         </p>
                         <p>
-                            All reasonable attempts will be made to remove you from any direct marketing lists we hold, generally this will take effect within 24hrs of your self-exclusion request. It is your responsibility to opt out of any marketing communications you may receive from a third party or access via social media.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_9" />
                         </p>
                         <p>
-                            Once your self-exclusion period has ended, Customer Services will contact you to confirm if you wish to reopen your account.
+                            <FormattedMessage id="PAGES.SELFEXCLUSION.TERMS_10" />
                         </p>
                         <Button variant="contained" color="secondary" onClick={this.selfExcusion}>Confirm and Self-Exclusion</Button>
                     </div>}

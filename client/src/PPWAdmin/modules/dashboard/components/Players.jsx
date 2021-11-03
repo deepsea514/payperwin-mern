@@ -5,13 +5,11 @@ import SVG from "react-inlinesvg";
 export function Players({ className, dashboardplayer }) {
     return (
         <>
-            <div className="col-lg-6">
+            <div className="col-lg-6 col-xl-4 col-xxl-4">
                 <div className={`card card-custom ${className} bg-success`}>
                     <div className="card-body p-0">
                         <div className="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                            <span
-                                className={`symbol symbol-50 symbol-light-success mr-2`}
-                            >
+                            <span className={`symbol symbol-50 symbol-light-success mr-2`}>
                                 <span className="symbol-label">
                                     <span className={`svg-icon svg-icon-xl svg-icon-success`}>
                                         <SVG src="/media/svg/icons/General/User.svg" />
@@ -30,13 +28,11 @@ export function Players({ className, dashboardplayer }) {
                     </div>
                 </div>
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-6 col-xl-4 col-xxl-4">
                 <div className={`card card-custom ${className} bg-warning`}>
                     <div className="card-body p-0">
                         <div className="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                            <span
-                                className={`symbol symbol-50 symbol-light-warning mr-2`}
-                            >
+                            <span className={`symbol symbol-50 symbol-light-warning mr-2`}>
                                 <span className="symbol-label">
                                     <span className={`svg-icon svg-icon-xl svg-icon-warning`}>
                                         <SVG src="/media/svg/icons/Devices/Gamepad2.svg" />

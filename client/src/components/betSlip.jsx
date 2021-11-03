@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import _env from '../env.json';
 import BetParlay from './betparlay';
+import { FormattedMessage, injectIntl } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class BetSlip extends Component {
@@ -38,7 +39,7 @@ class BetSlip extends Component {
     }
 
     placeSingleBets = () => {
-        const { updateUser, user, betSlip, removeBet } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
         this.setState({ errors: [] });
 
         let totalStake = 0;
@@ -47,15 +48,22 @@ class BetSlip extends Component {
             const b = betSlip[i];
             totalStake += b.stake;
             totalWin += b.win;
-            if (b.win > 5000) {
+            if (b.win > maxBetLimitTier) {
                 this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
                 return;
             }
         }
+
+        if (totalWin > maxBetLimitTier) {
+            this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
+            return;
+        }
+
         if (user && totalStake > user.balance) {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
+
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
@@ -83,7 +91,7 @@ class BetSlip extends Component {
     }
 
     placeParlayBets = () => {
-        const { updateUser, user, betSlip, removeBet } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
         const { parlayStake, parlayWin } = this.state;
         this.setState({ errors: [] });
         let totalWin = parlayWin ? parlayWin : 0;
@@ -92,7 +100,7 @@ class BetSlip extends Component {
             this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
             return;
         }
-        if (totalWin > 5000) {
+        if (totalWin > maxBetLimitTier) {
             this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
             return;
         }
@@ -116,6 +124,7 @@ class BetSlip extends Component {
     placeBets = () => {
         const { single } = this.state;
         single ? this.placeSingleBets() : this.placeParlayBets();
+
     }
 
     render() {
@@ -146,9 +155,10 @@ class BetSlip extends Component {
                         <i className="fal fa-times" onClick={() => this.toggleField('confirmationOpen')} />
                         <div>
                             <center>
-                                Your bet has been submitted.
+                                <FormattedMessage id="COMPONENTS.BET.SUBMITTED" />
                                 <br />
-                                <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button">View open bets</Link> <button className="form-button" onClick={() => this.toggleField('confirmationOpen')}>go back</button>
+                                <Link to={{ pathname: '/bets' }} onClick={() => this.toggleField('confirmationOpen')} className="form-button"><FormattedMessage id="COMPONENTS.BET.VIEWOPENBETS" /></Link>
+                                <button className="form-button ml-2" onClick={() => this.toggleField('confirmationOpen')}><FormattedMessage id="PAGES.BACK" /></button>
                             </center>
                         </div>
                     </div>
@@ -156,7 +166,7 @@ class BetSlip extends Component {
                 <div
                     className={`bet-slip ${betSlip.length > 0 ? '' : 'empty'}`}
                     onClick={() => toggleField('openBetSlipMenu')}>
-                    BET SLIP
+                    <FormattedMessage id="COMPONENTS.BETSLIP" />
                     {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
                     <i className="fas fa-minus" />
                 </div>
@@ -176,15 +186,15 @@ class BetSlip extends Component {
                             {single && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Insufficient Funds</b></div>
-                                        <div>You do not have sufficient funds to place these bets. Please deposit now to continue betting.</div>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
+                                        <div><FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS_CONTENT" /></div>
                                     </div>
                                     <div className="p-2">
                                         <Link
                                             type="button"
                                             className="deposit-btn text-center"
                                             to="/deposit">
-                                            Deposit
+                                            <FormattedMessage id="COMPONENTS.DEPOSIT" />
                                         </Link>
                                     </div>
                                 </div>}
@@ -195,22 +205,22 @@ class BetSlip extends Component {
                                         updateBet={updateBet}
                                         key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
                                     : <div className="no-bets">
-                                        <h4>There are no bets on your ticket.</h4>
-                                        <small>Click the odds to add a bet</small>
+                                        <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
+                                        <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
                                     </div>}
                             </div>}
                             {!single && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Insufficient Funds</b></div>
-                                        <div>You do not have sufficient funds to place these bets. Please deposit now to continue betting.</div>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
+                                        <div><FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS_CONTENT" /></div>
                                     </div>
                                     <div className="p-2">
                                         <Link
                                             type="button"
                                             className="deposit-btn text-center"
                                             to="/deposit">
-                                            Deposit
+                                            <FormattedMessage id="COMPONENTS.DEPOSIT" />
                                         </Link>
                                     </div>
                                 </div>}
@@ -222,14 +232,14 @@ class BetSlip extends Component {
                                         setParlayBet={(data) => this.setState(data)}
                                     /> :
                                     <div className="no-bets">
-                                        <h4>To place a Multiples bet you need a minimum of two bets on your Bet Slip. Alternatively, you can place a Singles bet.</h4>
-                                        <small>Click the odds to add a bet</small>
+                                        <h4><FormattedMessage id="COMPONENTS.BETSLIP.NOBET_PARLAY" /></h4>
+                                        <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
                                     </div>}
                             </div>}
                             <div className="total">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
-                                        Total Risk
+                                        <FormattedMessage id="COMPONENTS.TOTAL.RISK" />
                                     </div>
                                     <div className="total-st-left text-right">
                                         CAD {totalStake.toFixed(2)}
@@ -237,7 +247,7 @@ class BetSlip extends Component {
                                 </div>
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
-                                        Total Win
+                                        <FormattedMessage id="COMPONENTS.TOTAL.WIN" />
                                     </div>
                                     <div className="total-st-left text-right">
                                         CAD {totalWin.toFixed(2)}
@@ -257,7 +267,7 @@ class BetSlip extends Component {
                                             toggleField('openBetSlipMenu');
                                         }
                                     }>
-                                    {user ? 'Place All Bets' : 'Log in and Place Bets'}
+                                    {user ? <FormattedMessage id="COMPONENTS.BETSLIP.PLACEALL" /> : <FormattedMessage id="COMPONENTS.BETSLIP.LOGIN" />}
                                 </button>
                             </div>
                         </div>
@@ -268,4 +278,9 @@ class BetSlip extends Component {
     }
 }
 
-export default connect(null, frontend.actions)(BetSlip);
+const mapStateToProps = (state) => ({
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
+});
+
+
+export default connect(mapStateToProps, frontend.actions)(injectIntl(BetSlip));

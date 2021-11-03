@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from 'react-swipeable-views';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 const useStyles = {
     root: {
@@ -25,35 +26,34 @@ const useStyles = {
     },
 };
 
-const tourSteps = [
-    {
-        title: 'Open Bets',
-        description: 'On this page you will find all open bets for Peer-to-Peer and Sportsbook. Here you can check the status of all your bets.',
-        imgPath: '/images/slides/slide1.jpg',
-    },
-    {
-        title: 'Bet Forward',
-        description: 'Peer-to-Peer bets offer better odds. You will have to wait for a peer to bet against you, or you have the option to forward your bet to the Sportsbook for an instant accepted bet. The odds will be different here. Sportsbook odds will greater than the Peer-to-Peer odds.',
-        imgPath: '/images/slides/slide2.jpg',
-    },
-    {
-        title: 'Bet Your Friends',
-        description: 'Share your bet with your friends to have them bet with or against you.',
-        imgPath: '/images/slides/slide3.jpg',
-    },
-];
-
-
 class TourModal extends React.Component {
     constructor(props) {
         super(props);
+        const { intl } = props;
         this.state = {
             activeStep: 0,
+            tourSteps: [
+                {
+                    title: intl.formatMessage({ id: "COMPONENTS.TOUR.TITLE_1" }),
+                    description: intl.formatMessage({ id: "COMPONENTS.TOUR.DESCRIPTION_1" }),
+                    imgPath: '/images/slides/slide1.jpg',
+                },
+                {
+                    title: intl.formatMessage({ id: "COMPONENTS.TOUR.TITLE_2" }),
+                    description: intl.formatMessage({ id: "COMPONENTS.TOUR.DESCRIPTION_2" }),
+                    imgPath: '/images/slides/slide2.jpg',
+                },
+                {
+                    title: intl.formatMessage({ id: "COMPONENTS.TOUR.TITLE_3" }),
+                    description: intl.formatMessage({ id: "COMPONENTS.TOUR.DESCRIPTION_3" }),
+                    imgPath: '/images/slides/slide3.jpg',
+                },
+            ],
         }
     }
 
     handleNext = () => {
-        const { activeStep } = this.state;
+        const { activeStep, tourSteps } = this.state;
         const { hideTourAction } = this.props;
         if (activeStep < tourSteps.length - 1) {
             this.setState({ activeStep: activeStep + 1 });
@@ -69,7 +69,7 @@ class TourModal extends React.Component {
 
     render() {
         const { hideTourAction, classes } = this.props;
-        const { activeStep } = this.state;
+        const { activeStep, tourSteps } = this.state;
         const maxSteps = tourSteps.length;
 
         return (
@@ -114,4 +114,4 @@ class TourModal extends React.Component {
     }
 }
 
-export default connect(null, frontend.actions)(withStyles(useStyles)(TourModal));
+export default connect(null, frontend.actions)(withStyles(useStyles)(injectIntl(TourModal)));

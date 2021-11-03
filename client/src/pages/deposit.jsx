@@ -18,11 +18,11 @@ class Deposit extends Component {
 
         return (
             <div className="col-in">
-                <h3>Deposit</h3>
+                <h3><FormattedMessage id="COMPONENTS.SIDEBAR.DEPOSIT" /></h3>
                 <div className="main-cnt">
-                    <p className="dpsit">Select a deposit method. To find out more about our different Payment Methods, please check our payment methods page.</p>
+                    <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.SELECTALERT" /></p>
                     <div className="deposit-in bg-color-box pad10">
-                        <h4 className="header-i4">SELECT DEPOSIT METHOD</h4>
+                        <h4 className="header-i4"><FormattedMessage id="PAGES.DEPOSIT.SELECTMETHOD" /></h4>
                         <ul className="diposit-list d-flex flex-wrap justify-content-space">
                             <li>
                                 <Link to={{ pathname: '/deposit-etransfer' }}>
@@ -59,10 +59,10 @@ class Deposit extends Component {
                         </ul>
                     </div>
                     <p className="dpsit">
-                        PAYPER WIN make every effort to ensure our payment processing rules strike a balance between being fair to you the customer, and free of fees, while also enabling us to keep offering the best value odds online. Whenever possible we absorb transaction fees, however failure to meet our industry standard deposit roll-over threshold (three times deposit amount) will incur any applicable withdrawal fee.
+                        <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.1" />
                         <br />
                         <br />
-                        Please see the payment methods pages of the site for more information on fees.
+                        <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.2" />
                     </p>
                 </div>
             </div>

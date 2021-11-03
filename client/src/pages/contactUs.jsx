@@ -11,6 +11,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import JoditEditor from "jodit-react";
 import { getInputClasses } from "../helpers/getInputClasses";
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -86,7 +87,7 @@ class ContactUs extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, intl } = this.props;
         const { ticketSchema, submitError, submitSuccess } = this.state;
         const initialValues = {
             email: '',
@@ -102,20 +103,17 @@ class ContactUs extends Component {
         };
         return (
             <div className="col-in">
-                <h3>Customer services</h3>
+                <h3><FormattedMessage id="PAGES.CONTACTUS.CUSTOMER_SERVICE" /></h3>
                 <p>
-                    The Customer Services email address is the primary contact for all Account, Betting and Payment related questions or issues.
-                    Our customer service representatives are available to assist you by email 24 hours a day, 7 days a week.
-                    If you are already a member, remember to use the email address registered to your PayperWin account, and to include your Phone Number.
-                    You can also contact us by sending an email to: <a href="mailto:support@payperwin.com">support@payperwin.com</a>
+                    <FormattedMessage id="PAGES.CONTACTUS.CUSTOMER_SERVICE" />
                 </p>
                 <hr />
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!submitSuccess && <div className={classes.formContent}>
-                            <h4>Get in touch with us</h4>
+                            <h4><FormattedMessage id="PAGES.CONTACTUS.GETINTOUCH" /></h4>
                             <br />
-                            {submitError && <p className="text-danger">Submit failed. Please try again later</p>}
+                            {submitError && <p className="text-danger"><FormattedMessage id="PAGES.CONTACTUS.SUBMITFAILED" /></p>}
                             <Formik
                                 initialValues={initialValues}
                                 validationSchema={ticketSchema}
@@ -125,7 +123,7 @@ class ContactUs extends Component {
                                         const fileRef = useRef();
                                         return <form onSubmit={formik.handleSubmit}>
                                             <Form.Group>
-                                                <Form.Label>Email address&nbsp;<span className="text-danger">*</span></Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.EMAIL" />&nbsp;<span className="text-danger">*</span></Form.Label>
                                                 <Form.Control
                                                     type="email"
                                                     name="email"
@@ -141,7 +139,7 @@ class ContactUs extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Phone Number&nbsp;<span className="text-danger">*</span></Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" />&nbsp;<span className="text-danger">*</span></Form.Label>
                                                 <PhoneInput
                                                     type="text"
                                                     name="phone"
@@ -170,7 +168,7 @@ class ContactUs extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Subject&nbsp;<span className="text-danger">*</span></Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.SUBJECT" />&nbsp;<span className="text-danger">*</span></Form.Label>
                                                 <Form.Control
                                                     type="text"
                                                     name="subject"
@@ -186,7 +184,7 @@ class ContactUs extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Department&nbsp;<span className="text-danger">*</span></Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DEPARTMENT" />&nbsp;<span className="text-danger">*</span></Form.Label>
                                                 <Form.Control
                                                     as="select"
                                                     name="department"
@@ -196,13 +194,13 @@ class ContactUs extends Component {
                                                     {...formik.getFieldProps("department")}
                                                 >
                                                     <option value="">...</option>
-                                                    <option>My Account</option>
-                                                    <option>Betting enquiry</option>
-                                                    <option>Deposit/Withdrawal</option>
-                                                    <option>General Request</option>
-                                                    <option>Affilliates</option>
-                                                    <option>Marketing & Commercial</option>
-                                                    <option>Feedback</option>
+                                                    <option value="My Account">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MYACCOUNT" })}</option>
+                                                    <option value="Betting enquiry">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.BETTING" })}</option>
+                                                    <option value="Deposit/Withdrawal">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.DW" })}</option>
+                                                    <option value="General Request">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.GENERAL" })}</option>
+                                                    <option value="Affilliates">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.AFFILIATES" })}</option>
+                                                    <option value="Marketing & Commercial">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MARKETING" })}</option>
+                                                    <option value="Feedback">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.FEEDBACK" })}</option>
                                                 </Form.Control>
                                                 {formik.touched.department && formik.errors.department ? (
                                                     <div className="invalid-feedback">
@@ -211,7 +209,7 @@ class ContactUs extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Description&nbsp;<span className="text-danger">*</span></Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DESCRIPTION" />&nbsp;<span className="text-danger">*</span></Form.Label>
                                                 <JoditEditor
                                                     config={config}
                                                     name="description"
@@ -265,7 +263,7 @@ class ContactUs extends Component {
                                                         variant="contained"
                                                         color="default"
                                                         className={classes.button}>
-                                                        Back
+                                                        <FormattedMessage id="PAGES.INBOX.BACKTOINBOX" />
                                                     </Button>
                                                 </Link>
                                                 <Button
@@ -275,7 +273,7 @@ class ContactUs extends Component {
                                                     disabled={formik.isSubmitting}
                                                     className={classes.button}
                                                 >
-                                                    Submit
+                                                    <FormattedMessage id="COMPONENTS.SUBMIT" />
                                                 </Button>
                                             </div>
                                         </form>
@@ -284,8 +282,8 @@ class ContactUs extends Component {
                             </Formik>
                         </div>}
                         {submitSuccess && <div>
-                            <center><h3>Thanks for contacting us!</h3></center>
-                            <p>Your request has been sent for processing. please check your email for further information.</p>
+                            <center><h3><FormattedMessage id="PAGES.CONTACTUS.THANKS" /></h3></center>
+                            <p><FormattedMessage id="PAGES.CONTACTUS.REQUEST_PROCESSING" /></p>
                         </div>}
                     </div>
                 </div>
@@ -294,4 +292,4 @@ class ContactUs extends Component {
     }
 }
 
-export default withRouter(withStyles(useStyles, { withTheme: true })(ContactUs));
+export default withRouter(withStyles(useStyles, { withTheme: true })(injectIntl(ContactUs)));

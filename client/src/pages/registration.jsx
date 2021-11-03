@@ -19,6 +19,7 @@ import { RegionDropdown } from 'react-country-region-selector';
 import _ from 'lodash';
 import GoogleLogin from "react-google-login";
 import CustomDatePicker from '../components/customDatePicker';
+import { FormattedMessage } from 'react-intl';
 import config from '../../../config.json';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
@@ -318,7 +319,7 @@ class Registration extends Component {
             case 0:
                 return <>
                     <Form.Group>
-                        <Form.Label>Country</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.COUNTRY" /></Form.Label>
                         <Form.Control
                             as="select"
                             name="country"
@@ -334,7 +335,7 @@ class Registration extends Component {
                         {errors.country ? <div className="registration-feedback">{errors.country}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Region</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.REGION" /></Form.Label>
                         <RegionDropdown className="form-control"
                             country={country}
                             value={region}
@@ -345,7 +346,7 @@ class Registration extends Component {
                         {errors.region ? <div className="registration-feedback">{errors.region}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.EMAIL" /></Form.Label>
                         <Form.Control
                             type="email"
                             name="email"
@@ -359,7 +360,7 @@ class Registration extends Component {
                         {errors.email ? <div className="registration-feedback">{errors.email}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.PASSWORD" /></Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPass ? "text" : "password"}
@@ -378,7 +379,7 @@ class Registration extends Component {
                         {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Password Confirmation</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.PASSWORDCONFIRM" /></Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPassConfirm ? "text" : "password"}
@@ -400,7 +401,7 @@ class Registration extends Component {
             case 1:
                 return <>
                     <Form.Group>
-                        <Form.Label>First Name</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.FIRSTNAME" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="firstname"
@@ -414,7 +415,7 @@ class Registration extends Component {
                         {errors.firstname ? <div className="registration-feedback">{errors.firstname}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Last Name</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.LASTNAME" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="lastname"
@@ -428,7 +429,7 @@ class Registration extends Component {
                         {errors.lastname ? <div className="registration-feedback">{errors.lastname}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Birthday</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.PROFILE.BIRTHDAY" /></Form.Label>
                         <CustomDatePicker
                             name="dateofbirth"
                             className="form-control"
@@ -455,7 +456,7 @@ class Registration extends Component {
                         {errors.referral_code ? <div className="registration-feedback">{errors.referral_code}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>How did you know about us? Do you have a VIP code?(optional)</Form.Label>
+                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.VIPCODE" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="vipcode"
@@ -481,7 +482,11 @@ class Registration extends Component {
                         label={
                             <div>
                                 <span>
-                                    I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's <Link to={'/terms-and-conditions'}>Terms And Conditions</Link> and <Link to={'/betting-rules'}>Betting Rules.</Link></span>
+                                    <FormattedMessage id="PAGES.REGISTRATION.AGREETERMS" values={{
+                                        termslink: <Link to={'/terms-and-conditions'}><FormattedMessage id="PAGES.SELFEXCLUSION.TERMS" /></Link>,
+                                        rulelink: <Link to={'/betting-rules'}><FormattedMessage id="COMPONENTS.BETTING.RULES" /></Link>
+                                    }} />
+                                </span>
                             </div>
                         }
                     />
@@ -499,7 +504,7 @@ class Registration extends Component {
                         label={
                             <div>
                                 <span>
-                                    I have read and agree to PayPerWin's <Link to={'/privacy-policy'}>Privacy Policy</Link>.
+                                    <FormattedMessage id="PAGES.REGISTRATION.AGREEPRIVACY" values={{ privacylink: <Link to={'/privacy-policy'}><FormattedMessage id="COMPONENTS.PRIVACY_POLICY" /></Link> }} />
                                 </span>
                             </div>
                         }

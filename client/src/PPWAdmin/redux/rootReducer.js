@@ -23,6 +23,7 @@ import * as admin from "../modules/admin/redux/reducers";
 import * as cashback from "../modules/cashback/redux/reducers";
 import * as reports from "../modules/reports/redux/reducers";
 import * as errorlogs from "../modules/errorlogs/redux/reducers";
+import * as credits from "../modules/credit/redux/reducers";
 import * as currentUser from "./reducers";
 
 import * as frontend from "../../redux/reducer";
@@ -51,6 +52,7 @@ export const rootReducer = combineReducers({
     reports: reports.reducer,
     errorlogs: errorlogs.reducer,
     currentUser: currentUser.reducer,
+    credits: credits.reducer,
 
     frontend: frontend.reducer,
 });
@@ -79,6 +81,7 @@ export function* rootSaga() {
         cashback.saga(),
         reports.saga(),
         errorlogs.saga(),
+        credits.saga(),
 
         frontend.saga(),
     ]);

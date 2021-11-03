@@ -36,6 +36,7 @@ import CashbackModule from "../modules/cashback/pages";
 import ErrorLogsModule from "../modules/errorlogs/pages";
 import PlaceBet from "../modules/placebet/pages/PlaceBet";
 import ErrorBoundary from '../../libs/ErrorBoundary';
+import CreditsModule from '../modules/credit/pages';
 
 class App extends Component {
     constructor(props) {
@@ -197,6 +198,11 @@ class App extends Component {
                     {/* ErrorLogs */}
                     {this.isAvailable('errorlogs') && <Route path="/errorlogs" render={(props) =>
                         <ErrorBoundary><ErrorLogsModule {...props} /></ErrorBoundary>
+                    } />}
+
+                    {/* Credits */}
+                    {this.isAvailable('credits') && <Route path="/credits" render={(props) =>
+                        <ErrorBoundary><CreditsModule {...props} /></ErrorBoundary>
                     } />}
 
                     <Redirect exact from="/" to="/dashboard" />

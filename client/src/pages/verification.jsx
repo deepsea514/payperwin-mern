@@ -10,6 +10,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { withStyles } from "@material-ui/core/styles";
 import { getInputClasses } from "../helpers/getInputClasses";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -129,16 +130,20 @@ class Verification extends Component {
         };
         return (
             <div className="col-in">
-                <h3>Verification</h3>
-                {user && user.roles.verified && <p>You already verified your identify.</p>}
+                <h3><FormattedMessage id="PAGES.VERIFICATION" /></h3>
+                {user && user.roles.verified && <p><FormattedMessage id="PAGES.VERIFICATION.ALREADY_VERIFIED" /></p>}
                 {user && !user.roles.verified && <div className="main-cnt">
                     <p className="text-black">
-                        Please follow the instruction and upload copies of the documents we support.
-                        The document must be smaller than 5MB.
-                        Verifying your account can take up to 72 hours after submission.
+                        <FormattedMessage id="PAGES.VERIFICATION.CONDITION_1" />
+                    </p>
+                    <p className="text-black">
+                        <FormattedMessage id="PAGES.VERIFICATION.CONDITION_2" />
+                    </p>
+                    <p className="text-black">
+                        <FormattedMessage id="PAGES.VERIFICATION.CONDITION_3" />
                     </p>
                     <div className="bg-color-box pad10">
-                        <h4>ADDRESS INFORMATION</h4>
+                        <h4><FormattedMessage id="PAGES.VERIFICATION.ADDRESS" /></h4>
                         {!submitSuccess && <Formik
                             initialValues={initialValues}
                             validationSchema={verifyFormSchema}
@@ -146,9 +151,9 @@ class Verification extends Component {
                             {
                                 (formik) => {
                                     return <form onSubmit={formik.handleSubmit}>
-                                        {submitError && <p className="text-danger">Can't submit information. Please try again.</p>}
+                                        {submitError && <p className="text-danger"><FormattedMessage id="PAGES.VERIFICATION.CANNOTSUBMIT" /></p>}
                                         <Form.Group>
-                                            <Form.Label>Address</Form.Label>
+                                            <Form.Label><FormattedMessage id="PAGES.PROFILE.ADDRESS" /></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="address"
@@ -164,7 +169,7 @@ class Verification extends Component {
                                             ) : null}
                                         </Form.Group>
                                         <Form.Group>
-                                            <Form.Label>Address 2 (Optional)</Form.Label>
+                                            <Form.Label><FormattedMessage id="PAGES.PROFILE.ADDRESS2" /></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="address2"
@@ -179,7 +184,7 @@ class Verification extends Component {
                                             ) : null}
                                         </Form.Group>
                                         <Form.Group>
-                                            <Form.Label>City</Form.Label>
+                                            <Form.Label><FormattedMessage id="PAGES.PROFILE.CITY" /></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="city"
@@ -195,7 +200,7 @@ class Verification extends Component {
                                             ) : null}
                                         </Form.Group>
                                         <Form.Group>
-                                            <Form.Label>Postal Code</Form.Label>
+                                            <Form.Label><FormattedMessage id="PAGES.PROFILE.POSTALCODE" /></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name="postalcode"
@@ -211,7 +216,7 @@ class Verification extends Component {
                                             ) : null}
                                         </Form.Group>
                                         <Form.Group>
-                                            <Form.Label>Phone Number</Form.Label>
+                                            <Form.Label><FormattedMessage id="PAGES.PROFILE.PHONE" /></Form.Label>
                                             <PhoneInput
                                                 type="text"
                                                 country="us"
@@ -247,7 +252,7 @@ class Verification extends Component {
                                                 disabled={formik.isSubmitting}
                                                 className={classes.button}
                                             >
-                                                Submit
+                                                <FormattedMessage id="COMPONENTS.SUBMIT" />
                                             </Button>
                                         </div>
                                     </form>
@@ -261,7 +266,7 @@ class Verification extends Component {
                             <p>Postal&nbsp;Code:&nbsp;&nbsp;{addressInfo.postalcode}</p>
                             <p>Phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{addressInfo.phone}</p>
 
-                            <h6>Address Information is already submitted. If you want to submit again, <strong style={{ cursor: "pointer" }} onClick={() => this.setState({ submitSuccess: null })}>Click Here!</strong></h6>
+                            <h6><FormattedMessage id="PAGES.VERIFICATION.ADDRESSSUBMITTED" />, If you want to submit again, <strong style={{ cursor: "pointer" }} onClick={() => this.setState({ submitSuccess: null })}>Click Here!</strong></h6>
                         </>}
 
                         <h4 className="mt-3">DOCUMENT STATUS</h4>

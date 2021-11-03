@@ -11,6 +11,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Iframe from 'react-iframe';
 import { getInputClasses } from "../helpers/getInputClasses";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -81,12 +82,12 @@ class DepositTripleA extends Component {
         };
         return (
             <div className="col-in">
-                <h3>{method} Deposit</h3>
+                <h3>{method} <FormattedMessage id="COMPONENTS.SIDEBAR.DEPOSIT" /></h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!depositSuccess && <div className={classes.formContent}>
-                            <p className="dpsit">Please confirm the information below is correct.</p>
-                            {depositError && <p className="text-danger">Can't make deposit. Please try again later</p>}
+                            <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.CONFIRMINFORMATION" /></p>
+                            {depositError && <p className="text-danger"><FormattedMessage id="PAGES.DEPOSIT.ERRORMSG" /></p>}
                             {user && <Formik
                                 initialValues={initialValues}
                                 validationSchema={depositSchema}
@@ -95,7 +96,7 @@ class DepositTripleA extends Component {
                                     (formik) => {
                                         return <form onSubmit={formik.handleSubmit}>
                                             <Form.Group>
-                                                <Form.Label>Deposit Amount</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.AMOUNT" /></Form.Label>
                                                 <Form.Control
                                                     type="number"
                                                     name="amount"
@@ -111,7 +112,7 @@ class DepositTripleA extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Email address</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.EMAIL" /></Form.Label>
                                                 <Form.Control
                                                     type="email"
                                                     name="email"
@@ -127,7 +128,7 @@ class DepositTripleA extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Phone Number</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" /></Form.Label>
                                                 <PhoneInput
                                                     type="text"
                                                     name="phone"
@@ -162,7 +163,7 @@ class DepositTripleA extends Component {
                                                         variant="contained"
                                                         color="default"
                                                         className={classes.button}>
-                                                        Back
+                                                        <FormattedMessage id="PAGES.BACK" />
                                                     </Button>
                                                 </Link>
                                                 <Button
@@ -172,7 +173,7 @@ class DepositTripleA extends Component {
                                                     disabled={formik.isSubmitting}
                                                     className={classes.button}
                                                 >
-                                                    Submit
+                                                    <FormattedMessage id="PAGES.SUBMIT" />
                                                 </Button>
                                             </div>
                                         </form>
@@ -181,8 +182,8 @@ class DepositTripleA extends Component {
                             </Formik>}
                         </div>}
                         {depositSuccess && !hosted_url && <div>
-                            <center><h3>Deposit Pending</h3></center>
-                            <p>Your transaction has been sent for processing. please check <b style={{ borderBottom: '1px solid #000' }}>{user ? user.email : 'your email'}</b> for further information</p>
+                            <center><h3><FormattedMessage id="PAGES.DEPOSIT.PENDING" /></h3></center>
+                            <p><FormattedMessage id="PAGES.DEPOSIT.PENDINGMSG" values={{ email: <b style={{ borderBottom: '1px solid #000' }}>{user.email}</b> }} /></p>
                         </div>}
                         {depositSuccess && hosted_url && <div>
                             <Iframe url={hosted_url}

@@ -108,6 +108,28 @@ class PlaceBet extends React.Component {
         return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
     }
 
+    getPickName = (formValues ) => {
+        let { teamA, teamB, points, betType, placeBetOnTeamB } = formValues;
+        let pickName = 'Pick: ';
+        betType = betType.value.toLowerCase();
+        let isPlaceBetOnTeamB = placeBetOnTeamB;
+        let pick = isPlaceBetOnTeamB ? "away" : "home";
+        switch (betType) {
+            case 'moneyline':
+                pickName += pick == 'home' ? teamA : teamB;
+                break;
+            case 'spread':
+                pickName += pick == 'home' ?
+                    `${teamA} ${points > 0 ? '+' : ''}${points}` :
+                    `${teamB} ${(-1 * points) > 0 ? '+' : ''}${-1 * points}`;
+                break;
+            case 'total':
+                pickName += pick == 'home' ? `Over ${points}` : `Under ${points}`;
+        }
+        return pickName;
+    }
+
+
 
     tableBody = () => {
         const { placebets, loading } = this.props;
@@ -188,6 +210,10 @@ class PlaceBet extends React.Component {
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
         //console.log("getiing values", ...values);
+
+        let isPlaceBetOnTeamB = values.placeBetOnTeamB;
+        let pick = isPlaceBetOnTeamB ? "away" : "home";
+
         const placebet = {
             //...values,
              user: {
@@ -204,7 +230,7 @@ class PlaceBet extends React.Component {
             teamBOdds: values.teamBOdds,
             teamAOdds: values.teamAOdds,
             odds: { home: values.teamAOdds, away: values.teamBOdds },
-            pick: 'home',
+            pick: pick,
             stake: values.wager,
             //win: 30.3,
             win: values.teamToWin,
@@ -221,23 +247,26 @@ class PlaceBet extends React.Component {
                 lineId: '0',
                 type: values.betType.value,
                 subtype: null,
-                index: null
-              },
+                index: null,
+                points: values.points || null,
+            },
 
-            pickName: `Pick: ${values.teamA}`,
+            pickName: this.getPickName(values),
             index: null,
             origin: 'admin',
             sportsbook: false,
             startDate: values.registrationDate
         };
+        
         //delete placebet.user;
 
         formik.setSubmitting(false);
+
          createPlaceBet(placebet)
             .then(({ data }) => {
                 formik.setSubmitting(false);
-                if (data.success) {
-                    this.setState({ modal: true, addModal: false, resMessage: "Successfully added!", modalvariant: "success" });
+                if (data.errors.length === 0) {
+                    this.setState({ modal: true, addModal: false, resMessage: "Bet Successfully added!", modalvariant: "success" });
                     getPlaceBetsAction();
                 } else {
                     this.setState({ modal: true, addModal: false, resMessage: data.message, modalvariant: "danger" });
@@ -245,8 +274,8 @@ class PlaceBet extends React.Component {
             })
             .catch(() => {
                 formik.setSubmitting(false);
-                this.setState({ modal: true, addModal: false, resMessage: "Addition Failed!", modalvariant: "danger" });
-            }) 
+                this.setState({ modal: true, addModal: false, resMessage: "Bet Addition Failed!", modalvariant: "danger" });
+            })
     }
 
     render() {

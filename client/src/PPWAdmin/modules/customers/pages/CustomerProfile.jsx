@@ -12,7 +12,8 @@ import Deposit from "./profile/Deposit";
 import Withdraw from "./profile/Withdraw";
 import BetLog from "./profile/BetLog";
 import Preference from "./profile/Preference";
-
+import Credit from "./profile/Credit";
+import CustomerTier from "./profile/CustomerTier";
 class CustomerProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -51,44 +52,51 @@ class CustomerProfile extends React.Component {
                         <>
                             <div className="d-flex flex-row">
                                 {/* <BrowserRouter basename={`/RP1021/users/${id}/profile`}> */}
-                                    <ProfileCard customer={customer} history={history}></ProfileCard>
-                                    <div className="flex-row-fluid ml-lg-8">
-                                        <Switch>
-                                            <Route
-                                                path={`/users/${id}/profile/overview`}
-                                                component={(props) => <ProfileOverview {...props} customer={customer} />}
+                                <ProfileCard customer={customer} history={history}></ProfileCard>
+                                <div className="flex-row-fluid ml-lg-8">
+                                    <Switch>
+                                        <Route
+                                            path={`/users/${id}/profile/overview`}
+                                            component={(props) => <ProfileOverview {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/information`}
+                                            component={(props) => <PersonaInformation {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/preference`}
+                                            component={(props) => <Preference {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/login-history`}
+                                            component={(props) => <LoginHistory {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/deposit`}
+                                            component={(props) => <Deposit {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/withdraw`}
+                                            component={(props) => <Withdraw {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/bet-log`}
+                                            component={(props) => <BetLog {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/credit`}
+                                            component={(props) => <Credit {...props} customer={customer} />}
+                                        />
+                                         <Route
+                                                path={`/users/${id}/profile/tier`}
+                                                component={(props) => <CustomerTier {...props} customer={customer} />}
                                             />
-                                            <Route
-                                                path={`/users/${id}/profile/information`}
-                                                component={(props) => <PersonaInformation {...props} customer={customer} />}
-                                            />
-                                            <Route
-                                                path={`/users/${id}/profile/preference`}
-                                                component={(props) => <Preference {...props} customer={customer} />}
-                                            />
-                                            <Route
-                                                path={`/users/${id}/profile/login-history`}
-                                                component={(props) => <LoginHistory {...props} customer={customer} />}
-                                            />
-                                            <Route
-                                                path={`/users/${id}/profile/deposit`}
-                                                component={(props) => <Deposit {...props} customer={customer} />}
-                                            />
-                                            <Route
-                                                path={`/users/${id}/profile/withdraw`}
-                                                component={(props) => <Withdraw {...props} customer={customer} />}
-                                            />
-                                            <Route
-                                                path={`/users/${id}/profile/bet-log`}
-                                                component={(props) => <BetLog {...props} customer={customer} />}
-                                            />
-                                            <Redirect
-                                                // from="*"
-                                                // exact={true}
-                                                to={`/users/${id}/profile/overview`}
-                                            />
-                                        </Switch>
-                                    </div>
+                                        <Redirect
+                                            to={`/users/${id}/profile/overview`}
+                                        />
+                                        
+                                    </Switch>
+                                </div>
                                 {/* </BrowserRouter > */}
                             </div>
                         </>}

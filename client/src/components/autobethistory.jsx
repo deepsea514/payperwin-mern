@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import dateformat from "dateformat";
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class AutobetHistory extends Component {
     capitalizeFirstLetter = (string) => {
@@ -99,4 +100,4 @@ class AutobetHistory extends Component {
     }
 }
 
-export default AutobetHistory;
+export default injectIntl(AutobetHistory);

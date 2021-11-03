@@ -31,7 +31,6 @@ import TransactionHistory from "../pages/transactionhistory";
 import Security from "../pages/security";
 import SelfExcusion from "../pages/selfexcusion";
 import Deactivation from "../pages/deactivation";
-import SportsBook from "../pages/sportsbook";
 import PrivacyPolicy from "../pages/privacyPolicy";
 import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
@@ -64,6 +63,7 @@ import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
 import Search from '../pages/search';
+import SportsBreadcrumb from '../components/sportsbreadcrumb';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -169,7 +169,7 @@ class App extends Component {
     redirectToDashboard = (user) => {
         const { history, location } = this.props;
         const { pathname } = location;
-        if (user == false) {
+        if (!user) {
             if (ShowAccountLinks.includes(pathname)) {
                 history.push('/');
             }
@@ -270,10 +270,10 @@ class App extends Component {
         const { user,
             getUser,
             history,
-            updateUser,
             location,
             require_2fa,
             dark_light,
+            showLoginModalAction
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
@@ -304,8 +304,6 @@ class App extends Component {
                     {require_2fa && <TfaModal getUser={getUser} />}
                     <div className="container">
                         <Switch>
-                            <Route path="/sportsbook" render={(props) =>
-                                <ErrorBoundary><SportsBook {...props} user={user} /></ErrorBoundary>} />
                             <Route path="/signup" render={(props) =>
                                 <ErrorBoundary><Registration getUser={getUser} {...props} /></ErrorBoundary>} />
                             <Route path="/faq" render={(props) => <ErrorBoundary><Faq {...props} /></ErrorBoundary>} />
@@ -326,6 +324,9 @@ class App extends Component {
                                                 toggleField={this.toggleField}
                                                 sportsMenuMobileOpen={sportsMenuMobileOpen}
                                                 sidebarShowAccountLinks={sidebarShowAccountLinks}
+                                                showLoginModal={() => showLoginModalAction(true)}
+                                                user={user}
+                                                getUser={getUser}
                                             />
                                         </ErrorBoundary>
                                         <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
@@ -336,18 +337,18 @@ class App extends Component {
                                                 <Route path="/passwordRecovery" render={(props) =>
                                                     <ErrorBoundary><PasswordRecovery {...props} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/deposit" render={(props) =>
-                                                    <ErrorBoundary><Deposit updateUser={updateUser} {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/withdraw" render={(props) =>
-                                                    <ErrorBoundary><Withdrawal updateUser={updateUser} {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/bets" render={(props) =>
+                                                {user && <Route path="/deposit" render={(props) =>
+                                                    <ErrorBoundary><Deposit {...props} /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/withdraw" render={(props) =>
+                                                    <ErrorBoundary><Withdrawal {...props} /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/bets" render={(props) =>
                                                     <ErrorBoundary><OpenBets openBets={true} {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/history" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/history" render={(props) =>
                                                     <ErrorBoundary><OpenBets settledBets={true} {...props} /></ErrorBoundary>
-                                                } />
+                                                } />}
                                                 <Route path="/how-it-works" render={(props) =>
                                                     <ErrorBoundary><HowTo {...props} /></ErrorBoundary>
                                                 } />
@@ -356,24 +357,8 @@ class App extends Component {
                                                 } />
                                                 <Route path="/sport/:sportName/league/:leagueId/event/:eventId" render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} /></ErrorBoundary>
+                                                        removeBet={this.removeBet} {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:name/league/:league/team/:team" render={(props) => {
-                                                    const { match } = props;
-                                                    const name = resObjPath(match, 'params.name');
-                                                    const league = resObjPath(match, 'params.league');
-                                                    const team = resObjPath(match, 'params.team');
-                                                    return (
-                                                        <ErrorBoundary>
-                                                            <React.Fragment>
-                                                                <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                    removeBet={this.removeBet} sportName={name}
-                                                                    league={league} team={team}
-                                                                />
-                                                            </React.Fragment>
-                                                        </ErrorBoundary>
-                                                    );
-                                                }} />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
@@ -383,7 +368,22 @@ class App extends Component {
                                                             <React.Fragment>
                                                                 <Sport addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet} sportName={name}
-                                                                    league={league}
+                                                                    league={league} user={user} getUser={getUser}
+                                                                />
+                                                            </React.Fragment>
+                                                        </ErrorBoundary>
+                                                    );
+                                                }} />
+                                                <Route path="/sport/:name/team/:team" render={(props) => {
+                                                    const { match } = props;
+                                                    const sportName = resObjPath(match, 'params.name');
+                                                    const team = resObjPath(match, 'params.team');
+                                                    return (
+                                                        <ErrorBoundary>
+                                                            <React.Fragment>
+                                                                <Sport addBet={this.addBet} betSlip={betSlip}
+                                                                    removeBet={this.removeBet} sportName={sportName}
+                                                                    user={user} getUser={getUser} team={team}
                                                                 />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
@@ -395,7 +395,8 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <SportsLeagues sportName={name} />
+                                                                <SportsBreadcrumb sportName={name} user={user} />
+                                                                <SportsLeagues sportName={name} user={user} getUser={getUser} />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
                                                     );
@@ -436,30 +437,30 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/preferences" render={(props) =>
+                                                {user && <Route path="/preferences" render={(props) =>
                                                     <ErrorBoundary><Preferences {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/inbox" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/inbox" render={(props) =>
                                                     <ErrorBoundary><Inbox {...props} getUser={getUser} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/payment-options" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/payment-options" render={(props) =>
                                                     <ErrorBoundary><PaymentOptions {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/transaction-history" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/transaction-history" render={(props) =>
                                                     <ErrorBoundary><TransactionHistory {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/security" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/security" render={(props) =>
                                                     <ErrorBoundary><Security {...props} user={user} getUser={getUser} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/account" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/account" render={(props) =>
                                                     <ErrorBoundary><Profile {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/self-exclusion" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/self-exclusion" render={(props) =>
                                                     <ErrorBoundary><SelfExcusion {...props} user={user} getUser={getUser} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/deactivation" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/deactivation" render={(props) =>
                                                     <ErrorBoundary><Deactivation {...props} /></ErrorBoundary>
-                                                } />
+                                                } />}
                                                 <Route path="/privacy-policy" render={(props) =>
                                                     <ErrorBoundary><PrivacyPolicy {...props} /> </ErrorBoundary>
                                                 } />
@@ -469,57 +470,57 @@ class App extends Component {
                                                 <Route path="/betting-rules" render={(props) =>
                                                     <ErrorBoundary><BettingRules {...props} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/deposit-etransfer" render={(props) =>
+                                                {user && <Route path="/deposit-etransfer" render={(props) =>
                                                     <ErrorBoundary><DepositETransfer {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/deposit-bitcoin" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/deposit-bitcoin" render={(props) =>
                                                     <ErrorBoundary><DepositTripleA {...props} user={user} method="Bitcoin" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/deposit-ethereum" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/deposit-ethereum" render={(props) =>
                                                     <ErrorBoundary><DepositTripleA {...props} user={user} method="Ethereum" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/deposit-tether" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/deposit-tether" render={(props) =>
                                                     <ErrorBoundary><DepositTripleA {...props} user={user} method="Tether" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/withdraw-etransfer" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/withdraw-etransfer" render={(props) =>
                                                     <ErrorBoundary><WithdrawETransfer {...props} user={user} getUser={getUser} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/withdraw-bitcoin" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/withdraw-bitcoin" render={(props) =>
                                                     <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="Bitcoin" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/withdraw-ethereum" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/withdraw-ethereum" render={(props) =>
                                                     <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="Ethereum" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/withdraw-tether" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/withdraw-tether" render={(props) =>
                                                     <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" /></ErrorBoundary>
-                                                } />
-                                                <Route path="/verification" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/verification" render={(props) =>
                                                     <ErrorBoundary><Verification {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/phone-verification" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/phone-verification" render={(props) =>
                                                     <ErrorBoundary><PhoneVerification {...props} user={user} getUser={getUser} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/cashback" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/cashback" render={(props) =>
                                                     <ErrorBoundary><Cashback {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/custom-bets" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/custom-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/support" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/support" render={(props) =>
                                                     <ErrorBoundary><ContactUs {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/autobet-dashboard" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/autobet-dashboard" render={(props) =>
                                                     <ErrorBoundary><AutobetDashboard {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/autobet-settings" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/autobet-settings" render={(props) =>
                                                     <ErrorBoundary><AutobetSettings {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/prize" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/prize" render={(props) =>
                                                     <ErrorBoundary><Prize {...props} user={user} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/loyalty" render={(props) =>
+                                                } />}
+                                                {user && <Route path="/loyalty" render={(props) =>
                                                     <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
-                                                } />
+                                                } />}
                                                 <Route path="/search/:param" render={(props) =>
                                                     <ErrorBoundary><Search {...props} /></ErrorBoundary>
                                                 } />
@@ -546,7 +547,6 @@ class App extends Component {
                                                         removeBet={this.removeBet}
                                                         updateBet={this.updateBet}
                                                         user={user}
-                                                        updateUser={updateUser}
                                                         history={history}
                                                     />}
                                                 {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
@@ -572,7 +572,6 @@ class App extends Component {
                         removeBet={this.removeBet}
                         updateBet={this.updateBet}
                         user={user}
-                        updateUser={updateUser}
                         history={history}
                     />}
             </div>
@@ -585,6 +584,7 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,
+    user: state.frontend.user
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

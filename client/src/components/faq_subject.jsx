@@ -56,7 +56,7 @@ class FaqSubject extends Component {
         const { loading, faq_subject } = this.state;
         return (
             <>
-                <Link to="/faq" className="link-help-home">Help Center Home</Link>
+                <Link to="/faq" className="link-help-home"><FormattedMessage id="COMPONENTS.FAQ.HOME" /></Link>
 
                 {loading && <center>
                     <Preloader use={ThreeDots}
@@ -67,7 +67,7 @@ class FaqSubject extends Component {
                 </center>}
 
                 {!loading && !faq_subject && <div className="cs-s">
-                    <h3 className="heading">No data available</h3>
+                    <h3 className="heading"><FormattedMessage id="PAGES.NODATA.AVAILABLE" /></h3>
                 </div>}
 
                 {faq_subject && <div className="cs-s">
@@ -83,7 +83,7 @@ class FaqSubject extends Component {
                                         </div>
                                         <div className="list-desc" dangerouslySetInnerHTML={{ __html: item.content }}></div>
                                         <Link className="list-read-more" to={`/faq/article/${item._id}-${this.getURLfromTitle(item.title)}`}>
-                                            read more
+                                            <FormattedMessage id="PAGES.READMORE" />
                                         </Link>
                                     </section>
                                 </div>

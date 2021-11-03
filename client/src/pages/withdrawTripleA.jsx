@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { getInputClasses } from "../helpers/getInputClasses";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -144,10 +145,8 @@ class WithdrawTripleA extends Component {
                                                 labelPlacement="end"
                                                 label={
                                                     <span>
-                                                        {usedFreeWithdraw ? 'We will collect fee from this withdraw.' : 'This is your free withdrawal of the calendar month.'}<br />
-                                                        You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount.
-                                                        All additional withdrawals during the calendar month, for any amount using any withdrawal method, will incur a fee.
-                                                        Do you agree?
+                                                        {usedFreeWithdraw ? <FormattedMessage id="PAGES.WITHDRAW.COLLECTFEE" /> : <FormattedMessage id="PAGES.WITHDRAW.FREE" />}<br />
+                                                        <FormattedMessage id="You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount." />
                                                     </span>
                                                 }
                                             />
@@ -158,7 +157,7 @@ class WithdrawTripleA extends Component {
                                                         variant="contained"
                                                         color="default"
                                                         className={classes.button}>
-                                                        Back
+                                                        <FormattedMessage id="PAGES.BACK" />
                                                     </Button>
                                                 </Link>
                                                 <Button
@@ -168,11 +167,11 @@ class WithdrawTripleA extends Component {
                                                     disabled={formik.isSubmitting || !agreeWithdraw}
                                                     className={classes.button}
                                                 >
-                                                    Submit *
+                                                    <FormattedMessage id="PAGES.SUBMIT" /> *
                                                 </Button>
                                             </div>
                                             <div>
-                                                <span className="dpsit"><strong>*Click this button only once.</strong> Going back to this page and clicking this button again could result in multiple Withdraw requests.</span>
+                                                <span className="dpsit"><strong>*<FormattedMessage id="PAGES.WITHDRAW.CLICKONLYONCE" /></strong> <FormattedMessage id="PAGES.WITHDRAW.GOINGBACK" values={{ method: method }} /></span>
                                             </div>
                                         </form>
                                     }
@@ -180,22 +179,20 @@ class WithdrawTripleA extends Component {
                             </Formik>}
                         </div>}
                         {withdrawSuccess && <div>
-                            <center><h3>Withdraw Pending</h3></center>
+                            <center><h3><FormattedMessage id="PAGES.WITHDRAW.PENDING" /></h3></center>
                             <p>
-                                Your withdrawal request has been sent for manual processing.
-                                You will receive an email as verification when the withdrawal is complete.
-                                Please contact our Customer Service Department for more information at support@payperwin.com
+                                <FormattedMessage id="PAGES.WITHDRAW.PENDING_DES" />
                             </p>
-                            <p>
+                            {/* <p>
                                 For more information on withdrawing with {method} please click here
-                            </p>
+                            </p> */}
                         </div>}
                     </div>
                 </div>
                 <fieldset className="depositFieldset">
-                    <legend>{method} Withdraw Limits</legend>
-                    <p>Minumum Withdraw: CAD 25.00</p>
-                    <p>Maximum Withdraw: CAD 50,000.00</p>
+                    <legend><FormattedMessage id="PAGES.WITHDRAW.LIMIT" values={{ method: method }} /></legend>
+                    <p><FormattedMessage id="PAGES.WITHDRAW.MINIMUM" />: CAD 25.00</p>
+                    <p><FormattedMessage id="PAGES.WITHDRAW.MAXIMUM" />: CAD 50,000.00</p>
                 </fieldset>
             </div>
         );

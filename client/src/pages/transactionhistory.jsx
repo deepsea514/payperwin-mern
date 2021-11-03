@@ -6,6 +6,7 @@ import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -20,7 +21,8 @@ class TransactionHistory extends Component {
                 betwon: false,
                 placebet: false,
                 deposit: false,
-                withdraw: false
+                withdraw: false,
+                credit: false,
             },
             daterange: null,
             page: 1,
@@ -46,8 +48,6 @@ class TransactionHistory extends Component {
         this.setState({ loading: true, noMore: false });
         axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
             .then(({ data }) => {
-
-                console.log(data);
                 this.setState({ transactions: clear ? data : [...transactions, ...data], page, noMore: data.length == 0 });
             }).finally(() => this.setState({ loading: false }));
     }
@@ -84,6 +84,10 @@ class TransactionHistory extends Component {
                 return '-';
             case 'betrefund':
                 return '+';
+            case 'transfer-out':
+                return '+';
+            case 'transfer-in':
+                return '-';
             default:
                 return '';
         }
@@ -117,6 +121,10 @@ class TransactionHistory extends Component {
                 return '1 Bet(s) placed.';
             case 'betrefund':
                 return 'Bet Refund';
+            case 'transfer-out':
+                return 'Transfer out from the credit';
+            case 'transfer-in':
+                return 'Transfer in to the credit';
             default:
                 return '';
         }
@@ -135,7 +143,8 @@ class TransactionHistory extends Component {
                     betwon: false,
                     placebet: false,
                     deposit: false,
-                    withdraw: false
+                    withdraw: false,
+                    credit: false,
                 }
             });
         }
@@ -152,12 +161,10 @@ class TransactionHistory extends Component {
             else {
                 let nextFilter = { ...filter };
                 nextFilter[field] = false;
-                let { betwon, placebet, deposit, withdraw } = nextFilter;
-                let all = !betwon && !placebet && !deposit && !withdraw;
+                let { betwon, placebet, deposit, withdraw, credit } = nextFilter;
+                let all = !betwon && !placebet && !deposit && !withdraw && !credit;
                 await this.setState({
-                    filter: {
-                        betwon, placebet, deposit, withdraw, all
-                    }
+                    filter: { credit, betwon, placebet, deposit, withdraw, all }
                 });
             }
         }
@@ -177,16 +184,16 @@ class TransactionHistory extends Component {
         const { transactions, showFilter, filter, daterange, page, loading, noMore } = this.state;
         return (
             <div className="col-in">
-                <h1 className="main-heading-in">Transaction history</h1>
+                <h1 className="main-heading-in"><FormattedMessage id="PAGES.TRANSACTIONHISTORY" /></h1>
                 <div className="main-cnt">
                     <ul className="histyr-list d-flex justify-content-space">
-                        <li>FILTER OPTIONS</li>
+                        <li><FormattedMessage id="PAGES.TRANSACTIONHISTORY.FILTEROPTIONS" /></li>
                         <li>
                             <DateRangePicker
                                 initialSettings={daterange}
                                 onApply={this.handleChangeDate}
                             >
-                                <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
+                                <a href="#"><i className="fas fa-calendar-week"></i> <FormattedMessage id="PAGES.TRANSACTIONHISTORY.DATERANGE" /> </a>
                             </DateRangePicker>
                         </li>
                         <li>
@@ -235,12 +242,20 @@ class TransactionHistory extends Component {
                                             label="Withdraw"
                                             className="p-0 mb-0"
                                         />
+                                        <FormControlLabel
+                                            control={<Checkbox
+                                                checked={filter.credit}
+                                                onChange={this.changeFilter}
+                                                name="credit" />}
+                                            label="Credit"
+                                            className="p-0 mb-0"
+                                        />
                                     </FormGroup>
                                     <Button variant="outlined" color="primary" onClick={() => {
                                         this.getHistory();
                                         this.setState({ showFilter: false })
-                                    }}>Apply</Button>
-                                    <Button variant="outlined" color="secondary" className="ml-2" onClick={() => this.setState({ showFilter: false })}>Cancel</Button>
+                                    }}><FormattedMessage id="PAGES.TRANSACTIONHISTORY.APPLY" /></Button>
+                                    <Button variant="outlined" color="secondary" className="ml-2" onClick={() => this.setState({ showFilter: false })}><FormattedMessage id="PAGES.TRANSACTIONHISTORY.CANCEL" /></Button>
                                 </div>
                             </>}
                         </li>
@@ -250,14 +265,14 @@ class TransactionHistory extends Component {
                             <div className="col-sm-8">
                             </div>
                             <div className="col-sm-2 text-right">
-                                <strong> AMOUNT </strong>
+                                <strong> <FormattedMessage id="PAGES.TRANSACTIONHISTORY.AMOUNT" /> </strong>
                             </div>
                         </div>
                         {transactions.map((transaction, index) => (
                             <div className="row amount-col bg-color-box" key={index}>
                                 <div className="col-sm-8">
                                     <span>{this.getDate(transaction.updatedAt)}</span>
-                                    {transaction.betDetails && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div> }
+                                    {transaction.betDetails && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div>}
                                     <small>{this.getFormattedString(transaction.financialtype, transaction.method)}</small>
                                 </div>
                                 <div className="col-sm-2 text-right">
@@ -280,7 +295,7 @@ class TransactionHistory extends Component {
                             onClick={() => this.getHistory(page + 1, false)}
                             style={{ cursor: 'pointer' }}
                         >
-                            Load More
+                            <FormattedMessage id="PAGES.OPENBETS.LOADMORE" />
                         </a>
                     </div>}
                 </div>

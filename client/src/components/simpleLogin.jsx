@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import UserContext from '../contexts/userContext';
-import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { FormattedMessage, injectIntl } from "react-intl";
 
 class SimpleLogin extends Component {
     constructor(props) {
@@ -15,7 +10,6 @@ class SimpleLogin extends Component {
         this.state = {
         };
     }
-
 
     render() {
         const { location: { pathname }, showLoginModal } = this.props;
@@ -25,10 +19,10 @@ class SimpleLogin extends Component {
                 <div className="form">
                     <div className="form-join">
                         <div className="form-group">
-                            <button className="log-in-btn" onClick={showLoginModal}>Log&nbsp;in</button>
+                            <button className="log-in-btn" onClick={showLoginModal}><FormattedMessage id="COMPONENTS.LOGIN" /></button>
                         </div>
                         <div className="form-group">
-                            <Link to={{ pathname: '/signup' }} className="join">Join</Link>
+                            <Link to={{ pathname: '/signup' }} className="join"><FormattedMessage id="COMPONENTS.JOIN" /></Link>
                         </div>
                     </div>
                 </div>

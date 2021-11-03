@@ -34,8 +34,8 @@ class FaqArticle extends Component {
         const { loading, faq_article } = this.state;
         return (
             <>
-                {faq_article && <><Link to="/faq" className="link-help-home">Help Center Home</Link>  <span className="text-danger"> / </span> <Link to={`/faq/subjects/${faq_article.subject._id}`} className="link-help-home">{faq_article.subject.title}</Link></>}
-                {!faq_article && <Link to="/faq" className="link-help-home">Help Center Home</Link>}
+                {faq_article && <><Link to="/faq" className="link-help-home"><FormattedMessage id="COMPONENTS.FAQ.HOME" /></Link>  <span className="text-danger"> / </span> <Link to={`/faq/subjects/${faq_article.subject._id}`} className="link-help-home">{faq_article.subject.title}</Link></>}
+                {!faq_article && <Link to="/faq" className="link-help-home"><FormattedMessage id="COMPONENTS.FAQ.HOME" /></Link>}
                 {loading && <center>
                     <Preloader use={ThreeDots}
                         size={100}
@@ -45,7 +45,7 @@ class FaqArticle extends Component {
                 </center>}
 
                 {!loading && !faq_article && <div className="cs-s">
-                    <h3 className="heading">No data available</h3>
+                    <h3 className="heading"><FormattedMessage id="PAGES.NODATA.AVAILABLE" /></h3>
                 </div>}
 
                 {faq_article && <div className="fc-article-inner">
@@ -68,7 +68,7 @@ class FaqArticle extends Component {
                         </li>
                         <li>
                             <div className="fc-article-contact">
-                                Still looking for a solution? <Link to="/support" className="index_new_ticket">Contact us</Link>.
+                                <FormattedMessage id="COMPONENTS.FAQ.SOLUTION" /> <Link to="/support" className="index_new_ticket"><FormattedMessage id="COMPONENTS.FAQ.CONTACTUS" /></Link>.
                             </div>
                         </li>
                     </ul>

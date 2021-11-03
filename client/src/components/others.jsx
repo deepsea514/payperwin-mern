@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import convertOdds from '../helpers/convertOdds';
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -43,10 +43,10 @@ class Others extends Component {
         const { addBet, betSlip, removeBet, timezone, oddsFormat } = this.props;
         const { data, error } = this.state;
         if (error) {
-            return <div>Error</div>;
+            return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
         if (!data) {
-            return <div>Loading...</div>;
+            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
 
         return (
