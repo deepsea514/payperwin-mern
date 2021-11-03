@@ -2383,9 +2383,9 @@ expressApp.post(
 
 expressApp.get(
     '/user',
-    isAuthenticated,
+    // isAuthenticated,
     async (req, res) => {
-        let userObj = false;
+        let userObj = null;
         if (req.isAuthenticated()) {
             const { username, _id: userId, settings, roles, email, balance, phone, maxBetLimitTier } = req.user;
             let preference = await Preference.findOne({ user: userId });
