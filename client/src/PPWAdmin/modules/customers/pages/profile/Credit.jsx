@@ -13,6 +13,7 @@ class Credit extends React.Component {
         super(props);
         this.state = {
             id: props.customer._id,
+            creditAvailable: 0,
             perPage: 10,
             credits: [],
             total: 0,
@@ -39,18 +40,20 @@ class Credit extends React.Component {
         });
         getCustomerCredits(id, loadpage)
             .then(({ data }) => {
-                const { data: credits, total } = data;
+                const { data: credits, total, credit: creditAvailable } = data;
                 this._Mounted && this.setState({
                     loading: false,
                     credits: credits,
-                    total: total
+                    total: total,
+                    creditAvailable: creditAvailable
                 })
             })
             .catch(() => {
                 this._Mounted && this.setState({
                     loading: false,
                     credits: [],
-                    total: 0
+                    total: 0,
+                    creditAvailable: 0
                 })
             })
     }
@@ -128,7 +131,7 @@ class Credit extends React.Component {
 
     render() {
         const { className, customer } = this.props;
-        const { perPage, id, page, total } = this.state;
+        const { perPage, id, page, total, creditAvailable } = this.state;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
         return (
             <div className={`card card-custom ${className}`}>
@@ -155,7 +158,7 @@ class Credit extends React.Component {
                 </div>
                 {/* Body */}
                 <div className="card-body pt-3 pb-0">
-                    {customer && <h4 className="text-left">Credit Available: ${numberFormat(customer.credit)}</h4>}
+                    {customer && <h4 className="text-left">Credit Available: ${numberFormat(creditAvailable)}</h4>}
                     <div className="table-responsive text-left pt-3">
                         <table className="table table-vertical-center">
                             <thead>

@@ -38,7 +38,8 @@ class ProfileOverview extends React.Component {
             betsperweek: 0,
             averagebetafter2loss: 0,
             wins: 0,
-            usedCredit: 0
+            usedCredit: 0,
+            credit: 0
         };
         this._Mounted = false;
     }
@@ -62,7 +63,8 @@ class ProfileOverview extends React.Component {
                     betsperweek,
                     averagebetafter2loss,
                     wins,
-                    usedCredit
+                    usedCredit,
+                    credit
                 } = data;
                 this._Mounted && this.setState({
                     lastbets,
@@ -78,7 +80,8 @@ class ProfileOverview extends React.Component {
                     betsperweek,
                     averagebetafter2loss,
                     wins,
-                    usedCredit
+                    usedCredit,
+                    credit
                 });
             })
     }
@@ -92,7 +95,7 @@ class ProfileOverview extends React.Component {
             lastbets, lastsportsbookbets, totalwagers, totaldeposit,
             balance, currency, winloss, fees, averagebet, averagebetwin,
             averagebetloss, betsperday, betsperweek, averagebetafter2loss, id,
-            wins, usedCredit
+            wins, usedCredit, credit
         } = this.state;
         const { customer } = this.props;
         return (
@@ -192,7 +195,7 @@ class ProfileOverview extends React.Component {
                         <div className="col-md-4">
                             <UsedCredit
                                 usedCredit={Number(usedCredit).toFixed(2)}
-                                credit={Number(customer.credit).toFixed(2)}
+                                credit={Number(credit).toFixed(2)}
                                 currency={currency}
                                 className="mt-2" />
                         </div>
