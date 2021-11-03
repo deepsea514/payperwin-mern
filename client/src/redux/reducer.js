@@ -108,7 +108,7 @@ export const reducer = persistReducer(
                 return { ...state, user: action.user };
 
             case actionTypes.updateUser:
-                return { ...state, user: { ...user, ...action.payload } };
+                return { ...state, user: { ...state.user, ...action.payload } };
 
             default:
                 return state;
