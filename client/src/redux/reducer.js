@@ -65,8 +65,8 @@ export const reducer = persistReducer(
                     return { ...state, ...action.preference };
                 return initialState;
 
-            case actionTypes.setLanguage:
-                return { ...state, lang: action.lang };
+            // case actionTypes.setLanguage:
+            //     return { ...state, lang: action.lang };
 
             case actionTypes.setOddsFormat:
                 return { ...state, oddsFormat: action.oddsFormat };
@@ -181,7 +181,7 @@ export function* saga() {
     yield takeLatest(actionTypes.setLanguage, function* setLanguageSaga() {
         const lang = yield select((state) => state.frontend.lang);
         try {
-            yield setPreferences({ lang });
+            // yield setPreferences({ lang });
         } catch (error) {
         }
         setLanguage(lang);
