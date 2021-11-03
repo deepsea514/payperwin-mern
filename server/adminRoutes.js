@@ -617,13 +617,14 @@ adminRouter.get(
                 {
                     $match: {
                         user: new ObjectId(user._id),
-                        financialtype: 'transfer-out'
+                        financialtype: { $in: ['transfer-out', 'transfer-in'] }
                     }
                 },
-                { $group: { _id: null, total: { $sum: "$amount" } } }
+                { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
             );
-            if (usedCredit.length) usedCredit = usedCredit[0].total;
-            else usedCredit = 0;
+            const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+            const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+            usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
 
             res.status(200).json({
                 lastbets,
@@ -5965,14 +5966,31 @@ adminRouter.get(
                                 },
                             },
                         }],
-                        as: 'creditUsed'
+                        as: 'creditOut'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "transfer-in"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'creditIn'
                     }
                 },
                 {
                     $project: {
                         email: 1,
                         credit: 1,
-                        creditUsed: { $sum: "$creditUsed.amount" }
+                        creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
                     }
                 },
                 {
@@ -6053,17 +6071,19 @@ adminRouter.post(
                     })
                     break;
                 case 'transfer-out':
-                    let usedAmount = await FinancialLog.aggregate(
+                    let usedCredit = await FinancialLog.aggregate(
                         {
                             $match: {
                                 user: new ObjectId(user._id),
-                                financialtype: 'transfer-out'
+                                financialtype: { $in: ['transfer-out', 'transfer-in'] }
                             }
                         },
-                        { $group: { _id: null, total: { $sum: "$amount" } } }
+                        { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
                     );
-                    if (usedAmount.length) usedAmount = usedAmount[0].total;
-                    else usedAmount = 0;
+                    const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+                    const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+                    usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+
                     if (usedAmount + Number(amount) > user.credit)
                         return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
                     await FinancialLog.create({
