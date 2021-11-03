@@ -5,6 +5,7 @@ import _env from '../env.json';
 import resObjPath from '../libs/resObjPath';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import sportNameImage from '../helpers/sportNameImage';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class Search extends Component {
@@ -65,14 +66,14 @@ class Search extends Component {
         if (results.length == 0) {
             return (
                 <ul className="leagues-list">
-                    <li className="league-list-letter no-result">No Result</li>
-                    <li>Try to search again with a different league or team name.</li>
+                    <li className="league-list-letter no-result"><FormattedMessage id="PAGES.SEARCH.NORESULT" /></li>
+                    <li><FormattedMessage id="PAGES.SEARCH.TRYAGAIN" /></li>
                 </ul>
             )
         }
         return (
             <ul className="leagues-list">
-                <li className="league-list-letter">{results.length} Results</li>
+                <li className="league-list-letter">{results.length} <FormattedMessage id="PAGES.SEARCH.RESULTS" /></li>
                 {results.map((result, index) => {
                     if (result.type == 'league') {
                         return (
@@ -91,7 +92,7 @@ class Search extends Component {
                         return (
                             <li key={index}>
                                 <Link
-                                    to={{ pathname: `/sport/${result.sportName ? result.sportName.replace(" ", "_") : ""}/league/${result.leagueId}/team/${result.team}` }}>
+                                    to={{ pathname: `/sport/${result.sportName ? result.sportName.replace(" ", "_") : ""}/league/${result.leagueId}/event/${result.eventId}` }}>
                                     <span style={{ float: 'initial' }}>
                                         <img src={sportNameImage(result.sportName)} width="16" height="16" className="mr-2" />
                                         {result.team} ({result.leagueName})

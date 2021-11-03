@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { getInputClasses } from "../helpers/getInputClasses";
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -78,12 +79,12 @@ class DepositETransfer extends Component {
         };
         return (
             <div className="col-in">
-                <h3>Interac e-Transfer Deposit</h3>
+                <h3><FormattedMessage id="PAGES.DEPOSIT.INTERAC.ETRANSFER.DEPOSIT" /></h3>
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!depositSuccess && <div className={classes.formContent}>
-                            <p className="dpsit">Please confirm the information below is correct.</p>
-                            {depositError && <p className="text-danger">Can't make deposit. Please try again later</p>}
+                            <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.CONFIRMINFORMATION" /></p>
+                            {depositError && <p className="text-danger"><FormattedMessage id="PAGES.DEPOSIT.ERRORMSG" /></p>}
                             {user && <Formik
                                 initialValues={initialValues}
                                 validationSchema={depositSchema}
@@ -92,7 +93,7 @@ class DepositETransfer extends Component {
                                     (formik) => {
                                         return <form onSubmit={formik.handleSubmit}>
                                             <Form.Group>
-                                                <Form.Label>Deposit Amount</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.AMOUNT" /></Form.Label>
                                                 <Form.Control
                                                     type="number"
                                                     name="amount"
@@ -108,7 +109,7 @@ class DepositETransfer extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Email address</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.EMAIL" /></Form.Label>
                                                 <Form.Control
                                                     type="email"
                                                     name="email"
@@ -124,7 +125,7 @@ class DepositETransfer extends Component {
                                                 ) : null}
                                             </Form.Group>
                                             <Form.Group>
-                                                <Form.Label>Phone Number</Form.Label>
+                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" /></Form.Label>
                                                 <PhoneInput
                                                     type="text"
                                                     name="phone"
@@ -159,7 +160,7 @@ class DepositETransfer extends Component {
                                                         variant="contained"
                                                         color="default"
                                                         className={classes.button}>
-                                                        Back
+                                                        <FormattedMessage id="PAGES.BACK" />
                                                     </Button>
                                                 </Link>
                                                 <Button
@@ -169,7 +170,7 @@ class DepositETransfer extends Component {
                                                     disabled={formik.isSubmitting}
                                                     className={classes.button}
                                                 >
-                                                    Submit
+                                                    <FormattedMessage id="PAGES.SUBMIT" />
                                                 </Button>
                                             </div>
                                         </form>
@@ -178,15 +179,15 @@ class DepositETransfer extends Component {
                             </Formik>}
                         </div>}
                         {depositSuccess && <div>
-                            <center><h3>Deposit Pending</h3></center>
-                            <p>Your transaction has been sent for processing. please check <b style={{ borderBottom: '1px solid #000' }}>{user ? user.email : 'your email'}</b> for further information</p>
+                            <center><h3><FormattedMessage id="PAGES.DEPOSIT.PENDING" /></h3></center>
+                            <p><FormattedMessage id="PAGES.DEPOSIT.PENDINGMSG" values={{ email: <b style={{ borderBottom: '1px solid #000' }}>{user.email}</b> }} /></p>
                         </div>}
                     </div>
                 </div>
                 <fieldset className="depositFieldset">
-                    <legend>Interac E-Tranfer Deposit Limits</legend>
-                    <p>Minumum Deposit: CAD 25.00</p>
-                    <p>Maximum Deposit: CAD 3,000.00</p>
+                    <legend><FormattedMessage id="PAGES.DEPOSIT.INTERAC.LIMITS" /></legend>
+                    <p><FormattedMessage id="PAGES.DEPOSIT.INTERAC.LIMITS.MIN" /></p>
+                    <p><FormattedMessage id="PAGES.DEPOSIT.INTERAC.LIMITS.MAX" /></p>
                 </fieldset>
             </div>
         );

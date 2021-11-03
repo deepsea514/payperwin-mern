@@ -14,7 +14,6 @@ export default class SportName extends React.Component {
         const { sportName, addBet, removeBet, betSlip } = this.props;
         return (
             <React.Fragment >
-                <h3>{sportName ? sportName.replace("_", " ") : ""}</h3>
                 <Sport addBet={addBet} betSlip={betSlip}
                     removeBet={removeBet} sportName={sportName}
                 />

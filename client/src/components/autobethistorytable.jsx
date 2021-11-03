@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import dateformat from "dateformat";
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 const getDateFormat = (date) => {
     return dateformat(date, "mediumDate");
@@ -145,4 +146,4 @@ class AutobetHistoryTable extends Component {
     }
 }
 
-export default AutobetHistoryTable;
+export default injectIntl(AutobetHistoryTable);

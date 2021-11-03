@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
+import { FormattedMessage } from 'react-intl';
+import { toggleFavorites } from '../redux/services';
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -37,14 +39,7 @@ class SportsLeagues extends Component {
     getLeagues = () => {
         const { sportName } = this.props;
         this.setState({ leagues: [] });
-        const url = `${serverUrl}/sportleague?name=${sportName ? sportName.replace("_", " ") : ""}`;
-        axios({
-            method: 'get',
-            url,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(({ data }) => {
+        axios.get(`${serverUrl}/sportleague?name=${sportName ? sportName.replace("_", " ") : ""}`).then(({ data }) => {
             this.setState({ leagues: data });
         });
     }
@@ -58,6 +53,26 @@ class SportsLeagues extends Component {
         }
     }
 
+    toggleFavoriteLeague = (evt, league) => {
+        const { user, getUser, sportName } = this.props;
+        evt.preventDefault();
+        if (!user) return;
+        toggleFavorites({ sport: sportName, type: 'league', name: league.name })
+            .then(() => {
+                getUser();
+            })
+    }
+
+    getFavoritesSelected = (league) => {
+        const { user } = this.props;
+        if (!user) return <img src="/images/sports/star-unselected.svg" alt="Favourite" style={{ filter: 'invert(0.5)' }} />;
+        if (!user.favorites) return <img src="/images/sports/star-unselected.svg" alt="Favourite" style={{ filter: 'invert(0.5)' }} />;
+        const fav = user.favorites.find(fav => fav.originId == league.originId);
+        if (fav)
+            return <img src="/images/sports/star-selected.svg" alt="Favourite" />
+        return <img src="/images/sports/star-unselected.svg" alt="Favourite" style={{ filter: 'invert(0.5)' }} />;
+    }
+
     render() {
         const { leagues, letters } = this.state;
         const { sportName } = this.props;
@@ -65,17 +80,19 @@ class SportsLeagues extends Component {
         return (
             <>
                 <div className="highlights">
-                    <div className="bet-slip-header">TOP LEAGUES</div>
+                    <div className="bet-slip-header"><FormattedMessage id="PAGES.LEAGUES.TOPLEAGUES" /></div>
                     <div className="content">
                         {leagues && leagues.length != 0 && <ul className="leagues-list">
                             {leagues.slice(0, 6).map(league => (
                                 <li key={league.name}
                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                    <Link
-                                        to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}
-                                    >
-                                        <span style={sportNameSpanStyle}>{league.name}</span>
-                                        <span>{league.eventCount}</span>
+                                    <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                        <span style={sportNameSpanStyle}>
+                                            <b className="mr-3">{league.name}</b> {league.eventCount}
+                                        </span>
+                                        <span onClick={(evt) => this.toggleFavoriteLeague(evt, league)}>
+                                            {this.getFavoritesSelected(league)}
+                                        </span>
                                     </Link>
                                 </li>
                             ))}
@@ -93,10 +110,13 @@ class SportsLeagues extends Component {
                                     {filteredLeagues.map(league => (
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                            <Link
-                                                to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
-                                                <span style={sportNameSpanStyle}>{league.name}</span>
-                                                <span>{league.eventCount}</span>
+                                            <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                                <span style={sportNameSpanStyle}>
+                                                    <b className="mr-3">{league.name}</b> {league.eventCount}
+                                                </span>
+                                                <span onClick={(evt) => this.toggleFavoriteLeague(evt, league)}>
+                                                    {this.getFavoritesSelected(league)}
+                                                </span>
                                             </Link>
                                         </li>
                                     ))}

@@ -12,26 +12,26 @@ import TourModal from '../components/tourModal';
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import _env from '../env.json';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 const StatusPopOver = (
     <Popover>
         <div className="m-2" style={{ fontFamily: "'Roboto', sans-serif", fontSize: '12px' }}>
-            <h6>Bet Status</h6>
+            <h6><FormattedMessage id="PAGES.OPENBETS.BETSTATUS" /></h6>
             <div className="verification-proof-list">
                 <ul>
                     <li>
-                        <b>Waiting for Match:</b> Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.
+                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b> <FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT" />
                     </li>
                     <li>
-                        <b>Matched:</b> Your entire bet was matched and you wager is in play.
+                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED" />:</b> <FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED_CONTENT" />
                     </li>
                     <li>
-                        <b>Partially Match:</b> Only a portion of your wager was matched with another user.
-                        The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.
+                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED" />:</b> <FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT" />
                     </li>
                     <li>
-                        <b>Settled:</b> The game is over and the winner has been paid.
+                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED" />:</b> <FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED_CONTENT" />
                     </li>
                 </ul>
             </div>
@@ -259,7 +259,7 @@ class OpenBets extends Component {
                                         strokeColor="#F0AD4E"
                                         duration={800} />
                                 </center>}
-                                {!loadingUrl && !lineUrl && <h4>Can't generate URL. </h4>}
+                                {!loadingUrl && !lineUrl && <h4><FormattedMessage id="PAGES.OPENBETS.CANNOT_GENERATE_URL" /> </h4>}
                                 {!loadingUrl && lineUrl && <>
                                     <div className="row">
                                         <div className="col input-group mb-3">
@@ -302,11 +302,11 @@ class OpenBets extends Component {
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null })} />
                             <div>
-                                <b> Forward to Sportsbook</b>
+                                <b> <FormattedMessage id="PAGES.FORWARDTO.SPORTSBOOK" /></b>
                                 <hr />
-                                <p>A peer has not matched your bet. You can forward your bet to the sportsbook for immediate acceptance.</p>
-                                <p>Peer to Peer Odds: {Number(forwardBet.pickOdds) > 0 ? '+' : ''}{forwardBet.pickOdds}</p>
-                                <p>Sportsbook Odds: {Number(forwardBet.oldOdds) > 0 ? '+' : ''}{forwardBet.oldOdds}</p>
+                                <p><FormattedMessage id="PAGES.OPENBETS.FORWARD_DES" /></p>
+                                <p><FormattedMessage id="PAGES.OPENBETS.P2P_ODDS" />: {Number(forwardBet.pickOdds) > 0 ? '+' : ''}{forwardBet.pickOdds}</p>
+                                <p><FormattedMessage id="PAGES.OPENBETS.SB_ODDS" />: {Number(forwardBet.oldOdds) > 0 ? '+' : ''}{forwardBet.oldOdds}</p>
                                 <div className="text-right">
                                     <button className="form-button" onClick={this.confirmForward}> Proceed </button>
                                     <button className="form-button ml-2" onClick={() => this.setState({ forwardBet: null })}> Cancel </button>
@@ -319,7 +319,7 @@ class OpenBets extends Component {
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardResult: null })} />
                             <div>
-                                <b> Forward to Sportsbook</b>
+                                <b> <FormattedMessage id="PAGES.FORWARDTO.SPORTSBOOK" /></b>
                                 <hr />
                                 <p>{forwardResult}</p>
                                 <div className="text-right">
@@ -332,17 +332,17 @@ class OpenBets extends Component {
                     <h3>{settledBets ? 'Bet History' : 'Open Bets'}</h3>
 
                     <ul className="histyr-list d-flex justify-content-space">
-                        <li>FILTER OPTIONS</li>
+                        <li><FormattedMessage id="PAGES.TRANSACTIONHISTORY.FILTEROPTIONS" /></li>
                         <li>
                             <DateRangePicker
                                 initialSettings={daterange}
                                 onApply={this.handleChangeDate}
                             >
-                                <a href="#"><i className="fas fa-calendar-week"></i> Date Range </a>
+                                <a href="#"><i className="fas fa-calendar-week"></i> <FormattedMessage id="PAGES.TRANSACTIONHISTORY.DATERANGE" /> </a>
                             </DateRangePicker>
                         </li>
                         <li>
-                            <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> Filter </a>
+                            <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> <FormattedMessage id="PAGES.OPENBETS.FILTER" /> </a>
                             {showFilter &&
                                 <>
                                     <div className="background-closer bg-modal" onClick={() => this.setState({ showFilter: false })} />
@@ -395,13 +395,13 @@ class OpenBets extends Component {
                                 <div className="open-bets" key={_id}>
                                     <div className="open-bets-flex">
                                         <div className="open-bets-col">
-                                            <strong>Bet</strong>
+                                            <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                             <div>
                                                 {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                             </div>
                                         </div>
                                         <div className="open-bets-col">
-                                            <strong>Bet Type</strong>
+                                            <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                             <div>
                                                 {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                             </div>
@@ -410,13 +410,13 @@ class OpenBets extends Component {
                                             </div>
                                         </div>
                                         <div className="open-bets-col">
-                                            <strong>Risk</strong>
+                                            <strong><FormattedMessage id="PAGES.OPENBETS.RISK" /></strong>
                                             <div>
                                                 {bet.toFixed(2)}
                                             </div>
                                         </div>
                                         <div className="open-bets-col">
-                                            <strong>To win</strong>
+                                            <strong><FormattedMessage id="PAGES.OPENBETS.TOWIN" /></strong>
                                             {matchingStatus === 'Partial Match' && <div>
                                                 {toWin.toFixed(2)}
                                                 <br />
@@ -429,7 +429,7 @@ class OpenBets extends Component {
                                             </div>}
                                         </div>
                                         <div className="open-bets-col status">
-                                            <strong>Status</strong>
+                                            <strong><FormattedMessage id="PAGES.OPENBETS.STATUS" /></strong>
                                             <OverlayTrigger
                                                 trigger="click"
                                                 placement={'left'}
@@ -445,12 +445,12 @@ class OpenBets extends Component {
                                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                         {lineQuery.eventName}
                                         <div>
-                                            Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                            <strong className="float-right bg-primary px-2 py-1 text-white">Peer To Peer</strong>
+                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                            <strong className="float-right bg-primary px-2 py-1 text-white"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
                                         </div>
-                                        {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                        {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
-                                        {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                        {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
+                                        {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
+                                        {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
                                     </div>
                                 </div>
                             );
@@ -460,25 +460,25 @@ class OpenBets extends Component {
                             return <div className={`open-bets`} key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
-                                        <strong>Bet</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
                                             {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Bet Type</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                         <div>
                                             Multiples @{`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Risk</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.RISK" /></strong>
                                         <div>
                                             {bet.toFixed(2)}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>To win</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.TOWIN" /></strong>
                                         {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
                                             {toWin.toFixed(2)}
                                             <br />
@@ -491,7 +491,7 @@ class OpenBets extends Component {
                                         </div>}
                                     </div>
                                     <div className="open-bets-col status">
-                                        <strong>Status</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.STATUS" /></strong>
                                         <OverlayTrigger
                                             trigger="click"
                                             placement={'bottom'}
@@ -513,17 +513,17 @@ class OpenBets extends Component {
                                             {`${teamA.name} vs ${teamB.name}`}
                                             <div>{pickName}</div>
                                             <div>
-                                                Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                             </div>
-                                            {settledBets && status != 'Cancelled' && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
+                                            {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
                                             {settledBets && <div><strong>{status}</strong></div>}
                                         </div>
                                     );
                                 })}
                                 {settledBets && <div className="open-bets-event">
-                                    {status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                    {status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
-                                    {['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                    {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
+                                    {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
+                                    {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
                                 </div>}
                             </div>
                         }
@@ -533,13 +533,13 @@ class OpenBets extends Component {
                             <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook' : ''}`} key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
-                                        <strong>Bet</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
                                             {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Bet Type</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                         <div>
                                             {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
@@ -548,13 +548,13 @@ class OpenBets extends Component {
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Risk</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.RISK" /></strong>
                                         <div>
                                             {bet.toFixed(2)}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>To win</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.TOWIN" /></strong>
                                         {['Partial Match', 'Partial Accepted'].includes(matchingStatus) && <div>
                                             {toWin.toFixed(2)}
                                             <br />
@@ -567,7 +567,7 @@ class OpenBets extends Component {
                                         </div>}
                                     </div>
                                     <div className="open-bets-col status">
-                                        <strong>Status</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.STATUS" /></strong>
                                         <OverlayTrigger
                                             trigger="click"
                                             placement={'bottom'}
@@ -584,14 +584,14 @@ class OpenBets extends Component {
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                     {`${teamA.name} vs ${teamB.name}`}
                                     <div>
-                                        Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                        <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                         {sportsbook && <strong className="float-right bg-info px-2 py-1 text-white">Sportsbook</strong>}
                                         {!sportsbook && <strong className="float-right bg-primary px-2 py-1 text-white">Peer To Peer</strong>}
                                     </div>
-                                    {settledBets && status != 'Cancelled' && <div><strong>Final Score: {homeScore} - {awayScore}</strong></div>}
-                                    {settledBets && status == 'Settled - Win' && <div><strong>Credited: ${credited.toFixed(2)}</strong></div>}
-                                    {settledBets && status == 'Settled - Lose' && <div><strong>Debited: ${bet.toFixed(2)}</strong></div>}
-                                    {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong>Credited: ${bet.toFixed(2)}</strong></div>}
+                                    {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
+                                    {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
+                                    {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
+                                    {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
@@ -614,7 +614,7 @@ class OpenBets extends Component {
                             onClick={() => this.getBetHistory(page + 1, false)}
                             style={{ cursor: 'pointer' }}
                         >
-                            Load More
+                            <FormattedMessage id="PAGES.OPENBETS.LOADMORE" />
                         </a>
                     </div>}
                 </div>

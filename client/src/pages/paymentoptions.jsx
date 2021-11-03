@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
 import PaymentOptionTripleA from "../components/PaymentOptionTripleA";
+import { FormattedMessage } from 'react-intl';
 
 import GoToTop from "../components/gotoTop";
 
@@ -29,26 +30,23 @@ class PaymentOptions extends Component {
         const { option } = this.state;
         return (
             <div className="col-in px-5">
-                <h1 className="main-heading-in">Payment methods</h1>
+                <h1 className="main-heading-in"><FormattedMessage id="COMPONENTS.PAYMENT.METHODS" /></h1>
                 {!option && <div className="main-cnt">
                     <p>
-                        There are numerous payment options available to
-                        PAYPER WIN customers.
-                        They are determined by the currency you chose when
-                        you open an account.
+                        <FormattedMessage id="PAGES.PAYMENT.METHODS.SUMMARY" />
                     </p>
 
                     <div className="tab-container">
                         <div className="tab-navigation">
-                            <label>Select currency</label>
+                            <label><FormattedMessage id="PAGES.PAYMENT.CURRENCY.SELECT" /></label>
                             <select id="select-box" className="form-control">
-                                <option value="2">Canadian Dollars</option>
+                                <option value="2"><FormattedMessage id="PAGES.PAYMENT.CURRENCY.CAD" /></option>
                             </select>
                         </div>
 
                         <div className="tab-content">
                             <br />
-                            <h4 className="h4">Deposits</h4>
+                            <h4 className="h4"><FormattedMessage id="PAGES.DEPOSITS" /></h4>
                             <div className="container">
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
                                     <div
@@ -58,10 +56,10 @@ class PaymentOptions extends Component {
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
-                                            <li> Interac E-Transfer</li>
-                                            <li>Fee : <strong>Free</strong> </li>
-                                            <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>$3,000&nbsp;Daily</strong></li>
+                                            <li> <FormattedMessage id="PAGES.WITHDRAW.INTERAC.ETRANSFER" /></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong><FormattedMessage id="COMPONENTS.PAYMENT.FREE" /></strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$25</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$3,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -74,9 +72,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Bitcoin</li>
-                                            <li>Fee : <strong>Free</strong> </li>
-                                            <li>Min : <strong>$5</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong><FormattedMessage id="COMPONENTS.PAYMENT.FREE" /></strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$5</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -89,9 +87,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Ethereum</li>
-                                            <li>Fee : <strong>Free</strong> </li>
-                                            <li>Min : <strong>$5</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong><FormattedMessage id="COMPONENTS.PAYMENT.FREE" /></strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$5</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -104,9 +102,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> USDT</li>
-                                            <li>Fee : <strong>Free</strong> </li>
-                                            <li>Min : <strong>$5</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong><FormattedMessage id="COMPONENTS.PAYMENT.FREE" /></strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$5</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -115,7 +113,7 @@ class PaymentOptions extends Component {
 
                         <div className="tab-content">
                             <br />
-                            <h4 className="h4">Withdrawals</h4>
+                            <h4 className="h4"><FormattedMessage id="COMPONENTS.SIDEBAR.WITHDRAW" /></h4>
                             <div className="container">
                                 <div className="row pymnt-mthd" style={{ cursor: 'pointer' }} onClick={() => this.setState({ option: 'etransfer' })}>
                                     <div
@@ -125,10 +123,10 @@ class PaymentOptions extends Component {
 
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
-                                            <li> Interac E-Transfer</li>
-                                            <li>Fee : <strong>$15</strong> </li>
-                                            <li>Min : <strong>$25</strong></li>
-                                            <li>Max : <strong>-</strong></li>
+                                            <li> <FormattedMessage id="PAGES.WITHDRAW.INTERAC.ETRANSFER" /></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong>$15</strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$25</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>-</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -141,9 +139,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Bitcoin</li>
-                                            <li>Fee : <strong>$25</strong> </li>
-                                            <li>Min : <strong>$15</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong>$25</strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$15</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -156,9 +154,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> Ethereum</li>
-                                            <li>Fee : <strong>$25</strong> </li>
-                                            <li>Min : <strong>$15</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong>$25</strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$15</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -171,9 +169,9 @@ class PaymentOptions extends Component {
                                     <div className="col-sm-8">
                                         <ul className="paymnt-mdhd">
                                             <li> USDT</li>
-                                            <li>Fee : <strong>$25</strong> </li>
-                                            <li>Min : <strong>$15</strong></li>
-                                            <li>Max : <strong>$50,000&nbsp;Daily</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.FEE" /> : <strong>$25</strong> </li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MINUMUM" /> : <strong>$15</strong></li>
+                                            <li><FormattedMessage id="COMPONENTS.PAYMENT.MAXIMUM" /> : <strong>$50,000&nbsp;Daily</strong></li>
                                         </ul>
                                     </div>
                                 </div>

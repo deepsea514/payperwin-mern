@@ -3,6 +3,7 @@ import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class BetParlay extends Component {
     constructor(props) {
@@ -52,16 +53,16 @@ class BetParlay extends Component {
     }
 
     render() {
-        const { betSlip, oddsFormat, stake, win } = this.props;
+        const { betSlip, oddsFormat, stake, win, maxBetLimitTier } = this.props;
         const odds = this.getParlayOdds();
 
         return (
             <>
-                {win > 5000 && <div className="bet-parlay-warn-message">
-                    <div><b>Above Maximum Stake</b></div>
-                    Please enter a new amount that win amount does not exceed CAD 2,000.
+                {win > maxBetLimitTier && <div className="bet-parlay-warn-message">
+                    <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{max_win_limit: maxBetLimitTier}} />
                 </div>}
-                <div className={`bet-parlay-container ${win > 5000 ? 'bet-warn': ''}`}>
+                <div className={`bet-parlay-container ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">1's x {betSlip.length}</span>
                         <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
@@ -88,7 +89,7 @@ class BetParlay extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
+                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD maxBetLimitTier</span></div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
                         const { name, type, league, sportName, pickName } = bet;
@@ -112,6 +113,7 @@ class BetParlay extends Component {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
 });
 
-export default connect(mapStateToProps, frontend.actions)(BetParlay)
+export default connect(mapStateToProps, frontend.actions)(injectIntl(BetParlay))

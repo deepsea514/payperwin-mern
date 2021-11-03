@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Sport from './sport';
 import Others from "./others";
-// import sportNameIcon from '../helpers/sportNameIcon';
+import { FormattedMessage, injectIntl } from "react-intl";
 import sportNameImage from "../helpers/sportNameImage";
 import axios from "axios";
 import _env from '../env.json';
@@ -43,7 +43,7 @@ export default class Highlights extends Component {
         const { addBet, betSlip, removeBet } = this.props;
         return (
             <div className="highlights">
-                <div className="bet-slip-header">SPORTS BETTING</div>
+                <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div>
                 <ul className="nav nav-tabs pt-2" id="myTab" role="tablist">
                     {
                         sports.map((sport, i) => {
@@ -60,7 +60,7 @@ export default class Highlights extends Component {
                         })
                     }
                 </ul>
-                {loading && <div>Loading...</div>}
+                {loading && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                 {sports[sportIndex] && (sports[sportIndex] == "Other" ?
                     <Others
                         addBet={addBet}
@@ -72,6 +72,7 @@ export default class Highlights extends Component {
                         betSlip={betSlip}
                         removeBet={removeBet}
                         sportName={sports[sportIndex]}
+                        hideBreacrumb={true}
                     />)}
             </div>
         );

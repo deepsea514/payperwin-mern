@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class AutobetChart extends Component {
     render() {
@@ -53,4 +54,4 @@ class AutobetChart extends Component {
     }
 }
 
-export default AutobetChart;
+export default injectIntl(AutobetChart);

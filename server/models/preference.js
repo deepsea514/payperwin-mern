@@ -43,7 +43,7 @@ const PreferenceSchema = new Schema(
                 email: { type: Boolean, default: true },
                 sms: { type: Boolean, default: true },
             },
-        }
+        },
     },
     {
         timestamps: true,

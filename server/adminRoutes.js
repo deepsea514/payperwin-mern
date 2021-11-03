@@ -437,6 +437,7 @@ adminRouter.get(
                             totalBetCount: { '$size': '$betHistory' },
                             totalWager: { $sum: '$betHistory.bet' },
                             inplay: { $sum: '$pendingBets.bet' },
+                            maxBetLimitTier: 1,
                             createdAt: 1
                         }
                     },
@@ -611,6 +612,32 @@ adminRouter.get(
             }
 
             const wins = (winbets / (bets.length ? bets.length : 1) * 100).toFixed(2);
+
+            let usedCredit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(user._id),
+                        financialtype: { $in: ['transfer-out', 'transfer-in'] }
+                    }
+                },
+                { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+            );
+            const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+            const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+            usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+
+            let credit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(user._id),
+                        financialtype: 'credit'
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            );
+            if (credit.length > 0) credit = credit[0].total;
+            else credit = 0;
+
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -624,7 +651,9 @@ adminRouter.get(
                 betsperday: days > 0 ? betcount / days : 0,
                 betsperweek: days > 0 ? betcount / days * 7 : 0,
                 averagebetafter2loss,
-                wins
+                wins,
+                usedCredit,
+                credit
             });
         }
         catch (error) {
@@ -682,6 +711,47 @@ adminRouter.get(
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find History.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-credits',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 10;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        page--;
+        if (!id) {
+            res.status(404).json({ error: 'Customer id is not given.' });
+            return;
+        }
+        try {
+            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const data = await FinancialLog.find(searchObj)
+                .skip(page * perPage)
+                .limit(perPage);
+
+            let credit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(id),
+                        financialtype: 'credit'
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            );
+            if (credit.length > 0) credit = credit[0].total;
+            else credit = 0;
+            res.json({ total: total, data: data, credit });
+        }
+        catch (error) {
+            res.status(500).json({ error: 'Can\'t find Credits.', result: error });
         }
     }
 )
@@ -1613,8 +1683,8 @@ adminRouter.get(
                         from: 'users',
                         let: { user_id: "$userId" },
                         pipeline: [{
-                            $exists: true,
-                            $ne: null,
+                            // $exists: true,
+                            // $ne: null,
                             $match: {
                                 $expr: { $eq: ["$_id", "$$user_id"] },
                             },
@@ -1623,9 +1693,7 @@ adminRouter.get(
                     }
                 },
                 { $unwind: "$userId" },
-                {
-                    $match: searchObj
-                },
+                { $match: searchObj },
                 { $sort: { "createdAt": -1 } },
                 { $limit: 20 }
             ]);
@@ -5301,8 +5369,6 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
         const id = betId;
         const betAmout = toWin;
 
-        console.log("placeAutoBet", autoBetUserID);
-
         const bet = await Bet.findById(id);
 
         if (bet.isParlay) {
@@ -5565,6 +5631,7 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
 
 adminRouter.post(
     '/placeBets',
+    authenticateJWT,
     /* bruteforce.prevent, */
     async (req, res) => {
         const betSlip = req.body;
@@ -5623,6 +5690,7 @@ adminRouter.post(
                 type,
                 subtype,
                 altLineId,
+                points,
             } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
             if (sportData) {
@@ -5654,10 +5722,10 @@ adminRouter.post(
 
                 //
                 //TOASK: Snowman Why its calculated by 10 times
-                /*    let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-                   if (sportsbook) {
-                       newLineOdds = pick == 'home' ? oddsA : oddsB;
-                   } */
+                /*   let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+                      if (sportsbook) {
+                          newLineOdds = pick == 'home' ? oddsA : oddsB;
+                      }  */
 
                 newLineOdds = pick == 'home' ? oddsA : oddsB;
 
@@ -5713,7 +5781,7 @@ adminRouter.post(
                             if (preference && preference.timezone) {
                                 timezone = preference.timezone;
                             }
-                           // const timeString = convertTimeLineDate(new Date(), timezone);
+                            // const timeString = convertTimeLineDate(new Date(), timezone);
 
                             //const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                             let betType = '';
@@ -5728,9 +5796,9 @@ adminRouter.post(
 
                                 case 'spread':
                                     if (pick == 'home') {
-                                        betType += `${hdp > 0 ? '+' : ''}${hdp}`;
+                                        betType += `${points > 0 ? '+' : ''}${points}`;
                                     } else {
-                                        betType += `${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                                        betType += `${-1 * points > 0 ? '+' : ''}${-1 * points}`;
                                     }
                                     break;
                             }
@@ -5777,7 +5845,7 @@ adminRouter.post(
                                         matchStartDate: startDate,
                                         lineType: type,
                                         lineSubType: subtype,
-                                        // points: hdp ? hdp : points ? points : null,
+                                        points: points,
                                         points: null,
                                         homeBets: pick === 'home' ? [betId] : [],
                                         awayBets: pick === 'away' ? [betId] : [],
@@ -5797,7 +5865,6 @@ adminRouter.post(
                             }
                             await calculateBetsStatus(betpoolId);
 
-                            console.log(savedBet);
                             user.balance = newBalance;
                             try {
                                 await FinancialLog.create({
@@ -5827,16 +5894,16 @@ adminRouter.post(
         }
 
         res.json({
+            success: true,
             balance: 3000,//user.balance,
             errors,
         });
     }
 );
 
-
-
 adminRouter.get(
     '/placebetsbyadmin',
+    authenticateJWT,
     async (req, res) => {
         try {
             let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage, email } = req.query;
@@ -5897,7 +5964,236 @@ adminRouter.get(
     }
 )
 
+adminRouter.get(
+    '/credits',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page--;
 
+        try {
+            const filterQuery = [
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "transfer-out"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'creditOut'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "transfer-in"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'creditIn'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "credit"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'credit'
+                    }
+                },
+                {
+                    $project: {
+                        email: 1,
+                        credit: { $sum: "$credit.amount" },
+                        creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
+                    }
+                },
+                {
+                    $match: {
+                        $or: [
+                            { creditUsed: { $gt: 0 } },
+                            { credit: { $gt: 0 } }
+                        ]
+                    }
+                }
+            ];
+            const total = await User.aggregate(
+                [
+                    ...filterQuery,
+                    { $count: "total" }
+                ]
+            )
 
+            const users = await User.aggregate(
+                [
+                    ...filterQuery,
+                    { $skip: page * perPage },
+                    { $limit: perPage }
+                ]
+            );
+            res.json({ total: total.total, data: users });
+        } catch (error) {
+            console.error(error);
+            res.json({ total: 0, data: [] });
+        }
+    }
+)
+
+adminRouter.post(
+    '/credits',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        const data = req.body;
+        const { user: user_id, type, amount } = data;
+        if (!user_id || !type || !amount) {
+            return res.json({ success: false, message: 'Please input all the required fields.' });
+        }
+        try {
+            const user = await User.findById(user_id);
+            if (!user) {
+                return res.json({ success: false, message: 'User not found.' });
+            }
+            switch (type) {
+                case 'issue':
+                    if (amount <= 0)
+                        return res.json({ success: false, message: 'Amount should at least 0.' });
+                    await FinancialLog.create({
+                        financialtype: 'credit',
+                        uniqid: `C${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({ $inc: { credit: amount } });
+                    break;
+                case 'transfer-in':
+                    if (amount > user.balance)
+                        return res.json({ success: false, message: 'Cannot transfer in credit. Out of user balance.' });
+                    await FinancialLog.create({
+                        financialtype: 'transfer-in',
+                        uniqid: `TI${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({
+                        $inc: {
+                            balance: -amount,
+                        }
+                    })
+                    break;
+                case 'transfer-out':
+                    let usedCredit = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                user: new ObjectId(user._id),
+                                financialtype: { $in: ['transfer-out', 'transfer-in'] }
+                            }
+                        },
+                        { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+                    );
+                    const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+                    const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+                    usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+
+                    let credit = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                user: new ObjectId(user._id),
+                                financialtype: 'credit'
+                            }
+                        },
+                        { $group: { _id: null, total: { $sum: "$amount" } } }
+                    );
+                    if (credit.length > 0) credit = credit[0].total;
+                    else credit = 0;
+
+                    if (usedCredit + Number(amount) > credit)
+                        return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
+                    await FinancialLog.create({
+                        financialtype: 'transfer-out',
+                        uniqid: `TO${ID()}`,
+                        user: user._id,
+                        amount: amount,
+                        method: 'Line of Credit',
+                        status: FinancialStatus.success
+                    });
+                    await user.update({
+                        $inc: {
+                            balance: amount,
+                        }
+                    })
+                    break;
+                default:
+                    return res.json({ success: false, message: 'Unknown type.' });
+            }
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, message: 'Internal server error' });
+        }
+    }
+)
+
+adminRouter.get(
+    '/credits/:id',
+    authenticateJWT,
+    limitRoles('credits'),
+    async (req, res) => {
+        const { id } = req.params;
+        let { page, perPage } = req.query;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+        if (!page) page = 1;
+        page--;
+
+        try {
+            const user = await User.findById(id);
+            if (!user) {
+                return res.json({ user: null, data: [], total: 0 })
+            }
+            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const data = await FinancialLog.find(searchObj)
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['email'])
+            res.json({ total: total, data: data, user: user });
+        } catch (error) {
+            console.error(error);
+            res.json({ total: 0, data: [] });
+        }
+    }
+)
 
 module.exports = adminRouter;

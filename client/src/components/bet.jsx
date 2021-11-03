@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-// import sportNameIcon from '../helpers/sportNameIcon';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class Bet extends Component {
     constructor(props) {
@@ -55,15 +55,15 @@ class Bet extends Component {
 
     render() {
         const { stake, win } = this.state;
-        const { bet, removeBet, oddsFormat } = this.props;
+        const { bet, removeBet, oddsFormat, maxBetLimitTier } = this.props;
         const { name, type, subtype, league, odds, pick, sportName, lineId, pickName, index, sportsbook } = bet;
         return (
             <div className={`bet-container ${sportsbook ? 'bet-sportsbook' : ''}`}>
-                {win > 5000 && <div className="bet-warn-message">
-                    <div><b>Above Maximum Stake</b></div>
-                    Please enter a new amount that win amount does not exceed CAD 5,000.
+                {win > maxBetLimitTier && <div className="bet-warn-message">
+                    <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{max_win_limit: maxBetLimitTier}} />
                 </div>}
-                <div className={`bet ${win > 5000 ? 'bet-warn' : ''}`}>
+                <div className={`bet ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div>
                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                         {` ${name}`}
@@ -96,7 +96,7 @@ class Bet extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2">Max Win: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: 5000 } })}>CAD 5,000</span></div>
+                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
                 </div>
             </div>
         )
@@ -106,6 +106,7 @@ class Bet extends Component {
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
+    maxBetLimitTier: state.frontend.maxBetLimitTier,
 });
 
-export default connect(mapStateToProps, frontend.actions)(Bet)
+export default connect(mapStateToProps, frontend.actions)(injectIntl(Bet))

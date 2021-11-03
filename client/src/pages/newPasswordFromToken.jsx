@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
+import { FormattedMessage } from 'react-intl';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -68,7 +69,7 @@ const Form = ({
                         fullWidth
                         onClick={handleSubmit}
                     >
-                        Submit
+                        <FormattedMessage id="COMPONENTS.SUBMIT" />
                     </Button>
                 </CardActions>
             </Card>

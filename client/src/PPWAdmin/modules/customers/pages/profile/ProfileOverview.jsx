@@ -15,6 +15,7 @@ import { getCustomerOverview } from "../../redux/services";
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 import { WinPercentage } from "../../components/WinPercentage";
+import { UsedCredit } from "../../components/UsedCredit";
 
 class ProfileOverview extends React.Component {
     constructor(props) {
@@ -36,7 +37,9 @@ class ProfileOverview extends React.Component {
             betsperday: 0,
             betsperweek: 0,
             averagebetafter2loss: 0,
-            wins: 0
+            wins: 0,
+            usedCredit: 0,
+            credit: 0
         };
         this._Mounted = false;
     }
@@ -59,7 +62,9 @@ class ProfileOverview extends React.Component {
                     betsperday,
                     betsperweek,
                     averagebetafter2loss,
-                    wins
+                    wins,
+                    usedCredit,
+                    credit
                 } = data;
                 this._Mounted && this.setState({
                     lastbets,
@@ -74,7 +79,9 @@ class ProfileOverview extends React.Component {
                     betsperday,
                     betsperweek,
                     averagebetafter2loss,
-                    wins
+                    wins,
+                    usedCredit,
+                    credit
                 });
             })
     }
@@ -87,8 +94,10 @@ class ProfileOverview extends React.Component {
         const {
             lastbets, lastsportsbookbets, totalwagers, totaldeposit,
             balance, currency, winloss, fees, averagebet, averagebetwin,
-            averagebetloss, betsperday, betsperweek, averagebetafter2loss, id, wins
+            averagebetloss, betsperday, betsperweek, averagebetafter2loss, id,
+            wins, usedCredit, credit
         } = this.state;
+        const { customer } = this.props;
         return (
             <div className="card card-custom">
                 <div className="card-header border-0 pt-5">
@@ -180,6 +189,13 @@ class ProfileOverview extends React.Component {
                         <div className="col-md-4">
                             <AverageBetAfter2Loss
                                 averagebetafter2loss={Number(averagebetafter2loss).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        <div className="col-md-4">
+                            <UsedCredit
+                                usedCredit={Number(usedCredit).toFixed(2)}
+                                credit={Number(credit).toFixed(2)}
                                 currency={currency}
                                 className="mt-2" />
                         </div>

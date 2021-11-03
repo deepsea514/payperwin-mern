@@ -11,6 +11,8 @@ import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import _env from '../env.json';
 import SBModal from '../components/sbmodal';
+import { FormattedMessage } from 'react-intl';
+import LinesBreadcrumb from '../components/linesbreadcrumb';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -72,11 +74,7 @@ class Lines extends Component {
         if (sportName) {
             axios.get(`${serverUrl}/sport`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
                 .then(({ data }) => {
-                    if (data) {
-                        this.setState({
-                            data: data,
-                        })
-                    }
+                    if (data) { this.setState({ data: data }) }
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ error: err });
@@ -107,21 +105,28 @@ class Lines extends Component {
     }
 
     render() {
-        const { match, betSlip, removeBet, timezone, oddsFormat } = this.props;
+        const { match, betSlip, removeBet, timezone, oddsFormat, user, getUser } = this.props;
         const { sportName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, ogTitle, ogDescription, showAll
         } = this.state;
         if (error) {
-            return <div>Error</div>;
+            return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
         if (!data) {
-            return <div>Loading...</div>;
+            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
 
-        const { teamA, teamB, startDate, lines } = data;
+        const { teamA, teamB, startDate, lines, leagueName } = data;
         return (
             <div className="content detailed-lines mb-5">
+                <LinesBreadcrumb sportName={sportName}
+                    league={{ name: leagueName, leagueId: leagueId }}
+                    teams={{ teamA, teamB }}
+                    time={timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
+                    user={user}
+                    getUser={getUser}
+                />
                 {ogTitle && <MetaTags>
                     <meta property="og:type" content="article" />
                     <meta property="og:title" content={ogTitle} />
@@ -137,7 +142,7 @@ class Lines extends Component {
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                         <div>
-                            <b>Share This Link</b>
+                            <b><FormattedMessage id="PAGES.LINES.SHARE" /></b>
                             <hr />
                             <div className="row">
                                 <div className="col input-group mb-3">
@@ -174,7 +179,7 @@ class Lines extends Component {
                         </div>
                     </div>
                 </div>}
-                <center>
+                {/* <center>
                     <div className="line-name">
                         {timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
                         <div className="float-right">
@@ -185,7 +190,7 @@ class Lines extends Component {
                         </div>
                     </div>
                     <strong className="line-name">{teamA} VS {teamB}</strong>
-                </center>
+                </center> */}
                 <br />
                 <ul>
                     {lines ? lines.map((line, i) => {
@@ -233,7 +238,7 @@ class Lines extends Component {
 
                 {!showAll && <div className="d-flex flex-wr justify-content-center mt-3">
                     <div className="show-allmarkets-button" onClick={() => this.setState({ showAll: true })}>
-                        Show All markets&nbsp;&nbsp;<i className="fas fa-caret-down" />
+                        <FormattedMessage id="COMPONENTS.LINES.SHOWALLMARKET" />&nbsp;&nbsp;<i className="fas fa-caret-down" />
                     </div>
                 </div>}
             </div>

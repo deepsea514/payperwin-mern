@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { Link, Switch, Route, BrowserRouter } from "react-router-dom";
 import InboxDetail from "./inboxDetail";
 import _env from '../env.json';
+import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 class Inbox extends Component {
@@ -43,13 +44,13 @@ class Inbox extends Component {
                         )} />
                         <Route path="/" render={(props) =>
                             <div className="col-in ">
-                                <h1 className="main-heading-in">Inbox</h1>
+                                <h1 className="main-heading-in"><FormattedMessage id="PAGES.INBOX" /></h1>
                                 <div className="main-cnt">
                                     {error && <h6>{error}</h6>}
                                     {!error && messages.length == 0 && <div className="text-center mb-0">
                                         <img src="images/announ-img.jpg" />
                                         <br />
-                                        <strong>There are no messages in your announcements.</strong>
+                                        <strong><FormattedMessage id="PAGES.NO.ANNOUNCEMENTS" /></strong>
                                     </div>}
                                     {!error && messages.length != 0 && messages.map(message => (
                                         <div className="in-text" key={message._id}>

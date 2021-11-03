@@ -28,13 +28,11 @@ class HowTo extends Component {
             <div className="col-in">
                 <div className="how-it-works">
                     <h2>
-                        How
-                        <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }}
-                        />Works
+                        <FormattedMessage id="PAGES.HOWITWORKS.TITLE" values={{ image: <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }} /> }} />
                     </h2>
                     <div className="summary">
-                        <p>PAYPER WIN is a Peer-to-Peer betting platform offering better odds by cutting out the bookie. No Juice, No Vig or House – just you vs. other bettors. Place bets on your favorite sports.</p>
-                        <strong>RISK less and WIN More<i>!</i></strong>
+                        <p><FormattedMessage id="PAGES.HOWITWORKS.SUMMARY" /></p>
+                        <strong><FormattedMessage id="PAGES.HOWITWORKS.SUBTITLE" /><i>!</i></strong>
                     </div>
                     <div className="how-it-works-steps">
                         <Carousel
@@ -52,87 +50,83 @@ class HowTo extends Component {
                         <br />
                         <br />
                         <div>
-                            <center><strong>Select Your Sport</strong></center>
+                            <center><strong><FormattedMessage id="PAGES.HOWITWORKS.SELECTSPORT" /></strong></center>
                             <div className="how-it-works-info">
                                 <p>
-                                    Choose from MMA, Soccer, Basketball, Football, Baseball etc.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.SELECTSPORT.1" />
                                 </p>
                             </div>
                         </div>
                         <div>
                             <center>
-                                <strong>Choose Your Line</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.CHOOSELINE" /></strong>
                             </center>
                             <div className="how-it-works-info">
-                                <strong>PEER 2 PEER BETTING</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.CHOOSELINE.1" /></strong>
                                 <p>
-                                    Here is where you beat the bookie. The odds are even and better than you will find anywhere else online. The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete. PAYPER WIN will take 5% from only the winner for facilitating the transaction and making sure you get paid. PAYPER WIN gurantees all winning bets will be paid. If patience isn't your virtue, say no more; we suggest doing a Instant bet.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.CHOOSELINE.1.1" />
                                 </p>
-                                <strong>Instant Bet/ Live bet</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.CHOOSELINE.2" /></strong>
                                 <p>
-                                    Welcome, here is where you can bet instantly. Your bets do not need to wait for a peer to accept. These bets are instantly accepted. The only catch is that the odds are different than PEER 2 PEER. The bets here are forwarded on to a sportsbook. We are in no way affiliated with the sportsbooks.PAYPER WIN guarantees you will be paid on all winning bets. We have found the best sportsbook odds for you. PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets. All live betting or non matching bets are done here such soccer draw bets and parlays.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.CHOOSELINE.2.1" />
                                 </p>
                             </div>
                         </div>
                         <div>
                             <center>
-                                <strong>Enter You Stake</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.ENTERSTAKE" /></strong>
                             </center>
                             <div className="how-it-works-info">
                                 <p>
-                                    There are two boxes in which you can enter an amount. Stake, where you can enter the amount you want to bet; or Win, where you can enter the amount you want to win. Once a bet is placed, funds will be removed from your wallet until the completed event result.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.ENTERSTAKE.1" />
                                 </p>
                             </div>
                         </div>
                         <div>
                             <center>
-                                <strong>Get Matched</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED" /></strong>
                             </center>
                             <div className="how-it-works-info">
                                 <p>
-                                    The next step is to have your bet matched with an opposing bettor, there are fours stages of match result:
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.SUMMARY" />
                                 </p>
-                                <strong>Pending Match</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.1" /></strong>
                                 <p>
-                                    At this stage, your bet is awaiting an opposing bettor to place a bet against you. Not getting any action? Don’t worry, anytime during this stage you may change your bet to an INSTANT BET.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.1.1" />
                                 </p>
-                                <strong>Accepted Match</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.2" /></strong>
                                 <p>
-                                    This stage is to notify you that your bet is accepted and a bettor has bet against you. The bet will begin when the event starts.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.2.1" />
                                 </p>
-                                <strong>Partial Match</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.3" /></strong>
                                 <p>
-                                    This happens when a portion of your bet has been accepted and the remainder portion is awaiting acceptance.
-                                    The remainder portion will be pending until an opposing bettor accepts your bet. This will remain in effect until the start of the event.
-                                    If your pending portion is not accepted at event start time, the portion pending will be cancelled and reimbursed back to you. Once a bet is made, your bet cannot be cancelled or altered.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.3.1" />
                                 </p>
-                                <strong>Instant Match</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.4" /></strong>
                                 <p>
-                                    After a bet is placed and awaiting matching you may at anytime prior to a matching, convert your bet to an INSTANT BET.
-                                    An INSTANT BET is when we forward your bet to a sportsbook. We find competitive lines for you to accept, if you accept theses odds then your bet is instantly accepted.
-                                    PAYPER WIN does not profit on these transactions or charges fees for won bets. Please keep in mind odds will be different and you are betting against a sportsbook and not peer.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETMATCHED.4.1" />
                                 </p>
                             </div>
                         </div>
                         <div>
                             <center>
-                                <strong>Get Paid</strong>
+                                <strong><FormattedMessage id="PAGES.HOWITWORKS.GETPAID" /></strong>
                             </center>
                             <div className="how-it-works-info">
                                 <p>
-                                    If your bet is successful, we will transfer your winnings directly to your PAYPER WIN account. The event result will determine whether you are paid, reimbursed or charged.
+                                    <FormattedMessage id="PAGES.HOWITWORKS.GETPAID.SUMMARY" />
                                 </p>
                                 <p>
-                                    <strong>Event Result</strong>
+                                    <strong><FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT" /></strong>
                                 </p>
                                 <p>
-                                    <strong>Win Result:</strong> you will be paid after the event has taken place.
+                                    <strong><FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.1.1" />:</strong> <FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.1.2" />
                                 </p>
                                 <p>
-                                    <strong>Loss Result:</strong> your winnings will be transferred directly to the opposing bettor who has won.
+                                    <strong><FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.2.1" />:</strong> <FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.2.2" />
                                 </p>
                                 <p>
-                                    <strong>Cancelled Result:</strong> This is when the event is cancelled or the bet was unsuccessfully matched.
+                                    <strong><FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.3.1" />:</strong> <FormattedMessage id="PAGES.HOWITWORKS.GETPAID.RESULT.3.2" />
                                 </p>
                             </div>
                         </div>

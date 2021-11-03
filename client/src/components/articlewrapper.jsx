@@ -10,7 +10,6 @@ class ArticleWrapper extends Component {
         super(props);
     }
 
-
     render() {
         const { showMore, showCategories, categories, articles, title } = this.props;
 
