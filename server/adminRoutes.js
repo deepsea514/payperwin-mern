@@ -626,6 +626,18 @@ adminRouter.get(
             const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
             usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
 
+            let credit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(user._id),
+                        financialtype: 'credit'
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            );
+            if (credit.length > 0) credit = credit[0].total;
+            else credit = 0;
+
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -640,7 +652,8 @@ adminRouter.get(
                 betsperweek: days > 0 ? betcount / days * 7 : 0,
                 averagebetafter2loss,
                 wins,
-                usedCredit
+                usedCredit,
+                credit
             });
         }
         catch (error) {
@@ -722,8 +735,20 @@ adminRouter.get(
             const total = await FinancialLog.find(searchObj).count();
             const data = await FinancialLog.find(searchObj)
                 .skip(page * perPage)
-                .limit(perPage)
-            res.json({ total: total, data: data });
+                .limit(perPage);
+
+            let credit = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        user: new ObjectId(id),
+                        financialtype: 'credit'
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            );
+            if (credit.length > 0) credit = credit[0].total;
+            else credit = 0;
+            res.json({ total: total, data: data, credit });
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find Credits.', result: error });
@@ -5987,9 +6012,26 @@ adminRouter.get(
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "credit"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'credit'
+                    }
+                },
+                {
                     $project: {
                         email: 1,
-                        credit: 1,
+                        credit: { $sum: "$credit.amount" },
                         creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
                     }
                 },
@@ -6084,7 +6126,19 @@ adminRouter.post(
                     const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
                     usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
 
-                    if (usedCredit + Number(amount) > user.credit)
+                    let credit = await FinancialLog.aggregate(
+                        {
+                            $match: {
+                                user: new ObjectId(user._id),
+                                financialtype: 'credit'
+                            }
+                        },
+                        { $group: { _id: null, total: { $sum: "$amount" } } }
+                    );
+                    if (credit.length > 0) credit = credit[0].total;
+                    else credit = 0;
+
+                    if (usedCredit + Number(amount) > credit)
                         return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
                     await FinancialLog.create({
                         financialtype: 'transfer-out',
