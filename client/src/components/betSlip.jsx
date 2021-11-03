@@ -64,7 +64,6 @@ class BetSlip extends Component {
             return;
         }
 
-        console.log(betSlip);
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
             .then(({ data: { balance, errors } }) => {
