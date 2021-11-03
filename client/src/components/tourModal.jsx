@@ -53,7 +53,7 @@ class TourModal extends React.Component {
     }
 
     handleNext = () => {
-        const { activeStep } = this.state;
+        const { activeStep, tourSteps } = this.state;
         const { hideTourAction } = this.props;
         if (activeStep < tourSteps.length - 1) {
             this.setState({ activeStep: activeStep + 1 });
@@ -69,7 +69,7 @@ class TourModal extends React.Component {
 
     render() {
         const { hideTourAction, classes } = this.props;
-        const { activeStep } = this.state;
+        const { activeStep, tourSteps } = this.state;
         const maxSteps = tourSteps.length;
 
         return (
