@@ -11,6 +11,7 @@ import 'react-phone-input-2/lib/style.css';
 import { getInputClasses } from "../helpers/getInputClasses";
 import CustomDatePicker from '../components/customDatePicker';
 import _env from '../env.json';
+import { FormattedMessage, injectIntl } from 'react-intl';
 const serverUrl = _env.appUrl;
 
 export default class Profile extends Component {
