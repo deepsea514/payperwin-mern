@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class Deposit extends Component {
     constructor(props) {
