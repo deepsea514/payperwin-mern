@@ -1118,7 +1118,8 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .populate('user', ['email', 'currency']).populate('reason', ['title']);
+                .populate('user', ['email', 'currency'])
+                .populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
             console.error(error);
@@ -1189,10 +1190,10 @@ adminRouter.patch(
             let { id, data } = req.body;
 
             const deposit = await FinancialLog.findById(id);
-            if (deposit.status == FinancialStatus.success) {
-                res.status(400).json({ error: 'Can\'t update finished deposit.' });
-                return;
-            }
+            // if (deposit.status == FinancialStatus.success) {
+            //     res.status(400).json({ error: 'Can\'t update finished deposit.' });
+            //     return;
+            // }
             await deposit.update(data, { new: true }).exec();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
 
