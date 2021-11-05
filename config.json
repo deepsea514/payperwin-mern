@@ -40,8 +40,7 @@
         "Tether",
         "CREDIT",
         "DEBIT",
-        "Credit - Loan",
-        "Credit - Promotion"
+        "Cash"
     ],
     "AutoBetStatus": {
         "active": "Active",
