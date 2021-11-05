@@ -17,7 +17,8 @@
     },
     {
         "id": 12,
-        "name": "American Football"
+        "name": "American Football",
+        "liveSupport": true
     },
     {
         "id": 13,
@@ -41,7 +42,8 @@
     },
     {
         "id": 18,
-        "name": "Basketball"
+        "name": "Basketball",
+        "liveSupport": true
     },
     {
         "id": 19,

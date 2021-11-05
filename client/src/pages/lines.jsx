@@ -13,6 +13,7 @@ import _env from '../env.json';
 import SBModal from '../components/sbmodal';
 import { FormattedMessage } from 'react-intl';
 import LinesBreadcrumb from '../components/linesbreadcrumb';
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 const serverUrl = _env.appUrl;
 
 class Lines extends Component {
@@ -38,6 +39,7 @@ class Lines extends Component {
             ogTitle: '',
             ogDescription: '',
             showAll: type != null || subtype != null || index != null || true,
+            loading: false,
         };
     }
 
@@ -70,14 +72,17 @@ class Lines extends Component {
     }
 
     getSportLine() {
-        const { match: { params: { sportName, leagueId, eventId } } } = this.props;
+        this.setState({ loading: true });
+        const { match: { params: { sportName, leagueId, eventId } }, live } = this.props;
         if (sportName) {
-            axios.get(`${serverUrl}/sport`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
+            axios.get(`${serverUrl}/${live ? 'livesport' : 'sport'}`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
                 .then(({ data }) => {
-                    if (data) { this.setState({ data: data }) }
+                    if (data) { this.setState({ data: data, loading: false, }) }
+                    else {
+                        this.setState({ error: 'Line found', loading: false, });
+                    }
                 }).catch((err) => {
-                    console.log(err);
-                    this.setState({ error: err });
+                    this.setState({ error: err, loading: false, });
                 });
         }
     }
@@ -105,19 +110,26 @@ class Lines extends Component {
     }
 
     render() {
-        const { match, betSlip, removeBet, timezone, oddsFormat, user, getUser } = this.props;
+        const { match, betSlip, removeBet, timezone, oddsFormat, user, getUser, live } = this.props;
         const { sportName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
-            type, subtype, index, ogTitle, ogDescription, showAll
+            type, subtype, index, ogTitle, ogDescription, showAll, loading
         } = this.state;
-        if (error) {
+        if (loading) {
+            return <center className="mt-5">
+                <Preloader use={ThreeDots}
+                    size={100}
+                    strokeWidth={10}
+                    strokeColor="#F0AD4E"
+                    duration={800} />
+            </center>;
+        }
+        if (error || !data) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
-        if (!data) {
-            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
-        }
 
-        const { teamA, teamB, startDate, lines, leagueName } = data;
+        const { teamA, teamB, startDate, lines, leagueName, timer } = data;
+
         return (
             <div className="content detailed-lines mb-5">
                 <LinesBreadcrumb sportName={sportName}
@@ -193,7 +205,7 @@ class Lines extends Component {
                 </center> */}
                 <br />
                 <ul>
-                    {lines ? lines.map((line, i) => {
+                    {lines && lines.map((line, i) => {
                         const {
                             spreads, moneyline, totals, alternative_spreads, alternative_totals,
                             first_half, second_half, fifth_innings,
@@ -205,35 +217,38 @@ class Lines extends Component {
                         }
 
                         let lines = [
-                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals }, subtype: null },
-                            { line: first_half, subtype: "first_half" },
-                            { line: second_half, subtype: "second_half" },
-                            { line: first_quarter, subtype: "first_quarter" },
-                            { line: second_quarter, subtype: "second_quarter" },
-                            { line: third_quarter, subtype: "third_quarter" },
-                            { line: forth_quarter, subtype: "forth_quarter" },
-                            { line: fifth_innings, subtype: "fifth_innings" }
+                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals }, subtype: null, enabled: (!live || false) },
+                            { line: first_half, subtype: "first_half", enabled: (!live || false) },
+                            { line: second_half, subtype: "second_half", enabled: (!live || timer && timer.q && timer.q < "2") },
+                            { line: first_quarter, subtype: "first_quarter", enabled: (!live || false) },
+                            { line: second_quarter, subtype: "second_quarter", enabled: (!live || timer && timer.q && timer.q < "2") },
+                            { line: third_quarter, subtype: "third_quarter", enabled: (!live || timer && timer.q && timer.q < "3") },
+                            { line: forth_quarter, subtype: "forth_quarter", enabled: (!live || timer && timer.q && timer.q < "4") },
+                            { line: fifth_innings, subtype: "fifth_innings", enabled: (!live || false) }
                         ]
                         return lines.slice(0, showAll ? lines.length : 1)
-                            .map((line, idx) =>
-                                <React.Fragment key={idx}>
-                                    {idx != 0 && line.line && <hr />}
-                                    <Line
-                                        type={type}
-                                        subtype={subtype}
-                                        index={index}
-                                        event={data}
-                                        line={line}
-                                        betSlip={betSlip}
-                                        removeBet={removeBet}
-                                        addBet={this.addBet}
-                                        sportName={sportName}
-                                        leagueId={leagueId}
-                                        oddsFormat={oddsFormat}
-                                    />
-                                </React.Fragment>
-                            );
-                    }) : null}
+                            .map((line, idx) => {
+                                return (line.enabled &&
+                                    <React.Fragment key={idx}>
+                                        {idx != 0 && line.line && <hr />}
+                                        <Line
+                                            type={type}
+                                            subtype={subtype}
+                                            index={index}
+                                            event={data}
+                                            line={line}
+                                            betSlip={betSlip}
+                                            removeBet={removeBet}
+                                            addBet={this.addBet}
+                                            sportName={sportName}
+                                            leagueId={leagueId}
+                                            oddsFormat={oddsFormat}
+                                            live={live}
+                                        />
+                                    </React.Fragment>
+                                )
+                            });
+                    })}
                 </ul>
 
                 {!showAll && <div className="d-flex flex-wr justify-content-center mt-3">
