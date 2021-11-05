@@ -1734,7 +1734,8 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+            if (autobet.referral_code && user.bet_referral_code &&
+                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -1758,8 +1759,12 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 
     if (autobetusers.length == 0) return;
     autobetusers.sort((a, b) => {
-        if (a.referral_code == user.bet_referral_code) return -1;
-        if (b.referral_code == user.bet_referral_code) return 1;
+        if (a.referral_code && user.bet_referral_code &&
+            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return -1;
+        if (b.referral_code && user.bet_referral_code &&
+            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
 
@@ -1932,7 +1937,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }]
     if (user.bet_referral_code) {
         orCon.push({
-            referral_code: user.bet_referral_code
+            referral_code: new RegExp(`^${user.bet_referral_code}$`, 'i')
         })
     }
     let autobets = await AutoBet
@@ -1985,7 +1990,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+            if (autobet.referral_code && user.bet_referral_code &&
+                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -2011,8 +2017,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     if (autobetusers.length == 0) return;
 
     autobetusers.sort((a, b) => {
-        if (a.referral_code == user.bet_referral_code) return -1;
-        if (b.referral_code == user.bet_referral_code) return 1;
+        if (a.referral_code && user.bet_referral_code &&
+            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return -1;
+        if (b.referral_code && user.bet_referral_code &&
+            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
 
@@ -2807,7 +2817,7 @@ expressApp.get('/referralCodeExist', async (req, res) => {
     if (!referral_code)
         return res.json({ success: 1 });
     try {
-        const autobet = await AutoBet.findOne({ referral_code: referral_code });
+        const autobet = await AutoBet.findOne({ referral_code: new RegExp(`^${referral_code}$`, 'i') });
         if (autobet) {
             return res.json({ success: 1 });
         }
