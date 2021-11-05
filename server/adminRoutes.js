@@ -66,8 +66,6 @@ const {
     getLinePoints
 } = require('./libs/functions');
 
-const getLineFromSportData = require('./libs/getLineFromSportData');
-
 
 const BetFee = 0.05;
 const loyaltyPerBet = 25;
@@ -5696,8 +5694,6 @@ adminRouter.post(
             if (sportData) {
                 const { originSportId } = sportData;
                 lineQuery.sportId = originSportId;
-                //const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
-
 
                 const { teamA, teamB, startDate, home, userId, away, teamAOdds, teamBOdds } = betSlip;
                 const user = await User.findById(userId);

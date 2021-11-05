@@ -8,20 +8,33 @@ const EmptyLine = () => {
     return (
         <li>
             <div className="row mx-0">
-                <div className="col-md-6 col-sm-6">
-                    <span className="box-odds line-full">
-                        <div className="vertical-align">
-                            <center><i className="fap fa-do-not-enter" /></center>
-                        </div>
-                    </span>
-                </div>
-                <div className="col-md-6 col-sm-6">
-                    <span className="box-odds line-full">
-                        <div className="vertical-align">
-                            <center><i className="fap fa-do-not-enter" /></center>
-                        </div>
-                    </span>
-                </div>
+                {[1, 2].map(i => (
+                    <div className="col-md-6 col-sm-6" key={i}>
+                        <span className="box-odds line-full">
+                            <div className="vertical-align">
+                                <center><i className="fap fa-do-not-enter" style={{ fontSize: '10px' }} /></center>
+                            </div>
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </li>
+    )
+}
+
+const DisabledLine = () => {
+    return (
+        <li>
+            <div className="row mx-0">
+                {[1, 2].map(i => (
+                    <div className="col-md-6 col-sm-6" key={i}>
+                        <span className="box-odds line-full">
+                            <div className="vertical-align">
+                                <center><i className="fas fa-lock" style={{ fontSize: '15px' }} /></center>
+                            </div>
+                        </span>
+                    </div>
+                ))}
             </div>
         </li>
     )
@@ -90,13 +103,14 @@ export default class Line extends Component {
     render() {
         const {
             type, subtype, index, event, line, betSlip, removeBet,
-            addBet, sportName, leagueId, oddsFormat,
+            addBet, sportName, leagueId, oddsFormat, live
         } = this.props;
         const { showMoreASpread, showMoreATotal } = this.state;
 
         if (!line.line) return null;
         const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line.line;
         const { originId: eventId, teamA, teamB } = event;
+        const enabled = line.enabled;
 
         const lineQueryMoneyLine = {
             sportName: sportName.replace("_", " "),
@@ -112,14 +126,16 @@ export default class Line extends Component {
             <>
                 {(!type || type == 'moneyline' && subtype == line.subtype) && <>
                     <div className={classnames(["line-type-header line-type-header-moneyline", { "mt-3": line.subtype != null }])}><FormattedMessage id="PAGES.LINE.MONEYLINE" /> {this.getSubTypeName(line.subtype)}</div>
-                    {moneyline ? <LineDetail
+                    {moneyline ? (enabled ? <LineDetail
                         originOdds={moneyline}
                         betSlip={betSlip}
                         lineQuery={lineQueryMoneyLine}
                         removeBet={removeBet}
                         addBet={addBet}
                         event={event}
-                        oddsFormat={oddsFormat} />
+                        oddsFormat={oddsFormat}
+                        live={live}
+                    /> : <DisabledLine />)
                         : <EmptyLine />}
                 </>}
 
@@ -129,6 +145,9 @@ export default class Line extends Component {
                     {spreads && spreads.length != 0 ?
                         spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
+                            if (!enabled) {
+                                return <DisabledLine key={i} />
+                            }
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
                                 leagueId,
@@ -147,7 +166,9 @@ export default class Line extends Component {
                                 removeBet={removeBet}
                                 addBet={addBet}
                                 event={event}
-                                oddsFormat={oddsFormat} />
+                                oddsFormat={oddsFormat}
+                                live={live}
+                            />
                         }) : <EmptyLine />}
                 </>}
 
@@ -156,6 +177,9 @@ export default class Line extends Component {
                     <TeamNames teamA={teamA} teamB={teamB} />
                     {totals && totals.length != 0 ? totals.map((total, i) => {
                         if (type && index && index != i) return null;
+                        if (!enabled) {
+                            return <DisabledLine key={i} />
+                        }
                         const lineQuery = {
                             sportName: sportName.replace("_", " "),
                             leagueId,
@@ -174,7 +198,9 @@ export default class Line extends Component {
                             removeBet={removeBet}
                             addBet={addBet}
                             event={event}
-                            oddsFormat={oddsFormat} />
+                            oddsFormat={oddsFormat}
+                            live={live}
+                        />
                     }) : <EmptyLine />}
                 </>}
 
@@ -185,6 +211,11 @@ export default class Line extends Component {
                         {alternative_spreads.map((spread, i) => {
                             if (type && index && index != i) return null;
                             if (index != i && !showMoreASpread && i >= maximumShows) return null;
+
+                            if (!enabled) {
+                                return <DisabledLine key={i} />
+                            }
+
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
                                 leagueId,
@@ -203,7 +234,9 @@ export default class Line extends Component {
                                 removeBet={removeBet}
                                 addBet={addBet}
                                 event={event}
-                                oddsFormat={oddsFormat} />
+                                oddsFormat={oddsFormat}
+                                live={live}
+                            />
                         })}
                         <ShowMoreLess
                             show={showMoreASpread}
@@ -221,6 +254,11 @@ export default class Line extends Component {
                         {alternative_totals.map((total, i) => {
                             if (type && index && index != i) return null;
                             if (index != i && !showMoreATotal && i >= maximumShows) return null;
+
+                            if (!enabled) {
+                                return <DisabledLine key={i} />
+                            }
+
                             const lineQuery = {
                                 sportName: sportName.replace("_", " "),
                                 leagueId,
@@ -239,7 +277,9 @@ export default class Line extends Component {
                                 removeBet={removeBet}
                                 addBet={addBet}
                                 event={event}
-                                oddsFormat={oddsFormat} />
+                                oddsFormat={oddsFormat}
+                                live={live}
+                            />
                         })}
                         <ShowMoreLess
                             show={showMoreATotal}

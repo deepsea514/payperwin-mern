@@ -10,6 +10,7 @@ const SportSchema = new Schema(
         originFixturesLast: Number,
         originOddsLast: Number,
         leagues: Array,
+        liveLeagues: Array,
     },
     {
         timestamps: true,

@@ -74,7 +74,7 @@ export default class LineDetail extends Component {
     }
 
     render() {
-        const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet } = this.props;
+        const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet, live } = this.props;
         const { teamA, teamB, leagueName, origin, started } = event;
         const { home, away } = originOdds;
         const { newHome, newAway } = lineQuery.subtype == null ? calculateNewOdds(home, away, lineQuery.type, lineQuery.subtype) : { newHome: home, newAway: away };
@@ -102,7 +102,8 @@ export default class LineDetail extends Component {
                                     pickName: this.getPickName('home'),
                                     index: lineQuery.index,
                                     origin: origin,
-                                    subtype: lineQuery.subtype
+                                    subtype: lineQuery.subtype,
+                                    live: live
                                 })}>
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('home')}</div>
@@ -148,7 +149,8 @@ export default class LineDetail extends Component {
                                     pickName: this.getPickName('away'),
                                     index: lineQuery.index,
                                     origin: origin,
-                                    subtype: lineQuery.subtype
+                                    subtype: lineQuery.subtype,
+                                    live: live
                                 })}>
                             <div className="vertical-align">
                                 <div className="points">{this.getShowPickName('away')}</div>
