@@ -27,8 +27,8 @@ const calculateNewOdds = (home, away, pick, type, subtype = null) => {
     let newAway = parseInt(away + moneylineDifference * bigHome);
 
     if (newHome < home) {
-        newHome = 0;
-        newAway = 0;
+        newHome = home;
+        newAway = away;
     }
     if (pick == 'home' || pick == 'over') {
         return newHome;
