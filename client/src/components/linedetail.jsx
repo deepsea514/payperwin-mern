@@ -89,7 +89,7 @@ export default class LineDetail extends Component {
         return (
             <li>
                 <div className="row mx-0">
-                    <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
+                    <div className={`col-md-${isDraw ? 4 : 6} col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${homeExist ? 'orange' : null}`}
                             onClick={homeExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'home', lineQuery.index, lineQuery.subtype)
@@ -97,7 +97,7 @@ export default class LineDetail extends Component {
                                     name: `${teamA} vs ${teamB}`,
                                     type: lineQuery.type,
                                     league: leagueName,
-                                    odds: { home: newHome, away: newAway },
+                                    odds: { home: home, away: away },
                                     originOdds: { home: home, away: away },
                                     pick: 'home',
                                     home: teamA,
@@ -137,7 +137,7 @@ export default class LineDetail extends Component {
                         </span>
                     </div>
                     { isDraw != null &&
-                    <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
+                    <div className={`col-md-${isDraw ? 4 : 6} col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${drawExist ? 'orange' : ''}`}
                             onClick={drawExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'draw', lineQuery.index, lineQuery.subtype)
@@ -145,7 +145,7 @@ export default class LineDetail extends Component {
                                     name: `${teamA} vs ${teamB}`,
                                     type: lineQuery.type,
                                     league: leagueName,
-                                    odds: { home: newHome, draw: draw, away: newAway },
+                                    odds: { home: home, draw: draw, away: away },
                                     originOdds: { home: home, draw: draw, away: away },
                                     pick: 'draw',
                                     home: teamA,
@@ -159,20 +159,11 @@ export default class LineDetail extends Component {
                                     subtype: lineQuery.subtype
                                 })}>
                             <div className="vertical-align">
-                                <div className="points"> Draw {this.getShowPickName('draw')}</div>
+                                <div className="points"> Draw </div>
                                 {!started && <div className="odds">
-                                    {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'draw', lineQuery.type, lineQuery.subtype) && <>
-                                        <div className="old-odds">
-                                            {convertOdds(originOdds.draw, oddsFormat)}
+                                 <div className="origin-odds">
+                                            {convertOdds(originOdds.away, oddsFormat)}
                                         </div>
-                                        <div className="new-odds">
-                                            {convertOdds(newAway, oddsFormat)}
-                                        </div>
-                                    </>}
-                                    {!checkOddsAvailable(originOdds, { home: newHome, draw: draw, away: newAway }, 'draw', lineQuery.type, lineQuery.subtype) &&
-                                        <div className="origin-odds">
-                                            {convertOdds(originOdds.draw, oddsFormat)}
-                                        </div>}
                                 </div>}
                                 {started && <div className="odds">
                                     <div className="origin-odds">
@@ -183,7 +174,7 @@ export default class LineDetail extends Component {
                         </span>
                     </div>
                 }
-                    <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
+                    <div className={`col-md-${isDraw ? 4 : 6} col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${awayExist ? 'orange' : null}`}
                             onClick={awayExist ?
                                 () => removeBet(lineQuery.lineId, lineQuery.type, 'away', lineQuery.index, lineQuery.subtype)
