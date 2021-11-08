@@ -3704,3 +3704,46 @@ a:hover {
     text-transform: uppercase;
     cursor: pointer;
 }
+
+.is-loading {
+    color: transparent !important;
+    pointer-events: none;
+    text-shadow: unset !important;
+    position: relative;
+  }
+  .is-loading::after {
+    -webkit-animation: spinAround 0.5s infinite linear;
+    animation: spinAround 0.5s infinite linear;
+    border: 2px solid #dbdbdb;
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    content: "";
+    display: block;
+    height: 1.2em;
+    width: 1.2em;
+    left: calc(50% - (1.2em * 0.5));
+    top: calc(50% - (1.2em * 0.5));
+    position: absolute !important;
+  }
+  
+  @-webkit-keyframes spinAround {
+    from {
+      transform: rotate(0);
+    }
+  
+    to {
+      transform: rotate(359deg);
+    }
+  }
+  
+  @keyframes spinAround {
+    from {
+      transform: rotate(0);
+    }
+  
+    to {
+      transform: rotate(359deg);
+    }
+  }
+  
