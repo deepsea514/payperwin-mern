@@ -1824,3 +1824,15 @@ a.fav-link:hover {
     flex-direction: column;
     justify-content: center;
 }
+
+.language-li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.language-flag {
+    margin-right: 5px;
+    height: 12px;
+    width: 18px;
+    display: block;
+}
