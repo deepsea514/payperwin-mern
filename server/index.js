@@ -909,7 +909,7 @@ expressApp.post(
     // bruteforce.prevent,
     async (req, res) => {
         const { betSlip } = req.body;
-
+        console.log("betSlip",betSlip);
         const { user } = req;
         const errors = [];
         if (user.roles.selfExcluded &&
@@ -1170,6 +1170,7 @@ expressApp.post(
                         lineQuery.sportId = originSportId;
                         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
                         if (line) {
+                            console.log("getLineFromSportData", line);
                             const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
                             const existingBet = await Bet.findOne({
                                 userId: user._id,
@@ -1190,8 +1191,22 @@ expressApp.post(
                             const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
                             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
                             let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+                            console.log("calculateNewOdds", newLineOdds);
                             if (sportsbook) {
-                                newLineOdds = pick == 'home' ? oddsA : oddsB;
+                                switch (pick) {
+                                    case "home":
+                                        newLineOdds = oddsA
+                                        break;
+                                    case "draw":
+                                        newLineOdds =  line.line.draw;
+                                        break;
+                                    default:
+                                        newLineOdds = oddsB
+                                        break;
+                                }
+                                //newLineOdds = pick == 'home' ? oddsA : oddsB;
+                                console.log("sportsbook pick", pick);
+                                console.log("sportsbook newLineOdds", newLineOdds);
                             }
                             const oddsMatch = odds[pick] === newLineOdds;
                             if (oddsMatch) {
