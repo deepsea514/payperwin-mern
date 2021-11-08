@@ -13,30 +13,47 @@ import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
 const serverUrl = _env.appUrl;
 
+const emptyBoxLine = (
+    <li>
+        <span className="box-odds">
+            <div className="vertical-align">
+                <i className="fap fa-do-not-enter" />
+            </div>
+        </span>
+        <span className="box-odds">
+            <div className="vertical-align">
+                <i className="fap fa-do-not-enter" />
+            </div>
+        </span>
+    </li>
+);
+
 class Sport extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: null,
+            liveData: null,
             error: null,
             sportsbookInfo: null,
             timer: null,
-            updateTimer: null
+            liveTimer: null,
         };
     }
 
     componentDidMount() {
         this.getSport();
+        this.getLiveSport();
         this.setState({
-            timer: setInterval(this.getSport.bind(this), 10 * 60 * 1000),
-            updateTimer: setInterval(this.forceUpdate.bind(this), 1000),
+            timer: setInterval(this.getSport, 60 * 1000),
+            liveTimer: setInterval(this.getLiveSport, 10 * 1000),
         })
     }
 
     componentWillUnmount() {
-        const { timer, updateTimer } = this.state;
+        const { timer, liveTimer } = this.state;
         if (timer) clearInterval(timer);
-        if (updateTimer) clearInterval(updateTimer);
+        if (liveTimer) clearInterval(liveTimer);
     }
 
     componentDidUpdate(prevProps) {
@@ -46,77 +63,91 @@ class Sport extends Component {
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
+            this.getLiveSport();
         }
     }
 
-    getSport() {
+    getLiveSport = () => {
         const { sportName, league: league } = this.props;
-        this.setState({ data: null });
+        axios.get(`${serverUrl}/livesport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
+            .then(({ data }) => {
+                if (data) {
+                    this.setState({ liveData: data });
+                } else {
+                    this.setState({ liveData: null })
+                }
+            })
+            .catch((err) => {
+            })
+    }
+
+    getSport = () => {
+        const { sportName, league: league } = this.props;
         if (sportName) {
             axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
                 .then(({ data }) => {
                     if (data) {
-                        // Remove moneyline with draw
-                        data.leagues.forEach(league => {
-                            const { events } = league;
-
-                            console.log("events",events);
-                            events.forEach(event => {
-                                const { lines, startDate } = event;
-                                if ((new Date(startDate)).getTime() > (new Date()).getTime()) {
-                                    event.started = false;
-                                } else {
-                                    event.started = true;
-                                }
-                                event.lineCount = 0;
-                                if (lines) {
-                                    lines.forEach((line, i) => {
-                                        if (i === 0) {
-                                            const {
-                                                moneyline, spreads, totals, alternative_spreads, alternative_totals,
-                                                first_half, second_half, fifth_innings,
-                                                first_quarter, second_quarter, third_quarter, forth_quarter
-                                            } = line;
-                                            let mline = [
-                                                { moneyline, spreads, totals, alternative_spreads, alternative_totals },
-                                                first_half,
-                                                second_half,
-                                                first_quarter,
-                                                second_quarter,
-                                                third_quarter,
-                                                forth_quarter,
-                                                fifth_innings
-                                            ];
-                                            mline.forEach(line => {
-                                                if (!line) return;
-                                                const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line;
-                                                if (moneyline) {
-                                                    event.lineCount++;
-                                                }
-                                                if (spreads) {
-                                                    event.lineCount += spreads.length;
-                                                }
-                                                if (totals) {
-                                                    event.lineCount += totals.length;
-                                                }
-                                                if (alternative_spreads) {
-                                                    event.lineCount += alternative_spreads.length;
-                                                }
-                                                if (alternative_totals) {
-                                                    event.lineCount += alternative_totals.length;
-                                                }
-                                            })
-                                        }
-                                    });
-                                }
-                            });
-                        });
                         this.setState({ data });
+                    } else {
+                        this.setState({ data: null })
                     }
                 }).catch((err) => {
                     this.setState({ error: err });
                 });
         }
+    }
+
+    getLineCount = (line, timer) => {
+        let lineCount = 0;
+        const {
+            moneyline, spreads, totals, alternative_spreads, alternative_totals,
+            first_half, second_half, fifth_innings,
+            first_quarter, second_quarter, third_quarter, forth_quarter
+        } = line;
+        let lines = [];
+        if (timer) {
+            if (timer.q < "4") {
+                lines.push(forth_quarter);
+            }
+            if (timer.q < "3") {
+                lines.push(third_quarter);
+                lines.push(second_half);
+            }
+            if (timer.q < "2") {
+                lines.push(second_quarter);
+            }
+        } else {
+            lines = [
+                { moneyline, spreads, totals, alternative_spreads, alternative_totals },
+                first_half,
+                second_half,
+                first_quarter,
+                second_quarter,
+                third_quarter,
+                forth_quarter,
+                fifth_innings
+            ];
+        }
+        lines.forEach(line => {
+            if (!line) return;
+            const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line;
+            if (moneyline) {
+                lineCount++;
+            }
+            if (spreads) {
+                lineCount += spreads.length;
+            }
+            if (totals) {
+                lineCount += totals.length;
+            }
+            if (alternative_spreads) {
+                lineCount += alternative_spreads.length;
+            }
+            if (alternative_totals) {
+                lineCount += alternative_totals.length;
+            }
+        });
+        return lineCount;
     }
 
     handleChange(e) {
@@ -141,28 +172,15 @@ class Sport extends Component {
 
     render() {
         const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb, user, getUser } = this.props;
-        const { data, error, sportsbookInfo } = this.state;
+        const { data, error, sportsbookInfo, liveData } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
         if (!data) {
             return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
+
         const { leagues, origin } = data;
-        const emptyBoxLine = (
-            <li>
-                <span className="box-odds">
-                    <div className="vertical-align">
-                        <i className="fap fa-do-not-enter" />
-                    </div>
-                </span>
-                <span className="box-odds">
-                    <div className="vertical-align">
-                        <i className="fap fa-do-not-enter" />
-                    </div>
-                </span>
-            </li>
-        );
         const selectedLeague = leagues.find(league => league.originId == leagueId);
         return (
             <div>
@@ -176,34 +194,116 @@ class Sport extends Component {
                     onClose={() => this.setState({ sportsbookInfo: null })}
                     onAccept={this.addSportsbookBet}
                 />}
-                <div className="table-title"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
-                <div className="content">
-                    {leagues.map(league => {
-                        const { name: leagueName, originId: leagueId } = league;
-                        let events = league.events.map((event, i) => {
-                            const { teamA, teamB, startDate, lines, originId: eventId, started } = event;
-                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
+
+                {liveData && (() => {
+                    const { leagues } = liveData;
+                    if (!leagues || !leagues.length) return null;
+
+                    const filteredLeagues = leagues.map(league => {
+                        const { name: leagueName, originId: leagueId, events } = league;
+                        const filteredEvents = events.map((event, i) => {
+                            const { teamA, teamB, startDate, lines, timer } = event;
+                            if (!lines || !lines.length)
                                 return null;
-                            if (team && teamA != team && teamB != team) return;
-
-                            const { moneyline, spreads, totals, originId: lineId } = lines[0];
-
-                            if (!moneyline && !spreads && !totals)
-                                return null;
-
+                            const lineCount = this.getLineCount(lines[0], timer);
+                            if (!lineCount) return null;
+                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}/live`;
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
-                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf">
+                                        <Link to={{ pathname: pathname }} className="widh-adf">
                                             <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                         </Link>
-                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }} className="widh-adf mt-2 text-right">
+                                        <Link to={{ pathname: pathname }} className="widh-adf mt-2 text-right">
                                             <strong><FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /></strong>
                                         </Link>
                                     </li>
                                     <li className="detailed-lines-link mobile">
-                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }}>
-                                            +{event.lineCount}<i className="fas fa-angle-right" />
+                                        <Link to={{ pathname: pathname }}>
+                                            +{lineCount}<i className="fas fa-angle-right" />
+                                        </Link>
+                                    </li>
+                                    {[1, 2, 3].map(i => (
+                                        <li key={i}>
+                                            <span className="box-odds">
+                                                <div className="vertical-align">
+                                                    <div className="origin-odds">
+                                                        <i className="fas fa-lock" />
+                                                    </div>
+                                                </div>
+                                            </span>
+                                            <span className="box-odds">
+                                                <div className="vertical-align">
+                                                    <div className="origin-odds">
+                                                        <i className="fas fa-lock" />
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </li>
+                                    ))}
+                                    <li className="detailed-lines-link not-mobile">
+                                        <Link to={{ pathname: pathname }}>
+                                            +{lineCount}<i className="fas fa-angle-right" />
+                                        </Link>
+                                    </li>
+                                </ul>
+                            )
+                        }).filter(event => event);
+                        console.log(filteredEvents)
+                        return filteredEvents.length > 0 && (
+                            <div className="tab-content" id="myTabContent" key={leagueName}>
+                                <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                    <ul className="table-list table-list-top d-flex">
+                                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
+                                        <li className="detailed-lines-link mobile"></li>
+                                        <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
+                                        <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
+                                        <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
+                                        <li className="detailed-lines-link not-mobile"></li>
+                                    </ul>
+                                    {filteredEvents}
+                                </div>
+                            </div>
+                        );
+                    }).filter(league => league);
+
+                    return filteredLeagues.length > 0 && (
+                        <>
+                            <div className="table-title">LIVE</div>
+                            <div className="content mb-3">
+                                {filteredLeagues}
+                            </div>
+                        </>
+                    )
+                })()}
+
+                {(() => {
+
+                    const filteredLeagues = leagues.map(league => {
+                        const { name: leagueName, originId: leagueId } = league;
+                        let events = league.events.map((event, i) => {
+                            const { teamA, teamB, startDate, lines, originId: eventId } = event;
+                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
+                                return null;
+                            if (team && teamA != team && teamB != team) return;
+                            const { moneyline, spreads, totals, originId: lineId } = lines[0];
+                            if (!moneyline && !spreads && !totals)
+                                return null;
+                            const lineCount = this.getLineCount(lines[0]);
+                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}`;
+                            return (
+                                <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
+                                    <li>
+                                        <Link to={{ pathname: pathname }} className="widh-adf">
+                                            <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                        </Link>
+                                        <Link to={{ pathname: pathname }} className="widh-adf mt-2 text-right">
+                                            <strong><FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /></strong>
+                                        </Link>
+                                    </li>
+                                    <li className="detailed-lines-link mobile">
+                                        <Link to={{ pathname: pathname }}>
+                                            +{lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>
                                     <React.Fragment key={lineId}>
@@ -241,10 +341,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: ${teamA}`,
                                                                     index: null,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
                                                                 })}>
-                                                            {!started && <div className="vertical-align">
+                                                            <div className="vertical-align">
                                                                 {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.home, oddsFormat)}
@@ -256,12 +355,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <div className="origin-odds">
                                                                     {convertOdds(moneyline.home, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                         <span className={`box-odds ${awayExist ? 'orange' : null}`}
                                                             onClick={awayExist ?
@@ -281,10 +375,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: ${teamB}`,
                                                                     index: null,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
                                                                 })}>
-                                                            {!started && <div className="vertical-align">
+                                                            <div className="vertical-align">
                                                                 {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <>
                                                                     <div className="old-odds">
                                                                         {convertOdds(moneyline.away, oddsFormat)}
@@ -296,12 +389,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <div className="origin-odds">
                                                                     {convertOdds(moneyline.away, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                     </li>
                                                 );
@@ -324,8 +412,7 @@ class Sport extends Component {
                                                 const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
                                                 return (
                                                     <li>
-                                                        <span
-                                                            className={`box-odds ${homeExist ? 'orange' : null}`}
+                                                        <span className={`box-odds ${homeExist ? 'orange' : null}`}
                                                             onClick={homeExist
                                                                 ? () => removeBet(lineId, 'spread', 'home', 0, null)
                                                                 : () => this.addBet({
@@ -343,11 +430,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
                                                                     index: 0,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
-                                                                })}
-                                                        >
-                                                            {!started && <div className="vertical-align">
+                                                                })}>
+                                                            <div className="vertical-align">
                                                                 <div className="points">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`}</div>
                                                                 {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <>
                                                                     <div className="old-odds">
@@ -360,12 +445,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].home, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                         <span
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
@@ -386,10 +466,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
                                                                     index: 0,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
                                                                 })}>
-                                                            {!started && <div className="vertical-align">
+                                                            <div className="vertical-align">
                                                                 <div className="points">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`}</div>
                                                                 {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <>
                                                                     <div className="old-odds">
@@ -402,12 +481,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <div className="origin-odds">
                                                                     {convertOdds(spreads[0].away, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                     </li>
                                                 );
@@ -449,11 +523,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: Over ${totals[0].points}`,
                                                                     index: 0,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
-                                                                })}
-                                                        >
-                                                            {!started && <div className="vertical-align">
+                                                                })}>
+                                                            <div className="vertical-align">
                                                                 <div className="points">O {`${totals[0].points}`}</div>
                                                                 {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <>
                                                                     <div className="old-odds">
@@ -466,12 +538,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <div className="origin-odds">
                                                                     {convertOdds(totals[0].over, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                         <span
                                                             className={`box-odds ${awayExist ? 'orange' : null}`}
@@ -492,11 +559,9 @@ class Sport extends Component {
                                                                     pickName: `Pick: Under ${totals[0].points}`,
                                                                     index: 0,
                                                                     origin: origin,
-                                                                    started: started,
                                                                     subtype: null
-                                                                })}
-                                                        >
-                                                            {!started && <div className="vertical-align">
+                                                                })}>
+                                                            <div className="vertical-align">
                                                                 <div className="points">U {`${totals[0].points}`}</div>
                                                                 {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <>
                                                                     <div className="old-odds">
@@ -509,12 +574,7 @@ class Sport extends Component {
                                                                 {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <div className="origin-odds">
                                                                     {convertOdds(totals[0].under, oddsFormat)}
                                                                 </div>}
-                                                            </div>}
-                                                            {started && <div className="vertical-align">
-                                                                <div className="origin-odds">
-                                                                    <i className="fas fa-lock" />
-                                                                </div>
-                                                            </div>}
+                                                            </div>
                                                         </span>
                                                     </li>
                                                 );
@@ -522,15 +582,14 @@ class Sport extends Component {
                                         ) : emptyBoxLine}
                                     </React.Fragment>
                                     <li className="detailed-lines-link not-mobile">
-                                        <Link to={{ pathname: `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}` }}>
-                                            +{event.lineCount}<i className="fas fa-angle-right" />
+                                        <Link to={{ pathname: pathname }}>
+                                            +{lineCount}<i className="fas fa-angle-right" />
                                         </Link>
                                     </li>
                                 </ul>
                             );
-                        });
-                        events = events.filter(event => event);
-                        return (events.length ?
+                        }).filter(event => event);
+                        return (events.length > 0 &&
                             <div className="tab-content" id="myTabContent" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
@@ -544,11 +603,19 @@ class Sport extends Component {
                                     {events}
                                 </div>
                             </div>
-                            : null
                         );
-                    })}
-                </div>
-            </div >
+                    }).filter(league => league);
+                    return filteredLeagues.length > 0 && (
+                        <>
+                            <div className="table-title"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
+                            <div className="content">
+                                {filteredLeagues}
+                            </div>
+                        </>
+                    )
+                })()}
+
+            </div>
         );
     }
 }

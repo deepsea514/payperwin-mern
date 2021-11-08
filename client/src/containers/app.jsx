@@ -204,8 +204,8 @@ class App extends Component {
     }
 
     addBet = (bet) => {
-        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false } = bet;
-        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook };
+        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false } = bet;
+        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live };
         let { betSlip } = this.state;
         betSlip = betSlip.filter(bet => {
             const exists = bet.lineId === lineQuery.lineId &&
@@ -355,9 +355,13 @@ class App extends Component {
                                                 <Route path="/sports" render={(props) =>
                                                     <ErrorBoundary><Sports {...props} /></ErrorBoundary>
                                                 } />
+                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId/live" render={(props) =>
+                                                    <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
+                                                        removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={true} /></ErrorBoundary>
+                                                } />
                                                 <Route path="/sport/:sportName/league/:leagueId/event/:eventId" render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
-                                                        removeBet={this.removeBet} {...props} user={user} getUser={getUser} /></ErrorBoundary>
+                                                        removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={false} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/sport/:name/league/:league" render={(props) => {
                                                     const { match } = props;

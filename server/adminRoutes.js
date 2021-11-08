@@ -28,7 +28,7 @@ const FAQItem = require('./models/faq_item');
 const BetPool = require('./models/betpool');
 const ErrorLog = require('./models/errorlog');
 const LoyaltyLog = require('./models/loyaltylog');
-
+const ParlayBetPool = require('./models/parlaybetpool');
 
 //external Libraries
 const ExpressBrute = require('express-brute');
@@ -65,8 +65,6 @@ const {
     calculateParlayBetsStatus,
     getLinePoints
 } = require('./libs/functions');
-
-const getLineFromSportData = require('./libs/getLineFromSportData');
 
 
 const BetFee = 0.05;
@@ -1118,7 +1116,8 @@ adminRouter.get(
                 .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
-                .populate('user', ['email', 'currency']).populate('reason', ['title']);
+                .populate('user', ['email', 'currency'])
+                .populate('reason', ['title']);
             res.json({ perPage, total, page: page + 1, data: deposits });
         } catch (error) {
             console.error(error);
@@ -1189,10 +1188,10 @@ adminRouter.patch(
             let { id, data } = req.body;
 
             const deposit = await FinancialLog.findById(id);
-            if (deposit.status == FinancialStatus.success) {
-                res.status(400).json({ error: 'Can\'t update finished deposit.' });
-                return;
-            }
+            // if (deposit.status == FinancialStatus.success) {
+            //     res.status(400).json({ error: 'Can\'t update finished deposit.' });
+            //     return;
+            // }
             await deposit.update(data, { new: true }).exec();
             const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
 
@@ -5696,8 +5695,6 @@ adminRouter.post(
             if (sportData) {
                 const { originSportId } = sportData;
                 lineQuery.sportId = originSportId;
-                //const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
-
 
                 const { teamA, teamB, startDate, home, userId, away, teamAOdds, teamBOdds } = betSlip;
                 const user = await User.findById(userId);

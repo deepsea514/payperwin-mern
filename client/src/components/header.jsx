@@ -29,7 +29,7 @@ class Header extends Component {
         this.state = {
             userDropDownOpen: false,
             oddsDropDownOpen: false,
-            langDropDownOpen: false,
+            langDropDownOpen: true,
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
@@ -110,6 +110,19 @@ class Header extends Component {
         const { search, history } = this.props;
         if (evt.key !== 'Enter') return;
         history.push(`/search/${search}`);
+    }
+
+    getImageSource = () => {
+        const { lang } = this.props;
+        switch (lang) {
+            case 'ko':
+                return '/media/svg/flags/018-south-korea.svg';
+            case 'es':
+                return '/media/svg/flags/016-spain.svg';
+            case 'en':
+            default:
+                return '/media/svg/flags/226-united-states.svg';
+        }
     }
 
     render() {
@@ -333,20 +346,23 @@ class Header extends Component {
                                         ) : null}
                                     </li>
                                     <li>
-                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}>{lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
+                                        <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}><img src={this.getImageSource()} className="language-flag" style={{ display: 'inherit' }} /> {lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
                                         {langDropDownOpen ? (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
                                                 <div className="odds-dropdown">
                                                     <ul>
-                                                        <li onClick={() => this.setLanguage('en')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.ENGLISH" />
+                                                        <li onClick={() => this.setLanguage('en')} className="language-li">
+                                                            <div><img src="/media/svg/flags/226-united-states.svg" className="language-flag" /></div>
+                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.ENGLISH" /></div>
                                                         </li>
-                                                        <li onClick={() => this.setLanguage('es')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.SPANISH" />
+                                                        <li onClick={() => this.setLanguage('es')} className="language-li">
+                                                            <div><img src="/media/svg/flags/016-spain.svg" className="language-flag" /></div>
+                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.SPANISH" /></div>
                                                         </li>
-                                                        <li onClick={() => this.setLanguage('ko')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LANGUAGE.KOREAN" />
+                                                        <li onClick={() => this.setLanguage('ko')} className="language-li">
+                                                            <div><img src="/media/svg/flags/018-south-korea.svg" className="language-flag" /></div>
+                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.KOREAN" /></div>
                                                         </li>
                                                     </ul>
                                                 </div>
