@@ -28,7 +28,7 @@ const FAQItem = require('./models/faq_item');
 const BetPool = require('./models/betpool');
 const ErrorLog = require('./models/errorlog');
 const LoyaltyLog = require('./models/loyaltylog');
-
+const ParlayBetPool = require('./models/parlaybetpool');
 
 //external Libraries
 const ExpressBrute = require('express-brute');
