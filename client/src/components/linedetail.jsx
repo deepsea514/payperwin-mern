@@ -4,6 +4,8 @@ import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import convertOdds from '../helpers/convertOdds';
 
 export default class LineDetail extends Component {
+
+    
     getShowPickName = (pick) => {
         const { originOdds, lineQuery, event } = this.props;
         const { teamA, teamB } = event;
@@ -77,13 +79,13 @@ export default class LineDetail extends Component {
         const { originOdds, lineQuery, betSlip, event, oddsFormat, removeBet, addBet } = this.props;
         const { teamA, teamB, leagueName, origin, started } = event;
         console.log(originOdds);
-        console.log(originOdds);
-        const { home, away } = originOdds;
+        const { home, draw, away } = originOdds;
         const { newHome, newAway } = lineQuery.subtype == null ? calculateNewOdds(home, away, lineQuery.type, lineQuery.subtype) : { newHome: home, newAway: away };
         const homeExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'home' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         const awayExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'away' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
         const drawExist = betSlip.find((b) => b.lineId === lineQuery.lineId && b.pick === 'draw' && b.type === lineQuery.type && b.index === lineQuery.index && b.subtype == lineQuery.subtype);
 
+        let isDraw =  draw || null;
         return (
             <li>
                 <div className="row mx-0">
@@ -133,24 +135,24 @@ export default class LineDetail extends Component {
                             </div>
                         </span>
                     </div>
-
+                    { isDraw != null &&
                     <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${drawExist ? 'orange' : ''}`}
                             onClick={drawExist ?
-                                () => removeBet(lineQuery.lineId, lineQuery.type, 'away', lineQuery.index, lineQuery.subtype)
+                                () => removeBet(lineQuery.lineId, lineQuery.type, 'draw', lineQuery.index, lineQuery.subtype)
                                 : () => addBet({
                                     name: `${teamA} vs ${teamB}`,
                                     type: lineQuery.type,
                                     league: leagueName,
-                                    odds: { home: newHome, away: newAway },
-                                    originOdds: { home: home, away: away },
+                                    odds: { home: newHome, draw: draw, away: newAway },
+                                    originOdds: { home: home, draw: draw, away: away },
                                     pick: 'draw',
                                     home: teamA,
                                     away: teamB,
                                     sportName: lineQuery.sportName,
                                     lineId: lineQuery.lineId,
                                     lineQuery: lineQuery,
-                                    pickName: this.getPickName('draw'),
+                                    pickName: "Pick: Draw",
                                     index: lineQuery.index,
                                     origin: origin,
                                     subtype: lineQuery.subtype
@@ -166,7 +168,7 @@ export default class LineDetail extends Component {
                                             {convertOdds(newAway, oddsFormat)}
                                         </div>
                                     </>}
-                                    {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'draw', lineQuery.type, lineQuery.subtype) &&
+                                    {!checkOddsAvailable(originOdds, { home: newHome, draw: draw, away: newAway }, 'draw', lineQuery.type, lineQuery.subtype) &&
                                         <div className="origin-odds">
                                             {convertOdds(originOdds.draw, oddsFormat)}
                                         </div>}
@@ -179,7 +181,7 @@ export default class LineDetail extends Component {
                             </div>
                         </span>
                     </div>
-                    
+                }
                     <div className={`col-md-6 col-${lineQuery.type == 'moneyline' ? 12 : 6}`}>
                         <span className={`box-odds line-full ${awayExist ? 'orange' : null}`}
                             onClick={awayExist ?
