@@ -65,8 +65,8 @@ export const reducer = persistReducer(
                     return { ...state, ...action.preference };
                 return initialState;
 
-            // case actionTypes.setLanguage:
-            //     return { ...state, lang: action.lang };
+            case actionTypes.setLanguage:
+                return { ...state, lang: action.lang };
 
             case actionTypes.setOddsFormat:
                 return { ...state, oddsFormat: action.oddsFormat };
@@ -153,7 +153,10 @@ export function* saga() {
     yield takeLatest(actionTypes.setOddsFormat, function* setOddsFormatSaga() {
         try {
             const oddsFormat = yield select((state) => state.frontend.oddsFormat);
-            yield setPreferences({ oddsFormat });
+            const user = yield select((state) => state.frontend.user);
+            if (user) {
+                yield setPreferences({ oddsFormat });
+            }
         } catch (error) {
         }
     });
@@ -161,7 +164,10 @@ export function* saga() {
     yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
         try {
             const display_mode = yield select((state) => state.frontend.display_mode);
-            yield setPreferences({ display_mode });
+            const user = yield select((state) => state.frontend.user);
+            if (user) {
+                yield setPreferences({ display_mode });
+            }
             const dark_light = display_mode == 'system' ? timeHelper.getDisplayModeBasedOnSystemTime(timezone) : display_mode;
             yield put(actions.setPreference({ dark_light }));
         } catch (error) {
@@ -180,9 +186,12 @@ export function* saga() {
 
     yield takeLatest(actionTypes.setLanguage, function* setLanguageSaga() {
         const lang = yield select((state) => state.frontend.lang);
-        try {
-            // yield setPreferences({ lang });
-        } catch (error) {
+        const user = yield select((state) => state.frontend.user);
+        if (user) {
+            try {
+                yield setPreferences({ lang });
+            } catch (error) {
+            }
         }
         setLanguage(lang);
     });
@@ -190,7 +199,7 @@ export function* saga() {
     yield takeLatest(actionTypes.setMaxBetLimitTierAction, function* setMaxBetLimitTierSaga() {
         const maxBetLimitTier = yield select((state) => state.frontend.maxBetLimitTier);
         try {
-            yield setMaxBetLimitTierAction({ maxBetLimitTier });
+            // yield setMaxBetLimitTierAction({ maxBetLimitTier });
             actions.setMaxBetLimitTierAction(maxBetLimitTier);
         } catch (error) {
         }

@@ -946,6 +946,7 @@ expressApp.post(
                 origin,
                 type,
                 sportsbook,
+                live,
             } = bet;
             if (!odds || !pick || !toBet || !toWin || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
@@ -1167,7 +1168,7 @@ expressApp.post(
                     if (sportData) {
                         const { originSportId } = sportData;
                         lineQuery.sportId = originSportId;
-                        const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
+                        const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
                         if (line) {
                             const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
                             const existingBet = await Bet.findOne({
@@ -1443,7 +1444,7 @@ expressApp.post(
         let eventsDetail = '';
         for (const bet of betSlip) {
             index++;
-            const { odds, pick, lineQuery, pickName, origin, sportsbook } = bet;
+            const { odds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
             if (!odds || !pick || !lineQuery) {
                 errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
                 break;
@@ -1460,7 +1461,7 @@ expressApp.post(
             }
             const { originSportId } = sportData;
             lineQuery.sportId = originSportId;
-            const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
+            const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
             if (!line) {
                 errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
                 break;
@@ -1733,7 +1734,8 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+            if (autobet.referral_code && user.bet_referral_code &&
+                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -1757,8 +1759,12 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 
     if (autobetusers.length == 0) return;
     autobetusers.sort((a, b) => {
-        if (a.referral_code == user.bet_referral_code) return -1;
-        if (b.referral_code == user.bet_referral_code) return 1;
+        if (a.referral_code && user.bet_referral_code &&
+            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return -1;
+        if (b.referral_code && user.bet_referral_code &&
+            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
 
@@ -1931,7 +1937,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }]
     if (user.bet_referral_code) {
         orCon.push({
-            referral_code: user.bet_referral_code
+            referral_code: new RegExp(`^${user.bet_referral_code}$`, 'i')
         })
     }
     let autobets = await AutoBet
@@ -1984,7 +1990,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && autobet.referral_code == user.bet_referral_code) {
+            if (autobet.referral_code && user.bet_referral_code &&
+                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -2010,8 +2017,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     if (autobetusers.length == 0) return;
 
     autobetusers.sort((a, b) => {
-        if (a.referral_code == user.bet_referral_code) return -1;
-        if (b.referral_code == user.bet_referral_code) return 1;
+        if (a.referral_code && user.bet_referral_code &&
+            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return -1;
+        if (b.referral_code && user.bet_referral_code &&
+            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+            return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
 
@@ -2210,7 +2221,6 @@ expressApp.get(
                 const { lineQuery: { sportName, leagueId, eventId, lineId, type, altLineId }, pick, pickName, payableToWin, bet: risk, toWin, pickOdds, oldOdds } = bet;
                 const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
                 if (sportData) {
-                    const { originSportId } = sportData;
                     const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, altLineId);
                     line.type = type;
                     line.pickName = pickName;
@@ -2546,7 +2556,52 @@ expressApp.get(
                 }
                 return res.json(null);
             }
-            return res.json(sportData);
+            return res.json({
+                name: sportData.name,
+                leagues: sportData.leagues,
+                origin: sportData.origin,
+                originSportId: sportData.originSportId
+            });
+        } else {
+            return res.json(null);
+        }
+    },
+);
+
+expressApp.get(
+    '/livesport',
+    async (req, res) => {
+        const { name, leagueId, eventId } = req.query;
+        const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+        if (sportData) {
+            if (leagueId) {
+                const sportLeague = sportData.liveLeagues.find(league => league.originId == leagueId)
+                if (sportLeague) {
+                    if (eventId) {
+                        const event = sportLeague.events.find(event => event.originId == eventId);
+                        if (event)
+                            return res.json({
+                                leagueName: sportLeague.name,
+                                origin: sportData.origin,
+                                ...event
+                            });
+                        return res.json(null);
+                    }
+                    return res.json({
+                        name: sportData.name,
+                        leagues: [sportLeague],
+                        origin: sportData.origin,
+                        originSportId: sportData.originSportId
+                    });
+                }
+                return res.json(null);
+            }
+            return res.json({
+                name: sportData.name,
+                leagues: sportData.liveLeagues,
+                origin: sportData.origin,
+                originSportId: sportData.originSportId
+            });
         } else {
             return res.json(null);
         }
@@ -2569,11 +2624,27 @@ expressApp.get(
                     eventCount: filteredEvents.length,
                     originId
                 }
-            })
-            data = data.filter(data => data.eventCount)
-            data.sort((a, b) => b.eventCount - a.eventCount);
-            // data = data.slice(0, 5);
-            res.json(data);
+            });
+            let liveLeagues = sportData.liveLeagues ? sportData.liveLeagues.map(league => ({
+                name: league.name,
+                eventCount: league.events.length,
+                originId: league.originId
+            })) : [];
+            let merged = [];
+
+            data = data.filter(league => league.eventCount > 0)
+            for (let i = 0; i < data.length; i++) {
+                const duplicated = liveLeagues.find((itmInner) => itmInner.originId === data[i].originId)
+                if (duplicated) {
+                    merged.push({ ...data[i], eventCount: data[i].eventCount + liveLeagues.eventCount });
+                    liveLeagues = liveLeagues.filter(league => league.originId == duplicated.originId)
+                } else {
+                    merged.push(data[i]);
+                }
+            }
+            merged = [...merged, ...liveLeagues];
+            merged.sort((a, b) => b.eventCount - a.eventCount);
+            res.json(merged);
         } else {
             res.json([]);
         }
@@ -2746,7 +2817,7 @@ expressApp.get('/referralCodeExist', async (req, res) => {
     if (!referral_code)
         return res.json({ success: 1 });
     try {
-        const autobet = await AutoBet.findOne({ referral_code: referral_code });
+        const autobet = await AutoBet.findOne({ referral_code: new RegExp(`^${referral_code}$`, 'i') });
         if (autobet) {
             return res.json({ success: 1 });
         }

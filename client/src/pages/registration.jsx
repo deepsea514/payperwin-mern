@@ -443,7 +443,7 @@ class Registration extends Component {
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Referral Code(optional)</Form.Label>
+                        <Form.Label>Referral / Promotion Code (optional)</Form.Label>
                         <Form.Control
                             type="text"
                             name="referral_code"
