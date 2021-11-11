@@ -14,5 +14,21 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Ice Hockey",
+        "shortName": "ice_hockey",
+        "leagues": [
+            {
+                "name": "NHL",
+                "shortName": "NHL",
+                "seasons": [
+                    {
+                        "name": "2021",
+                        "data": "ice_hockey_nhl_2021.json"
+                    }
+                ]
+            }
+        ]
     }
 ]
