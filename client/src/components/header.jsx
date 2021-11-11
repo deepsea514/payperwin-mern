@@ -29,7 +29,7 @@ class Header extends Component {
         this.state = {
             userDropDownOpen: false,
             oddsDropDownOpen: false,
-            langDropDownOpen: true,
+            langDropDownOpen: false,
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
         };
