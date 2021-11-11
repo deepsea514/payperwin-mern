@@ -1,0 +1,18 @@
+[
+    {
+        "name": "American Football",
+        "shortName": "football",
+        "leagues": [
+            {
+                "name": "NFL",
+                "shortName": "nfl",
+                "seasons": [
+                    {
+                        "name": "2021",
+                        "data": "football_nfl_2021.json"
+                    }
+                ]
+            }
+        ]
+    }
+]
