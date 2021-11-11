@@ -37,6 +37,7 @@ import ErrorLogsModule from "../modules/errorlogs/pages";
 import PlaceBet from "../modules/placebet/pages/PlaceBet";
 import ErrorBoundary from '../../libs/ErrorBoundary';
 import CreditsModule from '../modules/credit/pages';
+import Prediction from '../modules/prediction/pages';
 
 class App extends Component {
     constructor(props) {
@@ -131,8 +132,8 @@ class App extends Component {
                         <ErrorBoundary><AutoBet {...props} /></ErrorBoundary>
                     } />}
 
-                     {/* Placebet */}
-                     {this.isAvailable('placebet') && <Route path="/placebet" component={PlaceBet} />}
+                    {/* Placebet */}
+                    {this.isAvailable('placebet') && <Route path="/placebet" component={PlaceBet} />}
 
 
                     {/* email templates */}
@@ -203,6 +204,11 @@ class App extends Component {
                     {/* Credits */}
                     {this.isAvailable('credits') && <Route path="/credits" render={(props) =>
                         <ErrorBoundary><CreditsModule {...props} /></ErrorBoundary>
+                    } />}
+
+                    {/* Prediction */}
+                    {this.isAvailable('predictions') && <Route path="/predictions" render={(props) =>
+                        <ErrorBoundary><Prediction {...props} /></ErrorBoundary>
                     } />}
 
                     <Redirect exact from="/" to="/dashboard" />
