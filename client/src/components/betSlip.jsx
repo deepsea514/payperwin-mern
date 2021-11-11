@@ -259,7 +259,7 @@ class BetSlip extends Component {
                                 <button
                                     disabled={submitting}
                                     type="button"
-                                    className="total-btn"
+                                    className={ 'total-btn'  + (submitting ? ' is-loading' : '')  }
                                     onClick={user
                                         ? this.placeBets
                                         : () => {
