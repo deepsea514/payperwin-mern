@@ -55,15 +55,19 @@ const calculateBetsStatus = async (betpoolUid) => {
         console.log('BetPool not found.');
         return;
     }
-    const { homeBets, awayBets, teamA, teamB } = betpool;
-    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
+    const { homeBets, awayBets, teamA, teamB, drawBets, nonDrawBets, teamNonDraw, teamDraw } = betpool;
+    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets,  ...drawBets, ...nonDrawBets ] } });
     const payPool = {
         home: teamB.betTotal,
         away: teamA.betTotal,
+        draw: teamNonDraw.betTotal,
+        nondraw: teamDraw.betTotal,
     }
     const betAmounts = {
         home: teamA.betTotal,
         away: teamB.betTotal,
+        draw: teamDraw.betTotal,
+        nondraw: teamNonDraw.betTotal,
     }
     for (const bet of bets) {
         const { _id, bet: betAmount, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin, sportsbook } = bet;
