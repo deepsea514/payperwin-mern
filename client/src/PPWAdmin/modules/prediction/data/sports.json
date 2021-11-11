@@ -1,0 +1,34 @@
+[
+    {
+        "name": "American Football",
+        "shortName": "football",
+        "leagues": [
+            {
+                "name": "NFL",
+                "shortName": "nfl",
+                "seasons": [
+                    {
+                        "name": "2021",
+                        "data": "football_nfl_2021.json"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Ice Hockey",
+        "shortName": "ice_hockey",
+        "leagues": [
+            {
+                "name": "NHL",
+                "shortName": "NHL",
+                "seasons": [
+                    {
+                        "name": "2021",
+                        "data": "ice_hockey_nhl_2021.json"
+                    }
+                ]
+            }
+        ]
+    }
+]

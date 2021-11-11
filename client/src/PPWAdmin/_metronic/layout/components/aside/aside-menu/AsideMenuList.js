@@ -348,6 +348,16 @@ function AsideMenuList({
                         </ul>
                     </div>
                 </li>}
+
+                {currentUser && isAvailable('predictions') && <li className={`menu-item ${getMenuItemActive("/predictions", false)}`}
+                    aria-haspopup="true">
+                    <Link className="menu-link" to="/predictions/">
+                        <span className="svg-icon menu-icon">
+                            <SVG src={"/media/svg/icons/General/Bookmark.svg"} />
+                        </span>
+                        <span className="menu-text">Predictions</span>
+                    </Link>
+                </li>}
             </ul>
             <br />
             <br />
