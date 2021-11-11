@@ -909,7 +909,7 @@ expressApp.post(
     // bruteforce.prevent,
     async (req, res) => {
         const { betSlip } = req.body;
-        console.log("betSlip",betSlip);
+        
         const { user } = req;
         const errors = [];
         if (user.roles.selfExcluded &&
@@ -1170,8 +1170,7 @@ expressApp.post(
                         lineQuery.sportId = originSportId;
                         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
                         if (line) {
-                            console.log("getLineFromSportData", line);
-                            const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
+                            const { teamA, teamB, startDate, line: { home, away, draw, hdp, points } } = line;
                             const existingBet = await Bet.findOne({
                                 userId: user._id,
                                 "lineQuery.sportName": lineQuery.sportName,
@@ -1182,6 +1181,12 @@ expressApp.post(
                                 "lineQuery.subtype": lineQuery.subtype,
                                 "lineQuery.altLineId": lineQuery.altLineId
                             });
+
+                            let oddDrawOpposite = 0;
+                            if(draw) {
+                                oddDrawOpposite = draw > 0 ? -Math.abs(draw) : Math.abs(draw);
+                            }
+                            
                             if (existingBet) {
                                 errors.push(`${pickName} @${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
                                 continue;
@@ -1197,7 +1202,7 @@ expressApp.post(
                                         newLineOdds = oddsA
                                         break;
                                     case "draw":
-                                        newLineOdds =  line.line.draw;
+                                        newLineOdds =  draw;
                                         break;
                                     default:
                                         newLineOdds = oddsB
@@ -1227,6 +1232,15 @@ expressApp.post(
                                             teamB: {
                                                 name: teamB,
                                                 odds: oddsB,
+                                            },
+                                            teamDraw: {
+                                                name: `Draw ${teamA} vs ${teamB}`,
+                                                odds: draw,
+                                            },
+                                            
+                                            teamNonDraw: {
+                                                name: `Non Draw ${teamA} vs ${teamB}`,
+                                                odds: oddDrawOpposite,
                                             },
                                             pick: pick,
                                             pickOdds: newLineOdds,
@@ -1323,14 +1337,44 @@ expressApp.post(
                                             const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
                                             let betpoolId = '';
                                             if (exists) {
-                                                const docChanges = {
+                                               /*  const docChanges = {
                                                     $push: pick === 'home' ? { homeBets: betId } : { awayBets: betId },
                                                     $inc: {},
+                                                }; */
+                                                const docChanges = {
+                                                    $push: {},
+                                                    $inc: {},
                                                 };
+                                                switch (pick) {
+                                                    case 'home':
+                                                        docChanges.$push['homeBets'] = betId;
+                                                        docChanges.$inc['teamA.betTotal'] = betAfterFee;
+                                                        docChanges.$inc['teamA.toWinTotal'] = toWin;
+                                                        break;
+                                                    case 'draw':
+                                                        docChanges.$push['drawBets'] = betId;
+                                                        docChanges.$inc['teamDraw.betTotal'] = betAfterFee;
+                                                        docChanges.$inc['teamDraw.toWinTotal'] = toWin;
+                                                        break;
+                                                    case 'nondraw':
+                                                        docChanges.$push['nonDrawBets'] = betId;
+                                                        docChanges.$inc['teamNonDraw.betTotal'] = betAfterFee;
+                                                        docChanges.$inc['teamNonDraw.toWinTotal'] = toWin;
+                                                        break;
+                                                    default:
+                                                        docChanges.$push['awayBets'] = betId;
+                                                        docChanges.$inc['teamB.betTotal'] = betAfterFee;
+                                                        docChanges.$inc['teamB.toWinTotal'] = toWin;
+                                                        break;
+                                                }
+
+                                                console.log('Place bet docChanges', docChanges);
+                                                /* 
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
                                                 docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.betTotal`] = betAfterFee;
                                                 docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.toWinTotal`] = toWin;
+                                                 */
                                                 await BetPool.findOneAndUpdate(
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
@@ -1361,13 +1405,13 @@ expressApp.post(
                                                         },
                                                         teamDraw: {
                                                             name: `Draw ${teamA} vs ${teamB}`,
-                                                            odds: line.line.draw,
+                                                            odds: draw,
                                                             betTotal: pick === 'draw' ? betAfterFee : 0,
                                                             toWinTotal: pick === 'draw' ? toWin : 0,
                                                         },
                                                         teamNonDraw: {
                                                             name: `Non Draw ${teamA} vs ${teamB}`,
-                                                            odds: line.line.draw,
+                                                            odds: oddDrawOpposite,
                                                             betTotal: pick === 'nondraw' ? betAfterFee : 0,
                                                             toWinTotal: pick === 'nondraw' ? toWin : 0,
                                                         },
@@ -1383,7 +1427,6 @@ expressApp.post(
                                                         origin
                                                     }
                                                 );
-                                                console.log(newBetPool);
                                                 try {
                                                     await newBetPool.save();
                                                     await checkAutoBet(savedBet, newBetPool, user, sportData, line);
@@ -1930,16 +1973,17 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             break;
     }
 
-    console.log("pick", pick);
-    //const pick = originPick == 'home' ? "away" : "home";
-
     const { type, subtype } = lineQuery;
 
     const { originSportId } = sportData;
     lineQuery.sportId = originSportId;
 
-    const { teamA, teamB, startDate, line: { home, away, hdp, points } } = line;
+    const { teamA, teamB, startDate, line: { home, away, draw, hdp, points } } = line;
 
+    let oddDrawOpposite = 0;
+    if(draw) {
+        oddDrawOpposite = draw > 0 ? -Math.abs(draw) : Math.abs(draw);
+    }
     const pickWithOverUnder = ['total', 'alternative_total'].includes(type) ? (pick === 'home' ? 'over' : 'under') : pick;
     const lineOdds = line.line[pickWithOverUnder];
     const oddsA = ['total', 'alternative_total'].includes(type) ? line.line.over : line.line.home;
@@ -1953,7 +1997,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                 newLineOdds = oddsA
                 break;
             case "draw":
-                newLineOdds =  line.line.draw;
+                newLineOdds = draw;
+                break;
+            case "nondraw":
+                    newLineOdds = oddDrawOpposite;
                 break;
             default:
                 newLineOdds = oddsB
@@ -1974,6 +2021,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             }
         }
     }
+
     let betType = 'Moneyline';
     switch (type) {
         case 'moneyline':
@@ -1990,15 +2038,18 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             break;
     }
 
+
     let orCon = [{
         side: side,
         betType: betType,
-    }]
+    }];
+
     if (user.bet_referral_code) {
         orCon.push({
             referral_code: new RegExp(`^${user.bet_referral_code}$`, 'i')
         })
     }
+
     let autobets = await AutoBet
         .find({
             $or: orCon,
@@ -2006,7 +2057,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         })
         .populate('userId');
     autobets = JSON.parse(JSON.stringify(autobets));
-
+    
     let timezoneOffset = -8;
     if (isDstObserved) timezoneOffset = -7;
     const today = new Date().addHours(timezoneOffset);
@@ -2028,10 +2079,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     },
                     { $group: { _id: null, amount: { $sum: "$amount" } } }
                 ]);
+
             let bettedamount = 0;
             if (logs && logs.length)
                 bettedamount = logs[0].amount;
             let budget = bet.sportsbook ? autobet.sportsbookBudget : autobet.budget;
+
             if (autobet.rollOver) { // If Roll Over
                 // Add win amount.
                 const logs = await FinancialLog
@@ -2138,6 +2191,12 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         case 'moneyline':
             if (pick == 'home') {
                 pickName += teamA;
+            }
+            else if (pick == 'draw') {
+                pickName += "Draw";
+            }
+            else if (pick == 'nondraw') {
+                pickName += "Non Draw";
             } else {
                 pickName += teamB;
             }
@@ -2146,10 +2205,7 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         default:
             break;
     }
-
     let betAmount = toBet;
-
-    console.log('betAmount', betAmount);    
     for (let i = 0; i < autobetusers.length; i++) {
         const selectedauto = autobetusers[i];
         if (betAmount <= 0) return;
@@ -2171,6 +2227,15 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             teamB: {
                 name: teamB,
                 odds: away,
+            },
+            teamDraw: {
+                name: `Draw ${teamA} vs ${teamB}`,
+                odds: draw,
+            },
+            
+            teamNonDraw: {
+                name: `Non Draw ${teamA} vs ${teamB}`,
+                odds: oddDrawOpposite,
             },
             pick,
             pickOdds: newLineOdds,
@@ -2202,17 +2267,33 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             });
 
             const betId = savedBet.id;
-            // add betId to betPool
+
             const docChanges = {
-                $push: pick === 'home' ? { homeBets: betId } : { awayBets: betId },
+                $push: {},
                 $inc: {},
             };
-            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
-            docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
-            docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.betTotal`] = betAfterFee;
-            docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.toWinTotal`] = toWin;
-
-            console.log('autobetdocChanges', docChanges);
+            switch (pick) {
+                case 'home':
+                    docChanges.$push['homeBets'] = betId;
+                    docChanges.$inc['teamA.betTotal'] = betAfterFee;
+                    docChanges.$inc['teamA.toWinTotal'] = toWin;
+                    break;
+                case 'draw':
+                    docChanges.$push['drawBets'] = betId;
+                    docChanges.$inc['teamDraw.betTotal'] = betAfterFee;
+                    docChanges.$inc['teamDraw.toWinTotal'] = toWin;
+                    break;
+                case 'nondraw':
+                    docChanges.$push['nonDrawBets'] = betId;
+                    docChanges.$inc['teamNonDraw.betTotal'] = betAfterFee;
+                    docChanges.$inc['teamNonDraw.toWinTotal'] = toWin;
+                    break;
+                default:
+                    docChanges.$push['awayBets'] = betId;
+                    docChanges.$inc['teamB.betTotal'] = betAfterFee;
+                    docChanges.$inc['teamB.toWinTotal'] = toWin;
+                    break;
+            }
             await betpool.update(docChanges);
             try {
                 await FinancialLog.create({
