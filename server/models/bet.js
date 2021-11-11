@@ -22,6 +22,14 @@ const BetSchema = new Schema(
             name: String,
             odds: String,
         },
+        teamDraw: {
+            name: String,
+            odds: String,
+        },
+        teamNonDraw: {
+            name: String,
+            odds: String,
+        },
         pick: String,
         pickName: String,
         pickOdds: String,
