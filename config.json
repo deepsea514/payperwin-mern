@@ -116,7 +116,8 @@
             "reports": true,
             "cashback": true,
             "errorlogs": true,
-            "credits": true
+            "credits": true,
+            "predictions": true
         },
         "Customer Service": {
             "dashboard": true,
@@ -141,7 +142,8 @@
             "reports": true,
             "cashback": true,
             "errorlogs": true,
-            "credits": false
+            "credits": false,
+            "predictions": true
         }
     },
     "isDstObserved": true,

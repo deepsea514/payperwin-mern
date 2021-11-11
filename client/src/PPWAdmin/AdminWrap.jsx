@@ -46,19 +46,19 @@ export default class AdminWrap extends Component {
                     <MetronicSplashScreenProvider>
                         {/* <Provider store={store}>
                             <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}> */}
-                                <React.Suspense fallback={<LayoutSplashScreen />}>
-                                    <Favicon url={'/images/favicon-2.ico'} />
-                                    <MTheme />
-                                    <MaterialThemeProvider>
-                                            <BrowserRouter basename={"RP1021"}>
-                                                <Switch>
-                                                    <Route path={`/login`} component={Login} />
-                                                    <Route path="/" component={App} />
-                                                </Switch>
-                                            </BrowserRouter>
-                                    </MaterialThemeProvider>
-                                </React.Suspense>
-                            {/* </PersistGate>
+                        <React.Suspense fallback={<LayoutSplashScreen />}>
+                            <Favicon url={'/images/favicon-2.ico'} />
+                            <MTheme />
+                            <MaterialThemeProvider>
+                                <BrowserRouter basename={"RP1021"}>
+                                    <Switch>
+                                        <Route path={`/login`} component={Login} />
+                                        <Route path="/" component={App} />
+                                    </Switch>
+                                </BrowserRouter>
+                            </MaterialThemeProvider>
+                        </React.Suspense>
+                        {/* </PersistGate>
                         </Provider> */}
                     </MetronicSplashScreenProvider>
                 </MetronicSubheaderProvider>
