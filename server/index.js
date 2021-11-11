@@ -1191,7 +1191,6 @@ expressApp.post(
                             const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
                             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
                             let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-                            console.log("calculateNewOdds", newLineOdds);
                             if (sportsbook) {
                                 switch (pick) {
                                     case "home":
@@ -1205,8 +1204,6 @@ expressApp.post(
                                         break;
                                 }
                                 //newLineOdds = pick == 'home' ? oddsA : oddsB;
-                                console.log("sportsbook pick", pick);
-                                console.log("sportsbook newLineOdds", newLineOdds);
                             }
                             const oddsMatch = odds[pick] === newLineOdds;
                             if (oddsMatch) {
@@ -1332,6 +1329,8 @@ expressApp.post(
                                                 };
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+                                                docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.betTotal`] = betAfterFee;
+                                                docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.toWinTotal`] = toWin;
                                                 await BetPool.findOneAndUpdate(
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
@@ -1340,6 +1339,7 @@ expressApp.post(
                                                 betpoolId = exists.uid;
                                             } else {
                                                 console.log('creating betpool');
+
                                                 const newBetPool = new BetPool(
                                                     {
                                                         uid: JSON.stringify(lineQuery),
@@ -1359,6 +1359,18 @@ expressApp.post(
                                                             betTotal: pick === 'away' ? betAfterFee : 0,
                                                             toWinTotal: pick === 'away' ? toWin : 0,
                                                         },
+                                                        teamDraw: {
+                                                            name: `Draw ${teamA} vs ${teamB}`,
+                                                            odds: line.line.draw,
+                                                            betTotal: pick === 'draw' ? betAfterFee : 0,
+                                                            toWinTotal: pick === 'draw' ? toWin : 0,
+                                                        },
+                                                        teamNonDraw: {
+                                                            name: `Non Draw ${teamA} vs ${teamB}`,
+                                                            odds: line.line.draw,
+                                                            betTotal: pick === 'nondraw' ? betAfterFee : 0,
+                                                            toWinTotal: pick === 'nondraw' ? toWin : 0,
+                                                        },
                                                         sportName,
                                                         matchStartDate: startDate,
                                                         lineType: type,
@@ -1366,10 +1378,12 @@ expressApp.post(
                                                         points: hdp ? hdp : points ? points : null,
                                                         homeBets: pick === 'home' ? [betId] : [],
                                                         awayBets: pick === 'away' ? [betId] : [],
+                                                        drawBets: pick === 'draw' ? [betId] : [],
+                                                        nonDrawBets: pick === 'nondraw' ? [betId] : [],
                                                         origin
                                                     }
                                                 );
-
+                                                console.log(newBetPool);
                                                 try {
                                                     await newBetPool.save();
                                                     await checkAutoBet(savedBet, newBetPool, user, sportData, line);
@@ -1902,7 +1916,22 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const { AutoBetStatus } = config;
     let { pick: originPick, toWin: toBet, lineQuery } = bet;
-    const pick = originPick == 'home' ? "away" : "home";
+    
+    let pick;
+    switch (originPick) {
+        case "home":
+            pick = "away"
+            break;
+        case "draw":
+            pick = "nondraw"
+            break;
+        default:
+            pick = "home"
+            break;
+    }
+
+    console.log("pick", pick);
+    //const pick = originPick == 'home' ? "away" : "home";
 
     const { type, subtype } = lineQuery;
 
@@ -1915,7 +1944,22 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     const lineOdds = line.line[pickWithOverUnder];
     const oddsA = ['total', 'alternative_total'].includes(type) ? line.line.over : line.line.home;
     const oddsB = ['total', 'alternative_total'].includes(type) ? line.line.under : line.line.away;
-    const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
+    //const newLineOdds = bet.sportsbook ? (pick == 'home' ? oddsA : oddsB) : calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
+    
+    let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type);
+    if (bet.sportsbook) {
+        switch (pick) {
+            case "home":
+                newLineOdds = oddsA
+                break;
+            case "draw":
+                newLineOdds =  line.line.draw;
+                break;
+            default:
+                newLineOdds = oddsB
+                break;
+        }
+    }
 
     let side = 'Underdog';
     if (['spread', 'alternative_spread'].includes(type)) {
@@ -2104,6 +2148,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     }
 
     let betAmount = toBet;
+
+    console.log('betAmount', betAmount);    
     for (let i = 0; i < autobetusers.length; i++) {
         const selectedauto = autobetusers[i];
         if (betAmount <= 0) return;
@@ -2163,6 +2209,10 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             };
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
             docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
+            docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.betTotal`] = betAfterFee;
+            docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.toWinTotal`] = toWin;
+
+            console.log('autobetdocChanges', docChanges);
             await betpool.update(docChanges);
             try {
                 await FinancialLog.create({

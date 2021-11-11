@@ -19,6 +19,18 @@ const BetPoolSchema = new Schema(
         teamB: {
             name: String,
             odds: String,
+            betTotal: Number, 
+            toWinTotal: Number,
+        },
+        teamDraw: {
+            name: String,
+            odds: String,
+            betTotal: Number,
+            toWinTotal: Number,
+        },
+        teamNonDraw: {
+            name: String,
+            odds: String,
             betTotal: Number,
             toWinTotal: Number,
         },
@@ -31,6 +43,8 @@ const BetPoolSchema = new Schema(
         awayBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
         homeScore: Number,
         awayScore: Number,
+        drawBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
+        nonDrawBets: [{ type: Schema.Types.ObjectId, ref: "Bet" }],
         origin: { type: String, default: 'bet365' }
         // betStartDate: Date,
         // betEndDate: Date,
