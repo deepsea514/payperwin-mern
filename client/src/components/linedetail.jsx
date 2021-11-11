@@ -162,7 +162,7 @@ export default class LineDetail extends Component {
                                 <div className="points"> Draw </div>
                                 {!started && <div className="odds">
                                  <div className="origin-odds">
-                                            {convertOdds(originOdds.away, oddsFormat)}
+                                            {convertOdds(originOdds.draw, oddsFormat)}
                                         </div>
                                 </div>}
                                 {started && <div className="odds">
