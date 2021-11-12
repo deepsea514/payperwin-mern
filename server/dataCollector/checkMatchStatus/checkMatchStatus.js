@@ -111,35 +111,35 @@ const checkMatchStatus = async () => {
         const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
         //Comment: disable this email and SMS message since there should always be a match now.
-       /*  
-       if (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.email) {
-            const msg = {
-                from: `${fromEmailName} <${fromEmailAddress}>`,
-                to: user.email,
-                subject: 'We couldn’t find you a match for your bet',
-                text: `We couldn’t find you a match for your bet`,
-                html: simpleresponsive(
-                    `Hi <b>${user.email}</b>.
-                    <br><br>
-                    Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
-                    <br><br>
-                `, { href: "https://www.payperwin.com/bets", name: 'View Open Bets' }),
-            };
-            sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
-            });
-        }
-        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
-            sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
-        } 
-        */
+        /*  
+        if (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.email) {
+             const msg = {
+                 from: `${fromEmailName} <${fromEmailAddress}>`,
+                 to: user.email,
+                 subject: 'We couldn’t find you a match for your bet',
+                 text: `We couldn’t find you a match for your bet`,
+                 html: simpleresponsive(
+                     `Hi <b>${user.email}</b>.
+                     <br><br>
+                     Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
+                     <br><br>
+                 `, { href: "https://www.payperwin.com/bets", name: 'View Open Bets' }),
+             };
+             sgMail.send(msg).catch(error => {
+                 ErrorLog.create({
+                     name: 'Send Grid Error',
+                     error: {
+                         name: error.name,
+                         message: error.message,
+                         stack: error.stack
+                     }
+                 });
+             });
+         }
+         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
+             sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
+         } 
+         */
 
     }
     console.log("Sent mails.")
@@ -244,53 +244,4 @@ const calculateBetPoolsStatus = async () => {
     // await ParlayBetPool.deleteMany({
     //     result: { $exists: true }
     // });
-}
-
-const checkBetWithoutBetPool = async () => {
-    const bets = await Bet.find({
-        status: 'Pending'
-    });
-    bets.forEach(async bet => {
-        if (bet.origin == 'other') return;
-        const lineQuery = bet.lineQuery;
-        const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
-
-        const uid = JSON.stringify(bet.lineQuery);
-        const exists = await BetPool.findOne({ $or: [{ homeBets: bet._id }, { awayBets: bet._id }] });
-        if (exists) return;
-        try {
-            await BetPool.create(
-                {
-                    uid: uid,
-                    sportId: bet.lineQuery.sportId,
-                    leagueId: bet.lineQuery.leagueId,
-                    eventId: bet.lineQuery.eventId,
-                    lineId: bet.lineQuery.lineId,
-                    teamA: {
-                        name: bet.teamA.name,
-                        // odds: home,
-                        betTotal: bet.pick === 'home' ? bet.bet : 0,
-                        toWinTotal: bet.pick === 'home' ? bet.toWin : 0,
-                    },
-                    teamB: {
-                        name: bet.teamB.name,
-                        // odds: away,
-                        betTotal: bet.pick === 'away' ? bet.bet : 0,
-                        toWinTotal: bet.pick === 'away' ? bet.toWin : 0,
-                    },
-                    sportName: bet.lineQuery.sportName,
-                    matchStartDate: bet.matchStartDate,
-                    lineType: bet.lineQuery.type,
-                    lineSubType: bet.lineQuery.subtype,
-                    points: linePoints,
-                    homeBets: bet.pick === 'home' ? [bet._id] : [],
-                    awayBets: bet.pick === 'away' ? [bet._id] : [],
-                    origin: bet.origin
-                }
-            );
-            console.log('Fix one bet.');
-        } catch (error) {
-            console.error(error);
-        }
-    })
 }
