@@ -29,7 +29,7 @@ class Prediction extends React.Component {
         if (!seasonData || !seasonData.length) {
             return (
                 <tr>
-                    <td colSpan="6">
+                    <td colSpan="7">
                         <center><h4>No data available.</h4></center>
                     </td>
                 </tr>
@@ -39,7 +39,7 @@ class Prediction extends React.Component {
         let correctCount = 0;
         let totalCount = 0;
         const tableData = seasonData.map((event, index) => {
-            const { HomeTeam, AwayTeam, PredScore, RealScore, date } = event;
+            const { HomeTeam, AwayTeam, PredScore, RealScore, date, Probability } = event;
             let correct = false;
             if (RealScore) {
                 totalCount++;
@@ -71,6 +71,7 @@ class Prediction extends React.Component {
                     <td>{AwayTeam}</td>
                     <td>{this.getDateFormat(date)}</td>
                     <td><span className={correct ? 'text-danger' : ''}>{PredScore}</span></td>
+                    <td><span>{Probability}</span></td>
                     <td><span className={correct ? 'text-danger' : ''}>{RealScore}</span></td>
                 </tr>
             )
@@ -78,7 +79,7 @@ class Prediction extends React.Component {
         const correctNess = totalCount > 0 ? ((correctCount / totalCount * 100).toFixed(2)) : 0;
         const accuracyRow = (
             <tr key="accuracy">
-                <td colSpan="6">
+                <td colSpan="7">
                     <center><h4>Accuracy {correctCount} / {totalCount} = {correctNess}% </h4></center>
                 </td>
             </tr>
@@ -183,6 +184,7 @@ class Prediction extends React.Component {
                                             <th>Away</th>
                                             <th>Date</th>
                                             <th>Prediction Score</th>
+                                            <th>Probability</th>
                                             <th>Real Score</th>
                                         </tr>
                                     </thead>
