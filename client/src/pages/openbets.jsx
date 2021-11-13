@@ -62,6 +62,7 @@ class OpenBets extends Component {
             forwardBet: null,
             forwardResult: null,
             forwardLatestOdd: null,
+            loadingOdds: false,
         };
     }
 
@@ -218,15 +219,18 @@ class OpenBets extends Component {
 
     forwardSportsbook = (bet) => {
         const bodyData ={lineQuery: bet.lineQuery, pick: bet.pick };
+        this.setState({loadingOdds: true});
         axios.post(`${serverUrl}/getLatestOdds`, bodyData, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({
                     forwardLatestOdd: data.latestOdds,
                     forwardBet: bet 
-                })
+                });
+                this.setState({loadingOdds: false});
             })
             .catch(() => {
                 this.setState({ forwardBet: null,  forwardResult: 'Can\'t get latest odd forward.' });
+                this.setState({loadingOdds: false});
             });
     }
 
@@ -250,7 +254,7 @@ class OpenBets extends Component {
 
     render() {
         const { bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
-            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult, forwardLatestOdd } = this.state;
+            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult, forwardLatestOdd, loadingOdds } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
@@ -606,7 +610,9 @@ class OpenBets extends Component {
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
-                                        <button className="form-button ml-2" onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
+                                        <button className={ 'form-button ml-2'  + (loadingOdds ? ' is-loading' : '')  }
+                                        disabled={loadingOdds}
+                                         onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
                                 </div>
                             </div>
                         );
