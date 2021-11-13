@@ -47,7 +47,7 @@ class OpenBets extends Component {
             error: null,
             shareModal: false,
             loadingUrl: false,
-            lineUrl: '',
+            lineUrl: '', 
             urlCopied: false,
             daterange: null,
             page: 0,
@@ -61,6 +61,7 @@ class OpenBets extends Component {
             noMore: false,
             forwardBet: null,
             forwardResult: null,
+            forwardLatestOdd: null,
         };
     }
 
@@ -216,7 +217,17 @@ class OpenBets extends Component {
     }
 
     forwardSportsbook = (bet) => {
-        this.setState({ forwardBet: bet });
+        const bodyData ={lineQuery: bet.lineQuery, pick: bet.pick };
+        axios.post(`${serverUrl}/getLatestOdds`, bodyData, { withCredentials: true })
+            .then(({ data }) => {
+                this.setState({
+                    forwardLatestOdd: data.latestOdds,
+                    forwardBet: bet 
+                })
+            })
+            .catch(() => {
+                this.setState({ forwardBet: null,  forwardResult: 'Can\'t get latest odd forward.' });
+            });
     }
 
     confirmForward = () => {
@@ -232,14 +243,14 @@ class OpenBets extends Component {
                     forwardResult: 'Bet forwarded.'
                 })
             })
-            .catch(() => {
+            .catch((data) => {
                 this.setState({ forwardBet: null, forwardResult: 'Can\'t forward bet to sportsbook.' });
             })
     }
 
     render() {
         const { bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
-            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult } = this.state;
+            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult, forwardLatestOdd } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
@@ -298,18 +309,18 @@ class OpenBets extends Component {
                         </div>
                     </div>}
                     {forwardBet != null && <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardBet: null })} />
+                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                         <div className="col-in">
-                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null })} />
+                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null, forwardLatestOdd:null })} />
                             <div>
                                 <b> <FormattedMessage id="PAGES.FORWARDTO.SPORTSBOOK" /></b>
                                 <hr />
                                 <p><FormattedMessage id="PAGES.OPENBETS.FORWARD_DES" /></p>
                                 <p><FormattedMessage id="PAGES.OPENBETS.P2P_ODDS" />: {Number(forwardBet.pickOdds) > 0 ? '+' : ''}{forwardBet.pickOdds}</p>
-                                <p><FormattedMessage id="PAGES.OPENBETS.SB_ODDS" />: {Number(forwardBet.oldOdds) > 0 ? '+' : ''}{forwardBet.oldOdds}</p>
+                                <p><FormattedMessage id="PAGES.OPENBETS.SB_ODDS" />: {Number(forwardLatestOdd) > 0 ? '+' : ''}{forwardLatestOdd}</p>
                                 <div className="text-right">
                                     <button className="form-button" onClick={this.confirmForward}> Proceed </button>
-                                    <button className="form-button ml-2" onClick={() => this.setState({ forwardBet: null })}> Cancel </button>
+                                    <button className="form-button ml-2" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })}> Cancel </button>
                                 </div>
                             </div>
                         </div>
