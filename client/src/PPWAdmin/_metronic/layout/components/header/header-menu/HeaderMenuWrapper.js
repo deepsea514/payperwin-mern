@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import objectPath from "object-path";
 import { Link } from "react-router-dom";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
-import { HeaderMenu } from "./HeaderMenu";
+import HeaderMenu from "./HeaderMenu";
 
 export function HeaderMenuWrapper() {
     const uiService = useHtmlClassService();
@@ -19,15 +19,15 @@ export function HeaderMenuWrapper() {
             headerSelfTheme: objectPath.get(uiService.config, "header.self.theme"),
             ulClasses: uiService.getClasses("header_menu_nav", true),
             disabledAsideSelfDisplay:
-                objectPath.get(uiService.config, "aside.self.display") === false
+                objectPath.get(uiService.config, "aside.self.display") === true
         };
     }, [uiService]);
     const getHeaderLogo = () => {
-        let result = "logo-white.png";
-        if (layoutProps.headerSelfTheme && layoutProps.headerSelfTheme !== "dark") {
-            result = "logo-white.png";
-        }
-        return `/images/logo-white.png`;
+        // let result = "logo-white.png";
+        // if (layoutProps.headerSelfTheme && layoutProps.headerSelfTheme !== "dark") {
+        //     result = "logo-white.png";
+        // }
+        return `/images/logo-blue.png`;
     };
 
     return <>
@@ -36,9 +36,9 @@ export function HeaderMenuWrapper() {
             {layoutProps.disabledAsideSelfDisplay && (
                 <>
                     {/*begin::Header Logo*/}
-                    <div className="header-logo">
-                        <Link to="/">
-                            <img alt="logo" src={getHeaderLogo()} />
+                    <div className="header-logo" style={{ height: '100%' }}>
+                        <Link to="/" style={{ height: '100%' }}>
+                            <img alt="logo" src={getHeaderLogo()} style={{ height: '100%', display: 'block' }} />
                         </Link>
                     </div>
                     {/*end::Header Logo*/}

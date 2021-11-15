@@ -78164,6 +78164,10 @@ body {
     background: #eef0f8
 }
 
+.header .header-menu .menu-nav > .menu-item > .menu-link.active {
+    border-bottom: none;
+}
+
 @media (min-width:992px) {
     .header-fixed .wrapper {
         padding-top: 65px
@@ -78172,10 +78176,10 @@ body {
         padding-top: 119px
     }
     .aside-fixed .wrapper {
-        padding-left: 265px
+        /* padding-left: 265px */
     }
     .aside-fixed.aside-minimize:not(.aside-minimize-hover) .wrapper {
-        padding-left: 70px
+        /* padding-left: 70px */
     }
     .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
         padding: 0 25px
@@ -78216,10 +78220,10 @@ body {
         z-index: 97
     }
     .aside-enabled .header.header-fixed {
-        left: 265px
+        /* left: 265px */
     }
     .header-fixed.aside-minimize .header {
-        left: 70px
+        /* left: 70px */
     }
     .header-fixed.subheader-fixed .header {
         -webkit-box-shadow: none!important;
@@ -79580,7 +79584,7 @@ body {
         -ms-flex-align: stretch;
         align-items: stretch
     }
-    body:not(.aside-enabled) .header-menu-wrapper {
+    body .header-menu-wrapper {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -79589,7 +79593,7 @@ body {
         -ms-flex-direction: row;
         flex-direction: row
     }
-    body:not(.aside-enabled) .header-menu-wrapper .header-logo {
+    body .header-menu-wrapper .header-logo {
         padding: 0;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -79597,7 +79601,8 @@ body {
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        margin-right: 25px
+        margin-right: 25px;
+        height: '100%'
     }
     .header-menu {
         display: -webkit-box;
@@ -79778,7 +79783,8 @@ body {
         top: 0;
         bottom: 0;
         left: 0;
-        z-index: 98
+        z-index: 98;
+        display: none !important;
     }
     .aside-static .aside {
         position: relative;
@@ -79807,10 +79813,10 @@ body {
         width: 265px
     }
     .aside-fixed.aside-minimize.aside-minimize-hover .wrapper {
-        padding-left: 70px
+        /* padding-left: 70px */
     }
     .aside-fixed.header-fixed.aside-minimize.aside-minimize-hover .header {
-        left: 70px
+        /* left: 70px */
     }
 }
 
@@ -80921,7 +80927,7 @@ body {
         transition: top .3s ease
     }
     .aside-enabled.subheader-fixed .subheader {
-        left: 265px
+        /* left: 265px */
     }
     .subheader-fixed.aside-minimize .subheader {
         left: 70px
@@ -80988,7 +80994,7 @@ body {
         left: 0
     }
     .aside-enabled.footer-fixed .footer {
-        left: 265px
+        /* left: 265px */
     }
     .aside-enabled.aside-minimize.footer-fixed .footer {
         left: 70px
