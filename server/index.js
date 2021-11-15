@@ -2473,6 +2473,26 @@ expressApp.post(
             const lineQuery = bet.lineQuery;
             const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
+            let latestOdds = 0;
+            const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
+
+            if (sportData) {
+                const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId);
+                if (line) {
+                    const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+                    const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+                    switch (bet.pick) {
+                            case "home":
+                                latestOdds = oddsA
+                                break;
+                            default:
+                                latestOdds = oddsB
+                                break;
+                    }
+                }
+            }
+
             let betpool = await BetPool.findOne({
                 $or: [
                     { homeBets: bet._id },
@@ -2526,9 +2546,9 @@ expressApp.post(
                 })
             }
 
-            bet.pickOdds = bet.oldOdds;
+            bet.pickOdds = latestOdds;
             bet.status = null;
-            bet.toWin = calculateToWinFromBet(bet.bet, Number(bet.oldOdds));
+            bet.toWin = calculateToWinFromBet(bet.bet, Number(latestOdds));
             bet.fee = bet.toWin * BetFee;
             bet.sportsbook = true;
             await bet.save();
@@ -2539,10 +2559,10 @@ expressApp.post(
                     teamB: bet.teamB.name,
                     startDate: bet.matchStartDate,
                     line: {
-                        home: Number(teamA.odds),
-                        over: Number(teamA.odds),
-                        away: Number(teamB.odds),
-                        under: Number(teamB.odds),
+                        home: Number(bet.teamA.odds),
+                        over: Number(bet.teamA.odds),
+                        away: Number(bet.teamB.odds),
+                        under: Number(bet.teamB.odds),
                         hdp: linePoints,
                         points: linePoints
                     }
@@ -4599,6 +4619,35 @@ expressApp.post(
     }
 )
 
+
+expressApp.use('/getLatestOdds', async (req, res) => { 
+    const betDetails = req.body;
+    const { pick, lineQuery, live } = betDetails;
+    const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+    const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
+    if (sportData) {
+        const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
+        if (line) {
+            const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+            const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+            let newLineOdds = 0;
+            switch (pick) {
+                    case "home":
+                        newLineOdds = oddsA
+                        break;
+                    default:
+                        newLineOdds = oddsB
+                        break;
+            }
+            res.json({ success: true,
+                latestOdds: newLineOdds });
+        }
+        else {
+            res.json({ success: false,
+                error: "no line found" });
+        }
+    }
+})
 
 // Admin
 expressApp.use('/admin', adminRouter);
