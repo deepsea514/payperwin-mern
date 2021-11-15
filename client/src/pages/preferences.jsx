@@ -12,7 +12,7 @@ import { getInputClasses } from "../helpers/getInputClasses";
 import { FormControl, FormControlLabel, RadioGroup, Radio, Checkbox } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import config from '../../../config.json';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 const TimeZones = config.TimeZones;
 const isDstObserved = config.isDstObserved;
 
@@ -73,7 +73,8 @@ class Preferences extends Component {
             timezone,
             display_mode,
             notification_settings,
-            user
+            user,
+            intl
         } = this.props;
 
         const initialValues = {
@@ -209,8 +210,8 @@ class Preferences extends Component {
                                                 className={`form-control ${getInputClasses(formik, "oddsFormat")}`}
                                                 {...formik.getFieldProps("oddsFormat")}
                                             >
-                                                <option value="american"> <FormattedMessage id="COMPONENTS.AMERICAN.ODDS" /></option>
-                                                <option value="decimal"> <FormattedMessage id="COMPONENTS.DECIMAL.ODDS" /></option>
+                                                <option value="american">{intl.formatMessage({ id: 'COMPONENTS.AMERICAN.ODDS' })}</option>
+                                                <option value="decimal">{intl.formatMessage({ id: 'COMPONENTS.DECIMAL.ODDS' })}</option>
                                             </Form.Control>
                                             {formik.touched.oddsFormat && formik.errors.oddsFormat ? (
                                                 <div className="invalid-feedback">
@@ -534,4 +535,4 @@ const mapStateToProps = (state) => ({
     notification_settings: state.frontend.notification_settings
 });
 
-export default connect(mapStateToProps, frontend.actions)(Preferences)
+export default connect(mapStateToProps, frontend.actions)(injectIntl(Preferences))
