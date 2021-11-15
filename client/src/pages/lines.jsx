@@ -45,9 +45,13 @@ class Lines extends Component {
 
     componentDidMount() {
         const { type, index } = this.state;
+        const { live } = this.props;
         const title = 'Betting on Detailed Sports line';
         setTitle({ pageTitle: title })
         this.getSportLine();
+        this.setState({
+            timer: setInterval(this.getSportLine.bind(this), live ? 10000 : 10 * 60 * 1000)
+        })
     }
 
     componentWillUnmount() {

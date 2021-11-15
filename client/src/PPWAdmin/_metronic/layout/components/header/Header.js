@@ -13,10 +13,11 @@ export function Header({ history }) {
             headerClasses: uiService.getClasses("header", true),
             headerAttributes: uiService.getAttributes("header"),
             headerContainerClasses: uiService.getClasses("header_container", true),
-            menuHeaderDisplay: objectPath.get(
-                uiService.config,
-                "header.menu.self.display"
-            )
+            // menuHeaderDisplay: objectPath.get(
+            //     uiService.config,
+            //     "header.menu.self.display"
+            // )
+            menuHeaderDisplay: true
         };
     }, [uiService]);
 

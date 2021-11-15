@@ -59,7 +59,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                <li className={`menu-item menu-item-submenu ${getMenuItemActive("/reports", true)}`}
+                <li className={`menu-item menu-item-submenu`}
                     aria-haspopup="true"
                     data-menu-toggle="hover">
                     <NavLink className="menu-link menu-toggle border-0" to="/reports">
