@@ -146,7 +146,7 @@
             "predictions": true
         }
     },
-    "isDstObserved": true,
+    "isDstObserved": false,
     "TimeZones": [
         {
             "name": "Eniwetok, Kwajalein",
