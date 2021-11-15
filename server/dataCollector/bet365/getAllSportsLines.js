@@ -5,7 +5,7 @@ const Addon = require("../../models/addon");
 const ErrorLog = require("../../models/errorlog");
 //local helpers
 const config = require('../../../config.json');
-const sportsData = require('./sports.json');
+let sportsData = require('./sports.json')
 const formatFixturesOdds = require('./formatFixturesOdds');
 const matchResults = require('./matchResults');
 const getLiveSportsLines = require('./getLiveSportsLines');
@@ -63,7 +63,7 @@ const getAllSportsLines = async () => {
         return;
     }
     const { bet365ApiKey } = bet365Addon.value;
-
+    sportsData = sportsData.filter(sport => sport.name != 'Boxing-UFC');
     let sportsDir = await SportsDir.findOne({ origin: "bet365" });
     if (!sportsDir) {
         sportsDir = await SportsDir.create({ origin: "bet365", sports: sportsData });
