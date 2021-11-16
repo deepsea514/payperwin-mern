@@ -1788,6 +1788,26 @@ adminRouter.get(
                     ...searchObj,
                     status: { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
                 };
+            } else if (status && status == 'win') {
+                searchObj = {
+                    ...searchObj,
+                    status: 'Settled - Win'
+                };
+            } else if (status && status == 'lose') {
+                searchObj = {
+                    ...searchObj,
+                    status: 'Settled - Lose'
+                };
+            } else if (status && status == 'draw') {
+                searchObj = {
+                    ...searchObj,
+                    status: 'Draw'
+                };
+            } else if (status && status == 'cancelled') {
+                searchObj = {
+                    ...searchObj,
+                    status: 'Cancelled'
+                };
             }
 
             if (match && match == 'pending') {

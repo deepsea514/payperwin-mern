@@ -362,9 +362,13 @@ class BetActivities extends React.Component {
                                         onChange={e => {
                                             this.onFilterChange({ status: e.target.value });
                                         }} >
-                                        <option value="">Choose Match Status...</option>
+                                        <option value="">Choose Event Status...</option>
                                         <option value="open">Open</option>
                                         <option value="settled">Settled</option>
+                                        <option value="win">Win</option>
+                                        <option value="lose">Lose</option>
+                                        <option value="draw">Draw</option>
+                                        <option value="cancelled">Cancelled</option>
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Status
