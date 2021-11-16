@@ -4,14 +4,11 @@ import _env from '../../../../env.json';
 const serverUrl = _env.appAdminUrl;
 
 export function getDashboardData(range, daterange) {
-    console.log('daterange getDashboardData', daterange);
-
     const { startDate, endDate } = daterange;
     let dateranges = [];
     let categories = [];
 
     if (startDate.getDate() === endDate.getDate()) {
-        console.log("js endDate and start Date are equal");
         const nowDate = new Date();
         const year = nowDate.getFullYear();
         const month = nowDate.getMonth();
