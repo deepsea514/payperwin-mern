@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { BreadCrumbs } from "./components/BreadCrumbs";
 import { getBreadcrumbsAndTitle, useSubheader } from "../../_core/MetronicSubheader";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
-import DateRPicker from "./components/DateRangePicker";
+import DateRPicker from "./components/DateRPicker";
 
 export function SubHeader() {
     const uiService = useHtmlClassService();
