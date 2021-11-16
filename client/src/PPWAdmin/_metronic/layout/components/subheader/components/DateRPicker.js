@@ -3,8 +3,6 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import Dropdown from 'react-bootstrap/Dropdown';
-import dateformat from 'dateformat';
 import { connect } from 'react-redux';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import * as dashboard from '../../../../../modules/dashboard/redux/reducers';
@@ -34,7 +32,7 @@ class DateRPicker extends React.Component {
             }}
             initialSettings={{ daterange }}
           >
-            <input className="form-control" />
+            <input className="btn btn-light btn-sm font-weight-bold" readOnly />
           </DateRangePicker>
 
         </OverlayTrigger>
