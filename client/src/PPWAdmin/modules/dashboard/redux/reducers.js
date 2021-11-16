@@ -34,7 +34,6 @@ const initialState = {
     loadingdeposits: false,
     bots: [],
     loadingbots: false,
-    selectedDate: 'today',
     loadingdashboarddata: false,
     categories: [],
     dashboarddeposit: {
@@ -56,6 +55,10 @@ const initialState = {
     dashboardfees: {
         totalfees: 0,
         fees: [],
+    },
+    daterange: {
+        startDate: new Date(),
+        endDate: new Date(),
     }
 };
 
@@ -88,7 +91,7 @@ export const reducer = persistReducer(
                 return { ...state, ...{ loadingdeposits: false, lastdeposits: action.data } };
 
             case actionTypes.changeDateRange:
-                return { ...state, ...{ selectedDate: action.range } };
+                return { ...state, ...{ daterange: action.range } };
 
             case actionTypes.getDashboardDataDetails:
                 return { ...state, ...{ loadingdashboarddata: true } };
@@ -101,7 +104,6 @@ export const reducer = persistReducer(
 
             case actionTypes.getBotsSuccess:
                 return { ...state, ...{ loadingbots: false, bots: action.data } };
-
             default:
                 return state;
         }
@@ -183,7 +185,7 @@ export function* saga() {
     yield takeLatest(actionTypes.getDashboardDataDetails, function* getDashboardDataDetailsSaga() {
         try {
             const state = yield select((state) => state.dashboard);
-            const { data } = yield getDashboardData(state.selectedDate);
+            const { data } = yield getDashboardData(state.selectedDate, state.daterange);
             const {
                 totaldeposit, deposits,
                 totalwager, wagers,
