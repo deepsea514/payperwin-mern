@@ -15,12 +15,14 @@ export default class SettleBetModal extends React.Component {
             initialValues: {
                 teamAScore: 0,
                 teamBScore: 0,
-            }
+            },
+            teamA: props.teamA,
+            teamB: props.teamB
         }
     }
 
     render() {
-        const { scoreSchema, initialValues } = this.state;
+        const { scoreSchema, initialValues, teamA, teamB } = this.state;
         const { show, onHide, onSubmit } = this.props;
         return (
             <Modal show={show} onHide={onHide}>
@@ -37,7 +39,7 @@ export default class SettleBetModal extends React.Component {
                             </Modal.Header>
                             <Modal.Body>
                                 <div className="form-group">
-                                    <label>Team A Score <span className="text-danger">*</span></label>
+                                    <label>{teamA} Score <span className="text-danger">*</span></label>
                                     <input name="teamAScore" placeholder="Team A Score"
                                         className={`form-control ${getInputClasses(formik, "teamAScore")}`}
                                         {...getFieldProps("teamAScore")}
@@ -54,7 +56,7 @@ export default class SettleBetModal extends React.Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Team B Score <span className="text-danger">*</span></label>
+                                    <label>{teamB} Score <span className="text-danger">*</span></label>
                                     <input name="teamBScore" placeholder="Team B Score"
                                         className={`form-control ${getInputClasses(formik, "teamBScore")}`}
                                         {...getFieldProps("teamBScore")}
