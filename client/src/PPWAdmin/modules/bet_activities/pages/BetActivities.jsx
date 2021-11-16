@@ -101,7 +101,7 @@ class BetActivities extends React.Component {
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                     <i className="fas fa-trash"></i>&nbsp; Delete
                                 </Dropdown.Item>
-                                {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: bet._id })}>
+                                {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
                             </>}
@@ -131,7 +131,7 @@ class BetActivities extends React.Component {
     onSettleBet = (values, formik) => {
         const { settleId } = this.state;
         const { getBetActivities } = this.props;
-        settleBet(settleId, values)
+        settleBet(settleId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, settleId: null, resMessage: "Successfully Settled!", modalvariant: "success" });
@@ -362,9 +362,13 @@ class BetActivities extends React.Component {
                                         onChange={e => {
                                             this.onFilterChange({ status: e.target.value });
                                         }} >
-                                        <option value="">Choose Match Status...</option>
+                                        <option value="">Choose Event Status...</option>
                                         <option value="open">Open</option>
                                         <option value="settled">Settled</option>
+                                        <option value="win">Win</option>
+                                        <option value="lose">Lose</option>
+                                        <option value="draw">Draw</option>
+                                        <option value="cancelled">Cancelled</option>
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Status
@@ -496,6 +500,8 @@ class BetActivities extends React.Component {
                     show={settleId != null}
                     onHide={() => this.setState({ settleId: null })}
                     onSubmit={this.onSettleBet}
+                    teamA={settleId.teamA}
+                    teamB={settleId.teamB}
                 />}
 
                 {matchId && <ManualMatchBetModal

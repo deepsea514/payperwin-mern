@@ -159,7 +159,6 @@ store.on('error', function (error) {
 });
 
 store.on('connection', function (res) {
-    console.log(res);
 })
 
 expressApp.use(cors({
@@ -1123,7 +1122,6 @@ expressApp.post(
 
                                         user.balance = newBalance;
                                         try {
-                                            console.log("place savedBet", betId);
                                             await FinancialLog.create({
                                                 financialtype: 'bet',
                                                 uniqid: `BP${ID()}`,
@@ -1368,7 +1366,6 @@ expressApp.post(
                                                         break;
                                                 }
 
-                                                console.log('Place bet docChanges', docChanges);
                                                 /* 
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
                                                 docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
