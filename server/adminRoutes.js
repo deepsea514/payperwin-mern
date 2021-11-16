@@ -1975,28 +1975,26 @@ adminRouter.post(
                 points
             } = betpool;
             let matchCancelled = false;
-
+            let drawCancelled = false;
 
             if (drawBets.length > 0 && nonDrawBets.length > 0) {
-                console.log("initate draw");
                 const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
                 if (cancellationReason) {
-                    matchCancelled = true;
+                    drawCancelled = true;
                 } else {
                     let moneyLineWinner = null;
-                    if (awayScore == homeScore) 
-                    {
+                    if (awayScore == homeScore) {
                         moneyLineWinner = 'draw';
                     }
                     else {
                         moneyLineWinner = 'nondraw'
                     }
 
-                    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets, ...drawBets, ...nonDrawBets] } });
+                    const bets = await Bet.find({ _id: { $in: [...drawBets, ...nonDrawBets] } });
 
                     for (const bet of bets) {
                         const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
-                        
+
                         if (payableToWin <= 0 || status == 'Pending') {
                             const { _id, userId, bet: betAmount } = bet;
                             await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
@@ -2013,47 +2011,12 @@ adminRouter.post(
                             continue;
                         }
 
-                        let betWin;
-                        let draw = false;
+                        let betWin = false;
                         if (lineType === 'moneyline') {
                             betWin = pick === moneyLineWinner;
-                            draw = awayScore == homeScore;
-                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
-                            const spread = {
-                                home: Number(points),
-                                away: 0,
-                            };
-                            const homeScoreHandiCapped = Number(homeScore) + spread.home;
-                            const awayScoreHandiCapped = Number(awayScore) + spread.away;
-                            let spreadWinner;
-                            if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
-                            else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
-                            betWin = pick === spreadWinner;
-                            draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (['total', 'alternative_total'].includes(lineType)) {
-                            const totalPoints = homeScore + awayScore;
-                            const overUnderWinner = totalPoints > points ? 'home' : 'away';
-                            betWin = pick === overUnderWinner;
-                        }
-
-                        if (draw) {
-                            // refund user
-                           // await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
-                            //await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                            /* await FinancialLog.create({
-                                financialtype: 'betdraw',
-                                uniqid: `BD${ID()}`,
-                                user: userId,
-                                betId: _id,
-                                amount: betAmount,
-                                method: 'betdraw',
-                                status: FinancialStatus.success,
-                            });
-                            continue; */
                         }
 
                         if (betWin === true) {
-                            // TODO: credit back bet ammount
                             const user = await User.findById(userId);
                             const betFee = Number((payableToWin * BetFee).toFixed(2));
                             const betChanges = {
@@ -2149,9 +2112,8 @@ adminRouter.post(
                     }
                 }
             } else {
-                matchCancelled = true;
+                drawCancelled = true;
             }
-
 
             if (homeBets.length > 0 && awayBets.length > 0) {
                 const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
@@ -2322,7 +2284,7 @@ adminRouter.post(
             }
 
             if (matchCancelled) {
-                for (const betId of homeBets) {
+                for (const betId of [...homeBets, ...awayBets]) {
                     const bet = await Bet.findOne({ _id: betId });
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
@@ -2338,7 +2300,11 @@ adminRouter.post(
                         status: FinancialStatus.success,
                     });
                 }
-                for (const betId of awayBets) {
+                await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
+            }
+
+            if (drawCancelled) {
+                for (const betId of [...drawBets, ...nonDrawBets]) {
                     const bet = await Bet.findOne({ _id: betId });
                     const { _id, userId, bet: betAmount } = bet;
                     // refund user
