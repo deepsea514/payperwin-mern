@@ -3,71 +3,34 @@ import dateformat from 'dateformat';
 import _env from '../../../../env.json';
 const serverUrl = _env.appAdminUrl;
 
-export function getDashboardData(range) {
-    if (!range) range = 'today';
+export function getDashboardData(range, daterange) {
+    const { startDate, endDate } = daterange;
     let dateranges = [];
     let categories = [];
-    const nowDate = new Date();
-    const year = nowDate.getFullYear();
-    const month = nowDate.getMonth();
-    const date = nowDate.getDate();
-    switch (range) {
-        case 'today':
-            for (let i = 0; i <= 24; i += 2) {
-                let ndate = new Date(year, month, date, i);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "HH:MM"));
-            }
-            break;
-        case 'yesterday':
-            for (let i = 0; i <= 24; i += 2) {
-                let ndate = new Date(year, month, date - 1, i);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "HH:MM"));
-            }
-            break;
-        case 'last7days':
-            for (let i = 0; i <= 7; i++) {
-                let ndate = new Date(year, month, date + i - 7)
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "mmm d"));
-            }
-            break;
-        case 'last30days':
-            for (let i = 0; i <= 30; i++) {
-                let ndate = new Date(year, month, date + i - 30);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "mmm d"));
-            }
-            break;
-        case 'thismonth':
-            for (let i = 0; i <= date; i++) {
-                let ndate = new Date(year, month, i);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "mmm d"));
-            }
-            break;
-        case 'lastmonth':
-            let limit = new Date(year, month, 0);
-            for (let i = 0; i <= 31; i++) {
-                let ndate = new Date(year, month - 1, i);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "mmm d"));
-                if (ndate.getTime() >= limit.getTime())
-                    break;
-            }
-            break;
-        case 'thisyear':
-        default:
-            for (let i = 0; i <= 12; i++) {
-                let ndate = new Date(year, i, 1);
-                dateranges.push(ndate);
-                categories.push(dateformat(ndate, "mmmm"));
-            }
-            break;
-    };
+
+    if (startDate.getDate() === endDate.getDate()) {
+        const nowDate = new Date();
+        const year = nowDate.getFullYear();
+        const month = nowDate.getMonth();
+        const date = nowDate.getDate();
+      for (let i = 0; i <= 24; i += 2) {
+        let ndate = new Date(year, month, date, i);
+        dateranges.push(ndate);
+        categories.push(dateformat(ndate, "HH:MM"));
+      }
+    } else {
+      //to avoid modifying the original date
+      const theDate = new Date(startDate);
+      while (theDate < endDate) {
+        dateranges = [...dateranges, new Date(theDate)];
+        theDate.setDate(theDate.getDate() + 1);
+        categories.push(dateformat(theDate, "HH:MM"));
+      }
+      dateranges = [...dateranges, endDate];
+    }
+
     return axios.post(`${serverUrl}/dashboard`,
-        { range, dateranges, categories },
+        { daterange, dateranges, categories },
         {
             withCredentials: true
         });
