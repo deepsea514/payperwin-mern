@@ -171,6 +171,10 @@
     color: white;
 }
 
+.main-section.dark .teaser-points {
+    color: white;
+}
+
 .main-section.dark .origin-odds, .main-section.dark .old-odds {
     color: #ED254E;
 }

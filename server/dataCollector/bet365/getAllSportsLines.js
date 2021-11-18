@@ -17,7 +17,7 @@ const fs = require('fs');
 const arrangeLeagues = require('./arrangeLeagues');
 require('dotenv').config();
 
-const per_page = 50;
+const per_page = 100;
 
 // Database
 mongoose.Promise = global.Promise;

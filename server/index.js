@@ -2471,7 +2471,7 @@ expressApp.post(
             const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
 
             let latestOdds = 0;
-            const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
 
             if (sportData) {
@@ -2480,12 +2480,12 @@ expressApp.post(
                     const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
                     const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
                     switch (bet.pick) {
-                            case "home":
-                                latestOdds = oddsA
-                                break;
-                            default:
-                                latestOdds = oddsB
-                                break;
+                        case "home":
+                            latestOdds = oddsA
+                            break;
+                        default:
+                            latestOdds = oddsB
+                            break;
                     }
                 }
             }
@@ -2814,13 +2814,12 @@ expressApp.get(
                 originId: league.originId
             })) : [];
             let merged = [];
-
             data = data.filter(league => league.eventCount > 0)
             for (let i = 0; i < data.length; i++) {
                 const duplicated = liveLeagues.find((itmInner) => itmInner.originId === data[i].originId)
                 if (duplicated) {
-                    merged.push({ ...data[i], eventCount: data[i].eventCount + liveLeagues.eventCount });
-                    liveLeagues = liveLeagues.filter(league => league.originId == duplicated.originId)
+                    merged.push({ ...data[i], eventCount: data[i].eventCount + duplicated.eventCount });
+                    liveLeagues = liveLeagues.filter(league => league.originId != duplicated.originId)
                 } else {
                     merged.push(data[i]);
                 }
@@ -4617,10 +4616,10 @@ expressApp.post(
 )
 
 
-expressApp.use('/getLatestOdds', async (req, res) => { 
+expressApp.use('/getLatestOdds', async (req, res) => {
     const betDetails = req.body;
     const { pick, lineQuery, live } = betDetails;
-    const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+    const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
     const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
     if (sportData) {
         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
@@ -4629,19 +4628,23 @@ expressApp.use('/getLatestOdds', async (req, res) => {
             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
             let newLineOdds = 0;
             switch (pick) {
-                    case "home":
-                        newLineOdds = oddsA
-                        break;
-                    default:
-                        newLineOdds = oddsB
-                        break;
+                case "home":
+                    newLineOdds = oddsA
+                    break;
+                default:
+                    newLineOdds = oddsB
+                    break;
             }
-            res.json({ success: true,
-                latestOdds: newLineOdds });
+            res.json({
+                success: true,
+                latestOdds: newLineOdds
+            });
         }
         else {
-            res.json({ success: false,
-                error: "no line found" });
+            res.json({
+                success: false,
+                error: "no line found"
+            });
         }
     }
 })

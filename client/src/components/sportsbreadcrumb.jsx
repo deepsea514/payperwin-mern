@@ -26,9 +26,10 @@ class SportsBreadcrumb extends Component {
     }
 
     render() {
-        const { sportName, league, team } = this.props;
+        const { sportName, league, team, active } = this.props;
         const displaySportName = sportName ? sportName.replace("_", " ") : ""
-
+        const importTeaser = ['American Football', 'Basketball'].includes(displaySportName);
+        const sportLink = !league && !team && active != 'teaser';
         return (
             <div className="contentBlock hide-mobile">
                 <div className="dashboard_breadcrumb">
@@ -36,8 +37,8 @@ class SportsBreadcrumb extends Component {
                         <ul>
                             <li><Link className="dashboard_breadcrumb_textLabel" to="/">Home</Link></li>
                             <span className="dashboard_breadcrumb_separator">/</span>
-                            {!league && !team && <li><span className="dashboard_breadcrumb_textLabel">{displaySportName}</span></li>}
-                            {(league || team) && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${sportName}`}>{displaySportName}</Link></li>}
+                            {sportLink && <li><span className="dashboard_breadcrumb_textLabel">{displaySportName}</span></li>}
+                            {!sportLink && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${sportName}`}>{displaySportName}</Link></li>}
                             {league && <>
                                 <span className="dashboard_breadcrumb_separator">/</span>
                                 <li><span className="dashboard_breadcrumb_textLabel">{league.name}</span></li>
@@ -46,12 +47,16 @@ class SportsBreadcrumb extends Component {
                                 <span className="dashboard_breadcrumb_separator">/</span>
                                 <li><span className="dashboard_breadcrumb_textLabel">{team}</span></li>
                             </>}
+                            {active == 'teaser' && <>
+                                <span className="dashboard_breadcrumb_separator">/</span>
+                                <li><span className="dashboard_breadcrumb_textLabel">Teaser</span></li>
+                            </>}
                         </ul>
                     </div>
                 </div>
                 <div className="dashboard_title">
                     <h3>
-                        {!league && !team && <span>{displaySportName} Odds</span>}
+                        {!league && !team && <span>{displaySportName} {active == 'teaser' ? 'Teaser ' : ''}Odds</span>}
                         {league && <span>{league.name} Odds</span>}
                         {team && <span>{team} Odds</span>}
                     </h3>
@@ -62,6 +67,19 @@ class SportsBreadcrumb extends Component {
                             </a>
                         </div>
                     </div>}
+                </div>
+                <div className="dashboard_bottombar">
+                    <div className="dashboard_bottombar_container">
+                        <div className="dashboard_bottombar_wrapper" style={{ width: '100%' }}>
+                            <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden' }}>
+                                <div className="dashboard_bottombar_scroller" style={{ transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)', transitionDuration: '0ms', transform: 'translate(0px, 0px) translateZ(0px)' }}>
+                                    <Link to={`/sport/${sportName}`} className={active == 'matchup' ? "dashboard_bottombar_selected" : ''}><span>Matchups</span></Link>
+                                    <Link to={`/sport/${sportName}/league`} className={active == 'league' ? "dashboard_bottombar_selected" : ''}><span>leagues</span></Link>
+                                    {importTeaser && <Link to={`/sport/${sportName}/teaser`} className={active == 'teaser' ? "dashboard_bottombar_selected" : ''}><span>teasers</span></Link>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
