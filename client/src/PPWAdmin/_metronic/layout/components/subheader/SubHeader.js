@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { BreadCrumbs } from "./components/BreadCrumbs";
 import { getBreadcrumbsAndTitle, useSubheader } from "../../_core/MetronicSubheader";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
-import DatePicker from "./components/DatePicker";
+import DateRPicker from "./components/DateRPicker";
 
 export function SubHeader() {
     const uiService = useHtmlClassService();
@@ -77,7 +77,7 @@ export function SubHeader() {
 
                 {/* Toolbar */}
                 <div className="d-flex align-items-center">
-                    {checkIfDashboard() && <DatePicker />}
+                    {checkIfDashboard() && <DateRPicker />}
                 </div>
             </div>
         </div>
