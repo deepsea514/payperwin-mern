@@ -393,6 +393,32 @@ footer ul li a i {
     padding: 0 10px
 }
 
+.no-bets.teaser {
+    text-align: left;
+    padding: 30px 20px;
+}
+
+.teaser-links {
+    padding: 20px 10px;
+}
+
+.teaser-links .teaser-image {
+    width: 12px;
+    height: 12px;
+}
+
+.teaser-links li {
+    margin-top: 6px;
+}
+
+.teaser-links a {
+    color: black;
+}
+
+.teaser-links a:hover {
+    opacity: 0.8;
+}
+
 .no-bets {
     text-align: center;
     background-color: #b8bcbf;
@@ -403,7 +429,6 @@ footer ul li a i {
 .total {
     background: #273043;
     padding: 15px;
-    ;
 }
 
 .total-st-left {
@@ -431,7 +456,7 @@ footer ul li a i {
     padding: 5px 5px 5px 10px;
 }
 
-.bet-slip-type:nth-child(2) {
+.bet-slip-type:not(:first-child) {
     border-left: 1px solid rgb(170, 170, 170);
 }
 
@@ -732,6 +757,8 @@ footer ul li a i {
 .widh-adf {
     display: block;
     width: 160px;
+    font-size: 10px;
+    color: #2b2b2c;
 }
 
 #demo {
