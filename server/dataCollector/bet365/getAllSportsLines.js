@@ -42,13 +42,13 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     getAllSportsLines();
     setInterval(getAllSportsLines, lineInterval);
 
-    const resultInterval = 10 * 60 * 1000;
-    matchResults();
-    setInterval(matchResults, resultInterval);
-
     const liveInterval = 10 * 1000;
     getLiveSportsLines();
     setInterval(getLiveSportsLines, liveInterval);
+
+    const resultInterval = 10 * 60 * 1000;
+    matchResults();
+    setInterval(matchResults, resultInterval);
 });
 
 Date.prototype.addHours = function (h) {
