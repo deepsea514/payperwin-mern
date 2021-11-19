@@ -4,43 +4,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
-const teaserOdds = {
-    'American Football': {
-        "6": {  // Teaser Point
-            "2": -110,   // Teams
-            "3": 180,
-            "4": 300
-        },
-        "6.5": {
-            "2": -120,
-            "3": 160,
-            "4": 200
-        },
-        "7": {
-            "2": -130,
-            "3": 140,
-            "4": 200
-        }
-    },
-    'Basketball': {
-        "4": {  // Teaser Point
-            "2": 100,   // Teams
-            "3": 180,
-            "4": 300
-        },
-        "4.5": {
-            "2": -110,
-            "3": 160,
-            "4": 200
-        },
-        "5": {
-            "2": -120,
-            "3": 140,
-            "4": 200
-        }
-    }
-}
+import getTeaserOdds from '../helpers/getTeaserOdds';
 
 class BetTeaser extends Component {
     constructor(props) {
@@ -53,7 +17,7 @@ class BetTeaser extends Component {
         if (!valid) return 100;
         const { type: { sportName, teaserPoint }, betSlip } = teaserBetSlip;
         const count = betSlip.length;
-        return teaserOdds[sportName][teaserPoint.toString()][count];
+        return getTeaserOdds(sportName, teaserPoint, count);
     }
 
     handleChange = (e) => {

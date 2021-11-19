@@ -166,7 +166,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     if (homeScore > awayScore) moneyLineWinner = 'home';
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
 
-                    const linePoints = getLinePoints(pickName, pick, lineQuery);
+                    const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(pickName, pick, lineQuery);
                     let betWin;
                     if (lineQuery.type === 'moneyline') {
                         betWin = pick === moneyLineWinner;

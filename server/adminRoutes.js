@@ -2014,7 +2014,7 @@ adminRouter.post(
                 return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
-            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+            const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
             const betpoolQuery = {
                 sportId: lineQuery.sportId,
@@ -2506,7 +2506,7 @@ adminRouter.post(
                 await calculateParlayBetsStatus(betpool._id);
             } else {
                 const lineQuery = bet.lineQuery;
-                const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+                const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
                 let betpool = await BetPool.findOne({
                     $or: [
@@ -3110,7 +3110,7 @@ adminRouter.post(
             let wagerssportsbook = [];
             let fees = [];
             for (let i = 1; i < dateranges.length; i++) {
-                
+
                 const deposit = await getTotalDeposit(dateranges[i - 1], dateranges[i]);
                 deposits.push(deposit);
                 const wager = await getTotalWager(dateranges[i - 1], dateranges[i]);
@@ -5726,7 +5726,7 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
             await calculateParlayBetsStatus(betpool._id);
         } else {
             const lineQuery = bet.lineQuery;
-            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery);
+            const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery);
 
             let betpool = await BetPool.findOne({
                 $or: [
