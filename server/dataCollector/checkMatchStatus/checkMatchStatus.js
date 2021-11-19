@@ -17,7 +17,6 @@ const {
     ID,
     calculateBetsStatus,
     calculateParlayBetsStatus,
-    getLinePoints,
 } = require('../../libs/functions');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';

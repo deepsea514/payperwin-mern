@@ -160,8 +160,8 @@ class SportTeaser extends Component {
                                                                     away: teamB,
                                                                     sportName: sport,
                                                                     lineId: lineId,
-                                                                    lineQuery: lineQuery,
-                                                                    pickName: `Pick: ${teamA} ${pointHome >= 0 ? '+' : ''} (${spreads[0].hdp} + ${teaserPoint} pts)`,
+                                                                    lineQuery: { ...lineQuery, points: pointHome },
+                                                                    pickName: `Pick: ${teamA} ${pointHome >= 0 ? '+' : ''}${pointHome} (${spreads[0].hdp} + ${teaserPoint} pts)`,
                                                                     origin: origin,
                                                                     subtype: null,
                                                                     teaserPoint: teaserPoint
@@ -183,8 +183,8 @@ class SportTeaser extends Component {
                                                                     away: teamB,
                                                                     sportName: sport,
                                                                     lineId: lineId,
-                                                                    lineQuery: lineQuery,
-                                                                    pickName: `Pick: ${teamB} ${pointAway >= 0 ? '+' : ''} (${-spreads[0].hdp} + ${teaserPoint} pts)`,
+                                                                    lineQuery: { ...lineQuery, points: pointAway },
+                                                                    pickName: `Pick: ${teamB} ${pointAway >= 0 ? '+' : ''}${pointAway} (${-spreads[0].hdp} + ${teaserPoint} pts)`,
                                                                     origin: origin,
                                                                     subtype: null,
                                                                     teaserPoint: teaserPoint
@@ -211,8 +211,8 @@ class SportTeaser extends Component {
                                                 if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
                                                 const homeExist = teaserBetSlip.betSlip.find(bet => bet.lineId == lineId && bet.type == 'total' && bet.pick == 'home');
                                                 const awayExist = teaserBetSlip.betSlip.find(bet => bet.lineId == lineId && bet.type == 'total' && bet.pick == 'away');
-                                                const pointHome = totals[0].points + teaserPoint;
-                                                const pointAway = totals[0].points - teaserPoint;
+                                                const pointHome = totals[0].points - teaserPoint;
+                                                const pointAway = totals[0].points + teaserPoint;
                                                 return (
                                                     <li>
                                                         <span
@@ -228,8 +228,8 @@ class SportTeaser extends Component {
                                                                     away: teamB,
                                                                     sportName: sport,
                                                                     lineId: lineId,
-                                                                    lineQuery: lineQuery,
-                                                                    pickName: `Pick: Over ${pointHome} (${totals[0].points} + ${teaserPoint} pts)`,
+                                                                    lineQuery: { ...lineQuery, points: pointHome },
+                                                                    pickName: `Pick: Over ${pointHome} (${totals[0].points} - ${teaserPoint} pts)`,
                                                                     origin: origin,
                                                                     subtype: null,
                                                                     teaserPoint: teaserPoint
@@ -251,8 +251,8 @@ class SportTeaser extends Component {
                                                                     away: teamB,
                                                                     sportName: sport,
                                                                     lineId: lineId,
-                                                                    lineQuery: lineQuery,
-                                                                    pickName: `Pick: Under ${pointAway} (${totals[0].points} - ${teaserPoint} pts)`,
+                                                                    lineQuery: { ...lineQuery, points: pointAway },
+                                                                    pickName: `Pick: Under ${pointAway} (${totals[0].points} + ${teaserPoint} pts)`,
                                                                     origin: origin,
                                                                     subtype: null,
                                                                     teaserPoint: teaserPoint
