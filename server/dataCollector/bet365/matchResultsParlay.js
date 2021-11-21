@@ -380,7 +380,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
             cancelBetPool(betpool);
         }
     }
-    console.log('Finished checking parlay betpools', new Date().toLocaleString());
+    console.log(`Finished checking ${betpools.length} parlay betpools`, new Date().toLocaleString());
 }
 
 module.exports = matchResultsParlay;
