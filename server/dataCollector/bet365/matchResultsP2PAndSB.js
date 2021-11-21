@@ -295,7 +295,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
             await betpool.update({ $set: { result: 'Cancelled' } });
         }
     }
-    console.log('Finished checking betpools', new Date().toLocaleString());
+    console.log(`Finished checking ${betpools.length} betpools`, new Date().toLocaleString());
 }
 
 module.exports = matchResultsP2PAndSB;
