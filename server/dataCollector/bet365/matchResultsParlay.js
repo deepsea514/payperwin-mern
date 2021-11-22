@@ -185,6 +185,10 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     }
                     homeWin = homeWin && betWin;
                     query.status = betWin ? 'Win' : 'Lose';
+                    if (homeWin == false) {
+                        delete query.result;
+                        break;
+                    }
                 }
                 delete query.result;
             }

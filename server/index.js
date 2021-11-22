@@ -1593,13 +1593,13 @@ expressApp.post(
 
         try {
             let parlayOdds = 1;
-            let lastMatchStartTime = new Date();
+            let lastMatchStartTime = new Date(parlayQuery[0].matchStartDate);
             for (const parlay of parlayQuery) {
                 const { pickOdds } = parlay;
                 parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
 
                 const matchStartDate = new Date(parlay.matchStartDate);
-                if (matchStartDate.getTime() > lastMatchStartTime.getTime())
+                if (matchStartDate.getTime() < lastMatchStartTime.getTime())
                     lastMatchStartTime = matchStartDate;
             }
 
@@ -1774,7 +1774,7 @@ expressApp.post(
         const teaserQuery = [];
         let index = 0;
         let eventsDetail = '';
-        let lastMatchStartTime = new Date();
+        let lastMatchStartTime = null;
         const newLineOdds = getTeaserOdds(teaserType.sportName, teaserType.teaserPoint, betSlip.length)
         for (const bet of betSlip) {
             index++;
@@ -1852,7 +1852,10 @@ expressApp.post(
             });
 
             const matchStartDate = new Date(startDate);
-            if (matchStartDate.getTime() > lastMatchStartTime.getTime())
+            if (lastMatchStartTime) {
+                lastMatchStartTime = matchStartDate;
+            }
+            if (matchStartDate.getTime() < lastMatchStartTime.getTime())
                 lastMatchStartTime = matchStartDate;
 
             eventsDetail += `<li>
