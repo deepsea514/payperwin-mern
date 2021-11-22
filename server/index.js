@@ -1852,7 +1852,7 @@ expressApp.post(
             });
 
             const matchStartDate = new Date(startDate);
-            if (lastMatchStartTime) {
+            if (lastMatchStartTime == null) {
                 lastMatchStartTime = matchStartDate;
             }
             if (matchStartDate.getTime() < lastMatchStartTime.getTime())
