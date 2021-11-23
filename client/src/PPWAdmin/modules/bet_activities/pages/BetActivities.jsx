@@ -106,9 +106,6 @@ class BetActivities extends React.Component {
                                 {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
-                                {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
-                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
-                                </Dropdown.Item>}
                             </>}
                            
                             {['Settled - Win', 'Settled - Lose'].includes(bet.status) &&
@@ -158,7 +155,9 @@ class BetActivities extends React.Component {
     onFixBetScore = (values, formik) => {
         const { fixBetId } = this.state;
         const { getBetActivities } = this.props;
-        fixBetScore(settleId.id, values)
+
+        console.log("onFixBetScore", fixBetId.id);
+        fixBetScore(fixBetId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, fixBetId: null, resMessage: "Successfully Fixed Bet Score!", modalvariant: "success" });
