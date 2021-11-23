@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet, fixBetScore } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
 import numberFormat from "../../../../helpers/numberFormat";
 import SettleBetModal from "../components/SettleBetModal";
 import ManualMatchBetModal from "../components/ManualMatchBetModal";
+import FixBetScoreModal from '../components/FixBetScoreModal';
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class BetActivities extends React.Component {
             modal: false,
             resMessage: "",
             modalvariant: "success",
+            fixBetId: null,
         }
         this.csvRef = createRef();
     }
@@ -104,7 +106,16 @@ class BetActivities extends React.Component {
                                 {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
+                                {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
+                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                                </Dropdown.Item>}
                             </>}
+                           
+                            {['Settled - Win', 'Settled - Lose'].includes(bet.status) &&
+                                <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
+                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                                </Dropdown.Item>
+                            }
                         {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
@@ -143,6 +154,24 @@ class BetActivities extends React.Component {
                 this.setState({ modal: true, settleId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
             })
     }
+
+    onFixBetScore = (values, formik) => {
+        const { fixBetId } = this.state;
+        const { getBetActivities } = this.props;
+        fixBetScore(settleId.id, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, fixBetId: null, resMessage: "Successfully Fixed Bet Score!", modalvariant: "success" });
+
+                getBetActivities();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, fixBetId: null, resMessage: "Fix Bet Score Failed!", modalvariant: "danger" });
+            })
+    }
+
+    
 
     onMatchBet = (values, formik) => {
         const { matchId } = this.state;
@@ -275,7 +304,7 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, matchId } = this.state;
+        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, matchId, fixBetId } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -503,6 +532,16 @@ class BetActivities extends React.Component {
                     teamA={settleId.teamA}
                     teamB={settleId.teamB}
                 />}
+
+
+                {fixBetId && <FixBetScoreModal
+                    show={fixBetId != null}
+                    onHide={() => this.setState({ fixBetId: null })}
+                    onSubmit={this.onFixBetScore}
+                    teamA={fixBetId.teamA}
+                    teamB={fixBetId.teamB}
+                />}
+
 
                 {matchId && <ManualMatchBetModal
                     show={matchId != null}
