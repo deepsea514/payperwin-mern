@@ -57,6 +57,14 @@ class Deposit extends Component {
                                     Tether
                                 </Link>
                             </li>
+                            <li>
+                                <Link to={{ pathname: '/deposit-giftcard' }}>
+                                    <img src="images/gift-card.png" />
+                                </Link>
+                                <Link to={{ pathname: '/deposit-giftcard' }}>
+                                    Gift Card
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <p className="dpsit">

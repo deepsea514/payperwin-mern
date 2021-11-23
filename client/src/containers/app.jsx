@@ -36,6 +36,7 @@ import TermsAndConditions from "../pages/termsAndConditions";
 import BettingRules from "../pages/bettingRules";
 import DepositETransfer from "../pages/depositEtransfer";
 import DepositTripleA from "../pages/depositTripleA";
+import DepositGiftCard from "../pages/depositGiftCard";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
 import WithdrawTripleA from "../pages/withdrawTripleA";
 import Dashboard from "../pages/dashboard";
@@ -52,6 +53,7 @@ import PhoneVerification from "../pages/phoneVerification";
 import Cashback from "../pages/cashback";
 import CashbackNames from "../components/cashbackNames";
 import SportName from "../pages/sportName";
+import SportTeaser from '../components/sportTeaser';
 import CustomBets from '../pages/custombets';
 import SportsLeagues from '../pages/sportleagues';
 import AutobetSettings from '../pages/AutobetSettings';
@@ -105,6 +107,7 @@ const ShowAccountLinks = [
     '/autobet-settings',
     '/loyalty',
     '/support',
+    '/deposit-giftcard',
 ];
 
 const exceptDarkLinks = [
@@ -141,6 +144,7 @@ const exceptDarkLinks = [
     '/autobet-dashboard',
     '/autobet-settings',
     '/loyalty',
+    '/deposit-giftcard',
 ];
 
 class App extends Component {
@@ -152,9 +156,18 @@ class App extends Component {
             sportsMenuMobileOpen: false,
             accountMenuMobileOpen: false,
             openBetSlipMenu: false,
+            betSlipType: 'single',
             betSlip: [],
+            teaserBetSlip: {
+                type: null,
+                betSlip: []
+            }
         };
         setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
+    }
+
+    setBetSlipType = (type) => {
+        this.setState({ betSlipType: type });
     }
 
     componentDidMount() {
@@ -258,6 +271,51 @@ class App extends Component {
         }
     }
 
+    addTeaserBet = (bet) => {
+        const { teaserBetSlip } = this.state;
+        const { teaserPoint, sportName, lineId, type, pick } = bet;
+        const betSlip = teaserBetSlip.betSlip.filter(bet => (bet.lineId != lineId || bet.type != type));
+        if (teaserBetSlip.type) {
+            if (teaserBetSlip.betSlip.length >= 4) {
+                return;
+            }
+            this.setState({
+                teaserBetSlip: {
+                    type: teaserBetSlip.type ? teaserBetSlip.type : {
+                        teaserPoint: teaserPoint,
+                        sportName: sportName
+                    },
+                    betSlip: [...betSlip, bet]
+                }
+            })
+        } else {
+            this.setState({
+                teaserBetSlip: {
+                    type: {
+                        teaserPoint: teaserPoint,
+                        sportName: sportName
+                    },
+                    betSlip: [bet]
+                }
+            })
+        }
+    }
+
+    removeTeaserBet = (lineId, type, pick) => {
+        const { teaserBetSlip } = this.state;
+        if (lineId) {
+            const betSlip = teaserBetSlip.betSlip.filter(bet => (bet.lineId != lineId || bet.type != type || bet.pick != pick));
+            this.setState({
+                teaserBetSlip: {
+                    type: betSlip.length ? teaserBetSlip.type : null,
+                    betSlip: betSlip
+                }
+            });
+        } else {
+            this.setState({ teaserBetSlip: { type: null, betSlip: [] } });
+        }
+    }
+
     render() {
         const {
             menuOpen,
@@ -266,6 +324,8 @@ class App extends Component {
             betSlip,
             openBetSlipMenu,
             scrolledTop,
+            betSlipType,
+            teaserBetSlip
         } = this.state;
         const { user,
             getUser,
@@ -355,15 +415,15 @@ class App extends Component {
                                                 <Route path="/sports" render={(props) =>
                                                     <ErrorBoundary><Sports {...props} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId/live" render={(props) =>
+                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId/live" exact render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={true} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId" render={(props) =>
+                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId" exact render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={false} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:name/league/:league" render={(props) => {
+                                                <Route path="/sport/:name/league/:league" exact render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
                                                     const league = resObjPath(match, 'params.league');
@@ -378,7 +438,7 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/sport/:name/team/:team" render={(props) => {
+                                                <Route path="/sport/:name/team/:team" exact render={(props) => {
                                                     const { match } = props;
                                                     const sportName = resObjPath(match, 'params.name');
                                                     const team = resObjPath(match, 'params.team');
@@ -393,19 +453,32 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/sport/:name/league" render={(props) => {
+                                                <Route path="/sport/:name/league" exact render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <SportsBreadcrumb sportName={name} user={user} />
+                                                                <SportsBreadcrumb sportName={name} user={user} active='league' />
                                                                 <SportsLeagues sportName={name} user={user} getUser={getUser} />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/sport/:name" render={(props) => {
+                                                <Route path="/sport/:name/teaser" exact render={(props) => {
+                                                    const { match } = props;
+                                                    const name = resObjPath(match, 'params.name');
+                                                    return (
+                                                        <ErrorBoundary>
+                                                            <SportTeaser addBet={this.addTeaserBet}
+                                                                setBetSlipType={this.setBetSlipType}
+                                                                teaserBetSlip={teaserBetSlip}
+                                                                removeBet={this.removeTeaserBet}
+                                                                sportName={name} />
+                                                        </ErrorBoundary>
+                                                    );
+                                                }} />
+                                                <Route path="/sport/:name" exact render={(props) => {
                                                     const { match } = props;
                                                     const name = resObjPath(match, 'params.name');
                                                     return (
@@ -415,7 +488,7 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/others/:id" render={(props) => {
+                                                <Route path="/others/:id" exact render={(props) => {
                                                     const { match } = props;
                                                     const id = resObjPath(match, 'params.id');
                                                     return (
@@ -486,6 +559,8 @@ class App extends Component {
                                                 {user && <Route path="/deposit-tether" render={(props) =>
                                                     <ErrorBoundary><DepositTripleA {...props} user={user} method="Tether" /></ErrorBoundary>
                                                 } />}
+                                                {user && <Route path='/deposit-giftcard' render={(props) =>
+                                                    <ErrorBoundary><DepositGiftCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />}
                                                 {user && <Route path="/withdraw-etransfer" render={(props) =>
                                                     <ErrorBoundary><WithdrawETransfer {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}
@@ -545,11 +620,15 @@ class App extends Component {
                                                 {!sidebarShowAccountLinks &&
                                                     <BetSlip
                                                         betSlip={betSlip}
+                                                        betSlipType={betSlipType}
+                                                        teaserBetSlip={teaserBetSlip}
+                                                        setBetSlipType={this.setBetSlipType}
                                                         className="hide-mobile"
                                                         openBetSlipMenu={openBetSlipMenu}
                                                         toggleField={this.toggleField}
                                                         removeBet={this.removeBet}
                                                         updateBet={this.updateBet}
+                                                        removeTeaserBet={this.removeTeaserBet}
                                                         user={user}
                                                         history={history}
                                                     />}
@@ -570,11 +649,15 @@ class App extends Component {
                 {!sidebarShowAccountLinks &&
                     <BetSlip
                         betSlip={betSlip}
+                        betSlipType={betSlipType}
+                        teaserBetSlip={teaserBetSlip}
+                        setBetSlipType={this.setBetSlipType}
                         className="show-mobile"
                         openBetSlipMenu={openBetSlipMenu}
                         toggleField={this.toggleField}
                         removeBet={this.removeBet}
                         updateBet={this.updateBet}
+                        removeTeaserBet={this.removeTeaserBet}
                         user={user}
                         history={history}
                     />}
