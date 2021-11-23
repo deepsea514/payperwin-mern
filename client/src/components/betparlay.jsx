@@ -29,7 +29,6 @@ class BetParlay extends Component {
         const { setParlayBet } = this.props;
         const { target: { name, value } } = e;
         const stateChange = {};
-        const { } = this.props
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange.parlayStake = stake;
@@ -60,7 +59,7 @@ class BetParlay extends Component {
             <>
                 {win > maxBetLimitTier && <div className="bet-parlay-warn-message">
                     <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
-                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{max_win_limit: maxBetLimitTier}} />
+                    <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{ max_win_limit: maxBetLimitTier }} />
                 </div>}
                 <div className={`bet-parlay-container ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div className="d-flex justify-content-between">
@@ -89,7 +88,7 @@ class BetParlay extends Component {
                             step={20}
                         />
                     </div>
-                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD maxBetLimitTier</span></div>
+                    <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
                         const { name, type, league, sportName, pickName } = bet;

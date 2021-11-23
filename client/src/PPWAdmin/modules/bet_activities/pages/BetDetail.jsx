@@ -167,8 +167,8 @@ class BetDetail extends React.Component {
                                                                     <li>Pick Name: {query.pickName}</li>
                                                                     <li>Sport: <img src={sportNameImage(query.lineQuery.sportName)} width="16" height="16" />&nbsp;{query.lineQuery.sportName}</li>
                                                                     <li>Match Date: {this.getDate(query.matchStartDate)}</li>
-                                                                    <li>Team A: {query.teamA.name} @{newHome} {this.getBetDogFav(query, 'home')}</li>
-                                                                    <li>Team B: {query.teamB.name} @{newAway} {this.getBetDogFav(query, 'away')}</li>
+                                                                    <li>Team A: {query.teamA.name} @{newHome}</li>
+                                                                    <li>Team B: {query.teamB.name} @{newAway}</li>
                                                                 </ul>
                                                             )
                                                         })}

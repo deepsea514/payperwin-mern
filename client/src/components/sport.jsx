@@ -150,10 +150,6 @@ class Sport extends Component {
         return lineCount;
     }
 
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
     addBet = (bet) => {
         const { addBet } = this.props;
         const { type, odds, originOdds, pick, subtype } = bet;
@@ -188,7 +184,7 @@ class Sport extends Component {
                     league={selectedLeague ? {
                         name: selectedLeague.name,
                         leagueId: selectedLeague.originId
-                    } : null} user={user} getUser={getUser} team={team} />}
+                    } : null} user={user} getUser={getUser} team={team} active='matchup' />}
                 {sportsbookInfo && <SBModal
                     sportsbookInfo={sportsbookInfo}
                     onClose={() => this.setState({ sportsbookInfo: null })}
@@ -249,7 +245,6 @@ class Sport extends Component {
                                 </ul>
                             )
                         }).filter(event => event);
-                        console.log(filteredEvents)
                         return filteredEvents.length > 0 && (
                             <div className="tab-content" id="myTabContent" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>

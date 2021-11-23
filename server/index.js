@@ -30,6 +30,7 @@ const PrizeLog = require('./models/prizelog');
 const LoyaltyLog = require('./models/loyaltylog');
 const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
+const GiftCard = require('./models/giftcard');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -53,6 +54,7 @@ const {
     getLinePoints,
     getMaxWithdraw,
 } = require('./libs/functions');
+const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
@@ -91,6 +93,7 @@ const googleClient = new OAuth2Client(config.googleClientID);
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
+const shopRouter = require('./shopRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -1335,10 +1338,6 @@ expressApp.post(
                                             const exists = await BetPool.findOne({ uid: JSON.stringify(lineQuery) });
                                             let betpoolId = '';
                                             if (exists) {
-                                                /*  const docChanges = {
-                                                     $push: pick === 'home' ? { homeBets: betId } : { awayBets: betId },
-                                                     $inc: {},
-                                                 }; */
                                                 const docChanges = {
                                                     $push: {},
                                                     $inc: {},
@@ -1366,12 +1365,6 @@ expressApp.post(
                                                         break;
                                                 }
 
-                                                /* 
-                                                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.betTotal`] = betAfterFee;
-                                                docChanges.$inc[`${pick === 'home' ? 'teamA' : 'teamB'}.toWinTotal`] = toWin;
-                                                docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.betTotal`] = betAfterFee;
-                                                docChanges.$inc[`${pick === 'draw' ? 'teamDraw' : 'teamNonDraw'}.toWinTotal`] = toWin;
-                                                 */
                                                 await BetPool.findOneAndUpdate(
                                                     { uid: JSON.stringify(lineQuery) },
                                                     docChanges,
@@ -1515,7 +1508,7 @@ expressApp.post(
             index++;
             const { odds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
             if (!odds || !pick || !lineQuery) {
-                errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
+                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Query Incomplete.`);
                 break;
             }
             if (origin == 'other') {
@@ -1602,13 +1595,13 @@ expressApp.post(
 
         try {
             let parlayOdds = 1;
-            let lastMatchStartTime = new Date();
+            let lastMatchStartTime = new Date(parlayQuery[0].matchStartDate);
             for (const parlay of parlayQuery) {
                 const { pickOdds } = parlay;
                 parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
 
                 const matchStartDate = new Date(parlay.matchStartDate);
-                if (matchStartDate.getTime() > lastMatchStartTime.getTime())
+                if (matchStartDate.getTime() < lastMatchStartTime.getTime())
                     lastMatchStartTime = matchStartDate;
             }
 
@@ -1742,6 +1735,271 @@ expressApp.post(
         }
 
         res.json({
+            balance: user.balance,
+            errors,
+        });
+    }
+);
+
+expressApp.post(
+    '/placeTeaserBets',
+    isAuthenticated,
+    bruteforce.prevent,
+    async (req, res) => {
+        const { teaserBetSlip: { type: teaserType, betSlip }, totalStake, totalWin } = req.body;
+        const { user } = req;
+        const errors = [];
+        if (user.roles.selfExcluded && (new Date()).getTime() < (new Date(user.roles.selfExcluded)).getTime()) {
+            errors.push(`You are self-excluded till ${dateformat(new Date(user.roles.selfExcluded), "mediumDate")}`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        let autobet = await AutoBet.findOne({ userId: user._id });
+        if (autobet) {
+            errors.push(`Autobet user can't place bet.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        if (totalStake > user.balance) {
+            errors.push(`Bet can't be placed. Insufficient funds.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        if (betSlip.length < 2 || !totalStake || !totalWin) {
+            errors.push(`Bet can't be placed. Query Incompleted.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
+        const teaserQuery = [];
+        let index = 0;
+        let eventsDetail = '';
+        let lastMatchStartTime = null;
+        const newLineOdds = getTeaserOdds(teaserType.sportName, teaserType.teaserPoint, betSlip.length)
+        for (const bet of betSlip) {
+            index++;
+            const { pick, lineQuery, pickName, origin, live, teaserPoint } = bet;
+            if (!pick || !lineQuery) {
+                errors.push(`${pickName} wager could not be placed. Query Incomplete.`);
+                break;
+            }
+            if (teaserPoint != teaserType.teaserPoint) {
+                errors.push(`${pickName} wager could not be placed. Line Mismatch.`);
+                break;
+            }
+            if (origin == 'other') {
+                errors.push(`Can't place parlay bets on custome events.`);
+                break;
+            }
+            const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
+            if (!sportData) {
+                errors.push(`${pickName} wager could not be placed. Line not found`);
+                break;
+            }
+            const { originSportId } = sportData;
+            lineQuery.sportId = originSportId;
+            const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
+            if (!line) {
+                errors.push(`${pickName} wager could not be placed. Line not found`);
+                break;
+            }
+            const { teamA, teamB, startDate, line: { hdp, points } } = line;
+            let fPoints = hdp ? hdp : points ? points : null;
+
+            const matchTimeString = convertTimeLineDate(new Date(startDate), null);
+            let betType = '';
+            switch (type) {
+                case 'total':
+                    if (pick == 'home') {
+                        fPoints -= teaserType.teaserPoint;
+                        betType += `O ${fPoints}`;
+                    } else {
+                        fPoints += teaserType.teaserPoint;
+                        betType += `U ${fPoints}`;
+                    }
+                    break;
+
+                case 'spread':
+                    if (pick == 'home') {
+                        fPoints += teaserType.teaserPoint;
+                        betType += `${fPoints > 0 ? '+' : ''}${fPoints}`;
+                    } else {
+                        fPoints = teaserType.teaserPoint - fPoints;
+                        betType += `${fPoints > 0 ? '+' : ''}${fPoints}`;
+                    }
+                    break;
+            }
+
+            if (fPoints != lineQuery.points) {
+                console.log(fPoints, lineQuery.points)
+                errors.push(`${pickName} wager could not be placed. Line is mismatching.`);
+                break;
+            }
+
+            teaserQuery.push({
+                teamA: { name: teamA },
+                teamB: { name: teamB },
+                pick: pick,
+                pickName: pickName,
+                matchStartDate: startDate,
+                lineQuery: {
+                    ...lineQuery,
+                    points: pick == 'away' && type == 'spread' ? -lineQuery.points : lineQuery.points,
+                    teaserPoint: teaserType.teaserPoint,
+                },
+                origin: origin,
+            });
+
+            const matchStartDate = new Date(startDate);
+            if (lastMatchStartTime == null) {
+                lastMatchStartTime = matchStartDate;
+            }
+            if (matchStartDate.getTime() < lastMatchStartTime.getTime())
+                lastMatchStartTime = matchStartDate;
+
+            eventsDetail += `<li>
+                <p>Event ${index}: ${teamA} vs ${teamB}(${lineQuery.sportName})</p>
+                <p>Bet: ${lineQuery.type == 'moneyline' ? lineQuery.type : `${lineQuery.type}@${betType}`}</p>
+                <p>Date: ${matchTimeString}</p>
+            </li>`;
+        }
+
+        if (teaserQuery.length != betSlip.length) {
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        try {
+            const toWin = calculateToWinFromBet(totalStake, newLineOdds);
+            if (toWin != totalWin) {
+                errors.push(`Bet can't be placed. Win Amount mismatch.`);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+
+            if (toWin > maximumWin) {
+                errors.push(`Bet can't be placed. Exceed maximum win amount.`);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+            const fee = toWin * BetFee;
+            const bet_id = ID();
+            const teaserBet = await Bet.create({
+                userId: user._id,
+                pick: 'home',
+                pickName: 'Parlay Bet',
+                pickOdds: newLineOdds,
+                oldOdds: newLineOdds,
+                bet: totalStake,
+                toWin: toWin,
+                fee: fee,
+                matchStartDate: lastMatchStartTime,
+                status: 'Pending',
+                matchingStatus: 'Pending',
+                transactionID: `B${bet_id}`,
+                origin: 'bet365',
+                isParlay: true,
+                parlayQuery: teaserQuery
+            });
+
+            await FinancialLog.create({
+                financialtype: 'bet',
+                uniqid: `BP${bet_id}`,
+                user: user._id,
+                betId: teaserBet._id,
+                amount: totalStake,
+                method: 'bet',
+                status: FinancialStatus.success,
+            });
+
+            user.balance -= totalStake;
+            await user.save();
+
+            await LoyaltyLog.create({
+                user: user._id,
+                point: totalStake * loyaltyPerBet
+            });
+
+            let adminMsg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: helloEmailAddress,
+                subject: 'New Parlay Bet',
+                text: `New Parlay Bet`,
+                html: simpleresponsive(
+                    `<ul>
+                        <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
+                        ${eventsDetail}
+                        <li>Wager: $${fee.toFixed(2)}</li>
+                        <li>Odds: ${newLineOdds > 0 ? ('+' + newLineOdds) : newLineOdds}</li>
+                        <li>Win: $${toWin.toFixed(2)}</li>
+                    </ul>`),
+            }
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            adminMsg.to = supportEmailAddress;
+            sgMail.send(adminMsg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+
+            const teaserBetPool = await ParlayBetPool.create({
+                parlayQuery: teaserQuery,
+                teamA: {
+                    odds: newLineOdds,
+                    betTotal: totalStake,
+                    toWinTotal: totalWin
+                },
+                teamB: {
+                    odds: -Number(newLineOdds),
+                    betTotal: 0,
+                    toWinTotal: 0
+                },
+                matchStartDate: lastMatchStartTime,
+                homeBets: [teaserBet._id],
+                awayBets: [],
+                origin: teaserBet.origin
+            });
+            try {
+                await checkAutobetForParlay(teaserBet, teaserBetPool, user);
+                await calculateParlayBetsStatus(teaserBetPool._id);
+            } catch (error) {
+                console.error(error);
+                return res.json({
+                    balance: user.balance,
+                    errors,
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            errors.push(`Bet can't be placed. Internal Server Error.`);
+        }
+
+        return res.json({
             balance: user.balance,
             errors,
         });
@@ -2468,10 +2726,10 @@ expressApp.post(
                 return res.status(400).json({ error: 'Forward is for only pending bets.' });
             }
             const lineQuery = bet.lineQuery;
-            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+            const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
             let latestOdds = 0;
-            const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
 
             if (sportData) {
@@ -2480,12 +2738,12 @@ expressApp.post(
                     const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
                     const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
                     switch (bet.pick) {
-                            case "home":
-                                latestOdds = oddsA
-                                break;
-                            default:
-                                latestOdds = oddsB
-                                break;
+                        case "home":
+                            latestOdds = oddsA
+                            break;
+                        default:
+                            latestOdds = oddsB
+                            break;
                     }
                 }
             }
@@ -2814,13 +3072,12 @@ expressApp.get(
                 originId: league.originId
             })) : [];
             let merged = [];
-
             data = data.filter(league => league.eventCount > 0)
             for (let i = 0; i < data.length; i++) {
                 const duplicated = liveLeagues.find((itmInner) => itmInner.originId === data[i].originId)
                 if (duplicated) {
-                    merged.push({ ...data[i], eventCount: data[i].eventCount + liveLeagues.eventCount });
-                    liveLeagues = liveLeagues.filter(league => league.originId == duplicated.originId)
+                    merged.push({ ...data[i], eventCount: data[i].eventCount + duplicated.eventCount });
+                    liveLeagues = liveLeagues.filter(league => league.originId != duplicated.originId)
                 } else {
                     merged.push(data[i]);
                 }
@@ -3112,7 +3369,7 @@ expressApp.post('/deposit',
     isAuthenticated,
     async (req, res) => {
         const data = req.body;
-        const { amount, email, phone, method } = data;
+        const { amount, email, phone, method, card_number } = data;
         if (method == "eTransfer") {
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
@@ -3200,6 +3457,44 @@ expressApp.post('/deposit',
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
             depositTripleA(req, res, data);
+        }
+        else if (method == 'giftcard') {
+            try {
+                const { user } = req;
+                if (!card_number) {
+                    return res.json({
+                        success: false,
+                        message: 'Card Number is required.'
+                    });
+                }
+                const giftcard = await GiftCard.findOne({ card_number: card_number });
+                if (!giftcard) {
+                    return res.json({
+                        success: false,
+                        message: 'Gift Card not found.'
+                    });
+                }
+                if (giftcard.used) {
+                    return res.json({
+                        success: false,
+                        message: 'Gift Card already used.'
+                    });
+                }
+                await FinancialLog.create({
+                    financialtype: 'deposit',
+                    uniqid: `D${ID()}`,
+                    user: user._id,
+                    amount: giftcard.amount,
+                    method: 'giftcard',
+                    status: FinancialStatus.success
+                });
+                await user.update({ $inc: { balance: giftcard.amount } });
+                await giftcard.update({ used: true });
+                return res.json({ success: true, message: `Successfully redeemed. Your balanced increased $${giftcard.amount}` })
+            } catch (error) {
+                console.error(error);
+                return res.json({ success: false, message: 'Cannot redeem gift card. Internal Server Error.' })
+            }
         }
         else {
             return res.status(400).json({ success: 0, message: "Method is not suitable." });
@@ -4617,10 +4912,10 @@ expressApp.post(
 )
 
 
-expressApp.use('/getLatestOdds', async (req, res) => { 
+expressApp.use('/getLatestOdds', async (req, res) => {
     const betDetails = req.body;
     const { pick, lineQuery, live } = betDetails;
-    const { sportName,leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+    const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
     const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
     if (sportData) {
         const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
@@ -4629,27 +4924,32 @@ expressApp.use('/getLatestOdds', async (req, res) => {
             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
             let newLineOdds = 0;
             switch (pick) {
-                    case "home":
-                        newLineOdds = oddsA
-                        break;
-                    default:
-                        newLineOdds = oddsB
-                        break;
+                case "home":
+                    newLineOdds = oddsA
+                    break;
+                default:
+                    newLineOdds = oddsB
+                    break;
             }
-            res.json({ success: true,
-                latestOdds: newLineOdds });
+            res.json({
+                success: true,
+                latestOdds: newLineOdds
+            });
         }
         else {
-            res.json({ success: false,
-                error: "no line found" });
+            res.json({
+                success: false,
+                error: "no line found"
+            });
         }
     }
 })
 
-// Admin
+// Router
 expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
+expressApp.use('/shop', shopRouter);
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
 

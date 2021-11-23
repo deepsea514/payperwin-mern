@@ -47,7 +47,7 @@ class OpenBets extends Component {
             error: null,
             shareModal: false,
             loadingUrl: false,
-            lineUrl: '', 
+            lineUrl: '',
             urlCopied: false,
             daterange: null,
             page: 0,
@@ -173,6 +173,10 @@ class OpenBets extends Component {
                 return 'matched';
             case 'Partial Accepted':
                 return 'partialmatched';
+            case 'Win':
+                return 'win';
+            case 'Lose':
+                return 'loss';
         }
     }
 
@@ -189,6 +193,9 @@ class OpenBets extends Component {
             case 'Draw':
             case 'Accepted':
             case 'Partial Accepted':
+            case 'Win':
+            case 'Lose':
+            default:
                 return status;
         }
     }
@@ -218,19 +225,19 @@ class OpenBets extends Component {
     }
 
     forwardSportsbook = (bet) => {
-        const bodyData ={lineQuery: bet.lineQuery, pick: bet.pick };
-        this.setState({loadingOdds: true});
+        const bodyData = { lineQuery: bet.lineQuery, pick: bet.pick };
+        this.setState({ loadingOdds: true });
         axios.post(`${serverUrl}/getLatestOdds`, bodyData, { withCredentials: true })
             .then(({ data }) => {
                 this.setState({
                     forwardLatestOdd: data.latestOdds,
-                    forwardBet: bet 
+                    forwardBet: bet
                 });
-                this.setState({loadingOdds: false});
+                this.setState({ loadingOdds: false });
             })
             .catch(() => {
-                this.setState({ forwardBet: null,  forwardResult: 'Can\'t get latest odd forward.' });
-                this.setState({loadingOdds: false});
+                this.setState({ forwardBet: null, forwardResult: 'Can\'t get latest odd forward.' });
+                this.setState({ loadingOdds: false });
             });
     }
 
@@ -315,7 +322,7 @@ class OpenBets extends Component {
                     {forwardBet != null && <div className="modal confirmation">
                         <div className="background-closer bg-modal" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                         <div className="col-in">
-                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null, forwardLatestOdd:null })} />
+                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                             <div>
                                 <b> <FormattedMessage id="PAGES.FORWARDTO.SPORTSBOOK" /></b>
                                 <hr />
@@ -524,14 +531,18 @@ class OpenBets extends Component {
                                     const { sportName } = lineQuery
                                     return (
                                         <div className="open-bets-event" key={index}>
-                                            <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
-                                            {`${teamA.name} vs ${teamB.name}`}
+                                            <div className='status text-dark'>
+                                                <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
+                                                {`${teamA.name} vs ${teamB.name}`}
+                                                {settledBets && <div className={this.getStatusClass(status) + ' float-right text-white'}>
+                                                    {this.getStatusName(status)}
+                                                </div>}
+                                            </div>
                                             <div>{pickName}</div>
                                             <div>
                                                 <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                             </div>
                                             {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
-                                            {settledBets && <div><strong>{status}</strong></div>}
                                         </div>
                                     );
                                 })}
@@ -610,9 +621,9 @@ class OpenBets extends Component {
                                     {openBets && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
-                                        <button className={ 'form-button ml-2'  + (loadingOdds ? ' is-loading' : '')  }
-                                        disabled={loadingOdds}
-                                         onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
+                                        <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
+                                            disabled={loadingOdds}
+                                            onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to Sportsbook</button>}
                                 </div>
                             </div>
                         );

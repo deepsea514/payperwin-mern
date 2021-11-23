@@ -166,7 +166,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     if (homeScore > awayScore) moneyLineWinner = 'home';
                     else if (awayScore > homeScore) moneyLineWinner = 'away';
 
-                    const linePoints = getLinePoints(pickName, pick, lineQuery);
+                    const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(pickName, pick, lineQuery);
                     let betWin;
                     if (lineQuery.type === 'moneyline') {
                         betWin = pick === moneyLineWinner;
@@ -185,6 +185,10 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     }
                     homeWin = homeWin && betWin;
                     query.status = betWin ? 'Win' : 'Lose';
+                    if (homeWin == false) {
+                        delete query.result;
+                        break;
+                    }
                 }
                 delete query.result;
             }
@@ -380,7 +384,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
             cancelBetPool(betpool);
         }
     }
-    console.log('Finished checking parlay betpools', new Date().toLocaleString());
+    console.log(`Finished checking ${betpools.length} parlay betpools`, new Date().toLocaleString());
 }
 
 module.exports = matchResultsParlay;

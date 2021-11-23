@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import _env from '../env.json';
 import BetParlay from './betparlay';
+import BetTeaser from './betteaser';
 import { FormattedMessage, injectIntl } from 'react-intl';
 const serverUrl = _env.appUrl;
 
@@ -16,17 +17,21 @@ class BetSlip extends Component {
             errors: [],
             submitting: false,
             confirmationOpen: false,
-            single: true,
             parlayWin: '',
             parlayStake: '',
+            teaserWin: '',
+            teaserStake: '',
         };
     }
 
     componentDidUpdate(prevProps) {
-        const { betSlip } = this.props;
-        const { betSlip: prevBetSlip } = prevProps;
+        const { betSlip, teaserBetSlip } = this.props;
+        const { betSlip: prevBetSlip, teaserBetSlip: prevTeaserBetSlip } = prevProps;
         if (JSON.stringify(betSlip) != JSON.stringify(prevBetSlip)) {
             this.setState({ parlayStake: '', parlayWin: '' });
+        }
+        if (JSON.stringify(teaserBetSlip) != JSON.stringify(prevTeaserBetSlip)) {
+            this.setState({ teaserStake: '', teaserWin: '' });
         }
     }
 
@@ -121,29 +126,73 @@ class BetSlip extends Component {
             });
     }
 
-    placeBets = () => {
-        const { single } = this.state;
-        single ? this.placeSingleBets() : this.placeParlayBets();
+    placeTeaserBets = () => {
+        const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier } = this.props;
+        const { teaserStake, teaserWin } = this.state;
+        this.setState({ errors: [] });
+        let totalWin = teaserWin ? teaserWin : 0;
+        let totalStake = teaserStake ? teaserStake : 0;
+        if (user && totalStake > user.balance) {
+            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
+            return;
+        }
+        if (totalWin > maxBetLimitTier) {
+            this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
+            return;
+        }
+        this.setState({ submitting: true });
+        axios.post(`${serverUrl}/placeTeaserBets`, { teaserBetSlip, totalStake, totalWin }, { withCredentials: true })
+            .then(({ data: { balance, errors } }) => {
+                if (errors.length == 0) {
+                    updateUser('balance', balance);
+                    removeTeaserBet(null, null, null);
+                    this.setState({ confirmationOpen: true });
+                } else {
+                    this.setState({ errors });
+                }
+            }).catch((err) => {
+                this.setState({ errors: ['Can\'t place bet.'] });
+            }).finally(() => {
+                this.setState({ submitting: false });
+            });
+    }
 
+    placeBets = () => {
+        const { betSlipType } = this.props;
+        switch (betSlipType) {
+            case 'single':
+                this.placeSingleBets();
+                break;
+            case 'parlay':
+                this.placeParlayBets();
+                break;
+            case 'teaser':
+                this.placeTeaserBets();
+                break;
+        }
     }
 
     render() {
-        const { errors, confirmationOpen, single, parlayWin, parlayStake, submitting } = this.state;
+        const { errors, confirmationOpen, parlayWin, parlayStake, teaserWin, teaserStake, submitting } = this.state;
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
-            className, showLoginModalAction
+            className, showLoginModalAction, betSlipType, setBetSlipType, teaserBetSlip,
+            removeTeaserBet
         } = this.props;
 
         let totalStake = 0;
         let totalWin = 0;
-        if (single) {
+        if (betSlipType == 'single') {
             betSlip.forEach(b => {
                 totalStake += b.stake;
                 totalWin += b.win;
             });
-        } else {
+        } else if (betSlipType == 'parlay') {
             totalWin = parlayWin ? parlayWin : 0;
             totalStake = parlayStake ? parlayStake : 0;
+        } else if (betSlipType == 'teaser') {
+            totalWin = teaserWin ? teaserWin : 0;
+            totalStake = teaserStake ? teaserStake : 0;
         }
         const sportsBetSlip = betSlip.filter(bet => bet.origin != 'other');
 
@@ -171,20 +220,24 @@ class BetSlip extends Component {
                     <i className="fas fa-minus" />
                 </div>
                 <div className="bet-slip-content">
-                    <div className="tab-content" id="myTabContent">
-                        <div className="tab-pane fade show active" id="Singles" role="tabpanel" aria-labelledby="home-tab">
+                    <div className="tab-content">
+                        <div className="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
                             <div className="row bet-slip-type-container mx-0 shadow-sm">
-                                <div className={`col-6 cursor-pointer bet-slip-type ${single ? 'active' : ''}`}
-                                    onClick={() => this.setState({ single: true })}>
-                                    Single Bets
+                                <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'single' ? 'active' : ''}`}
+                                    onClick={() => setBetSlipType('single')}>
+                                    Single
                                 </div>
-                                <div className={`col-6 cursor-pointer bet-slip-type ${!single ? 'active' : ''}`}
-                                    onClick={() => this.setState({ single: false })}>
+                                <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'parlay' ? 'active' : ''}`}
+                                    onClick={() => setBetSlipType('parlay')}>
                                     Parlay
                                 </div>
+                                <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'teaser' ? 'active' : ''}`}
+                                    onClick={() => setBetSlipType('teaser')}>
+                                    Teaser
+                                </div>
                             </div>
-                            {single && <div className="bet-slip-list">
-                                {user && user.balance < totalStake && <div className="bet p-0">
+                            {betSlipType == 'single' && <div className="bet-slip-list">
+                                {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
                                         <div><FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS_CONTENT" /></div>
@@ -209,8 +262,8 @@ class BetSlip extends Component {
                                         <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
                                     </div>}
                             </div>}
-                            {!single && <div className="bet-slip-list">
-                                {user && user.balance < totalStake && <div className="bet p-0">
+                            {betSlipType == 'parlay' && <div className="bet-slip-list">
+                                {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
                                         <div><FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS_CONTENT" /></div>
@@ -236,6 +289,37 @@ class BetSlip extends Component {
                                         <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
                                     </div>}
                             </div>}
+                            {betSlipType == 'teaser' && <div className="bet-slip-list">
+                                {user && user.balance < totalStake && <div className="bet p-0 m-1">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
+                                        <div><FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS_CONTENT" /></div>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link
+                                            type="button"
+                                            className="deposit-btn text-center"
+                                            to="/deposit">
+                                            <FormattedMessage id="COMPONENTS.DEPOSIT" />
+                                        </Link>
+                                    </div>
+                                </div>}
+                                {teaserBetSlip.betSlip.length > 0 ?
+                                    <BetTeaser
+                                        teaserBetSlip={teaserBetSlip}
+                                        stake={teaserStake}
+                                        win={teaserWin}
+                                        removeBet={removeTeaserBet}
+                                        setTeaserBet={(data) => this.setState(data)}
+                                    />
+                                    : <div className="no-bets teaser">
+                                        <h4>To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.</h4>
+                                        <ul className="teaser-links">
+                                            <li><Link to='/sport/Basketball/teaser'><img src='/images/icons/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
+                                            <li><Link to="/sport/American_Football/teaser"><img src="/images/icons/football.png" className='teaser-image' /> American Football Teasers</Link></li>
+                                        </ul>
+                                    </div>}
+                            </div>}
                             <div className="total">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
@@ -259,7 +343,7 @@ class BetSlip extends Component {
                                 <button
                                     disabled={submitting}
                                     type="button"
-                                    className={ 'total-btn'  + (submitting ? ' is-loading' : '')  }
+                                    className={'total-btn' + (submitting ? ' is-loading' : '')}
                                     onClick={user
                                         ? this.placeBets
                                         : () => {
