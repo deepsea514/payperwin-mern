@@ -33,3 +33,7 @@ export function settleBet(id, score) {
 export function matchBet(id, data) {
     return axios.post(`${serverUrl}/bets/${id}/match`, data);
 }
+
+export function fixBetScore(id, score) {
+    return axios.post(`${serverUrl}/bets/${id}/fixscore`, score);
+}
