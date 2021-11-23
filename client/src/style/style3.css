@@ -627,16 +627,15 @@ a.log-in-btn {
     color: #000;
     display: block;
     text-align: center;
+    margin: 0 auto;
 }
 
 .diposit-list img {
-    margin-bottom: 0;
-    margin-top: 0;
-    max-height: 30px;
+    height: 40px;
     display: block;
     text-align: center;
     margin: auto;
-    margin-bottom: 26px;
+    margin-bottom: 10px;
 }
 
 .diposit-list li a:last-child {

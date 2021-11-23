@@ -30,6 +30,7 @@ const PrizeLog = require('./models/prizelog');
 const LoyaltyLog = require('./models/loyaltylog');
 const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
+const GiftCard = require('./models/giftcard');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -92,6 +93,7 @@ const googleClient = new OAuth2Client(config.googleClientID);
 const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
+const shopRouter = require('./shopRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -3367,7 +3369,7 @@ expressApp.post('/deposit',
     isAuthenticated,
     async (req, res) => {
         const data = req.body;
-        const { amount, email, phone, method } = data;
+        const { amount, email, phone, method, card_number } = data;
         if (method == "eTransfer") {
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
@@ -3455,6 +3457,44 @@ expressApp.post('/deposit',
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
             depositTripleA(req, res, data);
+        }
+        else if (method == 'giftcard') {
+            try {
+                const { user } = req;
+                if (!card_number) {
+                    return res.json({
+                        success: false,
+                        message: 'Card Number is required.'
+                    });
+                }
+                const giftcard = await GiftCard.findOne({ card_number: card_number });
+                if (!giftcard) {
+                    return res.json({
+                        success: false,
+                        message: 'Gift Card not found.'
+                    });
+                }
+                if (giftcard.used) {
+                    return res.json({
+                        success: false,
+                        message: 'Gift Card already used.'
+                    });
+                }
+                await FinancialLog.create({
+                    financialtype: 'deposit',
+                    uniqid: `D${ID()}`,
+                    user: user._id,
+                    amount: giftcard.amount,
+                    method: 'giftcard',
+                    status: FinancialStatus.success
+                });
+                await user.update({ $inc: { balance: giftcard.amount } });
+                await giftcard.update({ used: true });
+                return res.json({ success: true, message: `Successfully redeemed. Your balanced increased $${giftcard.amount}` })
+            } catch (error) {
+                console.error(error);
+                return res.json({ success: false, message: 'Cannot redeem gift card. Internal Server Error.' })
+            }
         }
         else {
             return res.status(400).json({ success: 0, message: "Method is not suitable." });
@@ -4905,10 +4945,11 @@ expressApp.use('/getLatestOdds', async (req, res) => {
     }
 })
 
-// Admin
+// Router
 expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
+expressApp.use('/shop', shopRouter);
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
 
