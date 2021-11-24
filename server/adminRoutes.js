@@ -6704,9 +6704,8 @@ adminRouter.get(
 adminRouter.post(
     '/bets/:id/fixscore',
     authenticateJWT,
-    limitRoles('custom-events'),
+    limitRoles('bet_activities'),
     async (req, res) => {
-       console.log("fixscore initiated");
         try {
             let { id } = req.params;
             const { teamAScore, teamBScore } = req.body;
