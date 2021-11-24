@@ -71,7 +71,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
     }
     for (const betpool of betpools) {
         const { homeBets, awayBets, parlayQuery } = betpool;
-        let matchCancelled = false;
         if (homeBets.length > 0 && awayBets.length > 0) {
             let homeWin = true;
             let breaked = false;

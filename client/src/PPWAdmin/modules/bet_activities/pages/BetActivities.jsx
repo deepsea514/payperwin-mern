@@ -13,6 +13,7 @@ import CustomDatePicker from "../../../../components/customDatePicker";
 import numberFormat from "../../../../helpers/numberFormat";
 import SettleBetModal from "../components/SettleBetModal";
 import ManualMatchBetModal from "../components/ManualMatchBetModal";
+import SettleParlayBetModal from "../components/SettleParlayBetModal";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class BetActivities extends React.Component {
             wagerActivityDownloadData: [],
             deleteId: null,
             settleId: null,
+            settleParlayId: null,
             matchId: null,
             modal: false,
             resMessage: "",
@@ -104,6 +106,9 @@ class BetActivities extends React.Component {
                                 {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
+                                {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                    <i className="fas fa-check"></i>&nbsp; Settle
+                                </Dropdown.Item>}
                             </>}
                         {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
@@ -141,6 +146,22 @@ class BetActivities extends React.Component {
             .catch(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, settleId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
+            })
+    }
+
+    onSettleParlayBet = (values, formik) => {
+        const { settleParlayId } = this.state;
+        const { getBetActivities } = this.props;
+        settleBet(settleParlayId.id, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, settleParlayId: null, resMessage: "Successfully Settled!", modalvariant: "success" });
+
+                getBetActivities();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, settleParlayId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
             })
     }
 
@@ -275,7 +296,17 @@ class BetActivities extends React.Component {
     }
 
     render() {
-        const { perPage, wagerActivityDownloadData, deleteId, modal, resMessage, modalvariant, settleId, matchId } = this.state;
+        const {
+            perPage,
+            wagerActivityDownloadData,
+            deleteId,
+            modal,
+            resMessage,
+            modalvariant,
+            settleId,
+            matchId,
+            settleParlayId
+        } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -502,6 +533,13 @@ class BetActivities extends React.Component {
                     onSubmit={this.onSettleBet}
                     teamA={settleId.teamA}
                     teamB={settleId.teamB}
+                />}
+
+                {settleParlayId && <SettleParlayBetModal
+                    show={settleParlayId != null}
+                    onHide={() => this.setState({ settleParlayId: null })}
+                    onSubmit={this.onSettleParlayBet}
+                    parlayQuery={settleParlayId.parlayQuery}
                 />}
 
                 {matchId && <ManualMatchBetModal
