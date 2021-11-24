@@ -45,7 +45,6 @@ export default class SettleBetModal extends React.Component {
                                         {...getFieldProps("teamAScore")}
                                     />
                                     {errors &&
-                                        errors &&
                                         errors.teamAScore &&
                                         touched &&
                                         touched.teamAScore && (
@@ -62,7 +61,6 @@ export default class SettleBetModal extends React.Component {
                                         {...getFieldProps("teamBScore")}
                                     />
                                     {errors &&
-                                        errors &&
                                         errors.teamBScore &&
                                         touched &&
                                         touched.teamBScore && (
