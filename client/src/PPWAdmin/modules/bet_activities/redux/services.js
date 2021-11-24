@@ -35,6 +35,5 @@ export function matchBet(id, data) {
 }
 
 export function fixBetScore(id, score) {
-    console.log("fixBetScore", id, score);
     return axios.post(`${serverUrl}/bets/${id}/fixscore`, score);
 }
