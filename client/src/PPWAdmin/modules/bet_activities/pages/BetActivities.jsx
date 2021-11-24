@@ -112,12 +112,12 @@ class BetActivities extends React.Component {
                                     <i className="fas fa-check"></i>&nbsp; Settle
                                 </Dropdown.Item>}
                             </>}
-                           
-                            {['Settled - Win', 'Settled - Lose'].includes(bet.status) &&
-                                <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
-                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
-                                </Dropdown.Item>
-                            }
+
+                        {['Settled - Win', 'Settled - Lose'].includes(bet.status) && !bet.isParlay &&
+                            <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
+                                <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                            </Dropdown.Item>
+                        }
                         {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
@@ -160,12 +160,18 @@ class BetActivities extends React.Component {
     onFixBetScore = (values, formik) => {
         const { fixBetId } = this.state;
         const { getBetActivities } = this.props;
-
-        console.log("onFixBetScore", fixBetId.id);
         fixBetScore(fixBetId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, fixBetId: null, resMessage: "Successfully Fixed Bet Score!", modalvariant: "success" });
+                getBetActivities();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, fixBetId: null, resMessage: "Fix Bet Failed!", modalvariant: "danger" });
+            })
+    }
+
     onSettleParlayBet = (values, formik) => {
         const { settleParlayId } = this.state;
         const { getBetActivities } = this.props;
