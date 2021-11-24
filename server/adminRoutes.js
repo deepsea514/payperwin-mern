@@ -6704,9 +6704,8 @@ adminRouter.get(
 adminRouter.post(
     '/bets/:id/fixscore',
     authenticateJWT,
-    limitRoles('custom-events'),
+    limitRoles('bet_activities'),
     async (req, res) => {
-       console.log("fixscore initiated");
         try {
             let { id } = req.params;
             const { teamAScore, teamBScore } = req.body;
@@ -6746,113 +6745,111 @@ adminRouter.post(
 
             const homeScore = teamAScore;
             const awayScore = teamBScore;
-        
-            if (!betpool) {
-                console.log('no eligible betpool');
-                return false;
-            }
+
             let matchCancelled = false;
 
             if (homeBets.length > 0 && awayBets.length > 0) {
-                    let moneyLineWinner = null;
-                    if (homeScore > awayScore) moneyLineWinner = 'home';
-                    else if (awayScore > homeScore) moneyLineWinner = 'away';
-                    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
+                let moneyLineWinner = null;
+                if (homeScore > awayScore) moneyLineWinner = 'home';
+                else if (awayScore > homeScore) moneyLineWinner = 'away';
+                const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
 
-                    for (const bet of bets) {
-                        const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
-                         //reseting win or loss finacial logs amount and substracting user balance
-                        const oldfinancialLog = await FinancialLog.find({betId: _id});
-                        const totalBetFeeAndAmount = oldfinancialLog[0].amount + oldfinancialLog[1]?.amount | 0;
-                        const oldWinnerUserId = oldfinancialLog[0].user;
-                        await User.findOneAndUpdate({ _id: oldWinnerUserId }, { $min: { balance: totalBetFeeAndAmount } }); 
-                        await FinancialLog.updateMany({ betId: _id }, { $set: { amount: 0 } }); 
-                         //Updataing with user and fincaial log with latest winner and Amount and Balance
-                        const user = await User.findById(userId);
-                        if (payableToWin <= 0 || status == 'Pending') {
-                            const { _id, userId, bet: betAmount } = bet;
-                            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                            await FinancialLog.findOneAndUpdate( 
-                                {
-                                    betId: _id,
-                                },
-                                { $set: {
+                for (const bet of bets) {
+                    const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
+                    //reseting win or loss finacial logs amount and substracting user balance
+                    const oldfinancialLog = await FinancialLog.find({ betId: _id });
+                    const totalBetFeeAndAmount = oldfinancialLog[0].amount + (oldfinancialLog[1] ? oldfinancialLog[1].amount : 0);
+                    const oldWinnerUserId = oldfinancialLog[0].user;
+                    await User.findOneAndUpdate({ _id: oldWinnerUserId }, { $min: { balance: totalBetFeeAndAmount } });
+                    await FinancialLog.updateMany({ betId: _id }, { $set: { amount: 0 } });
+                    //Updataing with user and fincaial log with latest winner and Amount and Balance
+                    const user = await User.findById(userId);
+                    if (payableToWin <= 0 || status == 'Pending') {
+                        const { _id, userId, bet: betAmount } = bet;
+                        await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
+                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+                        await FinancialLog.findOneAndUpdate(
+                            {
+                                betId: _id,
+                            },
+                            {
+                                $set: {
                                     financialtype: 'betcancel',
                                     method: 'betcancel',
                                     amount: betAmount,
                                     status: FinancialStatus.success,
                                 }
                             });
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        let betWin;
-                        let draw = false;
-                        if (lineType === 'moneyline') {
-                            betWin = pick === moneyLineWinner;
-                            draw = awayScore == homeScore;
-                        } else if (['spread', 'alternative_spread'].includes(lineType)) {
-                            const spread = {
-                                home: Number(points),
-                                away: 0,
-                            };
-                            const homeScoreHandiCapped = Number(homeScore) + spread.home;
-                            const awayScoreHandiCapped = Number(awayScore) + spread.away;
-                            let spreadWinner;
-                            if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
-                            else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
-                            betWin = pick === spreadWinner;
-                            draw = homeScoreHandiCapped == awayScoreHandiCapped;
-                        } else if (['total', 'alternative_total'].includes(lineType)) {
-                            const totalPoints = homeScore + awayScore;
-                            const overUnderWinner = totalPoints > points ? 'home' : 'away';
-                            betWin = pick === overUnderWinner;
-                        }
+                    let betWin;
+                    let draw = false;
+                    if (lineType === 'moneyline') {
+                        betWin = pick === moneyLineWinner;
+                        draw = awayScore == homeScore;
+                    } else if (['spread', 'alternative_spread'].includes(lineType)) {
+                        const spread = {
+                            home: Number(points),
+                            away: 0,
+                        };
+                        const homeScoreHandiCapped = Number(homeScore) + spread.home;
+                        const awayScoreHandiCapped = Number(awayScore) + spread.away;
+                        let spreadWinner;
+                        if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
+                        else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
+                        betWin = pick === spreadWinner;
+                        draw = homeScoreHandiCapped == awayScoreHandiCapped;
+                    } else if (['total', 'alternative_total'].includes(lineType)) {
+                        const totalPoints = homeScore + awayScore;
+                        const overUnderWinner = totalPoints > points ? 'home' : 'away';
+                        betWin = pick === overUnderWinner;
+                    }
 
-                        if (draw) {
-                            // refund user
-                            await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
-                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                            await FinancialLog.findOneAndUpdate( 
-                                {
-                                    betId: _id,
-                                },
-                                { $set: {
+                    if (draw) {
+                        // refund user
+                        await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
+                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
+                        await FinancialLog.findOneAndUpdate(
+                            {
+                                betId: _id,
+                            },
+                            {
+                                $set: {
                                     financialtype: 'betdraw',
                                     method: 'betdraw',
                                     amount: betAmount,
                                     status: FinancialStatus.success,
                                 }
                             });
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        if (betWin === true) {
-                        
-                            const betFee = Number((payableToWin * BetFee).toFixed(2));
-                            const betChanges = {
-                                $set: {
-                                    status: 'Settled - Win',
-                                    credited: betAmount + payableToWin,
-                                    homeScore: homeScore,
-                                    awayScore: awayScore,
-                                    fee: betFee
-                                }
+                    if (betWin === true) {
+
+                        const betFee = Number((payableToWin * BetFee).toFixed(2));
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Win',
+                                credited: betAmount + payableToWin,
+                                homeScore: homeScore,
+                                awayScore: awayScore,
+                                fee: betFee
                             }
-                            await Bet.findOneAndUpdate({ _id }, betChanges);
-                            if (user) {
-                                const { email, balance } = user;
-                                if (payableToWin > 0) {
-                                    //Updating new winer balance
-                                    await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
+                        }
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                        if (user) {
+                            if (payableToWin > 0) {
+                                //Updating new winer balance
+                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
 
-                                    await FinancialLog.findOneAndUpdate( 
-                                        {
-                                            betId: _id,
-                                            financialtype: 'betwon'
-                                        },
-                                        { $set: {
+                                await FinancialLog.findOneAndUpdate(
+                                    {
+                                        betId: _id,
+                                        financialtype: 'betwon'
+                                    },
+                                    {
+                                        $set: {
                                             user: userId,
                                             betId: _id,
                                             financialtype: 'betwon',
@@ -6862,12 +6859,13 @@ adminRouter.post(
                                         }
                                     });
 
-                                    await FinancialLog.findOneAndUpdate( 
-                                        {
-                                            betId: _id,
-                                            financialtype: 'betfee'
-                                        },
-                                        { $set: {
+                                await FinancialLog.findOneAndUpdate(
+                                    {
+                                        betId: _id,
+                                        financialtype: 'betfee'
+                                    },
+                                    {
+                                        $set: {
                                             user: userId,
                                             betId: _id,
                                             amount: betFee,
@@ -6875,40 +6873,41 @@ adminRouter.post(
                                             status: FinancialStatus.success,
                                         }
                                     });
-                                }
                             }
-                        } else if (betWin === false) {
-                            const betChanges = {
-                                $set: {
-                                    status: 'Settled - Lose',
-                                    homeScore,
-                                    awayScore,
-                                }
+                        }
+                    } else if (betWin === false) {
+                        const betChanges = {
+                            $set: {
+                                status: 'Settled - Lose',
+                                homeScore,
+                                awayScore,
                             }
-                            const unplayableBet = payableToWin < toWin
-                                ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                            if (unplayableBet) {
-                                betChanges.$set.credited = unplayableBet;
-                                const latestBalance = balance - totalAmountToWin  // adjesting user previews balance 
-                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: latestBalance } });
+                        }
+                        const unplayableBet = payableToWin < toWin
+                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                        if (unplayableBet) {
+                            betChanges.$set.credited = unplayableBet;
+                            const latestBalance = balance - totalAmountToWin  // adjesting user previews balance 
+                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: latestBalance } });
 
-                                await FinancialLog.findOneAndUpdate( 
-                                    {
-                                        betId: _id,
-                                        financialtype: 'betrefund'
-                                    },
-                                    { $set: {
+                            await FinancialLog.findOneAndUpdate(
+                                {
+                                    betId: _id,
+                                    financialtype: 'betrefund'
+                                },
+                                {
+                                    $set: {
                                         amount: unplayableBet,
                                         status: FinancialStatus.success,
                                     }
                                 });
-                            }
-                            await Bet.findOneAndUpdate({ _id }, betChanges);
-                        } else {
-                            console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
-                        await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
+                        await Bet.findOneAndUpdate({ _id }, betChanges);
+                    } else {
+                        console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                     }
+                    await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Settled' } });
+                }
             } else {
                 matchCancelled = true;
             }
@@ -6920,16 +6919,17 @@ adminRouter.post(
                     // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                    await FinancialLog.findOneAndUpdate( 
+                    await FinancialLog.findOneAndUpdate(
                         {
                             betId: _id,
                             financialtype: 'betcancel'
                         },
-                        { $set: {
-                            amount: betAmount,
-                            status: FinancialStatus.success,
-                        }
-                    });
+                        {
+                            $set: {
+                                amount: betAmount,
+                                status: FinancialStatus.success,
+                            }
+                        });
                 }
                 await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
             }
