@@ -6587,16 +6587,12 @@ adminRouter.post(
                     for (const bet of bets) {
                         const { _id, userId, bet: betAmount, toWin, pick, payableToWin, status } = bet;
                          //reseting win or loss finacial logs amount and substracting user balance
-                         console.log("reseting oldfinancialLog: ", _id, " -----------------------");
                          const oldfinancialLog = await FinancialLog.find({betId: _id});
                          const totalBetFeeAndAmount = oldfinancialLog[0].amount + oldfinancialLog[1]?.amount | 0;
                          const oldWinnerUserId = oldfinancialLog[0].user;
                          await User.findOneAndUpdate({ _id: oldWinnerUserId }, { $min: { balance: totalBetFeeAndAmount } }); 
                          await FinancialLog.updateMany({ betId: _id }, { $set: { amount: 0 } }); 
-
-                         console.log(oldfinancialLog);
-
-                         console.log("reseting end with oldfinancialLog-------------------");
+                         
                          //Updataing with user and fincaial log with latest winner and Amount and Balance
                         const user = await User.findById(userId);
                         if (payableToWin <= 0 || status == 'Pending') {
