@@ -9,7 +9,7 @@ const ErrorLog = require('../../models/errorlog');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
-const { ID } = require('../../libs/functions');
+const { ID, sendBetWinConfirmEmail, sendBetLoseConfirmEmail } = require('../../libs/functions');
 const getMatchScores = require('./getMatchScores');
 //external libraries
 const axios = require('axios');
@@ -208,35 +208,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                     });
                                 }
                                 // TODO: email winner
-                                const preference = await Preference.findOne({ user: user._id });
-                                if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                                    const msg = {
-                                        from: `${fromEmailName} <${fromEmailAddress}>`,
-                                        to: email,
-                                        subject: 'You won a wager!',
-                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                        html: simpleresponsive(`
-                                            <p>
-                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                            </p>
-                                            `,
-                                            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                        ),
-                                    };
-                                    sgMail.send(msg).catch(error => {
-                                        ErrorLog.create({
-                                            name: 'Send Grid Error',
-                                            error: {
-                                                name: error.name,
-                                                message: error.message,
-                                                stack: error.stack
-                                            }
-                                        });
-                                    });
-                                }
-                                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                                    sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                                }
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         } else if (betWin === false) {
                             const betChanges = {
@@ -262,6 +234,11 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                 });
                             }
                             await Bet.findOneAndUpdate({ _id }, betChanges);
+
+                            const user = await User.findById(userId);
+                            if (user) {
+                                sendBetLoseConfirmEmail(user, betAmount);
+                            }
                         } else {
                             console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                         }
@@ -279,7 +256,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
             for (const betId of [...homeBets, ...awayBets]) {
                 const bet = await Bet.findById(betId);
                 if (bet) {
-                    const {_id, userId, bet: betAmount } = bet;
+                    const { _id, userId, bet: betAmount } = bet;
                     // refund user
                     await bet.update({ status: 'Cancelled' });
                     await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
