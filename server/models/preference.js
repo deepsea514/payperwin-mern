@@ -15,6 +15,10 @@ const PreferenceSchema = new Schema(
                 email: { type: Boolean, default: true },
                 sms: { type: Boolean, default: true },
             },
+            lose_confirmation: {
+                email: { type: Boolean, default: false },
+                sms: { type: Boolean, default: false },
+            },
             wager_matched: {
                 email: { type: Boolean, default: true },
                 sms: { type: Boolean, default: true },
