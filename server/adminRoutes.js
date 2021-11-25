@@ -6895,6 +6895,7 @@ adminRouter.get(
             }
             const total = await GiftCard.find(searchObj).count();
             const data = await GiftCard.find(searchObj)
+                .sort({ createdAt: -1 })
                 .skip(page * perPage)
                 .limit(perPage)
                 .populate('user', ['email'])
