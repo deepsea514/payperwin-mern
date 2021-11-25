@@ -6,7 +6,11 @@ const GiftCardSchema = new Schema(
     {
         card_number: { type: String, required: true, unique: true },
         amount: Number,
-        used: { type: Boolean, default: false },
+        usedAt: { type: Date, default: null },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }
     },
     {
         timestamps: true,

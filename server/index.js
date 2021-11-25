@@ -3474,7 +3474,7 @@ expressApp.post('/deposit',
                         message: 'Gift Card not found.'
                     });
                 }
-                if (giftcard.used) {
+                if (giftcard.usedAt) {
                     return res.json({
                         success: false,
                         message: 'Gift Card already used.'
@@ -3489,7 +3489,7 @@ expressApp.post('/deposit',
                     status: FinancialStatus.success
                 });
                 await user.update({ $inc: { balance: giftcard.amount } });
-                await giftcard.update({ used: true });
+                await giftcard.update({ usedAt: new Date(), user: user._id });
                 return res.json({ success: true, message: `Successfully redeemed. Your balanced increased $${giftcard.amount}` })
             } catch (error) {
                 console.error(error);

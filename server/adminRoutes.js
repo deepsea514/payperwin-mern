@@ -29,7 +29,7 @@ const BetPool = require('./models/betpool');
 const ErrorLog = require('./models/errorlog');
 const LoyaltyLog = require('./models/loyaltylog');
 const ParlayBetPool = require('./models/parlaybetpool');
-
+const GiftCard = require('./models/giftcard');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -6942,5 +6942,39 @@ adminRouter.post(
     }
 );
 
+adminRouter.get(
+    '/gift-cards',
+    authenticateJWT,
+    limitRoles('deposit_logs'),
+    async (req, res) => {
+        let { page, status, perPage } = req.query;
+        if (!page) page = 1;
+        page = parseInt(page);
+        page--;
+        if (!perPage) perPage = 25;
+        perPage = parseInt(perPage);
+
+        try {
+            let searchObj = {};
+            switch (status) {
+                case 'unused':
+                    searchObj.usedAt = null;
+                    break;
+                case 'used':
+                    searchObj.usedAt = { $ne: null };
+                    break;
+            }
+            const total = await GiftCard.find(searchObj).count();
+            const data = await GiftCard.find(searchObj)
+                .skip(page * perPage)
+                .limit(perPage)
+                .populate('user', ['email'])
+            return res.json({ total: total, data: data });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error.' });
+        }
+    }
+)
 
 module.exports = adminRouter;
