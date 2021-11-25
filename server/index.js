@@ -3884,6 +3884,25 @@ expressApp.post(
                 submitted_at: new Date()
             }
             await verification.save();
+            const msg = {
+                to: alertEmailAddress,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                subject: "A verification has been requested",
+                text: `A verification has been requested`,
+                html: simpleresponsive(
+                    `${user.email} has requested a verification of identify. Please log into admin to review the request`,
+                ),
+            };
+            sgMail.send(msg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
             res.json({ message: "success" });
         } catch (error) {
             res.status(400).json({ success: 0, message: "can't save image" });
