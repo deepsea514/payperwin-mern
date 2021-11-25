@@ -25,6 +25,7 @@ import * as reports from "../modules/reports/redux/reducers";
 import * as errorlogs from "../modules/errorlogs/redux/reducers";
 import * as credits from "../modules/credit/redux/reducers";
 import * as currentUser from "./reducers";
+import * as gift_cards from '../modules/giftcard/redux/reducers';
 
 import * as frontend from "../../redux/reducer";
 
@@ -53,6 +54,7 @@ export const rootReducer = combineReducers({
     errorlogs: errorlogs.reducer,
     currentUser: currentUser.reducer,
     credits: credits.reducer,
+    gift_cards: gift_cards.reducer,
 
     frontend: frontend.reducer,
 });
@@ -82,6 +84,7 @@ export function* rootSaga() {
         reports.saga(),
         errorlogs.saga(),
         credits.saga(),
+        gift_cards.saga(),
 
         frontend.saga(),
     ]);

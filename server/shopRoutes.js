@@ -50,7 +50,7 @@ shopRouter.post('/giftcard/purchase',
             await GiftCard.create({
                 card_number: card_number,
                 amount: amount,
-                used: false,
+                usedAt: null,
             })
             return res.json({ success: true });
         } catch (error) {

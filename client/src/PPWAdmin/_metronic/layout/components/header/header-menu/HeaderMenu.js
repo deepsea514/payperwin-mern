@@ -291,6 +291,16 @@ function HeaderMenu({ layoutProps, currentUser, kyc_total, pending_withdraw_tota
                                         </Link>
                                     </li>}
 
+                                    {currentUser && isAvailable('deposit_logs') && <li className={`menu-item ${getMenuItemActive("/gift-cards", false)}`}
+                                        aria-haspopup="true">
+                                        <Link className="menu-link" to="/gift-cards/">
+                                            <span className="svg-icon menu-icon">
+                                                <SVG src={"/media/svg/icons/Shopping/Gift.svg"} />
+                                            </span>
+                                            <span className="menu-text">Gift Cards</span>
+                                        </Link>
+                                    </li>}
+
                                     {currentUser && isAvailable('cashback') && <li className={`menu-item ${getMenuItemActive("/cashback", false)}`}
                                         aria-haspopup="true">
                                         <Link className="menu-link" to="/cashback/">

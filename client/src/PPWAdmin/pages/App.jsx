@@ -38,6 +38,7 @@ import PlaceBet from "../modules/placebet/pages/PlaceBet";
 import ErrorBoundary from '../../libs/ErrorBoundary';
 import CreditsModule from '../modules/credit/pages';
 import Prediction from '../modules/prediction/pages';
+import GiftCardsModule from '../modules/giftcard/pages';
 
 class App extends Component {
     constructor(props) {
@@ -120,6 +121,11 @@ class App extends Component {
                     {/* deposit */}
                     {this.isAvailable('deposit_logs') && <Route path="/deposit-log" render={(props) =>
                         <ErrorBoundary><DepositLogModule {...props} /></ErrorBoundary>
+                    } />}
+
+                    {/* Gift Cards */}
+                    {this.isAvailable('deposit_logs') && <Route path="/gift-cards" render={(props) =>
+                        <ErrorBoundary><GiftCardsModule {...props} /></ErrorBoundary>
                     } />}
 
                     {/* events */}
