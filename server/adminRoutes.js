@@ -63,7 +63,9 @@ const {
     calculateBetsStatus,
     calculateToWinFromBet,
     calculateParlayBetsStatus,
-    getLinePoints
+    getLinePoints,
+    sendBetWinConfirmEmail,
+    sendBetLoseConfirmEmail
 } = require('./libs/functions');
 
 
@@ -2072,7 +2074,6 @@ adminRouter.post(
                             const { _id, userId, bet: betAmount, payableToWin } = bet;
                             const user = await User.findById(userId);
                             if (user) {
-                                const { email } = user;
                                 const betFee = Number((payableToWin * BetFee).toFixed(2));
                                 const betChanges = {
                                     $set: {
@@ -2105,35 +2106,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                const preference = await Preference.findOne({ user: user._id });
-                                if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                                    const msg = {
-                                        from: `${fromEmailName} <${fromEmailAddress}>`,
-                                        to: email,
-                                        subject: 'You won a wager!',
-                                        text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                        html: simpleresponsive(`
-                                                <p>
-                                                    Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                                </p>
-                                            `,
-                                            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                        ),
-                                    };
-                                    sgMail.send(msg).catch(error => {
-                                        ErrorLog.create({
-                                            name: 'Send Grid Error',
-                                            error: {
-                                                name: error.name,
-                                                message: error.message,
-                                                stack: error.stack
-                                            }
-                                        });
-                                    });
-                                }
-                                if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                                    sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                                }
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         }
                     }
@@ -2141,6 +2114,7 @@ adminRouter.post(
                         const bet = await Bet.findById(bet_id);
                         if (bet) {
                             const { userId, payableToWin, toWin, bet: betAmount } = bet;
+                            const user = await User.findById(userId);
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Lose',
@@ -2163,6 +2137,9 @@ adminRouter.post(
                                 });
                             }
                             await bet.update(betChanges);
+                            if (user) {
+                                sendBetLoseConfirmEmail(user, betAmount);
+                            }
                         }
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
@@ -2294,37 +2271,10 @@ adminRouter.post(
                                         });
                                     }
                                     // TODO: email winner
-                                    const preference = await Preference.findOne({ user: user._id });
-                                    if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                                        const msg = {
-                                            from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: email,
-                                            subject: 'You won a wager!',
-                                            text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                            html: simpleresponsive(`
-                                                    <p>
-                                                        Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                                    </p>
-                                                    `,
-                                                { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                            ),
-                                        };
-                                        sgMail.send(msg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
-                                            });
-                                        });
-                                    }
-                                    if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                                        sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                                    }
+                                    sendBetWinConfirmEmail(user, payableToWin);
                                 }
                             } else if (betWin === false) {
+                                const user = await User.findById(userId);
                                 const betChanges = {
                                     $set: {
                                         status: 'Settled - Lose',
@@ -2348,6 +2298,9 @@ adminRouter.post(
                                     });
                                 }
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
+                                if (user) {
+                                    sendBetLoseConfirmEmail(user, betAmount);
+                                }
                             } else {
                                 console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                             }
@@ -2463,35 +2416,7 @@ adminRouter.post(
                                         });
                                     }
                                     // TODO: email winner
-                                    const preference = await Preference.findOne({ user: user._id });
-                                    if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                                        const msg = {
-                                            from: `${fromEmailName} <${fromEmailAddress}>`,
-                                            to: email,
-                                            subject: 'You won a wager!',
-                                            text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                            html: simpleresponsive(`
-                                                    <p>
-                                                        Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                                    </p>
-                                                    `,
-                                                { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                            ),
-                                        };
-                                        sgMail.send(msg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
-                                            });
-                                        });
-                                    }
-                                    if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                                        sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                                    }
+                                    sendBetWinConfirmEmail(user, payableToWin);
                                 }
                             } else if (betWin === false) {
                                 const betChanges = {
@@ -2516,6 +2441,10 @@ adminRouter.post(
                                     });
                                 }
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
+                                const user = await User.findById(userId);
+                                if (user) {
+                                    sendBetLoseConfirmEmail(user, betAmount);
+                                }
                             } else {
                                 console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                             }

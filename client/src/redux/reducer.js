@@ -43,6 +43,7 @@ const initialState = {
     require_2fa: false,
     notification_settings: {
         win_confirmation: { email: true, sms: true },
+        lose_confirmation: { email: false, sms: false },
         wager_matched: { email: true, sms: true },
         bet_accepted: { email: true, sms: true },
         no_match_found: { email: true, sms: true },

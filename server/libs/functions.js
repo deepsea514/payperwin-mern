@@ -4,8 +4,17 @@ const BetPool = require('../models/betpool');
 const Bet = require('../models/bet');
 const EventBetPool = require('../models/eventbetpool');
 const ParlayBetPool = require('../models/parlaybetpool');
+const Preference = require('../models/preference');
+const ErrorLog = require('../models/errorlog');
+
+const simpleresponsive = require('../emailtemplates/simpleresponsive');
+const sendSMS = require('./sendSMS');
+
 const { ObjectId } = require('mongodb');
-const config = require('../../config.json');
+const sgMail = require('@sendgrid/mail');
+
+const fromEmailName = 'PAYPER WIN';
+const fromEmailAddress = 'donotreply@payperwin.com';
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
@@ -56,7 +65,7 @@ const calculateBetsStatus = async (betpoolUid) => {
         return;
     }
     const { homeBets, awayBets, teamA, teamB, drawBets, nonDrawBets, teamNonDraw, teamDraw } = betpool;
-    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets,  ...drawBets, ...nonDrawBets ] } });
+    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets, ...drawBets, ...nonDrawBets] } });
     const payPool = {
         home: teamB.betTotal,
         away: teamA.betTotal,
@@ -271,6 +280,70 @@ const getLinePoints = (pickName, pick, lineQuery) => {
     return linePoints;
 }
 
+const sendBetWinConfirmEmail = async (user, winAmount) => {
+    const preference = await Preference.findOne({ user: user._id });
+    if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
+        const msg = {
+            from: `${fromEmailName} <${fromEmailAddress}>`,
+            to: user.email,
+            subject: 'You won a wager!',
+            text: `Congratulations! You won $${winAmount.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
+            html: simpleresponsive(`
+                    <p>
+                        Congratulations! You won $${winAmount.toFixed(2)}. View Result Details:
+                    </p>
+                `,
+                { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
+            ),
+        };
+        sgMail.send(msg).catch(error => {
+            ErrorLog.create({
+                name: 'Send Grid Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            });
+        });
+    }
+    if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
+        sendSMS(`Congratulations! You won $${winAmount.toFixed(2)}.`, user.phone);
+    }
+}
+
+const sendBetLoseConfirmEmail = async (user, loseAmount) => {
+    const preference = await Preference.findOne({ user: user._id });
+    if (!preference || !preference.notification_settings || preference.notification_settings.lose_confirmation.email) {
+        const msg = {
+            from: `${fromEmailName} <${fromEmailAddress}>`,
+            to: user.email,
+            subject: 'You lose a wager.',
+            text: `😥 You lose $${loseAmount.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
+            html: simpleresponsive(`
+                    <p>
+                    😥 You lose $${loseAmount.toFixed(2)}. View Result Details:
+                    </p>
+                `,
+                { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
+            ),
+        };
+        sgMail.send(msg).catch(error => {
+            ErrorLog.create({
+                name: 'Send Grid Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            });
+        });
+    }
+    if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.lose_confirmation.sms)) {
+        sendSMS(`😥 You lose $${loseAmount.toFixed(2)}.`, user.phone);
+    }
+}
+
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
@@ -283,5 +356,7 @@ module.exports = {
     isFreeWithdrawalUsed,
     asyncFilter,
     getLinePoints,
-    getMaxWithdraw
+    getMaxWithdraw,
+    sendBetWinConfirmEmail,
+    sendBetLoseConfirmEmail
 }

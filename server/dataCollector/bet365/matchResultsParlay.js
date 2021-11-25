@@ -9,7 +9,7 @@ const ErrorLog = require('../../models/errorlog');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
-const { ID, getLinePoints, calculateToWinFromBet, calculateParlayBetsStatus } = require('../../libs/functions');
+const { ID, getLinePoints, calculateToWinFromBet, calculateParlayBetsStatus, sendBetWinConfirmEmail, sendBetLoseConfirmEmail } = require('../../libs/functions');
 const getMatchScores = require('./getMatchScores');
 const convertOdds = require('../../libs/convertOdds');
 //external libraries
@@ -321,35 +321,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                             });
                         }
                         // TODO: email winner
-                        const preference = await Preference.findOne({ user: user._id });
-                        if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
-                            const msg = {
-                                from: `${fromEmailName} <${fromEmailAddress}>`,
-                                to: email,
-                                subject: 'You won a wager!',
-                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                html: simpleresponsive(`
-                                        <p>
-                                            Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                        </p>
-                                    `,
-                                    { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                ),
-                            };
-                            sgMail.send(msg).catch(error => {
-                                ErrorLog.create({
-                                    name: 'Send Grid Error',
-                                    error: {
-                                        name: error.name,
-                                        message: error.message,
-                                        stack: error.stack
-                                    }
-                                });
-                            });
-                        }
-                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-                            sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                        }
+                        sendBetWinConfirmEmail(user, payableToWin);
                     }
                 }
             }
@@ -379,6 +351,11 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         });
                     }
                     await bet.update(betChanges);
+
+                    const user = await User.findById(userId);
+                    if (user) {
+                        sendBetLoseConfirmEmail(user, betAmount);
+                    }
                 }
             }
             await betpool.update({ $set: { result: 'Settled' } });
