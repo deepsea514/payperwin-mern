@@ -18,6 +18,7 @@ const isDstObserved = config.isDstObserved;
 
 const initial_notification_settings = {
     win_confirmation: { email: true, sms: true },
+    lose_confirmation: { email: false, sms: false },
     wager_matched: { email: true, sms: true },
     bet_accepted: { email: true, sms: true },
     no_match_found: { email: true, sms: true },
@@ -83,7 +84,17 @@ class Preferences extends Component {
             dateFormat,
             timezone,
             display_mode: display_mode ? display_mode : 'system',
-            notification_settings: notification_settings ? notification_settings : initial_notification_settings
+            notification_settings: notification_settings ? {
+                win_confirmation: notification_settings.win_confirmation ? notification_settings.win_confirmation : { email: true, sms: true },
+                lose_confirmation: notification_settings.lose_confirmation ? notification_settings.lose_confirmation : { email: false, sms: false },
+                wager_matched: notification_settings.wager_matched ? notification_settings.wager_matched : { email: true, sms: true },
+                bet_accepted: notification_settings.bet_accepted ? notification_settings.bet_accepted : { email: true, sms: true },
+                no_match_found: notification_settings.no_match_found ? notification_settings.no_match_found : { email: true, sms: true },
+                bet_forward_reminder: notification_settings.bet_forward_reminder ? notification_settings.bet_forward_reminder : { email: true, sms: true },
+                deposit_confirmation: notification_settings.deposit_confirmation ? notification_settings.deposit_confirmation : { email: true, sms: true },
+                withdraw_confirmation: notification_settings.withdraw_confirmation ? notification_settings.withdraw_confirmation : { email: true, sms: true },
+                other: notification_settings.other ? notification_settings.other : { email: true, sms: true },
+            } : initial_notification_settings
         };
 
         const preferenceSchema = Yup.object().shape({
@@ -100,6 +111,10 @@ class Preferences extends Component {
                 win_confirmation: Yup.object().shape({
                     email: Yup.bool().default(true),
                     sms: Yup.bool().default(true),
+                }),
+                lose_confirmation: Yup.object().shape({
+                    email: Yup.bool().default(false),
+                    sms: Yup.bool().default(false),
                 }),
                 wager_matched: Yup.object().shape({
                     email: Yup.bool().default(true),
@@ -161,8 +176,7 @@ class Preferences extends Component {
                                                     type="button"
                                                     className="close"
                                                     data-dismiss="alert"
-                                                    aria-label="Close"
-                                                >
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">
                                                         <i className="ki ki-close"></i>
                                                     </span>
@@ -187,8 +201,7 @@ class Preferences extends Component {
                                                     type="button"
                                                     className="close"
                                                     data-dismiss="alert"
-                                                    aria-label="Close"
-                                                >
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">
                                                         <i className="ki ki-close"></i>
                                                     </span>
@@ -208,8 +221,7 @@ class Preferences extends Component {
                                                 placeholder=""
                                                 required
                                                 className={`form-control ${getInputClasses(formik, "oddsFormat")}`}
-                                                {...formik.getFieldProps("oddsFormat")}
-                                            >
+                                                {...formik.getFieldProps("oddsFormat")}>
                                                 <option value="american">{intl.formatMessage({ id: 'COMPONENTS.AMERICAN.ODDS' })}</option>
                                                 <option value="decimal">{intl.formatMessage({ id: 'COMPONENTS.DECIMAL.ODDS' })}</option>
                                             </Form.Control>
@@ -228,8 +240,7 @@ class Preferences extends Component {
                                                 placeholder=""
                                                 required
                                                 className={`form-control ${getInputClasses(formik, "dateFormat")}`}
-                                                {...formik.getFieldProps("dateFormat")}
-                                            >
+                                                {...formik.getFieldProps("dateFormat")}>
                                                 <option value="DD-MM-YYYY"> DD-MM-YYYY</option>
                                             </Form.Control>
                                             {formik.touched.dateFormat && formik.errors.dateFormat ? (
@@ -247,8 +258,7 @@ class Preferences extends Component {
                                                 placeholder=""
                                                 required
                                                 className={`form-control ${getInputClasses(formik, "timezone")}`}
-                                                {...formik.getFieldProps("timezone")}
-                                            >
+                                                {...formik.getFieldProps("timezone")}>
                                                 <option value="">...Select Timezone</option>
                                                 {this.getTimeZoneOptions()}
                                             </Form.Control>
@@ -267,8 +277,7 @@ class Preferences extends Component {
                                                 placeholder=""
                                                 required
                                                 className={`form-control ${getInputClasses(formik, "lang")}`}
-                                                {...formik.getFieldProps("lang")}
-                                            >
+                                                {...formik.getFieldProps("lang")}>
                                                 <option value="en"> English</option>
                                             </Form.Control>
                                             {formik.touched.lang && formik.errors.lang ? (
@@ -284,8 +293,7 @@ class Preferences extends Component {
                                                 <RadioGroup
                                                     name="display_mode"
                                                     row
-                                                    {...formik.getFieldProps("display_mode")}
-                                                >
+                                                    {...formik.getFieldProps("display_mode")}>
                                                     <FormControlLabel value="light" control={<Radio />} label="Light Mode" />
                                                     <FormControlLabel value="dark" control={<Radio />} label="Dark Mode" />
                                                     <FormControlLabel value="system" control={<Radio />} label="System Base Mode" />
@@ -338,7 +346,36 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
+                                                    <td className="gray-cell">
+                                                        Lose Confirmation
+                                                    </td>
+                                                    <td className="gray-cell">
+                                                        <center>
+                                                            <Checkbox
+                                                                checked={formik.values.notification_settings.lose_confirmation.email}
+                                                                {...formik.getFieldProps("notification_settings.lose_confirmation.email")}
+                                                                onChange={(e) => {
+                                                                    formik.setFieldValue("notification_settings.lose_confirmation.email", e.target.checked);
+                                                                }}
+                                                                color="primary"
+                                                            />
+                                                        </center>
+                                                    </td>
+                                                    <td className="gray-cell">
+                                                        <center>
+                                                            <Checkbox
+                                                                checked={formik.values.notification_settings.lose_confirmation.sms}
+                                                                {...formik.getFieldProps("notification_settings.lose_confirmation.sms")}
+                                                                onChange={(e) => {
+                                                                    formik.setFieldValue("notification_settings.lose_confirmation.sms", e.target.checked);
+                                                                }}
+                                                                color="primary"
+                                                            />
+                                                        </center>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td className="gray-cell">
                                                         Wager Matched
                                                     </td>
@@ -367,7 +404,7 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
                                                     <td className="gray-cell">
                                                         No Match Found
                                                     </td>
@@ -396,7 +433,7 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
                                                     <td className="gray-cell">
                                                         Bet Forward Reminder
                                                     </td>
@@ -425,7 +462,7 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
                                                     <td className="gray-cell">
                                                         Deposit Confirmation
                                                     </td>
@@ -454,7 +491,7 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
                                                     <td className="gray-cell">
                                                         Withdraw Confirmation
                                                     </td>
@@ -483,7 +520,7 @@ class Preferences extends Component {
                                                         </center>
                                                     </td>
                                                 </tr>
-                                                <tr >
+                                                <tr>
                                                     <td className="gray-cell">
                                                         Others
                                                     </td>
@@ -520,8 +557,8 @@ class Preferences extends Component {
                             )}
                         </Formik>}
                     </div>
-                </div >
-            </React.Fragment >
+                </div>
+            </React.Fragment>
         );
     }
 }
