@@ -25,7 +25,9 @@ const FinancialLogSchema = new Schema(
         note: { type: String, default: null },
         status: { type: String, default: FinancialStatus.pending },
         fee: { type: Number, default: 0 },
-    }, 
+        beforeBalance: Number,
+        afterBalance: Number,
+    },
     {
         timestamps: true,
     },

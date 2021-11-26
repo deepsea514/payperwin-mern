@@ -339,7 +339,9 @@ passport.use('local-signup', new LocalStrategy(
                                                 user: newUser._id,
                                                 amount: 50,
                                                 method: 'signupbonus',
-                                                status: FinancialStatus.success
+                                                status: FinancialStatus.success,
+                                                beforeBalance: 0,
+                                                afterBalance: 50
                                             });
                                             await PromotionLog.create({
                                                 user: newUser._id,
@@ -1004,7 +1006,6 @@ expressApp.post(
                                         origin: origin
                                     };
                                     const newBet = new Bet(newBetObj);
-                                    console.info(`created new bet`);
                                     try {
                                         const savedBet = await newBet.save();
                                         await LoyaltyLog.create({
@@ -1114,7 +1115,6 @@ expressApp.post(
 
                                         await calculateCustomBetsStatus(lineId);
 
-                                        user.balance = newBalance;
                                         try {
                                             await FinancialLog.create({
                                                 financialtype: 'bet',
@@ -1124,7 +1124,10 @@ expressApp.post(
                                                 amount: toBet,
                                                 method: 'bet',
                                                 status: FinancialStatus.success,
+                                                beforeBalance: user.balance,
+                                                afterBalance: newBalance
                                             });
+                                            user.balance = newBalance;
                                             await user.save();
                                         } catch (err) {
                                             console.error('can\'t save user balance => ' + err);
@@ -1253,7 +1256,6 @@ expressApp.post(
                                             sportsbook: sportsbook
                                         };
                                         const newBet = new Bet(newBetObj);
-                                        console.info(`created new bet`);
 
                                         // save the user
                                         try {
@@ -1417,7 +1419,6 @@ expressApp.post(
                                             }
                                             await calculateBetsStatus(betpoolId);
 
-                                            user.balance = newBalance;
                                             try {
                                                 await FinancialLog.create({
                                                     financialtype: 'bet',
@@ -1427,7 +1428,10 @@ expressApp.post(
                                                     amount: toBet,
                                                     method: 'bet',
                                                     status: FinancialStatus.success,
+                                                    beforeBalance: user.balance,
+                                                    afterBalance: newBalance
                                                 });
+                                                user.balance = newBalance;
                                                 await user.save();
                                             } catch (err) {
                                                 console.error('can\'t save user balance => ' + err);
@@ -1644,6 +1648,8 @@ expressApp.post(
                 amount: totalStake,
                 method: 'bet',
                 status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - totalStake
             });
 
             user.balance -= totalStake;
@@ -1908,6 +1914,8 @@ expressApp.post(
                 amount: totalStake,
                 method: 'bet',
                 status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - totalStake
             });
 
             user.balance -= totalStake;
@@ -2114,7 +2122,6 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
             parlayQuery: parlayQuery,
         };
         const newBet = new Bet(newBetObj);
-        console.info(`created new auto bet`);
 
         try {
             const savedBet = await newBet.save();
@@ -2141,16 +2148,21 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
             await parlayBetPool.update(docChanges);
 
             try {
-                await FinancialLog.create({
-                    financialtype: 'bet',
-                    uniqid: `BP${bet_id}`,
-                    user: selectedauto.userId._id,
-                    betId: betId,
-                    amount: bettable,
-                    method: 'bet',
-                    status: FinancialStatus.success,
-                });
-                await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
+                const user = await User.findById(selectedauto.userId._id);
+                if (user) {
+                    await FinancialLog.create({
+                        financialtype: 'bet',
+                        uniqid: `BP${bet_id}`,
+                        user: selectedauto.userId._id,
+                        betId: betId,
+                        amount: bettable,
+                        method: 'bet',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance - bettable
+                    });
+                    await user.update({ $inc: { balance: -bettable } });
+                }
             } catch (err) {
                 console.error('selectedauto.userId =>' + err);
             }
@@ -2494,7 +2506,6 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             sportsbook: bet.sportsbook
         };
         const newBet = new Bet(newBetObj);
-        console.info(`created new auto bet`);
 
         try {
             const savedBet = await newBet.save();
@@ -2539,16 +2550,21 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
             }
             await betpool.update(docChanges);
             try {
-                await FinancialLog.create({
-                    financialtype: 'bet',
-                    uniqid: `BP${bet_id}`,
-                    user: selectedauto.userId._id,
-                    betId: betId,
-                    amount: bettable,
-                    method: 'bet',
-                    status: FinancialStatus.success,
-                });
-                await User.findByIdAndUpdate(selectedauto.userId._id, { $inc: { balance: -bettable } });
+                const user = await User.findById(selectedauto.userId._id);
+                if (user) {
+                    await FinancialLog.create({
+                        financialtype: 'bet',
+                        uniqid: `BP${bet_id}`,
+                        user: selectedauto.userId._id,
+                        betId: betId,
+                        amount: bettable,
+                        method: 'bet',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance - bettable
+                    });
+                    await user.update({ $inc: { balance: -bettable } });
+                }
             } catch (err) {
                 console.error('selectedauto.userId =>' + err);
             }
@@ -3476,7 +3492,9 @@ expressApp.post('/deposit',
                     user: user._id,
                     amount: giftcard.amount,
                     method: 'giftcard',
-                    status: FinancialStatus.success
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + giftcard.amount
                 });
                 await user.update({ $inc: { balance: giftcard.amount } });
                 await giftcard.update({ usedAt: new Date(), user: user._id });
@@ -3544,29 +3562,32 @@ expressApp.post(
                     return res.json({ success: 0, message: "Insufficient funds." });
                 }
 
-                const withdraw = new FinancialLog({
+                const afterBalance = user.balance - amount;
+                await FinancialLog.create({
                     financialtype: 'withdraw',
                     uniqid: uniqid,
                     user: user._id,
                     amount: amount,
                     method: method,
                     status: FinancialStatus.pending,
-                    fee: fee
+                    fee: fee,
+                    beforeBalance: user.balance,
+                    afterBalance: afterBalance
                 });
-                await withdraw.save();
 
                 if (fee > 0) {
-                    const withdrawFee = new FinancialLog({
+                    await FinancialLog.create({
                         financialtype: 'withdrawfee',
                         uniqid: `WF${ID()}`,
                         user: user._id,
                         amount: fee,
                         method: method,
                         status: FinancialStatus.success,
+                        beforeBalance: afterBalance,
+                        afterBalance: afterBalance - fee
                     });
-                    await withdrawFee.save();
                 }
-                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+                await user.update({ $inc: { balance: -(fee + amount) } });
 
                 const msg = {
                     to: alertEmailAddress,
@@ -3633,29 +3654,32 @@ expressApp.post(
                     return res.json({ success: 0, message: "Insufficient funds." });
                 }
 
-                const withdraw = new FinancialLog({
+                const afterBalance = user.balance - amount;
+                await FinancialLog.create({
                     financialtype: 'withdraw',
                     uniqid: uniqid,
                     user: user._id,
                     amount: amount,
                     method: method,
-                    status: FinancialStatus.pending
+                    status: FinancialStatus.pending,
+                    beforeBalance: user.balance,
+                    afterBalance: afterBalance
                 });
-                await withdraw.save();
 
                 if (fee > 0) {
-                    const withdrawFee = new FinancialLog({
+                    await FinancialLog.create({
                         financialtype: 'withdrawfee',
                         uniqid: `WF${ID()}`,
                         user: user._id,
                         amount: fee,
                         method: method,
                         status: FinancialStatus.success,
+                        beforeBalance: afterBalance,
+                        afterBalance: afterBalance - fee
                     });
-                    await withdrawFee.save();
                 }
 
-                await User.findOneAndUpdate({ _id: user._id }, { $inc: { balance: -(fee + amount) } });
+                await user.update({ $inc: { balance: -(fee + amount) } });
                 const msg = {
                     to: alertEmailAddress,
                     from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -4744,9 +4768,7 @@ expressApp.post(
                         user: user._id,
                         type: '$5 Credit'
                     });
-                    await User.findOneAndUpdate({
-                        _id: user._id,
-                    }, { $inc: { balance: 5 } });
+                    await user.update({ $inc: { balance: 5 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -4754,6 +4776,8 @@ expressApp.post(
                         amount: 5,
                         method: 'prize',
                         status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 5
                     });
                     break;
                 case 2:
@@ -4762,9 +4786,7 @@ expressApp.post(
                         user: user._id,
                         type: '$25 Credit'
                     });
-                    await User.findOneAndUpdate({
-                        _id: user._id,
-                    }, { $inc: { balance: 25 } });
+                    await user.update({ $inc: { balance: 25 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -4772,6 +4794,8 @@ expressApp.post(
                         amount: 25,
                         method: 'prize',
                         status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 25
                     });
                     break;
                 case 4:     // $10 Credit
@@ -4780,9 +4804,7 @@ expressApp.post(
                         user: user._id,
                         type: '$10 Credit'
                     });
-                    await User.findOneAndUpdate({
-                        _id: user._id,
-                    }, { $inc: { balance: 10 } });
+                    await user.update({ $inc: { balance: 10 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -4790,6 +4812,8 @@ expressApp.post(
                         amount: 10,
                         method: 'prize',
                         status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 10
                     });
                     break;
                 case 6:     // $100 Credit
@@ -4798,9 +4822,7 @@ expressApp.post(
                         user: user._id,
                         type: '$100 Credit'
                     });
-                    await User.findOneAndUpdate({
-                        _id: user._id,
-                    }, { $inc: { balance: 100 } });
+                    await user.update({ $inc: { balance: 100 } });
                     await FinancialLog.create({
                         financialtype: 'prize',
                         uniqid: `P${ID()}`,
@@ -4808,6 +4830,8 @@ expressApp.post(
                         amount: 100,
                         method: 'prize',
                         status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 100
                     });
                     break;
                 case 3:     // +2,000 Loyalty

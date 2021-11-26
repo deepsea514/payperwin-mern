@@ -42,7 +42,6 @@ const EventSchema = new Schema(
     },
 );
 
-
 EventSchema.pre('save', async function (next) { // eslint-disable-line func-names
     const event = this;
     const BetFee = 0.05;
@@ -122,48 +121,8 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 origin: 'other'
             };
             const newBet = new Bet(newBetObj);
-            console.info(`created new bet`);
             const savedBet = await newBet.save();
 
-            //TODO: Uncomment this code in when bet_accepted status email and sms need 
-           /*  if (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.email) {
-                const msg = {
-                    from: `${fromEmailName} <${fromEmailAddress}>`,
-                    to: user.email,
-                    subject: 'Your bet is waiting for a match',
-                    text: `Your bet is waiting for a match`,
-                    html: simpleresponsive(
-                        `Hi <b>${user.email}</b>.
-                            <br><br>
-                            This email is to advise you that your bet for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                            <br><br>
-                            <ul>
-                                <li>Wager: $${betAfterFee.toFixed(2)}</li>
-                                <li>Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}</li>
-                                <li>Platform: PAYPER WIN Peer-to Peer</li>
-                            </ul>
-                        `),
-                };
-                sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
-                });
-
-            } 
-            if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.bet_accepted.sms)) {
-                sendSMS(`This is to advise you that your bet for ${name} moneyline on ${timeString} for $${betAfterFee.toFixed(2)} is waiting for a match. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game. 
-                Wager: $${betAfterFee.toFixed(2)}
-                Odds: ${pickOdds > 0 ? ('+' + pickOdds) : pickOdds}
-                Platform: PAYPER WIN Peer-to Peer`, user.phone);
-            }
-
-            */
             const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
             let adminMsg = {
                 from: `${fromEmailName} <${fromEmailAddress}>`,
@@ -203,7 +162,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     }
                 });
             });
-            
+
             const betId = savedBet.id;
             // add betId to betPool
             const exists = await EventBetPool.findOne({ eventId: event._id });
@@ -264,7 +223,6 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
 
             await calculateCustomBetsStatus(event._id);
 
-            user.balance = newBalance;
             await FinancialLog.create({
                 financialtype: 'bet',
                 uniqid: `BP${ID()}`,
@@ -272,7 +230,11 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 amount: betAfterFee,
                 method: 'bet',
                 status: FinancialStatus.success,
+                betId: betId,
+                beforeBalance: user.balance,
+                afterBalance: newBalance
             });
+            user.balance = newBalance;
             await user.save();
         }
     }
