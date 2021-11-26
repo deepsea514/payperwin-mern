@@ -186,6 +186,7 @@ class OpenBets extends Component {
                 if (sportsbook) return 'WAITING TO ACCEPT';
                 return 'WAITING FOR MATCH';
             case 'Matched':
+                return 'Accepted';
             case 'Partial Match':
             case 'Cancelled':
             case 'Settled - Lose':
@@ -328,7 +329,7 @@ class OpenBets extends Component {
                                 <hr />
                                 <p><FormattedMessage id="PAGES.OPENBETS.FORWARD_DES" /></p>
                                 <p><FormattedMessage id="PAGES.OPENBETS.P2P_ODDS" />: {Number(forwardBet.pickOdds) > 0 ? '+' : ''}{forwardBet.pickOdds}</p>
-                                <p><FormattedMessage id="PAGES.OPENBETS.SB_ODDS" />: {Number(forwardLatestOdd) > 0 ? '+' : ''}{forwardLatestOdd}</p>
+                                <p><b><FormattedMessage id="PAGES.OPENBETS.SB_ODDS" />: {Number(forwardLatestOdd) > 0 ? '+' : ''}{forwardLatestOdd}</b></p>
                                 <div className="text-right">
                                     <button className="form-button" onClick={this.confirmForward}> Proceed </button>
                                     <button className="form-button ml-2" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })}> Cancel </button>
@@ -468,7 +469,7 @@ class OpenBets extends Component {
                                         {lineQuery.eventName}
                                         <div>
                                             <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                            <strong className="float-right bg-primary px-2 py-1 text-white"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
+                                            <strong className="float-right bg-light-primary px-2 py-1 text-dark"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
                                         </div>
                                         {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                         {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
@@ -611,8 +612,8 @@ class OpenBets extends Component {
                                     {`${teamA.name} vs ${teamB.name}`}
                                     <div>
                                         <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                        {sportsbook && <strong className="float-right bg-info px-2 py-1 text-white">Sportsbook</strong>}
-                                        {!sportsbook && <strong className="float-right bg-primary px-2 py-1 text-white">Peer To Peer</strong>}
+                                        {sportsbook && <strong className="float-right bg-light-info px-2 py-1 text-dark">Sportsbook</strong>}
+                                        {!sportsbook && <strong className="float-right bg-light-danger px-2 py-1 text-dark">Peer To Peer</strong>}
                                     </div>
                                     {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
                                     {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}

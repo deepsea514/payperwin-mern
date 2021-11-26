@@ -2824,7 +2824,8 @@ expressApp.post(
                 });
             await calculateBetsStatus(betpool.uid);
 
-            res.json(bet);
+            const newBet = await Bet.findById(id);
+            res.json(newBet);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: error.stack });
