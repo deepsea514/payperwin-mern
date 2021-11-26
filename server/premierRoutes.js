@@ -65,6 +65,15 @@ premierRouter.post('/etransfer-deposit',
                     });
                 }
 
+                const afterBalance = user.balance + deposit.amount;
+                await deposit.update({
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: afterBalance
+                });
+
+                await user.update({ $inc: { balance: deposit.amount } });
+
                 const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
                 const promotionUsed = await isSignupBonusUsed(user._id);
                 if (promotionEnabled && !promotionUsed) {
@@ -74,16 +83,12 @@ premierRouter.post('/etransfer-deposit',
                         user: user._id,
                         amount: deposit.amount,
                         method: deposit.method,
-                        status: FinancialStatus.success
+                        status: FinancialStatus.success,
+                        beforeBalance: afterBalance,
+                        afterBalance: afterBalance + deposit.amount
                     });
                     await user.update({ $inc: { balance: deposit.amount } });
                 }
-
-                await deposit.update({
-                    status: FinancialStatus.success
-                });
-
-                await user.update({ $inc: { balance: deposit.amount } });
 
                 const preference = await Preference.findOne({ user: user._id });
                 if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
@@ -187,7 +192,9 @@ premierRouter.post('/etransfer-withdraw',
                     amount: withdraw.amount + withdraw.fee,
                     method: withdraw.method,
                     status: FinancialStatus.success,
-                    fee: 0
+                    fee: 0,
+                    beforeBalance: user.balance,
+                    afterBalance: withdraw.amount + withdraw.fee
                 });
                 await user.update({
                     $inc: { balance: withdraw.amount + withdraw.fee }

@@ -36,18 +36,22 @@ const cancelBetPool = async (betpool) => {
         const bet = await Bet.findById(betId);
         if (bet) {
             const { _id, userId, bet: betAmount } = bet;
-            // refund user
             await bet.update({ status: 'Cancelled' });
-            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
-            await FinancialLog.create({
-                financialtype: 'betcancel',
-                uniqid: `BC${ID()}`,
-                user: userId,
-                betId: _id,
-                amount: betAmount,
-                method: 'betcancel',
-                status: FinancialStatus.success,
-            });
+            const user = await User.findById(userId);
+            if (user) {
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: userId,
+                    betId: _id,
+                    amount: betAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + betAmount
+                });
+                await user.update({ $inc: { balance: betAmount } });
+            }
         }
     }
     await betpool.update({ $set: { result: 'Cancelled' } });
@@ -261,16 +265,21 @@ const matchResultsParlay = async (bet365ApiKey) => {
                             pickOdds: -parlayOdds
                         });
                         if (newBetAmount < betAmount) {
-                            await FinancialLog.create({
-                                financialtype: 'betrefund',
-                                uniqid: `BF${ID()}`,
-                                user: userId,
-                                betId: _id,
-                                amount: betAmount - newBetAmount,
-                                method: 'betrefund',
-                                status: FinancialStatus.success,
-                            });
-                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount - newBetAmount } });
+                            const user = await User.findById(userId);
+                            if (user) {
+                                await FinancialLog.create({
+                                    financialtype: 'betrefund',
+                                    uniqid: `BF${ID()}`,
+                                    user: userId,
+                                    betId: bet_id,
+                                    amount: betAmount - newBetAmount,
+                                    method: 'betrefund',
+                                    status: FinancialStatus.success,
+                                    beforeBalance: user.balance,
+                                    afterBalance: user.balance + betAmount - newBetAmount
+                                });
+                                await user.update({ $inc: { balance: betAmount - newBetAmount } });
+                            }
                         }
                     }
                 }
@@ -283,21 +292,20 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 const bet = await Bet.findById(bet_id);
                 if (bet) {
                     const { _id, userId, bet: betAmount, payableToWin } = bet;
+                    const betFee = Number((payableToWin * BetFee).toFixed(2));
+                    const betChanges = {
+                        $set: {
+                            status: 'Settled - Win',
+                            credited: betAmount + payableToWin,
+                            fee: betFee,
+                            parlayQuery: resultQuery
+                        }
+                    }
+                    await bet.update(betChanges);
                     const user = await User.findById(userId);
                     if (user) {
-                        const { email } = user;
-                        const betFee = Number((payableToWin * BetFee).toFixed(2));
-                        const betChanges = {
-                            $set: {
-                                status: 'Settled - Win',
-                                credited: betAmount + payableToWin,
-                                fee: betFee,
-                                parlayQuery: resultQuery
-                            }
-                        }
-                        await bet.update(betChanges);
                         if (payableToWin > 0) {
-                            await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
+                            const afterBalance = user.balance + betAmount + payableToWin;
                             await FinancialLog.create({
                                 financialtype: 'betwon',
                                 uniqid: `BW${ID()}`,
@@ -306,6 +314,8 @@ const matchResultsParlay = async (bet365ApiKey) => {
                                 amount: betAmount + payableToWin,
                                 method: 'betwon',
                                 status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance
                             });
                             await FinancialLog.create({
                                 financialtype: 'betfee',
@@ -315,7 +325,10 @@ const matchResultsParlay = async (bet365ApiKey) => {
                                 amount: betFee,
                                 method: 'betfee',
                                 status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance - betFee
                             });
+                            await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                         }
                         // TODO: email winner
                         sendBetWinConfirmEmail(user, payableToWin);
@@ -334,25 +347,27 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     }
                     const unplayableBet = payableToWin < toWin
                         ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                    if (unplayableBet) {
-                        betChanges.$set.credited = unplayableBet;
-                        await User.findByIdAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
-                        await FinancialLog.create({
-                            financialtype: 'betrefund',
-                            uniqid: `BF${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: unplayableBet,
-                            method: 'betrefund',
-                            status: FinancialStatus.success,
-                        });
-                    }
-                    await bet.update(betChanges);
 
                     const user = await User.findById(userId);
                     if (user) {
                         sendBetLoseConfirmEmail(user, betAmount);
+                        if (unplayableBet) {
+                            betChanges.$set.credited = unplayableBet;
+                            await User.findByIdAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                            await FinancialLog.create({
+                                financialtype: 'betrefund',
+                                uniqid: `BF${ID()}`,
+                                user: userId,
+                                betId: bet_id,
+                                amount: unplayableBet,
+                                method: 'betrefund',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: user.balance + unplayableBet
+                            });
+                        }
                     }
+                    await bet.update(betChanges);
                 }
             }
             await betpool.update({ $set: { result: 'Settled' } });

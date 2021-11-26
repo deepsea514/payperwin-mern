@@ -97,6 +97,19 @@ tripleARouter.post('/deposit',
                     break;
             }
 
+            const afterBalance = user.balance + receive_amount;
+            await FinancialLog.create({
+                financialtype: 'deposit',
+                uniqid,
+                user: webhook_data.payer_id,
+                amount: receive_amount,
+                method: method,
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance + receive_amount
+            });
+            await user.update({ $inc: { balance: receive_amount } });
+
             const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
             const promotionUsed = await isSignupBonusUsed(user._id);
             if (promotionEnabled && !promotionUsed) {
@@ -106,20 +119,12 @@ tripleARouter.post('/deposit',
                     user: user._id,
                     amount: receive_amount,
                     method: method,
-                    status: FinancialStatus.success
+                    status: FinancialStatus.success,
+                    beforeBalance: afterBalance,
+                    afterBalance: afterBalance + receive_amount
                 });
                 await user.update({ $inc: { balance: receive_amount } });
             }
-
-            await FinancialLog.create({
-                financialtype: 'deposit',
-                uniqid,
-                user: webhook_data.payer_id,
-                amount: receive_amount,
-                method: method,
-                status: FinancialStatus.success
-            });
-            await user.update({ $inc: { balance: receive_amount } });
 
             const preference = await Preference.findOne({ user: user._id });
             if (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.email) {
@@ -181,7 +186,7 @@ tripleARouter.post('/withdraw',
         if (status == "done") {
             // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
             // user.balance = parseInt(user.balance) - parseInt(withdraw.amount) - fee;
-            await withdraw.update({ status: FinancialStatus.success }).exec();
+            await withdraw.update({ status: FinancialStatus.success });
             // await user.save();
 
             const preference = await Preference.findOne({ user: user._id });
@@ -214,7 +219,22 @@ tripleARouter.post('/withdraw',
 
             return res.json({ success: true });
         } else if (status == "cancel") {
-            await withdraw.update({ status: FinancialStatus.onhold }).exec();
+            await withdraw.update({ status: FinancialStatus.onhold });
+
+            await FinancialLog.create({
+                financialtype: 'withdrawcancel',
+                uniqid: `WC${ID()}`,
+                user: user._id,
+                amount: withdraw.amount + withdraw.fee,
+                method: withdraw.method,
+                status: FinancialStatus.success,
+                fee: 0,
+                beforeBalance: user.balance,
+                afterBalance: withdraw.amount + withdraw.fee
+            });
+            await user.update({
+                $inc: { balance: withdraw.amount + withdraw.fee }
+            });
 
             const preference = await Preference.findOne({ user: user._id });
             if (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.email) {

@@ -196,6 +196,8 @@ const checkCashBack = async () => {
             note: `${year}:${month}`,
             fee: loss,
             status: FinancialStatus.success,
+            beforeBalance: user.balance,
+            afterBalance: user.balance + cashback
         });
         await user.update({ $inc: { balance: cashback } });
     })
