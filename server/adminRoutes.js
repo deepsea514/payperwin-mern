@@ -2668,6 +2668,7 @@ adminRouter.post(
                     uniqid: `BP${bet_id}`,
                     user: user._id,
                     amount: betAfterFee,
+                    betId: newBet._id,
                     method: 'bet',
                     status: FinancialStatus.success,
                     beforeBalance: user.balance,
@@ -2851,7 +2852,7 @@ adminRouter.post(
                 }
 
                 const bet_id = ID();
-                await Bet.create({
+                const newBet = await Bet.create({
                     userId: user._id,
                     transactionID: `B${bet_id}`,
                     teamA: bet.teamA,
@@ -2878,6 +2879,7 @@ adminRouter.post(
                     user: user._id,
                     amount: betAfterFee,
                     method: 'bet',
+                    betId: newBet._id,
                     status: FinancialStatus.success,
                     beforeBalance: user.balance,
                     afterBalance: user.balance - amount
