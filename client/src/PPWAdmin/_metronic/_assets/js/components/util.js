@@ -1801,7 +1801,6 @@ export var KTUtil = function() {
                 if (left < 0) {
                     return true;
                 } else if (left * 2 > width) {
-                    //console.log('left 2');
                     //return true;
                 }
             }
@@ -1810,7 +1809,6 @@ export var KTUtil = function() {
                 if (windowWidth < left + width) {
                     return true;
                 } else {
-                    //console.log('right 2');
                     //return true;
                 }
             }

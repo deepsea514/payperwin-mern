@@ -137,7 +137,6 @@ class CreateArticle extends React.Component {
         // reader.onload = function () {
         // };
         // reader.onerror = function (error) {
-        //     console.log('Error: ', error);
         // };
     }
 

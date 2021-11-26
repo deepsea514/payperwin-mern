@@ -84,7 +84,6 @@ class CustomerEdit extends React.Component {
             .then(() => {
                 this.setState({ isSuccess: true });
             }).catch((error) => {
-                .log(error);
                 this.setState({ isError: true });
             }).finally(() => {
                 formik.setSubmitting(false)
