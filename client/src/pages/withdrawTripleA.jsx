@@ -56,7 +56,6 @@ class WithdrawTripleA extends Component {
                 this.setState({ usedFreeWithdraw: data.used });
             })
             .catch(() => {
-                console.log('error');
                 this.setState({ usedFreeWithdraw: true });
             });
     }

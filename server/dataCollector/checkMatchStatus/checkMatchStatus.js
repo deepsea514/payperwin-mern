@@ -91,7 +91,6 @@ const checkMatchStatus = async () => {
             matchingStatus: ['Pending', 'Partial Match']
         }
     );
-    console.log(`${bets.length} of Unmatched bets.`);
     for (const bet of bets) {
         await bet.update({ notifySent: new Date() });
         const user = await User.findById(bet.userId);
@@ -141,7 +140,6 @@ const checkMatchStatus = async () => {
          */
 
     }
-    console.log("Sent mails.")
 
 }
 
@@ -155,7 +153,6 @@ const checkCashBack = async () => {
         note: `${year}:${month}`,
     });
     if (cashbacks.length) {
-        console.log('already made cashback.');
         return;
     }
 
@@ -200,7 +197,6 @@ const checkCashBack = async () => {
             fee: loss,
             status: FinancialStatus.success,
         });
-        console.log(user.username, ' cashback => ', cashback)
         await user.update({ $inc: { balance: cashback } });
     })
 }

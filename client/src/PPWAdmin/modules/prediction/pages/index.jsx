@@ -97,7 +97,6 @@ class Prediction extends React.Component {
                 try {
                     seasonData = require(`../data/${season.data}`);
                 } catch (error) {
-                    console.log(error);
                 }
                 this.setState({ season: value, seasonData: seasonData });
             } else {

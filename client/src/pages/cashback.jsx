@@ -118,7 +118,6 @@ export default class Cashback extends Component {
                 this.setState({ loading: false, data });
             })
             .catch((error) => {
-                console.log(error);
                 this.setState({ loading: false, error });
             })
     }

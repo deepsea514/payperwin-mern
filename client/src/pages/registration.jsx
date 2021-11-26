@@ -267,7 +267,6 @@ class Registration extends Component {
                             history.replace({ pathname: '/' });
                         })
                         .catch((err) => {
-                            console.log(err);
                             if (err.response) {
                                 const { data } = err.response;
                                 if (data.error) {
@@ -710,7 +709,6 @@ class Registration extends Component {
                 history.replace({ pathname: '/' });
             })
             .catch((err) => {
-                console.log(err);
                 if (err.response) {
                     const { data } = err.response;
                     if (data.error) {

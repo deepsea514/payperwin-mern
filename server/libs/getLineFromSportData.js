@@ -3,7 +3,6 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
     let found = false;
     if (data.name) lineData.sportName = data.name;
     if (live) {
-        console.log('live');
         data.liveLeagues.forEach(league => {
             const { name, originId, events } = league;
             if (leagueId.toString() === originId.toString()) {
@@ -37,7 +36,6 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
                                             selectedLine = line.third_quarter;
                                         break;
                                     case 'forth_quarter':
-                                        console.log('4th', timer);
                                         if (timer && timer.q < "4")
                                             selectedLine = line.forth_quarter;
                                         break;

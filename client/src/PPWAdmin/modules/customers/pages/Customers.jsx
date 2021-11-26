@@ -143,7 +143,6 @@ class Customers extends React.Component {
             this.props.addDepositSuccess(data);
             this.setState({ modal: true, addDepositId: null, resMessage: "Successfully added!", modalvariant: "success" });
         }).catch((error) => {
-            console.log(error)
             this.setState({ modal: true, addDepositId: null, resMessage: "Addition Failed!", modalvariant: "danger" });
         }).finally(() => {
             formik.setSubmitting(false);
@@ -158,7 +157,6 @@ class Customers extends React.Component {
             this.props.addWithdrawSuccess(data);
             this.setState({ modal: true, addWithdrawId: null, resMessage: "Successfully added!", modalvariant: "success" });
         }).catch((error) => {
-            console.log(error)
             this.setState({ modal: true, addWithdrawId: null, resMessage: "Addition Failed!", modalvariant: "danger" });
         }).finally(() => {
             formik.setSubmitting(false);

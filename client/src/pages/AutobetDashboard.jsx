@@ -55,7 +55,6 @@ class AutobetDashboard extends Component {
                 this._Mounted && this.setState({ loading: false, data, detail: null });
             })
             .catch((error) => {
-                console.log(error);
                 this._Mounted && this.setState({ loading: false, error, data: null, detail: null });
             })
     }

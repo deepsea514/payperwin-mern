@@ -66,7 +66,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
 
     // loop through betpools
     if (!betpools || betpools.length === 0) {
-        console.log('no eligible parlay betpools');
         return;
     }
     for (const betpool of betpools) {
@@ -102,7 +101,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 }
 
                 if (!success) {
-                    console.log('no data from api/cache for this line');
                     breaked = true;
                     break;
                 }
@@ -233,7 +231,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
                             pickOdds: parlayOdds
                         });
                     } else {
-                        console.log('bet not found', bet_id);
                     }
                 }
 
@@ -363,7 +360,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
             cancelBetPool(betpool);
         }
     }
-    console.log(`Finished checking ${betpools.length} parlay betpools`, new Date().toLocaleString());
 }
 
 module.exports = matchResultsParlay;

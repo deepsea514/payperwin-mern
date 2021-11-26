@@ -51,7 +51,6 @@ class ErrorLogs extends React.Component {
         }
 
         return errorlogs.map((record, index) => {
-            console.log(record);
             return (
                 <tr key={index}>
                     <td>{index + 1}</td>

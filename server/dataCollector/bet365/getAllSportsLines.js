@@ -70,7 +70,6 @@ const getAllSportsLines = async () => {
     }
 
     for (const sport of sportsData) {
-        console.log(`Start getting odds for ${sport.name}`);
         try {
             let sportEvents = {
                 originSportId: sport.id,
@@ -110,8 +109,6 @@ const getAllSportsLines = async () => {
                         }
                     });
                 }
-                console.log("total =>", total);
-                console.log("page =>", page);
                 if (!success) continue;
                 for (let ei = 0; ei < results.length; ei += 10) {
                     let ids = [];
@@ -190,11 +187,9 @@ const getAllSportsLines = async () => {
             else {
                 await Sport.create(sportEvents);
             }
-            console.log(`Finished getting odds for ${sport.name}`);
         } catch (error) {
             console.error(error);
         }
 
     }
-    console.log('All done')
 }

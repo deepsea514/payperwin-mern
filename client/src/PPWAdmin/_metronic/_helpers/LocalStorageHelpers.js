@@ -10,12 +10,6 @@ export function removeStorage(key) {
         localStorage.setItem(key, "");
         localStorage.setItem(key + "_expiresIn", "");
     } catch (e) {
-        console.log(
-            "removeStorage: Error removing key [" +
-            key +
-            "] from localStorage: " +
-            JSON.stringify(e)
-        );
         return false;
     }
     return true;
@@ -46,12 +40,6 @@ export function getStorage(key) {
             const value = localStorage.getItem(key);
             return value;
         } catch (e) {
-            console.log(
-                "getStorage: Error reading key [" +
-                key +
-                "] from localStorage: " +
-                JSON.stringify(e)
-            );
             return null;
         }
     }
@@ -76,12 +64,6 @@ export function setStorage(key, value, expires) {
         localStorage.setItem(key, value);
         localStorage.setItem(key + "_expiresIn", schedule);
     } catch (e) {
-        console.log(
-            "setStorage: Error setting key [" +
-            key +
-            "] in localStorage: " +
-            JSON.stringify(e)
-        );
         return false;
     }
     return true;

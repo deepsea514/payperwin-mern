@@ -107,7 +107,6 @@ class FAQItems extends React.Component {
                 }
             })
             .catch((err) => {
-                console.log(err)
                 this.setState({
                     modal: true,
                     editId: null,

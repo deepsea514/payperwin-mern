@@ -58,8 +58,6 @@ const getLiveSportsLines = async () => {
                         }
                     });
                 }
-                console.log("total =>", total);
-                console.log("page =>", page);
                 if (!success) continue;
                 for (let ei = 0; ei < results.length; ei += 10) {
                     let ids = [];
@@ -157,12 +155,10 @@ const getLiveSportsLines = async () => {
 
             arrangeLeagues(sportEvents.liveLeagues, sport.name);
             await Sport.findOneAndUpdate({ originSportId: sport.id, origin: 'bet365' }, sportEvents);
-            console.log(`Finished getting odds for ${sport.name}`);
         } catch (error) {
             console.error(error);
         }
     }
-    console.log('All done')
 }
 
 module.exports = getLiveSportsLines;

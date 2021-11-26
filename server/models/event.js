@@ -208,7 +208,6 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
             // add betId to betPool
             const exists = await EventBetPool.findOne({ eventId: event._id });
             if (exists) {
-                console.log('update existing betpool');
                 if (pick == 'home') {
                     const teamA = {
                         name: exists.teamA.name,
@@ -244,7 +243,6 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     toWinTotal: pick === 'away' ? toWin : 0,
                 }
                 const awayBets = pick === 'away' ? [betId] : []
-                console.log('creating betpool');
                 const newBetPool = new EventBetPool(
                     {
                         eventId: event._id,
