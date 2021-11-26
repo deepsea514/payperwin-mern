@@ -61,7 +61,6 @@ const calculateToWinFromBet = (bet, americanOdds) => {
 const calculateBetsStatus = async (betpoolUid) => {
     const betpool = await BetPool.findOne({ uid: new RegExp(`^${betpoolUid}$`, 'i') });
     if (!betpool) {
-        console.log('BetPool not found.');
         return;
     }
     const { homeBets, awayBets, teamA, teamB, drawBets, nonDrawBets, teamNonDraw, teamDraw } = betpool;
@@ -153,7 +152,6 @@ const calculateCustomBetsStatus = async (eventId) => {
 const calculateParlayBetsStatus = async (id) => {
     const betpool = await ParlayBetPool.findById(id);
     if (!betpool) {
-        console.log('BetPool not found.');
         return;
     }
     const { homeBets, awayBets, teamA, teamB } = betpool;

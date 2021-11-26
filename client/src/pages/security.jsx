@@ -106,7 +106,6 @@ class Security extends Component {
                             this.setState({ passwordChangeSuccess: true });
                         })
                         .catch((err) => {
-                            console.log(err);
                             if (err.response) {
                                 const { data } = err.response;
                                 if (data.error) {

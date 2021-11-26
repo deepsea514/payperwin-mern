@@ -4398,7 +4398,6 @@ const matchResults = async (eventId, matchResult) => {
     });
 
     if (!betpool) {
-        console.log('no eligible betpool');
         return false;
     }
 
@@ -6113,7 +6112,6 @@ adminRouter.post(
         //Assign Unique Event ID
         lineQuery.eventId = `E${ID()}`;
 
-        //console.log("linquery unique", lineQuery);
         if (!odds || !pick || !toBet || !toWin || !lineQuery) {
             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
         } else {
@@ -6199,7 +6197,6 @@ adminRouter.post(
                         };
                         const newBet = new Bet(newBetObj);
                         console.info(`created new bet`);
-                        //console.log("newBetObj", newBetObj)
                         // save the user
                         try {
                             const savedBet = await newBet.save();
@@ -6254,7 +6251,6 @@ adminRouter.post(
                                 await placeAutoBet(betId, autoBetUserId, toWin);
                                 betpoolId = exists.uid;
                             } else {
-                                console.log('creating betpool');
                                 const newBetPool = new BetPool(
                                     {
                                         uid: JSON.stringify(lineQuery),
@@ -6293,7 +6289,6 @@ adminRouter.post(
                                     await placeAutoBet(betId, autoBetUserId, toWin);
                                     betpoolId = newBetPool.uid;
                                 } catch (err) {
-                                    console.log('can\'t save newBetPool => ' + err);
                                 }
                             }
                             await calculateBetsStatus(betpoolId);
@@ -6311,7 +6306,6 @@ adminRouter.post(
                                 });
                                 await user.save();
                             } catch (err) {
-                                console.log('can\'t save user balance => ' + err);
                             }
                         }
                         catch (e2) {

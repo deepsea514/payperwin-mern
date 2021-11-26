@@ -169,20 +169,16 @@ tripleARouter.post('/withdraw',
         const { payout_reference, status } = req.body;
         const withdraw = await FinancialLog.findOne({ note: payout_reference });
         if (!withdraw) {
-            console.log("triple Payout", 'Can\'t find withdraw log.');
             return res.json({ success: false, message: 'Can\'t find withdraw log.' });
         }
         if (withdraw.status == FinancialStatus.success) {
-            console.log("triple Payout", 'Can\'t update finished withdraw.');
             return res.json({ success: false, message: 'Can\'t update finished withdraw.' });
         }
         const user = await User.findById(withdraw.user);
         if (!user) {
-            console.log("triple Payout", 'Can\'t find user.');
             return res.json({ success: false, message: 'Can\'t find user.' });
         }
         if (status == "done") {
-            console.log("triple Payout", 'success withdraw');
             // const fee = CountryInfo.find(info => info.currency == user.currency).fee;
             // user.balance = parseInt(user.balance) - parseInt(withdraw.amount) - fee;
             await withdraw.update({ status: FinancialStatus.success }).exec();
@@ -218,7 +214,6 @@ tripleARouter.post('/withdraw',
 
             return res.json({ success: true });
         } else if (status == "cancel") {
-            console.log("triple Payout", 'cancel withdraw');
             await withdraw.update({ status: FinancialStatus.onhold }).exec();
 
             const preference = await Preference.findOne({ user: user._id });

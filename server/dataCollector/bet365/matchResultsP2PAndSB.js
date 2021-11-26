@@ -42,7 +42,6 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
 
     // loop through betpools
     if (!betpools || betpools.length === 0) {
-        console.log('no eligible betpools');
         return;
     }
     for (const betpool of betpools) {
@@ -58,7 +57,6 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                         }
                     });
                 if (!success) {
-                    console.log('no data from api/cache for this line');
                     continue;
                 }
                 const { ss, scores, time_status, time, timer } = results[0];
@@ -274,7 +272,6 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
             await betpool.update({ $set: { result: 'Cancelled' } });
         }
     }
-    console.log(`Finished checking ${betpools.length} betpools`, new Date().toLocaleString());
 }
 
 module.exports = matchResultsP2PAndSB;

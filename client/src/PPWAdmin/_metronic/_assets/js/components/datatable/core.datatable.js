@@ -2058,7 +2058,6 @@
 			log: function(text, obj) {
 				if (typeof obj === 'undefined') obj = '';
 				if (datatable.debug) {
-					console.log(text, obj);
 				}
 			},
 

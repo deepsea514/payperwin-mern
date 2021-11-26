@@ -209,7 +209,6 @@ class PlaceBet extends React.Component {
 
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
-        //console.log("getiing values", ...values);
 
         let isPlaceBetOnTeamB = values.placeBetOnTeamB;
         let pick = isPlaceBetOnTeamB ? "away" : "home";

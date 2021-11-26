@@ -119,7 +119,6 @@ const bruteforce = new ExpressBrute(bruteStore);
 // Database
 mongoose.Promise = global.Promise;
 // const databaseName = 'PayPerWinDev'
-console.log(process.env.NODE_ENV, 'mode');
 const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
 const mongooptions = {
     authSource: "admin",
@@ -158,7 +157,6 @@ var store = new MongoDBStore({
 });
 
 store.on('error', function (error) {
-    console.log(error);
 });
 
 store.on('connection', function (res) {
@@ -212,7 +210,6 @@ passport.use(new LocalStrategy(
             if (err) { console.error(err); return done(err); }
             if (!user) {
                 if (process.env.NODE_ENV === 'development') {
-                    console.log('incorrect email', email);
                 }
                 return done(null, false, { message: 'Incorrect email.' });
             }
@@ -223,7 +220,6 @@ passport.use(new LocalStrategy(
                     return done(null, user);
                 }
                 if (process.env.NODE_ENV === 'development') {
-                    console.log(user.username, 'incorrect password');
                 }
                 return done(null, false, { message: 'Incorrect password.' });
             }
@@ -461,7 +457,6 @@ expressApp.post(
                     });
                     log.save((error) => {
                         if (error) console.error("register => ", error);
-                        else console.log(`User register log - ${user.username}`);
                     });
                     return res.send(`registered ${user.username}`);
                 });
@@ -586,7 +581,6 @@ expressApp.post('/googleRegister',
                     });
                     log.save((error) => {
                         if (error) console.error("register => ", error);
-                        else console.log(`User register log - ${user.username}`);
                     });
                     return res.send(`registered ${user.username}`);
                 });
@@ -850,7 +844,6 @@ expressApp.post('/newPasswordFromToken', bruteforce.prevent, async (req, res) =>
                 const changePasswordHash = seededRandomString(user.password, 20);
                 if (h === changePasswordHash) {
                     if (process.env.NODE_ENV === 'development') {
-                        console.log('new password:', password);
                     }
                     user.password = password;
                     user.save((err2) => {
@@ -1065,7 +1058,6 @@ expressApp.post(
                                         // add betId to betPool
                                         const exists = await EventBetPool.findOne({ eventId: new ObjectId(lineId) });
                                         if (exists) {
-                                            console.log('update existing betpool');
                                             if (pick == 'home') {
                                                 const teamA = {
                                                     name: exists.teamA.name,
@@ -1101,7 +1093,6 @@ expressApp.post(
                                                 toWinTotal: pick === 'away' ? toWin : 0,
                                             }
                                             const awayBets = pick === 'away' ? [betId] : []
-                                            console.log('creating betpool');
                                             const newBetPool = new EventBetPool(
                                                 {
                                                     eventId: lineId,
@@ -1372,7 +1363,6 @@ expressApp.post(
                                                 await checkAutoBet(savedBet, exists, user, sportData, line);
                                                 betpoolId = exists.uid;
                                             } else {
-                                                console.log('creating betpool');
 
                                                 const newBetPool = new BetPool(
                                                     {
@@ -1834,7 +1824,6 @@ expressApp.post(
             }
 
             if (fPoints != lineQuery.points) {
-                console.log(fPoints, lineQuery.points)
                 errors.push(`${pickName} wager could not be placed. Line is mismatching.`);
                 break;
             }

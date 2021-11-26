@@ -7,7 +7,6 @@ export function FormAlert({
   icon = "flaticon-warning"
 }) {
   useEffect(() => {
-    console.log("useEffect", isEnabled);
   }, [isEnabled]);
   if (isEnabled) {
     return (

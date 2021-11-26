@@ -52,7 +52,6 @@ class EditEmailTemplates extends React.Component {
             .then(() => {
                 this.setState({ isSuccess: true });
             }).catch((error) => {
-                console.log(error);
                 this.setState({ isError: true });
             }).finally(() => {
                 formik.setSubmitting(false)
