@@ -6704,7 +6704,7 @@ adminRouter.post(
                 return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
-            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+            const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
             const betpoolQuery = {
                 sportId: lineQuery.sportId,
@@ -6903,7 +6903,6 @@ adminRouter.post(
                 for (const betId of [...homeBets, ...awayBets]) {
                     const bet = await Bet.findOne({ _id: betId });
                     const { _id, userId, bet: betAmount } = bet;
-                    // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
                     await FinancialLog.findOneAndUpdate(
