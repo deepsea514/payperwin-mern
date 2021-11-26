@@ -39,7 +39,7 @@
     "COMPONENTS.TOTAL.WIN": "Total Win",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH": "Waiting for Match",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT": "Your bet is waiting for another an opposite wager. We will notify when we find you a match. An unmatched wager will be refunded upon the start of the game.",
-    "COMPONENTS.BETSTATUS.MATCHED": "Matched",
+    "COMPONENTS.BETSTATUS.MATCHED": "Accepted",
     "COMPONENTS.BETSTATUS.MATCHED_CONTENT": "Your entire bet was matched and you wager is in play.",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED": "Partially Match",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT": "Only a portion of your wager was matched with another user. The unmatched amount is waiting for a match. You can forward the bet to the Sportsbook for an instant match.",

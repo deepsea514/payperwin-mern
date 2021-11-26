@@ -9,20 +9,28 @@ class BetStatus extends Component {
                 <div className="verification-proof-list">
                     <ul>
                         <li>
-                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b>
+                            <b style={{ background: '#dc6c44', padding: '2px', color: 'white' }}><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b>
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT" />
                         </li>
                         <li>
-                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED" />:</b>
+                            <b style={{ background: '#53b657', padding: '2px', color: 'white' }}><FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED" />:</b>
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED_CONTENT" />
                         </li>
                         <li>
-                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED" />:</b>
+                            <b style={{ background: '#f9ec77', padding: '2px', color: 'black' }}><FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED" />:</b>
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT" />
                         </li>
                         <li>
-                            <b><FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED" />:</b>
+                            <b style={{ background: '#579187', padding: '2px', color: 'white' }}><FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED" />:</b>
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED_CONTENT" />
+                        </li>
+                        <li>
+                            <b style={{ background: '#FFE2E5', padding: '2px', color: 'dark' }}>Peer to Peer:</b>
+                            &nbsp;Your bet is placed on the peer to peer marketplace.
+                        </li>
+                        <li>
+                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'dark' }}>Sportsbook:</b>
+                            &nbsp;Your bet is accepted on the sportsbook marketplace.
                         </li>
                     </ul>
                 </div>

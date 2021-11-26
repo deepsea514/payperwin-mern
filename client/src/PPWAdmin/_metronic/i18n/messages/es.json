@@ -39,7 +39,7 @@
     "COMPONENTS.TOTAL.WIN": "Ganancia Total ",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH": "Esperando Partido",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT": "Su apuesta está esperando otra apuesta opuesta. Le notificaremos cuando encontremos una coincidencia. Una apuesta no igualada será reembolsada al comienzo del juego.",
-    "COMPONENTS.BETSTATUS.MATCHED": "Igualado",
+    "COMPONENTS.BETSTATUS.MATCHED": "Aceptado",
     "COMPONENTS.BETSTATUS.MATCHED_CONTENT": "Toda tu apuesta fue igualada y esta en juego",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED": "Parcialmente igualado",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT": "Solo una parte de su apuesta fue igualada con otro usuario. La cantidad no igualada está esperando un partido. Puede reenviar la apuesta a la casa de apuestas para un partido instantáneo",

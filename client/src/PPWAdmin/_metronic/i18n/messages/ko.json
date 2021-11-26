@@ -39,7 +39,7 @@
     "COMPONENTS.TOTAL.WIN": "총 우승",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH": "매치를 기다리는 중",
     "COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT": "귀하의 내기는 또 다른 정반대의 내기를 기다리고 있습니다. 일치하는 사람을 찾으면 알려 드리겠습니다. 타의 추종을 불허하는 내기는 경기 시작 시 환불됩니다.",
-    "COMPONENTS.BETSTATUS.MATCHED": "일치됨",
+    "COMPONENTS.BETSTATUS.MATCHED": "수락됨",
     "COMPONENTS.BETSTATUS.MATCHED_CONTENT": "귀하의 내기는 전부 일치했고 내기를 시작합니다",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED": "부분 일치",
     "COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT": "베팅의 일부만 다른 사용자와 일치했습니다. 일치하지 않는 금액이 일치를 기다리고 있습니다. 즉시 경기를 위해 내기를 스포츠 북으로 전달할 수 있습니다.",
