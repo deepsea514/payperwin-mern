@@ -355,8 +355,6 @@ async function validateFields(obj, options) {
 // };
 
 // async function doStuff() {
-//   console.log(await validateField('username', testData));
-//   console.log(await validateFields(testData));
 // }
 
 // doStuff();

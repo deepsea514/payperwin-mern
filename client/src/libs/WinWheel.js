@@ -551,7 +551,6 @@ Winwheel.prototype.drawSegmentImages = function () {
 
                     this.ctx.restore();
                 } else {
-                    console.log('Segment ' + x + ' imgData is not loaded');
                 }
             }
         }
@@ -1867,13 +1866,10 @@ Winwheel.prototype.getRandomForSegment = function (segmentNumber) {
             if (range > 0) {
                 stopAngle = (startAngle + 1 + Math.floor((Math.random() * range)));
             } else {
-                console.log('Segment size is too small to safely get random angle inside it');
             }
         } else {
-            console.log('Segment ' + segmentNumber + ' undefined');
         }
     } else {
-        console.log('Segment number not specified');
     }
 
     return stopAngle;
