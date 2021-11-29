@@ -83,3 +83,10 @@ export function suspendCustomer(id, suspended) {
 export function getCustomerCredits(id, page) {
     return axios.get(`${serverUrl}/customer-credits`, { params: { id, page } });
 }
+
+
+export function verifyCustomer(id) {
+  return axios.put(`${serverUrl}/customer/${id}/manualverification`, {
+    withCredentials: true,
+  });
+}
