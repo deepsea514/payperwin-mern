@@ -269,8 +269,8 @@ class Verification extends Component {
                             <h6><FormattedMessage id="PAGES.VERIFICATION.ADDRESSSUBMITTED" />, If you want to submit again, <strong style={{ cursor: "pointer" }} onClick={() => this.setState({ submitSuccess: null })}>Click Here!</strong></h6>
                         </>}
 
-                        <h4 className="mt-3">DOCUMENT STATUS</h4>
-                        <br />
+                        <h4 className="mt-5 mb-3">DOCUMENT STATUS</h4>
+                        
                         <p className="verification-items" onClick={() => this.clickUpload('address')}>
                             Address verification
                             &nbsp;{address == 'required' && <span className="badge badge-primary">REQUIRED</span>}

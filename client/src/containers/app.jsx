@@ -632,7 +632,7 @@ class App extends Component {
                                                         user={user}
                                                         history={history}
                                                     />}
-                                                {!verified && pathname.indexOf('/withdraw') == 0 && <VerificationNotify />}
+                                                {!verified && pathname.indexOf('/withdraw') == 0 && <Redirect to="/verification" from="*" />}
                                                 {!verified && pathname == '/verification' && <VerificationProof />}
                                                 {['/bets', '/history'].includes(pathname) && <BetStatus />}
                                                 {pathname == '/cashback' && <CashbackNames />}
