@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as customers from "../redux/reducers";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import { deleteCustomer, suspendCustomer, updateCustomer } from "../redux/services";
+import { deleteCustomer, suspendCustomer, updateCustomer, verifyCustomer } from "../redux/services";
 import { addWithdraw } from "../../withdrawlogs/redux/services";
 import { addDeposit } from "../../depositlogs/redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
@@ -46,6 +46,7 @@ class Customers extends React.Component {
             },
             suspendId: null,
             returnId: null,
+            verifyId: null,
         }
     }
 
@@ -107,17 +108,27 @@ class Customers extends React.Component {
                     <td className="">{numberFormat(Number(customer.inplay).toFixed(2))} {customer.currency}</td>
                     <td className="">{customer.totalBetCount}</td>
                     <td className="">{numberFormat(Number(customer.totalWager).toFixed(2))} {customer.currency}</td>
+                    <td className="">
+                    <span className={`label label-lg label-inline font-weight-lighter mr-2  label-${customer.roles.verified ? 'success' : 'info'}`}>
+                        {customer.roles.verified ? "Verified" : "Not Verified"}
+                    </span>
+
+                    </td>
+
                     <td className="text-right">
                         <DropdownButton title="Actions">
                             <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
                             <Dropdown.Item as={Link} to={`/users/${customer._id}/profile`}>
                                 <i className="far fa-user"></i>&nbsp; Profile
                             </Dropdown.Item>
+                            {!customer.roles.verified && <Dropdown.Item onClick={() => this.setState({ verifyId: customer._id })}><i className="fas fa-check"></i>&nbsp; Verify Customer</Dropdown.Item>}
                             <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ addWithdrawId: customer._id, withdrawmax: customer.balance })}><i className="fas fa-credit-card"></i>&nbsp; Add Withdraw</Dropdown.Item>
+                            
                             <Dropdown.Item onClick={() => this.setState({ deleteId: customer._id })}><i className="fas fa-trash"></i>&nbsp; Delete Customer</Dropdown.Item>
                             {!customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ suspendId: customer._id })}><i className="fas fa-pause"></i>&nbsp; Suspend Customer</Dropdown.Item>}
                             {customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ returnId: customer._id })}><i className="fas fa-play"></i>&nbsp; Return Customer</Dropdown.Item>}
+                            
                         </DropdownButton>
                     </td>
                 </tr>
@@ -134,6 +145,7 @@ class Customers extends React.Component {
             this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
         })
     }
+
 
     addDeposit = (values, formik) => {
         formik.setSubmitting(true);
@@ -200,9 +212,18 @@ class Customers extends React.Component {
             })
     }
 
+    verifyUser = () => {
+        const { verifyId } = this.state;
+        verifyCustomer(verifyId).then(() => {
+            this.setState({ modal: true, verifyId: null, resMessage: "Successfully Verified!", modalvariant: "success" });
+        }).catch(() => {
+            this.setState({ modal: true, verifyId: null, resMessage: "Verification Failed!", modalvariant: "danger" });
+        })
+    }
+
     render() {
         const { deleteId, modal, modalvariant, perPage, resMessage, addDepositId, changePasswordId,
-            addWithdrawId, withdrawmax, PasswordSchema, initialValues, suspendId, returnId } = this.state;
+            addWithdrawId, withdrawmax, PasswordSchema, initialValues, suspendId, returnId, verifyId } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -315,6 +336,7 @@ class Customers extends React.Component {
                                                         {filter.sort == 'desc' && <i className="fas fa-sort-amount-down-alt" />}
                                                     </>}
                                                 </th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -336,13 +358,27 @@ class Customers extends React.Component {
                 </div>
                 <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Do you want to delete this customer?</Modal.Title>
+                        <Modal.Title>Do you want to manually verify this customer?</Modal.Title>
                     </Modal.Header>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={this.deleteUser}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={verifyId != null} onHide={() => this.setState({ verifyId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to verify this customer?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ verifyId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={this.verifyUser}>
                             Confirm
                         </Button>
                     </Modal.Footer>
