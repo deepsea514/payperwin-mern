@@ -214,8 +214,10 @@ class Customers extends React.Component {
 
     verifyUser = () => {
         const { verifyId } = this.state;
+        const { getCustomers } = this.props;
         verifyCustomer(verifyId).then(() => {
             this.setState({ modal: true, verifyId: null, resMessage: "Successfully Verified!", modalvariant: "success" });
+            getCustomers();
         }).catch(() => {
             this.setState({ modal: true, verifyId: null, resMessage: "Verification Failed!", modalvariant: "danger" });
         })
