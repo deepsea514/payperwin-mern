@@ -4305,16 +4305,29 @@ expressApp.post(
             }
 
             try {
-                await twilioClient.verify.services(service.value.sid)
+                twilioClient.verify.services(service.value.sid)
                     .verificationChecks
-                    .create({ to: user.phone, code: verification_code });
-                await user.update({
-                    roles: {
-                        ...user.roles,
-                        phone_verified: true,
-                    }
-                })
-                res.json({ success: true });
+                    .create({ to: user.phone, code: verification_code })
+                    .then(async (verification_check) => {
+                        if (verification_check.valid) {
+                            try {
+                                await user.update({
+                                    roles: {
+                                        ...user.roles,
+                                        phone_verified: true,
+                                    }
+                                })
+                                res.json({ success: true });
+                            } catch (error) {
+                                console.error(error);
+                                res.json({ success: false });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        res.json({ success: false });
+                    })
             } catch (error) {
                 console.error(error);
                 res.json({ success: false });
