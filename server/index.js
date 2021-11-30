@@ -3541,7 +3541,7 @@ expressApp.post(
             try {
                 const uniqid = `W${ID()}`;
 
-                const maxwithdraw = getMaxWithdraw(user);
+                const maxwithdraw = await getMaxWithdraw(user);
                 let totalwithdraw = await FinancialLog.aggregate(
                     {
                         $match: {
@@ -3625,7 +3625,7 @@ expressApp.post(
 
             try {
                 const uniqid = `W${ID()}`;
-                const maxwithdraw = getMaxWithdraw(user);
+                const maxwithdraw = await getMaxWithdraw(user);
 
                 let totalwithdraw = await FinancialLog.aggregate(
                     {

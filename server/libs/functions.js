@@ -252,11 +252,25 @@ const getMaxWithdraw = async (user) => {
         }
     } else {
         if (totalwagers >= totaldeposit * 5) {
-            maxwithdraw = totalwinbet
+            maxwithdraw = totalwinbet;
         }
     }
 
-    maxwithdraw = Number(maxwithdraw.toFixed(2));
+    if (maxwithdraw) {
+        let usedCredit = await FinancialLog.aggregate(
+            {
+                $match: {
+                    user: new ObjectId(user._id),
+                    financialtype: { $in: ['transfer-out', 'transfer-in'] }
+                }
+            },
+            { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+        );
+        const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+        const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+        usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+        maxwithdraw = Number((maxwithdraw - usedCredit).toFixed(2));
+    }
     return maxwithdraw;
 }
 
