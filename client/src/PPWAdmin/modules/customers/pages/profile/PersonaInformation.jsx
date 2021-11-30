@@ -8,6 +8,7 @@ import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../../helpers/getInputClasses";
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
+import CustomDatePicker from "../../../../../components/customDatePicker";
 
 class PersonaInformation extends React.Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class PersonaInformation extends React.Component {
                 region: customer.region ? customer.region : "",
                 phone: customer.phone ? customer.phone : "",
                 currency: customer.currency ? customer.currency : "",
+                dateofbirth: customer.dateofbirth ? new Date(customer.dateofbirth) : new Date(),
             },
             Schema: Yup.object().shape({
                 username: Yup.string().required("User name is required"),
@@ -42,6 +44,7 @@ class PersonaInformation extends React.Component {
                 region: Yup.string(),
                 phone: Yup.string(),
                 currency: Yup.string(),
+                dateofbirth: Yup.date()
             })
         }
     }
@@ -62,13 +65,11 @@ class PersonaInformation extends React.Component {
         const { initialValues, Schema, saving, isError, isSuccess, id } = this.state;
 
         return (
-            <Formik
-                initialValues={initialValues}
+            <Formik initialValues={initialValues}
                 validationSchema={Schema}
                 onSubmit={this.saveCustomer}>
                 {(formik) => (
-                    <form
-                        className="card card-custom card-stretch"
+                    <form className="card card-custom card-stretch"
                         onSubmit={(e) => formik.handleSubmit(e)}>
                         {saving && <ModalProgressBar />}
 
@@ -328,6 +329,32 @@ class PersonaInformation extends React.Component {
                                         />
                                         {formik.touched.currency && formik.errors.currency ? (
                                             <div className="invalid-feedback">{formik.errors.currency}</div>
+                                        ) : null}
+                                    </div>
+                                </div>
+
+                                <div className="form-group row">
+                                    <label className="text-left col-xl-3 col-lg-3 col-form-label">
+                                        Date Of Birth
+                                    </label>
+                                    <div className="col-lg-9 col-xl-6">
+                                        <CustomDatePicker
+                                            name="dateofbirth"
+                                            className="form-control form-control-lg form-control-solid"
+                                            wrapperClassName="input-group"
+                                            selected={formik.values.dateofbirth}
+                                            {...formik.getFieldProps("dateofbirth")}
+                                            {...{
+                                                onChange: (dateofbirth) => {
+                                                    formik.setFieldError("dateofbirth", false);
+                                                    formik.setFieldTouched("dateofbirth", true);
+                                                    formik.setFieldValue("dateofbirth", dateofbirth);
+                                                },
+                                            }}
+                                            isInvalid={formik.errors.dateofbirth !== undefined}
+                                        />
+                                        {formik.touched.dateofbirth && formik.errors.dateofbirth ? (
+                                            <div className="invalid-feedback">{formik.errors.dateofbirth}</div>
                                         ) : null}
                                     </div>
                                 </div>
