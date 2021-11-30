@@ -145,7 +145,9 @@ export function* saga() {
             if (action.callback) {
                 action.callback(user);
             }
-            yield put(actions.getUserSuccess(user))
+            yield put(actions.getUserSuccess(user));
+            yield put(actions.setMaxBetLimitTierAction(user.maxBetLimitTier));
+
         } catch (error) {
 
         }
