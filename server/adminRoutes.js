@@ -992,6 +992,12 @@ adminRouter.post(
             });
 
             if (status == FinancialStatus.success) {
+                const afterBalance = user.balance + amount;
+                await deposit.update({
+                    beforeBalance: user.balance,
+                    afterBalance: afterBalance
+                })
+                await user.update({ $inc: { balance: amount } });
                 const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
                 const promotionUsed = await isSignupBonusUsed(user._id);
                 if (promotionEnabled && !promotionUsed) {
@@ -1001,11 +1007,12 @@ adminRouter.post(
                         user: user._id,
                         amount,
                         method,
-                        status
+                        status,
+                        beforeBalance: afterBalance,
+                        afterBalance: afterBalance + amount
                     });
                     await user.update({ $inc: { balance: amount } });
                 }
-                await user.update({ $inc: { balance: amount } });
             }
 
             if (sendEmail) {
@@ -1203,6 +1210,13 @@ adminRouter.patch(
                 return;
             }
             if (data.status == FinancialStatus.success) {
+                const afterBalance = user.balance + deposit.amount;
+                await deposit.update({
+                    beforeBalance: user.balance,
+                    afterBalance: afterBalance
+                })
+                await user.update({ $inc: { balance: deposit.amount } });
+
                 const promotionEnabled = await checkSignupBonusPromotionEnabled(user._id);
                 const promotionUsed = await isSignupBonusUsed(user._id);
                 if (promotionEnabled && !promotionUsed) {
@@ -1212,14 +1226,13 @@ adminRouter.patch(
                         user: user._id,
                         amount: deposit.amount,
                         method: deposit.method,
-                        status: data.status
+                        status: data.status,
+                        beforeBalance: afterBalance,
+                        afterBalance: afterBalance + deposit.amount
                     });
                     await user.update({ $inc: { balance: deposit.amount } });
                 }
-
-                await user.update({ $inc: { balance: deposit.amount } });
             }
-
             res.json(result);
         } catch (error) {
             console.error(error);
@@ -1291,18 +1304,7 @@ adminRouter.post(
                 return res.status(400).json({ error: 'Withdraw amount overflows balance.' });
             }
 
-            if (fee > 0) {
-                await FinancialLog.create({
-                    financialtype: 'withdrawfee',
-                    uniqid: `WF${ID()}`,
-                    user: user._id,
-                    amount: fee,
-                    method: method,
-                    note: note,
-                    status: FinancialStatus.success,
-                });
-            }
-
+            const afterBalance = user.balance - amount;
             await FinancialLog.create({
                 financialtype: 'withdraw',
                 uniqid: `W${ID()}`,
@@ -1312,7 +1314,23 @@ adminRouter.post(
                 status: status,
                 note: note,
                 fee: fee,
+                beforeBalance: user.balance,
+                afterBalance: afterBalance
             });
+
+            if (fee > 0) {
+                await FinancialLog.create({
+                    financialtype: 'withdrawfee',
+                    uniqid: `WF${ID()}`,
+                    user: user._id,
+                    amount: fee,
+                    method: method,
+                    note: note,
+                    status: FinancialStatus.success,
+                    beforeBalance: afterBalance,
+                    afterBalance: afterBalance - fee
+                });
+            }
 
             await user.update({ $inc: { balance: -(amount + fee) } });
             res.json({ success: true });
@@ -1912,8 +1930,6 @@ adminRouter.delete(
             }
             const user = await User.findById(user_id);
             if (user) {
-                user.balance = user.balance + bet.bet;
-                await user.save();
                 await FinancialLog.create({
                     financialtype: 'betcancel',
                     uniqid: `BC${ID()}`,
@@ -1922,7 +1938,11 @@ adminRouter.delete(
                     amount: bet.bet,
                     method: 'betcancel',
                     status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + bet.bet
                 });
+                user.balance = user.balance + bet.bet;
+                await user.save();
             }
             if (bet.isParlay) {
                 const betpool = await ParlayBetPool.findOne({
@@ -2086,6 +2106,7 @@ adminRouter.post(
                                 await bet.update(betChanges);
                                 if (payableToWin > 0) {
                                     await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
+                                    const afterBalance = user.balance + betAmount + payableToWin;
                                     await FinancialLog.create({
                                         financialtype: 'betwon',
                                         uniqid: `BW${ID()}`,
@@ -2094,6 +2115,8 @@ adminRouter.post(
                                         amount: betAmount + payableToWin,
                                         method: 'betwon',
                                         status: FinancialStatus.success,
+                                        beforeBalance: user.balance,
+                                        afterBalance: afterBalance
                                     });
                                     await FinancialLog.create({
                                         financialtype: 'betfee',
@@ -2103,6 +2126,8 @@ adminRouter.post(
                                         amount: betFee,
                                         method: 'betfee',
                                         status: FinancialStatus.success,
+                                        beforeBalance: afterBalance,
+                                        afterBalance: afterBalance - betFee
                                     });
                                 }
                                 // TODO: email winner
@@ -2114,7 +2139,6 @@ adminRouter.post(
                         const bet = await Bet.findById(bet_id);
                         if (bet) {
                             const { userId, payableToWin, toWin, bet: betAmount } = bet;
-                            const user = await User.findById(userId);
                             const betChanges = {
                                 $set: {
                                     status: 'Settled - Lose',
@@ -2123,23 +2147,27 @@ adminRouter.post(
                             }
                             const unplayableBet = payableToWin < toWin
                                 ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                            if (unplayableBet) {
-                                betChanges.$set.credited = unplayableBet;
-                                await User.findByIdAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
-                                await FinancialLog.create({
-                                    financialtype: 'betrefund',
-                                    uniqid: `BF${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: unplayableBet,
-                                    method: 'betrefund',
-                                    status: FinancialStatus.success,
-                                });
-                            }
-                            await bet.update(betChanges);
+
+                            const user = await User.findById(userId);
                             if (user) {
                                 sendBetLoseConfirmEmail(user, betAmount);
+                                if (unplayableBet) {
+                                    betChanges.$set.credited = unplayableBet;
+                                    await FinancialLog.create({
+                                        financialtype: 'betrefund',
+                                        uniqid: `BF${ID()}`,
+                                        user: userId,
+                                        betId: _id,
+                                        amount: unplayableBet,
+                                        method: 'betrefund',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: user.balance,
+                                        afterBalance: user.balance + unplayableBet
+                                    });
+                                    await user.update({ $inc: { balance: unplayableBet } });
+                                }
                             }
+                            await bet.update(betChanges);
                         }
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
@@ -2150,16 +2178,21 @@ adminRouter.post(
                             const { _id, userId, bet: betAmount } = bet;
                             // refund user
                             await bet.update({ status: 'Cancelled' });
-                            await User.findByIdAndUpdate(userId, { $inc: { balance: betAmount } });
-                            await FinancialLog.create({
-                                financialtype: 'betcancel',
-                                uniqid: `BC${ID()}`,
-                                user: userId,
-                                betId: _id,
-                                amount: betAmount,
-                                method: 'betcancel',
-                                status: FinancialStatus.success,
-                            });
+                            const user = await User.findById(userId);
+                            if (user) {
+                                await FinancialLog.create({
+                                    financialtype: 'betcancel',
+                                    uniqid: `BC${ID()}`,
+                                    user: userId,
+                                    betId: _id,
+                                    amount: betAmount,
+                                    method: 'betcancel',
+                                    status: FinancialStatus.success,
+                                    beforeBalance: user.balance,
+                                    afterBalance: user.balance + betAmount
+                                });
+                                await user.update({ $inc: { balance: betAmount } });
+                            }
                         }
                     }
                     await betpool.update({ $set: { result: 'Cancelled' } });
@@ -2217,16 +2250,21 @@ adminRouter.post(
                             if (payableToWin <= 0 || status == 'Pending') {
                                 const { _id, userId, bet: betAmount } = bet;
                                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                                await FinancialLog.create({
-                                    financialtype: 'betcancel',
-                                    uniqid: `BC${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: betAmount,
-                                    method: 'betcancel',
-                                    status: FinancialStatus.success,
-                                });
+                                const user = await User.findById(userId);
+                                if (user) {
+                                    await FinancialLog.create({
+                                        financialtype: 'betcancel',
+                                        uniqid: `BC${ID()}`,
+                                        user: userId,
+                                        betId: _id,
+                                        amount: betAmount,
+                                        method: 'betcancel',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: user.balance,
+                                        afterBalance: user.balance + betAmount
+                                    });
+                                    await user.update({ $inc: { balance: betAmount } });
+                                }
                                 continue;
                             }
 
@@ -2249,26 +2287,33 @@ adminRouter.post(
                                 }
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (user) {
-                                    const { email } = user;
                                     if (payableToWin > 0) {
-                                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
-                                        await FinancialLog.create({
-                                            financialtype: 'betwon',
-                                            uniqid: `BW${ID()}`,
-                                            user: userId,
-                                            betId: _id,
-                                            amount: betAmount + payableToWin,
-                                            method: 'betwon',
-                                            status: FinancialStatus.success,
-                                        });
-                                        await FinancialLog.create({
-                                            financialtype: 'betfee',
-                                            uniqid: `BF${ID()}`,
-                                            user: userId,
-                                            amount: betFee,
-                                            method: 'betfee',
-                                            status: FinancialStatus.success,
-                                        });
+                                        const user = await User.findById(userId);
+                                        if (user) {
+                                            const afterBalance = user.balance + betAmount + payableToWin;
+                                            await FinancialLog.create({
+                                                financialtype: 'betwon',
+                                                uniqid: `BW${ID()}`,
+                                                user: userId,
+                                                betId: _id,
+                                                amount: betAmount + payableToWin,
+                                                method: 'betwon',
+                                                status: FinancialStatus.success,
+                                                beforeBalance: user.balance,
+                                                afterBalance: afterBalance
+                                            });
+                                            await FinancialLog.create({
+                                                financialtype: 'betfee',
+                                                uniqid: `BF${ID()}`,
+                                                user: userId,
+                                                amount: betFee,
+                                                method: 'betfee',
+                                                status: FinancialStatus.success,
+                                                beforeBalance: afterBalance,
+                                                afterBalance: afterBalance - betFee
+                                            });
+                                            await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
+                                        }
                                     }
                                     // TODO: email winner
                                     sendBetWinConfirmEmail(user, payableToWin);
@@ -2284,23 +2329,27 @@ adminRouter.post(
                                 }
                                 const unplayableBet = payableToWin < toWin
                                     ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                                if (unplayableBet) {
-                                    betChanges.$set.credited = unplayableBet;
-                                    await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
-                                    await FinancialLog.create({
-                                        financialtype: 'betrefund',
-                                        uniqid: `BF${ID()}`,
-                                        user: userId,
-                                        betId: _id,
-                                        amount: unplayableBet,
-                                        method: 'betrefund',
-                                        status: FinancialStatus.success,
-                                    });
-                                }
-                                await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (user) {
                                     sendBetLoseConfirmEmail(user, betAmount);
+                                    if (unplayableBet) {
+                                        betChanges.$set.credited = unplayableBet;
+                                        if (user) {
+                                            await FinancialLog.create({
+                                                financialtype: 'betrefund',
+                                                uniqid: `BF${ID()}`,
+                                                user: userId,
+                                                betId: _id,
+                                                amount: unplayableBet,
+                                                method: 'betrefund',
+                                                status: FinancialStatus.success,
+                                                beforeBalance: user.balance,
+                                                afterBalance: user.balance + unplayableBet
+                                            });
+                                            await user.update({ $inc: { balance: unplayableBet } });
+                                        }
+                                    }
                                 }
+                                await Bet.findOneAndUpdate({ _id }, betChanges);
                             } else {
                                 console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                             }
@@ -2327,16 +2376,21 @@ adminRouter.post(
                             if (payableToWin <= 0 || status == 'Pending') {
                                 const { _id, userId, bet: betAmount } = bet;
                                 await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                                await FinancialLog.create({
-                                    financialtype: 'betcancel',
-                                    uniqid: `BC${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: betAmount,
-                                    method: 'betcancel',
-                                    status: FinancialStatus.success,
-                                });
+                                const user = await User.findById(userId);
+                                if (user) {
+                                    await FinancialLog.create({
+                                        financialtype: 'betcancel',
+                                        uniqid: `BC${ID()}`,
+                                        user: userId,
+                                        betId: _id,
+                                        amount: betAmount,
+                                        method: 'betcancel',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: user.balance,
+                                        afterBalance: user.balance + betAmount
+                                    });
+                                    await user.update({ $inc: { balance: betAmount } });
+                                }
                                 continue;
                             }
 
@@ -2366,16 +2420,21 @@ adminRouter.post(
                             if (draw) {
                                 // refund user
                                 await Bet.findOneAndUpdate({ _id: _id }, { status: 'Draw' });
-                                await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                                await FinancialLog.create({
-                                    financialtype: 'betdraw',
-                                    uniqid: `BD${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: betAmount,
-                                    method: 'betdraw',
-                                    status: FinancialStatus.success,
-                                });
+                                const user = await User.findById(userId);
+                                if (user) {
+                                    await FinancialLog.create({
+                                        financialtype: 'betdraw',
+                                        uniqid: `BD${ID()}`,
+                                        user: userId,
+                                        betId: _id,
+                                        amount: betAmount,
+                                        method: 'betdraw',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: user.balance,
+                                        afterBalance: user.balance + betAmount
+                                    });
+                                    await user.update({ $inc: { balance: betAmount } });
+                                }
                                 continue;
                             }
 
@@ -2394,9 +2453,8 @@ adminRouter.post(
                                 }
                                 await Bet.findOneAndUpdate({ _id }, betChanges);
                                 if (user) {
-                                    const { email } = user;
                                     if (payableToWin > 0) {
-                                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
+                                        const afterBalance = user.balance + betAmount + payableToWin;
                                         await FinancialLog.create({
                                             financialtype: 'betwon',
                                             uniqid: `BW${ID()}`,
@@ -2405,6 +2463,8 @@ adminRouter.post(
                                             amount: betAmount + payableToWin,
                                             method: 'betwon',
                                             status: FinancialStatus.success,
+                                            beforeBalance: user.balance,
+                                            afterBalance: afterBalance
                                         });
                                         await FinancialLog.create({
                                             financialtype: 'betfee',
@@ -2413,7 +2473,10 @@ adminRouter.post(
                                             amount: betFee,
                                             method: 'betfee',
                                             status: FinancialStatus.success,
+                                            beforeBalance: afterBalance,
+                                            afterBalance: afterBalance - betFee
                                         });
+                                        await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                     }
                                     // TODO: email winner
                                     sendBetWinConfirmEmail(user, payableToWin);
@@ -2428,23 +2491,25 @@ adminRouter.post(
                                 }
                                 const unplayableBet = payableToWin < toWin
                                     ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                                if (unplayableBet) {
-                                    betChanges.$set.credited = unplayableBet;
-                                    await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
-                                    await FinancialLog.create({
-                                        financialtype: 'betrefund',
-                                        uniqid: `BF${ID()}`,
-                                        user: userId,
-                                        amount: unplayableBet,
-                                        method: 'betrefund',
-                                        status: FinancialStatus.success,
-                                    });
-                                }
-                                await Bet.findOneAndUpdate({ _id }, betChanges);
                                 const user = await User.findById(userId);
                                 if (user) {
                                     sendBetLoseConfirmEmail(user, betAmount);
+                                    if (unplayableBet) {
+                                        betChanges.$set.credited = unplayableBet;
+                                        await FinancialLog.create({
+                                            financialtype: 'betrefund',
+                                            uniqid: `BF${ID()}`,
+                                            user: userId,
+                                            amount: unplayableBet,
+                                            method: 'betrefund',
+                                            status: FinancialStatus.success,
+                                            beforeBalance: user.balance,
+                                            afterBalance: user.balance + unplayableBet
+                                        });
+                                        await user.update({ $inc: { balance: unplayableBet } });
+                                    }
                                 }
+                                await Bet.findOneAndUpdate({ _id }, betChanges);
                             } else {
                                 console.error('error: somehow', lineType, 'bet did not result in win or loss. betWin value:', betWin);
                             }
@@ -2461,16 +2526,21 @@ adminRouter.post(
                         const { _id, userId, bet: betAmount } = bet;
                         // refund user
                         await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                        await FinancialLog.create({
-                            financialtype: 'betcancel',
-                            uniqid: `BC${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount,
-                            method: 'betcancel',
-                            status: FinancialStatus.success,
-                        });
+                        const user = await User.findById(userId);
+                        if (user) {
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: userId,
+                                betId: _id,
+                                amount: betAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: user.balance + betAmount
+                            });
+                            await user.update({ $inc: { balance: betAmount } });
+                        }
                     }
                     await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
                 }
@@ -2481,16 +2551,21 @@ adminRouter.post(
                         const { _id, userId, bet: betAmount } = bet;
                         // refund user
                         await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                        await FinancialLog.create({
-                            financialtype: 'betcancel',
-                            uniqid: `BC${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount,
-                            method: 'betcancel',
-                            status: FinancialStatus.success,
-                        });
+                        const user = await User.findById(userId);
+                        if (user) {
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: userId,
+                                betId: _id,
+                                amount: betAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: user.balance + betAmount
+                            });
+                            await user.update({ $inc: { balance: betAmount } });
+                        }
                     }
                     await BetPool.findOneAndUpdate({ uid }, { $set: { result: 'Cancelled' } });
                 }
@@ -2593,8 +2668,11 @@ adminRouter.post(
                     uniqid: `BP${bet_id}`,
                     user: user._id,
                     amount: betAfterFee,
+                    betId: newBet._id,
                     method: 'bet',
                     status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance - amount
                 });
                 await LoyaltyLog.create({
                     user: user._id,
@@ -2774,7 +2852,7 @@ adminRouter.post(
                 }
 
                 const bet_id = ID();
-                await Bet.create({
+                const newBet = await Bet.create({
                     userId: user._id,
                     transactionID: `B${bet_id}`,
                     teamA: bet.teamA,
@@ -2801,7 +2879,10 @@ adminRouter.post(
                     user: user._id,
                     amount: betAfterFee,
                     method: 'bet',
+                    betId: newBet._id,
                     status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance - amount
                 });
                 await LoyaltyLog.create({
                     user: user._id,
@@ -4398,7 +4479,6 @@ const matchResults = async (eventId, matchResult) => {
     });
 
     if (!betpool) {
-        console.log('no eligible betpool');
         return false;
     }
 
@@ -4429,16 +4509,21 @@ const matchResults = async (eventId, matchResult) => {
                     if (payableToWin <= 0 || status == 'Pending') {
                         const { _id, userId, bet: betAmount } = bet;
                         await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-                        await FinancialLog.create({
-                            financialtype: 'betcancel',
-                            uniqid: `BC${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount,
-                            method: 'betcancel',
-                            status: FinancialStatus.success,
-                        });
+                        const user = await User.findById(userId);
+                        if (user) {
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: userId,
+                                betId: _id,
+                                amount: betAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: user.balance + betAmount
+                            });
+                            await user.update({ $inc: { balance: betAmount } });
+                        }
                         continue;
                     }
 
@@ -4458,58 +4543,33 @@ const matchResults = async (eventId, matchResult) => {
                             }
                         }
                         await Bet.findOneAndUpdate({ _id }, betChanges);
-                        await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount + payableToWin - betFee } });
-                        await FinancialLog.create({
-                            financialtype: 'betwon',
-                            uniqid: `BW${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount + payableToWin,
-                            method: 'betwon',
-                            status: FinancialStatus.success,
-                        });
-                        await FinancialLog.create({
-                            financialtype: 'betfee',
-                            uniqid: `BF${ID()}`,
-                            user: userId,
-                            amount: betFee,
-                            method: 'betfee',
-                            status: FinancialStatus.success,
-                        });
-                        // TODO: email winner
-
-                        const preference = await Preference.findOne({ user: user._id });
-                        if (!preference || !preference.notification_settings || preference.notification_settings.other.email) {
-                            const msg = {
-                                from: `${fromEmailName} <${fromEmailAddress}>`,
-                                to: email,
-                                subject: 'You won a wager!',
-                                text: `Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
-                                html: simpleresponsive(`
-                                            <p>
-                                                Congratulations! You won $${payableToWin.toFixed(2)}. View Result Details:
-                                            </p>
-                                            `,
-                                    { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
-                                ),
-                            };
-                            sgMail.send(msg).catch(error => {
-                                ErrorLog.create({
-                                    name: 'Send Grid Error',
-                                    error: {
-                                        name: error.name,
-                                        message: error.message,
-                                        stack: error.stack
-                                    }
-                                });
+                        if (user) {
+                            const afterBalance = user.balance + betAmount + payableToWin;
+                            await FinancialLog.create({
+                                financialtype: 'betwon',
+                                uniqid: `BW${ID()}`,
+                                user: userId,
+                                betId: _id,
+                                amount: betAmount + payableToWin,
+                                method: 'betwon',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance
                             });
-
+                            await FinancialLog.create({
+                                financialtype: 'betfee',
+                                uniqid: `BF${ID()}`,
+                                user: userId,
+                                amount: betFee,
+                                method: 'betfee',
+                                status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance - betFee
+                            });
+                            await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
+                            sendBetWinConfirmEmail(user, payableToWin);
                         }
-                        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
-                            sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
-                        }
-
-
+                        // TODO: email winner
                     } else if (betWin === false) {
                         const betChanges = {
                             $set: {
@@ -4520,9 +4580,23 @@ const matchResults = async (eventId, matchResult) => {
                         }
                         const unplayableBet = payableToWin < toWin
                             ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
-                        if (unplayableBet) {
-                            betChanges.$set.credited = unplayableBet;
-                            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: unplayableBet } });
+                        const user = await User.findById(userId);
+                        if (user) {
+                            sendBetLoseConfirmEmail(user, betAmount);
+                            if (unplayableBet) {
+                                betChanges.$set.credited = unplayableBet;
+                                await FinancialLog.create({
+                                    financialtype: 'betrefund',
+                                    uniqid: `BF${ID()}`,
+                                    user: userId,
+                                    amount: unplayableBet,
+                                    method: 'betrefund',
+                                    status: FinancialStatus.success,
+                                    beforeBalance: user.balance,
+                                    afterBalance: user.balance + unplayableBet
+                                });
+                                await user.update({ $inc: { balance: unplayableBet } });
+                            }
                         }
                         await Bet.findOneAndUpdate({ _id }, betChanges);
                     } else {
@@ -4538,37 +4612,26 @@ const matchResults = async (eventId, matchResult) => {
         matchCancelled = true;
     }
     if (matchCancelled) {
-        for (const betId of homeBets) {
+        for (const betId of [...homeBets, ...awayBets]) {
             const bet = await Bet.findOne({ _id: betId });
             const { _id, userId, bet: betAmount } = bet;
             // refund user
             await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-            await FinancialLog.create({
-                financialtype: 'betcancel',
-                uniqid: `BC${ID()}`,
-                user: userId,
-                betId: _id,
-                amount: betAmount,
-                method: 'betcancel',
-                status: FinancialStatus.success,
-            });
-        }
-        for (const betId of awayBets) {
-            const bet = await Bet.findOne({ _id: betId });
-            const { _id, userId, bet: betAmount } = bet;
-            // refund user
-            await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
-            await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
-            await FinancialLog.create({
-                financialtype: 'betcancel',
-                uniqid: `BC${ID()}`,
-                user: userId,
-                betId: _id,
-                amount: betAmount,
-                method: 'betcancel',
-                status: FinancialStatus.success,
-            });
+            const user = await User.findById(userId);
+            if (user) {
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: userId,
+                    betId: _id,
+                    amount: betAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + betAmount
+                });
+                await user.update({ $inc: { balance: betAmount } });
+            }
         }
         await betpool.update({ $set: { result: 'Cancelled' } });
     }
@@ -5814,6 +5877,8 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
                 amount: betAfterFee,
                 method: "bet",
                 status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - amount
             });
             await LoyaltyLog.create({
                 user: user._id,
@@ -6021,6 +6086,8 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
                 amount: betAfterFee,
                 method: "bet",
                 status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - amount
             });
             await LoyaltyLog.create({
                 user: user._id,
@@ -6113,7 +6180,6 @@ adminRouter.post(
         //Assign Unique Event ID
         lineQuery.eventId = `E${ID()}`;
 
-        //console.log("linquery unique", lineQuery);
         if (!odds || !pick || !toBet || !toWin || !lineQuery) {
             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
         } else {
@@ -6198,8 +6264,6 @@ adminRouter.post(
                             sportsbook: sportsbook
                         };
                         const newBet = new Bet(newBetObj);
-                        console.info(`created new bet`);
-                        //console.log("newBetObj", newBetObj)
                         // save the user
                         try {
                             const savedBet = await newBet.save();
@@ -6254,7 +6318,6 @@ adminRouter.post(
                                 await placeAutoBet(betId, autoBetUserId, toWin);
                                 betpoolId = exists.uid;
                             } else {
-                                console.log('creating betpool');
                                 const newBetPool = new BetPool(
                                     {
                                         uid: JSON.stringify(lineQuery),
@@ -6293,12 +6356,10 @@ adminRouter.post(
                                     await placeAutoBet(betId, autoBetUserId, toWin);
                                     betpoolId = newBetPool.uid;
                                 } catch (err) {
-                                    console.log('can\'t save newBetPool => ' + err);
                                 }
                             }
                             await calculateBetsStatus(betpoolId);
 
-                            user.balance = newBalance;
                             try {
                                 await FinancialLog.create({
                                     financialtype: 'bet',
@@ -6308,10 +6369,12 @@ adminRouter.post(
                                     amount: toBet,
                                     method: 'bet',
                                     status: FinancialStatus.success,
+                                    beforeBalance: user.balance,
+                                    afterBalance: newBalance
                                 });
+                                user.balance = newBalance;
                                 await user.save();
                             } catch (err) {
-                                console.log('can\'t save user balance => ' + err);
                             }
                         }
                         catch (e2) {
@@ -6524,7 +6587,9 @@ adminRouter.post(
                         user: user._id,
                         amount: amount,
                         method: 'Line of Credit',
-                        status: FinancialStatus.success
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance
                     });
                     await user.update({ $inc: { credit: amount } });
                     break;
@@ -6537,13 +6602,11 @@ adminRouter.post(
                         user: user._id,
                         amount: amount,
                         method: 'Line of Credit',
-                        status: FinancialStatus.success
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance - amount
                     });
-                    await user.update({
-                        $inc: {
-                            balance: -amount,
-                        }
-                    })
+                    await user.update({ $inc: { balance: -amount, } })
                     break;
                 case 'transfer-out':
                     let usedCredit = await FinancialLog.aggregate(
@@ -6579,13 +6642,11 @@ adminRouter.post(
                         user: user._id,
                         amount: amount,
                         method: 'Line of Credit',
-                        status: FinancialStatus.success
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + amount
                     });
-                    await user.update({
-                        $inc: {
-                            balance: amount,
-                        }
-                    })
+                    await user.update({ $inc: { balance: amount } })
                     break;
                 default:
                     return res.json({ success: false, message: 'Unknown type.' });
@@ -6629,7 +6690,6 @@ adminRouter.get(
     }
 );
 
-
 adminRouter.post(
     '/bets/:id/fixscore',
     authenticateJWT,
@@ -6644,7 +6704,7 @@ adminRouter.post(
                 return res.status(404).json({ error: 'Bet not found' });
             }
             const lineQuery = bet.lineQuery;
-            const linePoints = getLinePoints(bet.pickName, bet.pick, lineQuery)
+            const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
             const betpoolQuery = {
                 sportId: lineQuery.sportId,
@@ -6665,8 +6725,6 @@ adminRouter.post(
             const {
                 homeBets,
                 awayBets,
-                drawBets,
-                nonDrawBets,
                 uid,
                 lineType,
                 points
@@ -6845,7 +6903,6 @@ adminRouter.post(
                 for (const betId of [...homeBets, ...awayBets]) {
                     const bet = await Bet.findOne({ _id: betId });
                     const { _id, userId, bet: betAmount } = bet;
-                    // refund user
                     await Bet.findOneAndUpdate({ _id }, { status: 'Cancelled' });
                     await User.findOneAndUpdate({ _id: userId }, { $inc: { balance: betAmount } });
                     await FinancialLog.findOneAndUpdate(
