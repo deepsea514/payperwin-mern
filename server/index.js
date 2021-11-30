@@ -1174,7 +1174,8 @@ expressApp.post(
                                 "lineQuery.lineId": lineQuery.lineId,
                                 "lineQuery.type": lineQuery.type,
                                 "lineQuery.subtype": lineQuery.subtype,
-                                "lineQuery.altLineId": lineQuery.altLineId
+                                "lineQuery.altLineId": lineQuery.altLineId,
+                                pick: pick
                             });
 
                             let oddDrawOpposite = 0;
