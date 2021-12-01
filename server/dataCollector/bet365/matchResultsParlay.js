@@ -346,7 +346,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         }
                     }
                     const unplayableBet = payableToWin < toWin
-                        ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                        ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
 
                     const user = await User.findById(userId);
                     if (user) {

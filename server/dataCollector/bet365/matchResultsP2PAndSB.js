@@ -236,7 +236,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                             }
 
                             const unplayableBet = payableToWin < toWin
-                                ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                                ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
                             const user = await User.findById(userId);
                             if (user) {
                                 sendBetLoseConfirmEmail(user, betAmount);
@@ -252,7 +252,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                         method: 'betrefund',
                                         status: FinancialStatus.success,
                                         beforeBalance: user.balance,
-                                        afterBalance: user.balance + unplayableBet
+                                        afterBalance: user.balance + Number(unplayableBet)
                                     });
                                     await user.update({ $inc: { balance: unplayableBet } });
                                 }
