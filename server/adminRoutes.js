@@ -970,6 +970,7 @@ adminRouter.post(
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
             if (!status) status = FinancialStatus.pending;
+            amount = Number(amount);
 
             const user = await User.findById(userId);
             if (!user) {
