@@ -101,8 +101,9 @@ premierRouter.post('/etransfer-deposit',
                                 await FinancialLog.create({
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
-                                    user: user._id,
+                                    user: invitor._id,
                                     amount: inviteBonus,
+                                    method: deposit.method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
                                     afterBalance: invitor.balance + inviteBonus
