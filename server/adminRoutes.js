@@ -50,6 +50,7 @@ const FinancialStatus = config.FinancialStatus;
 const EventStatus = config.EventStatus;
 const AdminRoles = config.AdminRoles;
 const isDstObserved = config.isDstObserved;
+const inviteBonus = config.inviteBonus;
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
@@ -65,7 +66,8 @@ const {
     calculateParlayBetsStatus,
     getLinePoints,
     sendBetWinConfirmEmail,
-    sendBetLoseConfirmEmail
+    sendBetLoseConfirmEmail,
+    checkFirstDeposit
 } = require('./libs/functions');
 
 
@@ -1013,6 +1015,28 @@ adminRouter.post(
                     });
                     await user.update({ $inc: { balance: amount } });
                 }
+                if (user.invite) {
+                    try {
+                        const firstDeposit = await checkFirstDeposit(user);
+                        if (firstDeposit) {
+                            const invitor = await User.findOne({ username: user.invite });
+                            if (invitor) {
+                                await FinancialLog.create({
+                                    financialtype: 'invitebonus',
+                                    uniqid: `IB${ID()}`,
+                                    user: user._id,
+                                    amount: inviteBonus,
+                                    status: FinancialStatus.success,
+                                    beforeBalance: invitor.balance,
+                                    afterBalance: invitor.balance + inviteBonus
+                                });
+                                await invitor.update({ $inc: { balance: inviteBonus } });
+                            }
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
             }
 
             if (sendEmail) {
@@ -1231,6 +1255,29 @@ adminRouter.patch(
                         afterBalance: afterBalance + deposit.amount
                     });
                     await user.update({ $inc: { balance: deposit.amount } });
+                }
+
+                if (user.invite) {
+                    try {
+                        const firstDeposit = await checkFirstDeposit(user);
+                        if (firstDeposit) {
+                            const invitor = await User.findOne({ username: user.invite });
+                            if (invitor) {
+                                await FinancialLog.create({
+                                    financialtype: 'invitebonus',
+                                    uniqid: `IB${ID()}`,
+                                    user: user._id,
+                                    amount: inviteBonus,
+                                    status: FinancialStatus.success,
+                                    beforeBalance: invitor.balance,
+                                    afterBalance: invitor.balance + inviteBonus
+                                });
+                                await invitor.update({ $inc: { balance: inviteBonus } });
+                            }
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             }
             res.json(result);

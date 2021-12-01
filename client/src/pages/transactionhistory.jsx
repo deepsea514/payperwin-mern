@@ -88,6 +88,8 @@ class TransactionHistory extends Component {
                 return '+';
             case 'transfer-in':
                 return '-';
+            case 'invitebonus':
+                return '+';
             default:
                 return '';
         }
@@ -125,6 +127,8 @@ class TransactionHistory extends Component {
                 return 'Transfer out from the credit';
             case 'transfer-in':
                 return 'Transfer in to the credit';
+            case 'invitebonus':
+                return 'Invite Bonus';
             default:
                 return '';
         }
