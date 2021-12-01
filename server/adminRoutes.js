@@ -69,7 +69,10 @@ const {
     sendBetLoseConfirmEmail,
     checkFirstDeposit
 } = require('./libs/functions');
-
+const {
+    generatePremierRequestSignature,
+    generatePremierResponseSignature
+} = require('./libs/generatePremierSignature');
 
 const BetFee = 0.05;
 const loyaltyPerBet = 25;
@@ -2207,7 +2210,7 @@ adminRouter.post(
                                         financialtype: 'betrefund',
                                         uniqid: `BF${ID()}`,
                                         user: userId,
-                                        betId: _id,
+                                        betId: bet_id,
                                         amount: unplayableBet,
                                         method: 'betrefund',
                                         status: FinancialStatus.success,
