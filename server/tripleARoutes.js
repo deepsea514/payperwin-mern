@@ -19,9 +19,11 @@ const fromEmailAddress = 'donotreply@payperwin.com';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
+const inviteBonus = config.inviteBonus;
 const {
     checkSignupBonusPromotionEnabled,
-    isSignupBonusUsed
+    isSignupBonusUsed,
+    checkFirstDeposit
 } = require('./libs/functions');
 
 
@@ -124,6 +126,29 @@ tripleARouter.post('/deposit',
                     afterBalance: afterBalance + receive_amount
                 });
                 await user.update({ $inc: { balance: receive_amount } });
+            }
+
+            if (user.invite) {
+                try {
+                    const firstDeposit = await checkFirstDeposit(user);
+                    if (firstDeposit) {
+                        const invitor = await User.findOne({ username: user.invite });
+                        if (invitor) {
+                            await FinancialLog.create({
+                                financialtype: 'invitebonus',
+                                uniqid: `IB${ID()}`,
+                                user: user._id,
+                                amount: inviteBonus,
+                                status: FinancialStatus.success,
+                                beforeBalance: invitor.balance,
+                                afterBalance: invitor.balance + inviteBonus
+                            });
+                            await invitor.update({ $inc: { balance: inviteBonus } });
+                        }
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
             }
 
             const preference = await Preference.findOne({ user: user._id });

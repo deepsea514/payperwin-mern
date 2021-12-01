@@ -7,14 +7,16 @@ const ParlayBetPool = require('../models/parlaybetpool');
 const Preference = require('../models/preference');
 const ErrorLog = require('../models/errorlog');
 
-const simpleresponsive = require('../emailtemplates/simpleresponsive');
-const sendSMS = require('./sendSMS');
-
 const { ObjectId } = require('mongodb');
 const sgMail = require('@sendgrid/mail');
 
+const simpleresponsive = require('../emailtemplates/simpleresponsive');
+const sendSMS = require('./sendSMS');
+const config = require('../../config.json');
+
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
+const FinancialStatus = config.FinancialStatus;
 
 const checkSignupBonusPromotionEnabled = async (user_id) => {
     const promotionlog = await PromotionLog.aggregate([
@@ -193,9 +195,7 @@ const isFreeWithdrawalUsed = async (user) => {
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     const freeWithdraw = await FinancialLog.find({
         fee: 0,
-        createdAt: {
-            $gte: firstDay
-        },
+        createdAt: { $gte: firstDay },
         user: user._id,
         financialtype: 'withdraw'
     });
@@ -203,6 +203,16 @@ const isFreeWithdrawalUsed = async (user) => {
     if (freeWithdraw && freeWithdraw.length) {
         return true
     }
+    return false;
+}
+
+const checkFirstDeposit = async (user) => {
+    const deposits = await FinancialLog.find({
+        financialtype: 'deposit',
+        user: user._id,
+        status: FinancialStatus.success
+    });
+    if (deposits.length == 1) return true;
     return false;
 }
 
@@ -359,6 +369,7 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
+    checkFirstDeposit,
     ID,
     calculateToWinFromBet,
     calculateBetsStatus,
