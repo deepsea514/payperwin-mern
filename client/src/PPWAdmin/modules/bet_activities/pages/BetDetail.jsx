@@ -95,6 +95,10 @@ class BetDetail extends React.Component {
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">Accepted</span>
             case "Partial Accepted":
                 return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
+            case "Win":
+                return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Win</span>
+            case "Lose":
+                return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Lose</span>
         }
     }
 
@@ -164,11 +168,13 @@ class BetDetail extends React.Component {
                                                             return (
                                                                 <ul key={index}>
                                                                     <li><b>Line {index + 1}</b></li>
+                                                                    <li><b>Game: {query.teamA.name} vs {query.teamB.name} </b></li>
                                                                     <li>Pick Name: {query.pickName}</li>
                                                                     <li>Sport: <img src={sportNameImage(query.lineQuery.sportName)} width="16" height="16" />&nbsp;{query.lineQuery.sportName}</li>
                                                                     <li>Match Date: {this.getDate(query.matchStartDate)}</li>
                                                                     <li>Team A: {query.teamA.name} @{newHome}</li>
                                                                     <li>Team B: {query.teamB.name} @{newAway}</li>
+                                                                    {query.status && <li>{this.getBetStatus(query.status)}</li>}
                                                                 </ul>
                                                             )
                                                         })}
