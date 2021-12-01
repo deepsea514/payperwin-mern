@@ -32,6 +32,7 @@ const UserSchema = new Schema(
         settings: Object,
         balance: { type: Number, default: 0 },
         maxBetLimitTier: { type: String, default: '2000' },
+        invite: { type: String, default: null }
     },
     {
         timestamps: true,

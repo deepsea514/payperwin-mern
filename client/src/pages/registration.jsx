@@ -178,7 +178,13 @@ const initState = {
 class Registration extends Component {
     constructor(props) {
         super(props);
-        this.state = { ...initState };
+        const { search } = window.location;
+        const params = new URLSearchParams(search);
+        const invite = params.get('invite');
+        this.state = {
+            ...initState,
+            invite: invite,
+        };
     }
 
     componentDidMount() {
@@ -245,22 +251,16 @@ class Registration extends Component {
         }
         registrationValidation.validateFields(this.state, { tags: ['registration'] })
             .then((result) => {
-
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
-                        title, dateofbirth, vipcode, referral_code } = this.state;
+                        title, dateofbirth, vipcode, referral_code, invite } = this.state;
                     axios.post(`${serverUrl}/register`,
                         {
                             email, password, firstname, lastname, region,
                             country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                            vipcode, referral_code
+                            vipcode, referral_code, invite
                         },
-                        {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            withCredentials: true,
-                        }
+                        { withCredentials: true, }
                     )
                         .then((/* { data } */) => {
                             getUser();
@@ -693,16 +693,11 @@ class Registration extends Component {
     }
 
     handleGoogleSignup = (googleData) => {
-        const { errors } = this.state;
+        const { errors, invite } = this.state;
         const { getUser, history } = this.props;
         axios.post(`${serverUrl}/googleRegister`,
-            { token: googleData.tokenId },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            }
+            { token: googleData.tokenId, invite },
+            { withCredentials: true }
         )
             .then((/* { data } */) => {
                 getUser();

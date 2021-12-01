@@ -275,7 +275,7 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            vipcode, referral_code } = req.body;
+            vipcode, referral_code, invite } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(async () => {
@@ -304,10 +304,8 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    vipcode, bet_referral_code: referral_code,
-                    roles: {
-                        registered: true,
-                    },
+                    vipcode, bet_referral_code: referral_code, invite: invite ? invite : null,
+                    roles: { registered: true },
                 };
 
                 const newUser = await new User(newUserObj);
