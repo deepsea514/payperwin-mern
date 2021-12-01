@@ -20,7 +20,7 @@ class BetActivities extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            perPage: 25,
+            perPage: 50,
             wagerActivityDownloadData: [],
             deleteId: null,
             settleId: null,

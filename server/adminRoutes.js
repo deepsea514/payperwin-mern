@@ -1824,7 +1824,7 @@ adminRouter.get(
     async (req, res) => {
         try {
             let { page, datefrom, dateto, sport, status, minamount, maxamount, house, match, perPage, email } = req.query;
-            if (!perPage) perPage = 25;
+            if (!perPage) perPage = 50;
             perPage = parseInt(perPage);
             if (!page) page = 1;
             page--;
