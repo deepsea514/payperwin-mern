@@ -88,16 +88,19 @@ const formatBaseballFixturesOdds = (event) => {
             let other = others.find(other => other.sp && other.sp["alternative_run_line"]);
             alternative_run_line = other ? other.sp["alternative_run_line"].odds : [];
         }
-        if (alternative_run_line.length > 0) {
-            const count = alternative_run_line.length / 2;
-            for (let i = 0; i < count; i++) {
-                line.alternative_spreads.push({
-                    altLineId: alternative_run_line[i].id,
-                    hdp: Number(alternative_run_line[i].handicap),
-                    home: convertDecimalToAmericanOdds(alternative_run_line[i].odds),
-                    away: convertDecimalToAmericanOdds(alternative_run_line[i + count].odds),
-                });
-            }
+        while (alternative_point_spread.length > 0) {
+            const first = alternative_point_spread[0];
+            const second = alternative_point_spread.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
+            if (!second) continue;
+            const home = first.header == '1' ? first : second;
+            const away = first.header == '2' ? first : second;
+            line.alternative_spreads.push({
+                altLineId: home.id,
+                hdp: Number(home.handicap),
+                over: convertDecimalToAmericanOdds(home.odds),
+                under: convertDecimalToAmericanOdds(away.odds),
+            });
+            alternative_point_spread = alternative_point_spread.filter(total => total.id != home.id && total.id != away.id);
         }
 
         let alternative_game_total = [];
@@ -108,16 +111,19 @@ const formatBaseballFixturesOdds = (event) => {
             let other = others.find(other => other.sp && other.sp["alternative_game_total"]);
             alternative_game_total = other ? other.sp["alternative_game_total"].odds : [];
         }
-        if (alternative_game_total.length > 0) {
-            const count = alternative_game_total.length / 2;
-            for (let i = 0; i < count; i++) {
-                line.alternative_totals.push({
-                    altLineId: alternative_game_total[i].id,
-                    points: Number(alternative_game_total[i].name),
-                    over: convertDecimalToAmericanOdds(alternative_game_total[i].odds),
-                    under: convertDecimalToAmericanOdds(alternative_game_total[i + count].odds),
-                });
-            }
+        while (alternative_game_total.length > 0) {
+            const first = alternative_game_total[0];
+            const second = alternative_game_total.find(total => total.name == first.name && total.header != first.header);
+            if (!second) continue;
+            const over = first.header == 'Over' ? first : second;
+            const under = first.header == 'Under' ? first : second;
+            line.alternative_totals.push({
+                altLineId: over.id,
+                points: Number(over.name),
+                over: convertDecimalToAmericanOdds(over.odds),
+                under: convertDecimalToAmericanOdds(under.odds),
+            });
+            alternative_game_total = alternative_game_total.filter(total => total.name != first.name);
         }
     }
 
