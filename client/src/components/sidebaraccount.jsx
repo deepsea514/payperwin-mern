@@ -84,6 +84,9 @@ class SidebarAccount extends Component {
                     {user && !user.roles.phone_verified && !user.autobet && <li>
                         <Link to={{ pathname: '/phone-verification' }}><i className="fas fa-sms"></i><FormattedMessage id="COMPONENTS.SIDEBAR.PHONE_VERIFICATION" /></Link>
                     </li>}
+                    <li>
+                        <Link to={{ pathname: '/invite' }}><i className="fas fa-user-plus"></i><FormattedMessage id="COMPONENTS.INVITE" /> </Link>
+                    </li>
                 </ul>
 
                 {(!user || !user.autobet) && <>
