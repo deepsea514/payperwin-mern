@@ -88,9 +88,9 @@ const formatBaseballFixturesOdds = (event) => {
             let other = others.find(other => other.sp && other.sp["alternative_run_line"]);
             alternative_run_line = other ? other.sp["alternative_run_line"].odds : [];
         }
-        while (alternative_point_spread.length > 0) {
-            const first = alternative_point_spread[0];
-            const second = alternative_point_spread.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
+        while (alternative_run_line.length > 0) {
+            const first = alternative_run_line[0];
+            const second = alternative_run_line.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
             if (!second) continue;
             const home = first.header == '1' ? first : second;
             const away = first.header == '2' ? first : second;
@@ -100,7 +100,7 @@ const formatBaseballFixturesOdds = (event) => {
                 over: convertDecimalToAmericanOdds(home.odds),
                 under: convertDecimalToAmericanOdds(away.odds),
             });
-            alternative_point_spread = alternative_point_spread.filter(total => total.id != home.id && total.id != away.id);
+            alternative_run_line = alternative_run_line.filter(total => total.id != home.id && total.id != away.id);
         }
 
         let alternative_game_total = [];
