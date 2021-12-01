@@ -2196,7 +2196,7 @@ adminRouter.post(
                                 }
                             }
                             const unplayableBet = payableToWin < toWin
-                                ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                                ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
 
                             const user = await User.findById(userId);
                             if (user) {
@@ -2378,7 +2378,7 @@ adminRouter.post(
                                     }
                                 }
                                 const unplayableBet = payableToWin < toWin
-                                    ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                                    ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
                                 if (user) {
                                     sendBetLoseConfirmEmail(user, betAmount);
                                     if (unplayableBet) {
@@ -2540,7 +2540,7 @@ adminRouter.post(
                                     }
                                 }
                                 const unplayableBet = payableToWin < toWin
-                                    ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                                    ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
                                 const user = await User.findById(userId);
                                 if (user) {
                                     sendBetLoseConfirmEmail(user, betAmount);
@@ -4629,7 +4629,7 @@ const matchResults = async (eventId, matchResult) => {
                             }
                         }
                         const unplayableBet = payableToWin < toWin
-                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                            ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
                         const user = await User.findById(userId);
                         if (user) {
                             sendBetLoseConfirmEmail(user, betAmount);
@@ -6920,7 +6920,7 @@ adminRouter.post(
                             }
                         }
                         const unplayableBet = payableToWin < toWin
-                            ? ((1 - (payableToWin / toWin)) * betAmount).toFixed(2) : null;
+                            ? Number(((1 - payableToWin / toWin) * betAmount).toFixed(2)) : null;
                         if (unplayableBet) {
                             betChanges.$set.credited = unplayableBet;
                             const latestBalance = balance - totalAmountToWin  // adjesting user previews balance 
