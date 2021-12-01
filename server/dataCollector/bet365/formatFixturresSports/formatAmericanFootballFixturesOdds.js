@@ -151,31 +151,37 @@ const formatAmericanFootballFixturesOdds = (event) => {
         // Alternative spreads and totals
         if (others) {
             let other = others.find(other => other.sp && other.sp["alternative_point_spread_2_way"]);
-            const alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
-            if (alternative_point_spread_2_way.length > 0) {
-                const count = alternative_point_spread_2_way.length / 2;
-                for (let i = 0; i < count; i++) {
-                    line.alternative_spreads.push({
-                        altLineId: alternative_point_spread_2_way[i].id,
-                        hdp: Number(alternative_point_spread_2_way[i].handicap),
-                        home: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i].odds),
-                        away: convertDecimalToAmericanOdds(alternative_point_spread_2_way[i + count].odds),
-                    });
-                }
+            let alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
+            while (alternative_point_spread_2_way.length > 0) {
+                const first = alternative_point_spread_2_way[0];
+                const second = alternative_point_spread_2_way.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
+                if (!second) continue;
+                const home = first.header == '1' ? first : second;
+                const away = first.header == '2' ? first : second;
+                line.alternative_spreads.push({
+                    altLineId: home.id,
+                    hdp: Number(home.handicap),
+                    over: convertDecimalToAmericanOdds(home.odds),
+                    under: convertDecimalToAmericanOdds(away.odds),
+                });
+                alternative_point_spread_2_way = alternative_point_spread_2_way.filter(total => total.id != home.id && total.id != away.id);
             }
 
             other = others.find(other => other.sp && other.sp["alternative_total_2_way"]);
-            const alternative_total_2_way = other ? other.sp["alternative_total_2_way"].odds : [];
-            if (alternative_total_2_way.length > 0) {
-                const count = alternative_total_2_way.length / 2;
-                for (let i = 0; i < count; i++) {
-                    line.alternative_totals.push({
-                        altLineId: alternative_total_2_way[i].id,
-                        points: Number(alternative_total_2_way[i].name),
-                        over: convertDecimalToAmericanOdds(alternative_total_2_way[i].odds),
-                        under: convertDecimalToAmericanOdds(alternative_total_2_way[i + count].odds),
-                    });
-                }
+            let alternative_total_2_way = other ? other.sp["alternative_total_2_way"].odds : [];
+            while (alternative_total_2_way.length > 0) {
+                const first = alternative_total_2_way[0];
+                const second = alternative_total_2_way.find(total => total.name == first.name && total.header != first.header);
+                if (!second) continue;
+                const over = first.header == 'Over' ? first : second;
+                const under = first.header == 'Under' ? first : second;
+                line.alternative_totals.push({
+                    altLineId: over.id,
+                    points: Number(over.name),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                alternative_total_2_way = alternative_total_2_way.filter(total => total.name != first.name);
             }
         }
     }
