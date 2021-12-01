@@ -214,6 +214,9 @@ class Header extends Component {
                                                             <Link to={{ pathname: '/bets' }}><FormattedMessage id="COMPONENTS.OPENBETS" /></Link>
                                                         </li>
                                                         <li>
+                                                            <Link to={{ pathname: '/invite' }}><FormattedMessage id="COMPONENTS.INVITE" /></Link>
+                                                        </li>
+                                                        <li>
                                                             <button onClick={this.logout}><FormattedMessage id="COMPONENTS.LOGOUT" /><i className="fap fa-sign-out" /></button>
                                                         </li>
                                                     </ul>

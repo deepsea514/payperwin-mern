@@ -66,6 +66,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
 import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
+import Invite from '../pages/invite';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -108,6 +109,7 @@ const ShowAccountLinks = [
     '/loyalty',
     '/support',
     '/deposit-giftcard',
+    '/invite'
 ];
 
 const exceptDarkLinks = [
@@ -145,6 +147,13 @@ const exceptDarkLinks = [
     '/autobet-settings',
     '/loyalty',
     '/deposit-giftcard',
+    '/invite'
+];
+
+const fullWidthRoutes = [
+    '/loyalty',
+    '/autobet-dashboard',
+    '/invite'
 ];
 
 class App extends Component {
@@ -342,10 +351,7 @@ class App extends Component {
             if (pathname.startsWith(path)) return true;
             else return false;
         }).length;
-        const fullWidth = [
-            '/loyalty',
-            '/autobet-dashboard'
-        ].includes(pathname);
+        const fullWidth = fullWidthRoutes.includes(pathname);
 
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
@@ -601,6 +607,9 @@ class App extends Component {
                                                 {user && <Route path="/loyalty" render={(props) =>
                                                     <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
                                                 } />}
+                                                {user && <Route path="/invite" render={(props) => (
+                                                    <ErrorBoundary><Invite {...props} user={user} /></ErrorBoundary>
+                                                )} />}
                                                 <Route path="/search/:param" render={(props) =>
                                                     <ErrorBoundary><Search {...props} /></ErrorBoundary>
                                                 } />
