@@ -696,6 +696,7 @@ footer ul li a i {
     .sport-list-dropdown-league {
         display: block;
     }
+
     .sport-desktop-list li.active .sport-list-count, .sport-desktop-list li:hover .sport-list-count {
         display: block;
     }
@@ -1987,36 +1988,47 @@ sup {
     .content-container .rules>* {
         display: block !important
     }
+
     .content-container .rules>table {
         display: table !important
     }
+
     .content-container .rules h2.accordion-toggle {
         display: none !important
     }
+
     .content-container .terms-and-conditions>* {
         display: block !important
     }
+
     .content-container .terms-and-conditions>table {
         display: table !important
     }
+
     .content-container .terms-and-conditions h2.accordion-toggle {
         display: none !important
     }
+
     .content-container .terms-and-conditions .mobile-container {
         display: block !important
     }
+
     .content-container .mobile-selection-list {
         display: none
     }
+
     .content-container .privacy-policy-container>* {
         display: block !important
     }
+
     .content-container .privacy-policy-container>table {
         display: table !important
     }
+
     .content-container .privacy-policy-container .accordion-toggle {
         display: none !important
     }
+
     .content-container .privacy-policy-container .mobile-container {
         display: block !important
     }
@@ -2031,15 +2043,19 @@ sup {
         padding-top: 10px;
         margin-bottom: 0
     }
+
     .content-container h1.title-bar {
         padding-top: 15px
     }
+
     .content-container .selection-list {
         display: none
     }
+
     .content-container .content {
         background-color: #F7F8FA
     }
+
     .content-container .title-bar {
         /* position: absolute; */
         /* top: 50px; */
@@ -2053,18 +2069,22 @@ sup {
         text-align: center;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2)
     }
+
     .content-container .rules {
         padding-top: 5px;
         padding-bottom: 5px;
         margin-top: 0;
         border-bottom: 1px solid #DADBDC
     }
+
     .content-container .rules h2 {
         display: none
     }
+
     .content-container .rules.gray {
         background-color: transparent
     }
+
     .content-container .rules h2.accordion-toggle {
         display: block;
         font-size: 14px;
@@ -2072,6 +2092,7 @@ sup {
         margin-bottom: 5px;
         cursor: pointer
     }
+
     .content-container .rules .arrow-up {
         float: right;
         width: 14px;
@@ -2079,21 +2100,25 @@ sup {
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
         display: none
     }
+
     .content-container .rules .arrow-down {
         float: right;
         width: 14px;
         height: 10px;
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
     }
+
     .content-container .rules ol {
         padding-left: 15px
     }
+
     .content-container .responsible_gaming_container {
         padding-top: 5px;
         padding-bottom: 5px;
         margin-top: 0;
         border-bottom: 1px solid #DADBDC
     }
+
     .content-container .responsible_gaming_container.header h2 {
         position: absolute;
         top: 50px;
@@ -2108,6 +2133,7 @@ sup {
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
         padding: 15px 0
     }
+
     .content-container .responsible_gaming_container:not(.header) h2 {
         display: block;
         font-size: 14px;
@@ -2116,6 +2142,7 @@ sup {
         cursor: hand;
         cursor: pointer
     }
+
     .content-container .responsible_gaming_container.header h1:first-of-type {
         position: absolute;
         top: 50px;
@@ -2130,10 +2157,12 @@ sup {
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
         padding: 15px 0 !important
     }
+
     .content-container .mobile-selection-list {
         display: block;
         padding: 15px
     }
+
     .content-container .mobile-selection-list select {
         font-size: 15px;
         height: 44px;
@@ -2147,24 +2176,30 @@ sup {
         padding-left: 15px;
         padding-right: 15px
     }
+
     .content-container .bets-types {
         margin-top: 0
     }
+
     .content-container .bets-types, .content-container .bets-types ul li {
         display: block
     }
+
     .content-container .terms-and-conditions {
         padding-top: 5px;
         padding-bottom: 5px;
         margin-top: 0;
         border-bottom: 1px solid #DADBDC
     }
+
     .content-container .terms-and-conditions h2 {
         display: none
     }
+
     .content-container .terms-and-conditions.gray {
         background-color: transparent
     }
+
     .content-container .terms-and-conditions h2.accordion-toggle {
         display: block;
         font-size: 14px;
@@ -2172,6 +2207,7 @@ sup {
         margin-bottom: 5px;
         cursor: pointer
     }
+
     .content-container .terms-and-conditions .arrow-up {
         float: right;
         width: 14px;
@@ -2179,30 +2215,37 @@ sup {
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
         display: none
     }
+
     .content-container .terms-and-conditions .arrow-down {
         float: right;
         width: 14px;
         height: 10px;
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
     }
+
     .content-container .terms-and-conditions ol {
         padding-left: 15px
     }
+
     .content-container .terms-and-conditions .mobile-container {
         display: none
     }
+
     .content-container .privacy-policy-container .privacy-policy-header-text {
         margin: 0;
         border-bottom: 1px solid #DADBDC
     }
+
     .content-container .privacy-policy-container .privacy-policy-section-title {
         margin: 0;
         padding-bottom: 15px;
         border-top: 1px solid #DADBDC
     }
+
     .content-container .privacy-policy-container .accordion-toggle {
         cursor: pointer
     }
+
     .content-container .privacy-policy-container .privacy-policy-page-title {
         /* position: absolute; */
         /* top: 62px; */
@@ -2219,9 +2262,11 @@ sup {
         margin-bottom: 10px;
         font-weight: 700
     }
+
     .content-container .privacy-policy-container br {
         display: none
     }
+
     .content-container .privacy-policy-container .arrow-up {
         float: right;
         width: 14px;
@@ -2230,6 +2275,7 @@ sup {
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
         display: none
     }
+
     .content-container .privacy-policy-container .arrow-down {
         float: right;
         width: 14px;
@@ -2237,12 +2283,15 @@ sup {
         margin-top: 5px;
         background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
     }
+
     .content-container .privacy-policy-container .desktop {
         display: none
     }
+
     .content-container .privacy-policy-container .mobile-container {
         display: none
     }
+
     .content-container .privacy-policy-container ul {
         padding: 0 10px
     }
@@ -2310,6 +2359,7 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     .verification-notify-container {
         display: none;
     }
+
     .verification-proof-container {
         display: none;
     }
@@ -2444,16 +2494,20 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
         background-color: #e8f2fe !important;
         color: #0b1422 !important;
     }
+
     .cookieBanner_main {
         min-width: auto !important;
     }
+
     .cookieBanner_main1 {
         display: block !important;
         padding: 15px;
     }
+
     .cookieBanner_content {
         display: block !important;
     }
+
     .cookieBanner_button {
         margin-left: 0px;
         margin-top: 15px;
@@ -2772,10 +2826,12 @@ input.special {
         padding-bottom: 30px;
         bottom: 0;
     }
+
     .fc-article-inner .article-feedback-holder li {
         display: block;
         width: 100%;
     }
+
     .fc-article-inner .fc-article-contact {
         position: relative;
     }
@@ -3493,19 +3549,23 @@ input.special {
         text-align: center;
         padding: 20px;
     }
+
     .maintenance-article {
         display: block;
         text-align: left;
         width: 90%;
         margin: auto auto;
     }
+
     .maintenance-article h1 {
         font-size: 30px !important;
     }
+
     .maintenance-article p {
         font: 18px Helvetica, sans-serif !important;
         color: #333 !important;
     }
+
     .maintenance-article img {
         width: 100%;
         height: auto;
@@ -3578,7 +3638,7 @@ input.special {
 }
 
 .font-weight-bold {
-    font-weight: 500!important;
+    font-weight: 500 !important;
 }
 
 .payment_container {
@@ -3737,8 +3797,9 @@ a:hover {
     pointer-events: none;
     text-shadow: unset !important;
     position: relative;
-  }
-  .is-loading::after {
+}
+
+.is-loading::after {
     -webkit-animation: spinAround 0.5s infinite linear;
     animation: spinAround 0.5s infinite linear;
     border: 2px solid #dbdbdb;
@@ -3752,25 +3813,24 @@ a:hover {
     left: calc(50% - (1.2em * 0.5));
     top: calc(50% - (1.2em * 0.5));
     position: absolute !important;
-  }
-  
-  @-webkit-keyframes spinAround {
+}
+
+@-webkit-keyframes spinAround {
     from {
-      transform: rotate(0);
+        transform: rotate(0);
     }
-  
+
     to {
-      transform: rotate(359deg);
+        transform: rotate(359deg);
     }
-  }
-  
-  @keyframes spinAround {
+}
+
+@keyframes spinAround {
     from {
-      transform: rotate(0);
+        transform: rotate(0);
     }
-  
+
     to {
-      transform: rotate(359deg);
+        transform: rotate(359deg);
     }
-  }
-  
+}
