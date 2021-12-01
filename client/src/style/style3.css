@@ -925,12 +925,15 @@ a.log-in-btn {
     .hide-mobile {
         display: none !important;
     }
+
     .show-mobile {
         display: flex !important;
     }
+
     .bet-slip.empty {
         display: none;
     }
+
     .bet-slip {
         position: fixed;
         bottom: 0;
@@ -943,6 +946,7 @@ a.log-in-btn {
         font-size: 15px;
         z-index: 1;
     }
+
     .full-fixed .bet-slip .fa-minus {
         display: block;
         float: right;
@@ -950,6 +954,7 @@ a.log-in-btn {
         line-height: 40px;
         cursor: pointer;
     }
+
     .full-fixed .bet-slip {
         display: block;
         position: relative;
@@ -965,18 +970,22 @@ a.log-in-btn {
         line-height: 40px;
         padding: 0 15px;
     }
+
     .full-fixed .tab-content>.active {
         height: 100%;
         display: flex;
         flex-direction: column;
     }
+
     .full-fixed .tab-content {
         height: 100%;
     }
+
     .full-fixed .bet-slip-list {
         flex: 1;
         max-height: initial;
     }
+
     .bet-slip-contain.full-fixed {
         position: fixed;
         top: 0;
@@ -987,51 +996,64 @@ a.log-in-btn {
         flex-direction: column;
         height: 100%;
     }
+
     .side-bar {
         display: block !important;
     }
+
     .bet-slip-content {
         display: none;
     }
+
     .full-fixed .bet-slip-content {
         display: block;
         height: 100%;
         display: flex;
         flex-direction: column;
     }
+
     .login-nav {
         padding-top: 0;
     }
+
     .login-nav i {
         margin: 0;
         font-size: 15px;
     }
+
     .login-nav .blue-icon {
         background: #2b4470;
         padding: 7px;
         border-radius: 2px;
     }
+
     .login-nav li:nth-child(2) {
         margin-right: 0;
     }
+
     .deposit {
         background: inherit;
         padding: 7px;
         border-radius: 2px;
     }
+
     .deposit i {
         display: inline-block;
         margin: 0;
     }
+
     .login-nav li {
         margin-right: 5px;
     }
+
     .how-it-works h2 {
         font-size: 24px;
     }
+
     .main-section {
         padding-top: 175px;
     }
+
     .BrainhubCarousel {
         margin-bottom: 5px;
     }
@@ -1045,40 +1067,51 @@ a.log-in-btn {
     h1 {
         margin-left: 15px;
     }
+
     .header-bottom {
         display: block;
         background: #F0F3F7;
     }
+
     .navbar-mobile, .navbar-mobile * {
         color: #70777F !important;
     }
+
     .responsive-cat .navbar-toggler-icon {
         background: #70777F !important;
     }
+
     .mobile {
         display: block;
     }
+
     .not-mobile {
         display: none !important;
     }
+
     .open-bets-flex {
         flex-wrap: wrap;
         justify-content: right;
     }
+
     .open-bets-col {
         width: 50%;
         padding: 10px;
     }
+
     .main-section {
         padding-top: 135px;
     }
+
     .logo>img {
         height: 40px !important;
     }
+
     .filter-dropdown {
         width: 100% !important;
         left: 0;
     }
+
     .filter-dropdown::before {
         display: none;
     }
@@ -1200,6 +1233,7 @@ a.log-in-btn {
         margin: 10vh 10px !important;
         padding: 0 !important;
     }
+
     .create_bet_modal_container {
         margin: 10vh 10px !important;
         padding: 0 !important;
@@ -1245,9 +1279,11 @@ a.log-in-btn {
     .login_modal_main {
         min-height: 560px;
     }
+
     .create_bet_modal_main {
         min-height: 500px;
     }
+
     .login_modal_leftbar {
         max-width: 275px;
     }
@@ -1258,22 +1294,28 @@ a.log-in-btn {
         min-width: 0 !important;
         width: 100% !important;
     }
+
     .create_bet_modal_content {
         min-width: 0 !important;
         width: 100% !important;
     }
+
     .login_modal_rightbar {
         display: none;
     }
+
     .login_modal_main {
         width: 100% !important;
     }
+
     .create_bet_modal_main {
         width: 100% !important;
     }
+
     .login_modal_context {
         padding: 0 2rem !important;
     }
+
     .create_bet_context {
         padding: 0 2rem !important;
     }
@@ -1772,8 +1814,8 @@ a.fav-link:hover {
     line-height: 34px;
     font-weight: 500;
     font-size: 12px;
-    background-color: rgba(7,36,67,.5);
-    border-top: 1px solid hsla(0,0%,100%,.2);
+    background-color: rgba(7, 36, 67, .5);
+    border-top: 1px solid hsla(0, 0%, 100%, .2);
 }
 
 .dashboard_bottombar_wrapper {
@@ -1786,7 +1828,7 @@ a.fav-link:hover {
 .dashboard_bottombar_scroller {
     position: absolute;
     z-index: 0;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     height: 35px;
     transform: translateZ(0);
     -webkit-user-select: none;
@@ -1807,11 +1849,11 @@ a.fav-link:hover {
 }
 
 .dashboard_bottombar_scroller a {
-    background-color: rgba(7,36,67,.5);
+    background-color: rgba(7, 36, 67, .5);
     font-weight: 500;
     padding: 8px 15px;
     margin: 0;
-    color: hsla(0,0%,100%,.7);
+    color: hsla(0, 0%, 100%, .7);
     text-transform: uppercase;
     cursor: inherit;
     border: none;
@@ -1873,7 +1915,7 @@ a.fav-link:hover {
     margin-bottom: auto;
 }
 
-.line_breadcrumb_favorite{
+.line_breadcrumb_favorite {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1924,7 +1966,7 @@ a.fav-link:hover {
 .teaser-markets-scroller {
     position: absolute;
     z-index: 0;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     height: 31px;
     transform: translateZ(0);
     -webkit-user-select: none;

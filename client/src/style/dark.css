@@ -30,9 +30,11 @@
     .header-bottom.dark .navbar-mobile, .header-bottom.dark .navbar-mobile * {
         color: white !important;
     }
+
     .header-bottom.dark {
         background: linear-gradient(90deg, #0b1422, #273043);
     }
+
     .header-bottom.dark .responsive-cat .navbar-toggler-icon {
         background: white !important;
     }
@@ -219,6 +221,10 @@
     outline: none;
 }
 
+.main-section.dark .teaser-links a {
+    color: white;
+}
+
 .main-section.dark h3 {
     color: white;
 }
@@ -234,6 +240,15 @@
 }
 
 .main-section.dark h2 {
+    color: white;
+}
+
+.main-section.dark .teaser-markets {
+    background-color: #082242;
+}
+
+.main-section.dark .teaser-markets-scroller span {
+    background-color: #082242;
     color: white;
 }
 
