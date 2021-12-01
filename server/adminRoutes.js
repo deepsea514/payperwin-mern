@@ -968,26 +968,27 @@ adminRouter.post(
         try {
             let { user: userId, reason, amount, method, status, sendEmail } = req.body;
             if (!userId) res.status(400).json({ error: 'User field is required.' });
-            if (!reason) res.status(400).json({ error: 'Reason field is required.' });
             if (!amount) res.status(400).json({ error: 'Amount field is required.' });
             if (!method) res.status(400).json({ error: 'Method field is required.' });
             if (!status) status = FinancialStatus.pending;
-
+            amount = Number(amount);
             const user = await User.findById(userId);
             if (!user) {
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            const reasonData = await DepositReason.findById(reason);
-            if (!reasonData) {
-                res.status(400).json({ error: 'Can\'t find reason.' });
-                return;
+            if (reason) {
+                const reasonData = await DepositReason.findById(reason);
+                if (!reasonData) {
+                    res.status(400).json({ error: 'Can\'t find reason.' });
+                    return;
+                }
             }
             const deposit = await FinancialLog.create({
                 financialtype: 'deposit',
                 uniqid: `D${ID()}`,
                 user: user._id,
-                reason: reasonData._id,
+                reason: reason ? reason : null,
                 amount,
                 method,
                 status
@@ -1024,8 +1025,9 @@ adminRouter.post(
                                 await FinancialLog.create({
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
-                                    user: user._id,
+                                    user: invitor._id,
                                     amount: inviteBonus,
+                                    method: method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
                                     afterBalance: invitor.balance + inviteBonus
@@ -1218,7 +1220,7 @@ adminRouter.patch(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            let { id, data } = req.body;
+            let { id, data, status } = req.body;
 
             const deposit = await FinancialLog.findById(id);
             // if (deposit.status == FinancialStatus.success) {
@@ -1233,7 +1235,7 @@ adminRouter.patch(
                 res.status(400).json({ error: 'Can\'t find user.' });
                 return;
             }
-            if (data.status == FinancialStatus.success) {
+            if (status == FinancialStatus.success) {
                 const afterBalance = user.balance + deposit.amount;
                 await deposit.update({
                     beforeBalance: user.balance,
@@ -1250,7 +1252,7 @@ adminRouter.patch(
                         user: user._id,
                         amount: deposit.amount,
                         method: deposit.method,
-                        status: data.status,
+                        status: status,
                         beforeBalance: afterBalance,
                         afterBalance: afterBalance + deposit.amount
                     });
@@ -1266,8 +1268,9 @@ adminRouter.patch(
                                 await FinancialLog.create({
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
-                                    user: user._id,
+                                    user: invitor._id,
                                     amount: inviteBonus,
+                                    method: deposit.method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
                                     afterBalance: invitor.balance + inviteBonus
@@ -6614,8 +6617,7 @@ adminRouter.post(
     authenticateJWT,
     limitRoles('credits'),
     async (req, res) => {
-        const data = req.body;
-        const { user: user_id, type, amount } = data;
+        const { user: user_id, type, amount } = req.body;
         if (!user_id || !type || !amount) {
             return res.json({ success: false, message: 'Please input all the required fields.' });
         }

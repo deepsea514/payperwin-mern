@@ -36,8 +36,7 @@ class AddDeposit extends React.Component {
                 amount: Yup.number()
                     .min(1, "Amount shouldn't be 0.")
                     .required("Amount field is required."),
-                reason: Yup.string()
-                    .required("Reason field is required"),
+                reason: Yup.string(),
                 method: Yup.string()
                     .required("Method field is required"),
                 status: Yup.string()
