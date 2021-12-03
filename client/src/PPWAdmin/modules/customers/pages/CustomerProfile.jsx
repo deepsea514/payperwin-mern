@@ -14,6 +14,8 @@ import BetLog from "./profile/BetLog";
 import Preference from "./profile/Preference";
 import Credit from "./profile/Credit";
 import CustomerTier from "./profile/CustomerTier";
+import TransactionHistory from "./profile/TransactionHistory";
+
 class CustomerProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -87,14 +89,17 @@ class CustomerProfile extends React.Component {
                                             path={`/users/${id}/profile/credit`}
                                             component={(props) => <Credit {...props} customer={customer} />}
                                         />
-                                         <Route
-                                                path={`/users/${id}/profile/tier`}
-                                                component={(props) => <CustomerTier {...props} customer={customer} />}
-                                            />
+                                        <Route
+                                            path={`/users/${id}/profile/tier`}
+                                            component={(props) => <CustomerTier {...props} customer={customer} />}
+                                        />
+                                        <Route
+                                            path={`/users/${id}/profile/transactions`}
+                                            component={(props) => <TransactionHistory {...props} customer={customer} />}
+                                        />
                                         <Redirect
                                             to={`/users/${id}/profile/overview`}
                                         />
-                                        
                                     </Switch>
                                 </div>
                                 {/* </BrowserRouter > */}

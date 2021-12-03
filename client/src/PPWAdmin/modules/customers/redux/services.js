@@ -3,37 +3,23 @@ import _env from '../../../../env.json';
 const serverUrl = _env.appAdminUrl;
 
 export function getCustomers(page, filter) {
-    let url = `${serverUrl}/customers?page=${page}`;
-    return axios.get(url, {
-        withCredentials: true,
-        params: filter
-    });
+    return axios.get(`${serverUrl}/customers`, { params: { ...filter, page } });
 }
 
 export function getCustomerDetail(id) {
-    return axios.get(`${serverUrl}/customer?id=${id}`, {
-        withCredentials: true
-    });
+    return axios.get(`${serverUrl}/customer`, { params: { id } });
 }
 
 export function updateCustomer(id, data) {
-    return axios.patch(`${serverUrl}/customer`, {
-        id, data
-    }, {
-        withCredentials: true
-    });
+    return axios.patch(`${serverUrl}/customer`, { id, data });
 }
 
 export function deleteCustomer(id) {
-    return axios.delete(`${serverUrl}/customer?id=${id}`, {
-        withCredentials: true
-    })
+    return axios.delete(`${serverUrl}/customer`, { params: { id } })
 }
 
 export function getReason() {
-    return axios.get(`${serverUrl}/depositreasons`, {
-        withCredentials: true
-    })
+    return axios.get(`${serverUrl}/depositreasons`)
 }
 
 export function searchUsers(name) {
@@ -60,6 +46,11 @@ export function getCustomerWithdraws(id, page, perPage) {
     return axios.get(`${serverUrl}/customer-withdraws?id=${id}&page=${page}&perPage=${perPage}`);
 }
 
+export function getCustomerTransactions(id, page, perPage) {
+    return axios.get(`${serverUrl}/customer-transactions`, { params: { id, page, perPage } });
+}
+
+
 export function getCustomerBets(id, page, perPage, src = 'ppw') {
     return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}&src=${src}`);
 }
@@ -84,9 +75,6 @@ export function getCustomerCredits(id, page) {
     return axios.get(`${serverUrl}/customer-credits`, { params: { id, page } });
 }
 
-
 export function verifyCustomer(id) {
-  return axios.put(`${serverUrl}/customer/${id}/manualverification`, {
-    withCredentials: true,
-  });
+    return axios.put(`${serverUrl}/customer/${id}/manualverification`);
 }
