@@ -2184,7 +2184,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, betAmount + payableToWin);
                             }
                         }
                     }
@@ -2370,7 +2370,7 @@ adminRouter.post(
                                         }
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, payableToWin);
+                                    sendBetWinConfirmEmail(user, betAmount + payableToWin);
                                 }
                             } else if (betWin === false) {
                                 const user = await User.findById(userId);
@@ -2534,7 +2534,7 @@ adminRouter.post(
                                         await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, payableToWin);
+                                    sendBetWinConfirmEmail(user, betAmount + payableToWin);
                                 }
                             } else if (betWin === false) {
                                 const betChanges = {
@@ -4624,7 +4624,7 @@ const matchResults = async (eventId, matchResult) => {
                                 afterBalance: afterBalance - betFee
                             });
                             await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
-                            sendBetWinConfirmEmail(user, payableToWin);
+                            sendBetWinConfirmEmail(user, betAmount + payableToWin);
                         }
                         // TODO: email winner
                     } else if (betWin === false) {

@@ -331,7 +331,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                             await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                         }
                         // TODO: email winner
-                        sendBetWinConfirmEmail(user, payableToWin);
+                        sendBetWinConfirmEmail(user, betAmount + payableToWin);
                     }
                 }
             }
