@@ -14,7 +14,7 @@ const formatTennisFixturesOdds = (event) => {
         const to_win_match = main.sp.to_win_match;
         if (to_win_match) {
             const moneyline = main.sp.to_win_match.odds;
-            if (moneyline.length)
+            if (moneyline.length > 2)
                 line.moneyline = {
                     home: convertDecimalToAmericanOdds(moneyline[0].odds),
                     away: convertDecimalToAmericanOdds(moneyline[1].odds),
