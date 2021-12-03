@@ -732,8 +732,7 @@ adminRouter.get(
         else page = parseInt(page);
         page--;
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
@@ -753,10 +752,10 @@ adminRouter.get(
             );
             if (credit.length > 0) credit = credit[0].total;
             else credit = 0;
-            res.json({ total: total, data: data, credit });
+            return res.json({ total: total, data: data, credit });
         }
         catch (error) {
-            res.status(500).json({ error: 'Can\'t find Credits.', result: error });
+            return res.status(500).json({ error: 'Can\'t find Credits.', result: error });
         }
     }
 )
@@ -772,17 +771,16 @@ adminRouter.get(
         if (!page) page = 1;
         else page = parseInt(page);
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             const searchObj = { user: id, financialtype: "deposit" };
             const total = await FinancialLog.find(searchObj).count();
             const deposits = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage).populate('reason');
-            res.json({ total, page, perPage, deposits });
+            return res.json({ total, page, perPage, deposits });
         }
         catch (error) {
-            res.status(500).json({ error: 'Can\'t find Deposits.', result: error });
+            return res.status(500).json({ error: 'Can\'t find Deposits.', result: error });
         }
     }
 )
@@ -798,8 +796,7 @@ adminRouter.get(
         if (!page) page = 1;
         else page = parseInt(page);
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             const searchObj = { user: id, financialtype: "withdraw" };
@@ -809,6 +806,31 @@ adminRouter.get(
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find Withdraws.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-transactions',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            return res.status(404).json({ error: 'Customer id is not given.' });
+        }
+        try {
+            const searchObj = { user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const transactions = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            return res.json({ total, page, perPage, transactions });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Can\'t find Withdraws.', result: error });
         }
     }
 )
