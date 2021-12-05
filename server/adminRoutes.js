@@ -2776,7 +2776,7 @@ adminRouter.post(
                 if (bet.sportsbook) {
                     switch (pick) {
                         case "home":
-                            newLineOdds = --Number(bet.teamB.odds)
+                            newLineOdds = -Number(bet.teamB.odds)
                             break;
                         case "draw":
                             newLineOdds = Number(bet.teamDraw.odds);
@@ -2840,7 +2840,7 @@ adminRouter.post(
                         break;
                     case 'moneyline':
                         if (pick == 'home') {
-                            pickName += teamA;
+                            pickName += bet.teamA.name;
                         }
                         else if (pick == 'draw') {
                             pickName += "Draw";
@@ -2848,7 +2848,7 @@ adminRouter.post(
                         else if (pick == 'nondraw') {
                             pickName += "Non Draw";
                         } else {
-                            pickName += teamB;
+                            pickName += bet.teamB.name;
                         }
                         break;
                     default:
