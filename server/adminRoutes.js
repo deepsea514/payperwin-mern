@@ -2059,8 +2059,8 @@ adminRouter.post(
                             return res.status(400).json({ success: false, error: 'Result not exists.' });
                         }
                         const { teamAScore: homeScore, teamBScore: awayScore } = result.score;
-                        query.homeScore = homeScore;
-                        query.awayScore = awayScore;
+                        query.homeScore = parseInt(homeScore);
+                        query.awayScore = parseInt(awayScore);
 
                         let moneyLineWinner = null;
                         if (homeScore > awayScore) moneyLineWinner = 'home';
@@ -2234,7 +2234,9 @@ adminRouter.post(
                 let drawCancelled = false;
 
                 if (drawBets.length > 0 && nonDrawBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         drawCancelled = true;
                     } else {
@@ -2365,7 +2367,9 @@ adminRouter.post(
                 }
 
                 if (homeBets.length > 0 && awayBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         matchCancelled = true;
                     } else {
