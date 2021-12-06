@@ -51,6 +51,22 @@ class BetActivities extends React.Component {
         return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
     }
 
+    getMatchDate = (bet) => {
+        if (bet.isParlay) {
+            const parlayQuery = bet.parlayQuery;
+            let minDate = new Date(parlayQuery[0].matchStartDate);
+            let maxDate = new Date(parlayQuery[0].matchStartDate);
+            for (const query of parlayQuery) {
+                const date = new Date(query.matchStartDate);
+                if (minDate.getTime() > date.getTime()) minDate = date;
+                if (maxDate.getTime() < date.getTime()) maxDate = date;
+            }
+            return this.getDateFormat(minDate) + ' ~ ' + this.getDateFormat(maxDate);
+        } else {
+            return this.getDateFormat(bet.matchStartDate);
+        }
+    }
+
     tableBody = () => {
         const { bet_activities, loading, filter, autobets } = this.props;
 
@@ -91,7 +107,7 @@ class BetActivities extends React.Component {
                     {bet.isParlay ? '' :
                         bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                 </td>
-                <td scope="col">{this.getDateFormat(bet.matchStartDate)}</td>
+                <td scope="col">{this.getMatchDate(bet)}</td>
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
                 <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
