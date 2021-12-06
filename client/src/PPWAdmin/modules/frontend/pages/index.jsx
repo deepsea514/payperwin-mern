@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FeaturedSports from "../components/FeaturedSports";
 import Maintenance from "../components/Maintenance";
 import TopSports from "../components/TopSports";
+import ToggleBet from "../components/ToggleBet";
 
 export default class FrontendManageModule extends Component {
     render() {
@@ -18,6 +19,8 @@ export default class FrontendManageModule extends Component {
                             <TopSports />
                             <hr />
                             <FeaturedSports />
+                            <hr />
+                            <ToggleBet />
                             <hr />
                             <Maintenance />
                             <hr />
