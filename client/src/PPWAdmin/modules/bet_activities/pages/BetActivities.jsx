@@ -48,7 +48,7 @@ class BetActivities extends React.Component {
     }
 
     getDateFormat = (date) => {
-        return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
+        return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
     }
 
     tableBody = () => {
@@ -91,7 +91,7 @@ class BetActivities extends React.Component {
                     {bet.isParlay ? '' :
                         bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                 </td>
-                <td scope="col">{dateformat(bet.matchStartDate)}</td>
+                <td scope="col">{this.getDateFormat(bet.matchStartDate)}</td>
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
                 <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
