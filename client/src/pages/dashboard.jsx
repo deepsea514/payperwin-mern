@@ -67,11 +67,11 @@ class Dashboard extends Component {
                 </div>}
                 <Carousel autoPlay={8000} animationSpeed={1800} infinite
                     stopAutoPlayOnHover={true}>
+                    <a href='http://shop.payperwin.com/' target="_blank">
+                        <img src="/images/ppw-banner-v3.png" />
+                    </a>
                     <Link to={{ pathname: '/how-it-works' }}>
                         <img src="/images/Banner 1.jpg" />
-                    </Link>
-                    <Link to={{ pathname: '/how-it-works' }}>
-                        <img src="/images/Banner 2.png" />
                     </Link>
                 </Carousel>
                 <Highlights addBet={addBet} betSlip={betSlip}
