@@ -2130,8 +2130,8 @@ adminRouter.post(
                             return res.status(400).json({ success: false, error: 'Result not exists.' });
                         }
                         const { teamAScore: homeScore, teamBScore: awayScore } = result.score;
-                        query.homeScore = homeScore;
-                        query.awayScore = awayScore;
+                        query.homeScore = parseInt(homeScore);
+                        query.awayScore = parseInt(awayScore);
 
                         let moneyLineWinner = null;
                         if (homeScore > awayScore) moneyLineWinner = 'home';
@@ -2305,7 +2305,9 @@ adminRouter.post(
                 let drawCancelled = false;
 
                 if (drawBets.length > 0 && nonDrawBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         drawCancelled = true;
                     } else {
@@ -2437,7 +2439,9 @@ adminRouter.post(
                 }
 
                 if (homeBets.length > 0 && awayBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         matchCancelled = true;
                     } else {
@@ -2850,7 +2854,7 @@ adminRouter.post(
                 if (bet.sportsbook) {
                     switch (pick) {
                         case "home":
-                            newLineOdds = --Number(bet.teamB.odds)
+                            newLineOdds = -Number(bet.teamB.odds)
                             break;
                         case "draw":
                             newLineOdds = Number(bet.teamDraw.odds);
@@ -2914,7 +2918,7 @@ adminRouter.post(
                         break;
                     case 'moneyline':
                         if (pick == 'home') {
-                            pickName += teamA;
+                            pickName += bet.teamA.name;
                         }
                         else if (pick == 'draw') {
                             pickName += "Draw";
@@ -2922,7 +2926,7 @@ adminRouter.post(
                         else if (pick == 'nondraw') {
                             pickName += "Non Draw";
                         } else {
-                            pickName += teamB;
+                            pickName += bet.teamB.name;
                         }
                         break;
                     default:
