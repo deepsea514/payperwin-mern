@@ -6622,8 +6622,31 @@ adminRouter.get(
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'bets',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$userId", "$$user_id"] },
+                                        { $in: ["$status", ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"]] }
+                                    ]
+                                },
+                            },
+                        }, {
+                            $project: {
+                                bet: 1
+                            }
+                        }],
+                        as: 'inplay'
+                    }
+                },
+                {
                     $project: {
                         email: 1,
+                        balance: 1,
+                        inplay: { $sum: "$inplay.bet" },
                         credit: { $sum: "$credit.amount" },
                         creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
                     }
