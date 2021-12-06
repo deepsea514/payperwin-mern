@@ -227,7 +227,12 @@ const getMaxWithdraw = async (user) => {
     else totalwinbet = 0;
 
     let totaldeposit = await FinancialLog.aggregate(
-        { $match: { financialtype: "deposit" } },
+        {
+            $match: {
+                user: user._id,
+                financialtype: "deposit"
+            }
+        },
         { $group: { _id: null, total: { $sum: "$amount" } } }
     )
     if (totaldeposit.length) totaldeposit = totaldeposit[0].total;
@@ -245,15 +250,21 @@ const getMaxWithdraw = async (user) => {
         }
     }
 
+    let inviteBonus = await FinancialLog.aggregate(
+        {
+            $match: {
+                user: user._id,
+                financialtype: 'invitebonus',
+            }
+        },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+    )
+    if (inviteBonus.length) inviteBonus = inviteBonus[0].total;
+    else inviteBonus = 0;
+
     let maxwithdraw = 0;
-    if (signupBonusAmount) {
-        if (totalwagers >= (signupBonusAmount * 8 + totaldeposit * 5)) {
-            maxwithdraw = totalwinbet;
-        }
-    } else {
-        if (totalwagers >= totaldeposit * 5) {
-            maxwithdraw = totalwinbet;
-        }
+    if (totalwagers >= ((signupBonusAmount + inviteBonus) * 8 + totaldeposit * 5)) {
+        maxwithdraw = totalwagers / 5 + signupBonusAmount + inviteBonus;
     }
 
     if (maxwithdraw) {
