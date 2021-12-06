@@ -4,7 +4,7 @@ import SVG from "react-inlinesvg";
 import { getFrontendInfo, saveFrontendInfo } from '../redux/services';
 import Switch from '@material-ui/core/Switch';
 
-export default class Maintenance extends Component {
+export default class ToggleBet extends Component {
     constructor(props) {
         super(props);
 
@@ -49,7 +49,7 @@ export default class Maintenance extends Component {
         const { loading, isError, isSuccess, maintenance, is_Submitting } = this.state;
         return (
             <>
-                <h3>Maintenance Mode.</h3>
+                <h3>Bet Settins</h3>
                 {loading && <center>
                     <Preloader use={ThreeDots}
                         size={100}
@@ -73,9 +73,7 @@ export default class Maintenance extends Component {
                         role="alert">
                         <div className="alert-icon">
                             <span className="svg-icon svg-icon-3x svg-icon-danger">
-                                <SVG
-                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                ></SVG>{" "}
+                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                             </span>
                         </div>
                         <div className="alert-text font-weight-bold">
@@ -86,8 +84,7 @@ export default class Maintenance extends Component {
                                 type="button"
                                 className="close"
                                 data-dismiss="alert"
-                                aria-label="Close"
-                            >
+                                aria-label="Close">
                                 <span aria-hidden="true">
                                     <i className="ki ki-close"></i>
                                 </span>
@@ -101,9 +98,7 @@ export default class Maintenance extends Component {
                         role="alert">
                         <div className="alert-icon">
                             <span className="svg-icon svg-icon-3x svg-icon-success">
-                                <SVG
-                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                ></SVG>{" "}
+                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                             </span>
                         </div>
                         <div className="alert-text font-weight-bold">
@@ -114,8 +109,7 @@ export default class Maintenance extends Component {
                                 type="button"
                                 className="close"
                                 data-dismiss="alert"
-                                aria-label="Close"
-                            >
+                                aria-label="Close">
                                 <span aria-hidden="true">
                                     <i className="ki ki-close"></i>
                                 </span>
