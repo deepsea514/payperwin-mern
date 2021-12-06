@@ -70,9 +70,9 @@ class Dashboard extends Component {
                     <Link to={{ pathname: '/how-it-works' }}>
                         <img src="/images/Banner 1.jpg" />
                     </Link>
-                    <Link to={{ pathname: '/how-it-works' }}>
-                        <img src="/images/Banner 2.png" />
-                    </Link>
+                    <a href='http://shop.payperwin.com/' target="_blank">
+                        <img src="/images/ppw-banner-v3.png" />
+                    </a>
                 </Carousel>
                 <Highlights addBet={addBet} betSlip={betSlip}
                     removeBet={removeBet} />
