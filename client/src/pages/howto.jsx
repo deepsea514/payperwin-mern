@@ -28,7 +28,7 @@ class HowTo extends Component {
             <div className="col-in">
                 <div className="how-it-works">
                     <h2>
-                        <FormattedMessage id="PAGES.HOWITWORKS.TITLE" values={{ image: <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }} /> }} />
+                        <FormattedMessage id="PAGES.HOWITWORKS.TITLE" values={{ image: <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/ppw-white-xmas.png'} style={{ width: 200, height: 49, margin: '0 15px', }} /> }} />
                     </h2>
                     <div className="summary">
                         <p><FormattedMessage id="PAGES.HOWITWORKS.SUMMARY" /></p>
