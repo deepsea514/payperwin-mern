@@ -643,6 +643,18 @@ adminRouter.get(
             if (credit.length > 0) credit = credit[0].total;
             else credit = 0;
 
+            let inplay = await Bet.aggregate(
+                {
+                    $match: {
+                        userId: user._id,
+                        status: { $in: ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"] }
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$bet" } } }
+            )
+            if (inplay.length > 0) inplay = inplay[0].total;
+            else inplay = 0;
+
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -658,7 +670,8 @@ adminRouter.get(
                 averagebetafter2loss,
                 wins,
                 usedCredit,
-                credit
+                credit,
+                inplay
             });
         }
         catch (error) {
