@@ -126,6 +126,12 @@ class Header extends Component {
         }
     }
 
+    checkShowMessage = () => {
+        const { adminMessage, adminMessageDismiss } = this.props;
+        if (!adminMessage || !adminMessage.value || !adminMessage.value.show) return false;
+        return adminMessageDismiss != adminMessage.updatedAt;
+    }
+
     render() {
         const { userDropDownOpen,
             oddsDropDownOpen,
@@ -145,13 +151,16 @@ class Header extends Component {
             showLoginModal,
             showForgotPasswordModal,
             showLoginModalAction,
-            showForgotPasswordModalAction
+            showForgotPasswordModalAction,
+            adminMessage,
+            dismissAdminMessage
         } = this.props;
+        const showMessage = this.checkShowMessage();
         const { pathname } = location;
         return (
             <header className="header">
                 {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
-                {false && <AdminMessage />}
+                {showMessage && <AdminMessage onDismiss={dismissAdminMessage} message={adminMessage} />}
                 <div className="header-top">
                     <div className="container">
                         <div className="row">
@@ -189,7 +198,7 @@ class Header extends Component {
                                                 </a>
                                             </li>
                                         </ul>
-                                        {userDropDownOpen ? (
+                                        {userDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('userDropDownOpen')} />
                                                 <div className="login-dropdown">
@@ -224,11 +233,9 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </div>
-                                )
-                                    : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />
-                                }
+                                ) : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />}
                             </div>
                         </div>
                     </div>
@@ -348,7 +355,7 @@ class Header extends Component {
                                         <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
                                             <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddsFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
                                         </a>
-                                        {oddsDropDownOpen ? (
+                                        {oddsDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
                                                 <div className="odds-dropdown">
@@ -362,11 +369,11 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </li>
                                     <li>
                                         <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}><img src={this.getImageSource()} className="language-flag" style={{ display: 'inherit' }} /> {lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
-                                        {langDropDownOpen ? (
+                                        {langDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
                                                 <div className="odds-dropdown">
@@ -386,7 +393,7 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </li>
                                     <li>{timeString}</li>
                                     <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> <FormattedMessage id="COMPONENTS.HELP" /> </Link></li>
@@ -427,6 +434,8 @@ const mapStateToProps = (state) => ({
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,
     maxBetLimitTier: state.frontend.maxBetLimitTier,
+    adminMessage: state.frontend.adminMessage,
+    adminMessageDismiss: state.frontend.adminMessageDismiss
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(Header))
