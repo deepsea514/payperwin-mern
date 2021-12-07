@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
-import { setPreferences, getUser } from "./services";
+import { setPreferences, getUser, getAdminMessage } from "./services";
 import Cookie from 'js-cookie';
 import timeHelper from "../helpers/timehelper";
 import { setLanguage } from '../PPWAdmin/_metronic/i18n/Metronici18n';
@@ -26,6 +26,9 @@ export const actionTypes = {
     setDisplayModeBasedOnSystem: "[Set Display Mode Based On System]",
     setMaxBetLimitTierAction: "[Set Max Bet Limit Tier Action]",
     enableBetAction: "[Enable Bet Action]",
+    getAdminMessageAction: "[Get Admin Message Action]",
+    getAdminMessageSuccess: "[Get Admin Message Success]",
+    dismissAdminMessage: "[Dismiss Admin Message]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -62,10 +65,14 @@ const initialState = {
         teaser: true,
     },
     adminMessage: null,
+    adminMessageDismiss: null,
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed', 'user', 'betEnabled'] },
+    {
+        storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie',
+            'timezone', 'showedTourTimes', 'loginFailed', 'user', 'betEnabled', 'adminMessageDismiss']
+    },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
@@ -118,6 +125,12 @@ export const reducer = persistReducer(
             case actionTypes.updateUser:
                 return { ...state, user: { ...state.user, ...action.payload } };
 
+            case actionTypes.getAdminMessageSuccess:
+                return { ...state, adminMessage: action.message };
+
+            case actionTypes.dismissAdminMessage:
+                return { ...state, adminMessageDismiss: action.date };
+
             default:
                 return state;
         }
@@ -142,7 +155,10 @@ export const actions = {
     setMaxBetLimitTierAction: (maxBetLimitTier) => ({ type: actionTypes.setMaxBetLimitTierAction, maxBetLimitTier }),
     getUser: (callback) => ({ type: actionTypes.getUser, callback }),
     getUserSuccess: (user) => ({ type: actionTypes.getUserSuccess, user }),
-    updateUser: (field, value) => ({ type: actionTypes.updateUser, payload: { [field]: value } })
+    updateUser: (field, value) => ({ type: actionTypes.updateUser, payload: { [field]: value } }),
+    getAdminMessageAction: () => ({ type: actionTypes.getAdminMessageAction }),
+    getAdminMessageSuccess: (message) => ({ type: actionTypes.getAdminMessageSuccess, message }),
+    dismissAdminMessage: (date) => ({ type: actionTypes.dismissAdminMessage, date }),
 };
 
 export function* saga() {
@@ -215,4 +231,12 @@ export function* saga() {
         }
     });
 
+    yield takeLatest(actionTypes.getAdminMessageAction, function* getAdminMessageSaga() {
+        try {
+            const { data } = yield getAdminMessage();
+            yield put(actions.getAdminMessageSuccess(data));
+        } catch (error) {
+            yield put(actions.getAdminMessageSuccess(null));
+        }
+    })
 }

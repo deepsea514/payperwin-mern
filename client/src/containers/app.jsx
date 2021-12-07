@@ -180,12 +180,13 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const { setDisplayModeBasedOnSystem, getUser } = this.props;
+        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
 
         getUser(this.redirectToDashboard);
+        getAdminMessageAction();
     }
 
     redirectToDashboard = (user) => {
