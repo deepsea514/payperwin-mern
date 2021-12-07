@@ -43,8 +43,8 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
     setInterval(getAllSportsLines, lineInterval);
 
     const liveInterval = 10 * 1000;
-    getLiveSportsLines();
-    setInterval(getLiveSportsLines, liveInterval);
+    // getLiveSportsLines();
+    // setInterval(getLiveSportsLines, liveInterval);
 
     const resultInterval = 10 * 60 * 1000;
     matchResults();
