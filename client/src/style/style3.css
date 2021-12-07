@@ -1240,16 +1240,6 @@ a.log-in-btn {
     }
 }
 
-.dead-center {
-    vertical-align: middle;
-    -ms-flex-align: center;
-    align-items: center;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-}
-
 .login_modal_content {
     z-index: 2;
     min-width: 760px;

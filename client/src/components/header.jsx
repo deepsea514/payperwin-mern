@@ -4,6 +4,7 @@ import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import { FormattedMessage, injectIntl } from "react-intl";
 import CookieAccept from "./cookieAccept";
+import AdminMessage from './adminMessage';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
@@ -150,6 +151,7 @@ class Header extends Component {
         return (
             <header className="header">
                 {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
+                {false && <AdminMessage />}
                 <div className="header-top">
                     <div className="container">
                         <div className="row">
