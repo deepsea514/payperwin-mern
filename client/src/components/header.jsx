@@ -252,6 +252,13 @@ class Header extends Component {
                                                 </Link>
                                             </center>
                                         </li>
+                                        <li className="nav-item">
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                                                </a>
+                                            </center>
+                                        </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <center style={{ whiteSpace: "nowrap" }}>
                                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link">
@@ -281,6 +288,13 @@ class Header extends Component {
                                             <Link to={{ pathname: '/' }} className="nav-link">
                                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                                                </a>
+                                            </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
