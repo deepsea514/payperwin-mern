@@ -3,6 +3,7 @@ import FeaturedSports from "../components/FeaturedSports";
 import Maintenance from "../components/Maintenance";
 import TopSports from "../components/TopSports";
 import ToggleBet from "../components/ToggleBet";
+import Message from '../components/Message';
 
 export default class FrontendManageModule extends Component {
     render() {
@@ -16,14 +17,28 @@ export default class FrontendManageModule extends Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <TopSports />
-                            <hr />
-                            <FeaturedSports />
-                            <hr />
-                            <ToggleBet />
-                            <hr />
-                            <Maintenance />
-                            <hr />
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <Maintenance />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6">
+                                    <ToggleBet />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6">
+                                    <TopSports />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6">
+                                    <FeaturedSports />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6">
+                                    <Message />
+                                    <hr />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

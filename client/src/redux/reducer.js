@@ -25,6 +25,7 @@ export const actionTypes = {
     showForgotPasswordModalAction: "[Show Forgot Password Modal Action]",
     setDisplayModeBasedOnSystem: "[Set Display Mode Based On System]",
     setMaxBetLimitTierAction: "[Set Max Bet Limit Tier Action]",
+    enableBetAction: "[Enable Bet Action]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -55,10 +56,16 @@ const initialState = {
     showLoginModal: false,
     showForgotPasswordModal: false,
     maxBetLimitTier: 2000,
+    betEnabled: {
+        single: true,
+        parlay: true,
+        teaser: true,
+    },
+    adminMessage: null,
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed', 'user'] },
+    { storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'timezone', 'showedTourTimes', 'loginFailed', 'user', 'betEnabled'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setPreference:
