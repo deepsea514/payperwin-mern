@@ -1514,9 +1514,9 @@ expressApp.post(
         let eventsDetail = '';
         for (const bet of betSlip) {
             index++;
-            const { odds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
-            if (!odds || !pick || !lineQuery) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Query Incomplete.`);
+            const { odds, originOdds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
+            if (!originOdds || !pick || !lineQuery) {
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Query Incomplete.`);
                 break;
             }
             if (origin == 'other') {
@@ -1526,14 +1526,14 @@ expressApp.post(
             const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
             if (!sportData) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Line not found`);
                 break;
             }
             const { originSportId } = sportData;
             lineQuery.sportId = originSportId;
             const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
             if (!line) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Line not found`);
                 break;
             }
             const { teamA, teamB, startDate, line: { home, away, hdp, points, over, under } } = line;
@@ -1541,12 +1541,13 @@ expressApp.post(
             const lineOdds = line.line[pickWithOverUnder];
             const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? over : home;
             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? under : away;
-            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-            if (sportsbook) newLineOdds = pick == 'home' ? oddsA : oddsB;
+            // let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+            // if (sportsbook)
+            // const newLineOdds = pick == 'home' ? oddsA : oddsB;
 
-            const oddsMatch = odds[pick] === newLineOdds;
+            const oddsMatch = originOdds[pick] === lineOdds;
             if (!oddsMatch) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Odds have changed.`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Odds have changed.`);
                 break;
             }
 
@@ -1554,7 +1555,7 @@ expressApp.post(
                 teamA: { name: teamA, odds: oddsA },
                 teamB: { name: teamB, odds: oddsB },
                 pick: pick,
-                pickOdds: newLineOdds,
+                pickOdds: lineOdds,
                 oldOdds: lineOdds,
                 pickName: pickName,
                 matchStartDate: startDate,
@@ -1563,7 +1564,7 @@ expressApp.post(
                     points: hdp ? hdp : points ? points : null,
                 },
                 origin: origin,
-                sportsbook: sportsbook
+                sportsbook: true
             });
 
             const matchTimeString = convertTimeLineDate(new Date(startDate), null);
@@ -1774,7 +1775,7 @@ expressApp.post(
         }
 
         const betSettings = await Frontend.findOne({ name: "bet_settings" });
-        if(betSettings && betSettings.value && !betSettings.value.teaser) {
+        if (betSettings && betSettings.value && !betSettings.value.teaser) {
             errors.push(`Teaser Bet is disabled by admin.`)
             return res.json({
                 balance: user.balance,
