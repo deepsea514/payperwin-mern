@@ -1807,6 +1807,19 @@ adminRouter.get(
                     ...searchObj,
                     status: { $in: [null, 'Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
                 };
+
+                if (match && match == 'pending') {
+                    searchObj = {
+                        ...searchObj,
+                        matchingStatus: { $in: [null, 'Pending', 'Partial Match', 'Partial Accepted'] }
+                    };
+                }
+                else if (match && match == 'matched') {
+                    searchObj = {
+                        ...searchObj,
+                        matchingStatus: { $in: ['Matched', 'Accepted'] }
+                    };
+                }
             } else if (status && status == 'settled') {
                 searchObj = {
                     ...searchObj,
@@ -1831,19 +1844,6 @@ adminRouter.get(
                 searchObj = {
                     ...searchObj,
                     status: 'Cancelled'
-                };
-            }
-
-            if (match && match == 'pending') {
-                searchObj = {
-                    ...searchObj,
-                    matchingStatus: { $in: [null, 'Pending', 'Partial Match', 'Partial Accepted'] }
-                };
-            }
-            else if (match && match == 'matched') {
-                searchObj = {
-                    ...searchObj,
-                    matchingStatus: { $in: ['Matched', 'Accepted'] }
                 };
             }
 
