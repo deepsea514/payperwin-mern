@@ -47,7 +47,7 @@ class BetSlip extends Component {
         const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
         const disabled = betEnabled && !betEnabled.single;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Single Bet disabled by admin.`] });
+            this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
             return;
         }
 
@@ -105,7 +105,7 @@ class BetSlip extends Component {
         const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
         const disabled = betEnabled && !betEnabled.parlay;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Parlay Bet disabled by admin.`] });
+            this.setState({ errors: [`Wager could not be placed. Parlay Bet is temporary unavailable.`] });
             return;
         }
 
@@ -142,7 +142,7 @@ class BetSlip extends Component {
         const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier, betEnabled } = this.props;
         const disabled = betEnabled && !betEnabled.teaser;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Teaser Bet disabled by admin.`] });
+            this.setState({ errors: [`Wager could not be placed. Teaser Bet is temporary unavailable.`] });
             return;
         }
 
@@ -275,7 +275,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {singleDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Signle Bet is disabled by admin.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> Signle Bet is temporary unavailable.</b></div>
                                     </div>
                                 </div>}
                                 {betSlip.length > 0 ?
@@ -308,7 +308,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {parlayDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Parlay Bet is disabled by admin.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> Parlay Bet is temporary unavailable.</b></div>
                                     </div>
                                 </div>}
                                 {sportsBetSlip.length > 1 ?
@@ -341,7 +341,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {teaserDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Teaser Bet is disabled by admin.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> Teaser Bet is temporary unavailable.</b></div>
                                     </div>
                                 </div>}
                                 {teaserBetSlip.betSlip.length > 0 ?

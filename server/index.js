@@ -928,7 +928,7 @@ expressApp.post(
 
         const betSettings = await Frontend.findOne({ name: "bet_settings" });
         if (betSettings && betSettings.value && !betSettings.value.single) {
-            errors.push(`Single Bet is disabled by admin.`)
+            errors.push(`Single Bet is temporary unavailable.`)
             return res.json({
                 balance: user.balance,
                 errors,
@@ -1492,7 +1492,7 @@ expressApp.post(
 
         const betSettings = await Frontend.findOne({ name: "bet_settings" });
         if (betSettings && betSettings.value && !betSettings.value.parlay) {
-            errors.push(`Parlay Bet is disabled by admin.`)
+            errors.push(`Parlay Bet is temporary unavailable.`)
             return res.json({
                 balance: user.balance,
                 errors,
@@ -1776,7 +1776,7 @@ expressApp.post(
 
         const betSettings = await Frontend.findOne({ name: "bet_settings" });
         if (betSettings && betSettings.value && !betSettings.value.teaser) {
-            errors.push(`Teaser Bet is disabled by admin.`)
+            errors.push(`Teaser Bet is temporary unavailable.`)
             return res.json({
                 balance: user.balance,
                 errors,
