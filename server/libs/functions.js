@@ -366,6 +366,25 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
     }
 }
 
+const ResetWinnerFinancialLog = async() => {
+    //reseting wininer finacial logs amount and substracting user balance
+    const oldfinancialLogs = await FinancialLog.find({ betId: { $in: [...homeBets, ...awayBets] }, method: { $in: ['betwon', 'betfee'] } });
+
+    for (const oldfinancialLog of oldfinancialLogs) {
+        const betAmount = oldfinancialLog.amount;
+        const oldWinnerUserId = oldfinancialLog.user;
+
+        if (oldfinancialLog.method === 'betwon') {
+            await User.findOneAndUpdate({ _id: oldWinnerUserId }, { $inc: { balance: -betAmount } });
+        }
+        else if (oldfinancialLog.method === 'betfee') {
+            await User.findOneAndUpdate({ _id: oldWinnerUserId }, { $inc: { balance: betAmount } });
+        }
+        //Remove wiiner previous financial log
+        await FinancialLog.deleteOne({ _id: oldfinancialLog._id });
+    }
+}
+
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
