@@ -398,21 +398,6 @@ class BetActivities extends React.Component {
                                 <div className="col-lg-2 col-md-3">
                                     <select
                                         className="form-control"
-                                        value={filter.match}
-                                        onChange={e => {
-                                            this.onFilterChange({ match: e.target.value });
-                                        }} >
-                                        <option value="">Choose Match Status...</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="matched">Matched</option>
-                                    </select>
-                                    <small className="form-text text-muted">
-                                        <b>Search</b> by Match Status
-                                    </small>
-                                </div>
-                                <div className="col-lg-2 col-md-3">
-                                    <select
-                                        className="form-control"
                                         value={filter.status}
                                         onChange={e => {
                                             this.onFilterChange({ status: e.target.value });
@@ -427,6 +412,22 @@ class BetActivities extends React.Component {
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Status
+                                    </small>
+                                </div>
+                                <div className="col-lg-2 col-md-3">
+                                    <select
+                                        className="form-control"
+                                        disabled={filter.status != 'open'}
+                                        value={filter.match}
+                                        onChange={e => {
+                                            this.onFilterChange({ match: e.target.value });
+                                        }} >
+                                        <option value="">Choose Match Status...</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="matched">Matched</option>
+                                    </select>
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Match Status
                                     </small>
                                 </div>
                                 <div className="col-lg-2 col-md-3">
