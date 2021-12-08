@@ -917,12 +917,18 @@ expressApp.post(
             });
         }
 
-        let autobet = await AutoBet
-            .findOne({
-                userId: user._id
-            });
+        let autobet = await AutoBet.findOne({ userId: user._id });
         if (autobet) {
             errors.push(`Autobet user can't place bet.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if (betSettings && betSettings.value && !betSettings.value.single) {
+            errors.push(`Single Bet is disabled by admin.`)
             return res.json({
                 balance: user.balance,
                 errors,
@@ -1484,6 +1490,15 @@ expressApp.post(
             return res.json({ balance: user.balance, errors });
         }
 
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if (betSettings && betSettings.value && !betSettings.value.parlay) {
+            errors.push(`Parlay Bet is disabled by admin.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
         if (totalStake > user.balance) {
             errors.push(`Bet can't be placed. Insufficient funds.`)
             return res.json({ balance: user.balance, errors });
@@ -1756,6 +1771,15 @@ expressApp.post(
         if (autobet) {
             errors.push(`Autobet user can't place bet.`)
             return res.json({ balance: user.balance, errors });
+        }
+
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if(betSettings && betSettings.value && !betSettings.value.teaser) {
+            errors.push(`Teaser Bet is disabled by admin.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
         }
 
         if (totalStake > user.balance) {
