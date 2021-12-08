@@ -14,8 +14,8 @@ class BetParlay extends Component {
         const { betSlip } = this.props;
         let parlayDdds = 1;
         for (const bet of betSlip) {
-            const { odds, pick } = bet;
-            parlayDdds *= Number(convertOdds(odds[pick], 'decimal'));
+            const { originOdds, pick } = bet;
+            parlayDdds *= Number(convertOdds(originOdds[pick], 'decimal'));
         }
         if (parlayDdds >= 2) {
             parlayDdds = parseInt((parlayDdds - 1) * 100);
@@ -89,6 +89,7 @@ class BetParlay extends Component {
                         />
                     </div>
                     <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
+                    <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses Sportsbook odds in parlay bets.</div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
                         const { name, type, league, sportName, pickName } = bet;

@@ -228,8 +228,8 @@ class App extends Component {
     }
 
     addBet = (bet) => {
-        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false } = bet;
-        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live };
+        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false, originOdds } = bet;
+        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live, originOdds };
         let { betSlip } = this.state;
         betSlip = betSlip.filter(bet => {
             const exists = bet.lineId === lineQuery.lineId &&
