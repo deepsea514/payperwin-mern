@@ -68,9 +68,9 @@ class TransactionHistory extends React.Component {
             case 'withdrawfee':
                 return `-`;
             case 'cashback':
-                return '';
+                return '+';
             case 'betwon':
-                return '';
+                return '+';
             case 'betfee':
                 return '-';
             case 'betcancel':
