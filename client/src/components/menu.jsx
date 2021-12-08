@@ -29,6 +29,11 @@ class Menu extends Component {
                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                             </Link>
                         </li>
+                        <li className="nav-item">
+                            <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                            </a>
+                        </li>
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>
                                 toggleField('menuOpen')}>
