@@ -13,27 +13,23 @@ export function getDashboardData(range, daterange) {
         const year = nowDate.getFullYear();
         const month = nowDate.getMonth();
         const date = nowDate.getDate();
-      for (let i = 0; i <= 24; i += 2) {
-        let ndate = new Date(year, month, date, i);
-        dateranges.push(ndate);
-        categories.push(dateformat(ndate, "HH:MM"));
-      }
+        for (let i = 0; i <= 24; i += 2) {
+            let ndate = new Date(year, month, date, i);
+            dateranges.push(ndate);
+            categories.push(dateformat(ndate, "HH:MM"));
+        }
     } else {
-      //to avoid modifying the original date
-      const theDate = new Date(startDate);
-      while (theDate < endDate) {
-        dateranges = [...dateranges, new Date(theDate)];
-        theDate.setDate(theDate.getDate() + 1);
-        categories.push(dateformat(theDate, "HH:MM"));
-      }
-      dateranges = [...dateranges, endDate];
+        //to avoid modifying the original date
+        const theDate = new Date(startDate);
+        while (theDate < endDate) {
+            dateranges = [...dateranges, new Date(theDate)];
+            theDate.setDate(theDate.getDate() + 1);
+            categories.push(dateformat(theDate, "HH:MM"));
+        }
+        dateranges = [...dateranges, endDate];
     }
 
-    return axios.post(`${serverUrl}/dashboard`,
-        { daterange, dateranges, categories },
-        {
-            withCredentials: true
-        });
+    return axios.post(`${serverUrl}/dashboard`, { daterange, dateranges, categories });
 }
 
 export function getBots() {
