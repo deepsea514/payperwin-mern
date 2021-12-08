@@ -17,3 +17,7 @@ export function getUser() {
 export function getAdminMessage() {
     return axios.get(`${serverUrl}/frontend/message`);
 }
+
+export function getBetStatus() {
+    return axios.get(`${serverUrl}/frontend/bet_settings`);
+}

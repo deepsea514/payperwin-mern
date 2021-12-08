@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, select } from "redux-saga/effects";
-import { setPreferences, getUser, getAdminMessage } from "./services";
+import { setPreferences, getUser, getAdminMessage, getBetStatus } from "./services";
 import Cookie from 'js-cookie';
 import timeHelper from "../helpers/timehelper";
 import { setLanguage } from '../PPWAdmin/_metronic/i18n/Metronici18n';
@@ -29,6 +29,8 @@ export const actionTypes = {
     getAdminMessageAction: "[Get Admin Message Action]",
     getAdminMessageSuccess: "[Get Admin Message Success]",
     dismissAdminMessage: "[Dismiss Admin Message]",
+    getBetStatusAction: "[Get Bet Status Action]",
+    getBetStatusSuccess: "[Get Bet Status Success]",
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -59,11 +61,7 @@ const initialState = {
     showLoginModal: false,
     showForgotPasswordModal: false,
     maxBetLimitTier: 2000,
-    betEnabled: {
-        single: true,
-        parlay: true,
-        teaser: true,
-    },
+    betEnabled: null,
     adminMessage: null,
     adminMessageDismiss: null,
 };
@@ -131,6 +129,9 @@ export const reducer = persistReducer(
             case actionTypes.dismissAdminMessage:
                 return { ...state, adminMessageDismiss: action.date };
 
+            case actionTypes.getBetStatusSuccess:
+                return { ...state, betEnabled: action.betEnabled };
+
             default:
                 return state;
         }
@@ -159,6 +160,8 @@ export const actions = {
     getAdminMessageAction: () => ({ type: actionTypes.getAdminMessageAction }),
     getAdminMessageSuccess: (message) => ({ type: actionTypes.getAdminMessageSuccess, message }),
     dismissAdminMessage: (date) => ({ type: actionTypes.dismissAdminMessage, date }),
+    getBetStatusAction: () => ({ type: actionTypes.getBetStatusAction }),
+    getBetStatusSuccess: (betEnabled) => ({ type: actionTypes.getBetStatusSuccess, betEnabled }),
 };
 
 export function* saga() {
@@ -237,6 +240,19 @@ export function* saga() {
             yield put(actions.getAdminMessageSuccess(data));
         } catch (error) {
             yield put(actions.getAdminMessageSuccess(null));
+        }
+    });
+
+    yield takeLatest(actionTypes.getBetStatusAction, function* getBetStatusSaga() {
+        try {
+            const { data } = yield getBetStatus();
+            if (data && data.value) {
+                yield put(actions.getBetStatusSuccess(data.value));
+            } else {
+                yield put(actions.getBetStatusSuccess(null));
+            }
+        } catch (error) {
+            yield put(actions.getBetStatusSuccess(null));
         }
     })
 }

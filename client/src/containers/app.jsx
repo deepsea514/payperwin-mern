@@ -180,13 +180,14 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction } = this.props;
+        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction, getBetStatusAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
 
         getUser(this.redirectToDashboard);
         getAdminMessageAction();
+        getBetStatusAction();
     }
 
     redirectToDashboard = (user) => {
@@ -682,7 +683,8 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,
-    user: state.frontend.user
+    user: state.frontend.user,
+    betEnabled: state.frontend.betEnabled
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))
