@@ -9,16 +9,16 @@ import { connect } from "react-redux";
 
 class DatePickerToggle extends React.Component {
     getDateRange = () => {
-        const { selectedDate } = this.props;
+        const { daterange } = this.props;
         let year, month, day, rangeText, title;
         const nowDate = new Date();
         year = nowDate.getFullYear();
         month = nowDate.getMonth();
         day = nowDate.getDate();
 
-        switch (selectedDate) {
+        switch (daterange.selected) {
             case "today":
-                rangeText = dateformat(nowDate, "mmm d, yyyy");
+                rangeText = dateformat(new Date(year, month, day), "mmm d, yyyy");
                 title = "Today";
                 break;
             case "yesterday":
@@ -26,32 +26,31 @@ class DatePickerToggle extends React.Component {
                 title = "Yesterday";
                 break;
             case "last7days":
-                rangeText = dateformat(new Date(year, month, day - 6), "mmm d, yyyy - ");
-                rangeText += dateformat(nowDate, "mmm d, yyyy");
                 title = "Last 7 Days";
                 break;
             case "last30days":
-                rangeText = dateformat(new Date(year, month, day - 30), "mmm d, yyyy - ");
-                rangeText += dateformat(nowDate, "mmm d, yyyy");
                 title = "Last 30 Days";
                 break;
             case "thismonth":
-                rangeText = dateformat(new Date(year, month, 1), "mmm d, yyyy - ");
-                rangeText += dateformat(nowDate, "mmm d, yyyy");
                 title = "This Month";
                 break;
             case "lastmonth":
-                rangeText = dateformat(new Date(year, month - 1, 1), "mmm d, yyyy - ");
-                rangeText += dateformat(new Date(year, month, 0), "mmm d, yyyy");
                 title = "Last Month";
                 break;
             case "thisyear":
-                rangeText = dateformat(new Date(year, 0, 1), "mmm d, yyyy - ");
-                rangeText += dateformat(nowDate, "mmm d, yyyy");
                 title = "This Year";
                 break;
-            default:
+            case 'alltime':
+                title = "All Time";
+                rangeText = 'Until ' + dateformat(daterange.endDate, "mmm d, yyyy");
                 break;
+            default:
+                title = 'Custom';
+                break;
+        }
+
+        if (!rangeText) {
+            rangeText = dateformat(daterange.startDate, "mmm d, yyyy - ") + dateformat(daterange.endDate, "mmm d, yyyy");
         }
         return {
             rangeText,
@@ -70,8 +69,7 @@ class DatePickerToggle extends React.Component {
                 onClick={e => {
                     e.preventDefault();
                     onClick(e);
-                }}
-            >
+                }}>
                 <span className="text-muted font-weight-bold mr-2">{this.getDateRange().title}</span>
                 <span className="text-primary font-weight-bold">{this.getDateRange().rangeText}</span>
             </a>
@@ -80,7 +78,7 @@ class DatePickerToggle extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    selectedDate: state.dashboard.selectedDate
+    daterange: state.dashboard.daterange
 })
 
 const DatePickerToggleWithState = connect(mapStateToProps)(DatePickerToggle);
@@ -91,9 +89,67 @@ const QuickActionsDropdownToggle = forwardRef((props, ref) => {
     );
 });
 
+const dateRanges = [
+    { key: 'today', title: 'Today' },
+    { key: 'yesterday', title: 'Yesterday' },
+    { key: 'last7days', title: 'Last 7 Days' },
+    { key: 'last30days', title: 'Last 30 Days' },
+    { key: 'thismonth', title: 'This Month' },
+    { key: 'lastmonth', title: 'Last Month' },
+    { key: 'thisyear', title: 'This Year' },
+    { key: 'alltime', title: 'All Time' },
+]
+
 class DatePicker extends React.Component {
+    changeDateRange = (selected) => {
+        const { changeDateRange } = this.props;
+
+        let year, month, day;
+        const nowDate = new Date();
+        year = nowDate.getFullYear();
+        month = nowDate.getMonth();
+        day = nowDate.getDate();
+        let startDate = nowDate;
+        let endDate = nowDate;
+        switch (selected) {
+            case "today":
+                startDate = new Date(year, month, day);
+                endDate = new Date(nowDate);
+                break;
+            case "yesterday":
+                startDate = new Date(year, month, day - 1);
+                endDate = new Date(year, month, day);
+                break;
+            case "last7days":
+                startDate = new Date(year, month, day - 6);
+                endDate = new Date(nowDate);
+                break;
+            case "last30days":
+                startDate = new Date(year, month, day - 30);
+                endDate = new Date(nowDate);
+                break;
+            case "thismonth":
+                startDate = new Date(year, month, 1);
+                endDate = new Date(nowDate);
+                break;
+            case "lastmonth":
+                startDate = new Date(year, month - 1, 1);
+                endDate = new Date(year, month, 0);
+                break;
+            case "thisyear":
+                startDate = new Date(year, 0, 1);
+                endDate = new Date(nowDate);
+                break;
+            case "alltime":
+                startDate = new Date(2020, 1, 1);
+                endDate = new Date(nowDate);
+                break;
+        }
+        changeDateRange({ selected, startDate, endDate });
+    }
+
     render() {
-        const { selectedDate, changeDateRange } = this.props;
+        const { daterange } = this.props;
         return (
             <>
                 <OverlayTrigger
@@ -101,18 +157,14 @@ class DatePicker extends React.Component {
                     overlay={<Tooltip>Select Date Range</Tooltip>}
                 >
                     <Dropdown className="dropdown-inline" drop="down" alignRight>
-                        <Dropdown.Toggle
-                            as={QuickActionsDropdownToggle}
-                        />
+                        <Dropdown.Toggle as={QuickActionsDropdownToggle} />
                         <Dropdown.Menu className="dropdown-menu p-0 m-0 dropdown-menu-sm dropdown-menu-right">
                             <ul className="date-range">
-                                <li onClick={() => changeDateRange('today')} className={selectedDate == "today" ? "active" : ""}>Today</li>
-                                <li onClick={() => changeDateRange('yesterday')} className={selectedDate == "yesterday" ? "active" : ""}>Yesterday</li>
-                                <li onClick={() => changeDateRange('last7days')} className={selectedDate == "last7days" ? "active" : ""}>Last 7 Days</li>
-                                <li onClick={() => changeDateRange('last30days')} className={selectedDate == "last30days" ? "active" : ""}>Last 30 Days</li>
-                                <li onClick={() => changeDateRange('thismonth')} className={selectedDate == "thismonth" ? "active" : ""}>This Month</li>
-                                <li onClick={() => changeDateRange('lastmonth')} className={selectedDate == "lastmonth" ? "active" : ""}>Last Month</li>
-                                <li onClick={() => changeDateRange('thisyear')} className={selectedDate == "thisyear" ? "active" : ""}>This Year</li>
+                                {dateRanges.map((range) => (
+                                    <li key={range.key} onClick={() => this.changeDateRange(range.key)} className={daterange.selected == range.range ? "active" : ""}>
+                                        {range.title}
+                                    </li>
+                                ))}
                             </ul>
                         </Dropdown.Menu>
                     </Dropdown>

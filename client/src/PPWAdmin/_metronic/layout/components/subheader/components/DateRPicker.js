@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 class DateRPicker extends React.Component {
 
     render() {
-        const { daterange, changeDateRange, selectedDate } = this.props;
+        const { daterange, changeDateRange } = this.props;
         return (
             <>
                 <OverlayTrigger
@@ -27,12 +27,16 @@ class DateRPicker extends React.Component {
                         onApply={(event, picker) => {
                             changeDateRange({
                                 startDate: picker.startDate._d,
-                                endDate: picker.endDate._d
+                                endDate: picker.endDate._d,
+                                selected: 'custom'
                             })
                         }}
-                        initialSettings={{ daterange }}
-                    >
-                        <input className="btn btn-light btn-sm font-weight-bold" readOnly />
+                        initialSettings={{ daterange }}>
+                        <i className='fas fa-calendar' style={{
+                            fontSize: 16,
+                            cursor: 'pointer',
+                            marginLeft: '10px'
+                        }} />
                     </DateRangePicker>
                 </OverlayTrigger>
             </>
