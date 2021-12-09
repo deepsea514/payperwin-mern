@@ -71,11 +71,17 @@ class Promotions extends React.Component {
                 <td>{promotion.usage_limit}</td>
                 <td>{PromotionFor[promotion.usage_for]}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/${promotion._id}/detail`} ><i className="fas fa-eye" />&nbsp; Detail</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setEditId(promotion)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: promotion._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`/${promotion._id}/detail`} ><i className="fas fa-eye" />&nbsp; Detail</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setEditId(promotion)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ deleteId: promotion._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

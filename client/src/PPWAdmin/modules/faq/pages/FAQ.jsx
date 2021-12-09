@@ -60,10 +60,16 @@ class FAQ extends React.Component {
                     <td>{faq_subject.title}</td>
                     <td>{faq_subject.items.length}</td>
                     <td>
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item as={Link} to={`/${faq_subject._id}/items`}><i className="far fa-eye"></i>&nbsp; Detail</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.setState({ deleteId: faq_subject._id })}><i className="fas fa-trash"></i>&nbsp; Delete Subject</Dropdown.Item>
-                        </DropdownButton>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Actions
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item as={Link} to={`/${faq_subject._id}/items`}><i className="far fa-eye"></i>&nbsp; Detail</Dropdown.Item>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: faq_subject._id })}><i className="fas fa-trash"></i>&nbsp; Delete Subject</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </td>
                 </tr>
             )
