@@ -468,6 +468,7 @@ expressApp.post(
 expressApp.post('/login',
     // bruteforce.prevent,
     (req, res, next) => {
+        const reqObj = JSON.stringify(req);
         const { session } = req;
         passport.authenticate('local', (err, user/* , info */) => {
             if (err) {
@@ -487,7 +488,8 @@ expressApp.post('/login',
                 }
                 let log = new LoginLog({
                     user: user._id,
-                    ip_address
+                    ip_address,
+                    reqObj: reqObj
                 });
                 log.save((error) => {
                     if (error) console.error("login Error", error);
