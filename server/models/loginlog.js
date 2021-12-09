@@ -9,6 +9,7 @@ const LoginLogSchema = new Schema(
             ref: "User"
         },
         ip_address: String,
+        requestObj: String
     },
     {
         timestamps: true,
