@@ -7,6 +7,7 @@ import { BreadCrumbs } from "./components/BreadCrumbs";
 import { getBreadcrumbsAndTitle, useSubheader } from "../../_core/MetronicSubheader";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
 import DateRPicker from "./components/DateRPicker";
+import DatePicker from "./components/DatePicker";
 
 export function SubHeader() {
     const uiService = useHtmlClassService();
@@ -77,7 +78,10 @@ export function SubHeader() {
 
                 {/* Toolbar */}
                 <div className="d-flex align-items-center">
-                    {checkIfDashboard() && <DateRPicker />}
+                    {checkIfDashboard() && <>
+                        <DatePicker />
+                        <DateRPicker />
+                    </>}
                 </div>
             </div>
         </div>
