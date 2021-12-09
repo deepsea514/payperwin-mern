@@ -21,13 +21,18 @@ class Menu extends Component {
                         <i className="fal fa-times" />
                     </button>
                     <Link to={{ pathname: '/' }} className="logo">
-                        <img src="/images/logo-white.png" />
+                        <img src="/images/ppw-white-xmas.png" />
                     </Link>
                     <ul className="navbar-nav">
                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/' }} className="nav-link">
                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                             </Link>
+                        </li>
+                        <li className="nav-item">
+                            <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                            </a>
                         </li>
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                             <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>

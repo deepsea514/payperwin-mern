@@ -28,7 +28,7 @@ class BetDetail extends React.Component {
     }
 
     getDate = (date) => {
-        return dateformat(new Date(date), "mediumDate");
+        return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
     }
 
     getBetDogFav = (bet, pick) => {

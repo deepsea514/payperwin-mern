@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import SVG from "react-inlinesvg";
 import { getFrontendInfo, saveFrontendInfo } from '../redux/services';
-import Switch from '@material-ui/core/Switch';
+import { Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 
-export default class Maintenance extends Component {
+export default class ToggleBet extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            maintenance: false,
+            single: true,
+            teaser: true,
+            parlay: true,
             loading: false,
             isError: false,
             isSuccess: false,
@@ -20,25 +22,28 @@ export default class Maintenance extends Component {
     componentDidMount() {
         this.setState({ loading: false });
 
-        getFrontendInfo('maintenance_mode')
+        getFrontendInfo('bet_settings')
             .then(({ data }) => {
                 this.setState({
                     loading: false,
-                    maintenance: data ? data.value.maintenance : false
+                    single: data ? data.value.single : true,
+                    teaser: data ? data.value.teaser : true,
+                    parlay: data ? data.value.parlay : true
                 });
             })
             .catch(() => {
-                this.setState({ loading: false, maintenance: false });
+                this.setState({ loading: false, single: false });
             })
     }
 
-    handleChange = (event) => {
-        const maintenance = event.target.checked;
-        const submitValue = { maintenance };
+    handleChange = async (event) => {
+        const { single, teaser, parlay } = this.state;
+        const value = event.target.checked;
+        const key = event.target.name;
         this.setState({ isSuccess: false, isError: false, is_Submitting: true });
-        saveFrontendInfo('maintenance_mode', submitValue)
+        saveFrontendInfo('bet_settings', { ...{ single, teaser, parlay }, [key]: value })
             .then(() => {
-                this.setState({ isSuccess: true, is_Submitting: false, maintenance });
+                this.setState({ isSuccess: true, is_Submitting: false, [key]: value });
             })
             .catch(() => {
                 this.setState({ isError: true, is_Submitting: false, });
@@ -46,10 +51,10 @@ export default class Maintenance extends Component {
     }
 
     render() {
-        const { loading, isError, isSuccess, maintenance, is_Submitting } = this.state;
+        const { loading, isError, isSuccess, single, teaser, parlay, is_Submitting } = this.state;
         return (
             <>
-                <h3>Maintenance Mode.</h3>
+                <h3>Bet Settins</h3>
                 {loading && <center>
                     <Preloader use={ThreeDots}
                         size={100}
@@ -57,15 +62,32 @@ export default class Maintenance extends Component {
                         strokeColor="#F0AD4E"
                         duration={800} />
                 </center>}
-                <div className="form-group">
-                    <Switch
-                        checked={maintenance}
+                <FormGroup row>
+                    <FormControlLabel control={<Switch
+                        checked={single}
                         onChange={this.handleChange}
-                        value="maintenance"
+                        value="single"
                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                         disabled={is_Submitting}
-                    />
-                </div>
+                        name="single"
+                    />} label="Single Bets" />
+                    <FormControlLabel control={<Switch
+                        checked={parlay}
+                        onChange={this.handleChange}
+                        value="parlay"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        disabled={is_Submitting}
+                        name="parlay"
+                    />} label="Parlay Bets" />
+                    <FormControlLabel control={<Switch
+                        checked={teaser}
+                        onChange={this.handleChange}
+                        value="teaser"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        disabled={is_Submitting}
+                        name="teaser"
+                    />} label="Teaser Bets" />
+                </FormGroup>
 
                 {isError && (
                     <div
@@ -73,9 +95,7 @@ export default class Maintenance extends Component {
                         role="alert">
                         <div className="alert-icon">
                             <span className="svg-icon svg-icon-3x svg-icon-danger">
-                                <SVG
-                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                ></SVG>{" "}
+                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                             </span>
                         </div>
                         <div className="alert-text font-weight-bold">
@@ -86,8 +106,7 @@ export default class Maintenance extends Component {
                                 type="button"
                                 className="close"
                                 data-dismiss="alert"
-                                aria-label="Close"
-                            >
+                                aria-label="Close">
                                 <span aria-hidden="true">
                                     <i className="ki ki-close"></i>
                                 </span>
@@ -101,9 +120,7 @@ export default class Maintenance extends Component {
                         role="alert">
                         <div className="alert-icon">
                             <span className="svg-icon svg-icon-3x svg-icon-success">
-                                <SVG
-                                    src={"/media/svg/icons/Code/Info-circle.svg"}
-                                ></SVG>{" "}
+                                <SVG src={"/media/svg/icons/Code/Info-circle.svg"} />
                             </span>
                         </div>
                         <div className="alert-text font-weight-bold">
@@ -114,8 +131,7 @@ export default class Maintenance extends Component {
                                 type="button"
                                 className="close"
                                 data-dismiss="alert"
-                                aria-label="Close"
-                            >
+                                aria-label="Close">
                                 <span aria-hidden="true">
                                     <i className="ki ki-close"></i>
                                 </span>

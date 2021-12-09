@@ -13,3 +13,11 @@ export function toggleFavorites(data) {
 export function getUser() {
     return axios.get(`${serverUrl}/user?compress=false`, { withCredentials: true });
 }
+
+export function getAdminMessage() {
+    return axios.get(`${serverUrl}/frontend/message`);
+}
+
+export function getBetStatus() {
+    return axios.get(`${serverUrl}/frontend/bet_settings`);
+}

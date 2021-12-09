@@ -61,7 +61,7 @@ class Customers extends React.Component {
             case "2000":
                 return "0 (default)";
             case "3000":
-                return "1";    
+                return "1";
             case "5000":
                 return "2";
             case "10000":
@@ -102,16 +102,16 @@ class Customers extends React.Component {
                     {/* <td>{index + 1}</td> */}
                     <td>{(customer.firstname ? customer.firstname : "") + " " + (customer.lastname ? customer.lastname : "")}</td>
                     <td><Link to={`/users/${customer._id}/profile`}>{customer.email}</Link></td>
-                     <td className="">{this.getCustomerTier(customer.maxBetLimitTier || "2000")}</td> 
+                    <td className="">{this.getCustomerTier(customer.maxBetLimitTier || "2000")}</td>
                     <td className="">{dateformat(new Date(customer.createdAt), "mediumDate")}</td>
                     <td className="">{numberFormat(Number(customer.balance).toFixed(2))} {customer.currency}</td>
                     <td className="">{numberFormat(Number(customer.inplay).toFixed(2))} {customer.currency}</td>
                     <td className="">{customer.totalBetCount}</td>
                     <td className="">{numberFormat(Number(customer.totalWager).toFixed(2))} {customer.currency}</td>
                     <td className="">
-                    <span className={`label label-lg label-inline font-weight-lighter mr-2  label-${customer.roles.verified ? 'success' : 'info'}`}>
-                        {customer.roles.verified ? "Verified" : "Not Verified"}
-                    </span>
+                        <span className={`label label-lg label-inline font-weight-lighter mr-2  label-${customer.roles.verified ? 'success' : 'info'}`}>
+                            {customer.roles.verified ? "Verified" : "Not Verified"}
+                        </span>
 
                     </td>
 
@@ -124,11 +124,11 @@ class Customers extends React.Component {
                             {!customer.roles.verified && <Dropdown.Item onClick={() => this.setState({ verifyId: customer._id })}><i className="fas fa-check"></i>&nbsp; Verify Customer</Dropdown.Item>}
                             <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({ addWithdrawId: customer._id, withdrawmax: customer.balance })}><i className="fas fa-credit-card"></i>&nbsp; Add Withdraw</Dropdown.Item>
-                            
+
                             <Dropdown.Item onClick={() => this.setState({ deleteId: customer._id })}><i className="fas fa-trash"></i>&nbsp; Delete Customer</Dropdown.Item>
                             {!customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ suspendId: customer._id })}><i className="fas fa-pause"></i>&nbsp; Suspend Customer</Dropdown.Item>}
                             {customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ returnId: customer._id })}><i className="fas fa-play"></i>&nbsp; Return Customer</Dropdown.Item>}
-                            
+
                         </DropdownButton>
                     </td>
                 </tr>
@@ -228,6 +228,8 @@ class Customers extends React.Component {
             addWithdrawId, withdrawmax, PasswordSchema, initialValues, suspendId, returnId, verifyId } = this.state;
         const { total, currentPage, filter, reasons } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
+        const startNum = perPage * (currentPage - 1) + 1;
+        const endNum = perPage * currentPage < total ? perPage * currentPage : total;
 
         return (
             <>
@@ -237,6 +239,9 @@ class Customers extends React.Component {
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Users List</h3>
+                                </div>
+                                <div className="card-toolbar">
+                                    {startNum} - {endNum} out of {total} users.
                                 </div>
                             </div>
                             <div className="card-body">
@@ -348,7 +353,7 @@ class Customers extends React.Component {
                                     </table>
                                 </div>
                                 <CustomPagination
-                                    className="pagination pull-right"
+                                    className="pagination"
                                     currentPage={currentPage - 1}
                                     totalPages={totalPages}
                                     showPages={7}
@@ -441,46 +446,44 @@ class Customers extends React.Component {
                         initialValues={initialValues}
                         validationSchema={PasswordSchema}
                         onSubmit={this.changePassword}>
-                        {
-                            (formik) => {
-                                return <form onSubmit={formik.handleSubmit}>
-                                    <Modal.Body>
-                                        <div className="form-group">
-                                            <label>New Password<span className="text-danger">*</span></label>
-                                            <input type="password" name="password" placeholder="Enter New Password"
-                                                className={`form-control ${getInputClasses(formik, "password")}`}
-                                                {...formik.getFieldProps("password")}
-                                            />
-                                            {formik.touched.password && formik.errors.password ? (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.password}
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Confirm Password<span className="text-danger">*</span></label>
-                                            <input type="password" name="confirmpassword" placeholder="Enter Confirm Password"
-                                                className={`form-control ${getInputClasses(formik, "confirmpassword")}`}
-                                                {...formik.getFieldProps("confirmpassword")}
-                                            />
-                                            {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.confirmpassword}
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="light-primary" onClick={() => this.setState({ changePasswordId: null })}>
-                                            Cancel
-                                        </Button>
-                                        <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
-                                            Save
-                                        </Button>
-                                    </Modal.Footer>
-                                </form>
-                            }
-                        }
+                        {(formik) => {
+                            return <form onSubmit={formik.handleSubmit}>
+                                <Modal.Body>
+                                    <div className="form-group">
+                                        <label>New Password<span className="text-danger">*</span></label>
+                                        <input type="password" name="password" placeholder="Enter New Password"
+                                            className={`form-control ${getInputClasses(formik, "password")}`}
+                                            {...formik.getFieldProps("password")}
+                                        />
+                                        {formik.touched.password && formik.errors.password ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.password}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Confirm Password<span className="text-danger">*</span></label>
+                                        <input type="password" name="confirmpassword" placeholder="Enter Confirm Password"
+                                            className={`form-control ${getInputClasses(formik, "confirmpassword")}`}
+                                            {...formik.getFieldProps("confirmpassword")}
+                                        />
+                                        {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.confirmpassword}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="light-primary" onClick={() => this.setState({ changePasswordId: null })}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="primary" type="submit" disabled={formik.isSubmitting}>
+                                        Save
+                                    </Button>
+                                </Modal.Footer>
+                            </form>
+                        }}
                     </Formik>
                 </Modal>}
 

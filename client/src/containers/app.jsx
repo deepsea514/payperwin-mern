@@ -180,12 +180,14 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const { setDisplayModeBasedOnSystem, getUser } = this.props;
+        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction, getBetStatusAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
         setDisplayModeBasedOnSystem();
 
         getUser(this.redirectToDashboard);
+        getAdminMessageAction();
+        getBetStatusAction();
     }
 
     redirectToDashboard = (user) => {
@@ -226,8 +228,8 @@ class App extends Component {
     }
 
     addBet = (bet) => {
-        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false } = bet;
-        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live };
+        const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false, originOdds } = bet;
+        const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live, originOdds };
         let { betSlip } = this.state;
         betSlip = betSlip.filter(bet => {
             const exists = bet.lineId === lineQuery.lineId &&
@@ -681,7 +683,8 @@ const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,
-    user: state.frontend.user
+    user: state.frontend.user,
+    betEnabled: state.frontend.betEnabled
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

@@ -4,6 +4,7 @@ import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import { FormattedMessage, injectIntl } from "react-intl";
 import CookieAccept from "./cookieAccept";
+import AdminMessage from './adminMessage';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
@@ -125,6 +126,12 @@ class Header extends Component {
         }
     }
 
+    checkShowMessage = () => {
+        const { adminMessage, adminMessageDismiss } = this.props;
+        if (!adminMessage || !adminMessage.value || !adminMessage.value.show) return false;
+        return adminMessageDismiss != adminMessage.updatedAt;
+    }
+
     render() {
         const { userDropDownOpen,
             oddsDropDownOpen,
@@ -144,12 +151,16 @@ class Header extends Component {
             showLoginModal,
             showForgotPasswordModal,
             showLoginModalAction,
-            showForgotPasswordModalAction
+            showForgotPasswordModalAction,
+            adminMessage,
+            dismissAdminMessage
         } = this.props;
+        const showMessage = this.checkShowMessage();
         const { pathname } = location;
         return (
             <header className="header">
                 {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
+                {showMessage && <AdminMessage onDismiss={dismissAdminMessage} message={adminMessage} />}
                 <div className="header-top">
                     <div className="container">
                         <div className="row">
@@ -160,7 +171,7 @@ class Header extends Component {
                                     <span className="navbar-toggler-icon"></span>
                                 </button>
                                 <Link to={{ pathname: '/' }} className="logo">
-                                    <img src="/images/logo-white.png" />
+                                    <img src="/images/ppw-white-xmas.png" />
                                 </Link>
                             </div>
                             <div className="col-7 col-sm-6 text-right">
@@ -187,7 +198,7 @@ class Header extends Component {
                                                 </a>
                                             </li>
                                         </ul>
-                                        {userDropDownOpen ? (
+                                        {userDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('userDropDownOpen')} />
                                                 <div className="login-dropdown">
@@ -222,11 +233,9 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </div>
-                                )
-                                    : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />
-                                }
+                                ) : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />}
                             </div>
                         </div>
                     </div>
@@ -248,6 +257,13 @@ class Header extends Component {
                                                 <Link to={{ pathname: '/' }} className="nav-link">
                                                     <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                                 </Link>
+                                            </center>
+                                        </li>
+                                        <li className="nav-item">
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                                                </a>
                                             </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
@@ -279,6 +295,13 @@ class Header extends Component {
                                             <Link to={{ pathname: '/' }} className="nav-link">
                                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                             </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <center style={{ whiteSpace: "nowrap" }}>
+                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
+                                                </a>
+                                            </center>
                                         </li>
                                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
@@ -332,7 +355,7 @@ class Header extends Component {
                                         <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
                                             <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddsFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
                                         </a>
-                                        {oddsDropDownOpen ? (
+                                        {oddsDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
                                                 <div className="odds-dropdown">
@@ -346,11 +369,11 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </li>
                                     <li>
                                         <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}><img src={this.getImageSource()} className="language-flag" style={{ display: 'inherit' }} /> {lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
-                                        {langDropDownOpen ? (
+                                        {langDropDownOpen && (
                                             <React.Fragment>
                                                 <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
                                                 <div className="odds-dropdown">
@@ -370,7 +393,7 @@ class Header extends Component {
                                                     </ul>
                                                 </div>
                                             </React.Fragment>
-                                        ) : null}
+                                        )}
                                     </li>
                                     <li>{timeString}</li>
                                     <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> <FormattedMessage id="COMPONENTS.HELP" /> </Link></li>
@@ -411,6 +434,8 @@ const mapStateToProps = (state) => ({
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,
     maxBetLimitTier: state.frontend.maxBetLimitTier,
+    adminMessage: state.frontend.adminMessage,
+    adminMessageDismiss: state.frontend.adminMessageDismiss
 });
 
 export default connect(mapStateToProps, frontend.actions)(injectIntl(Header))

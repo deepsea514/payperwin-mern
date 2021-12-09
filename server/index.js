@@ -468,6 +468,7 @@ expressApp.post(
 expressApp.post('/login',
     // bruteforce.prevent,
     (req, res, next) => {
+        // const reqObj = JSON.stringify(req);
         const { session } = req;
         passport.authenticate('local', (err, user/* , info */) => {
             if (err) {
@@ -487,7 +488,7 @@ expressApp.post('/login',
                 }
                 let log = new LoginLog({
                     user: user._id,
-                    ip_address
+                    ip_address,
                 });
                 log.save((error) => {
                     if (error) console.error("login Error", error);
@@ -917,12 +918,18 @@ expressApp.post(
             });
         }
 
-        let autobet = await AutoBet
-            .findOne({
-                userId: user._id
-            });
+        let autobet = await AutoBet.findOne({ userId: user._id });
         if (autobet) {
             errors.push(`Autobet user can't place bet.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if (betSettings && betSettings.value && !betSettings.value.single) {
+            errors.push(`Single Bet is temporary unavailable.`)
             return res.json({
                 balance: user.balance,
                 errors,
@@ -1484,6 +1491,15 @@ expressApp.post(
             return res.json({ balance: user.balance, errors });
         }
 
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if (betSettings && betSettings.value && !betSettings.value.parlay) {
+            errors.push(`Parlay Bet is temporary unavailable.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
+        }
+
         if (totalStake > user.balance) {
             errors.push(`Bet can't be placed. Insufficient funds.`)
             return res.json({ balance: user.balance, errors });
@@ -1494,14 +1510,29 @@ expressApp.post(
             return res.json({ balance: user.balance, errors });
         }
 
+        let correlated = false;
+        for (const bet of betSlip) {
+            const { pickName, lineQuery } = bet;
+            const sameBet = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+            if (sameBet) {
+                correlated = true;
+                break;
+            }
+        }
+
+        if (correlated) {
+            errors.push(`Correlated bets could not be placed.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
         const parlayQuery = [];
         let index = 0;
         let eventsDetail = '';
         for (const bet of betSlip) {
             index++;
-            const { odds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
-            if (!odds || !pick || !lineQuery) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Query Incomplete.`);
+            const { odds, originOdds, pick, lineQuery, pickName, origin, sportsbook, live } = bet;
+            if (!originOdds || !pick || !lineQuery) {
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Query Incomplete.`);
                 break;
             }
             if (origin == 'other') {
@@ -1511,14 +1542,14 @@ expressApp.post(
             const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
             if (!sportData) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Line not found`);
                 break;
             }
             const { originSportId } = sportData;
             lineQuery.sportId = originSportId;
             const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
             if (!line) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Line not found`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Line not found`);
                 break;
             }
             const { teamA, teamB, startDate, line: { home, away, hdp, points, over, under } } = line;
@@ -1526,12 +1557,13 @@ expressApp.post(
             const lineOdds = line.line[pickWithOverUnder];
             const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? over : home;
             const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? under : away;
-            let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-            if (sportsbook) newLineOdds = pick == 'home' ? oddsA : oddsB;
+            // let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
+            // if (sportsbook)
+            // const newLineOdds = pick == 'home' ? oddsA : oddsB;
 
-            const oddsMatch = odds[pick] === newLineOdds;
+            const oddsMatch = originOdds[pick] === lineOdds;
             if (!oddsMatch) {
-                errors.push(`${pickName} @${odds[pick]} wager could not be placed. Odds have changed.`);
+                errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Odds have changed.`);
                 break;
             }
 
@@ -1539,7 +1571,7 @@ expressApp.post(
                 teamA: { name: teamA, odds: oddsA },
                 teamB: { name: teamB, odds: oddsB },
                 pick: pick,
-                pickOdds: newLineOdds,
+                pickOdds: lineOdds,
                 oldOdds: lineOdds,
                 pickName: pickName,
                 matchStartDate: startDate,
@@ -1548,7 +1580,7 @@ expressApp.post(
                     points: hdp ? hdp : points ? points : null,
                 },
                 origin: origin,
-                sportsbook: sportsbook
+                sportsbook: true
             });
 
             const matchTimeString = convertTimeLineDate(new Date(startDate), null);
@@ -1756,6 +1788,15 @@ expressApp.post(
         if (autobet) {
             errors.push(`Autobet user can't place bet.`)
             return res.json({ balance: user.balance, errors });
+        }
+
+        const betSettings = await Frontend.findOne({ name: "bet_settings" });
+        if (betSettings && betSettings.value && !betSettings.value.teaser) {
+            errors.push(`Teaser Bet is temporary unavailable.`)
+            return res.json({
+                balance: user.balance,
+                errors,
+            });
         }
 
         if (totalStake > user.balance) {

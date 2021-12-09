@@ -48,6 +48,12 @@ export function DropdownMenuCustomer({ id }) {
                 </Link>
             </li>
             <li className="navi-item">
+                <Link to={`/users/${id}/profile/transactions`} className="navi-link">
+                    <span className="navi-icon"><SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg" /></span>
+                    <span className="navi-text">Transactions</span>
+                </Link>
+            </li>
+            <li className="navi-item">
                 <Link to={`/users/${id}/profile/bet-log`} className="navi-link">
                     <span className="navi-icon"><SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg" /></span>
                     <span className="navi-text">Bet Log</span>
@@ -55,7 +61,7 @@ export function DropdownMenuCustomer({ id }) {
             </li>
             <li className="navi-item">
                 <Link to={`/users/${id}/profile/tier`} className="navi-link">
-                <span className="navi-icon"><SVG src="/media/svg/icons/General/Settings-1.svg" /></span>
+                    <span className="navi-icon"><SVG src="/media/svg/icons/General/Settings-1.svg" /></span>
                     <span className="navi-text">Custmoer Tier</span>
                 </Link>
             </li>
