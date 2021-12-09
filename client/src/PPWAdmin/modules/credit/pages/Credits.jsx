@@ -61,10 +61,16 @@ class Credits extends React.Component {
                 <td>${Number(user.inplay).toFixed(2)}</td>
                 <td>${user.creditUsed} / ${user.credit}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item onClick={() => this.setAdjustId(user)}><i className="fas fa-edit"></i>&nbsp; Adjust Credit</Dropdown.Item>
-                        <Dropdown.Item as={Link} to={`/${user._id}/detail`}><i className="fas fa-eye"></i>&nbsp; Detail</Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item onClick={() => this.setAdjustId(user)}><i className="fas fa-edit"></i>&nbsp; Adjust Credit</Dropdown.Item>
+                            <Dropdown.Item as={Link} to={`/${user._id}/detail`}><i className="fas fa-eye"></i>&nbsp; Detail</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

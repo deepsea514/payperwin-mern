@@ -61,10 +61,16 @@ class Admins extends Component {
                 <td>{admin.phone}</td>
                 <td>{admin.role}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        {currentUser && currentUser._id != admin._id && <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>}
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            {currentUser && currentUser._id != admin._id && <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>}
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

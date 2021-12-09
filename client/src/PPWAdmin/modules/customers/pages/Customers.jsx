@@ -116,20 +116,24 @@ class Customers extends React.Component {
                     </td>
 
                     <td className="text-right">
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
-                            <Dropdown.Item as={Link} to={`/users/${customer._id}/profile`}>
-                                <i className="far fa-user"></i>&nbsp; Profile
-                            </Dropdown.Item>
-                            {!customer.roles.verified && <Dropdown.Item onClick={() => this.setState({ verifyId: customer._id })}><i className="fas fa-check"></i>&nbsp; Verify Customer</Dropdown.Item>}
-                            <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.setState({ addWithdrawId: customer._id, withdrawmax: customer.balance })}><i className="fas fa-credit-card"></i>&nbsp; Add Withdraw</Dropdown.Item>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Actions
+                            </Dropdown.Toggle>
 
-                            <Dropdown.Item onClick={() => this.setState({ deleteId: customer._id })}><i className="fas fa-trash"></i>&nbsp; Delete Customer</Dropdown.Item>
-                            {!customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ suspendId: customer._id })}><i className="fas fa-pause"></i>&nbsp; Suspend Customer</Dropdown.Item>}
-                            {customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ returnId: customer._id })}><i className="fas fa-play"></i>&nbsp; Return Customer</Dropdown.Item>}
-
-                        </DropdownButton>
+                            <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item onClick={() => this.setState({ changePasswordId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Change Password</Dropdown.Item>
+                                <Dropdown.Item as={Link} to={`/users/${customer._id}/profile`}>
+                                    <i className="far fa-user"></i>&nbsp; Profile
+                                </Dropdown.Item>
+                                {!customer.roles.verified && <Dropdown.Item onClick={() => this.setState({ verifyId: customer._id })}><i className="fas fa-check"></i>&nbsp; Verify Customer</Dropdown.Item>}
+                                <Dropdown.Item onClick={() => this.setState({ addDepositId: customer._id })}><i className="fas fa-credit-card"></i>&nbsp; Add Deposit</Dropdown.Item>
+                                <Dropdown.Item onClick={() => this.setState({ addWithdrawId: customer._id, withdrawmax: customer.balance })}><i className="fas fa-credit-card"></i>&nbsp; Add Withdraw</Dropdown.Item>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: customer._id })}><i className="fas fa-trash"></i>&nbsp; Delete Customer</Dropdown.Item>
+                                {!customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ suspendId: customer._id })}><i className="fas fa-pause"></i>&nbsp; Suspend Customer</Dropdown.Item>}
+                                {customer.roles.suspended && <Dropdown.Item onClick={() => this.setState({ returnId: customer._id })}><i className="fas fa-play"></i>&nbsp; Return Customer</Dropdown.Item>}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </td>
                 </tr>
             )

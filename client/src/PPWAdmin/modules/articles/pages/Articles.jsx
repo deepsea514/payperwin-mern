@@ -59,10 +59,16 @@ class Articles extends React.Component {
                 <td>{this.getDateFormat(article.createdAt)}</td>
                 <td>{article.published_at ? this.getDateFormat(article.published_at) : null}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/edit/${article._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: article._id })}><i className="fas fa-trash"></i>&nbsp; Delete Draft</Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`/edit/${article._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ deleteId: article._id })}><i className="fas fa-trash"></i>&nbsp; Delete Draft</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

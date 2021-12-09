@@ -58,10 +58,16 @@ class MessageCenter extends React.Component {
                 <th scope="col">{message.type}</th>
                 <th scope="col">{dateformat(new Date(message.createdAt), "yyyy-mm-dd HH:MM")}</th>
                 <th scope="col">
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`/edit/${message._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: message._id })}><i className="fas fa-trash"></i>&nbsp; Delete Draft</Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`/edit/${message._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ deleteId: message._id })}><i className="fas fa-trash"></i>&nbsp; Delete Draft</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </th>
             </tr>
         ))
