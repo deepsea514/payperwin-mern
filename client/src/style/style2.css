@@ -2415,16 +2415,19 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     animation-fill-mode: forwards;
 }
 
+.adminMessage_container {
+    color: rgb(255, 255, 255);
+    background-color: #04c66d;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
 .cookieBanner_main {
     display: flex;
     max-width: 1280px;
     margin: 0px auto;
     width: 100%;
-}
-
-.cookieBanner_main1 {
     padding: 10px;
-    display: flex;
     justify-content: center;
 }
 
@@ -2480,6 +2483,32 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     flex-shrink: 0;
 }
 
+.adminMessage_button {
+    appearance: none;
+    border-radius: 3px;
+    border: 1px solid;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    font-style: inherit;
+    font-variant: inherit;
+    font-stretch: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    user-select: none;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row wrap;
+    font-weight: 700 !important;
+    margin-left: 30px;
+    flex-shrink: 0;
+}
+
 .dead-center {
     vertical-align: middle;
     -ms-flex-align: center;
@@ -2494,6 +2523,10 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     .cookieBanner_container {
         height: 48px;
     }
+
+    .adminMessage_container {
+        height: 48px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2502,11 +2535,13 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
         color: #0b1422 !important;
     }
 
-    .cookieBanner_main {
-        min-width: auto !important;
+    .adminMessage_container {
+        background-color: #e8fef2 !important;
+        color: #0b1422 !important;
     }
 
-    .cookieBanner_main1 {
+    .cookieBanner_main {
+        min-width: auto !important;
         display: block !important;
         padding: 15px;
     }
@@ -2528,6 +2563,21 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
         color: rgb(255, 255, 255);
         background-color: #0a74ef;
         border-color: #0a74ef;
+    }
+
+    .adminMessage_button {
+        margin-left: 0px;
+        margin-top: 15px;
+        font-size: 13px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-radius: 3px;
+        height: 36px;
+        display: flex;
+        width: 100%;
+        color: rgb(255, 255, 255);
+        background-color: #0acf74;
+        border-color: #0acf74;
     }
 }
 

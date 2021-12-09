@@ -239,6 +239,12 @@ a.log-in-btn {
     border-top-right-radius: unset;
 }
 
+.bet-parlay-container.bet-error {
+    border: none;
+    border-top-left-radius: unset;
+    border-top-right-radius: unset;
+}
+
 .bet-warn-message {
     background: #f9ec77;
     font-size: 10px;
@@ -249,6 +255,15 @@ a.log-in-btn {
 
 .bet-parlay-warn-message {
     background: #f9ec77;
+    font-size: 10px;
+    padding: 10px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    margin: 0 10px;
+}
+
+.bet-parlay-error-message {
+    background: #f0a1a9;
     font-size: 10px;
     padding: 10px;
     border-top-left-radius: 3px;
@@ -1238,16 +1253,6 @@ a.log-in-btn {
         margin: 10vh 10px !important;
         padding: 0 !important;
     }
-}
-
-.dead-center {
-    vertical-align: middle;
-    -ms-flex-align: center;
-    align-items: center;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
 }
 
 .login_modal_content {

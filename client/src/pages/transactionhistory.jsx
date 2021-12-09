@@ -69,9 +69,9 @@ class TransactionHistory extends Component {
             case 'withdrawfee':
                 return `-`;
             case 'cashback':
-                return '';
+                return '+';
             case 'betwon':
-                return '';
+                return '+';
             case 'betfee':
                 return '-';
             case 'betcancel':

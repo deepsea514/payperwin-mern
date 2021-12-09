@@ -44,7 +44,17 @@ class BetSlip extends Component {
     }
 
     placeSingleBets = () => {
-        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (betSlip.length < 1) {
+            return this.setState({ errors: [`Wager could not be placed. No bets in your slip.`] });
+        }
+
+        const disabled = betEnabled && !betEnabled.single;
+        if (disabled) {
+            return this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
+        }
+
         this.setState({ errors: [] });
 
         let totalStake = 0;
@@ -54,19 +64,16 @@ class BetSlip extends Component {
             totalStake += b.stake;
             totalWin += b.win;
             if (b.win > maxBetLimitTier) {
-                this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
-                return;
+                return this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
             }
         }
 
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
         }
 
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
 
         this.setState({ submitting: true });
@@ -95,19 +102,42 @@ class BetSlip extends Component {
             });
     }
 
+    checkCorrelated = () => {
+        const { betSlip } = this.props;
+        for (const bet of betSlip) {
+            const { pickName, lineQuery } = bet;
+            const correlated = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+            if (correlated) return true;
+        }
+        return false;
+    }
+
     placeParlayBets = () => {
-        const { updateUser, user, betSlip, removeBet, maxBetLimitTier } = this.props;
+        const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (betSlip.length < 2) {
+            return this.setState({ errors: [`Wager could not be placed. To place a Multiples bet you need a minimum of two bets on your Bet Slip.`] });
+        }
+
+        const correlated = this.checkCorrelated();
+        if (correlated) {
+            return this.setState({ errors: [`Correlated bets could not be placed.`] });
+        }
+
+        const disabled = betEnabled && !betEnabled.parlay;
+        if (disabled) {
+            return this.setState({ errors: [`Wager could not be placed. Parlay Bet is temporary unavailable.`] });
+        }
+
         const { parlayStake, parlayWin } = this.state;
         this.setState({ errors: [] });
         let totalWin = parlayWin ? parlayWin : 0;
         let totalStake = parlayStake ? parlayStake : 0;
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeParlayBets`, { betSlip, totalStake, totalWin }, { withCredentials: true })
@@ -127,18 +157,26 @@ class BetSlip extends Component {
     }
 
     placeTeaserBets = () => {
-        const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier } = this.props;
+        const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (teaserBetSlip.length < 2) {
+            return this.setState({ errors: [`Wager could not be placed. To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.`] });
+        }
+
+        const disabled = betEnabled && !betEnabled.teaser;
+        if (disabled) {
+            return this.setState({ errors: [`Wager could not be placed. Teaser Bet is temporary unavailable.`] });
+        }
+
         const { teaserStake, teaserWin } = this.state;
         this.setState({ errors: [] });
         let totalWin = teaserWin ? teaserWin : 0;
         let totalStake = teaserStake ? teaserStake : 0;
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeTeaserBets`, { teaserBetSlip, totalStake, totalWin }, { withCredentials: true })
@@ -177,7 +215,7 @@ class BetSlip extends Component {
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
             className, showLoginModalAction, betSlipType, setBetSlipType, teaserBetSlip,
-            removeTeaserBet
+            removeTeaserBet, betEnabled
         } = this.props;
 
         let totalStake = 0;
@@ -195,6 +233,10 @@ class BetSlip extends Component {
             totalStake = teaserStake ? teaserStake : 0;
         }
         const sportsBetSlip = betSlip.filter(bet => bet.origin != 'other');
+
+        const singleDisabled = betEnabled && !betEnabled.single;
+        const parlayDisabled = betEnabled && !betEnabled.parlay;
+        const teaserDisabled = betEnabled && !betEnabled.teaser;
 
         return (
             <div className={`bet-slip-contain ${className} ${openBetSlipMenu ? 'full-fixed' : ''}`}>
@@ -251,16 +293,23 @@ class BetSlip extends Component {
                                         </Link>
                                     </div>
                                 </div>}
+                                {singleDisabled && <div className="bet p-0 m-1">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> Signle Bet is temporary unavailable.</b></div>
+                                    </div>
+                                </div>}
                                 {betSlip.length > 0 ?
                                     betSlip.map(bet => <Bet
                                         bet={bet}
                                         removeBet={removeBet}
                                         updateBet={updateBet}
                                         key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
-                                    : <div className="no-bets">
-                                        <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
-                                        <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
-                                    </div>}
+                                    : (
+                                        <div className="no-bets">
+                                            <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
+                                            <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
+                                        </div>
+                                    )}
                             </div>}
                             {betSlipType == 'parlay' && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
@@ -277,17 +326,23 @@ class BetSlip extends Component {
                                         </Link>
                                     </div>
                                 </div>}
+                                {parlayDisabled && <div className="bet p-0 m-1">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> Parlay Bet is temporary unavailable.</b></div>
+                                    </div>
+                                </div>}
                                 {sportsBetSlip.length > 1 ?
                                     <BetParlay
                                         betSlip={sportsBetSlip}
                                         stake={parlayStake}
                                         win={parlayWin}
                                         setParlayBet={(data) => this.setState(data)}
-                                    /> :
-                                    <div className="no-bets">
-                                        <h4><FormattedMessage id="COMPONENTS.BETSLIP.NOBET_PARLAY" /></h4>
-                                        <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
-                                    </div>}
+                                    /> : (
+                                        <div className="no-bets">
+                                            <h4><FormattedMessage id="COMPONENTS.BETSLIP.NOBET_PARLAY" /></h4>
+                                            <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
+                                        </div>
+                                    )}
                             </div>}
                             {betSlipType == 'teaser' && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
@@ -304,6 +359,11 @@ class BetSlip extends Component {
                                         </Link>
                                     </div>
                                 </div>}
+                                {teaserDisabled && <div className="bet p-0 m-1">
+                                    <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
+                                        <div><b><i className="fas fa-info-circle" /> Teaser Bet is temporary unavailable.</b></div>
+                                    </div>
+                                </div>}
                                 {teaserBetSlip.betSlip.length > 0 ?
                                     <BetTeaser
                                         teaserBetSlip={teaserBetSlip}
@@ -312,13 +372,15 @@ class BetSlip extends Component {
                                         removeBet={removeTeaserBet}
                                         setTeaserBet={(data) => this.setState(data)}
                                     />
-                                    : <div className="no-bets teaser">
-                                        <h4>To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.</h4>
-                                        <ul className="teaser-links">
-                                            <li><Link to='/sport/Basketball/teaser'><img src='/images/icons/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
-                                            <li><Link to="/sport/American_Football/teaser"><img src="/images/icons/football.png" className='teaser-image' /> American Football Teasers</Link></li>
-                                        </ul>
-                                    </div>}
+                                    : (
+                                        <div className="no-bets teaser">
+                                            <h4>To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.</h4>
+                                            <ul className="teaser-links">
+                                                <li><Link to='/sport/Basketball/teaser'><img src='/images/icons/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
+                                                <li><Link to="/sport/American_Football/teaser"><img src="/images/icons/football.png" className='teaser-image' /> American Football Teasers</Link></li>
+                                            </ul>
+                                        </div>
+                                    )}
                             </div>}
                             <div className="total">
                                 <div className="total-stack d-flex">
@@ -364,6 +426,7 @@ class BetSlip extends Component {
 
 const mapStateToProps = (state) => ({
     maxBetLimitTier: state.frontend.maxBetLimitTier,
+    betEnabled: state.frontend.betEnabled,
 });
 
 

@@ -48,7 +48,23 @@ class BetActivities extends React.Component {
     }
 
     getDateFormat = (date) => {
-        return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
+        return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
+    }
+
+    getMatchDate = (bet) => {
+        if (bet.isParlay) {
+            const parlayQuery = bet.parlayQuery;
+            let minDate = new Date(parlayQuery[0].matchStartDate);
+            let maxDate = new Date(parlayQuery[0].matchStartDate);
+            for (const query of parlayQuery) {
+                const date = new Date(query.matchStartDate);
+                if (minDate.getTime() > date.getTime()) minDate = date;
+                if (maxDate.getTime() < date.getTime()) maxDate = date;
+            }
+            return this.getDateFormat(minDate) + ' ~ ' + this.getDateFormat(maxDate);
+        } else {
+            return this.getDateFormat(bet.matchStartDate);
+        }
     }
 
     tableBody = () => {
@@ -91,7 +107,7 @@ class BetActivities extends React.Component {
                     {bet.isParlay ? '' :
                         bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                 </td>
-                <td scope="col">{dateformat(bet.matchStartDate)}</td>
+                <td scope="col">{this.getMatchDate(bet)}</td>
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
                 <td scope="col">{this.getBetMatch(bet)}</td>
                 <td scope="col">{this.getWinLoss(bet)}</td>
@@ -398,21 +414,6 @@ class BetActivities extends React.Component {
                                 <div className="col-lg-2 col-md-3">
                                     <select
                                         className="form-control"
-                                        value={filter.match}
-                                        onChange={e => {
-                                            this.onFilterChange({ match: e.target.value });
-                                        }} >
-                                        <option value="">Choose Match Status...</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="matched">Matched</option>
-                                    </select>
-                                    <small className="form-text text-muted">
-                                        <b>Search</b> by Match Status
-                                    </small>
-                                </div>
-                                <div className="col-lg-2 col-md-3">
-                                    <select
-                                        className="form-control"
                                         value={filter.status}
                                         onChange={e => {
                                             this.onFilterChange({ status: e.target.value });
@@ -427,6 +428,22 @@ class BetActivities extends React.Component {
                                     </select>
                                     <small className="form-text text-muted">
                                         <b>Search</b> by Status
+                                    </small>
+                                </div>
+                                <div className="col-lg-2 col-md-3">
+                                    <select
+                                        className="form-control"
+                                        disabled={filter.status != 'open'}
+                                        value={filter.match}
+                                        onChange={e => {
+                                            this.onFilterChange({ match: e.target.value });
+                                        }} >
+                                        <option value="">Choose Match Status...</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="matched">Matched</option>
+                                    </select>
+                                    <small className="form-text text-muted">
+                                        <b>Search</b> by Match Status
                                     </small>
                                 </div>
                                 <div className="col-lg-2 col-md-3">

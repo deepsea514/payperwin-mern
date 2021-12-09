@@ -643,6 +643,18 @@ adminRouter.get(
             if (credit.length > 0) credit = credit[0].total;
             else credit = 0;
 
+            let inplay = await Bet.aggregate(
+                {
+                    $match: {
+                        userId: user._id,
+                        status: { $in: ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"] }
+                    }
+                },
+                { $group: { _id: null, total: { $sum: "$bet" } } }
+            )
+            if (inplay.length > 0) inplay = inplay[0].total;
+            else inplay = 0;
+
             res.status(200).json({
                 lastbets,
                 lastsportsbookbets,
@@ -658,7 +670,8 @@ adminRouter.get(
                 averagebetafter2loss,
                 wins,
                 usedCredit,
-                credit
+                credit,
+                inplay
             });
         }
         catch (error) {
@@ -732,8 +745,7 @@ adminRouter.get(
         else page = parseInt(page);
         page--;
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
@@ -753,10 +765,10 @@ adminRouter.get(
             );
             if (credit.length > 0) credit = credit[0].total;
             else credit = 0;
-            res.json({ total: total, data: data, credit });
+            return res.json({ total: total, data: data, credit });
         }
         catch (error) {
-            res.status(500).json({ error: 'Can\'t find Credits.', result: error });
+            return res.status(500).json({ error: 'Can\'t find Credits.', result: error });
         }
     }
 )
@@ -772,17 +784,16 @@ adminRouter.get(
         if (!page) page = 1;
         else page = parseInt(page);
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             const searchObj = { user: id, financialtype: "deposit" };
             const total = await FinancialLog.find(searchObj).count();
             const deposits = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage).populate('reason');
-            res.json({ total, page, perPage, deposits });
+            return res.json({ total, page, perPage, deposits });
         }
         catch (error) {
-            res.status(500).json({ error: 'Can\'t find Deposits.', result: error });
+            return res.status(500).json({ error: 'Can\'t find Deposits.', result: error });
         }
     }
 )
@@ -798,8 +809,7 @@ adminRouter.get(
         if (!page) page = 1;
         else page = parseInt(page);
         if (!id) {
-            res.status(404).json({ error: 'Customer id is not given.' });
-            return;
+            return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
             const searchObj = { user: id, financialtype: "withdraw" };
@@ -809,6 +819,31 @@ adminRouter.get(
         }
         catch (error) {
             res.status(500).json({ error: 'Can\'t find Withdraws.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/customer-transactions',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 15;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        if (!id) {
+            return res.status(404).json({ error: 'Customer id is not given.' });
+        }
+        try {
+            const searchObj = { user: id };
+            const total = await FinancialLog.find(searchObj).count();
+            const transactions = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            return res.json({ total, page, perPage, transactions });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Can\'t find Withdraws.', result: error });
         }
     }
 )
@@ -1856,6 +1891,19 @@ adminRouter.get(
                     ...searchObj,
                     status: { $in: [null, 'Pending', 'Partial Match', 'Matched', 'Accepted', 'Partial Accepted'] }
                 };
+
+                if (match && match == 'pending') {
+                    searchObj = {
+                        ...searchObj,
+                        matchingStatus: { $in: [null, 'Pending', 'Partial Match', 'Partial Accepted'] }
+                    };
+                }
+                else if (match && match == 'matched') {
+                    searchObj = {
+                        ...searchObj,
+                        matchingStatus: { $in: ['Matched', 'Accepted'] }
+                    };
+                }
             } else if (status && status == 'settled') {
                 searchObj = {
                     ...searchObj,
@@ -1880,19 +1928,6 @@ adminRouter.get(
                 searchObj = {
                     ...searchObj,
                     status: 'Cancelled'
-                };
-            }
-
-            if (match && match == 'pending') {
-                searchObj = {
-                    ...searchObj,
-                    matchingStatus: { $in: [null, 'Pending', 'Partial Match', 'Partial Accepted'] }
-                };
-            }
-            else if (match && match == 'matched') {
-                searchObj = {
-                    ...searchObj,
-                    matchingStatus: { $in: ['Matched', 'Accepted'] }
                 };
             }
 
@@ -2108,8 +2143,8 @@ adminRouter.post(
                             return res.status(400).json({ success: false, error: 'Result not exists.' });
                         }
                         const { teamAScore: homeScore, teamBScore: awayScore } = result.score;
-                        query.homeScore = homeScore;
-                        query.awayScore = awayScore;
+                        query.homeScore = parseInt(homeScore);
+                        query.awayScore = parseInt(awayScore);
 
                         let moneyLineWinner = null;
                         if (homeScore > awayScore) moneyLineWinner = 'home';
@@ -2283,7 +2318,9 @@ adminRouter.post(
                 let drawCancelled = false;
 
                 if (drawBets.length > 0 && nonDrawBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         drawCancelled = true;
                     } else {
@@ -2415,7 +2452,9 @@ adminRouter.post(
                 }
 
                 if (homeBets.length > 0 && awayBets.length > 0) {
-                    const { teamAScore: homeScore, teamBScore: awayScore, cancellationReason } = req.body;
+                    const { teamAScore, teamBScore, cancellationReason } = req.body;
+                    const homeScore = parseInt(teamAScore);
+                    const awayScore = parseInt(teamBScore);
                     if (cancellationReason) {
                         matchCancelled = true;
                     } else {
@@ -2828,7 +2867,7 @@ adminRouter.post(
                 if (bet.sportsbook) {
                     switch (pick) {
                         case "home":
-                            newLineOdds = --Number(bet.teamB.odds)
+                            newLineOdds = -Number(bet.teamB.odds)
                             break;
                         case "draw":
                             newLineOdds = Number(bet.teamDraw.odds);
@@ -2892,7 +2931,7 @@ adminRouter.post(
                         break;
                     case 'moneyline':
                         if (pick == 'home') {
-                            pickName += teamA;
+                            pickName += bet.teamA.name;
                         }
                         else if (pick == 'draw') {
                             pickName += "Draw";
@@ -2900,7 +2939,7 @@ adminRouter.post(
                         else if (pick == 'nondraw') {
                             pickName += "Non Draw";
                         } else {
-                            pickName += teamB;
+                            pickName += bet.teamB.name;
                         }
                         break;
                     default:
@@ -6583,8 +6622,31 @@ adminRouter.get(
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'bets',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$userId", "$$user_id"] },
+                                        { $in: ["$status", ["Pending", "Partial Match", "Partial Accepted", "Matched", "Accepted"]] }
+                                    ]
+                                },
+                            },
+                        }, {
+                            $project: {
+                                bet: 1
+                            }
+                        }],
+                        as: 'inplay'
+                    }
+                },
+                {
                     $project: {
                         email: 1,
+                        balance: 1,
+                        inplay: { $sum: "$inplay.bet" },
                         credit: { $sum: "$credit.amount" },
                         creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
                     }

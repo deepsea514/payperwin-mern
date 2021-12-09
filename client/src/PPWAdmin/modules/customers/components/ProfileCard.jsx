@@ -127,6 +127,17 @@ class ProfileCard extends React.Component {
                                     </span>
                                 </NavLink>
                             </div>
+                            <li className="navi-item mb-2">
+                                <NavLink to={`/users/${id}/profile/transactions`}
+                                    className="navi-link py-4 non-border-bottom">
+                                    <span className="navi-icon mr-2">
+                                        <SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg" />
+                                    </span>
+                                    <span className="text-left navi-text font-size-lg">
+                                        Transactions
+                                    </span>
+                                </NavLink>
+                            </li>
                             <div className="navi-item mb-2">
                                 <NavLink
                                     to={`/users/${id}/profile/bet-log`}
@@ -147,12 +158,12 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/General/Settings-1.svg"/>
+                                            <SVG src="/media/svg/icons/General/Settings-1.svg" />
                                         </span>
-                                        
+
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
-                                     Customer Tier
+                                        Customer Tier
                                     </span>
                                 </NavLink>
                             </div>
