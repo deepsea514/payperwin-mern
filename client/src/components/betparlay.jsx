@@ -51,9 +51,20 @@ class BetParlay extends Component {
         setParlayBet(stateChange);
     }
 
+    checkCorrelated = () => {
+        const { betSlip } = this.props;
+        for (const bet of betSlip) {
+            const { pickName, lineQuery } = bet;
+            const correlated = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+            if (correlated) return true;
+        }
+        return false;
+    }
+
     render() {
         const { betSlip, oddsFormat, stake, win, maxBetLimitTier } = this.props;
         const odds = this.getParlayOdds();
+        const correlated = this.checkCorrelated();
 
         return (
             <>
@@ -61,7 +72,12 @@ class BetParlay extends Component {
                     <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
                     <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{ max_win_limit: maxBetLimitTier }} />
                 </div>}
-                <div className={`bet-parlay-container ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
+
+                {correlated && <div className="bet-parlay-error-message">
+                    <div><i className="fas fa-info-circle" /> <b>Correlated Selection</b></div>
+                </div>}
+
+                <div className={`bet-parlay-container ${correlated ? 'bet-error' : (win > maxBetLimitTier ? 'bet-warn' : '')}`}>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">1's x {betSlip.length}</span>
                         <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
@@ -92,12 +108,13 @@ class BetParlay extends Component {
                     <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses Sportsbook odds in parlay bets.</div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, index) => {
-                        const { name, type, league, sportName, pickName } = bet;
+                        const { name, type, league, sportName, pickName, lineQuery } = bet;
+                        const correlated = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
                         return (
                             <div key={index} className="bet-parlay">
                                 <div>
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
-                                    {name}
+                                    <span className={correlated ? "text-danger" : ""}>{name}</span>
                                 </div>
                                 <div className="bet-type-league">{type} - {league}</div>
                                 <span className="bet-pick">{pickName}</span>

@@ -1509,6 +1509,21 @@ expressApp.post(
             return res.json({ balance: user.balance, errors });
         }
 
+        let correlated = false;
+        for (const bet of betSlip) {
+            const { pickName, lineQuery } = bet;
+            const sameBet = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+            if (sameBet) {
+                correlated = true;
+                break;
+            }
+        }
+
+        if (correlated) {
+            errors.push(`Correlated bets could not be placed.`)
+            return res.json({ balance: user.balance, errors });
+        }
+
         const parlayQuery = [];
         let index = 0;
         let eventsDetail = '';

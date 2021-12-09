@@ -45,10 +45,14 @@ class BetSlip extends Component {
 
     placeSingleBets = () => {
         const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (betSlip.length < 1) {
+            return this.setState({ errors: [`Wager could not be placed. No bets in your slip.`] });
+        }
+
         const disabled = betEnabled && !betEnabled.single;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
-            return;
+            return this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
         }
 
         this.setState({ errors: [] });
@@ -60,19 +64,16 @@ class BetSlip extends Component {
             totalStake += b.stake;
             totalWin += b.win;
             if (b.win > maxBetLimitTier) {
-                this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
-                return;
+                return this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
             }
         }
 
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
         }
 
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
 
         this.setState({ submitting: true });
@@ -101,12 +102,31 @@ class BetSlip extends Component {
             });
     }
 
+    checkCorrelated = () => {
+        const { betSlip } = this.props;
+        for (const bet of betSlip) {
+            const { pickName, lineQuery } = bet;
+            const correlated = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+            if (correlated) return true;
+        }
+        return false;
+    }
+
     placeParlayBets = () => {
         const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (betSlip.length < 2) {
+            return this.setState({ errors: [`Wager could not be placed. To place a Multiples bet you need a minimum of two bets on your Bet Slip.`] });
+        }
+
+        const correlated = this.checkCorrelated();
+        if (correlated) {
+            return this.setState({ errors: [`Correlated bets could not be placed.`] });
+        }
+
         const disabled = betEnabled && !betEnabled.parlay;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Parlay Bet is temporary unavailable.`] });
-            return;
+            return this.setState({ errors: [`Wager could not be placed. Parlay Bet is temporary unavailable.`] });
         }
 
         const { parlayStake, parlayWin } = this.state;
@@ -114,12 +134,10 @@ class BetSlip extends Component {
         let totalWin = parlayWin ? parlayWin : 0;
         let totalStake = parlayStake ? parlayStake : 0;
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeParlayBets`, { betSlip, totalStake, totalWin }, { withCredentials: true })
@@ -140,10 +158,14 @@ class BetSlip extends Component {
 
     placeTeaserBets = () => {
         const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier, betEnabled } = this.props;
+
+        if (teaserBetSlip.length < 2) {
+            return this.setState({ errors: [`Wager could not be placed. To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.`] });
+        }
+
         const disabled = betEnabled && !betEnabled.teaser;
         if (disabled) {
-            this.setState({ errors: [`Wager could not be placed. Teaser Bet is temporary unavailable.`] });
-            return;
+            return this.setState({ errors: [`Wager could not be placed. Teaser Bet is temporary unavailable.`] });
         }
 
         const { teaserStake, teaserWin } = this.state;
@@ -151,12 +173,10 @@ class BetSlip extends Component {
         let totalWin = teaserWin ? teaserWin : 0;
         let totalStake = teaserStake ? teaserStake : 0;
         if (user && totalStake > user.balance) {
-            this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
-            return;
+            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
         if (totalWin > maxBetLimitTier) {
-            this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
-            return;
+            return this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
         axios.post(`${serverUrl}/placeTeaserBets`, { teaserBetSlip, totalStake, totalWin }, { withCredentials: true })
