@@ -62,11 +62,17 @@ class Cashback extends React.Component {
                 <td>${Number(cashback.fee).toFixed(2)}</td>
                 <td>${Number(cashback.amount).toFixed(2)}</td>
                 <td className="text-right">
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item as={Link} to={`${cashback.user._id}/history/${filter.year}/${parseInt(filter.month) + 1}`}>
-                            <i className="far fa-eye"></i>&nbsp; Detail
-                        </Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`${cashback.user._id}/history/${filter.year}/${parseInt(filter.month) + 1}`}>
+                                <i className="far fa-eye"></i>&nbsp; Detail
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

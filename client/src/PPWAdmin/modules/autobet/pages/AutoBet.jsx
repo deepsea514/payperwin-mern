@@ -115,10 +115,16 @@ class AutoBet extends React.Component {
                 <td>{this.getStatus(bet.status)}</td>
                 <td>{this.getDateFormat(bet.createdAt)}</td>
                 <td>
-                    <DropdownButton title="Actions">
-                        <Dropdown.Item onClick={() => this.setEditId(bet)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}><i className="fas fa-trash"></i>&nbsp; Delete Autobet</Dropdown.Item>
-                    </DropdownButton>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item onClick={() => this.setEditId(bet)}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}><i className="fas fa-trash"></i>&nbsp; Delete Autobet</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </td>
             </tr>
         ));

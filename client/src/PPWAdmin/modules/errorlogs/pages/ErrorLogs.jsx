@@ -58,9 +58,15 @@ class ErrorLogs extends React.Component {
                     <td>{record.name}</td>
                     <td>{record.stack}</td>
                     <td>
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item onClick={() => this.setState({ deleteId: record.id })}><i className="fas fa-trash"></i>&nbsp; Delete Log</Dropdown.Item>
-                        </DropdownButton>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Actions
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: record.id })}><i className="fas fa-trash"></i>&nbsp; Delete Log</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </td>
                 </tr>
             )
