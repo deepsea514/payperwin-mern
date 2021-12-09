@@ -84,10 +84,16 @@ class DepositLog extends React.Component {
                     <td>{log.uniqid}</td>
                     <td>{dateformat(new Date(log.createdAt), "mediumDate")}</td>
                     <td>
-                        <DropdownButton title="Actions">
-                            <Dropdown.Item onClick={() => this.setState({ editStatusId: log._id, initialValues: { status: log.status } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
-                            {log.status !== FinancialStatus.success && <Dropdown.Item onClick={() => this.setState({ deleteId: log._id })}><i className="fas fa-trash"></i>&nbsp; Delete Log</Dropdown.Item>}
-                        </DropdownButton>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Actions
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item onClick={() => this.setState({ editStatusId: log._id, initialValues: { status: log.status } })}><i className="fas fa-check"></i>&nbsp; Change Status</Dropdown.Item>
+                                {log.status !== FinancialStatus.success && <Dropdown.Item onClick={() => this.setState({ deleteId: log._id })}><i className="fas fa-trash"></i>&nbsp; Delete Log</Dropdown.Item>}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </td>
                 </tr>
             )

@@ -1946,10 +1946,29 @@ a.fav-link:hover {
     justify-content: space-between;
 }
 
+.language-li-menu {
+    float: left;
+}
+
+.language-flag.ko {
+    height: 16px;
+}
+
 .language-flag {
     margin-right: 5px;
     height: 12px;
     width: 18px;
+    display: block;
+}
+
+.language-flag-menu.ko {
+    height: 20px;
+}
+
+.language-flag-menu {
+    margin-right: 10px;
+    height: 18px;
+    width: 24px;
     display: block;
 }
 

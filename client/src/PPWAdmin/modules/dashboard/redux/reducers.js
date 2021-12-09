@@ -57,13 +57,14 @@ const initialState = {
         fees: [],
     },
     daterange: {
+        selected: 'custom',
         startDate: new Date(),
         endDate: new Date(),
     }
 };
 
 export const reducer = persistReducer(
-    { storage, key: "dashboard", whitelist: ['selectedDate'] },
+    { storage, key: "dashboard", whitelist: ['daterange'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.getLastBets:

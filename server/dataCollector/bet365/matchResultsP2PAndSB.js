@@ -151,7 +151,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                             draw = totalPoints == points;
                         }
 
-                        if (draw) {
+                        if (draw && !['Boxing-UFC'].includes(sportName)) {
                             // refund user
                             await Bet.findOneAndUpdate({ _id: _id }, {
                                 status: 'Draw',
