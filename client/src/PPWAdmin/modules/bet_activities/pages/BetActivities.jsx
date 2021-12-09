@@ -15,6 +15,8 @@ import SettleBetModal from "../components/SettleBetModal";
 import ManualMatchBetModal from "../components/ManualMatchBetModal";
 import FixBetScoreModal from '../components/FixBetScoreModal';
 import SettleParlayBetModal from "../components/SettleParlayBetModal";
+import FixParlayBetScoreModal from "../components/FixParlayBetScoreModal";
+
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -30,6 +32,7 @@ class BetActivities extends React.Component {
             resMessage: "",
             modalvariant: "success",
             fixBetId: null,
+            fixParlayId: null,
         }
         this.csvRef = createRef();
     }
@@ -134,6 +137,11 @@ class BetActivities extends React.Component {
                                 <i className="fas fa-wrench"></i>&nbsp; Fix Bet
                             </Dropdown.Item>
                         }
+                          {['Settled - Win', 'Settled - Lose'].includes(bet.status) && bet.isParlay &&
+                            <Dropdown.Item onClick={() => this.setState({ fixParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                            </Dropdown.Item>
+                        }
                         {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
                             <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                 <i className="fas fa-link"></i>&nbsp; Manual Match
@@ -203,6 +211,21 @@ class BetActivities extends React.Component {
                 this.setState({ modal: true, settleParlayId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
             })
     }
+    onFixParlayBet = (values, formik) => {
+        const { fixParlayId } = this.state;
+        const { getBetActivities } = this.props;
+        fixBetScore(fixParlayId.id, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, fixParlayId: null, resMessage: "Successfully Bet Fixed!", modalvariant: "success" });
+                getBetActivities();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, fixParlayId: null, resMessage: "Bet Fix Failed!", modalvariant: "danger" });
+            })
+    }
+
 
     onMatchBet = (values, formik) => {
         const { matchId } = this.state;
@@ -345,7 +368,8 @@ class BetActivities extends React.Component {
             settleId,
             matchId,
             settleParlayId,
-            fixBetId
+            fixBetId,
+            fixParlayId
         } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
@@ -592,6 +616,14 @@ class BetActivities extends React.Component {
                     onSubmit={this.onSettleParlayBet}
                     parlayQuery={settleParlayId.parlayQuery}
                 />}
+
+                {fixParlayId && <FixParlayBetScoreModal
+                    show={fixParlayId != null}
+                    onHide={() => this.setState({ fixParlayId: null })}
+                    onSubmit={this.onFixParlayBet}
+                    parlayQuery={fixParlayId.parlayQuery}
+                />}
+
 
                 {matchId && <ManualMatchBetModal
                     show={matchId != null}
