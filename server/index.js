@@ -469,7 +469,6 @@ expressApp.post('/login',
     // bruteforce.prevent,
     (req, res, next) => {
         // const reqObj = JSON.stringify(req);
-        console.log(req)
         const { session } = req;
         passport.authenticate('local', (err, user/* , info */) => {
             if (err) {
