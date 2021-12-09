@@ -50,16 +50,27 @@ class Menu extends Component {
                                 <i className="fa fa-question-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.HELP" />
                             </Link>
                         </li>
-                    </ul>
-                    <ul className="list-fab">
-                        <li>
-                            <FormattedMessage id="COMPONENTS.LANGUAGE" />
+                        <li className="nav-item">
+                            {/* <FormattedMessage id="COMPONENTS.LANGUAGE" />
                             <select value={lang} onChange={(evt) => setLanguage(evt.target.value)}>
                                 <option value="en">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.ENGLISH" })} (EN)</option>
                                 <option value="es">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.SPANISH" })} (ES)</option>
                                 <option value="ko">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.KOREAN" })} (KO)</option>
-                            </select>
+                            </select> */}
+                            <ul>
+                                <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">
+                                    <img src="/media/svg/flags/226-united-states.svg" className="language-flag-menu" />
+                                </li>
+                                <li onClick={() => setLanguage('es')} className="language-li-menu border-0 px-1 cursor-pointer">
+                                    <img src="/media/svg/flags/016-spain.svg" className="language-flag-menu" />
+                                </li>
+                                <li onClick={() => setLanguage('ko')} className="language-li-menu border-0 px-1 cursor-pointer">
+                                    <img src="/media/svg/flags/018-south-korea.svg" className="language-flag-menu ko" />
+                                </li>
+                            </ul>
                         </li>
+                    </ul>
+                    <ul className="list-fab">
                         <li>
                             <FormattedMessage id="COMPONENTS.MENU.ODDS" />
                             <select value={oddsFormat} onChange={(evt) => setOddsFormat(evt.target.value)}>
