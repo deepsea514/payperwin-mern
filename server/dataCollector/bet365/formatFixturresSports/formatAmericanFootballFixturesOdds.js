@@ -161,8 +161,8 @@ const formatAmericanFootballFixturesOdds = (event) => {
                 line.alternative_spreads.push({
                     altLineId: home.id,
                     hdp: Number(home.handicap),
-                    over: convertDecimalToAmericanOdds(home.odds),
-                    under: convertDecimalToAmericanOdds(away.odds),
+                    home: convertDecimalToAmericanOdds(home.odds),
+                    away: convertDecimalToAmericanOdds(away.odds),
                 });
                 alternative_point_spread_2_way = alternative_point_spread_2_way.filter(total => total.id != home.id && total.id != away.id);
             }
