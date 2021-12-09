@@ -97,8 +97,8 @@ const formatBaseballFixturesOdds = (event) => {
             line.alternative_spreads.push({
                 altLineId: home.id,
                 hdp: Number(home.handicap),
-                over: convertDecimalToAmericanOdds(home.odds),
-                under: convertDecimalToAmericanOdds(away.odds),
+                home: convertDecimalToAmericanOdds(home.odds),
+                away: convertDecimalToAmericanOdds(away.odds),
             });
             alternative_run_line = alternative_run_line.filter(total => total.id != home.id && total.id != away.id);
         }
