@@ -22,22 +22,31 @@ class BetSlip extends Component {
             teaserWin: '',
             teaserStake: '',
         };
+        this._Mounted = false;
+    }
+
+    componentDidMount() {
+        this._Mounted = true;
     }
 
     componentDidUpdate(prevProps) {
         const { betSlip, teaserBetSlip } = this.props;
         const { betSlip: prevBetSlip, teaserBetSlip: prevTeaserBetSlip } = prevProps;
         if (JSON.stringify(betSlip) != JSON.stringify(prevBetSlip)) {
-            this.setState({ parlayStake: '', parlayWin: '' });
+            this._Mounted && this.setState({ parlayStake: '', parlayWin: '' });
         }
         if (JSON.stringify(teaserBetSlip) != JSON.stringify(prevTeaserBetSlip)) {
-            this.setState({ teaserStake: '', teaserWin: '' });
+            this._Mounted && this.setState({ teaserStake: '', teaserWin: '' });
         }
+    }
+
+    componentWillUnmount() {
+        this._Mounted = false;
     }
 
     toggleField = (fieldName, forceState) => {
         if (typeof this.state[fieldName] !== 'undefined') {
-            this.setState({
+            this._Mounted && this.setState({
                 [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
             });
         }
@@ -47,15 +56,15 @@ class BetSlip extends Component {
         const { updateUser, user, betSlip, removeBet, maxBetLimitTier, betEnabled } = this.props;
 
         if (betSlip.length < 1) {
-            return this.setState({ errors: [`Wager could not be placed. No bets in your slip.`] });
+            return this._Mounted && this.setState({ errors: [`Wager could not be placed. No bets in your slip.`] });
         }
 
         const disabled = betEnabled && !betEnabled.single;
         if (disabled) {
-            return this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
+            return this._Mounted && this.setState({ errors: [`Wager could not be placed. Single Bet is temporary unavailable.`] });
         }
 
-        this.setState({ errors: [] });
+        this._Mounted && this.setState({ errors: [] });
 
         let totalStake = 0;
         let totalWin = 0;
@@ -64,16 +73,16 @@ class BetSlip extends Component {
             totalStake += b.stake;
             totalWin += b.win;
             if (b.win > maxBetLimitTier) {
-                return this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
+                return this._Mounted && this.setState({ errors: [`${b.pickName} ${b.odds[b.pick]} wager could not be placed. Exceed maximum win amount.`] });
             }
         }
 
         if (totalWin > maxBetLimitTier) {
-            return this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
+            return this._Mounted && this.setState({ errors: [`The wager could not be placed. You have exceeded your maximum win amount.`] });
         }
 
         if (user && totalStake > user.balance) {
-            return this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
+            return this._Mounted && this.setState({ errors: [`Insufficient Funds. You do not have sufficient funds to place these bets.`] });
         }
 
         this.setState({ submitting: true });
@@ -88,17 +97,17 @@ class BetSlip extends Component {
                 }
                 if (errors && errors.length) stateChanges.errors = errors;
                 if (successCount || errors) {
-                    this.setState(stateChanges);
+                    this._Mounted && this.setState(stateChanges);
                 }
             }).catch((err) => {
                 if (err.response && err.response.data) {
                     const { error } = err.response.data;
-                    this.setState({ formError: error });
+                    this._Mounted && this.setState({ formError: error });
                 } else {
-                    this.setState({ errors: ['Can\'t place bet.'] });
+                    this._Mounted && this.setState({ errors: ['Can\'t place bet.'] });
                 }
             }).finally(() => {
-                this.setState({ submitting: false });
+                this._Mounted && this.setState({ submitting: false });
             });
     }
 
@@ -211,11 +220,14 @@ class BetSlip extends Component {
     }
 
     render() {
-        const { errors, confirmationOpen, parlayWin, parlayStake, teaserWin, teaserStake, submitting } = this.state;
+        const {
+            errors, confirmationOpen, parlayWin, parlayStake, teaserWin,
+            teaserStake, submitting
+        } = this.state;
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
             className, showLoginModalAction, betSlipType, setBetSlipType, teaserBetSlip,
-            removeTeaserBet, betEnabled
+            removeTeaserBet, betEnabled, betSlipOdds
         } = this.props;
 
         let totalStake = 0;
@@ -303,6 +315,7 @@ class BetSlip extends Component {
                                         bet={bet}
                                         removeBet={removeBet}
                                         updateBet={updateBet}
+                                        betSlipOdds={betSlipOdds}
                                         key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
                                     : (
                                         <div className="no-bets">
@@ -336,6 +349,7 @@ class BetSlip extends Component {
                                         betSlip={sportsBetSlip}
                                         stake={parlayStake}
                                         win={parlayWin}
+                                        betSlipOdds={betSlipOdds}
                                         setParlayBet={(data) => this.setState(data)}
                                     /> : (
                                         <div className="no-bets">
