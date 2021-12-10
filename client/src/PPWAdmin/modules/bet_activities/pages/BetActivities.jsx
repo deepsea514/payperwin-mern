@@ -16,7 +16,7 @@ import ManualMatchBetModal from "../components/ManualMatchBetModal";
 import FixBetScoreModal from '../components/FixBetScoreModal';
 import SettleParlayBetModal from "../components/SettleParlayBetModal";
 import FixParlayBetScoreModal from "../components/FixParlayBetScoreModal";
-
+import BetDetailModal from '../components/BetDetailModal';
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -33,6 +33,7 @@ class BetActivities extends React.Component {
             modalvariant: "success",
             fixBetId: null,
             fixParlayId: null,
+            detailId: null,
         }
         this.csvRef = createRef();
     }
@@ -121,7 +122,7 @@ class BetActivities extends React.Component {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
-                            <Dropdown.Item as={Link} to={`/${bet._id}/detail`}>
+                            <Dropdown.Item onClick={() => this.setState({ detailId: bet })}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
                             {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
@@ -146,11 +147,11 @@ class BetActivities extends React.Component {
                                 <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
                                     <i className="fas fa-link"></i>&nbsp; Manual Match
                                 </Dropdown.Item>}
-                                
+
                             {['Settled - Win', 'Settled - Lose'].includes(bet.status) && bet.isParlay &&
-                            <Dropdown.Item onClick={() => this.setState({ fixParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
-                                <i className="fas fa-wrench"></i>&nbsp; Fix Bet
-                            </Dropdown.Item>
+                                <Dropdown.Item onClick={() => this.setState({ fixParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                                </Dropdown.Item>
                             }
 
                         </Dropdown.Menu>
@@ -377,7 +378,8 @@ class BetActivities extends React.Component {
             matchId,
             settleParlayId,
             fixBetId,
-            fixParlayId
+            fixParlayId,
+            detailId
         } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
@@ -632,11 +634,16 @@ class BetActivities extends React.Component {
                     parlayQuery={fixParlayId.parlayQuery}
                 />}
 
-
                 {matchId && <ManualMatchBetModal
                     show={matchId != null}
                     onHide={() => this.setState({ matchId: null })}
                     onSubmit={this.onMatchBet}
+                />}
+
+                {detailId && <BetDetailModal
+                    show={detailId != null}
+                    onHide={() => this.setState({ detailId: null })}
+                    bet={detailId}
                 />}
             </div>
         );
