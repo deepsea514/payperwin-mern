@@ -162,11 +162,11 @@ class BetActivities extends React.Component {
 
     deleteBet = () => {
         const { deleteId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         deleteBet(deleteId)
             .then(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
-                getBetActivities();
+                getBetActivities(currentPage);
             })
             .catch(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
@@ -175,13 +175,13 @@ class BetActivities extends React.Component {
 
     onSettleBet = (values, formik) => {
         const { settleId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         settleBet(settleId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, settleId: null, resMessage: "Successfully Settled!", modalvariant: "success" });
 
-                getBetActivities();
+                getBetActivities(currentPage);
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -191,12 +191,12 @@ class BetActivities extends React.Component {
 
     onFixBetScore = (values, formik) => {
         const { fixBetId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         fixBetScore(fixBetId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, fixBetId: null, resMessage: "Successfully Fixed Bet Score!", modalvariant: "success" });
-                getBetActivities();
+                getBetActivities(currentPage);
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -206,13 +206,13 @@ class BetActivities extends React.Component {
 
     onSettleParlayBet = (values, formik) => {
         const { settleParlayId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         settleBet(settleParlayId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, settleParlayId: null, resMessage: "Successfully Settled!", modalvariant: "success" });
 
-                getBetActivities();
+                getBetActivities(currentPage);
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -221,12 +221,12 @@ class BetActivities extends React.Component {
     }
     onFixParlayBet = (values, formik) => {
         const { fixParlayId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         fixBetScore(fixParlayId.id, values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, fixParlayId: null, resMessage: "Successfully Bet Fixed!", modalvariant: "success" });
-                getBetActivities();
+                getBetActivities(currentPage);
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -237,13 +237,13 @@ class BetActivities extends React.Component {
 
     onMatchBet = (values, formik) => {
         const { matchId } = this.state;
-        const { getBetActivities } = this.props;
+        const { getBetActivities, currentPage } = this.props;
         matchBet(matchId, { user: values.user.value, amount: values.amount })
             .then(({ data }) => {
                 if (data.success) {
                     formik.setSubmitting(false);
                     this.setState({ modal: true, matchId: null, resMessage: "Successfully Matched!", modalvariant: "success" });
-                    getBetActivities();
+                    getBetActivities(currentPage);
                 } else {
                     formik.setSubmitting(false);
                     this.setState({ modal: true, matchId: null, resMessage: data.error, modalvariant: "danger" });
