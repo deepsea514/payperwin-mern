@@ -62,7 +62,7 @@ class BetParlay extends Component {
     }
 
     render() {
-        const { betSlip, oddsFormat, stake, win, maxBetLimitTier } = this.props;
+        const { betSlip, oddsFormat, stake, win, maxBetLimitTier, betSlipOdds } = this.props;
         const odds = this.getParlayOdds();
         const correlated = this.checkCorrelated();
 
@@ -107,17 +107,34 @@ class BetParlay extends Component {
                     <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
                     <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses Sportsbook odds in parlay bets.</div>
                     <div className='bet-divider' />
-                    {betSlip.map((bet, index) => {
-                        const { name, type, league, sportName, pickName, lineQuery } = bet;
+                    {betSlip.map((bet, betIdx) => {
+                        const { name, type, subtype, index, league, sportName, pickName, lineQuery, lineId, originOdds, pick } = bet;
                         const correlated = betSlip.find(bet => bet.lineQuery.eventId == lineQuery.eventId && bet.pickName != pickName);
+
+                        let oddsChanged = null;
+                        if (betSlipOdds && betSlipOdds.length > 0) {
+                            const latestOdds = betSlipOdds.find(({ lineQuery }) => {
+                                return lineQuery.lineId == lineId &&
+                                    lineQuery.type == type &&
+                                    lineQuery.subtype == subtype &&
+                                    lineQuery.index == index
+                            });
+                            if (latestOdds) {
+                                if (latestOdds.odds.home != originOdds.home || latestOdds.odds.away != originOdds.away) {
+                                    oddsChanged = latestOdds.odds;
+                                }
+                            }
+                        }
+
                         return (
-                            <div key={index} className="bet-parlay">
+                            <div key={betIdx} className="bet-parlay">
                                 <div>
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
                                     <span className={correlated ? "text-danger" : ""}>{name}</span>
                                 </div>
                                 <div className="bet-type-league">{type} - {league}</div>
                                 <span className="bet-pick">{pickName}</span>
+                                {oddsChanged && <div className='text-danger'>Odds changed to {oddsChanged[pick]}</div>}
                             </div>
                         )
                     })}

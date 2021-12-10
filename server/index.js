@@ -4997,8 +4997,7 @@ expressApp.post(
     }
 )
 
-
-expressApp.use('/getLatestOdds', async (req, res) => {
+expressApp.post('/getLatestOdds', async (req, res) => {
     const betDetails = req.body;
     const { pick, lineQuery, live } = betDetails;
     const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
@@ -5028,6 +5027,31 @@ expressApp.use('/getLatestOdds', async (req, res) => {
                 error: "no line found"
             });
         }
+    }
+})
+
+expressApp.post('/getSlipLatestOdds', async (req, res) => {
+    try {
+        const betSlip = req.body;
+        const results = [];
+        for (const bet of betSlip) {
+            const { lineQuery, live } = bet;
+            const { sportName, leagueId, eventId, lineId, type, subtype, altLineId } = lineQuery;
+            const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
+            if (sportData) {
+                const line = getLineFromSportData(sportData, leagueId, eventId, lineId, type, subtype, altLineId, live);
+                if (line) {
+                    const oddsA = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.over : line.line.home;
+                    const oddsB = ['total', 'alternative_total'].includes(lineQuery.type) ? line.line.under : line.line.away;
+                    results.push({ lineQuery, odds: { home: oddsA, away: oddsB } });
+                } else {
+                    results.push({ lineQuery, odds: { home: 0, away: 0 } });
+                }
+            }
+        }
+        return res.json(results);
+    } catch (error) {
+        return res.json(null);
     }
 })
 

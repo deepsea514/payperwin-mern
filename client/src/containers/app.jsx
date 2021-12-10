@@ -68,6 +68,10 @@ import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
 import Invite from '../pages/invite';
 
+import _env from '../env.json';
+import axios from 'axios';
+const serverUrl = _env.appUrl;
+
 import '../style/all.css';
 import '../style/all.min.css';
 import '../style/bootstrap.min.css';
@@ -170,9 +174,12 @@ class App extends Component {
             teaserBetSlip: {
                 type: null,
                 betSlip: []
-            }
+            },
+            betSlipTimer: null,
+            betSlipOdds: null,
         };
         setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
+        this._Mounted = true;
     }
 
     setBetSlipType = (type) => {
@@ -180,6 +187,7 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this._Mounted = true;
         const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction, getBetStatusAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
         setInterval(() => setDisplayModeBasedOnSystem(), 1000);
@@ -188,6 +196,25 @@ class App extends Component {
         getUser(this.redirectToDashboard);
         getAdminMessageAction();
         getBetStatusAction();
+        this.setState({ betSlipTimer: setInterval(this.getLatestOdds, 10 * 1000) });
+    }
+
+    getLatestOdds = () => {
+        const { betSlip } = this.state;
+        if (betSlip.length == 0) return;
+        axios.post(`${serverUrl}/getSlipLatestOdds`, betSlip)
+            .then(({ data }) => {
+                this._Mounted && this.setState({ betSlipOdds: data });
+            })
+            .catch(() => {
+                this._Mounted && this.setState({ betSlipOdds: null });
+            })
+    }
+
+    componentWillUnmount() {
+        this._Mounted = false;
+        const { betSlipTimer } = this.state;
+        if (betSlipTimer) clearInterval(betSlipTimer);
     }
 
     redirectToDashboard = (user) => {
@@ -337,7 +364,8 @@ class App extends Component {
             openBetSlipMenu,
             scrolledTop,
             betSlipType,
-            teaserBetSlip
+            teaserBetSlip,
+            betSlipOdds
         } = this.state;
         const { user,
             getUser,
@@ -643,6 +671,7 @@ class App extends Component {
                                                         removeTeaserBet={this.removeTeaserBet}
                                                         user={user}
                                                         history={history}
+                                                        betSlipOdds={betSlipOdds}
                                                     />}
                                                 {!verified && pathname.indexOf('/withdraw') == 0 && <Redirect to="/verification" from="*" />}
                                                 {!verified && pathname == '/verification' && <VerificationProof />}
@@ -672,6 +701,7 @@ class App extends Component {
                         removeTeaserBet={this.removeTeaserBet}
                         user={user}
                         history={history}
+                        betSlipOdds={betSlipOdds}
                     />}
             </div>
         );
