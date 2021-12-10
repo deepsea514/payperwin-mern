@@ -2,7 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
-import { Dropdown, DropdownButton, Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 export default class SettleBetModal extends React.Component {
     constructor(props) {
