@@ -2990,22 +2990,22 @@ adminRouter.post(
                 };
                 switch (pick) {
                     case 'home':
-                        docChanges.$push['homeBets'] = bet._id;
+                        docChanges.$push['homeBets'] = newBet._id;
                         docChanges.$inc['teamA.betTotal'] = betAfterFee;
                         docChanges.$inc['teamA.toWinTotal'] = toWin;
                         break;
                     case 'draw':
-                        docChanges.$push['drawBets'] = bet._id;
+                        docChanges.$push['drawBets'] = newBet._id;
                         docChanges.$inc['teamDraw.betTotal'] = betAfterFee;
                         docChanges.$inc['teamDraw.toWinTotal'] = toWin;
                         break;
                     case 'nondraw':
-                        docChanges.$push['nonDrawBets'] = bet._id;
+                        docChanges.$push['nonDrawBets'] = newBet._id;
                         docChanges.$inc['teamNonDraw.betTotal'] = betAfterFee;
                         docChanges.$inc['teamNonDraw.toWinTotal'] = toWin;
                         break;
                     default:
-                        docChanges.$push['awayBets'] = bet._id;
+                        docChanges.$push['awayBets'] = newBet._id;
                         docChanges.$inc['teamB.betTotal'] = betAfterFee;
                         docChanges.$inc['teamB.toWinTotal'] = toWin;
                         break;
