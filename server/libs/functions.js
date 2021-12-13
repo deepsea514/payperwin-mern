@@ -231,7 +231,7 @@ const getMaxWithdraw = async (user) => {
                 status: "Settled - Win",
             }
         },
-        { $group: { _id: null, total: { $sum: "$credited" } } }
+        { $group: { _id: null, total: { $sum: "$payableToWin" } } }
     );
     if (totalwinbet.length) totalwinbet = totalwinbet[0].total;
     else totalwinbet = 0;
@@ -272,24 +272,25 @@ const getMaxWithdraw = async (user) => {
     if (inviteBonus.length) inviteBonus = inviteBonus[0].total;
     else inviteBonus = 0;
 
+    let usedCredit = await FinancialLog.aggregate(
+        {
+            $match: {
+                user: new ObjectId(user._id),
+                financialtype: { $in: ['transfer-out', 'transfer-in'] }
+            }
+        },
+        { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+    );
+    const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+    const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+    usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+
     let maxwithdraw = 0;
-    if (totalwagers >= ((signupBonusAmount + inviteBonus) * 8 + totaldeposit * 5)) {
-        maxwithdraw = totalwagers / 5 + signupBonusAmount + inviteBonus;
+    if (totalwagers >= ((signupBonusAmount + inviteBonus) * 8 + (totaldeposit + inamount) * 5)) {
+        maxwithdraw = totalwinbet + signupBonusAmount + inviteBonus;
     }
 
     if (maxwithdraw) {
-        let usedCredit = await FinancialLog.aggregate(
-            {
-                $match: {
-                    user: new ObjectId(user._id),
-                    financialtype: { $in: ['transfer-out', 'transfer-in'] }
-                }
-            },
-            { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
-        );
-        const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
-        const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
-        usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
         maxwithdraw = Number((maxwithdraw - usedCredit).toFixed(2));
     }
     return maxwithdraw;
