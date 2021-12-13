@@ -635,13 +635,14 @@ adminRouter.get(
                 {
                     $match: {
                         user: new ObjectId(user._id),
-                        financialtype: 'credit'
+                        financialtype: { $in: ['credit', 'debit'] }
                     }
                 },
-                { $group: { _id: null, total: { $sum: "$amount" } } }
+                { $group: { _id: '$financialtype', total: { $sum: "$amount" } } }
             );
-            if (credit.length > 0) credit = credit[0].total;
-            else credit = 0;
+            const creditamount = credit.find(credit => credit._id == 'credit');
+            const debitamount = credit.find(credit => credit._id == 'debit');
+            credit = (creditamount ? creditamount.total : 0) - (debitamount ? debitamount.total : 0);
 
             let inplay = await Bet.aggregate(
                 {
@@ -748,7 +749,7 @@ adminRouter.get(
             return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
-            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            let searchObj = { financialtype: { $in: ['credit', 'debit', 'transfer-out', 'transfer-in'] }, user: id };
             const total = await FinancialLog.find(searchObj).count();
             const data = await FinancialLog.find(searchObj)
                 .skip(page * perPage)
@@ -757,14 +758,16 @@ adminRouter.get(
             let credit = await FinancialLog.aggregate(
                 {
                     $match: {
-                        user: new ObjectId(id),
-                        financialtype: 'credit'
+                        user: new ObjectId(user._id),
+                        financialtype: { $in: ['credit', 'debit'] }
                     }
                 },
-                { $group: { _id: null, total: { $sum: "$amount" } } }
+                { $group: { _id: '$financialtype', total: { $sum: "$amount" } } }
             );
-            if (credit.length > 0) credit = credit[0].total;
-            else credit = 0;
+            const creditamount = credit.find(credit => credit._id == 'credit');
+            const debitamount = credit.find(credit => credit._id == 'debit');
+            credit = (creditamount ? creditamount.total : 0) - (debitamount ? debitamount.total : 0);
+
             return res.json({ total: total, data: data, credit });
         }
         catch (error) {
@@ -6623,6 +6626,23 @@ adminRouter.get(
                 },
                 {
                     $lookup: {
+                        from: 'financiallogs',
+                        let: { user_id: "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$user", "$$user_id"] },
+                                        { $eq: ["$financialtype", "debit"] }
+                                    ]
+                                },
+                            },
+                        }],
+                        as: 'debit'
+                    }
+                },
+                {
+                    $lookup: {
                         from: 'bets',
                         let: { user_id: "$_id" },
                         pipeline: [{
@@ -6647,7 +6667,7 @@ adminRouter.get(
                         email: 1,
                         balance: 1,
                         inplay: { $sum: "$inplay.bet" },
-                        credit: { $sum: "$credit.amount" },
+                        credit: { $subtract: [{ $sum: "$credit.amount" }, { $sum: "$debit.amount" }] },
                         creditUsed: { $subtract: [{ $sum: "$creditOut.amount" }, { $sum: "$creditIn.amount" }] }
                     }
                 },
@@ -6687,10 +6707,11 @@ adminRouter.post(
     authenticateJWT,
     limitRoles('credits'),
     async (req, res) => {
-        const { user: user_id, type, amount } = req.body;
+        let { user: user_id, type, amount } = req.body;
         if (!user_id || !type || !amount) {
             return res.json({ success: false, message: 'Please input all the required fields.' });
         }
+        amount = Number(amount);
         try {
             const user = await User.findById(user_id);
             if (!user) {
@@ -6698,108 +6719,120 @@ adminRouter.post(
             }
             switch (type) {
                 case 'issue':
-                    if (amount <= 0)
-                        return res.json({ success: false, message: 'Amount should be at least 0.' });
-                    await FinancialLog.create({
-                        financialtype: 'credit',
-                        uniqid: `C${ID()}`,
-                        user: user._id,
-                        amount: amount,
-                        method: 'Line of Credit',
-                        status: FinancialStatus.success,
-                        beforeBalance: user.balance,
-                        afterBalance: user.balance
-                    });
-                    await user.update({ $inc: { credit: amount } });
-                    break;
-                case 'debit':
-                    if (amount <= 0)
-                        return res.json({ success: false, message: 'Amount should be at least 0.' });
-
-                    let usedCredit = await FinancialLog.aggregate(
-                        {
-                            $match: {
-                                user: new ObjectId(user._id),
-                                financialtype: { $in: ['transfer-out', 'transfer-in'] }
-                            }
-                        },
-                        { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
-                    );
-                    const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
-                    const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
-                    usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
-
-                    if (amount > user.credit - usedCredit) {
-                        return res.json({ success: false, message: 'Amount exceed the credit used.' });
+                    {
+                        if (amount <= 0)
+                            return res.json({ success: false, message: 'Amount should be at least 0.' });
+                        await FinancialLog.create({
+                            financialtype: 'credit',
+                            uniqid: `C${ID()}`,
+                            user: user._id,
+                            amount: amount,
+                            method: 'Line of Credit',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance
+                        });
+                        await user.update({ $inc: { credit: amount } });
+                        break;
                     }
+                case 'debit':
+                    {
+                        if (amount <= 0)
+                            return res.json({ success: false, message: 'Amount should be at least 0.' });
 
-                    await FinancialLog.create({
-                        financialtype: 'debit',
-                        uniqid: `C${ID()}`,
-                        user: user._id,
-                        amount: amount,
-                        method: 'Line of Credit',
-                        status: FinancialStatus.success,
-                        beforeBalance: user.balance,
-                        afterBalance: user.balance
-                    });
-                    await user.update({ $inc: { credit: -amount } });
-                    break;
+                        let usedCredit = await FinancialLog.aggregate(
+                            {
+                                $match: {
+                                    user: new ObjectId(user._id),
+                                    financialtype: { $in: ['transfer-out', 'transfer-in', 'credit', 'debit'] }
+                                }
+                            },
+                            { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+                        );
+                        const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+                        const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+                        const creditamount = usedCredit.find(credit => credit._id == 'credit');
+                        const debitamount = usedCredit.find(credit => credit._id == 'debit');
+                        usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+                        const credit = (creditamount ? creditamount.total : 0) - (debitamount ? debitamount.total : 0);
+
+                        if (amount > credit - usedCredit) {
+                            return res.json({ success: false, message: 'Amount exceed the credit used.' });
+                        }
+
+                        await FinancialLog.create({
+                            financialtype: 'debit',
+                            uniqid: `C${ID()}`,
+                            user: user._id,
+                            amount: amount,
+                            method: 'Line of Credit',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance
+                        });
+                        await user.update({ $inc: { credit: -amount } });
+                        break;
+                    }
                 case 'transfer-in':
-                    if (amount > user.balance)
-                        return res.json({ success: false, message: 'Cannot transfer in credit. Out of user balance.' });
-                    await FinancialLog.create({
-                        financialtype: 'transfer-in',
-                        uniqid: `TI${ID()}`,
-                        user: user._id,
-                        amount: amount,
-                        method: 'Line of Credit',
-                        status: FinancialStatus.success,
-                        beforeBalance: user.balance,
-                        afterBalance: user.balance - amount
-                    });
-                    await user.update({ $inc: { balance: -amount, } })
-                    break;
+                    {
+                        if (amount > user.balance)
+                            return res.json({ success: false, message: 'Cannot transfer in credit. Out of user balance.' });
+                        await FinancialLog.create({
+                            financialtype: 'transfer-in',
+                            uniqid: `TI${ID()}`,
+                            user: user._id,
+                            amount: amount,
+                            method: 'Line of Credit',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance - amount
+                        });
+                        await user.update({ $inc: { balance: -amount, } })
+                        break;
+                    }
                 case 'transfer-out':
-                    let usedCredit = await FinancialLog.aggregate(
-                        {
-                            $match: {
-                                user: new ObjectId(user._id),
-                                financialtype: { $in: ['transfer-out', 'transfer-in'] }
-                            }
-                        },
-                        { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
-                    );
-                    const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
-                    const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
-                    usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
+                    {
+                        let usedCredit = await FinancialLog.aggregate(
+                            {
+                                $match: {
+                                    user: new ObjectId(user._id),
+                                    financialtype: { $in: ['transfer-out', 'transfer-in'] }
+                                }
+                            },
+                            { $group: { _id: "$financialtype", total: { $sum: "$amount" } } }
+                        );
+                        const inamount = usedCredit.find(credit => credit._id == 'transfer-in');
+                        const outamount = usedCredit.find(credit => credit._id == 'transfer-out');
+                        usedCredit = (outamount ? outamount.total : 0) - (inamount ? inamount.total : 0);
 
-                    let credit = await FinancialLog.aggregate(
-                        {
-                            $match: {
-                                user: new ObjectId(user._id),
-                                financialtype: 'credit'
-                            }
-                        },
-                        { $group: { _id: null, total: { $sum: "$amount" } } }
-                    );
-                    if (credit.length > 0) credit = credit[0].total;
-                    else credit = 0;
+                        let credit = await FinancialLog.aggregate(
+                            {
+                                $match: {
+                                    user: new ObjectId(user._id),
+                                    financialtype: { $in: ['credit', 'debit'] }
+                                }
+                            },
+                            { $group: { _id: '$financialtype', total: { $sum: "$amount" } } }
+                        );
+                        const creditamount = credit.find(credit => credit._id == 'credit');
+                        const debitamount = credit.find(credit => credit._id == 'debit');
+                        credit = (creditamount ? creditamount.total : 0) - (debitamount ? debitamount.total : 0);
 
-                    if (usedCredit + Number(amount) > credit)
-                        return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
-                    await FinancialLog.create({
-                        financialtype: 'transfer-out',
-                        uniqid: `TO${ID()}`,
-                        user: user._id,
-                        amount: amount,
-                        method: 'Line of Credit',
-                        status: FinancialStatus.success,
-                        beforeBalance: user.balance,
-                        afterBalance: user.balance + amount
-                    });
-                    await user.update({ $inc: { balance: amount } })
-                    break;
+                        if (usedCredit + Number(amount) > credit)
+                            return res.json({ success: false, message: 'Cannot transfer out credit. Out of credit amount.' });
+                        await FinancialLog.create({
+                            financialtype: 'transfer-out',
+                            uniqid: `TO${ID()}`,
+                            user: user._id,
+                            amount: amount,
+                            method: 'Line of Credit',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance + amount
+                        });
+                        await user.update({ $inc: { balance: amount } })
+                        break;
+                    }
                 default:
                     return res.json({ success: false, message: 'Unknown type.' });
             }
@@ -6828,7 +6861,7 @@ adminRouter.get(
             if (!user) {
                 return res.json({ user: null, data: [], total: 0 })
             }
-            let searchObj = { financialtype: { $in: ['credit', 'transfer-out', 'transfer-in'] }, user: id };
+            let searchObj = { financialtype: { $in: ['credit', 'debit', 'transfer-out', 'transfer-in'] }, user: id };
             const total = await FinancialLog.find(searchObj).count();
             const data = await FinancialLog.find(searchObj)
                 .skip(page * perPage)
