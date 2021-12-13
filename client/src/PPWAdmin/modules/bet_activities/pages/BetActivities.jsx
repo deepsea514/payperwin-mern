@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet, fixBetScore } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet, fixBetScore, cancelBet } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
@@ -34,6 +34,7 @@ class BetActivities extends React.Component {
             fixBetId: null,
             fixParlayId: null,
             detailId: null,
+            cancelId: null,
         }
         this.csvRef = createRef();
     }
@@ -130,6 +131,9 @@ class BetActivities extends React.Component {
                                     <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                         <i className="fas fa-trash"></i>&nbsp; Delete
                                     </Dropdown.Item>
+                                    {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ cancelId: bet._id })}>
+                                        <i className="fa fa-times"></i>&nbsp; Cancel
+                                    </Dropdown.Item>}
                                     {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                         <i className="fas fa-check"></i>&nbsp; Settle
                                     </Dropdown.Item>}
@@ -171,6 +175,19 @@ class BetActivities extends React.Component {
             })
             .catch(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
+            })
+    }
+
+    cancelBet = () => {
+        const { cancelId } = this.state;
+        const { getBetActivities, currentPage } = this.props;
+        cancelBet(cancelId)
+            .then(() => {
+                this.setState({ modal: true, cancelId: null, resMessage: "Successfully cancelled!", modalvariant: "success" });
+                getBetActivities(currentPage);
+            })
+            .catch(() => {
+                this.setState({ modal: true, cancelId: null, resMessage: "Failed to cancel!", modalvariant: "danger" });
             })
     }
 
@@ -379,7 +396,8 @@ class BetActivities extends React.Component {
             settleParlayId,
             fixBetId,
             fixParlayId,
-            detailId
+            detailId,
+            cancelId
         } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
@@ -586,6 +604,20 @@ class BetActivities extends React.Component {
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={this.deleteBet}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={cancelId != null} onHide={() => this.setState({ cancelId: null })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Do you want to cancel this bet?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ cancelId: null })}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={this.cancelBet}>
                             Confirm
                         </Button>
                     </Modal.Footer>

@@ -2679,6 +2679,82 @@ adminRouter.post(
 )
 
 adminRouter.post(
+    '/bets/:id/cancel',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const bet = await Bet.findById(id);
+            if (!bet) {
+                return res.status(404).json({ success: false });
+            }
+
+            if (bet.isParlay) {
+                return res.status(404).json({ success: false });
+            } else {
+                const betpool = await BetPool.findOne({
+                    $or: [
+                        { homeBets: bet._id },
+                        { awayBets: bet._id },
+                        { drawBets: bet._id },
+                        { nonDrawBets: bet._id },
+                    ]
+                });
+                if (betpool) {
+                    const { homeBets, awayBets, drawBets, nonDrawBets } = betpool;
+                    for (const betId of [...homeBets, ...awayBets, ...(drawBets ? drawBets : []), ...(nonDrawBets ? nonDrawBets : [])]) {
+                        const bet = await Bet.findById(betId);
+                        if (bet) {
+                            const { _id, userId, bet: betAmount } = bet;
+                            // refund user
+                            await bet.update({ status: 'Cancelled' });
+                            const user = await User.findById(userId);
+                            if (user) {
+                                await FinancialLog.create({
+                                    financialtype: 'betcancel',
+                                    uniqid: `BC${ID()}`,
+                                    user: userId,
+                                    betId: _id,
+                                    amount: betAmount,
+                                    method: 'betcancel',
+                                    status: FinancialStatus.success,
+                                    beforeBalance: user.balance,
+                                    afterBalance: user.balance + betAmount
+                                });
+                                await user.update({ $inc: { balance: betAmount } });
+                            }
+                        }
+                    }
+                } else {
+                    const { _id, userId, bet: betAmount } = bet;
+                    const user = await User.findById(userId);
+                    await bet.update({ status: 'Cancelled' });
+                    if (user) {
+                        await FinancialLog.create({
+                            financialtype: 'betcancel',
+                            uniqid: `BC${ID()}`,
+                            user: userId,
+                            betId: _id,
+                            amount: betAmount,
+                            method: 'betcancel',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance + betAmount
+                        });
+                        await user.update({ $inc: { balance: betAmount } });
+                    }
+                }
+            }
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false });
+        }
+    }
+);
+
+adminRouter.post(
     '/bets/:id/match',
     authenticateJWT,
     limitRoles('bet_activities'),
