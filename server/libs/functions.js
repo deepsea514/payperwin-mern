@@ -287,9 +287,8 @@ const getMaxWithdraw = async (user) => {
 
     let maxwithdraw = 0;
     if (totalwagers >= ((signupBonusAmount + inviteBonus) * 8 + (totaldeposit + (inamount ? inamount.total : 0)) * 5)) {
-        maxwithdraw = totalwinbet + signupBonusAmount + inviteBonus;
+        maxwithdraw = totalwinbet + signupBonusAmount + inviteBonus + totaldeposit + (inamount ? inamount.total : 0);
     }
-    console.log(maxwithdraw, usedCredit);
     if (maxwithdraw) {
         maxwithdraw = Number((maxwithdraw - usedCredit).toFixed(2));
     }
