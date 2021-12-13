@@ -26,6 +26,10 @@ export function deleteBet(id) {
     return axios.delete(`${serverUrl}/bets/${id}`);
 }
 
+export function cancelBet(id) {
+    return axios.post(`${serverUrl}/bets/${id}/cancel`);
+}
+
 export function settleBet(id, score) {
     return axios.post(`${serverUrl}/bets/${id}/settle`, score);
 }
