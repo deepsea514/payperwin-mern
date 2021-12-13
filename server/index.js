@@ -3818,7 +3818,7 @@ expressApp.post(
                         ...searchObj,
                         $or: [
                             {
-                                financialtype: { $nin: ["withdraw", "credit"] },
+                                financialtype: { $nin: ["withdraw", "credit", "debit"] },
                                 status: FinancialStatus.success
                             },
                             {

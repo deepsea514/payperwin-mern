@@ -87,6 +87,8 @@ class CreditDetail extends React.Component {
         switch (type) {
             case 'credit':
                 return <span className="label label-lg label-outline-info label-inline font-weight-lighter mr-2">Credit</span>
+            case 'debit':
+                return <span className="label label-lg label-outline-primary label-inline font-weight-lighter mr-2">Debit</span>
             case 'transfer-in':
                 return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Transfer In</span>
             case 'transfer-out':
