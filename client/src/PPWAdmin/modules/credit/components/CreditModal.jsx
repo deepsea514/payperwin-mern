@@ -101,6 +101,7 @@ export default class CreditModal extends React.Component {
                                             {...formik.getFieldProps("type")}>
                                             <option value="">Choose Type ...</option>
                                             <option value="issue">Issue Credit</option>
+                                            <option value="debit">Debit Line</option>
                                             <option value="transfer-in">Transfer In</option>
                                             <option value="transfer-out">Transfer Out</option>
                                         </select>}
