@@ -2139,6 +2139,7 @@ adminRouter.post(
                 const { homeBets, awayBets } = betpool;
                 if (homeBets.length > 0 && awayBets.length > 0) {
                     let homeWin = true;
+                    const drawIds = [];
                     for (const query of parlayQuery) {
                         const lineQuery = query.lineQuery;
                         const result = results.find(result => {
@@ -2158,8 +2159,10 @@ adminRouter.post(
 
                         const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(query.pickName, query.pick, lineQuery);
                         let betWin;
+                        let draw = false;
                         if (lineQuery.type === 'moneyline') {
                             betWin = query.pick === moneyLineWinner;
+                            draw = homeScore == awayScore;
                         } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                             const spread = { home: linePoints, away: 0 };
                             const homeScoreHandiCapped = homeScore + spread.home;
@@ -2168,15 +2171,143 @@ adminRouter.post(
                             if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
                             else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                             betWin = query.pick === spreadWinner;
+                            draw = homeScoreHandiCapped == awayScoreHandiCapped;
                         } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                             betWin = query.pick === overUnderWinner;
+                            draw = totalPoints == linePoints
                         }
 
-                        homeWin = homeWin && betWin;
+                        if (draw) {
+                            if (lineQuery.sportName == 'Boxing-UFC') {
+                                draw = false;
+                                betWin = false;
+                            } else {
+                                drawIds.push(lineQuery.eventId);
+                            }
+                        }
+
+                        homeWin = homeWin && (betWin || draw);
                         query.status = betWin ? 'Win' : 'Lose';
+                        query.status = draw ? 'Draw' : query.status;
                         delete query.result;
+                    }
+
+                    if (drawIds.length > 0) {
+                        const originParlayQuery = bet.parlayQuery;
+                        let teaserPoint = null;
+                        for (const query of originParlayQuery) {
+                            if (query.lineQuery.teaserPoint != undefined) {
+                                teaserPoint = query.lineQuery.teaserPoint;
+                                break;
+                            }
+                        }
+
+                        if (drawIds.length == originParlayQuery.length) {
+                            await cancelBetPool(betpool);
+                            return res.json({ success: true });
+                        }
+
+                        let parlayOdds = 1;
+                        const newParlayQuery = [];
+                        if (teaserPoint != null) {
+                            let sportName = null;
+                            for (const query of originParlayQuery) {
+                                const { lineQuery: { eventId, sportName: querySportName } } = query;
+                                sportName = querySportName;
+                                const cancelled = drawIds.find(event => event == eventId);
+                                if (cancelled) continue;
+                                newParlayQuery.push(query);
+                            }
+                            if (newParlayQuery.length <= 1) {
+                                await cancelBetPool(betpool);
+                                return res.json({ success: true });
+                            }
+                            parlayOdds = getTeaserOdds(sportName, teaserPoint, newParlayQuery.length);
+                        } else {
+                            for (const query of originParlayQuery) {
+                                const { pickOdds, lineQuery: { eventId } } = query;
+                                const cancelled = drawIds.find(event => event == eventId);
+                                if (cancelled) continue;
+                                parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+                                newParlayQuery.push(query);
+                            }
+                            if (parlayOdds >= 2) {
+                                parlayOdds = parseInt((parlayOdds - 1) * 100);
+                            } else {
+                                parlayOdds = parseInt(-100 / (parlayOdds - 1));
+                            }
+                        }
+
+                        const { homeBets, awayBets } = betpool;
+                        const teamA = { odds: parlayOdds, betTotal: 0, toWinTotal: 0 };
+                        const teamB = { odds: -parlayOdds, betTotal: 0, toWinTotal: 0 };
+                        const newHomeBets = [];
+                        const newAwayBets = [];
+                        for (const bet_id of homeBets) {
+                            const bet = await Bet.findById(bet_id);
+                            if (bet) {
+                                newHomeBets.push(bet._id);
+                                const { bet: betAmount } = bet;
+                                const toWin = calculateToWinFromBet(betAmount, parlayOdds);
+                                teamA.betTotal = betAmount;
+                                teamA.toWinTotal = toWin;
+                                await bet.update({
+                                    toWin: toWin,
+                                    payableToWin: 0,
+                                    pickOdds: parlayOdds,
+                                });
+                            }
+                        }
+
+                        const totalAwayBet = teamA.toWinTotal;
+                        const prevTotalAwayBet = betpool.teamB.betTotal;
+                        if (totalAwayBet == 0 || prevTotalAwayBet <= 0) {
+                            await cancelBetPool(betpool);
+                            return res.json({ success: true });
+                        }
+
+                        for (const bet_id of awayBets) {
+                            const bet = await Bet.findById(bet_id);
+                            if (bet) {
+                                newAwayBets.push(bet._id);
+                                const { userId, bet: betAmount } = bet;
+                                let newBetAmount = betAmount;
+                                if (totalAwayBet < prevTotalAwayBet) {
+                                    const rate = betAmount / prevTotalAwayBet;
+                                    newBetAmount = totalAwayBet * rate;
+                                }
+                                const toWin = calculateToWinFromBet(newBetAmount, -parlayOdds);
+                                teamB.betTotal += newBetAmount;
+                                teamB.toWinTotal += toWin;
+                                await bet.update({
+                                    bet: newBetAmount,
+                                    toWin: toWin,
+                                    payableToWin: 0,
+                                    pickOdds: -parlayOdds,
+                                });
+                                if (newBetAmount < betAmount) {
+                                    const user = await User.findById(userId);
+                                    if (user) {
+                                        await FinancialLog.create({
+                                            financialtype: 'betrefund',
+                                            uniqid: `BF${ID()}`,
+                                            user: userId,
+                                            betId: bet_id,
+                                            amount: betAmount - newBetAmount,
+                                            method: 'betrefund',
+                                            status: FinancialStatus.success,
+                                            beforeBalance: user.balance,
+                                            afterBalance: user.balance + betAmount - newBetAmount
+                                        });
+                                        await user.update({ $inc: { balance: betAmount - newBetAmount } });
+                                    }
+                                }
+                            }
+                        }
+                        await betpool.update({ teamA, teamB, homeBets: newHomeBets, awayBets: newAwayBets });
+                        await calculateParlayBetsStatus(betpool._id);
                     }
 
                     const winBets = homeWin ? homeBets : awayBets;
@@ -2266,30 +2397,7 @@ adminRouter.post(
                     }
                     await betpool.update({ $set: { result: 'Settled' } });
                 } else {
-                    for (const betId of [...homeBets, ...awayBets]) {
-                        const bet = await Bet.findById(betId);
-                        if (bet) {
-                            const { _id, userId, bet: betAmount } = bet;
-                            // refund user
-                            await bet.update({ status: 'Cancelled' });
-                            const user = await User.findById(userId);
-                            if (user) {
-                                await FinancialLog.create({
-                                    financialtype: 'betcancel',
-                                    uniqid: `BC${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: betAmount,
-                                    method: 'betcancel',
-                                    status: FinancialStatus.success,
-                                    beforeBalance: user.balance,
-                                    afterBalance: user.balance + betAmount
-                                });
-                                await user.update({ $inc: { balance: betAmount } });
-                            }
-                        }
-                    }
-                    await betpool.update({ $set: { result: 'Cancelled' } });
+                    cancelBetPool(betpool);
                 }
                 return res.json({ success: true });
             } else {
