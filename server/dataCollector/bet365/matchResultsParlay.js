@@ -9,12 +9,13 @@ const ErrorLog = require('../../models/errorlog');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
-const { ID, getLinePoints, calculateToWinFromBet, calculateParlayBetsStatus, sendBetWinConfirmEmail, sendBetLoseConfirmEmail } = require('../../libs/functions');
+const { ID, getLinePoints, calculateToWinFromBet, calculateParlayBetsStatus, sendBetWinConfirmEmail, sendBetLoseConfirmEmail, cancelBetPool } = require('../../libs/functions');
 const getMatchScores = require('./getMatchScores');
 const convertOdds = require('../../libs/convertOdds');
 //external libraries
 const axios = require('axios');
 const sgMail = require('@sendgrid/mail');
+const getTeaserOdds = require('../../libs/getTeaserOdds');
 const FinancialStatus = config.FinancialStatus;
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
@@ -28,33 +29,6 @@ Date.prototype.addHours = function (h) {
 Date.prototype.addMinutes = function (m) {
     this.setTime(this.getTime() + (m * 60 * 1000));
     return this;
-}
-
-const cancelBetPool = async (betpool) => {
-    const { homeBets, awayBets } = betpool;
-    for (const betId of [...homeBets, ...awayBets]) {
-        const bet = await Bet.findById(betId);
-        if (bet) {
-            const { _id, userId, bet: betAmount } = bet;
-            await bet.update({ status: 'Cancelled' });
-            const user = await User.findById(userId);
-            if (user) {
-                await FinancialLog.create({
-                    financialtype: 'betcancel',
-                    uniqid: `BC${ID()}`,
-                    user: userId,
-                    betId: _id,
-                    amount: betAmount,
-                    method: 'betcancel',
-                    status: FinancialStatus.success,
-                    beforeBalance: user.balance,
-                    afterBalance: user.balance + betAmount
-                });
-                await user.update({ $inc: { balance: betAmount } });
-            }
-        }
-    }
-    await betpool.update({ $set: { result: 'Cancelled' } });
 }
 
 const matchResultsParlay = async (bet365ApiKey) => {
@@ -200,21 +174,46 @@ const matchResultsParlay = async (bet365ApiKey) => {
             if (cancelledEvents.length > 0) {
                 // Adjust wallet and odds
                 if (cancelledEvents.length == resultQuery.length) {
-                    cancelBetPool(betpool);
+                    await cancelBetPool(betpool);
                     continue;
                 }
 
-                let parlayOdds = 1;
+                let teaserPoint = null;
                 for (const query of parlayQuery) {
-                    const { pickOdds, lineQuery: { eventId } } = query;
-                    const cancelled = cancelledEvents.find(event => event == eventId);
-                    if (cancelled) continue;
-                    parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+                    if (query.lineQuery.teaserPoint != undefined) {
+                        teaserPoint = query.lineQuery.teaserPoint;
+                        break;
+                    }
                 }
-                if (parlayOdds >= 2) {
-                    parlayOdds = parseInt((parlayOdds - 1) * 100);
+
+                let parlayOdds = 1;
+                if (teaserPoint != null) {
+                    let sportName = null;
+                    const newParlayQuery = [];
+                    for (const query of parlayQuery) {
+                        const { lineQuery: { eventId, sportName: querySportName } } = query;
+                        sportName = querySportName;
+                        const cancelled = cancelledEvents.find(event => event == eventId);
+                        if (cancelled) continue;
+                        newParlayQuery.push(query);
+                    }
+                    if (newParlayQuery.length <= 1) {
+                        await cancelBetPool(betpool);
+                        continue;
+                    }
+                    parlayOdds = getTeaserOdds(sportName, teaserPoint, newParlayQuery.length);
                 } else {
-                    parlayOdds = parseInt(-100 / (parlayOdds - 1));
+                    for (const query of parlayQuery) {
+                        const { pickOdds, lineQuery: { eventId } } = query;
+                        const cancelled = cancelledEvents.find(event => event == eventId);
+                        if (cancelled) continue;
+                        parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+                    }
+                    if (parlayOdds >= 2) {
+                        parlayOdds = parseInt((parlayOdds - 1) * 100);
+                    } else {
+                        parlayOdds = parseInt(-100 / (parlayOdds - 1));
+                    }
                 }
 
                 const teamA = { odds: parlayOdds, betTotal: 0, toWinTotal: 0 };
@@ -372,7 +371,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
             }
             await betpool.update({ $set: { result: 'Settled' } });
         } else {
-            cancelBetPool(betpool);
+            await cancelBetPool(betpool);
         }
     }
 }

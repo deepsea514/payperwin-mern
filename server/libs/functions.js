@@ -6,6 +6,7 @@ const EventBetPool = require('../models/eventbetpool');
 const ParlayBetPool = require('../models/parlaybetpool');
 const Preference = require('../models/preference');
 const ErrorLog = require('../models/errorlog');
+const User = require('../models/user');
 
 const { ObjectId } = require('mongodb');
 const sgMail = require('@sendgrid/mail');
@@ -377,7 +378,7 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
     }
 }
 
-const ResetWinnerFinancialLog = async() => {
+const ResetWinnerFinancialLog = async () => {
     //reseting wininer finacial logs amount and substracting user balance
     const oldfinancialLogs = await FinancialLog.find({ betId: { $in: [...homeBets, ...awayBets] }, method: { $in: ['betwon', 'betfee'] } });
 
@@ -396,6 +397,33 @@ const ResetWinnerFinancialLog = async() => {
     }
 }
 
+const cancelBetPool = async (betpool) => {
+    const { homeBets, awayBets, drawBets, nonDrawBets } = betpool;
+    for (const betId of [...homeBets, ...awayBets, ...(drawBets ? drawBets : []), ...(nonDrawBets ? nonDrawBets : [])]) {
+        const bet = await Bet.findById(betId);
+        if (bet) {
+            const { _id, userId, bet: betAmount } = bet;
+            await bet.update({ status: 'Cancelled' });
+            const user = await User.findById(userId);
+            if (user) {
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: userId,
+                    betId: _id,
+                    amount: betAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + betAmount
+                });
+                await user.update({ $inc: { balance: betAmount } });
+            }
+        }
+    }
+    await betpool.update({ $set: { result: 'Cancelled' } });
+}
+
 module.exports = {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
@@ -411,5 +439,6 @@ module.exports = {
     getLinePoints,
     getMaxWithdraw,
     sendBetWinConfirmEmail,
-    sendBetLoseConfirmEmail
+    sendBetLoseConfirmEmail,
+    cancelBetPool
 }

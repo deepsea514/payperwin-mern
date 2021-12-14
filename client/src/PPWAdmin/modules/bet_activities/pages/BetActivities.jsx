@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import * as bet_activities from "../redux/reducers";
 import * as autobet from "../../autobet/redux/reducers";
 import dateformat from "dateformat";
-import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet, fixBetScore, cancelBet } from "../redux/services";
+import { getSports, getWagerActivityAsCSV, deleteBet, settleBet, matchBet, fixBetScore, cancelBet, removeGame } from "../redux/services";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { CSVLink } from 'react-csv';
 import CustomDatePicker from "../../../../components/customDatePicker";
@@ -17,6 +17,7 @@ import FixBetScoreModal from '../components/FixBetScoreModal';
 import SettleParlayBetModal from "../components/SettleParlayBetModal";
 import FixParlayBetScoreModal from "../components/FixParlayBetScoreModal";
 import BetDetailModal from '../components/BetDetailModal';
+import RemoveGameModal from "../components/RemoveGameModal";
 
 class BetActivities extends React.Component {
     constructor(props) {
@@ -35,6 +36,7 @@ class BetActivities extends React.Component {
             fixParlayId: null,
             detailId: null,
             cancelId: null,
+            removeParlayId: null,
         }
         this.csvRef = createRef();
     }
@@ -136,6 +138,9 @@ class BetActivities extends React.Component {
                                     </Dropdown.Item>}
                                     {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                         <i className="fas fa-check"></i>&nbsp; Settle
+                                    </Dropdown.Item>}
+                                    {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ removeParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                        <i className="fas fa-times"></i>&nbsp; Remove a Game
                                     </Dropdown.Item>}
                                     {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
                                         <i className="fas fa-check"></i>&nbsp; Settle
@@ -251,7 +256,6 @@ class BetActivities extends React.Component {
                 this.setState({ modal: true, fixParlayId: null, resMessage: "Bet Fix Failed!", modalvariant: "danger" });
             })
     }
-
 
     onMatchBet = (values, formik) => {
         const { matchId } = this.state;
@@ -383,21 +387,33 @@ class BetActivities extends React.Component {
             })
     }
 
+    onRemoveParlay = (values, formik) => {
+        const { removeParlayId } = this.state;
+        const { getBetActivities, currentPage } = this.props;
+        formik.setSubmitting(false);
+        removeGame(removeParlayId.id, values.removeIds.map(value => value.value))
+            .then(({ data }) => {
+                if (data.success) {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, removeParlayId: null, resMessage: "Successfully Removed!", modalvariant: "success" });
+                    getBetActivities(currentPage);
+                } else {
+                    formik.setSubmitting(false);
+                    this.setState({ modal: true, removeParlayId: null, resMessage: data.error, modalvariant: "danger" });
+                }
+            })
+            .catch(error => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, removeParlayId: null, resMessage: "Remove Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const {
-            perPage,
-            wagerActivityDownloadData,
-            deleteId,
-            modal,
-            resMessage,
-            modalvariant,
-            settleId,
-            matchId,
-            settleParlayId,
-            fixBetId,
-            fixParlayId,
-            detailId,
-            cancelId
+        const { perPage, wagerActivityDownloadData,
+            modal, resMessage, modalvariant,
+            deleteId, settleId, matchId,
+            settleParlayId, fixBetId, fixParlayId,
+            detailId, cancelId, removeParlayId,
         } = this.state;
         const { total, currentPage, filter } = this.props;
         const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
@@ -572,7 +588,7 @@ class BetActivities extends React.Component {
                                             <th scope="col">User</th>
                                             {/* <th scope="col">Sport</th> */}
                                             <th scope="col">Event</th>
-                                            <th scope="col">Start Date</th>
+                                            <th scope="col" style={{ minWidth: "180px" }}>Start Date</th>
                                             {/* <th scope="col">Dog/Fav</th> */}
                                             <th scope="col">Status</th>
                                             <th scope="col">Match</th>
@@ -677,6 +693,12 @@ class BetActivities extends React.Component {
                     onHide={() => this.setState({ detailId: null })}
                     bet={detailId}
                 />}
+
+                {removeParlayId && <RemoveGameModal
+                    show={removeParlayId != null}
+                    onHide={() => this.setState({ removeParlayId: null })}
+                    onSubmit={this.onRemoveParlay}
+                    bet={removeParlayId} />}
             </div>
         );
     }
