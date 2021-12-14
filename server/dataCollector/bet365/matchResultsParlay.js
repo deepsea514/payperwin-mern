@@ -143,8 +143,10 @@ const matchResultsParlay = async (bet365ApiKey) => {
 
                     const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(pickName, pick, lineQuery);
                     let betWin;
+                    let draw = false;
                     if (lineQuery.type === 'moneyline') {
                         betWin = pick === moneyLineWinner;
+                        draw = homeScore == awayScore;
                     } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
                         const spread = { home: linePoints, away: 0 };
                         const homeScoreHandiCapped = homeScore + spread.home;
@@ -153,13 +155,26 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         if (homeScoreHandiCapped > awayScoreHandiCapped) spreadWinner = 'home';
                         else if (awayScoreHandiCapped > homeScoreHandiCapped) spreadWinner = 'away';
                         betWin = pick === spreadWinner;
+                        draw = homeScoreHandiCapped == awayScoreHandiCapped;
                     } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
                         const totalPoints = homeScore + awayScore;
                         const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                         betWin = pick === overUnderWinner;
+                        draw = totalPoints == linePoints
                     }
-                    homeWin = homeWin && betWin;
+
+                    if (draw) {
+                        if (lineQuery.sportName == 'Boxing-UFC') {
+                            draw = false;
+                            betWin = false;
+                        } else {
+                            cancelledEvents.push(lineQuery.eventId);
+                        }
+                    }
+
+                    homeWin = homeWin && (betWin || draw);
                     query.status = betWin ? 'Win' : 'Lose';
+                    query.status = draw ? 'Draw' : query.status;
                     if (homeWin == false) {
                         delete query.result;
                         break;
@@ -167,6 +182,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 }
                 delete query.result;
             }
+
             if (breaked) {
                 continue;
             }
