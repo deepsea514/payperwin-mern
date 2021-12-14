@@ -67,12 +67,15 @@ const {
     getLinePoints,
     sendBetWinConfirmEmail,
     sendBetLoseConfirmEmail,
-    checkFirstDeposit
+    checkFirstDeposit,
+    cancelBetPool
 } = require('./libs/functions');
 const {
     generatePremierRequestSignature,
     generatePremierResponseSignature
 } = require('./libs/generatePremierSignature');
+const convertOdds = require('./libs/convertOdds');
+const getTeaserOdds = require('./libs/getTeaserOdds');
 
 const BetFee = 0.05;
 const loyaltyPerBet = 25;
@@ -2679,6 +2682,152 @@ adminRouter.post(
 )
 
 adminRouter.post(
+    '/bets/:id/remove',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        const { cancelIds } = req.body;
+        if (!cancelIds || !cancelIds.length) {
+            return res.status(400).json({ success: false });
+        }
+
+        const { id } = req.params;
+        const bet = await Bet.findById(id);
+        if (!bet || !bet.isParlay) {
+            return res.status(404).json({ success: false });
+        }
+
+        const betpool = await ParlayBetPool.findOne({
+            $or: [
+                { homeBets: bet._id },
+                { awayBets: bet._id },
+            ]
+        })
+        if (!betpool) {
+            return res.json({ success: false, error: 'Betpool not found.' });
+        }
+
+        const originParlayQuery = bet.parlayQuery;
+        let teaserPoint = null;
+        for (const query of originParlayQuery) {
+            if (query.lineQuery.teaserPoint != undefined) {
+                teaserPoint = query.lineQuery.teaserPoint;
+                break;
+            }
+        }
+
+        if (cancelIds.length == originParlayQuery.length) {
+            await cancelBetPool(betpool);
+            return res.json({ success: true });
+        }
+
+        let parlayOdds = 1;
+        const newParlayQuery = [];
+        if (teaserPoint != null) {
+            let sportName = null;
+            for (const query of originParlayQuery) {
+                const { lineQuery: { eventId, sportName: querySportName } } = query;
+                sportName = querySportName;
+                const cancelled = cancelIds.find(event => event == eventId);
+                if (cancelled) continue;
+                newParlayQuery.push(query);
+            }
+            if (newParlayQuery.length <= 1) {
+                await cancelBetPool(betpool);
+                return res.json({ success: true });
+            }
+            parlayOdds = getTeaserOdds(sportName, teaserPoint, newParlayQuery.length);
+        } else {
+            for (const query of originParlayQuery) {
+                const { pickOdds, lineQuery: { eventId } } = query;
+                const cancelled = cancelIds.find(event => event == eventId);
+                if (cancelled) continue;
+                parlayOdds *= Number(convertOdds(Number(pickOdds), 'decimal'));
+                newParlayQuery.push(query);
+            }
+            if (parlayOdds >= 2) {
+                parlayOdds = parseInt((parlayOdds - 1) * 100);
+            } else {
+                parlayOdds = parseInt(-100 / (parlayOdds - 1));
+            }
+        }
+
+        const { homeBets, awayBets } = betpool;
+        const teamA = { odds: parlayOdds, betTotal: 0, toWinTotal: 0 };
+        const teamB = { odds: -parlayOdds, betTotal: 0, toWinTotal: 0 };
+        const newHomeBets = [];
+        const newAwayBets = [];
+        for (const bet_id of homeBets) {
+            const bet = await Bet.findById(bet_id);
+            if (bet) {
+                newHomeBets.push(bet._id);
+                const { bet: betAmount } = bet;
+                const toWin = calculateToWinFromBet(betAmount, parlayOdds);
+                teamA.betTotal = betAmount;
+                teamA.toWinTotal = toWin;
+                await bet.update({
+                    toWin: toWin,
+                    payableToWin: 0,
+                    pickOdds: parlayOdds,
+                    parlayQuery: newParlayQuery
+                });
+            }
+        }
+
+        const totalAwayBet = teamA.toWinTotal;
+        const prevTotalAwayBet = betpool.teamB.betTotal;
+        if (totalAwayBet == 0 || prevTotalAwayBet <= 0) {
+            await cancelBetPool(betpool);
+            return res.json({ success: true });
+        }
+
+        for (const bet_id of awayBets) {
+            const bet = await Bet.findById(bet_id);
+            if (bet) {
+                newAwayBets.push(bet._id);
+                const { userId, bet: betAmount } = bet;
+                let newBetAmount = betAmount;
+                if (totalAwayBet < prevTotalAwayBet) {
+                    const rate = betAmount / prevTotalAwayBet;
+                    newBetAmount = totalAwayBet * rate;
+                }
+                const toWin = calculateToWinFromBet(newBetAmount, -parlayOdds);
+                teamB.betTotal += newBetAmount;
+                teamB.toWinTotal += toWin;
+                await bet.update({
+                    bet: newBetAmount,
+                    toWin: toWin,
+                    payableToWin: 0,
+                    pickOdds: -parlayOdds,
+                    parlayQuery: newParlayQuery
+                });
+                if (newBetAmount < betAmount) {
+                    const user = await User.findById(userId);
+                    if (user) {
+                        await FinancialLog.create({
+                            financialtype: 'betrefund',
+                            uniqid: `BF${ID()}`,
+                            user: userId,
+                            betId: bet_id,
+                            amount: betAmount - newBetAmount,
+                            method: 'betrefund',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: user.balance + betAmount - newBetAmount
+                        });
+                        await user.update({ $inc: { balance: betAmount - newBetAmount } });
+                    }
+                }
+            }
+        }
+        await betpool.update({ teamA, teamB, homeBets: newHomeBets, awayBets: newAwayBets, parlayQuery: newParlayQuery });
+        await calculateParlayBetsStatus(betpool._id);
+
+        res.json({ success: true });
+    }
+)
+
+adminRouter.post(
     '/bets/:id/cancel',
     authenticateJWT,
     limitRoles('bet_activities'),
@@ -2692,58 +2841,34 @@ adminRouter.post(
 
             if (bet.isParlay) {
                 return res.status(404).json({ success: false });
+            }
+            const betpool = await BetPool.findOne({
+                $or: [
+                    { homeBets: bet._id },
+                    { awayBets: bet._id },
+                    { drawBets: bet._id },
+                    { nonDrawBets: bet._id },
+                ]
+            });
+            if (betpool) {
+                await cancelBetPool(betpool);
             } else {
-                const betpool = await BetPool.findOne({
-                    $or: [
-                        { homeBets: bet._id },
-                        { awayBets: bet._id },
-                        { drawBets: bet._id },
-                        { nonDrawBets: bet._id },
-                    ]
-                });
-                if (betpool) {
-                    const { homeBets, awayBets, drawBets, nonDrawBets } = betpool;
-                    for (const betId of [...homeBets, ...awayBets, ...(drawBets ? drawBets : []), ...(nonDrawBets ? nonDrawBets : [])]) {
-                        const bet = await Bet.findById(betId);
-                        if (bet) {
-                            const { _id, userId, bet: betAmount } = bet;
-                            // refund user
-                            await bet.update({ status: 'Cancelled' });
-                            const user = await User.findById(userId);
-                            if (user) {
-                                await FinancialLog.create({
-                                    financialtype: 'betcancel',
-                                    uniqid: `BC${ID()}`,
-                                    user: userId,
-                                    betId: _id,
-                                    amount: betAmount,
-                                    method: 'betcancel',
-                                    status: FinancialStatus.success,
-                                    beforeBalance: user.balance,
-                                    afterBalance: user.balance + betAmount
-                                });
-                                await user.update({ $inc: { balance: betAmount } });
-                            }
-                        }
-                    }
-                } else {
-                    const { _id, userId, bet: betAmount } = bet;
-                    const user = await User.findById(userId);
-                    await bet.update({ status: 'Cancelled' });
-                    if (user) {
-                        await FinancialLog.create({
-                            financialtype: 'betcancel',
-                            uniqid: `BC${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount,
-                            method: 'betcancel',
-                            status: FinancialStatus.success,
-                            beforeBalance: user.balance,
-                            afterBalance: user.balance + betAmount
-                        });
-                        await user.update({ $inc: { balance: betAmount } });
-                    }
+                const { _id, userId, bet: betAmount } = bet;
+                const user = await User.findById(userId);
+                await bet.update({ status: 'Cancelled' });
+                if (user) {
+                    await FinancialLog.create({
+                        financialtype: 'betcancel',
+                        uniqid: `BC${ID()}`,
+                        user: userId,
+                        betId: _id,
+                        amount: betAmount,
+                        method: 'betcancel',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + betAmount
+                    });
+                    await user.update({ $inc: { balance: betAmount } });
                 }
             }
             return res.json({ success: true });

@@ -9,7 +9,7 @@ const ErrorLog = require('../../models/errorlog');
 const simpleresponsive = require('../../emailtemplates/simpleresponsive');
 const config = require('../../../config.json');
 const sendSMS = require('../../libs/sendSMS');
-const { ID, sendBetWinConfirmEmail, sendBetLoseConfirmEmail } = require('../../libs/functions');
+const { ID, sendBetWinConfirmEmail, sendBetLoseConfirmEmail, cancelBetPool } = require('../../libs/functions');
 const getMatchScores = require('./getMatchScores');
 //external libraries
 const axios = require('axios');
@@ -272,30 +272,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
         }
 
         if (matchCancelled) {
-            for (const betId of [...homeBets, ...awayBets]) {
-                const bet = await Bet.findById(betId);
-                if (bet) {
-                    const { _id, userId, bet: betAmount } = bet;
-                    // refund user
-                    await bet.update({ status: 'Cancelled' });
-                    const user = await User.findById(userId);
-                    if (user) {
-                        await FinancialLog.create({
-                            financialtype: 'betcancel',
-                            uniqid: `BC${ID()}`,
-                            user: userId,
-                            betId: _id,
-                            amount: betAmount,
-                            method: 'betcancel',
-                            status: FinancialStatus.success,
-                            beforeBalance: user.balance,
-                            afterBalance: user.balance + betAmount
-                        });
-                        await user.update({ $inc: { balance: betAmount } });
-                    }
-                }
-            }
-            await betpool.update({ $set: { result: 'Cancelled' } });
+            await cancelBetPool(betpool);
         }
     }
 }
