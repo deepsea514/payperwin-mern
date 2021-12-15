@@ -94,6 +94,7 @@ const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 const shopRouter = require('./shopRoutes');
+const sortSearchResults = require('./libs/sortSearchResults');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -3269,7 +3270,7 @@ expressApp.get(
                     }
                 }
             }
-            res.json(results);
+            res.json(sortSearchResults(results));
         } catch (error) {
             console.error(error);
             res.json([]);
@@ -4750,7 +4751,7 @@ expressApp.get(
                 .select(['name'])
                 .exec((error, data) => {
                     if (error) {
-                        res.status(404).json({ error: 'Can\'t find customers.' });
+                        res.status(404).json({ error: 'Can\'t find sports.' });
                         return;
                     }
                     const result = data.map(sport => {
@@ -4763,7 +4764,7 @@ expressApp.get(
                 })
         }
         catch (error) {
-            res.status(500).json({ error: 'Can\'t find customers.', message: error });
+            res.status(500).json({ error: 'Can\'t find sports.', message: error });
         }
     }
 )
