@@ -3487,6 +3487,25 @@ expressApp.post('/deposit',
                             method,
                             status: FinancialStatus.pending
                         });
+                        const msg = {
+                            to: user.email,
+                            from: `${fromEmailName} <${fromEmailAddress}>`,
+                            subject: "E-Transfer Deposit Instructions",
+                            text: `E-Transfer Deposit Instructions`,
+                            html: simpleresponsive(
+                                `We have received your request for an e-Transfer deposit. You will soon receive an email from <b>“BNA Smart Payment System“</b>. Please follow the link in their email to complete the deposit. Be sure to check your spam folder.`,
+                            ),
+                        };
+                        sgMail.send(msg).catch(error => {
+                            ErrorLog.create({
+                                name: 'Send Grid Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            });
+                        });
                         return res.json({ success: 1, message: "Please wait until deposit is finished." });
                     }
                     return res.status(400).json({ success: 0, message: "Failed to create etransfer." });
