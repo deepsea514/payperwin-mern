@@ -374,37 +374,18 @@ class Header extends Component {
                                     <li>
                                         <ul>
                                             <li onClick={() => this.setLanguage('en')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/media/svg/flags/226-united-states.svg" className="language-flag" />
+                                                <img src="/images/flag/us.jpg" className="language-flag" />
                                             </li>
                                             <li onClick={() => this.setLanguage('es')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/media/svg/flags/016-spain.svg" className="language-flag" />
+                                                <img src="/images/flag/es.png" className="language-flag" />
                                             </li>
-                                            <li onClick={() => this.setLanguage('ko')} className="language-li border-0 px-1 cursor-pointer py-1">
-                                                <img src="/media/svg/flags/018-south-korea.svg" className="language-flag ko" />
+                                            <li onClick={() => this.setLanguage('ko')} className="language-li border-0 px-1 cursor-pointer">
+                                                <img src="/images/flag/ko.png" className="language-flag" />
+                                            </li>
+                                            <li onClick={() => this.setLanguage('vi')} className="language-li border-0 px-1 cursor-pointer">
+                                                <img src="/images/flag/vi.png" className="language-flag" />
                                             </li>
                                         </ul>
-                                        {/* <a onClick={() => this.toggleField('langDropDownOpen')} style={{ cursor: "pointer" }}><img src={this.getImageSource()} className="language-flag" style={{ display: 'inherit' }} /> {lang.toUpperCase()} <i className="fa fa-caret-down" aria-hidden="true"></i></a>
-                                        {langDropDownOpen && (
-                                            <React.Fragment>
-                                                <div className="background-closer" onClick={() => this.toggleField('langDropDownOpen')} />
-                                                <div className="odds-dropdown">
-                                                    <ul>
-                                                        <li onClick={() => this.setLanguage('en')} className="language-li">
-                                                            <div><img src="/media/svg/flags/226-united-states.svg" className="language-flag" /></div>
-                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.ENGLISH" /></div>
-                                                        </li>
-                                                        <li onClick={() => this.setLanguage('es')} className="language-li">
-                                                            <div><img src="/media/svg/flags/016-spain.svg" className="language-flag" /></div>
-                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.SPANISH" /></div>
-                                                        </li>
-                                                        <li onClick={() => this.setLanguage('ko')} className="language-li">
-                                                            <div><img src="/media/svg/flags/018-south-korea.svg" className="language-flag" /></div>
-                                                            <div><FormattedMessage id="COMPONENTS.LANGUAGE.KOREAN" /></div>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </React.Fragment>
-                                        )} */}
                                     </li>
                                     <li>{timeString}</li>
                                     <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> <FormattedMessage id="COMPONENTS.HELP" /> </Link></li>

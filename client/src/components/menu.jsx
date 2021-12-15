@@ -51,21 +51,18 @@ class Menu extends Component {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            {/* <FormattedMessage id="COMPONENTS.LANGUAGE" />
-                            <select value={lang} onChange={(evt) => setLanguage(evt.target.value)}>
-                                <option value="en">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.ENGLISH" })} (EN)</option>
-                                <option value="es">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.SPANISH" })} (ES)</option>
-                                <option value="ko">{intl.formatMessage({ id: "COMPONENTS.LANGUAGE.KOREAN" })} (KO)</option>
-                            </select> */}
                             <ul>
                                 <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">
-                                    <img src="/media/svg/flags/226-united-states.svg" className="language-flag-menu" />
+                                    <img src="/images/flag/us.jpg" className="language-flag-menu" />
                                 </li>
                                 <li onClick={() => setLanguage('es')} className="language-li-menu border-0 px-1 cursor-pointer">
-                                    <img src="/media/svg/flags/016-spain.svg" className="language-flag-menu" />
+                                    <img src="/images/flag/es.png" className="language-flag-menu" />
                                 </li>
                                 <li onClick={() => setLanguage('ko')} className="language-li-menu border-0 px-1 cursor-pointer">
-                                    <img src="/media/svg/flags/018-south-korea.svg" className="language-flag-menu ko" />
+                                    <img src="/images/flag/ko.png" className="language-flag-menu" />
+                                </li>
+                                <li onClick={() => setLanguage('vi')} className="language-li-menu border-0 px-1 cursor-pointer">
+                                    <img src="/images/flag/vi.png" className="language-flag-menu" />
                                 </li>
                             </ul>
                         </li>
