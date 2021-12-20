@@ -5,7 +5,6 @@ const ErrorLog = require('./errorlog');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
 const simpleresponsive = require('../emailtemplates/simpleresponsive');
-const { convertTimeLineDate } = require('../libs/timehelper');
 const sendSMS = require("../libs/sendSMS");
 
 const { Schema } = mongoose;
@@ -51,6 +50,7 @@ const BetSchema = new Schema(
         sportsbook: { type: Boolean, default: false },
         isParlay: { type: Boolean, default: false },
         parlayQuery: { type: Array, default: null },
+        scoreMismatch: { type: Object, default: null },
     },
     {
         timestamps: true,
@@ -64,10 +64,6 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
             const user = await User.findById(bet.userId);
             if (!user) return;
             const preference = await Preference.findOne({ user: bet.userId });
-            let timezone = "00:00";
-            if (preference && preference.timezone) {
-                timezone = preference.timezone;
-            }
             if (bet.matchingStatus == 'Matched') {
                 const { pickOdds, lineQuery, bet: betAmount, payableToWin } = bet;
                 if (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.email) {
