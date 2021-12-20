@@ -241,6 +241,16 @@ function HeaderMenu({ layoutProps, currentUser, kyc_total, pending_withdraw_tota
                                             <span className="menu-text">Custom Events</span>
                                         </Link>
                                     </li>}
+
+                                    {currentUser && isAvailable('bet_activities') && <li className={`menu-item ${getMenuItemActive("/mismatch-scores", false)}`}
+                                        aria-haspopup="true">
+                                        <Link className="menu-link" to="/mismatch-scores/">
+                                            <span className="svg-icon menu-icon">
+                                                <SVG src={"/media/svg/icons/General/Duplicate.svg"} />
+                                            </span>
+                                            <span className="menu-text">Mismatch Scores</span>
+                                        </Link>
+                                    </li>}
                                 </ul>
                             </div>
                         </li>

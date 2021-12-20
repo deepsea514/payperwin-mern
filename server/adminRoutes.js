@@ -1985,9 +1985,7 @@ adminRouter.get(
                     }
                 },
                 { $unwind: '$userId' },
-                {
-                    $match: { "userId.email": { "$regex": email, "$options": "i" } }
-                },
+                { $match: { "userId.email": { "$regex": email, "$options": "i" } } },
             ]
             let total = await Bet.aggregate([
                 ...aggregate,
@@ -7851,6 +7849,54 @@ adminRouter.put(
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: 'Can\'t verified user.', result: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/mismatch-scores',
+    authenticateJWT,
+    limitRoles('bet_activities'),
+    async (req, res) => {
+        try {
+            let { page, perPage } = req.query;
+            if (!perPage) perPage = 50;
+            perPage = parseInt(perPage);
+            if (!page) page = 1;
+            page--;
+
+            let aggregate = [
+                { $match: { scoreMismatch: { $ne: null } } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { user_id: "$userId" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                            { $project: { email: 1, currency: 1 } }
+                        ],
+                        as: 'userId',
+                    }
+                },
+                { $unwind: '$userId' },
+            ]
+            let total = await Bet.aggregate([
+                ...aggregate,
+                { $count: "total" }
+            ]);
+            if (total.length > 0) total = total[0].total;
+            else total = 0;
+            const data = await Bet.aggregate([
+                ...aggregate,
+                { $sort: { createdAt: -1 } },
+                { $skip: page * perPage },
+                { $limit: perPage }
+            ]);
+
+            page++;
+            return res.json({ total: total, perPage, page, data });
+        } catch (error) {
+            return res.status(500).json({ error: 'Can\'t find bets.', message: error });
         }
     }
 )
