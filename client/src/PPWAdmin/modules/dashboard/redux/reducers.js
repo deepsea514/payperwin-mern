@@ -186,7 +186,7 @@ export function* saga() {
     yield takeLatest(actionTypes.getDashboardDataDetails, function* getDashboardDataDetailsSaga() {
         try {
             const state = yield select((state) => state.dashboard);
-            const { data } = yield getDashboardData(state.selectedDate, state.daterange);
+            const { data } = yield getDashboardData(state.daterange);
             const {
                 totaldeposit, deposits,
                 totalwager, wagers,

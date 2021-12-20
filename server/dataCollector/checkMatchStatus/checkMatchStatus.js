@@ -18,6 +18,7 @@ const {
     calculateBetsStatus,
     calculateParlayBetsStatus,
 } = require('../../libs/functions');
+const getMatchScores = require("../bet365/getMatchScores");
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
 const FinancialStatus = config.FinancialStatus;
@@ -25,9 +26,15 @@ const FinancialStatus = config.FinancialStatus;
 const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
+const axios = require('axios');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
+}
+
+Date.prototype.addMins = function (m) {
+    this.setTime(this.getTime() + (m * 60 * 1000));
     return this;
 }
 
@@ -60,26 +67,37 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 });
 
 const checkTimerOne = async () => {
-    //////////////////// Check match status
-    checkMatchStatus();
+    try {
+        //////////////////// Check match status
+        // checkMatchStatus();
 
-    ////////////////// Delete Shared Lines
-    await SharedLine.deleteMany({
-        eventDate: {
-            $lte: new Date()
-        }
-    });
+        ////////////////// Delete Shared Lines
+        await SharedLine.deleteMany({
+            eventDate: {
+                $lte: new Date()
+            }
+        });
 
-    ////////////////// Cashback in the last day of the month.
-    checkCashBack();
+        ////////////////// Cashback in the last day of the month.
+        checkCashBack();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const checkTimerTwo = async () => {
-    // Check BetPool status
-    calculateBetPoolsStatus();
+    try {
+        // Check BetPool status
+        calculateBetPoolsStatus();
 
-    // Check bet without betpool
-    // checkBetWithoutBetPool();
+        // Check bet without betpool
+        // checkBetWithoutBetPool();
+
+        // Check settled score;
+        checkSettledScore();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const checkMatchStatus = async () => {
@@ -91,6 +109,7 @@ const checkMatchStatus = async () => {
             matchingStatus: ['Pending', 'Partial Match']
         }
     );
+
     for (const bet of bets) {
         await bet.update({ notifySent: new Date() });
         const user = await User.findById(bet.userId);
@@ -109,38 +128,34 @@ const checkMatchStatus = async () => {
         const timeString = convertTimeLineDate(new Date(bet.matchStartDate), timezone);
 
         //Comment: disable this email and SMS message since there should always be a match now.
-        /*  
         if (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.email) {
-             const msg = {
-                 from: `${fromEmailName} <${fromEmailAddress}>`,
-                 to: user.email,
-                 subject: 'We couldn’t find you a match for your bet',
-                 text: `We couldn’t find you a match for your bet`,
-                 html: simpleresponsive(
-                     `Hi <b>${user.email}</b>.
+            const msg = {
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                to: user.email,
+                subject: 'We couldn’t find you a match for your bet',
+                text: `We couldn’t find you a match for your bet`,
+                html: simpleresponsive(
+                    `Hi <b>${user.email}</b>.
                      <br><br>
                      Unfortunately we are still unable to match your bet with another player for <b>${eventName}</b> on ${timeString}. 
                      <br><br>
                  `, { href: "https://www.payperwin.com/bets", name: 'View Open Bets' }),
-             };
-             sgMail.send(msg).catch(error => {
-                 ErrorLog.create({
-                     name: 'Send Grid Error',
-                     error: {
-                         name: error.name,
-                         message: error.message,
-                         stack: error.stack
-                     }
-                 });
-             });
-         }
-         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
-             sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
-         } 
-         */
-
+            };
+            sgMail.send(msg).catch(error => {
+                ErrorLog.create({
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                });
+            });
+        }
+        if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {
+            sendSMS(`Unfortunately we are still unable to match your bet with another player for ${eventName} on ${timeString}. `, user.phone);
+        }
     }
-
 }
 
 const checkCashBack = async () => {
@@ -204,7 +219,7 @@ const checkCashBack = async () => {
 }
 
 const isLastDay = (date) => {
-    return new Date(date.getTime() - 86400000).getDate() === 1;
+    return new Date().addHours(-24).getDate() === 1;
 }
 
 const calculateBetPoolsStatus = async () => {
@@ -241,4 +256,142 @@ const calculateBetPoolsStatus = async () => {
     // await ParlayBetPool.deleteMany({
     //     result: { $exists: true }
     // });
+}
+
+const checkSettledScore = async () => {
+    const bet365Addon = await Addon.findOne({ name: 'bet365' });
+    if (!bet365Addon || !bet365Addon.value || !bet365Addon.value.bet365ApiKey) {
+        console.warn("Bet365 Api Key is not set");
+        return;
+    }
+    const { bet365ApiKey } = bet365Addon.value;
+
+    const bets = await Bet.find({
+        status: { $in: ['Settled - Win', 'Settled - Lose'] },
+        updatedAt: { $gte: new Date().addHours(-1) },
+        scoreMismatch: null,
+    });
+    console.log('%d of just settled bets.', bets.length);
+    for (const bet of bets) {
+        if (bet.isParlay) {
+            const parlayQuery = bet.parlayQuery;
+            const resultQuery = JSON.parse(JSON.stringify(parlayQuery));
+            let breaked = false;
+            let page = 0;
+            while (true) {
+                let success = false;
+                let results = [];
+                let event_ids = '';
+                const resultQueryForOne = resultQuery.slice(page * 10, ++page * 10);
+                resultQueryForOne.forEach((query, index) => {
+                    event_ids += query.lineQuery.eventId;
+                    event_ids += index == resultQueryForOne.length - 1 ? '' : ',';
+                })
+                try {
+                    const { data: { success: success_result, results: results_result } } = await axios
+                        .get(`https://api.b365api.com/v1/bet365/result`, {
+                            params: {
+                                token: bet365ApiKey,
+                                event_id: event_ids
+                            }
+                        });
+                    success = success_result;
+                    results = results_result;
+                } catch (error) {
+                    console.error(error);
+                    breaked = true;
+                    break;
+                }
+
+                if (!success) {
+                    breaked = true;
+                    break;
+                }
+
+                resultQuery.map(query => {
+                    const result = results.find((result) => query.lineQuery.eventId == result.bet365_id);
+                    if (result) query.result = result;
+                });
+
+                if (page * 10 >= resultQuery.length) break;
+            }
+            if (breaked) continue;
+
+            const cancelledEvents = [];
+            for (let nI = 0; nI < resultQuery.length; nI++) {
+                const query = resultQuery[nI];
+                const query2 = parlayQuery[nI];
+                if (!query2.status) break;
+                const { lineQuery, result } = query;
+                const { ss, scores, time_status, timer } = result;
+                let matchResult = {
+                    homeScore: 0,
+                    awayScore: 0,
+                    cancellationReason: false
+                };
+                if (time_status == "3") { //Ended, In Play
+                    const result = getMatchScores(lineQuery.sportName, lineQuery.type, lineQuery.subtype, ss, scores, timer, time_status);
+                    matchResult = { ...matchResult, ...result };
+                } else if (time_status == "0" ||
+                    time_status == "2" ||
+                    time_status == "1") { // Postponed, Not Started
+                    continue;
+                } else if (time_status == "4" ||
+                    time_status == "5" ||
+                    time_status == "7" ||
+                    time_status == "8" ||
+                    time_status == "9" ||
+                    time_status == "6") { // Cancelled, Interrupted, Abandoned, Retired, Walkover
+                    matchResult.cancellationReason = true;
+                } else {
+                    matchResult.cancellationReason = true;
+                }
+                const { homeScore, awayScore, cancellationReason } = matchResult;
+                if (cancellationReason) {
+                    cancelledEvents.push(lineQuery.eventId);
+                    query.status = 'Cancelled';
+                } else {
+                    query.homeScore = homeScore;
+                    query.awayScore = awayScore;
+                }
+
+                if (query2.status &&
+                    (query2.status != query.status ||
+                        query2.homeScore != query.homeScore ||
+                        query2.awayScore != query.awayScore)
+                ) {
+                    await bet.update({
+                        scoreMismatch: resultQuery.map(query => ({
+                            homeScore: query.homeScore,
+                            awayScore: query.awayScore,
+                            status: query.status,
+                        }))
+                    });
+                    break;
+                }
+            }
+        } else {
+            const lineQuery = bet.lineQuery;
+            const { data: { success, results } } = await axios
+                .get(`https://api.b365api.com/v1/bet365/result`, {
+                    params: {
+                        token: bet365ApiKey,
+                        event_id: lineQuery.eventId,
+                    }
+                });
+            if (!success) {
+                continue;
+            }
+            const { ss, scores, time_status, timer } = results[0];
+            if (time_status != "3") {
+                continue;
+            }
+            const result = getMatchScores(lineQuery.sportName, lineQuery.type, lineQuery.subtype, ss, scores, timer, time_status);
+            const { homeScore, awayScore } = result;
+            if (bet.homeScore != homeScore || bet.awayScore != awayScore) {
+                await bet.update({ scoreMismatch: { homeScore, awayScore } });
+            }
+        }
+    }
+    console.log('All done');
 }
