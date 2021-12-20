@@ -3,12 +3,12 @@ import dateformat from 'dateformat';
 import _env from '../../../../env.json';
 const serverUrl = _env.appAdminUrl;
 
-export function getDashboardData(range, daterange) {
-    const { startDate, endDate } = daterange;
+export function getDashboardData(daterange) {
+    const { startDate, endDate, selected } = daterange;
     let dateranges = [];
     let categories = [];
 
-    if (startDate.getDate() === endDate.getDate()) {
+    if (new Date(endDate).getTime() - new Date(startDate).getTime() <= 24 * 60 * 60 * 100) {
         const nowDate = new Date();
         const year = nowDate.getFullYear();
         const month = nowDate.getMonth();
@@ -21,12 +21,26 @@ export function getDashboardData(range, daterange) {
     } else {
         //to avoid modifying the original date
         const theDate = new Date(startDate);
-        while (theDate < endDate) {
-            dateranges = [...dateranges, new Date(theDate)];
-            theDate.setDate(theDate.getDate() + 1);
-            categories.push(dateformat(theDate, "HH:MM"));
+        console.log(selected)
+        switch (selected) {
+            case 'alltime':
+            case 'thisyear':
+                theDate.setDate(1);
+                while (theDate.getTime() < new Date(endDate).getTime()) {
+                    dateranges = [...dateranges, new Date(theDate)];
+                    categories.push(dateformat(theDate, "yyyy mmm"));
+                    theDate.setMonth(theDate.getMonth() + 1);
+                }
+                dateranges = [...dateranges, endDate];
+                break;
+            default:
+                while (theDate.getTime() < new Date(endDate).getTime()) {
+                    dateranges = [...dateranges, new Date(theDate)];
+                    categories.push(dateformat(theDate, "mmm d"));
+                    theDate.setDate(theDate.getDate() + 1);
+                }
+                dateranges = [...dateranges, endDate];
         }
-        dateranges = [...dateranges, endDate];
     }
 
     return axios.post(`${serverUrl}/dashboard`, { daterange, dateranges, categories });
