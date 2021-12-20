@@ -116,12 +116,12 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         breaked = true;
                         break;
                     }
-                } else if (time_status == "4" ||
-                    time_status == "0" ||
+                } else if (time_status == "0" ||
                     time_status == "2" || time_status == "1") { // Postponed, Not Started
                     breaked = true;
                     break;
-                } else if (time_status == "5" ||
+                } else if (time_status == "4" ||
+                    time_status == "5" ||
                     time_status == "7" ||
                     time_status == "8" ||
                     time_status == "9" ||

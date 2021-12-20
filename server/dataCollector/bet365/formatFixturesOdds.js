@@ -80,7 +80,7 @@ const formatFixturesOdds = (event, sport) => {
                 return formatESportsFixturesOdds(event);
         }
     } catch (error) {
-        console.error(error);
+        console.error(error, event);
         return null;
     }
 }

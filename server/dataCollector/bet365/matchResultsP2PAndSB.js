@@ -80,12 +80,12 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                         console.error("matchError:", eventId);
                         continue;
                     }
-                } else if (time_status == "4" ||
-                    time_status == "0" ||
+                } else if (time_status == "0" ||
                     time_status == "2" || time_status == "1") { // Postponed, Not Started
                     await betpool.update({ matchStartDate: new Date(Number(time) * 1000) });
                     continue;
-                } else if (time_status == "5" ||
+                } else if (time_status == "4" ||
+                    time_status == "5" ||
                     time_status == "7" ||
                     time_status == "8" ||
                     time_status == "9" ||
