@@ -39,6 +39,7 @@ import ErrorBoundary from '../../libs/ErrorBoundary';
 import CreditsModule from '../modules/credit/pages';
 import Prediction from '../modules/prediction/pages';
 import GiftCardsModule from '../modules/giftcard/pages';
+import MismatchScoresModule from '../modules/mismatchscores/pages';
 
 class App extends Component {
     constructor(props) {
@@ -215,6 +216,11 @@ class App extends Component {
                     {/* Prediction */}
                     {this.isAvailable('predictions') && <Route path="/predictions" render={(props) =>
                         <ErrorBoundary><Prediction {...props} /></ErrorBoundary>
+                    } />}
+
+                    {/* Mismatch Scores */}
+                    {this.isAvailable('bet_activities') && <Route path="/mismatch-scores" render={(props) =>
+                        <ErrorBoundary><MismatchScoresModule {...props} /></ErrorBoundary>
                     } />}
 
                     <Redirect exact from="/" to="/dashboard" />
