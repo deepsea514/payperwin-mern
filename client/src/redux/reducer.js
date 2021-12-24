@@ -171,8 +171,21 @@ export function* saga() {
             if (action.callback) {
                 action.callback(user);
             }
-            yield put(actions.getUserSuccess(user));
-            yield put(actions.setMaxBetLimitTierAction(user.maxBetLimitTier));
+            if (user) {
+                yield put(actions.getUserSuccess(user));
+                yield put(actions.setMaxBetLimitTierAction(user.maxBetLimitTier));
+                yield put(actions.setDateFormat(user.preference.dateFormat));
+                yield put(actions.setDisplayMode(user.preference.display_mode));
+                yield put(actions.setTimezone(user.preference.timezone));
+                yield put(actions.setOddsFormat(user.preference.oddsFormat));
+
+                const lang = yield select((state) => state.frontend.lang);
+                if (lang != user.preference.lang) {
+                    yield put(actions.setLanguage(user.preference.lang));
+                }
+            } else {
+                yield put(actions.getUserSuccess(null));
+            }
 
         } catch (error) {
 

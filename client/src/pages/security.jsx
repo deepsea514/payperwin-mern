@@ -144,7 +144,7 @@ class Security extends Component {
                         <div className="col-12">
                             <div className="card scrity mt-3 tab-card">
                                 <div className="card-header tab-card-header">
-                                    <ul className="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                                    <ul className="nav nav-tabs card-header-tabs" role="tablist">
                                         <li className="nav-item">
                                             <a className="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">PASSWORD AND SECURITY</a>
                                         </li>
@@ -154,7 +154,7 @@ class Security extends Component {
                                     </ul>
                                 </div>
 
-                                <div className="tab-content" id="myTabContent">
+                                <div className="tab-content">
                                     <div className="tab-pane fade show active p-3" id="one" role="tabpanel" aria-labelledby="one-tab">
                                         <form onSubmit={this.handleSubmit}>
                                             <h4 className="h4"><FormattedMessage id="PAGES.SECURITY.PASSWORD" /></h4>

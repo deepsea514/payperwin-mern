@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import axios from 'axios';
 import SimpleLogin from './simpleLogin';
 import { FormattedMessage, injectIntl } from "react-intl";
 import CookieAccept from "./cookieAccept";
@@ -11,24 +10,13 @@ import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
 import numberFormat from '../helpers/numberFormat';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
-
-function logout(getUser, history) {
-    const url = `${serverUrl}/logout`;
-    axios.get(url, { withCredentials: true })
-        .then(() => {
-            getUser();
-            history.replace({ pathname: '/' });
-        });
-}
+import { logout } from '../libs/logout';
 
 class Header extends Component {
     constructor(props) {
         super(props);
         const { timezone } = props;
         this.state = {
-            userDropDownOpen: false,
             oddsDropDownOpen: false,
             langDropDownOpen: false,
             timerInterval: null,
@@ -69,9 +57,10 @@ class Header extends Component {
     }
 
     logout = () => {
-        const { getUser, history } = this.props;
+        const { getUser, history, toggleField } = this.props;
         logout(getUser, history);
-        this.setState({ userDropDownOpen: false, oddsDropDownOpen: false, langDropDownOpen: false });
+        this.setState({ oddsDropDownOpen: false, langDropDownOpen: false });
+        toggleField('userDropDownOpen');
     }
 
     getOddsFormatString = () => {
@@ -133,16 +122,14 @@ class Header extends Component {
     }
 
     render() {
-        const { userDropDownOpen,
+        const {
             oddsDropDownOpen,
-            langDropDownOpen,
             timeString,
         } = this.state;
         const { toggleField,
             user,
             location,
             search,
-            lang,
             setSearch,
             acceptCookie,
             acceptCookieAction,
@@ -153,7 +140,8 @@ class Header extends Component {
             showLoginModalAction,
             showForgotPasswordModalAction,
             adminMessage,
-            dismissAdminMessage
+            dismissAdminMessage,
+            userDropDownOpen
         } = this.props;
         const showMessage = this.checkShowMessage();
         const { pathname } = location;
@@ -163,18 +151,13 @@ class Header extends Component {
                 {showMessage && <AdminMessage onDismiss={dismissAdminMessage} message={adminMessage} />}
                 <div className="header-top">
                     <div className="container">
-                        <div className="row">
-                            <div className="col-5 col-sm-6">
-                                <button className="navbar-toggler responsive-menu" type="button" onClick={() => toggleField('menuOpen')}>
-                                    <span className="navbar-toggler-icon"></span>
-                                    <span className="navbar-toggler-icon"></span>
-                                    <span className="navbar-toggler-icon"></span>
-                                </button>
+                        <div className="d-flex justify-content-between">
+                            <div className="">
                                 <Link to={{ pathname: '/' }} className="logo">
                                     <img src="/images/ppw-white-xmas.png" />
                                 </Link>
                             </div>
-                            <div className="col-7 col-sm-6 text-right">
+                            <div className="d-flex justify-content-end">
                                 {user ? (
                                     <div className="login-nav-contain">
                                         <ul className="login-nav">
@@ -184,7 +167,7 @@ class Header extends Component {
                                                     <Link to={{ pathname: '/deposit' }}>
                                                         CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
                                                     </Link>
-                                                    &nbsp;<i className="fa fa-refresh cursor-pointer" onClick={() => getUser()} />
+                                                    &nbsp;<i className="fa fa-refresh cursor-pointer not-mobile" onClick={() => getUser()} />
                                                 </span>
                                             </li>}
                                             <li className="not-mobile">
@@ -192,15 +175,15 @@ class Header extends Component {
                                                     <span>{<FormattedMessage id="COMPONENTS.DEPOSIT" />}</span>
                                                 </Link>
                                             </li>
-                                            <li>
-                                                <a className="username blue-icon" onClick={() => this.toggleField('userDropDownOpen')}>
+                                            <li className="not-mobile">
+                                                <a className="username blue-icon" onClick={() => toggleField('userDropDownOpen')}>
                                                     <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan"><FormattedMessage id="COMPONENTS.MY.ACCOUNT" /></span>&nbsp;<i className="fa fa-caret-down not-mobile" />
                                                 </a>
                                             </li>
                                         </ul>
                                         {userDropDownOpen && (
                                             <React.Fragment>
-                                                <div className="background-closer" onClick={() => this.toggleField('userDropDownOpen')} />
+                                                <div className="background-closer" onClick={() => toggleField('userDropDownOpen')} />
                                                 <div className="login-dropdown">
                                                     <ul>
                                                         <li className="mobile username">
@@ -236,11 +219,17 @@ class Header extends Component {
                                         )}
                                     </div>
                                 ) : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />}
+                                <button className="navbar-toggler responsive-menu"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <span className="navbar-toggler-icon"></span>
+                                    <span className="navbar-toggler-icon"></span>
+                                    <span className="navbar-toggler-icon"></span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className={`header-bottom ${dark_light == 'light' ? 'light' : 'dark'}`}>
+                <div className={`header-bottom not-mobile ${dark_light == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-12">

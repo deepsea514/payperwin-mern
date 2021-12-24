@@ -59,7 +59,7 @@ export function AdvanceTablesWidget7({ className }) {
             </div>
             {/* Body */}
             <div className="card-body pt-2 pb-0 mt-n3">
-                <div className={`tab-content mt-5`} id="myTabTables12">
+                <div className={`tab-content mt-5`}>
                     {/* begin::Tap pane MONTH */}
                     <div
                         className={`tab-pane fade ${key === "Month" ? "show active" : ""}`}

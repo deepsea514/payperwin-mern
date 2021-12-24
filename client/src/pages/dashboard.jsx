@@ -69,6 +69,7 @@ class Dashboard extends Component {
                     animationSpeed={1800}
                     infinite
                     // stopAutoPlayOnHover={true}
+                    className='not-mobile'
                 >
                     <a href='http://shop.payperwin.com/' target="_blank">
                         <img src="/images/ppw-banner-v3.png" />

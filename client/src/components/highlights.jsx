@@ -43,22 +43,25 @@ export default class Highlights extends Component {
         const { addBet, betSlip, removeBet } = this.props;
         return (
             <div className="highlights">
-                <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div>
-                <ul className="nav nav-tabs pt-2" id="myTab" role="tablist">
-                    {
-                        sports.map((sport, i) => {
-                            return (
-                                <li
-                                    className={`nav-item ${sport === sports[sportIndex] ? 'active' : ''}`}
-                                    onClick={() => this.setState({ sportIndex: i })}
-                                    key={sport}
-                                >
-                                    <img src={sportNameImage(sport)} width="18" height="18" />
+                {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
+                <ul className="nav nav-tabs pt-2">
+                    {sports.map((sport, i) => {
+                        return (
+                            <li className="nav-item"
+                                onClick={() => this.setState({ sportIndex: i })}
+                                key={sport}>
+                                <center>
+                                    <div className={`sports-league-image-container ${sportIndex == i ? 'active' : ''}`}>
+                                        <img src={sportNameImage(sport)}
+                                            className='sports-league-image'
+                                            width="18"
+                                            height="18" />
+                                    </div>
                                     <span className="nav-link">{sport}</span>
-                                </li>
-                            );
-                        })
-                    }
+                                </center>
+                            </li>
+                        );
+                    })}
                 </ul>
                 {loading && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                 {sports[sportIndex] && (sports[sportIndex] == "Other" ?
