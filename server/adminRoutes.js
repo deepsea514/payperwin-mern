@@ -2354,7 +2354,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         }
                     }
@@ -2519,7 +2519,7 @@ adminRouter.post(
                                         }
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                    sendBetWinConfirmEmail(user, payableToWin);
                                 }
                             } else if (betWin === false) {
                                 const user = await User.findById(userId);
@@ -2685,7 +2685,7 @@ adminRouter.post(
                                         await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                    sendBetWinConfirmEmail(user, payableToWin);
                                 }
                             } else if (betWin === false) {
                                 const betChanges = {
@@ -4973,7 +4973,7 @@ const matchResults = async (eventId, matchResult) => {
                                 afterBalance: afterBalance - betFee
                             });
                             await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
-                            sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                            sendBetWinConfirmEmail(user, payableToWin);
                         }
                         // TODO: email winner
                     } else if (betWin === false) {
@@ -7309,7 +7309,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         }
                     }
@@ -7511,7 +7511,7 @@ adminRouter.post(
                                     }
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         } else if (betWin === false) {
                             const user = await User.findById(userId);
@@ -7690,7 +7690,7 @@ adminRouter.post(
                                     await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, betAmount + payableToWin);
+                                sendBetWinConfirmEmail(user, payableToWin);
                             }
                         } else if (betWin === false) {
                             const betChanges = {
