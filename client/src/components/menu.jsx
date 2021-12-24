@@ -3,29 +3,82 @@ import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { logout } from '../libs/logout';
 
 class Menu extends Component {
+    logout = () => {
+        const { getUser, history, toggleField } = this.props;
+        logout(getUser, history);
+        toggleField('menuOpen');
+    }
+
     render() {
         const {
             location, toggleField, oddsFormat, display_mode, lang,
-            setOddsFormat, setDisplayMode, setLanguage,
-            intl
+            setOddsFormat, setDisplayMode, setLanguage, user,
+            intl, showLoginModalAction
         } = this.props;
         const { pathname } = location;
 
         return (
             <>
-                <div className="background-closer" onClick={() => toggleField('menuOpen')} />
+                <div className="background-closer bg-modal" onClick={() => toggleField('menuOpen')} />
                 <div className="mobile-menu modal-content">
-                    <button type="button" className="close-header" onClick={() => toggleField('menuOpen')}>
-                        <i className="fal fa-times" />
-                    </button>
-                    <Link to={{ pathname: '/' }} className="logo">
-                        <img src="/images/ppw-white-xmas.png" />
-                    </Link>
+                    <div className='d-flex justify-content-between p-4' style={{ alignItems: 'center' }}>
+                        <h3 className='menu-title'>Welcome</h3>
+                        <button type="button" className="close-header" onClick={() => toggleField('menuOpen')}>
+                            <i className="fas fa-times" />
+                        </button>
+                    </div>
+                    {!user && <div className='d-flex justify-content-around p-4'>
+                        <Link className='mobile-menu-quick-icon-container' to="/signup" onClick={() => toggleField('menuOpen')}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='far fa-handshake' />
+                            </div>
+                            <p>Join</p>
+                        </Link>
+                        <a className='mobile-menu-quick-icon-container' onClick={() => {
+                            toggleField('menuOpen');
+                            showLoginModalAction(true);
+                        }}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='fas fa-sign-in-alt' />
+                            </div>
+                            <p>Login</p>
+                        </a>
+                        <Link className='mobile-menu-quick-icon-container' to="/faq" onClick={() => toggleField('menuOpen')}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='fas fa-question' />
+                            </div>
+                            <p>FAQ</p>
+                        </Link>
+                    </div>}
+                    {user && <div className='d-flex justify-content-around p-4'>
+                        <Link className='mobile-menu-quick-icon-container' to="/bets" onClick={() => toggleField('menuOpen')}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='far fa-gamepad' />
+                            </div>
+                            <p>Open Bets</p>
+                        </Link>
+                        <Link className='mobile-menu-quick-icon-container' to="/deposit" onClick={() => toggleField('menuOpen')}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='fas fa-piggy-bank' />
+                            </div>
+                            <p>Deposit</p>
+                        </Link>
+                        <Link className='mobile-menu-quick-icon-container' to="/account" onClick={() => {
+                            toggleField('accountMenuMobileOpen');
+                            toggleField('menuOpen');
+                        }}>
+                            <div className='mobile-menu-quick-icon'>
+                                <i className='fas fa-user' />
+                            </div>
+                            <p>Account</p>
+                        </Link>
+                    </div>}
                     <ul className="navbar-nav">
-                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                            <Link to={{ pathname: '/' }} className="nav-link">
+                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`} >
+                            <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                 <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                             </Link>
                         </li>
@@ -35,8 +88,7 @@ class Menu extends Component {
                             </a>
                         </li>
                         <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
-                            <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() =>
-                                toggleField('menuOpen')}>
+                            <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                 <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
                             </Link>
                         </li>
@@ -50,6 +102,11 @@ class Menu extends Component {
                                 <i className="fa fa-question-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.HELP" />
                             </Link>
                         </li>
+                        {user && <li className="nav-item">
+                            <a className="nav-link" onClick={this.logout}>
+                                <i className="fas fa-sign-out-alt" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LOGOUT" />
+                            </a>
+                        </li>}
                         <li className="nav-item">
                             <ul>
                                 <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">

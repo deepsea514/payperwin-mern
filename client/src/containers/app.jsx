@@ -168,6 +168,7 @@ class App extends Component {
             menuOpen: false,
             sportsMenuMobileOpen: false,
             accountMenuMobileOpen: false,
+            userDropDownOpen: false,
             openBetSlipMenu: false,
             betSlipType: 'single',
             betSlip: [],
@@ -365,7 +366,8 @@ class App extends Component {
             scrolledTop,
             betSlipType,
             teaserBetSlip,
-            betSlipOdds
+            betSlipOdds,
+            userDropDownOpen
         } = this.state;
         const { user,
             getUser,
@@ -395,8 +397,14 @@ class App extends Component {
                     getUser={getUser}
                     history={history}
                     location={location}
+                    userDropDownOpen={userDropDownOpen}
                 />
-                {menuOpen ? <Menu user={user} location={location} toggleField={this.toggleField} /> : null}
+                {menuOpen && <Menu user={user}
+                    location={location}
+                    getUser={getUser}
+                    history={history}
+                    showLoginModalAction={showLoginModalAction}
+                    toggleField={this.toggleField} />}
                 <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     <div className="container">

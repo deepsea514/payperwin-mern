@@ -5,12 +5,12 @@
 }
 
 .header-search.dark {
-    background: linear-gradient(90deg, #0b1422, #273043);
+    background: linear-gradient(90deg, #171717, #313131);
     color: white;
 }
 
 .header-search.dark .search-box, .header-search.dark .searh-f, .header-search.dark .displaymode_container {
-    background-color: #29496e;
+    background-color: #333333;
     color: white;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .main-section.dark {
-    background-color: #05162b !important;
+    background-color: #121212 !important;
 }
 
 .main-section.dark .cat-heading {
@@ -59,8 +59,8 @@
 }
 
 .main-section.dark .favorites {
-    background: #082242;
-    border-color: #082242;
+    background: #1d1d1d;
+    border-color: #1d1d1d;
     color: white;
 }
 
@@ -95,7 +95,7 @@
 }
 
 .main-section.dark .bet-slip-list {
-    background: #082242;
+    background: #1d1d1d;
 }
 
 .main-section.dark .betslip-deposit-message, .main-section.dark .betslip-deposit-message i {
@@ -103,20 +103,20 @@
 }
 
 .main-section.dark .no-bets {
-    background: #082242;
+    background: #1d1d1d;
     color: white;
 }
 
 .main-section.dark .bet-slip-header, .main-section.dark .bet-slip {
-    background: #182f49;
+    background: #2d2d2d;
 }
 
 .main-section.dark .bet-slip-type-container {
-    background: #334d6b;
+    background: #333;
 }
 
 .main-section.dark .bet-parlay-container {
-    background-color: #182f49;
+    background-color: #2d2d2d;
     color: white;
 }
 
@@ -129,11 +129,11 @@
 }
 
 .main-section.dark .total {
-    background: #182f49;
+    background: #2d2d2d;
 }
 
 .main-section.dark .table-title {
-    background: #182f49;
+    background: #2d2d2d;
 }
 
 .main-section.dark .highlights .nav-link {
@@ -141,7 +141,7 @@
 }
 
 .main-section.dark .table-list-top {
-    background: #082242;
+    background: #1d1d1d;
     color: white;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .main-section.dark .table-bottom {
-    background: #082242;
+    background: #1d1d1d;
 }
 
 .main-section.dark .table-list li:first-child a {
@@ -158,8 +158,8 @@
 }
 
 .main-section.dark .box-odds {
-    background: #182f49;
-    border: 1px solid #203e5f;
+    background: #2d2d2d;
+    border: 1px solid #3d3d3d;
     color: white;
 }
 
@@ -194,12 +194,12 @@
 }
 
 .main-section.dark .line-type-header-teams {
-    background-color: #05162b !important;
+    background-color: #080808 !important;
     color: white !important;
 }
 
 .main-section.dark .bet {
-    background: #182f49;
+    background: #2d2d2d;
     color: white;
 }
 
@@ -212,8 +212,8 @@
 }
 
 .main-section.dark .bet-stake, .main-section.dark .bet-win {
-    border: 1px solid #082242;
-    background: #082242;
+    border: 1px solid #1d1d1d;
+    background: #1d1d1d;
     color: white;
 }
 
@@ -230,13 +230,13 @@
 }
 
 .main-section.dark .col-in {
-    background: #082242;
+    background: #1d1d1d;
     border-color: #0a294e;
 }
 
 .main-section.dark .help-center {
-    background: #05162b;
-    border-color: #0a294e;
+    background: #121212;
+    border-color: #202020;
 }
 
 .main-section.dark h2 {
@@ -244,17 +244,17 @@
 }
 
 .main-section.dark .teaser-markets {
-    background-color: #082242;
+    background-color: #1d1d1d;
 }
 
 .main-section.dark .teaser-markets-scroller span {
-    background-color: #082242;
+    background-color: #1d1d1d;
     color: white;
 }
 
 .main-section.dark .help-center .hc-search-input input {
-    background: #082242;
-    border-color: #0a294e;
+    background: #1d1d1d;
+    border-color: #2d2d2d;
     color: white;
 }
 
@@ -263,8 +263,8 @@
 }
 
 .main-section.dark .cs-g, .main-section.dark .fc-article-inner {
-    background: #05162b;
-    border-color: #0a294e;
+    background: #121212;
+    border-color: #202020;
 }
 
 .main-section.dark .cs-g .list-lead, .main-section.dark .cs-g .list-desc, .main-section.dark .link-help-home, .main-section.dark p, .main-section.dark li {
@@ -272,7 +272,7 @@
 }
 
 .main-section.dark .how-it-works-info {
-    background: #071d38;
+    background: #121212;
 }
 
 .main-section.dark .how-it-works-steps {
@@ -280,20 +280,20 @@
 }
 
 .main-section.dark .content-container {
-    background: #071d38;
+    background: #1d1d1d;
     color: white;
 }
 
 .main-section.dark .content-container .privacy-policy-header-text {
-    background: #0a294e;
+    background: #121212;
 }
 
 .main-section.dark .content-container .gray {
-    background: #0a294e;
+    background: #121212;
 }
 
 .main-section.dark .content-container .privacy-policy-section-title {
-    background: #0a294e;
+    background: #121212;
 }
 
 .main-section.dark .line-name {
@@ -301,7 +301,7 @@
 }
 
 .main-section.dark .content-container .privacy-policy-paragraph {
-    background: #0a294e;
+    background: #121212;
 }
 
 .main-section.dark .content-container .rules table {
@@ -309,7 +309,7 @@
 }
 
 .main-section.dark .content-container .terms-and-conditions table {
-    background: #071d38;
+    background: #000;
 }
 
 .main-section.dark .content-container .terms-and-conditions .list-alike p span {
@@ -317,7 +317,7 @@
 }
 
 .main-section.dark .content-container .title-bar, .main-section.dark .content-container .privacy-policy-container .privacy-policy-page-title {
-    background: #071d38 !important;
+    background: #1d1d1d !important;
 }
 
 .main-section.dark .modal.confirmation {
@@ -335,7 +335,7 @@
 }
 
 .main-section.dark .leagues-list li {
-    background-color: #082242;
+    background-color: #1d1d1d;
     color: white;
 }
 
@@ -344,11 +344,15 @@
 }
 
 .main-section.dark .leagues-list li.active, .main-section.dark .leagues-list li:hover {
-    background-color: #182f49;
+    background-color: #2d2d2d;
 }
 
 .main-section.dark .leagues-list li.league-list-letter, .main-section.dark .leagues-list li.league-list-letter:hover {
-    background-color: #1e3857;
+    background-color: #2d2d2d;
+}
+
+.main-section.dark .sports-league-image-container {
+    border: 2px solid white;
 }
 
 /* Footer */
@@ -358,7 +362,7 @@ footer.dark, footer.dark * {
 }
 
 footer.dark {
-    background: #05162b !important;
+    background: #121212 !important;
 }
 
 footer.dark .footer-heading {
@@ -374,7 +378,7 @@ footer.dark ul li a:hover {
 }
 
 footer.dark .glambing {
-    background: #13273E;
+    background: #000;
     color: white;
 }
 

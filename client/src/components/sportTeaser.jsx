@@ -272,7 +272,7 @@ class SportTeaser extends Component {
                             );
                         }).filter(event => event);
                         return (events.length > 0 &&
-                            <div className="tab-content" id="myTabContent" key={leagueName}>
+                            <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>

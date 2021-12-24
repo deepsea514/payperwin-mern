@@ -69,13 +69,11 @@
 
     .mobile-menu {
         display: none;
-        /* background: #273043; */
         position: fixed;
         top: 0;
         z-index: 99;
         width: 86%;
-        /* padding-bottom: 30px; */
-        /* padding-left: 10px; */
+        right: 0;
     }
 
     .responsive-menu .navbar-toggler-icon {
@@ -92,9 +90,7 @@
     }
 
     .header-top .navbar-toggler {
-        position: absolute;
-        left: 0;
-        top: 0px;
+        float: right;
     }
 
     .mobile-menu.trnslteY {
@@ -153,9 +149,6 @@
 
     .logo {
         /* padding-top: 0; */
-        display: inline-block;
-        position: relative;
-        left: 28px;
     }
 
     .footer-inner {

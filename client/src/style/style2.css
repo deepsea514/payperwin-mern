@@ -133,8 +133,7 @@ header form {
 
 .header-top {
     padding: 10px 0;
-    /* background-color:#0a1a2e; */
-    background: linear-gradient(90deg, #0b1422, #273043);
+    background: linear-gradient(90deg, #171717, #313131);
 }
 
 .collapse:not(.show) {
@@ -346,7 +345,7 @@ ul.list-s li:not(:first-child) i {
 }
 
 .header-bottom {
-    background: linear-gradient(90deg, #0b1422, #273043);
+    background: linear-gradient(90deg, #171717, #313131);
     border-top: 1px solid hsla(0, 0%, 100%, .2);
 }
 
@@ -427,7 +426,7 @@ footer ul li a i {
 }
 
 .total {
-    background: #273043;
+    background: #2d2d2d;
     padding: 15px;
 }
 
@@ -438,7 +437,7 @@ footer ul li a i {
 }
 
 .bet-slip-header, .bet-slip {
-    background: #273043;
+    background: #2d2d2d;
     color: #fff;
     font-weight: 700;
     font-size: 13px;
@@ -447,7 +446,7 @@ footer ul li a i {
 }
 
 .bet-slip-type-container {
-    background-color: #54575e;
+    background-color: #333;
     color: white;
     border-bottom: none !important;
 }
@@ -729,7 +728,7 @@ footer ul li a i {
     box-shadow: inset 0px -13px 15px -5px rgba(0, 0, 0, 0.1);
 }
 
-.close-header {
+/* .close-header {
     z-index: 999;
     font-size: 40px !important;
     color: #fff;
@@ -737,18 +736,47 @@ footer ul li a i {
     position: absolute;
     right: -52px;
     top: 7px;
-}
+} */
 
 .mobile-menu button.close-header {
     padding: 0;
-    background-color: #273043;
-    width: 65px;
+    margin: 0;
     border: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    right: -60px;
-    top: 0px;
+    background: transparent;
+    position: relative;
+    font-size: 30px !important;
+    color: #fff;
+    font-weight: 500;
+}
+
+.mobile-menu .menu-title {
+    color: white;
+    font-size: 2rem !important;
+}
+
+.mobile-menu-quick-icon-container {
+    text-align: center;
+}
+
+.mobile-menu-quick-icon-container p {
+    color: white;
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+.mobile-menu-quick-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+.mobile-menu-quick-icon i {
+    font-size: 26px;
+    color: white;
 }
 
 .mobile-menu {
@@ -791,7 +819,7 @@ footer ul li a i {
 }
 
 .table-title {
-    background: #273043;
+    background: #2d2d2d;
     color: #fff;
     font-weight: 600;
     font-size: 12px;
@@ -1631,7 +1659,7 @@ sup {
 }
 
 .content-container .rules h3 a, .content-container .rules ol a {
-    color: #F50;
+    color: #ED254E;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -1778,7 +1806,7 @@ sup {
 }
 
 .content-container .terms-and-conditions .mobile-container a {
-    color: #F50;
+    color: #ED254E;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -1869,7 +1897,7 @@ sup {
 }
 
 .content-container .privacy-policy-paragraph a {
-    color: #F50;
+    color: #ED254E;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -1947,7 +1975,7 @@ sup {
 }
 
 .content-container .responsible_gaming_container a {
-    color: #F50;
+    color: #ED254E;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -2066,7 +2094,7 @@ sup {
     .content-container .title-bar {
         /* position: absolute; */
         /* top: 50px; */
-        width: 100%;
+        /* width: 100%; */
         background-color: #fff;
         text-transform: uppercase;
         font-size: 14px;
@@ -2369,6 +2397,10 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 
     .verification-proof-container {
         display: none;
+    }
+
+    .login-nav {
+        padding-top: 10px !important;
     }
 }
 
@@ -2743,7 +2775,7 @@ input.special {
 }
 
 .help-center .category-container .categories a.active {
-    border-bottom: 2px solid #f50;
+    border-bottom: 2px solid #ED254E;
 }
 
 .faq-content {
