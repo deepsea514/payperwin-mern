@@ -187,6 +187,7 @@ const getAllSportsLines = async () => {
             else {
                 await Sport.create(sportEvents);
             }
+            console.log('All done')
         } catch (error) {
             console.error(error);
         }
