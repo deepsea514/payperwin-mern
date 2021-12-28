@@ -36,8 +36,9 @@ const gotLineToOdds = (game_lines) => {
     line.spreads = line.spreads.length ? line.spreads : null;
     line.totals = line.totals.length ? line.totals : null;
 
-    if (line.moneyline || line.spreads || line.totals)
+    if (line.moneyline || line.spreads || line.totals) {
         return line;
+    }
     return null;
 }
 
@@ -64,7 +65,9 @@ const formatBasketballFixturesOdds = (event) => {
         if (main.sp.game_lines) {
             const game_lines = main.sp.game_lines.odds;
             const whole_line = gotLineToOdds(game_lines);
-            if (whole_line == null) return null;
+            if (whole_line == null) {
+                return null;
+            }
             line = { ...line, ...whole_line };
         }
 
@@ -188,7 +191,11 @@ const formatBasketballFixturesOdds = (event) => {
     line.totals = line.totals && line.totals.length ? line.totals : null;
     line.alternative_spreads = line.alternative_spreads && line.alternative_spreads.length ? line.alternative_spreads : null;
     line.alternative_totals = line.alternative_totals && line.alternative_totals.length ? line.alternative_totals : null;
-    return line;
+
+    if (line.moneyline || line.spreads || line.totals) {
+        return line;
+    }
+    return null;
 }
 
 module.exports = formatBasketballFixturesOdds;

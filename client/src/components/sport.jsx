@@ -311,17 +311,21 @@ class Sport extends Component {
                         const { name: leagueName, originId: leagueId } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
-                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
+                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
                                 return null;
+                            }
                             if (minDate && new Date(startDate).getTime() < minDate.getTime() ||
                                 maxDate && new Date(startDate).getTime() >= maxDate.getTime()) {
                                 return null;
                             }
 
-                            if (team && teamA != team && teamB != team) return;
-                            const { moneyline, spreads, totals, originId: lineId } = lines[0];
-                            if (!moneyline && !spreads && !totals)
+                            if (team && teamA != team && teamB != team) {
                                 return null;
+                            }
+                            const { moneyline, spreads, totals, originId: lineId } = lines[0];
+                            if (!moneyline && !spreads && !totals) {
+                                return null;
+                            }
                             const lineCount = this.getLineCount(lines[0]);
                             const pathname = `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}`;
                             return (
@@ -663,7 +667,7 @@ class Sport extends Component {
                         </>
                     )
                 })()}
-            </div >
+            </div>
         );
     }
 }
