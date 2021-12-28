@@ -45,7 +45,7 @@ class Sport extends Component {
             sportsbookInfo: null,
             timer: null,
             liveTimer: null,
-            dateSelected: null,
+            dateSelected: 0,
         };
     }
 
