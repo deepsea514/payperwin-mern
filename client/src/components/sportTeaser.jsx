@@ -309,7 +309,6 @@ class SportTeaser extends Component {
                                 </div>
                             </div>
 
-                            <div className="table-title mt-3"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
                             <div className="content">
                                 {filteredLeagues}
                             </div>

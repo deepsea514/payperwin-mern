@@ -133,7 +133,7 @@
 }
 
 .main-section.dark .table-title {
-    background: #2d2d2d;
+    background: #121212;
 }
 
 .main-section.dark .highlights .nav-link {
@@ -402,4 +402,11 @@ footer.dark .glambing {
 
 footer.dark p {
     color: white;
+}
+
+@media(max-width:767px) {
+    .main-section.dark .box-odds {
+        background: #1d1d1d;
+        border: none;
+    }
 }

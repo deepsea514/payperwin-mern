@@ -45,7 +45,7 @@ class Sport extends Component {
             sportsbookInfo: null,
             timer: null,
             liveTimer: null,
-            dateSelected: 0,
+            dateSelected: null,
         };
     }
 
@@ -620,7 +620,8 @@ class Sport extends Component {
                         }).filter(event => event);
                         return (events.length > 0 &&
                             <div className="tab-content" key={leagueName}>
-                                <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
+                                    <div className="table-title">{leagueName}</div>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                         <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
@@ -635,7 +636,6 @@ class Sport extends Component {
                     }).filter(league => league);
                     return (
                         <>
-                            <div className="table-title"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
                             <div className="dashboard_bottombar date_bottombar_container">
                                 <div className="dashboard_bottombar_container date_bottombar">
                                     <div className="dashboard_bottombar_wrapper" style={{ minWidth: '100%' }}>
