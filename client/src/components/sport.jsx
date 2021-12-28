@@ -51,10 +51,10 @@ class Sport extends Component {
 
     componentDidMount() {
         this.getSport();
-        this.getLiveSport();
+        // this.getLiveSport();
         this.setState({
             timer: setInterval(this.getSport, 60 * 1000),
-            liveTimer: setInterval(this.getLiveSport, 10 * 1000),
+            // liveTimer: setInterval(this.getLiveSport, 10 * 1000),
         })
     }
 
