@@ -370,12 +370,6 @@ a.log-in-btn {
     text-align: center;
 }
 
-.highlights i {
-    display: block;
-    margin: 0 auto;
-    margin-top: 5px;
-}
-
 .login-nav-contain {
     position: relative;
 }
@@ -2066,4 +2060,25 @@ a.fav-link:hover {
     margin: auto 0;
     width: 40px;
     height: 40px;
+}
+
+.promotion-header {
+    font-size: 14px;
+    display: inline-block;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.promotion-botton:first-child {
+    border: 1px solid #ED254E !important;
+}
+
+.promotion-botton {
+    width: 48%;
+    text-align: center;
+    border: 1px solid #000;
+    color: #000;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 0;
 }

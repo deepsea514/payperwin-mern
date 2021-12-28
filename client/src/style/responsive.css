@@ -185,4 +185,27 @@
         position: relative;
         background: #e8ecf3;
     }
+
+    .table-list li:nth-child(2) {
+        width: 72px;
+        min-width: 72px;
+    }
+
+    .table-list li:nth-child(3) {
+        width: 72px;
+        min-width: 72px;
+    }
+
+    .table-list li:nth-child(4) {
+        width: 72px;
+        min-width: 72px;
+    }
+
+    .box-odds:not(:first-child) {
+        margin-left: 0;
+    }
+
+    .box-odds {
+        height: 56px;
+    }
 }

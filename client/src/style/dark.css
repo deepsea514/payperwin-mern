@@ -368,6 +368,11 @@
     background-color: #000 !important;
 }
 
+.main-section.dark .promotion-botton {
+    color: white;
+    border: 1px solid #FFF;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {

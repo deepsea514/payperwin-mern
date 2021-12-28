@@ -233,15 +233,11 @@ class Sport extends Component {
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
                                         <Link to={{ pathname: pathname }} className="widh-adf">
-                                            <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                            <strong>{teamA}</strong> <strong>{teamB}</strong>
                                         </Link>
-                                        <Link to={{ pathname: pathname }} className="widh-adf mt-2 text-right">
-                                            <strong><FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /></strong>
-                                        </Link>
-                                    </li>
-                                    <li className="detailed-lines-link mobile">
-                                        <Link to={{ pathname: pathname }}>
-                                            +{lineCount}<i className="fas fa-angle-right" />
+                                        <Link to={{ pathname: pathname }} className="widh-adf mt-3">
+                                            {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                            <strong>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
                                         </Link>
                                     </li>
                                     {[1, 2, 3].map(i => (
@@ -274,8 +270,7 @@ class Sport extends Component {
                             <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
-                                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
-                                        <li className="detailed-lines-link mobile"></li>
+                                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right"></i></li>
                                         <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
                                         <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
                                         <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
@@ -333,15 +328,11 @@ class Sport extends Component {
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
                                         <Link to={{ pathname: pathname }} className="widh-adf">
-                                            <strong>{teamA}</strong> <strong>{teamB}</strong>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                            <strong>{teamA}</strong> <strong>{teamB}</strong>
                                         </Link>
-                                        <Link to={{ pathname: pathname }} className="widh-adf mt-2 text-right">
-                                            <strong><FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /></strong>
-                                        </Link>
-                                    </li>
-                                    <li className="detailed-lines-link mobile">
-                                        <Link to={{ pathname: pathname }}>
-                                            +{lineCount}<i className="fas fa-angle-right" />
+                                        <Link to={{ pathname: pathname }} className="widh-adf mt-3">
+                                            {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                            <strong>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
                                         </Link>
                                     </li>
                                     <React.Fragment key={lineId}>
@@ -632,7 +623,6 @@ class Sport extends Component {
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
-                                        <li className="detailed-lines-link mobile"></li>
                                         <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
                                         <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
                                         <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
