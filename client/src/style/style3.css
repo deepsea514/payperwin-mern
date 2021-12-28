@@ -1668,6 +1668,20 @@ button.loginButton span {
     -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
 }
 
+.dashboard_bottombar_scroller_container {
+    position: relative;
+    height: 100%;
+    min-width: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.dashboard_bottombar_scroller_container::-webkit-scrollbar {
+    display: none;
+}
+
 .tab-pane-leagues {
     background-color: #E5E5E5;
 }
@@ -1809,6 +1823,12 @@ a.fav-link:hover {
 
 .dashboard_bottombar {
     margin-top: auto;
+    overflow-x: 'auto';
+    overflow-y: 'hidden';
+}
+
+.dashboard_bottombar_container.date_bottombar {
+    background-color: #FFF;
 }
 
 .dashboard_bottombar_container {
@@ -1823,7 +1843,8 @@ a.fav-link:hover {
 .dashboard_bottombar_wrapper {
     overflow: hidden;
     position: relative;
-    height: 35px;
+    /* height: 35px; */
+    height: 100%;
     display: inline-block;
 }
 
@@ -1842,6 +1863,10 @@ a.fav-link:hover {
     cursor: pointer;
 }
 
+.dashboard_bottombar_scroller.date_bottombar a.dashboard_bottombar_selected {
+    color: #000;
+}
+
 .dashboard_bottombar_scroller a.dashboard_bottombar_selected {
     color: #fff;
 }
@@ -1850,12 +1875,17 @@ a.fav-link:hover {
     border-bottom: 2px #ED254E solid;
 }
 
+.dashboard_bottombar_scroller.date_bottombar a {
+    background-color: rgba(255, 255, 255, .5);
+    color: rgba(0, 0, 0, 0.7);
+}
+
 .dashboard_bottombar_scroller a {
     background-color: rgba(0, 0, 0, .5);
     font-weight: 500;
     padding: 8px 15px;
     margin: 0;
-    color: hsla(0, 0%, 100%, .7);
+    color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
     cursor: inherit;
     border: none;

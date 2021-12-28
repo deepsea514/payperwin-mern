@@ -11,6 +11,8 @@ import _env from '../env.json';
 import SBModal from './sbmodal';
 import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
+import dateFormat from 'dateformat';
+
 const serverUrl = _env.appUrl;
 
 const emptyBoxLine = (
@@ -28,6 +30,11 @@ const emptyBoxLine = (
     </li>
 );
 
+Date.prototype.addDates = function (d) {
+    this.setTime(this.getTime() + (d * 24 * 60 * 60 * 1000));
+    return this;
+}
+
 class Sport extends Component {
     constructor(props) {
         super(props);
@@ -38,6 +45,7 @@ class Sport extends Component {
             sportsbookInfo: null,
             timer: null,
             liveTimer: null,
+            dateSelected: 0,
         };
     }
 
@@ -166,9 +174,26 @@ class Sport extends Component {
         this.setState({ sportsbookInfo: null });
     }
 
+    getDateStr = (day) => {
+        switch (day) {
+            case 0:
+                return 'Today';
+            case null:
+                return 'All';
+            default:
+                const date = new Date().addDates(day);
+                return dateFormat(date, "mmm d");
+        }
+    }
+
     render() {
-        const { betSlip, removeBet, timezone, oddsFormat, team, sportName, league: leagueId, hideBreacrumb, user, getUser } = this.props;
-        const { data, error, sportsbookInfo, liveData } = this.state;
+        const {
+            betSlip, removeBet, timezone, oddsFormat, team, sportName,
+            league: leagueId, hideBreacrumb, user, getUser
+        } = this.props;
+        const {
+            data, error, sportsbookInfo, liveData, dateSelected
+        } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
@@ -273,13 +298,31 @@ class Sport extends Component {
                 })()}
 
                 {(() => {
-
+                    let minDate = null;
+                    let maxDate = null;
+                    switch (dateSelected) {
+                        case null:
+                            break;
+                        default:
+                            const today = new Date();
+                            const year = today.getFullYear();
+                            const month = today.getMonth();
+                            const date = today.getDate();
+                            const newDate = new Date(year, month, date);
+                            minDate = new Date(newDate.addDates(dateSelected));
+                            maxDate = new Date(newDate.addDates(1));
+                    }
                     const filteredLeagues = leagues.map(league => {
                         const { name: leagueName, originId: leagueId } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
                             if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime())
                                 return null;
+                            if (minDate && new Date(startDate).getTime() < minDate.getTime() ||
+                                maxDate && new Date(startDate).getTime() >= maxDate.getTime()) {
+                                return null;
+                            }
+
                             if (team && teamA != team && teamB != team) return;
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
                             if (!moneyline && !spreads && !totals)
@@ -600,17 +643,37 @@ class Sport extends Component {
                             </div>
                         );
                     }).filter(league => league);
-                    return filteredLeagues.length > 0 && (
+                    return (
                         <>
                             <div className="table-title"><FormattedMessage id="COMPONENTS.SPORT.HIGHLIGHTS" /></div>
+                            <div className="dashboard_bottombar date_bottombar_container">
+                                <div className="dashboard_bottombar_container date_bottombar">
+                                    <div className="dashboard_bottombar_wrapper" style={{ minWidth: '100%' }}>
+                                        <div className='dashboard_bottombar_scroller_container'>
+                                            <div className="dashboard_bottombar_scroller date_bottombar" style={{
+                                                transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)',
+                                                transitionDuration: '0ms',
+                                                transform: 'translate(0px, 0px) translateZ(0px)'
+                                            }}>
+                                                {[0, 1, 2, 3, 4, 5, 6, null].map((date, index) => {
+                                                    return (
+                                                        <a key={index}
+                                                            className={dateSelected == date ? "dashboard_bottombar_selected" : ''}
+                                                            onClick={() => this.setState({ dateSelected: date })}><span>{this.getDateStr(date)}</span></a>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="content">
                                 {filteredLeagues}
                             </div>
                         </>
                     )
                 })()}
-
-            </div>
+            </div >
         );
     }
 }

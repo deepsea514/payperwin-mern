@@ -355,6 +355,19 @@
     border: 2px solid white;
 }
 
+.main-section.dark .dashboard_bottombar_scroller.date_bottombar a {
+    background-color: rgba(0, 0, 0, .5) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.main-section.dark .dashboard_bottombar_scroller.date_bottombar a.dashboard_bottombar_selected {
+    color: #FFF !important;
+}
+
+.main-section.dark .dashboard_bottombar_container.date_bottombar {
+    background-color: #000 !important;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {
