@@ -97,6 +97,10 @@ const matchResultsParlay = async (bet365ApiKey) => {
             const cancelledEvents = [];
             for (const query of resultQuery) {
                 const { lineQuery, result, pick, pickName } = query;
+                if (!result) {
+                    breaked = true;
+                    break;
+                }
                 const { ss, scores, time_status, time, timer } = result;
                 let matchResult = {
                     homeScore: 0,
