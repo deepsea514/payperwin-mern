@@ -7,11 +7,39 @@ import axios from "axios";
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
+const topLeagues = [
+    {
+        name: 'NFL',
+        sportName: 'American_Football',
+        leagueId: '10037219',
+        imgsrc: '/images/sports/nfl.png',
+    },
+    {
+        name: 'NBA',
+        sportName: 'Basketball',
+        leagueId: '10041830',
+        imgsrc: '/images/sports/nba.png',
+    },
+    {
+        name: 'MLB',
+        sportName: 'Baseball',
+        leagueId: '10037485',
+        imgsrc: '/images/sports/mlb.png',
+    },
+    {
+        name: 'NHL',
+        sportName: 'Ice_Hockey',
+        leagueId: '10037477',
+        imgsrc: '/images/sports/nhl.png',
+    }
+]
+
 export default class Highlights extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sportIndex: 0,
+            sportIndex: null,
+            leagueIndex: 0,
             sports: [],
             loading: false,
         };
@@ -39,23 +67,37 @@ export default class Highlights extends Component {
     }
 
     render() {
-        const { sportIndex, sports, loading } = this.state;
+        const { sportIndex, leagueIndex, sports, loading } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
+        const sportName = sportIndex == null ? topLeagues[leagueIndex].sportName : sports[sportIndex];
         return (
             <div className="highlights">
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <ul className="nav nav-tabs pt-2">
+                    {topLeagues.map((league, i) => {
+                        return (
+                            <li className="nav-item"
+                                onClick={() => this.setState({ leagueIndex: i, sportIndex: null })}
+                                key={league.leagueId}>
+                                <center>
+                                    <div className={`sports-league-image-container ${leagueIndex == i ? 'active' : ''}`}>
+                                        <img src={league.imgsrc}
+                                            className='sports-league-image' />
+                                    </div>
+                                    <span className="nav-link">{league.name}</span>
+                                </center>
+                            </li>
+                        )
+                    })}
                     {sports.map((sport, i) => {
                         return (
                             <li className="nav-item"
-                                onClick={() => this.setState({ sportIndex: i })}
+                                onClick={() => this.setState({ sportIndex: i, leagueIndex: null })}
                                 key={sport}>
                                 <center>
                                     <div className={`sports-league-image-container ${sportIndex == i ? 'active' : ''}`}>
                                         <img src={sportNameImage(sport)}
-                                            className='sports-league-image'
-                                            width="18"
-                                            height="18" />
+                                            className='sports-league-image' />
                                     </div>
                                     <span className="nav-link">{sport}</span>
                                 </center>
@@ -64,7 +106,7 @@ export default class Highlights extends Component {
                     })}
                 </ul>
                 {loading && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
-                {sports[sportIndex] && (sports[sportIndex] == "Other" ?
+                {sportName == "Other" ?
                     <Others
                         addBet={addBet}
                         betSlip={betSlip}
@@ -74,9 +116,10 @@ export default class Highlights extends Component {
                         addBet={addBet}
                         betSlip={betSlip}
                         removeBet={removeBet}
-                        sportName={sports[sportIndex]}
+                        sportName={sportName}
+                        league={sportIndex == null ? topLeagues[leagueIndex].leagueId : null}
                         hideBreacrumb={true}
-                    />)}
+                    />}
             </div>
         );
     }
