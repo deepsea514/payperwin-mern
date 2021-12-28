@@ -64,7 +64,7 @@ function convertTimeEventDate(date, timezone) {
     }
 
     const time = getChangedTime(date, timezone);
-    return dateformat(new Date(time), "mm/dd/yyyy h:MM tt ") + `GMT ${timezone}`;
+    return dateformat(new Date(time), "mm/dd/yyyy h:MM tt ");
 }
 
 function convertTimeLineDate(date, timezone) {
@@ -79,7 +79,7 @@ function convertTimeLineDate(date, timezone) {
     }
 
     const time = getChangedTime(date, timezone);
-    return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ") + `GMT ${timezone}`;
+    return dateformat(new Date(time), "dddd, mmmm d, yyyy h:MM tt ");
 }
 
 

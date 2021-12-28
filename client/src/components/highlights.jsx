@@ -73,6 +73,13 @@ export default class Highlights extends Component {
         return (
             <div className="highlights">
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
+                <div className='mobile p-3'>
+                    <p className='promotion-header'>PAYPER Win is a social sportsbetting platform. Risk less, win more!</p>
+                    <div className='d-flex justify-content-between p-3'>
+                        <div className='promotion-botton'><span>Promotions</span></div>
+                        <div className='promotion-botton'><span>Favorites</span></div>
+                    </div>
+                </div>
                 <ul className="nav nav-tabs pt-2">
                     {topLeagues.map((league, i) => {
                         return (
