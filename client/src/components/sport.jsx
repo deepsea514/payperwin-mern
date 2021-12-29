@@ -662,7 +662,9 @@ class Sport extends Component {
                                 </div>
                             </div>
                             <div className="content">
-                                {filteredLeagues}
+                                {filteredLeagues.length > 0 ? filteredLeagues : (
+                                    <h3 className='no-games'>There are no games for the selected date. Please check back later.</h3>
+                                )}
                             </div>
                         </>
                     )

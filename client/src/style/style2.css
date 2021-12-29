@@ -758,10 +758,22 @@ footer ul li a i {
     text-align: center;
 }
 
+.mobile-menu-quick-icon-container.active {
+    border: none;
+}
+
+.mobile-menu-quick-icon-container.active p {
+    color: #ED254E;
+}
+
 .mobile-menu-quick-icon-container p {
     color: white;
     margin-top: 4px;
     font-weight: 400;
+}
+
+.mobile-menu-quick-icon-container.active .mobile-menu-quick-icon {
+    border: 2px solid #ED254E;
 }
 
 .mobile-menu-quick-icon {
@@ -772,6 +784,10 @@ footer ul li a i {
     align-items: center;
     justify-content: center;
     border: 2px solid white;
+}
+
+.mobile-menu-quick-icon-container.active .mobile-menu-quick-icon i {
+    color: #ED254E;
 }
 
 .mobile-menu-quick-icon i {

@@ -208,4 +208,8 @@
     .box-odds {
         height: 56px;
     }
+
+    .header-top {
+        background: #121212;
+    }
 }

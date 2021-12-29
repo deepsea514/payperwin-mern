@@ -351,12 +351,20 @@ a.log-in-btn {
     overflow-y: hidden;
     width: 100%;
     overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-bottom: none;
+}
+
+.highlights ul.nav-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .highlights .nav-link {
     color: #545a64;
     padding: 4px 1rem;
-    width: 100px;
+    min-width: 70px;
+    font-size: 12px;
 }
 
 .highlights .nav-item.active i {
@@ -1676,6 +1684,7 @@ button.loginButton span {
     display: none;
 }
 
+
 .tab-pane-leagues {
     background-color: #E5E5E5;
 }
@@ -1823,6 +1832,7 @@ a.fav-link:hover {
 
 .dashboard_bottombar_container.date_bottombar {
     background-color: #FFF;
+    font-size: 13px;
 }
 
 .dashboard_bottombar_container {
@@ -2047,19 +2057,20 @@ a.fav-link:hover {
 }
 
 .sports-league-image-container {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border: 2px solid #000;
-    border-radius: 30px;
+    border-radius: 25px;
     align-items: center;
     display: flex;
     justify-content: center;
+    margin: 0;
 }
 
 .sports-league-image {
     margin: auto 0;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
 }
 
 .promotion-header {
@@ -2074,11 +2085,16 @@ a.fav-link:hover {
 }
 
 .promotion-botton {
-    width: 48%;
+    width: 100%;
     text-align: center;
     border: 1px solid #000;
     color: #000;
     border-radius: 6px;
     font-size: 14px;
     padding: 6px 0;
+}
+
+.no-games {
+    font-size: 16px;
+    padding: 20px;
 }

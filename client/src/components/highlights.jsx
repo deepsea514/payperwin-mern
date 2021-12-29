@@ -50,7 +50,6 @@ export default class Highlights extends Component {
         this._isMounted = false;
     }
 
-
     componentDidMount() {
         this._isMounted = true;
         this._isMounted && this.setState({ loading: true });
@@ -75,9 +74,9 @@ export default class Highlights extends Component {
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
                     <p className='promotion-header'>PAYPER Win is a social sportsbetting platform. Risk less, win more!</p>
-                    <div className='d-flex justify-content-between p-3'>
+                    <div className='d-flex justify-content-center p-3'>
                         <div className='promotion-botton'><span>Promotions</span></div>
-                        <div className='promotion-botton'><span>Favorites</span></div>
+                        {/* <div className='promotion-botton'><span>Favorites</span></div> */}
                     </div>
                 </div>
                 <ul className="nav nav-tabs pt-2">
@@ -106,7 +105,7 @@ export default class Highlights extends Component {
                                         <img src={sportNameImage(sport)}
                                             className='sports-league-image' />
                                     </div>
-                                    <span className="nav-link">{sport}</span>
+                                    <span className="nav-link">{sport == 'American Football' ? 'Football' : sport}</span>
                                 </center>
                             </li>
                         );
