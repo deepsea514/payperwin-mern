@@ -81,7 +81,7 @@ class Search extends Component {
                                 <Link
                                     to={{ pathname: `/sport/${result.sportName ? result.sportName.replace(" ", "_") : ""}/league/${result.leagueId}` }}>
                                     <span style={{ float: 'initial' }}>
-                                        <img src={sportNameImage(result.sportName)} width="16" height="16" className="mr-2" />
+                                        <img src={sportNameImage(result.sportName, result.leagueName)} width="16" height="16" className="mr-2" />
                                         {result.leagueName}
                                     </span>
                                     <span><i className="fas fa-chevron-right" /></span>

@@ -3020,37 +3020,64 @@ expressApp.get(
     '/sport',
     async (req, res) => {
         const { name, leagueId, eventId } = req.query;
-        const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
-        if (sportData) {
-            if (leagueId) {
-                const sportLeague = sportData.leagues.find(league => league.originId == leagueId)
-                if (sportLeague) {
-                    if (eventId) {
-                        const event = sportLeague.events.find(event => event.originId == eventId);
-                        if (event)
+        try {
+            if (name) {
+                const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+                if (sportData) {
+                    if (leagueId) {
+                        const sportLeague = sportData.leagues.find(league => league.originId == leagueId)
+                        if (sportLeague) {
+                            if (eventId) {
+                                const event = sportLeague.events.find(event => event.originId == eventId);
+                                if (event)
+                                    return res.json({
+                                        leagueName: sportLeague.name,
+                                        sportName: sportData.name,
+                                        origin: sportData.origin,
+                                        ...event
+                                    });
+                                return res.json(null);
+                            }
+                            sportLeague.sportName = sportData.name;
                             return res.json({
-                                leagueName: sportLeague.name,
+                                name: sportData.name,
+                                leagues: [sportLeague],
                                 origin: sportData.origin,
-                                ...event
+                                originSportId: sportData.originSportId
                             });
+                        }
                         return res.json(null);
                     }
                     return res.json({
                         name: sportData.name,
-                        leagues: [sportLeague],
+                        leagues: sportData.leagues.map(league => ({
+                            ...league,
+                            sportName: sportData.name,
+                        })),
                         origin: sportData.origin,
                         originSportId: sportData.originSportId
                     });
+                } else {
+                    return res.json(null);
                 }
-                return res.json(null);
+            } else {
+                const sportsData = await Sport.find();
+                let leagues = [];
+                for (const sportData of sportsData) {
+                    leagues = [...leagues, ...sportData.leagues.map(league => ({
+                        ...league,
+                        sportName: sportData.name,
+                    }))]
+                }
+
+                return res.json({
+                    name: 'All',
+                    leagues: sortSearchResults(leagues),
+                    origin: 'bet365',
+                });
             }
-            return res.json({
-                name: sportData.name,
-                leagues: sportData.leagues,
-                origin: sportData.origin,
-                originSportId: sportData.originSportId
-            });
-        } else {
+        } catch (error) {
+            console.error(error);
             return res.json(null);
         }
     },

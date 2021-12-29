@@ -10,27 +10,23 @@ const serverUrl = _env.appUrl;
 const topLeagues = [
     {
         name: 'NFL',
-        sportName: 'American_Football',
+        sportName: 'American Football',
         leagueId: '10037219',
-        imgsrc: '/images/sports/nfl.png',
     },
     {
         name: 'NBA',
         sportName: 'Basketball',
         leagueId: '10041830',
-        imgsrc: '/images/sports/nba.png',
     },
     {
         name: 'MLB',
         sportName: 'Baseball',
         leagueId: '10037485',
-        imgsrc: '/images/sports/mlb.png',
     },
     {
         name: 'NHL',
-        sportName: 'Ice_Hockey',
+        sportName: 'Ice Hockey',
         leagueId: '10037477',
-        imgsrc: '/images/sports/nhl.png',
     }
 ]
 
@@ -39,7 +35,7 @@ export default class Highlights extends Component {
         super(props);
         this.state = {
             sportIndex: null,
-            leagueIndex: 0,
+            leagueIndex: null,
             sports: [],
             loading: false,
         };
@@ -68,7 +64,7 @@ export default class Highlights extends Component {
     render() {
         const { sportIndex, leagueIndex, sports, loading } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
-        const sportName = sportIndex == null ? topLeagues[leagueIndex].sportName : sports[sportIndex];
+        const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         return (
             <div className="highlights">
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
@@ -80,6 +76,16 @@ export default class Highlights extends Component {
                     </div>
                 </div>
                 <ul className="nav nav-tabs pt-2">
+                    <li className="nav-item"
+                        onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
+                        <center>
+                            <div className={`sports-league-image-container ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>
+                                <img src={'/images/sports/nfl.png'}
+                                    className='sports-league-image' />
+                            </div>
+                            <span className="nav-link">All</span>
+                        </center>
+                    </li>
                     {topLeagues.map((league, i) => {
                         return (
                             <li className="nav-item"
@@ -87,7 +93,7 @@ export default class Highlights extends Component {
                                 key={league.leagueId}>
                                 <center>
                                     <div className={`sports-league-image-container ${leagueIndex == i ? 'active' : ''}`}>
-                                        <img src={league.imgsrc}
+                                        <img src={sportNameImage(league.sportName, league.name)}
                                             className='sports-league-image' />
                                     </div>
                                     <span className="nav-link">{league.name}</span>
@@ -123,7 +129,7 @@ export default class Highlights extends Component {
                         betSlip={betSlip}
                         removeBet={removeBet}
                         sportName={sportName}
-                        league={sportIndex == null ? topLeagues[leagueIndex].leagueId : null}
+                        league={sportIndex == null && leagueIndex != null ? topLeagues[leagueIndex].leagueId : null}
                         hideBreacrumb={true}
                     />}
             </div>
