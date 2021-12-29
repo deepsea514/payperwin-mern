@@ -26,17 +26,22 @@ const sportImages = {
     'E-sports': '/images/icons/esports.png',
 
     'Football': '/images/icons/football.png',
-    'NFL': '/images/icons/football.png',
-    'NHL': '/images/icons/hockey.png',
-    'MLB': '/images/icons/baseball.png',
-    'NBA': '/images/icons/basketball.png',
-    'WNBA': '/images/icons/basketball.png',
-    'NCAA': '/images/icons/athelete.png',
-    'UFC': '/images/icons/boxing.png',
     'Other': '/images/icons/other.png'
 };
 
-function sportNameImage(name) {
+const leagueImages = {
+    'NFL': '/images/sports/nfl.png',
+    'NBA': '/images/sports/nba.png',
+    'MLB': '/images/sports/mlb.png',
+    'NHL': '/images/sports/nhl.png',
+}
+
+function sportNameImage(name, leagueName) {
+    if (leagueName) {
+        if (leagueImages[leagueName]) {
+            return leagueImages[leagueName];
+        }
+    }
     return sportImages[name.replace("_", " ")];
 }
 

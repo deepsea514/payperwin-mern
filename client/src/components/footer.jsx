@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 const Footer = (props) => {
     const { user, display_mode } = props;
     return (
-        <footer className={display_mode == 'light' ? 'light' : 'dark'}>
+        <footer className={`${display_mode == 'light' ? 'light' : 'dark'}`}>
             <div className="container">
                 <div className="foooter-main">
                     <div className="d-flex flex-wr justify-content-between">

@@ -12,6 +12,7 @@ import SBModal from './sbmodal';
 import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
 import dateFormat from 'dateformat';
+import sportNameImage from '../helpers/sportNameImage';
 
 const serverUrl = _env.appUrl;
 
@@ -91,18 +92,16 @@ class Sport extends Component {
 
     getSport = () => {
         const { sportName, league: league } = this.props;
-        if (sportName) {
-            axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
-                .then(({ data }) => {
-                    if (data) {
-                        this.setState({ data });
-                    } else {
-                        this.setState({ data: null })
-                    }
-                }).catch((err) => {
-                    this.setState({ error: err });
-                });
-        }
+        axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
+            .then(({ data }) => {
+                if (data) {
+                    this.setState({ data });
+                } else {
+                    this.setState({ data: null })
+                }
+            }).catch((err) => {
+                this.setState({ error: err });
+            });
     }
 
     getLineCount = (line, timer) => {
@@ -202,7 +201,7 @@ class Sport extends Component {
         }
 
         const { leagues, origin } = data;
-        const selectedLeague = leagues.find(league => league.originId == leagueId);
+        const selectedLeague = leagues.find(league => leagueId == leagueId);
         return (
             <div>
                 {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
@@ -221,14 +220,14 @@ class Sport extends Component {
                     if (!leagues || !leagues.length) return null;
 
                     const filteredLeagues = leagues.map(league => {
-                        const { name: leagueName, originId: leagueId, events } = league;
+                        const { name: leagueName, originId: leagueId, events, sportName } = league;
                         const filteredEvents = events.map((event, i) => {
-                            const { teamA, teamB, startDate, lines, timer } = event;
+                            const { teamA, teamB, startDate, lines, timer, originId: eventId } = event;
                             if (!lines || !lines.length)
                                 return null;
                             const lineCount = this.getLineCount(lines[0], timer);
                             if (!lineCount) return null;
-                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}/live`;
+                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}/live`;
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
@@ -308,7 +307,7 @@ class Sport extends Component {
                             maxDate = new Date(newDate.addDates(1));
                     }
                     const filteredLeagues = leagues.map(league => {
-                        const { name: leagueName, originId: leagueId } = league;
+                        const { name: leagueName, originId: leagueId, sportName } = league;
                         let events = league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
                             if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
@@ -327,7 +326,7 @@ class Sport extends Component {
                                 return null;
                             }
                             const lineCount = this.getLineCount(lines[0]);
-                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${league.originId}/event/${event.originId}`;
+                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
@@ -625,7 +624,8 @@ class Sport extends Component {
                         return (events.length > 0 &&
                             <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                    <div className="table-title">{leagueName}</div>
+                                    <div className="table-title d-flex align-items-center"><img src={sportNameImage(sportName, leagueName)}
+                                        style={{ marginRight: '6px', width: '14px', height: '14px' }} /> {leagueName}</div>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                         <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>

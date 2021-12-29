@@ -28,7 +28,7 @@ class Favorites extends Component {
                             }
                             className="sport-list-compact"
                         >
-                            <img src={sportNameImage(favorite.sport)} style={{ marginRight: '6px' }} />
+                            <img src={sportNameImage(favorite.sport, favorite.name)} style={{ marginRight: '6px' }} />
                             <label><span><span>{favorite.name}</span></span></label>
                             <span className="sport-list-count" onClick={(evt) => this.toggleFavoriteLeague(evt, favorite)}>
                                 <img src="/images/sports/star-selected.svg" alt="Favourite" />
