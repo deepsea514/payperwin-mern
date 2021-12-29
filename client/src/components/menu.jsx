@@ -31,7 +31,8 @@ class Menu extends Component {
                         </button>
                     </div>
                     {!user && <div className='d-flex justify-content-around p-4'>
-                        <Link className='mobile-menu-quick-icon-container' to="/signup" onClick={() => toggleField('menuOpen')}>
+                        <Link className={`mobile-menu-quick-icon-container ${pathname === '/signup' ? 'active' : ''}`}
+                            to="/signup" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
                                 <i className='far fa-handshake' />
                             </div>
@@ -46,7 +47,8 @@ class Menu extends Component {
                             </div>
                             <p>Login</p>
                         </a>
-                        <Link className='mobile-menu-quick-icon-container' to="/faq" onClick={() => toggleField('menuOpen')}>
+                        <Link className={`mobile-menu-quick-icon-container ${pathname === '/faq' ? 'active' : ''}`}
+                            to="/faq" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
                                 <i className='fas fa-question' />
                             </div>
@@ -54,19 +56,21 @@ class Menu extends Component {
                         </Link>
                     </div>}
                     {user && <div className='d-flex justify-content-around p-4'>
-                        <Link className='mobile-menu-quick-icon-container' to="/bets" onClick={() => toggleField('menuOpen')}>
+                        <Link className={`mobile-menu-quick-icon-container ${pathname === '/bets' ? 'active' : ''}`}
+                            to="/bets" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
                                 <i className='far fa-gamepad' />
                             </div>
                             <p>Open Bets</p>
                         </Link>
-                        <Link className='mobile-menu-quick-icon-container' to="/deposit" onClick={() => toggleField('menuOpen')}>
+                        <Link className={`mobile-menu-quick-icon-container ${pathname === '/deposit' ? 'active' : ''}`}
+                            to="/deposit" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
                                 <i className='fas fa-piggy-bank' />
                             </div>
                             <p>Deposit</p>
                         </Link>
-                        <Link className='mobile-menu-quick-icon-container' to="/account" onClick={() => {
+                        <a className='mobile-menu-quick-icon-container' onClick={() => {
                             toggleField('accountMenuMobileOpen');
                             toggleField('menuOpen');
                         }}>
@@ -74,7 +78,7 @@ class Menu extends Component {
                                 <i className='fas fa-user' />
                             </div>
                             <p>Account</p>
-                        </Link>
+                        </a>
                     </div>}
                     <ul className="navbar-nav">
                         <li className={`nav-item ${pathname === '/' ? 'active' : ''}`} >
