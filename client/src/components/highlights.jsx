@@ -61,6 +61,17 @@ export default class Highlights extends Component {
             })
     }
 
+    getSportName = (sport) => {
+        switch (sport) {
+            case 'American Football':
+                return 'Football';
+            case 'Ice Hockey':
+                return 'Hockey';
+            default:
+                return sport;
+        }
+    }
+
     render() {
         const { sportIndex, leagueIndex, sports, loading } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
@@ -110,7 +121,7 @@ export default class Highlights extends Component {
                                         <img src={sportNameImage(sport)}
                                             className='sports-league-image' />
                                     </div>
-                                    <span className="nav-link">{sport == 'American Football' ? 'Football' : sport}</span>
+                                    <span className="nav-link">{this.getSportName(sport)}</span>
                                 </center>
                             </li>
                         );

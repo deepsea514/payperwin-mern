@@ -39,7 +39,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: 'system',
+    display_mode: 'dark',
     dark_light: timeHelper.getDisplayModeBasedOnSystemTime(null),
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
