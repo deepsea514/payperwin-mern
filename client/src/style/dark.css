@@ -414,7 +414,7 @@ footer.dark p {
 
 @media(max-width:767px) {
     .main-section.dark .box-odds {
-        background: #1d1d1d;
+        background: #121212;
         border: none;
     }
 }
