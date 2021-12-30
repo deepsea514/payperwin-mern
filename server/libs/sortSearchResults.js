@@ -37,8 +37,8 @@ const sortSearchResults = (results) => {
         if (a.sportName == b.sportName) {
             const sport = sortsOrder[a.sportName];
             if (!sport) return 0;
-            const orderA = sport.leagues[a.leagueId];
-            const orderB = sport.leagues[b.leagueId];
+            const orderA = sport.leagues[a.leagueId ? a.leagueId : a.originId];
+            const orderB = sport.leagues[b.leagueId ? b.leagueId : b.originId];
             if (orderA && orderB) {
                 return orderA.order - orderB.order;
             } else if (orderB) {
