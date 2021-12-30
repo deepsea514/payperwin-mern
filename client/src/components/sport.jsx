@@ -649,7 +649,7 @@ class Sport extends Component {
                                                 transitionDuration: '0ms',
                                                 transform: 'translate(0px, 0px) translateZ(0px)'
                                             }}>
-                                                {[0, 1, 2, 3, 4, 5, 6, null].map((date, index) => {
+                                                {[0, 1, 2, 3, 4, 5, 6].map((date, index) => {
                                                     return (
                                                         <a key={index}
                                                             className={dateSelected == date ? "dashboard_bottombar_selected" : ''}
@@ -663,7 +663,7 @@ class Sport extends Component {
                             </div>
                             <div className="content">
                                 {filteredLeagues.length > 0 ? filteredLeagues : (
-                                    <h3 className='no-games'>There are no games for the selected date. Please check back later.</h3>
+                                    <h3 className='no-games'>There are no games for the selected date. Please choose all or select a different league.</h3>
                                 )}
                             </div>
                         </>
