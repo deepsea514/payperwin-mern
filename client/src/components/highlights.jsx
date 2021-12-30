@@ -91,7 +91,7 @@ export default class Highlights extends Component {
                         onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
                         <center>
                             <div className={`sports-league-image-container ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>
-                                <img src='/images/sports/book.png' className='sports-league-image' />
+                                <img src='/images/sports/all.png' className='sports-league-image' />
                             </div>
                             <span className={`nav-link ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>All</span>
                         </center>

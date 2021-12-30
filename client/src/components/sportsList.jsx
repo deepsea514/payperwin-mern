@@ -105,62 +105,60 @@ class SportsList extends Component {
                                     </Link>
                                 </li>
                             )
-                            : (
-                                showleagues ? (
-                                    <li className="sport-list-item sport-sublist-item" key={name}>
-                                        <a
-                                            onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}`) }}
-                                            style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                            className="sport-list-compact"
-                                        >
-                                            <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
-                                            <label><span><span>{name}</span></span></label>
-                                            <span className="sport-list-count">{eventCount}</span>
-                                            {(leaguesData.length == 0 || !leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.getLeagues(evt, name)}>
-                                                <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-down mr-0 pl-2"></i>
-                                            </span>}
-                                            {(leaguesData.length != 0 && leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.removeLeagues(evt, name)}>
-                                                <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-up mr-0 pl-2"></i>
-                                            </span>}
-                                        </a>
-                                        {(leaguesData && leaguesData.find(league => league.name == name)) && <ul className="sport-league-list sport-list-compact">
-                                            {leaguesData.find(league => league.name == name).leagues.map(league => (
-                                                <li key={league.name} className="sport-list-item sport-league-item sport-hide-league">
-                                                    <Link
-                                                        className="sport-list-compact"
-                                                        to={{ pathname: `/sport/${name.replace(" ", "_")}/league/${league.originId}` }}
-                                                        style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                                    >
-                                                        <label><span>{league.name}</span></label>
-                                                        <span className="sport-list-count">{league.eventCount}</span>
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                            <li className="sport-list-item sport-league-item sport-hide-league">
+                            : (showleagues ? (
+                                <li className="sport-list-item sport-sublist-item" key={name}>
+                                    <a
+                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}`) }}
+                                        style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
+                                        className="sport-list-compact"
+                                    >
+                                        <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                        <label><span><span>{name}</span></span></label>
+                                        <span className="sport-list-count">{eventCount}</span>
+                                        {(leaguesData.length == 0 || !leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.getLeagues(evt, name)}>
+                                            <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-down mr-0 pl-2"></i>
+                                        </span>}
+                                        {(leaguesData.length != 0 && leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.removeLeagues(evt, name)}>
+                                            <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-up mr-0 pl-2"></i>
+                                        </span>}
+                                    </a>
+                                    {(leaguesData && leaguesData.find(league => league.name == name)) && <ul className="sport-league-list sport-list-compact">
+                                        {leaguesData.find(league => league.name == name).leagues.map(league => (
+                                            <li key={league.name} className="sport-list-item sport-league-item sport-hide-league">
                                                 <Link
                                                     className="sport-list-compact"
-                                                    to={{ pathname: `/sport/${name.replace(" ", "_")}/league` }}
+                                                    to={{ pathname: `/sport/${name.replace(" ", "_")}/league/${league.originId}` }}
+                                                    style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                                 >
-                                                    <label><span>All Leagues</span></label>
-                                                    <span className="sport-list-count">&nbsp;</span>
+                                                    <label><span>{league.name}</span></label>
+                                                    <span className="sport-list-count">{league.eventCount}</span>
                                                 </Link>
                                             </li>
-                                        </ul>}
-                                    </li>
-                                ) : (
-                                    <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
-                                        <a
-                                            onClick={() => { history.push(name == 'Soccer' ? `/sport/${name.replace(" ", "_")}/league` : `/sport/${name.replace(" ", "_")}`) }}
-                                            style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                            className="sport-list-compact"
-                                        >
-                                            <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
-                                            <label><span><span>{name}</span></span></label>
-                                            <span className="sport-list-count">{eventCount}</span>
-                                        </a>
-                                    </li>
-                                )
-                            )
+                                        ))}
+                                        <li className="sport-list-item sport-league-item sport-hide-league">
+                                            <Link
+                                                className="sport-list-compact"
+                                                to={{ pathname: `/sport/${name.replace(" ", "_")}/league` }}
+                                            >
+                                                <label><span>All Leagues</span></label>
+                                                <span className="sport-list-count">&nbsp;</span>
+                                            </Link>
+                                        </li>
+                                    </ul>}
+                                </li>
+                            ) : (
+                                <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
+                                    <a
+                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${name.replace(" ", "_")}/league` : `/sport/${name.replace(" ", "_")}`) }}
+                                        style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
+                                        className="sport-list-compact"
+                                    >
+                                        <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                        <label><span><span>{name}</span></span></label>
+                                        <span className="sport-list-count">{eventCount}</span>
+                                    </a>
+                                </li>
+                            ))
                     )
                 })}
             </ul >

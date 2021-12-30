@@ -1,14 +1,14 @@
 const sportImages = {
-    'Soccer': '/images/icons/soccer.png',
-    'Baseball': '/images/icons/baseball.png',
+    'Soccer': '/images/sports/soccer.png',
+    'Baseball': '/images/sports/baseball.png',
     'Tennis': '/images/icons/tennis.png',
     'Cricket': '/images/icons/cricket.png',
     'Rugby Union': '/images/icons/rugby.png',
     'Boxing-UFC': '/images/icons/boxing.png',
-    'American Football': '/images/icons/football.png',
+    'American Football': '/images/sports/football.png',
     'Snooker': '/images/icons/snooker.png',
     'Darts': '/images/icons/darts.png',
-    'Ice Hockey': '/images/icons/hockey.png',
+    'Ice Hockey': '/images/sports/hockey.png',
     'Basketball': '/images/icons/basketball.png',
     'Rugby League': '/images/icons/rugby.png',
     'Australian Rules': '/images/icons/australian_rules.png',
@@ -25,7 +25,7 @@ const sportImages = {
     'Water Polo': '/images/icons/water_polo.png',
     'E-sports': '/images/icons/esports.png',
 
-    'Football': '/images/icons/football.png',
+    'Football': '/images/sports/football.png',
     'Other': '/images/icons/other.png'
 };
 

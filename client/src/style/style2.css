@@ -3977,3 +3977,17 @@ a:hover {
 footer .toggle {
     color: black;
 }
+
+.menu-sports-item {
+    display: flex !important;
+    flex-direction: row;
+    vertical-align: middle;
+    text-align: left;
+    padding: 6px 10px !important;
+}
+
+.menu-sports-item img {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
