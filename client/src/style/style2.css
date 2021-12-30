@@ -832,7 +832,7 @@ footer ul li a i {
 .table-list-top {
     padding: 3px 20px 4px 10px;
     background: #F9F9F9;
-    margin-bottom: 3px;
+    margin-bottom: 1px;
 }
 
 .table-title {
@@ -840,7 +840,7 @@ footer ul li a i {
     color: #ED254E;
     font-weight: 600;
     font-size: 14px;
-    padding: 2px 10px;
+    padding: 8px 10px;
 }
 
 .widh-adf strong {

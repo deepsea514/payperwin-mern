@@ -25,7 +25,7 @@ class Menu extends Component {
                 <div className="background-closer bg-modal" onClick={() => toggleField('menuOpen')} />
                 <div className="mobile-menu modal-content">
                     <div className='d-flex justify-content-between p-4' style={{ alignItems: 'center' }}>
-                        <h3 className='menu-title'>Welcome</h3>
+                        <h3 className='menu-title' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user ? 'Hi, ' + user.firstname : 'Welcome'}</h3>
                         <button type="button" className="close-header" onClick={() => toggleField('menuOpen')}>
                             <i className="fas fa-times" />
                         </button>

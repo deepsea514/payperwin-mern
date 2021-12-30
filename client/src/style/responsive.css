@@ -223,11 +223,15 @@
     .date_bottombar_container {
         position: -webkit-sticky;
         position: sticky;
-        top: 85px;
+        top: 88px;
         z-index: 1;
     }
 
     .footer-main.show {
         display: block !important;
+    }
+
+    .box-odds {
+        font-weight: 100 !important;
     }
 }
