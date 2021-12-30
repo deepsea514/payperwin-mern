@@ -93,7 +93,7 @@ export default class Highlights extends Component {
                             <div className={`sports-league-image-container ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>
                                 <img src='/images/sports/book.png' className='sports-league-image' />
                             </div>
-                            <span className="nav-link">All</span>
+                            <span className={`nav-link ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>All</span>
                         </center>
                     </li>
                     {topLeagues.map((league, i) => {
@@ -106,7 +106,7 @@ export default class Highlights extends Component {
                                         <img src={sportNameImage(league.sportName, league.name)}
                                             className='sports-league-image' />
                                     </div>
-                                    <span className="nav-link">{league.name}</span>
+                                    <span className={`nav-link ${leagueIndex == i ? 'active' : ''}`}>{league.name}</span>
                                 </center>
                             </li>
                         )
@@ -121,7 +121,7 @@ export default class Highlights extends Component {
                                         <img src={sportNameImage(sport)}
                                             className='sports-league-image' />
                                     </div>
-                                    <span className="nav-link">{this.getSportName(sport)}</span>
+                                    <span className={`nav-link ${sportIndex == i ? 'active' : ''}`}>{this.getSportName(sport)}</span>
                                 </center>
                             </li>
                         );

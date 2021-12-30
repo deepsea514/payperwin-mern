@@ -2885,7 +2885,7 @@ expressApp.get(
     async (req, res) => {
         let userObj = null;
         if (req.isAuthenticated()) {
-            const { username, _id: userId, settings, roles, email, balance, phone, maxBetLimitTier } = req.user;
+            const { username, _id: userId, settings, roles, email, balance, phone, maxBetLimitTier, firstname, lastname } = req.user;
             let preference = await Preference.findOne({ user: userId });
             if (!preference) {
                 preference = await Preference.create({ user: userId });
@@ -2897,7 +2897,21 @@ expressApp.get(
                 userId: userId
             });
             const favorites = await Favorites.find({ user: userId })
-            userObj = { username, userId: userId.toString(), roles, email, balance, phone, preference, messages, autobet, maxBetLimitTier, favorites };
+            userObj = {
+                username,
+                userId: userId.toString(),
+                firstname,
+                lastname,
+                roles,
+                email,
+                balance,
+                phone,
+                preference,
+                messages,
+                autobet,
+                maxBetLimitTier,
+                favorites
+            };
             if (settings && settings.site) {
                 userObj.settings = settings.site;
             }
