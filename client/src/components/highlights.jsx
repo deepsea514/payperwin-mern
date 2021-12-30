@@ -127,7 +127,6 @@ export default class Highlights extends Component {
                         );
                     })}
                 </ul>
-                {loading && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                 {sportName == "Other" ?
                     <Others
                         addBet={addBet}
