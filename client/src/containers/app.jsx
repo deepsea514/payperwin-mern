@@ -389,7 +389,7 @@ class App extends Component {
         const verified = user && user.roles.verified;
 
         return (
-            <div className={`background dark-theme ${scrolledTop ? 'scrolled-top' : ''}`}>
+            <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon-2.ico'} />
                 <Header
                     toggleField={this.toggleField}

@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 const Footer = (props) => {
+    const [show, setShow] = useState(false);
     const { user, display_mode } = props;
     return (
         <footer className={`${display_mode == 'light' ? 'light' : 'dark'}`}>
             <div className="container">
-                <div className="foooter-main">
+                <div className='mobile d-flex justify-content-center toggle mb-3'>
+                    <i className={`fas fa-chevron-${show ? 'up' : 'down'}`}
+                        style={{
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                        }}
+                        onClick={() => setShow(!show)} />
+                </div>
+                <div className={`footer-main not-mobile ${show ? 'show' : ''}`}>
                     <div className="d-flex flex-wr justify-content-between">
                         <div className="footer-inner">
                             <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.ABOUT.PPW" /> </h3>

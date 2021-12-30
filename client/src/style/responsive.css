@@ -183,7 +183,6 @@
     footer {
         padding: 30px 0;
         position: relative;
-        background: #e8ecf3;
     }
 
     .table-list li:nth-child(2) {
@@ -226,5 +225,9 @@
         position: sticky;
         top: 85px;
         z-index: 1;
+    }
+
+    .footer-main.show {
+        display: block !important;
     }
 }
