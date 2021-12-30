@@ -894,7 +894,6 @@ footer ul li a i {
 footer {
     padding: 75px 0;
     position: relative;
-    background: #e8ecf3;
 }
 
 .list-fab {
@@ -3969,4 +3968,12 @@ a:hover {
 
 .invite-copybutton:hover {
     opacity: 0.8;
+}
+
+.background.dark-theme {
+    min-height: 100%;
+}
+
+footer .toggle {
+    color: black;
 }
