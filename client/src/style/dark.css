@@ -36,7 +36,7 @@
     }
 
     .header-bottom.dark {
-        background: linear-gradient(90deg, #0b1422, #273043);
+        background: linear-gradient(90deg, #171717, #313131);
     }
 
     .header-bottom.dark .responsive-cat .navbar-toggler-icon {
@@ -73,7 +73,7 @@
 }
 
 .main-section.dark .sport-desktop-list li.active>a, .main-section.dark .sport-desktop-list li:hover>a {
-    background: #25364b;
+    background: #2d2d2d;
 }
 
 .main-section.dark .left-cat li div {
@@ -85,14 +85,14 @@
 }
 
 .main-section.dark .left-cat li:not(.sports-dropdown):hover {
-    background: #25364b;
+    background: #2d2d2d;
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
     overflow: hidden;
 }
 
 .main-section.dark .left-cat li.sports-dropdown:hover div {
-    background: #25364b;
+    background: #2d2d2d;
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
     overflow: hidden;
