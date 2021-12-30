@@ -2,32 +2,32 @@ const sortsOrder = {
     "American Football": {
         order: 0,
         leagues: {
-            10037219: { order: 0 }
+            '10037219': { order: 0 }
         }
     },
     "Basketball": {
         order: 1,
         leagues: {
-            10041830: { order: 0 }
+            '10041830': { order: 0 }
         }
     },
     "Baseball": {
         order: 2,
         leagues: {
-            225: { order: 0 }
+            '10037485': { order: 0 }
         }
     },
     "Ice Hockey": {
         order: 3,
         leagues: {
-            10037477: { order: 0 }
+            '10037477': { order: 0 }
         }
     },
     "Soccer": {
         order: 4,
         leagues: {
-            10041809: { order: 0 },
-            10041957: { order: 1 },
+            '10041809': { order: 0 },
+            '10041957': { order: 1 },
         }
     }
 }
