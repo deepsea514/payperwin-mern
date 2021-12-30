@@ -373,6 +373,10 @@
     border: 1px solid #FFF;
 }
 
+.main-section.dark .highlights .nav-tabs {
+    background-color: #121212;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {

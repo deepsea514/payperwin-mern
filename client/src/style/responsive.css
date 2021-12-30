@@ -212,4 +212,19 @@
     .header-top {
         background: #121212;
     }
+
+    .highlights .nav-tabs {
+        background-color: #f1f3f7;
+        position: -webkit-sticky;
+        position: sticky;
+        top: 4px;
+        z-index: 1;
+    }
+
+    .date_bottombar_container {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 85px;
+        z-index: 1;
+    }
 }
