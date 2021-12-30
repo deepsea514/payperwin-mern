@@ -802,7 +802,7 @@ a.log-in-btn {
     position: relative;
 }
 
-.mobile-menu .nav-item:last-child {
+.mobile-menu .navbar-nav>.nav-item:last-child {
     bottom: 0;
     position: absolute;
     width: 100%;

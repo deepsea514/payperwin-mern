@@ -220,10 +220,17 @@
         z-index: 1;
     }
 
-    .date_bottombar_container {
+    .date_bottombar_container_dashboard {
         position: -webkit-sticky;
         position: sticky;
         top: 88px;
+        z-index: 1;
+    }
+
+    .date_bottombar_container {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 60px;
         z-index: 1;
     }
 
