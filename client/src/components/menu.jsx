@@ -114,10 +114,10 @@ class Menu extends Component {
                         <li className="nav-item">
                             <ul>
                                 <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">
-                                    <img src="/images/flag/us.jpg" className="language-flag-menu" />
+                                    <img src="/images/flag/ca.png" className="language-flag-menu" />
                                 </li>
                                 <li onClick={() => setLanguage('es')} className="language-li-menu border-0 px-1 cursor-pointer">
-                                    <img src="/images/flag/es.png" className="language-flag-menu" />
+                                    <img src="/images/flag/co.png" className="language-flag-menu" />
                                 </li>
                                 <li onClick={() => setLanguage('ko')} className="language-li-menu border-0 px-1 cursor-pointer">
                                     <img src="/images/flag/ko.png" className="language-flag-menu" />

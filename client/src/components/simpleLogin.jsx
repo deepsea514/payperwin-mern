@@ -15,18 +15,16 @@ class SimpleLogin extends Component {
         const { location: { pathname }, showLoginModal } = this.props;
 
         return (
-            <>
-                <div className="form">
-                    <div className="form-join">
-                        <div className="form-group">
-                            <button className="log-in-btn" onClick={showLoginModal}><FormattedMessage id="COMPONENTS.LOGIN" /></button>
-                        </div>
-                        <div className="form-group">
-                            <Link to={{ pathname: '/signup' }} className="join"><FormattedMessage id="COMPONENTS.JOIN" /></Link>
-                        </div>
+            <div className="form not-mobile">
+                <div className="form-join">
+                    <div className="form-group">
+                        <button className="log-in-btn" onClick={showLoginModal}><FormattedMessage id="COMPONENTS.LOGIN" /></button>
+                    </div>
+                    <div className="form-group">
+                        <Link to={{ pathname: '/signup' }} className="join"><FormattedMessage id="COMPONENTS.JOIN" /></Link>
                     </div>
                 </div>
-            </>
+            </div>
         );
     }
 }

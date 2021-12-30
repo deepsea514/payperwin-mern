@@ -363,10 +363,10 @@ class Header extends Component {
                                     <li>
                                         <ul>
                                             <li onClick={() => this.setLanguage('en')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/us.jpg" className="language-flag" />
+                                                <img src="/images/flag/ca.png" className="language-flag" />
                                             </li>
                                             <li onClick={() => this.setLanguage('es')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/es.png" className="language-flag" />
+                                                <img src="/images/flag/co.png" className="language-flag" />
                                             </li>
                                             <li onClick={() => this.setLanguage('ko')} className="language-li border-0 px-1 cursor-pointer">
                                                 <img src="/images/flag/ko.png" className="language-flag" />
