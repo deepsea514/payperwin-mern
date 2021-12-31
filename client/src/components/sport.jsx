@@ -651,7 +651,7 @@ class Sport extends Component {
                                                 transitionDuration: '0ms',
                                                 transform: 'translate(0px, 0px) translateZ(0px)'
                                             }}>
-                                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((date, index) => {
+                                                {[0, 1, 2, 3, 4, 5].map((date, index) => {
                                                     return (
                                                         <a key={index}
                                                             className={dateSelected == date ? "dashboard_bottombar_selected" : ''}
