@@ -24,12 +24,12 @@ class Dashboard extends Component {
         const title = 'Peer to Peer Betting';
         setTitle({ pageTitle: title });
 
-        const preference = JSON.parse(localStorage.getItem('frontend-preference'));
-        if (!preference || !preference.p2pModal) {
-            setTimeout(() => {
-                this._isMounted && this.setState({ showModal: true });
-            }, 1500);
-        }
+        // const preference = JSON.parse(localStorage.getItem('frontend-preference'));
+        // if (!preference || !preference.p2pModal) {
+        //     setTimeout(() => {
+        //         this._isMounted && this.setState({ showModal: true });
+        //     }, 1500);
+        // }
     }
 
     dontShowModal = () => {
@@ -48,7 +48,7 @@ class Dashboard extends Component {
 
         return (
             <React.Fragment>
-                {showModal && <div className="modal confirmation">
+                {/* {showModal && <div className="modal confirmation">
                     <div className="background-closer bg-modal" onClick={() => this.setState({ showModal: false })} />
                     <div className="col-in">
                         <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ showModal: false })} />
@@ -64,7 +64,7 @@ class Dashboard extends Component {
                             </div>
                         </div>
                     </div>
-                </div>}
+                </div>} */}
                 {/* <Carousel autoPlay={8000}
                     animationSpeed={1800}
                     infinite>
