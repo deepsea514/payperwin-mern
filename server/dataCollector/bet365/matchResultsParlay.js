@@ -56,12 +56,8 @@ const matchResultsParlay = async (bet365ApiKey) => {
             while (true) {
                 let success = false;
                 let results = [];
-                let event_ids = '';
                 const resultQueryForOne = resultQuery.slice(page * 10, ++page * 10);
-                resultQueryForOne.forEach((query, index) => {
-                    event_ids += query.lineQuery.eventId;
-                    event_ids += index == resultQueryForOne.length - 1 ? '' : ',';
-                })
+                const event_ids = resultQueryForOne.map(query => query.lineQuery.eventId).join(',');
                 try {
                     const { data: { success: success_result, results: results_result } } = await axios
                         .get(`https://api.b365api.com/v1/bet365/result`, {
