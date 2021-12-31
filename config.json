@@ -14,9 +14,9 @@
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
     "recaptchaSiteKey": "6LfKBfIbAAAAAJMnROmY0jkEGoVrbf2-0UwkV-M6",
     "mongo": {
-        "username": "admin",
-        "password": "PayPerWin777",
-        "host": "159.203.4.60:27017"
+        "username": "",
+        "password": "",
+        "host": "127.0.0.1:27017"
     },
     "CountryInfo": [
         {
