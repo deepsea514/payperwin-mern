@@ -154,7 +154,7 @@ class Header extends Component {
                         <div className="d-flex justify-content-between">
                             <div className="">
                                 <Link to={{ pathname: '/' }} className="logo">
-                                    <img src="/images/ppw-white-xmas.png" />
+                                    <img src="/images/logo-white.png" />
                                 </Link>
                             </div>
                             <div className="d-flex justify-content-end">
