@@ -241,4 +241,8 @@
     .box-odds {
         font-weight: 100 !important;
     }
+
+    .table-list>li:nth-child(2), .table-list>li:nth-child(3) {
+        border-right: 1px solid #444;
+    }
 }
