@@ -5,6 +5,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import sportNameImage from "../helpers/sportNameImage";
 import axios from "axios";
 import _env from '../env.json';
+import PromotionModal from './promotionModal';
 const serverUrl = _env.appUrl;
 
 const topLeagues = [
@@ -38,6 +39,7 @@ export default class Highlights extends Component {
             leagueIndex: null,
             sports: [],
             loading: false,
+            showPromotion: false,
         };
         this._isMounted = false;
     }
@@ -73,16 +75,17 @@ export default class Highlights extends Component {
     }
 
     render() {
-        const { sportIndex, leagueIndex, sports, loading } = this.state;
+        const { sportIndex, leagueIndex, sports, showPromotion } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         return (
             <div className="highlights">
+                {showPromotion && <PromotionModal closePromotion={() => this.setState({ showPromotion: false })} />}
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
                     <p className='promotion-header'>Payper Win is a Peer-to-Peer Sportsbetting Exchange. Risk less Win more!</p>
                     <div className='d-flex justify-content-center p-3'>
-                        <div className='promotion-botton'><span>Promotions</span></div>
+                        <div className='promotion-botton' onClick={() => this.setState({ showPromotion: true })}><span>Promotions</span></div>
                         {/* <div className='promotion-botton'><span>Favorites</span></div> */}
                     </div>
                 </div>
