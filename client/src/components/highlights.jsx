@@ -80,7 +80,7 @@ export default class Highlights extends Component {
             <div className="highlights">
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
-                    <p className='promotion-header'>Payper Win is a Peer-to-Peer Sportsbetting Exchange. Risk less Win More!</p>
+                    <p className='promotion-header'>Payper Win is a Peer-to-Peer Sportsbetting Exchange. Risk less Win more!</p>
                     <div className='d-flex justify-content-center p-3'>
                         <div className='promotion-botton'><span>Promotions</span></div>
                         {/* <div className='promotion-botton'><span>Favorites</span></div> */}
