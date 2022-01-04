@@ -2110,18 +2110,21 @@ a.fav-link:hover {
     padding: 0 10px;
 }
 
-.promotion-botton:first-child {
-    border: 1px solid #ED254E !important;
+.promotion-botton-wrap {
+    background: linear-gradient(to right, red, purple);
+    padding: 2px;
+    width: 100%;
+    border-radius: 6px;
 }
 
 .promotion-botton {
     width: 100%;
     text-align: center;
-    border: 1px solid #000;
     color: #000;
     border-radius: 6px;
     font-size: 14px;
     padding: 6px 0;
+    background-color: #f1f3f7;
 }
 
 .no-games {

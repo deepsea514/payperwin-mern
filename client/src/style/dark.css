@@ -375,7 +375,7 @@
 
 .main-section.dark .promotion-botton {
     color: white;
-    border: 1px solid #FFF;
+    background-color: #121212;
 }
 
 .main-section.dark .highlights .nav-tabs {
