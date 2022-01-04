@@ -753,6 +753,26 @@ a.log-in-btn {
     filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
 }
 
+.modal.promotion {
+    display: block;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    background-color: #121212;
+    /* padding: 15px 30px; */
+}
+
+.promotion-modal-header {
+    padding: 10px 10px 10px 10px;
+}
+
+.promotion-modal-header i {
+    color: white;
+    font-size: 30px;
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
 .modal.confirmation .col-in center {
     padding: 20px 0;
 }
