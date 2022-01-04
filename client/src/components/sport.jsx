@@ -40,6 +40,7 @@ class Sport extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             data: null,
             liveData: null,
             error: null,
@@ -72,7 +73,7 @@ class Sport extends Component {
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
-            this.getLiveSport();
+            // this.getLiveSport();
         }
     }
 
@@ -92,15 +93,16 @@ class Sport extends Component {
 
     getSport = () => {
         const { sportName, league: league } = this.props;
+        this.setState({ loading: true });
         axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
             .then(({ data }) => {
                 if (data) {
-                    this.setState({ data });
+                    this.setState({ data, loading: false });
                 } else {
-                    this.setState({ data: null })
+                    this.setState({ data: null, loading: false })
                 }
             }).catch((err) => {
-                this.setState({ error: err });
+                this.setState({ error: err, loading: false });
             });
     }
 
@@ -193,15 +195,22 @@ class Sport extends Component {
         } = this.props;
         const { pathname } = location;
         const {
-            data, error, sportsbookInfo, liveData, dateSelected
+            loading, data, error, sportsbookInfo, liveData, dateSelected
         } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
-        if (!data) {
+        if (loading) {
             return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
         }
 
+        if (!data) {
+            return (
+                <div className="content">
+                    <h3 className='no-games'>There are no games for the selected league. Please choose all or select a different league.</h3>
+                </div>
+            )
+        }
         const { leagues, origin } = data;
         const selectedLeague = leagues.find(league => leagueId == leagueId);
         return (
