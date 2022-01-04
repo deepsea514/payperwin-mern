@@ -3,11 +3,11 @@ import Stories from 'react-insta-stories';
 
 const stories = [
     {
-        url: 'https://placeimg.com/1080/1920',
+        url: '/images/promotion-banner.jpg',
         loader: true,
     },
     {
-        url: 'https://placeimg.com/480/600',
+        url: 'https://placeimg.com/1080/1920',
         loader: true,
     },
     {
