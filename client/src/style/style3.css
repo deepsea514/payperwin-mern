@@ -2002,6 +2002,17 @@ a.fav-link:hover {
     display: block;
 }
 
+.social-li-menu {
+    float: right;
+    display: inline;
+}
+
+.social-li-menu a {
+    padding: 10px !important;
+    font-size: 18px !important;
+    color: white;
+}
+
 .teaser-markets {
     height: 31px;
     line-height: 30px;

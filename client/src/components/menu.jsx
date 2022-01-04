@@ -14,7 +14,7 @@ class Menu extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showSports: false,
+            showMenu: null,
             sports: [],
         }
         this._isMounted = false;
@@ -49,7 +49,7 @@ class Menu extends Component {
             intl, showLoginModalAction
         } = this.props;
         const { pathname } = location;
-        const { showSports, sports } = this.state;
+        const { showMenu, sports } = this.state;
         return (
             <>
                 <div className="background-closer bg-modal" onClick={() => toggleField('menuOpen')} />
@@ -111,14 +111,14 @@ class Menu extends Component {
                         </a>
                     </div>}
                     <ul className="navbar-nav">
-                        {!showSports && <>
+                        {!showMenu && <>
                             <li className={`nav-item ${pathname === '/' ? 'active' : ''}`} >
                                 <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                     <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" onClick={() => this.setState({ showSports: true })}>
+                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'az-sports' })}>
                                     <i className="fas fa-list" /><FormattedMessage id="COMPONENTS.AZ.SPORTS" /><i className="fas fa-chevron-right float-right" />
                                 </a>
                             </li>
@@ -137,10 +137,20 @@ class Menu extends Component {
                                     <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
                                 </Link>
                             </li>
-                            <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/faq' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fa fa-question-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.HELP" />
+                            <li className={`nav-item`}>
+                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'help' })}>
+                                    <i className="fa fa-question-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.HELP" /><i className="fas fa-chevron-right float-right" />
+                                </a>
+                            </li>
+                            <li className={`nav-item ${pathname === '/about-us' ? 'active' : ''}`}>
+                                <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-question"></i>About Us
                                 </Link>
+                            </li>
+                            <li className={`nav-item`}>
+                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'policy' })}>
+                                    <i className="fa fa-book" aria-hidden="true"></i>Our Policy<i className="fas fa-chevron-right float-right" />
+                                </a>
                             </li>
                             {user && <li className="nav-item">
                                 <a className="nav-link" onClick={this.logout}>
@@ -148,7 +158,7 @@ class Menu extends Component {
                                 </a>
                             </li>}
                         </>}
-                        {showSports && <ul style={{ maxHeight: '300px' }}>
+                        {showMenu == 'az-sports' && <ul style={{ maxHeight: '300px' }}>
                             {sports.map(sport => {
                                 const { name, eventCount } = sport;
                                 if (eventCount <= 0) return null;
@@ -166,6 +176,58 @@ class Menu extends Component {
                                 )
                             })}
                         </ul>}
+                        {showMenu == 'help' && <ul style={{ maxHeight: '300px' }}>
+                            <li className="nav-item">
+                                <Link to="/payment-options"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="far fa-money-bill-alt" />
+                                    <FormattedMessage id="COMPONENTS.PAYMENT.OPTIONS" />
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/betting-rules"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-tasks" />
+                                    <FormattedMessage id="COMPONENTS.BETTING.RULES" />
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/support"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-phone" />
+                                    <FormattedMessage id="COMPONENTS.CONTACTUS" />
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/faq"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-question" />
+                                    <FormattedMessage id="COMPONENTS.CASHBACK.FAQ" />
+                                </Link>
+                            </li>
+                        </ul>}
+                        {showMenu == 'policy' && <ul style={{ maxHeight: '300px' }}>
+                            <li className="nav-item">
+                                <Link to="/privacy-policy"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-book" />
+                                    <FormattedMessage id="COMPONENTS.PRIVACY_POLICY" />
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/terms-and-conditions"
+                                    className="nav-link"
+                                    onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-journal-whills" />
+                                    <FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" />
+                                </Link>
+                            </li>
+                        </ul>}
                         <li className="nav-item">
                             <ul>
                                 <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">
@@ -179,6 +241,10 @@ class Menu extends Component {
                                 </li>
                                 <li onClick={() => setLanguage('vi')} className="language-li-menu border-0 px-1 cursor-pointer">
                                     <img src="/images/flag/vi.png" className="language-flag-menu" />
+                                </li>
+                                <li className="social-li-menu cursor-pointer">
+                                    <a href="https://www.instagram.com/payperwin/?hl=en"><i className="fab fa-instagram" /></a>
+                                    <a href="https://twitter.com/payperwin"><i className="fab fa-twitter" /></a>
                                 </li>
                             </ul>
                         </li>
