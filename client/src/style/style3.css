@@ -143,6 +143,13 @@ a.log-in-btn {
 
 .content {
     overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-bottom: none;
+}
+
+.content::-webkit-scrollbar {
+    display: none;
 }
 
 .table-list, .table-list-top {
