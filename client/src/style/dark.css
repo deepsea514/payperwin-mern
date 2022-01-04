@@ -424,15 +424,15 @@ footer.dark .toggle {
     }
 
     .main-section.dark .origin-odds, .main-section.dark .old-odds {
-        color: #EABE40;
+        color: #d6ac5a;
     }
 
     .main-section.dark .old-odds::before {
-        background: #EABE40;
+        background: #d6ac5a;
     }
 
     .main-section.dark .new-odds {
-        color: #cf2c79;
+        color: #ca33df;
     }
 
     .orange .new-odds {
