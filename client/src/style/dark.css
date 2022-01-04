@@ -423,6 +423,22 @@ footer.dark .toggle {
         border: none;
     }
 
+    .main-section.dark .origin-odds, .main-section.dark .old-odds {
+        color: #EABE40;
+    }
+
+    .main-section.dark .old-odds::before {
+        background: #EABE40;
+    }
+
+    .main-section.dark .new-odds {
+        color: #cf2c79;
+    }
+
+    .orange .new-odds {
+        color: #FFF !important;
+    }
+
     .main-section.dark .table-list>li:nth-child(2), .main-section.dark .table-list>li:nth-child(3) {
         border-right: 1px solid hsla(0, 0%, 100%, .2);
     }
