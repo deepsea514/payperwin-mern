@@ -147,11 +147,6 @@ class Menu extends Component {
                                     <i className="fas fa-question"></i>About Us
                                 </Link>
                             </li>
-                            <li className={`nav-item`}>
-                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'policy' })}>
-                                    <i className="fa fa-book" aria-hidden="true"></i>Our Policy<i className="fas fa-chevron-right float-right" />
-                                </a>
-                            </li>
                             {user && <li className="nav-item">
                                 <a className="nav-link" onClick={this.logout}>
                                     <i className="fas fa-sign-out-alt" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LOGOUT" />
@@ -209,8 +204,6 @@ class Menu extends Component {
                                     <FormattedMessage id="COMPONENTS.CASHBACK.FAQ" />
                                 </Link>
                             </li>
-                        </ul>}
-                        {showMenu == 'policy' && <ul style={{ maxHeight: '300px' }}>
                             <li className="nav-item">
                                 <Link to="/privacy-policy"
                                     className="nav-link"
