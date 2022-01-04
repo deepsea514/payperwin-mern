@@ -762,17 +762,6 @@ a.log-in-btn {
     /* padding: 15px 30px; */
 }
 
-.promotion-modal-header {
-    padding: 10px 10px 10px 10px;
-}
-
-.promotion-modal-header i {
-    color: white;
-    font-size: 30px;
-    padding-top: 5px;
-    padding-right: 5px;
-}
-
 .modal.confirmation .col-in center {
     padding: 20px 0;
 }
