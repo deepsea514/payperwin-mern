@@ -153,7 +153,11 @@ class Menu extends Component {
                                 </a>
                             </li>}
                         </>}
-                        {showMenu == 'az-sports' && <ul style={{ maxHeight: '300px' }}>
+                        {showMenu == 'az-sports' && <ul style={{
+                            // maxHeight: '300px',
+                            // overflowX: 'hidden',
+                            // overflowY: 'scroll'
+                        }}>
                             {sports.map(sport => {
                                 const { name, eventCount } = sport;
                                 if (eventCount <= 0) return null;
