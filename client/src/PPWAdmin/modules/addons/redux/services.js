@@ -1,11 +1,9 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getAddon(name) {
-    return axios.get(`${serverUrl}/addons/${name}`);
+    return AdminAPI.get(`/addons/${name}`);
 }
 
 export function setAddon(name, value) {
-    return axios.put(`${serverUrl}/addons/${name}`, value);
+    return AdminAPI.put(`/addons/${name}`, value);
 }

@@ -1,5 +1,5 @@
 import React from "react"
-import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
+import { Dropdown, Button, Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
@@ -165,6 +165,9 @@ class Promotions extends React.Component {
                                 <h3 className="card-label">Promotions</h3>
                             </div>
                             <div className="card-toolbar">
+                                <Link to={"/banners"} className="btn btn-success font-weight-bolder font-size-sm mr-2">
+                                    Promotion Banners
+                                </Link>
                                 <Button className="btn btn-success font-weight-bolder font-size-sm" onClick={() => this.setState({ addModal: true })}>
                                     <i className="fas fa-credit-card"></i>&nbsp; Add Promotion
                                 </Button>
