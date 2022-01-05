@@ -103,7 +103,7 @@
     }
 
     .mobile-menu .navbar-nav a {
-        padding: 10px 15px;
+        padding: 6px 15px;
         font-size: 14px;
     }
 
@@ -157,7 +157,7 @@
     }
 
     .table-list li:nth-child(1) {
-        width: 160px;
+        width: 140px;
     }
 
     .table-list-top li:nth-child(1) {
@@ -239,11 +239,15 @@
     }
 
     .box-odds {
-        font-weight: 100 !important;
+        font-weight: 400 !important;
     }
 
     .table-list>li:nth-child(2), .table-list>li:nth-child(3) {
         border-right: none;
+    }
+
+    .table-list>li:nth-child(2), .table-list>li:nth-child(3), .table-list>li:nth-child(4) {
+        padding: 0 6px;
     }
 
     .mobile-menu i.fa-times {
@@ -252,5 +256,9 @@
 
     .mobile-menu ul.navbar-nav li.nav-item i {
         color: #ED254E;
+    }
+
+    .content {
+        overflow: hidden;
     }
 }
