@@ -55,7 +55,7 @@ class Sport extends Component {
         this.getSport();
         // this.getLiveSport();
         this.setState({
-            timer: setInterval(this.getSport, 60 * 1000),
+            timer: setInterval(() => this.getSport(false), 60 * 1000),
             // liveTimer: setInterval(this.getLiveSport, 10 * 1000),
         })
     }
@@ -91,9 +91,11 @@ class Sport extends Component {
             })
     }
 
-    getSport = () => {
+    getSport = (setLoading = true) => {
         const { sportName, league: league } = this.props;
-        this.setState({ loading: true });
+        if (setLoading) {
+            this.setState({ loading: true });
+        }
         axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
             .then(({ data }) => {
                 if (data) {
