@@ -216,21 +216,21 @@
         background-color: #f1f3f7;
         position: -webkit-sticky;
         position: sticky;
-        top: 14px;
+        top: 4px;
         z-index: 1;
     }
 
     .date_bottombar_container_dashboard {
         position: -webkit-sticky;
         position: sticky;
-        top: 98px;
+        top: 88px;
         z-index: 1;
     }
 
     .date_bottombar_container {
         position: -webkit-sticky;
         position: sticky;
-        top: 70px;
+        top: 60px;
         z-index: 1;
     }
 

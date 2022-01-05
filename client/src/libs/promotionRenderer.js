@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import SVG from 'react-inlinesvg'
 
-export const ImageRenderer = ({ story, action, isPaused, config, closePromotion }) => {
+export const ImageRenderer = ({ story, action, config, closePromotion }) => {
     const [loaded, setLoaded] = useState(false);
     const { width, height, loader, storyStyles } = config;
     let computedStyles = {
