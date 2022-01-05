@@ -372,6 +372,7 @@ a.log-in-btn {
     padding: 4px 1rem;
     min-width: 70px;
     font-size: 12px;
+    white-space: nowrap;
 }
 
 .highlights .nav-item.active i {
