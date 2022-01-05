@@ -86,7 +86,7 @@ export default class Highlights extends Component {
                     <p className='promotion-header'>Payper Win is a Peer-to-Peer Sportsbetting Exchange. Risk less Win more!</p>
                     <div className='p-3'>
                         <div className='promotion-botton-wrap' onClick={() => this.setState({ showPromotion: true })}>
-                            <div className='promotion-botton'><span>Promotions</span></div>
+                            <div className='promotion-botton'><span>What's New</span></div>
                         </div>
                     </div>
                 </div>
