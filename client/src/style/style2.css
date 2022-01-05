@@ -837,9 +837,10 @@ footer ul li a i {
 .table-title {
     background: #2d2d2d;
     color: #ED254E;
-    font-weight: 600;
+    font-weight: 100;
     font-size: 14px;
     padding: 8px 20px;
+    border-bottom: 2px solid #FF00FE;
 }
 
 .widh-adf strong {
