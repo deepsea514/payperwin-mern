@@ -1,19 +1,17 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getWithdrawLog(page, filter, perPage = null) {
-    let url = `${serverUrl}/withdraw?page=${page}`;
-    if (perPage) url += `&perPage=${perPage}`;
+    const params = { page };
+    if (perPage) params.perPage = perPage;
     const { datefrom, dateto, status, method, minamount, maxamount } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
-    if (status && status != '') url += `&status=${encodeURIComponent(status)}`;
-    if (method && method != '') url += `&method=${encodeURIComponent(method)}`;
-    if (minamount && minamount != '') url += `&minamount=${encodeURIComponent(minamount)}`;
-    if (maxamount && maxamount != '') url += `&maxamount=${encodeURIComponent(maxamount)}`;
+    if (datefrom && datefrom != '') params.datefrom = datefrom;
+    if (dateto && dateto != '') params.dateto = dateto;
+    if (status && status != '') params.status = status;
+    if (method && method != '') params.method = method;
+    if (minamount && minamount != '') params.minamount = minamount;
+    if (maxamount && maxamount != '') params.maxamount = maxamount;
 
-    return axios.get(url, { withCredentials: true });
+    return AdminAPI.get('/withdraw', { params });
 }
 
 export function updateWithdraw(id, data) {
@@ -21,24 +19,24 @@ export function updateWithdraw(id, data) {
     delete data._2fa_code;
     let time = (new Date()).getTime();
     time = Math.floor(time / 1000);
-    return axios.patch(`${serverUrl}/withdraw?_2fa_code=${_2fa_code}&time=${time}`, { id, data }, { withCredentials: true });
+    return AdminAPI.patch(`/withdraw`, { id, data }, { params: { _2fa_code, time } });
 }
 
 export function deleteWithdraw(id) {
-    return axios.delete(`${serverUrl}/withdraw?id=${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/withdraw`, { params: { id } });
 }
 
 export function addWithdraw(data) {
     let time = (new Date()).getTime();
     time = Math.floor(time / 1000);
-    return axios.post(`${serverUrl}/withdraw`, data, { withCredentials: true });
+    return AdminAPI.post(`/withdraw`, data);
 }
 
 export function getWithdrawLogAsCSV(filter) {
-    let url = `${serverUrl}/withdraw-csv?format=csv`;
+    const params = {};
     const { datefrom, dateto } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
+    if (datefrom && datefrom != '') params.datefrom = datefrom;
+    if (dateto && dateto != '') params.dateto = dateto;
 
-    return axios.get(url, { withCredentials: true });
+    return AdminAPI.get('/withdraw-csv', { params });
 }

@@ -1,15 +1,13 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getCredits(page) {
-    return axios.get(`${serverUrl}/credits`, { params: { page } });
+    return AdminAPI.get(`/credits`, { params: { page } });
 }
 
 export function setCredit(data) {
-    return axios.post(`${serverUrl}/credits`, data);
+    return AdminAPI.post(`/credits`, data);
 }
 
 export function getCreditDetail(page, user_id) {
-    return axios.get(`${serverUrl}/credits/${user_id}`, { params: { page } });
+    return AdminAPI.get(`/credits/${user_id}`, { params: { page } });
 }

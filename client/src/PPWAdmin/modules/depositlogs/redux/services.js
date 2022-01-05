@@ -1,38 +1,36 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getDepositLog(page, filter, perPage = null) {
-    let url = `${serverUrl}/deposit?page=${page}`;
-    if (perPage) url += `&perPage=${perPage}`;
+    const params = { page };
+    if (perPage) params.perPage = perPage;
     const { datefrom, dateto, status, method, minamount, maxamount } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
-    if (status && status != '') url += `&status=${encodeURIComponent(status)}`;
-    if (method && method != '') url += `&method=${encodeURIComponent(method)}`;
-    if (minamount && minamount != '') url += `&minamount=${encodeURIComponent(minamount)}`;
-    if (maxamount && maxamount != '') url += `&maxamount=${encodeURIComponent(maxamount)}`;
+    if (datefrom && datefrom != '') params.datefrom = datefrom;
+    if (dateto && dateto != '') params.dateto = dateto;
+    if (status && status != '') params.status = status;
+    if (method && method != '') params.method = method;
+    if (minamount && minamount != '') params.minamount = minamount;
+    if (maxamount && maxamount != '') params.maxamount = maxamount;
 
-    return axios.get(url, { withCredentials: true });
+    return AdminAPI.get(`/deposit`, { params });
 }
 
 export function updateDeposit(id, data) {
-    return axios.patch(`${serverUrl}/deposit`, { id, data }, { withCredentials: true });
+    return AdminAPI.patch(`/deposit`, { id, data });
 }
 
 export function deleteDeposit(id) {
-    return axios.delete(`${serverUrl}/deposit?id=${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/deposit`, { params: { id } });
 }
 
 export function addDeposit(credit) {
-    return axios.post(`${serverUrl}/deposit`, credit, { withCredentials: true });
+    return AdminAPI.post(`/deposit`, credit);
 }
 
 export function getDepositLogAsCSV(filter) {
-    let url = `${serverUrl}/deposit-csv?format=csv`;
     const { datefrom, dateto } = filter;
-    if (datefrom && datefrom != '') url += `&datefrom=${encodeURIComponent(datefrom)}`;
-    if (dateto && dateto != '') url += `&dateto=${encodeURIComponent(dateto)}`;
+    const params = {};
+    if (datefrom && datefrom != '') params.datefrom = datefrom;
+    if (dateto && dateto != '') params.dateto = dateto;
 
-    return axios.get(url, { withCredentials: true });
+    return AdminAPI.get('/deposit-csv', { params });
 }

@@ -1,43 +1,41 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function createArticle(value) {
-    return axios.post(`${serverUrl}/articles`, value, { withCredentials: true });
+    return AdminAPI.post(`/articles`, value);
 }
 
 export function getArticleDrafts(page, filter) {
-    let url = `${serverUrl}/articles?page=${page}`;
+    const params = { page };
     if (filter.status) {
-        url += `&status=${filter.status}`;
+        params.status = filter.status;
     }
-    return axios.get(url);
+    return AdminAPI.get('/articles', { params });
 }
 
 export function getArticleDraft(id) {
-    return axios.get(`${serverUrl}/articles/${id}`);
+    return AdminAPI.get(`/articles/${id}`);
 }
 
 export function deleteArticle(id) {
-    return axios.delete(`${serverUrl}/articles/${id}`);
+    return AdminAPI.delete(`/articles/${id}`);
 }
 
 export function updateArticle(id, data) {
-    return axios.put(`${serverUrl}/articles/${id}`, data);
+    return AdminAPI.put(`/articles/${id}`, data);
 }
 
 export function getCategories() {
-    return axios.get(`${serverUrl}/articles/categories`);
+    return AdminAPI.get(`/articles/categories`);
 }
 
 export function searchCategories(name) {
-    return axios.get(`${serverUrl}/articles/searchcategories?name=${name}`);
+    return AdminAPI.get(`/articles/searchcategories?name=${name}`);
 }
 
 export function createCategory(data) {
-    return axios.post(`${serverUrl}/articles/categories`, data);
+    return AdminAPI.post(`/articles/categories`, data);
 }
 
 export function deleteCategory(id) {
-    return axios.delete(`${serverUrl}/articles/categories/${id}`);
+    return AdminAPI.delete(`/articles/categories/${id}`);
 }

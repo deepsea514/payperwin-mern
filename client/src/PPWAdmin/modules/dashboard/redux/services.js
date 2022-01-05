@@ -1,7 +1,5 @@
-import axios from "axios";
 import dateformat from 'dateformat';
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from '../../../redux/adminAPI';
 
 export function getDashboardData(daterange) {
     const { startDate, endDate, selected } = daterange;
@@ -21,7 +19,6 @@ export function getDashboardData(daterange) {
     } else {
         //to avoid modifying the original date
         const theDate = new Date(startDate);
-        console.log(selected)
         switch (selected) {
             case 'alltime':
             case 'thisyear':
@@ -43,9 +40,9 @@ export function getDashboardData(daterange) {
         }
     }
 
-    return axios.post(`${serverUrl}/dashboard`, { daterange, dateranges, categories });
+    return AdminAPI.post(`/dashboard`, { daterange, dateranges, categories });
 }
 
 export function getBots() {
-    return axios.get(`${serverUrl}/autobets/overview`);
+    return AdminAPI.get(`/autobets/overview`);
 }

@@ -1,15 +1,13 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getFrontendInfo(name) {
-    return axios.get(`${serverUrl}/frontend/${name}`);
+    return AdminAPI.get(`/frontend/${name}`);
 }
 
 export function searchSports(name) {
-    return axios.get(`${serverUrl}/searchsports?name=${name}`);
+    return AdminAPI.get(`/searchsports`, { params: { name } });
 }
 
 export function saveFrontendInfo(name, value) {
-    return axios.put(`${serverUrl}/frontend/${name}`, value);
+    return AdminAPI.put(`/frontend/${name}`, value);
 }

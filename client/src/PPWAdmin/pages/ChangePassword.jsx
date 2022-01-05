@@ -1,10 +1,8 @@
 import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import axios from "axios";
 import { getInputClasses } from "../../helpers/getInputClasses";
-import _env from '../../env.json';
-const serverUrl = _env.appAdminUrl;
+import { changePassword } from "../redux/services";
 
 class ChangePassword extends React.Component {
     constructor(props) {
@@ -40,7 +38,7 @@ class ChangePassword extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ resMsg: null, isSuccess: false, isError: false, });
-        axios.post(`${serverUrl}/change-password`, values, { withCredentials: true })
+        changePassword(values)
             .then(({ data }) => {
                 if (data.success) {
                     this.setState({ isSuccess: true, resMsg: 'Password changed.' });

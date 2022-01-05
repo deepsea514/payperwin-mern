@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as currentUser from "../redux/reducers";
-import axios from 'axios';
 import config from '../../../../config.json';
-import _env from '../../env.json';
-const serverUrl = _env.appAdminUrl;
 const AdminRoles = config.AdminRoles;
 
 import { Layout } from "../_metronic/layout";
@@ -40,6 +37,7 @@ import CreditsModule from '../modules/credit/pages';
 import Prediction from '../modules/prediction/pages';
 import GiftCardsModule from '../modules/giftcard/pages';
 import MismatchScoresModule from '../modules/mismatchscores/pages';
+import { getUser } from '../redux/services';
 
 class App extends Component {
     constructor(props) {
@@ -55,13 +53,14 @@ class App extends Component {
 
     checkUser = () => {
         const { setCurrentUserAction } = this.props;
-        const url = `${serverUrl}/user`;
-        axios.get(url).then(({ data: user }) => {
-            this._Mounted && setCurrentUserAction(user);
-        }).catch(err => {
-            this._Mounted && setCurrentUserAction(null);
-            this.props.history.push("/login");
-        })
+        getUser()
+            .then(({ data: user }) => {
+                this._Mounted && setCurrentUserAction(user);
+            })
+            .catch(err => {
+                this._Mounted && setCurrentUserAction(null);
+                this.props.history.push("/login");
+            })
     }
 
     componentWillUnmount() {

@@ -1,23 +1,21 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function createMessage(value) {
-    return axios.post(`${serverUrl}/messages`, value, { withCredentials: true });
+    return AdminAPI.post(`/messages`, value);
 }
 
 export function getMessageDrafts(page) {
-    return axios.get(`${serverUrl}/messages?page=${page}`);
+    return AdminAPI.get(`/messages`, { params: { page } });
 }
 
 export function getMessageDraft(id) {
-    return axios.get(`${serverUrl}/messages/${id}`);
+    return AdminAPI.get(`/messages/${id}`);
 }
 
 export function editMessageDraft(id, data) {
-    return axios.put(`${serverUrl}/messages/${id}`, data);
+    return AdminAPI.put(`/messages/${id}`, data);
 }
 
 export function deleteMessageDraft(id) {
-    return axios.delete(`${serverUrl}/messages/${id}`);
+    return AdminAPI.delete(`/messages/${id}`);
 }
