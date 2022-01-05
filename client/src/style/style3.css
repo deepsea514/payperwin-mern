@@ -2103,7 +2103,7 @@ a.fav-link:hover {
 .promotion-header {
     font-size: 14px;
     display: inline-block;
-    text-align: center;
+    text-align: left;
     padding: 0 10px;
 }
 

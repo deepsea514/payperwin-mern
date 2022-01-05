@@ -83,9 +83,7 @@ export default class Highlights extends Component {
                 {showPromotion && <PromotionModal closePromotion={() => this.setState({ showPromotion: false })} />}
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
-                    <center>
-                        <p className='promotion-header'>Peer-to-Peer Sportsbetting Exchange.<br /> Risk less Win more!</p>
-                    </center>
+                    <p className='promotion-header'>Peer-to-Peer Sportsbetting Exchange.<br /> Risk less Win more!</p>
                     <div className='p-3'>
                         <div className='promotion-botton-wrap' onClick={() => this.setState({ showPromotion: true })}>
                             <div className='promotion-botton'><span>What's New</span></div>
