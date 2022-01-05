@@ -23,7 +23,7 @@ const sportImages = {
     'Beach Volleyball': '/images/icons/beach_volleyball.png',
     'Squash': '/images/icons/squash.png',
     'Water Polo': '/images/icons/water_polo.png',
-    'E-sports': '/images/icons/esports.png',
+    'E-sports': '/images/sports/esports.png',
 
     'Football': '/images/sports/football.png',
     'Other': '/images/icons/other.png'
