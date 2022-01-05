@@ -23,3 +23,11 @@ export function updatePromotion(id, data) {
 export function loadPromotionBanners() {
     return AdminAPI.get(`/promotions/banners`);
 }
+
+export function uploadPromotionBanner(formdata) {
+    return AdminAPI.post(`/promotions/banners`, formdata, { headers: { 'content-type': 'multipart/form-data' } });
+}
+
+export function deletePromotionBanner(id) {
+    return AdminAPI.delete(`/promotions/banners/${id}`);
+}

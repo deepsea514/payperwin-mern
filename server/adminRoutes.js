@@ -30,6 +30,7 @@ const ErrorLog = require('./models/errorlog');
 const LoyaltyLog = require('./models/loyaltylog');
 const ParlayBetPool = require('./models/parlaybetpool');
 const GiftCard = require('./models/giftcard');
+const PromotionBanner = require('./models/promotion_banner');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -43,6 +44,8 @@ const axios = require('axios');
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const _ = require("lodash");
+const fileUpload = require('express-fileupload');
+const fs = require('fs');
 //local helpers
 const sendSMS = require("./libs/sendSMS");
 const config = require("../config.json");
@@ -4291,6 +4294,66 @@ adminRouter.get(
             res.json(result);
         } catch (error) {
             res.status(404).json({ error: 'Can\'t find promotion.' });
+        }
+    }
+)
+
+adminRouter.post(
+    '/promotions/banners',
+    authenticateJWT,
+    limitRoles('promotions'),
+    fileUpload(),
+    async (req, res) => {
+        try {
+            const { files } = req;
+            const { priority } = req.body;
+            const ext = files.file.name.split('.').pop();
+            const filename = 'banner_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
+            files.file.mv('./banners/' + filename);
+            let type = 'image';
+            if (['m4v', 'mp4', 'avi'].includes(ext)) {
+                type = 'video'
+            }
+            await PromotionBanner.create({ path: filename, priority: priority, type: type });
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/promotions/banners',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async (req, res) => {
+        try {
+            const banners = await PromotionBanner.find();
+            return res.json(banners);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
+        }
+    }
+)
+
+adminRouter.delete(
+    '/promotions/banners/:id',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const banner = await PromotionBanner.findById(id);
+            if (banner) {
+                fs.unlink('./banners/' + banner.path, function () { });
+            }
+            await PromotionBanner.deleteMany({ _id: id });
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
         }
     }
 )

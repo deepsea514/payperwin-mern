@@ -3,7 +3,10 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Dropdown, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import dateformat from "dateformat";
-import { loadPromotionBanners } from "../redux/services";
+import { deletePromotionBanner, loadPromotionBanners, uploadPromotionBanner } from "../redux/services";
+import AddPromotionBannerModal from "../components/AddPromotionBannerModal";
+import _env from '../../../../env.json';
+const serverUrl = _env.appUrl;
 
 export default class PromotionBanners extends Component {
     constructor(props) {
@@ -12,6 +15,11 @@ export default class PromotionBanners extends Component {
             addModal: false,
             loading: false,
             banners: [],
+            deleteId: null,
+
+            modal: false,
+            resMessage: '',
+            modalvariant: '',
         }
     }
 
@@ -64,9 +72,75 @@ export default class PromotionBanners extends Component {
                 </tr>
             );
         }
+
+        return banners.map((banner, index) => {
+            return (
+                <tr key={index}>
+                    <th scope="col">{index + 1}</th>
+                    <th scope="col">
+                        <div>
+                            {banner.type == 'image' &&
+                                <img src={`${serverUrl}/banners/${banner.path}`}
+                                    style={{ width: '150px', height: 'auto', display: 'block' }} />}
+
+                            {banner.type == 'video' &&
+                                <video src={`${serverUrl}/banners/${banner.path}`}
+                                    playsInline
+                                    autoPlay
+                                    controls={true}
+                                    style={{ width: '150px', height: 'auto', display: 'block' }} />}
+                        </div>
+                    </th>
+                    <th scope="col">{this.getDate(banner.createdAt)}</th>
+                    <th scope="col">{banner.type}</th>
+                    <th scope="col">{banner.priority}</th>
+                    <th scope="col">
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Actions
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: banner._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </th>
+                </tr>
+            );
+        })
+    }
+
+    addPromotionBanner = (values, formik) => {
+        let data = new FormData();
+        data.append('file', values.file, values.file.name);
+        data.append('priority', values.priority);
+        uploadPromotionBanner(data)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, addModal: null, resMessage: "Successfully uploaded!", modalvariant: "success" });
+                this.loadBanners();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, addModal: null, resMessage: "Upload Failed!", modalvariant: "danger" });
+            })
+    }
+
+    deletePromotionBanner = () => {
+        const { deleteId } = this.state;
+        deletePromotionBanner(deleteId)
+            .then(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
+                this.loadBanners();
+            })
+            .catch(() => {
+                this.setState({ modal: true, deleteId: null, resMessage: "Delete Failed!", modalvariant: "danger" });
+            })
     }
 
     render() {
+        const { addModal, modal, resMessage, modalvariant, deleteId, } = this.state;
+
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
@@ -104,6 +178,37 @@ export default class PromotionBanners extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <Modal show={modal} onHide={() => this.setState({ modal: false })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{resMessage}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Footer>
+                            <Button variant={modalvariant} onClick={() => this.setState({ modal: false })}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    <AddPromotionBannerModal
+                        show={addModal}
+                        onHide={() => this.setState({ addModal: false })}
+                        onSubmit={this.addPromotionBanner}
+                    />
+
+                    <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Do you want to delete this banner?</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" onClick={this.deletePromotionBanner}>
+                                Confirm
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             </div>
         );
