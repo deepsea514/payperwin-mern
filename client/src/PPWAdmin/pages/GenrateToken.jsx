@@ -1,10 +1,8 @@
 import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import axios from "axios";
 import { getInputClasses } from "../../helpers/getInputClasses";
-import _env from '../../env.json';
-const serverUrl = _env.appAdminUrl;
+import { generateToken } from "../redux/services";
 
 class GenerateToken extends React.Component {
     constructor(props) {
@@ -25,7 +23,7 @@ class GenerateToken extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ qrcode: null, errMsg: null, });
-        axios.post(`${serverUrl}/generateAuthCode`, values, { withCredentials: true })
+        generateToken(values)
             .then(({ data }) => {
                 if (data.qrcode) {
                     this.setState({ qrcode: data.qrcode });

@@ -1,11 +1,9 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getMetaTagDetail(title) {
-    return axios.get(`${serverUrl}/meta/${title}`);
+    return AdminAPI.get(`/meta/${title}`);
 }
 
 export function updateMetaTagDetail(title, data) {
-    return axios.put(`${serverUrl}/meta/${title}`, data);
+    return AdminAPI.put(`/meta/${title}`, data);
 }

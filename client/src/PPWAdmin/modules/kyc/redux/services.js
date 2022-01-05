@@ -1,32 +1,19 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getVerifications(page, perPage = null) {
-    let url = `${serverUrl}/verifications?page=${page}`;
-    if (perPage) url += `&perPage=${perPage}`;
-
-    return axios.get(url, { withCredentials: true });
+    const params = { page };
+    if (perPage) params.perPage = perPage;
+    return AdminAPI.get('/verifications', { params });
 }
 
 export function getVerificationImage(user_id, name) {
-    let url = `${serverUrl}/verification-image`;
-    return axios.post(url, {
-        user_id,
-        name
-    }, { withCredentials: true });
+    return AdminAPI.post(`/verification-image`, { user_id, name });
 }
 
 export function acceptVerification(user_id) {
-    let url = `${serverUrl}/verification-accept`;
-    return axios.post(url, {
-        user_id,
-    }, { withCredentials: true });
+    return AdminAPI.post(`/verification-accept`, { user_id, });
 }
 
 export function declineVerification(user_id) {
-    let url = `${serverUrl}/verification-decline`;
-    return axios.post(url, {
-        user_id,
-    }, { withCredentials: true });
+    return AdminAPI.post(`/verification-decline`, { user_id, });
 }

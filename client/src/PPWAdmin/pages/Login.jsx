@@ -3,11 +3,8 @@ import * as Yup from "yup";
 import "../assets/css/pages/login/classic/login-1.css";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
-import axios from 'axios';
 import { getInputClasses } from "../../helpers/getInputClasses";
-import _env from '../../env.json';
-const serverUrl = _env.appAdminUrl;
-
+import { getUser, login, resend2FA, verify2FA } from '../redux/services';
 
 const initialLoginValues = {
     email: "",
@@ -47,15 +44,14 @@ export default class Login extends Component {
     }
 
     checkUser = () => {
-        const url = `${serverUrl}/user`;
-        axios.get(url).then(({ data: user }) => {
+        getUser().then(({ data: user }) => {
             this.props.history.push("/");
         })
     }
 
     onLoginSubmit = (values, formik) => {
         this.setState({ isError: false });
-        axios.post(`${serverUrl}/login`, values)
+        login(values)
             .then(({ data: { _2fa_enabled, accessToken } }) => {
                 localStorage.setItem("admin-token", accessToken);
                 formik.setSubmitting(false);
@@ -73,7 +69,7 @@ export default class Login extends Component {
     on2FASubmit = (values, formik) => {
         this.setState({ isError: false });
 
-        axios.post(`${serverUrl}/verify-2fa`, values)
+        verify2FA(values)
             .then(({ data: { success, accessToken } }) => {
                 formik.setSubmitting(false);
                 if (success) {
@@ -90,7 +86,7 @@ export default class Login extends Component {
 
     resend2FACode = (formik) => {
         formik.setSubmitting(true);
-        axios.post(`${serverUrl}/resend-2fa`, null)
+        resend2FA()
             .then(() => {
                 formik.setSubmitting(false);
             }).catch(() => {

@@ -1,22 +1,17 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function createAutoBet(data) {
-    return axios.post(`${serverUrl}/autobet`, data, { withCredentials: true });
+    return AdminAPI.post(`/autobet`, data);
 }
 
 export function getAutoBets(page) {
-    let url = `${serverUrl}/autobets?page=${page}`;
-    return axios.get(url, {
-        withCredentials: true
-    });
+    return AdminAPI.get('/autobets', { params: { page } });
 }
 
 export function updateAutoBet(id, data) {
-    return axios.patch(`${serverUrl}/autobet/${id}`, data, { withCredentials: true });
+    return AdminAPI.patch(`/autobet/${id}`, data);
 }
 
 export function deleteAutoBet(id) {
-    return axios.delete(`${serverUrl}/autobet/${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/autobet/${id}`);
 }

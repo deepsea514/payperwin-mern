@@ -1,11 +1,9 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getProfitReports(page, filter) {
-    return axios.get(`${serverUrl}/profits`, { withCredentials: true, params: { page, ...filter } });
+    return AdminAPI.get(`/profits`, { params: { page, ...filter } });
 }
 
 export function getProfitReportsCSV(filter) {
-    return axios.get(`${serverUrl}/profits-csv`, { withCredentials: true, params: filter });
+    return AdminAPI.get(`/profits-csv`, { params: filter });
 }

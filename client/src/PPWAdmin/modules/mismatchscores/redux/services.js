@@ -1,7 +1,5 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getMismatchScores(page) {
-    return axios.get(`${serverUrl}/mismatch-scores?page=${page}`);
+    return AdminAPI.get(`/mismatch-scores`, { params: { page } });
 }

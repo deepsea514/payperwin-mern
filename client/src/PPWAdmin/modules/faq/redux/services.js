@@ -1,31 +1,29 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getFAQSubjects(page) {
-    return axios.get(`${serverUrl}/faq-subjects?page=${page}`, { withCredentials: true });
+    return AdminAPI.get(`/faq-subjects`, { params: { page } });
 }
 
 export function addFAQSubject(value) {
-    return axios.post(`${serverUrl}/faq-subjects`, value, { withCredentials: true });
+    return AdminAPI.post(`/faq-subjects`, value);
 }
 
 export function deleteFAQSubject(id) {
-    return axios.delete(`${serverUrl}/faq-subjects/${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/faq-subjects/${id}`);
 }
 
 export function getFAQSubjectDetail(id) {
-    return axios.get(`${serverUrl}/faq-subjects/${id}`, { withCredentials: true });
+    return AdminAPI.get(`/faq-subjects/${id}`);
 }
 
 export function addFAQItem(subjectid, item) {
-    return axios.post(`${serverUrl}/faq-subjects/${subjectid}/item`, item, { withCredentials: true });
+    return AdminAPI.post(`/faq-subjects/${subjectid}/item`, item);
 }
 
 export function deleteFAQItem(subjectid, id) {
-    return axios.delete(`${serverUrl}/faq-subjects/${subjectid}/item/${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/faq-subjects/${subjectid}/item/${id}`);
 }
 
 export function editFAQItem(id, value) {
-    return axios.put(`${serverUrl}/faq-subjects/item/${id}`, value, { withCredentials: true });
+    return AdminAPI.put(`/faq-subjects/item/${id}`, value);
 }

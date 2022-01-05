@@ -1,32 +1,30 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function addEvent(data) {
-    return axios.post(`${serverUrl}/events`, data, { withCredentials: true });
+    return AdminAPI.post(`/events`, data);
 }
 
 export function getEvents(page, filter, perPage = null) {
-    let url = `${serverUrl}/events?page=${page}`;
-    if (perPage) url += `&perPage=${perPage}`;
+    const params = { page };
+    if (perPage) params.perPage = perPage;
     const { status } = filter;
-    if (status && status != '') url += `&status=${encodeURIComponent(status)}`;
+    if (status && status != '') params.status = status;
 
-    return axios.get(url, { withCredentials: true });
+    return AdminAPI.get("/events");
 }
 
 export function getEvent(id) {
-    return axios.get(`${serverUrl}/events/${id}`, { withCredentials: true });
+    return AdminAPI.get(`/events/${id}`);
 }
 
 export function editEvent(id, data) {
-    return axios.put(`${serverUrl}/events/${id}`, data, { withCredentials: true });
+    return AdminAPI.put(`/events/${id}`, data);
 }
 
 export function settleEvent(id, data) {
-    return axios.post(`${serverUrl}/events/${id}/settle`, data, { withCredentials: true });
+    return AdminAPI.post(`/events/${id}/settle`, data);
 }
 
 export function cancelEvent(id) {
-    return axios.post(`${serverUrl}/events/${id}/cancel`, {}, { withCredentials: true });
+    return AdminAPI.post(`/events/${id}/cancel`, {});
 }

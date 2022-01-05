@@ -1,7 +1,5 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getGiftCards(page, filter) {
-    return axios.get(`${serverUrl}/gift-cards`, { params: { page, ...filter } });
+    return AdminAPI.get(`/gift-cards`, { params: { page, ...filter } });
 }

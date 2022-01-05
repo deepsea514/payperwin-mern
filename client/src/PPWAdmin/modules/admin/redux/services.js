@@ -1,22 +1,22 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getAdmins(page, filter) {
-    let url = `${serverUrl}/admins?page=${page}`;
     const { role } = filter;
-    if (role && role != '') url += `&role=${role}`;
-    return axios.get(url);
+    const params = { page };
+    if (role && role != '') {
+        params.role = role;
+    }
+    return AdminAPI.get('/admins', { params });
 }
 
 export function createAdmin(value) {
-    return axios.post(`${serverUrl}/admins`, value);
+    return AdminAPI.post(`/admins`, value);
 }
 
 export function getAdmin(id) {
-    return axios.get(`${serverUrl}/admins/${id}`);
+    return AdminAPI.get(`/admins/${id}`);
 }
 
 export function updateAdmin(id, data) {
-    return axios.put(`${serverUrl}/admins/${id}`, data);
+    return AdminAPI.put(`/admins/${id}`, data);
 }

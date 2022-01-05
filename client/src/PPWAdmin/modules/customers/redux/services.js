@@ -1,80 +1,78 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function getCustomers(page, filter) {
-    return axios.get(`${serverUrl}/customers`, { params: { ...filter, page } });
+    return AdminAPI.get(`/customers`, { params: { ...filter, page } });
 }
 
 export function getCustomerDetail(id) {
-    return axios.get(`${serverUrl}/customer`, { params: { id } });
+    return AdminAPI.get(`/customer`, { params: { id } });
 }
 
 export function updateCustomer(id, data) {
-    return axios.patch(`${serverUrl}/customer`, { id, data });
+    return AdminAPI.patch(`/customer`, { id, data });
 }
 
 export function deleteCustomer(id) {
-    return axios.delete(`${serverUrl}/customer`, { params: { id } })
+    return AdminAPI.delete(`/customer`, { params: { id } })
 }
 
 export function getReason() {
-    return axios.get(`${serverUrl}/depositreasons`)
+    return AdminAPI.get(`/depositreasons`)
 }
 
 export function searchUsers(name) {
-    return axios.get(`${serverUrl}/searchusers?name=${name}`);
+    return AdminAPI.get(`/searchusers`, { params: { name } });
 }
 
 export function searchAutobetUsers(name) {
-    return axios.get(`${serverUrl}/searchautobetusers?name=${name}`);
+    return AdminAPI.get(`/searchautobetusers`, { params: { name } });
 }
 
 export function getCustomerOverview(id) {
-    return axios.get(`${serverUrl}/customer-overview?id=${id}`);
+    return AdminAPI.get(`/customer-overview`, { params: { id } });
 }
 
 export function getCustomerLoginHistory(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-loginhistory?id=${id}&page=${page}&perPage=${perPage}`);
+    return AdminAPI.get(`/customer-loginhistory`, { params: { id, page, perPage } });
 }
 
 export function getCustomerDeposits(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-deposits?id=${id}&page=${page}&perPage=${perPage}`);
+    return AdminAPI.get(`/customer-deposits`, { params: { id, page, perPage } });
 }
 
 export function getCustomerWithdraws(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-withdraws?id=${id}&page=${page}&perPage=${perPage}`);
+    return AdminAPI.get(`/customer-withdraws`, { params: { id, page, perPage } });
 }
 
 export function getCustomerTransactions(id, page, perPage) {
-    return axios.get(`${serverUrl}/customer-transactions`, { params: { id, page, perPage } });
+    return AdminAPI.get(`/customer-transactions`, { params: { id, page, perPage } });
 }
 
 
 export function getCustomerBets(id, page, perPage, src = 'ppw') {
-    return axios.get(`${serverUrl}/customer-bets?id=${id}&page=${page}&perPage=${perPage}&src=${src}`);
+    return AdminAPI.get(`/customer-bets`, { params: { id, page, perPage, src } });
 }
 
 export function searchSports(name) {
-    return axios.get(`${serverUrl}/searchsports?name=${name}`);
+    return AdminAPI.get(`/searchsports`, { params: { name } });
 }
 
 export function getCustomerPreference(id) {
-    return axios.get(`${serverUrl}/customer-preference/${id}`);
+    return AdminAPI.get(`/customer-preference/${id}`);
 }
 
 export function updateCustomerPreference(id, data) {
-    return axios.put(`${serverUrl}/customer-preference/${id}`, data);
+    return AdminAPI.put(`/customer-preference/${id}`, data);
 }
 
 export function suspendCustomer(id, suspended) {
-    return axios.put(`${serverUrl}/customer/${id}/suspend`, { suspended });
+    return AdminAPI.put(`/customer/${id}/suspend`, { suspended });
 }
 
 export function getCustomerCredits(id, page) {
-    return axios.get(`${serverUrl}/customer-credits`, { params: { id, page } });
+    return AdminAPI.get(`/customer-credits`, { params: { id, page } });
 }
 
 export function verifyCustomer(id) {
-    return axios.put(`${serverUrl}/customer/${id}/manualverification`);
+    return AdminAPI.put(`/customer/${id}/manualverification`);
 }

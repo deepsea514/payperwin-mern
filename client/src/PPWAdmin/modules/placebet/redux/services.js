@@ -1,35 +1,25 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function createPlaceBet(data) {
-    return axios.post(`${serverUrl}/placeBets`, data, { withCredentials: true });
+    return AdminAPI.post(`/placeBets`, data);
 }
 
 export function getPlaceBets(page) {
-    let url = `${serverUrl}/placebetsbyadmin?page=${page}`;
-    return axios.get(url, {
-        withCredentials: true
-    });
+    return AdminAPI.get('/placebetsbyadmin', { params: { page } });
 }
 
 export function searchSportsLeague(sportName) {
-    return axios.get(`${serverUrl}/searchsportsleague/${sportName}`);
+    return AdminAPI.get(`/searchsportsleague/${sportName}`);
 }
 
-
-
-export function searchAutoBetUsers(data) {
-    let url = `${serverUrl}/seacrhautobets?name=${data}`;
-    return axios.get(url, {
-        withCredentials:true
-    })
+export function searchAutoBetUsers(name) {
+    return AdminAPI.get('/seacrhautobets', { params: { name } })
 }
 
 export function updatePlaceBet(id, data) {
-    return axios.patch(`${serverUrl}/autobet/${id}`, data, { withCredentials: true });
+    return AdminAPI.patch(`/autobet/${id}`, data);
 }
 
 export function deletePlaceBet(id) {
-    return axios.delete(`${serverUrl}/autobet/${id}`, { withCredentials: true });
+    return AdminAPI.delete(`/autobet/${id}`);
 }
