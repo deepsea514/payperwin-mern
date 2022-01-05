@@ -245,4 +245,12 @@
     .table-list>li:nth-child(2), .table-list>li:nth-child(3) {
         border-right: none;
     }
+
+    .mobile-menu i.fa-times {
+        color: #ED254E;
+    }
+
+    .mobile-menu ul.navbar-nav li.nav-item i {
+        color: #ED254E;
+    }
 }
