@@ -5,10 +5,8 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Login from "./pages/Login";
 import App from "./pages/App";
 import axios from 'axios';
-import update from 'immutability-helper';
+import AdminAPI from './redux/adminAPI';
 import Favicon from 'react-favicon';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
 
 // import "./assets/css/style.bundle.css";
 // import "./assets/css/themes/layout/header/base/light.css";
@@ -34,6 +32,7 @@ import "./_metronic/_assets/plugins/keenthemes-icons/font/ki.css";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import * as _redux from "./redux";
 
+_redux.setupAxios(AdminAPI);
 _redux.setupAxios(axios);
 
 const MTheme = React.lazy(() => import('./theme'));

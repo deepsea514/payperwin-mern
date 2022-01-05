@@ -1,23 +1,25 @@
-import axios from "axios";
-import _env from '../../../../env.json';
-const serverUrl = _env.appAdminUrl;
+import AdminAPI from "../../../redux/adminAPI";
 
 export function createPromotion(data) {
-    return axios.post(`${serverUrl}/promotion`, data, { withCredentials: true });
+    return AdminAPI.post(`/promotion`, data);
 }
 
 export function getPromotions(page) {
-    return axios.get(`${serverUrl}/promotions?page=${page}`, { withCredentials: true });
+    return AdminAPI.get(`/promotions`, { params: { page } });
 }
 
 export function getPromotionDetail(id) {
-    return axios.get(`${serverUrl}/promotion/${id}`, { withCredentials: true });
+    return AdminAPI.get(`/promotion/${id}`);
 }
 
 export function deletePromotion(id) {
-    return axios.delete(`${serverUrl}/promotion/${id}`);
+    return AdminAPI.delete(`/promotion/${id}`);
 }
 
 export function updatePromotion(id, data) {
-    return axios.patch(`${serverUrl}/promotion/${id}`, data);
+    return AdminAPI.patch(`/promotion/${id}`, data);
+}
+
+export function loadPromotionBanners() {
+    return AdminAPI.get(`/promotions/banners`);
 }
