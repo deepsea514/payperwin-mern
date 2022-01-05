@@ -29,21 +29,13 @@ export default class PromotionModal extends Component {
         setTimeout(() => this.setState({
             stories: [
                 {
-                    url: '/images/promotion-banner.jpg',
-                    type: 'image',
-                },
-                {
-                    url: 'https://placeimg.com/640/480',
-                    type: 'image',
-                },
-                {
-                    url: '/media/demo video.mp4',
+                    url: '/banners/video banner.mp4',
                     type: 'video',
                 },
                 {
-                    url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-                    type: 'video',
-                }
+                    url: 'banners/hs-banner.jpg',
+                    type: 'image',
+                },
             ],
             loading: false,
         }), 2000);
@@ -61,7 +53,7 @@ export default class PromotionModal extends Component {
                     storyContainerStyles={{ width: '100%', height: '100%' }}
                     width='100%'
                     height='100%'
-                    // preventDefault
+                    preventDefault
                     renderers={this.renderers}
                 />}
                 {loading && <>
