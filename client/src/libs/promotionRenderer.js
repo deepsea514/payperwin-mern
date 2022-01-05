@@ -51,7 +51,7 @@ export const ImageRenderer = ({ story, action, config, closePromotion }) => {
                     </div>
                 )}
             </div>
-            <div style={{ position: "absolute", right: 12, top: 20, zIndex: 19 }}>
+            <div style={{ position: "absolute", right: 12, top: 20, zIndex: 1000 }}>
                 <div style={styles.header}>
                     <div style={styles.close} onClick={closePromotion}>
                         <i className="fa fa-times" style={styles.closeIcon} />
@@ -152,7 +152,7 @@ export const VideoRenderer = ({ story, action, isPaused, config, messageHandler,
                     </div>
                 )}
             </div>
-            <div className="header-close" style={{ position: "absolute", right: 12, top: 20, zIndex: 19 }}>
+            <div className="header-close" style={{ position: "absolute", right: 12, top: 20, zIndex: 1000 }}>
                 <div style={styles.header}>
                     <div style={styles.close} onClick={closePromotion}>
                         <i className="fa fa-times" style={styles.closeIcon} />

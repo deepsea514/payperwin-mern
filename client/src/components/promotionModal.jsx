@@ -53,7 +53,7 @@ export default class PromotionModal extends Component {
                     storyContainerStyles={{ width: '100%', height: '100%' }}
                     width='100%'
                     height='100%'
-                    preventDefault
+                    // preventDefault
                     renderers={this.renderers}
                 />}
                 {loading && <>
