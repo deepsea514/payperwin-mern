@@ -769,7 +769,7 @@ footer ul li a i {
 
 .mobile-menu-quick-icon-container p {
     color: white;
-    margin-top: 4px;
+    margin: 4px 0;
     font-weight: 400;
 }
 
@@ -831,7 +831,7 @@ footer ul li a i {
 .table-list-top {
     padding: 3px 20px 4px 10px;
     background: #F9F9F9;
-    margin-bottom: 1px;
+    /* margin-bottom: 1px; */
 }
 
 .table-title {

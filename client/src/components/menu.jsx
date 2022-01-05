@@ -60,7 +60,7 @@ class Menu extends Component {
                             <i className="fas fa-times" />
                         </button>
                     </div>
-                    {!user && <div className='d-flex justify-content-around p-4'>
+                    {!user && <div className='d-flex justify-content-around px-4'>
                         <Link className={`mobile-menu-quick-icon-container ${pathname === '/signup' ? 'active' : ''}`}
                             to="/signup" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
@@ -85,7 +85,7 @@ class Menu extends Component {
                             <p>FAQ</p>
                         </Link>
                     </div>}
-                    {user && <div className='d-flex justify-content-around p-4'>
+                    {user && <div className='d-flex justify-content-around px-4'>
                         <Link className={`mobile-menu-quick-icon-container ${pathname === '/bets' ? 'active' : ''}`}
                             to="/bets" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
@@ -126,6 +126,11 @@ class Menu extends Component {
                                 <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
                                     <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
                                 </a>
+                            </li>
+                            <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
+                                <Link to={{ pathname: '/articles' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-pencil"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
+                                </Link>
                             </li>
                             <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                 <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
