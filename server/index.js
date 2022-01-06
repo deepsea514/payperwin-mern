@@ -422,7 +422,7 @@ expressApp.use((req, res, next) => {
 // expressApp.use(session({ secret: 'change this', resave: false, saveUninitialized: false, cookie: { maxAge: 24 * 60 * 60 * 1000 } }));
 expressApp.use(bodyParser.urlencoded({ extended: false }));
 expressApp.use(bodyParser.json({
-    limit: '100mb',
+    limit: 100 * 1024 * 1024,
     verify: (req, res, buf) => {
         // req.rawBody = buf;
     }
