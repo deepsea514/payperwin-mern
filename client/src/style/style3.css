@@ -519,7 +519,7 @@ a.log-in-btn {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1;
+    z-index: 3;
 }
 
 .bg-modal {
@@ -2124,4 +2124,8 @@ a.fav-link:hover {
 .no-games {
     font-size: 16px;
     padding: 20px;
+}
+
+.noscroll {
+    overflow: hidden !important;
 }

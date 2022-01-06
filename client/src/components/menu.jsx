@@ -28,10 +28,12 @@ class Menu extends Component {
             })
             .catch((err) => {
             });
+        document.body.classList.add('noscroll');
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        document.body.classList.remove('noscroll');
     }
 
     logout = () => {
