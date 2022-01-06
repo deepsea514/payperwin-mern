@@ -4302,7 +4302,14 @@ adminRouter.post(
     '/promotions/banners',
     authenticateJWT,
     limitRoles('promotions'),
-    fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }),
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 },
+        files: 1,
+        abortOnLimit: true,
+        limitHandler: (req, res, next) => {
+            return res.status(400).json({ error: true, message: "Request Entity Too Large" })
+        },
+    }),
     async (req, res) => {
         try {
             const { files } = req;
