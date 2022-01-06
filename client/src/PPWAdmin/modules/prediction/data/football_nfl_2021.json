@@ -1668,7 +1668,7 @@
         "AwayTeam": "Kansas City Chiefs",
         "PredScore": "19-26",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "28-34",
         "date": "2021-12-17 01:20:00Z"
     },
     {
@@ -1676,7 +1676,7 @@
         "AwayTeam": "New York Jets",
         "PredScore": "26-23",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "31-24",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1684,23 +1684,23 @@
         "AwayTeam": "Washington",
         "PredScore": "21-19",
         "Probability": 4,
-        "RealScore": "",
-        "date": "2021-12-19 18:00:00Z"
+        "RealScore": "27-17",
+        "date": "2021-12-22 00:00:00Z"
     },
     {
         "HomeTeam": "Cleveland Browns",
         "AwayTeam": "Las Vegas Raiders",
         "PredScore": "23-22",
         "Probability": 3,
-        "RealScore": "",
-        "date": "2021-12-18 21:30:00Z"
+        "RealScore": "14-16",
+        "date": "2021-12-20 22:00:00Z"
     },
     {
         "HomeTeam": "Buffalo Bills",
         "AwayTeam": "Carolina Panthers",
         "PredScore": "23-22",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "31-14",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1708,7 +1708,7 @@
         "AwayTeam": "New England Patriots",
         "PredScore": "23-26",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "27-17",
         "date": "2021-12-19 13:15:00Z"
     },
     {
@@ -1716,7 +1716,7 @@
         "AwayTeam": "Dallas Cowboys",
         "PredScore": "16-23",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "6-21",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1724,7 +1724,7 @@
         "AwayTeam": "Houston Texans",
         "PredScore": "17-19",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "16-30",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1732,7 +1732,7 @@
         "AwayTeam": "Tennessee Titans",
         "PredScore": "29-19",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "19-13",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1740,7 +1740,7 @@
         "AwayTeam": "Green Bay Packers",
         "PredScore": "25-24",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "30-31",
         "date": "2021-12-19 21:25:00Z"
     },
     {
@@ -1748,7 +1748,7 @@
         "AwayTeam": "Arizona Cardinals",
         "PredScore": "23-23",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "30-12",
         "date": "2021-12-19 18:00:00Z"
     },
     {
@@ -1756,7 +1756,7 @@
         "AwayTeam": "Cincinnati Bengals",
         "PredScore": "18-18",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "10-15",
         "date": "2021-12-19 21:05:00Z"
     },
     {
@@ -1764,7 +1764,7 @@
         "AwayTeam": "Atlanta Falcons",
         "PredScore": "17-26",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "31-13",
         "date": "2021-12-19 21:05:00Z"
     },
     {
@@ -1772,15 +1772,15 @@
         "AwayTeam": "Seattle Seahawks",
         "PredScore": "26-25",
         "Probability": 3,
-        "RealScore": "",
-        "date": "2021-12-19 21:25:00Z"
+        "RealScore": "20-10",
+        "date": "2021-12-22 00:00:00Z"
     },
     {
         "HomeTeam": "Tampa Bay Buccaneers",
         "AwayTeam": "New Orleans Saints",
         "PredScore": "24-21",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "0-9",
         "date": "2021-12-20 01:20:00Z"
     },
     {
@@ -1788,7 +1788,7 @@
         "AwayTeam": "Minnesota Vikings",
         "PredScore": "16-20",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "9-17",
         "date": "2021-12-21 01:15:00Z"
     },
     {
@@ -1796,7 +1796,7 @@
         "AwayTeam": "San Francisco 49ers",
         "PredScore": "25-21",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "20-17",
         "date": "2021-12-24 01:20:00Z"
     },
     {
@@ -1804,7 +1804,7 @@
         "AwayTeam": "Cleveland Browns",
         "PredScore": "20-21",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "24-22",
         "date": "2021-12-25 21:30:00Z"
     },
     {
@@ -1812,7 +1812,7 @@
         "AwayTeam": "Indianapolis Colts",
         "PredScore": "19-21",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "16-22",
         "date": "2021-12-26 01:15:00Z"
     },
     {
@@ -1820,7 +1820,7 @@
         "AwayTeam": "New York Giants",
         "PredScore": "26-17",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "34-10",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1828,7 +1828,7 @@
         "AwayTeam": "Los Angeles Rams",
         "PredScore": "18-26",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "23-30",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1836,7 +1836,7 @@
         "AwayTeam": "Buffalo Bills",
         "PredScore": "22-18",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "21-33",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1844,7 +1844,7 @@
         "AwayTeam": "Tampa Bay Buccaneers",
         "PredScore": "23-28",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "6-32",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1852,7 +1852,7 @@
         "AwayTeam": "Jacksonville Jaguars",
         "PredScore": "17-21",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "26-21",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1860,7 +1860,7 @@
         "AwayTeam": "Detroit Lions",
         "PredScore": "31-22",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "20-16",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1868,7 +1868,7 @@
         "AwayTeam": "Los Angeles Chargers",
         "PredScore": "18-25",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "41-29",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1876,7 +1876,7 @@
         "AwayTeam": "Baltimore Ravens",
         "PredScore": "22-22",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "41-21",
         "date": "2021-12-26 18:00:00Z"
     },
     {
@@ -1884,7 +1884,7 @@
         "AwayTeam": "Chicago Bears",
         "PredScore": "19-17",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "24-25",
         "date": "2021-12-26 21:05:00Z"
     },
     {
@@ -1892,7 +1892,7 @@
         "AwayTeam": "Pittsburgh Steelers",
         "PredScore": "21-15",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "36-10",
         "date": "2021-12-26 21:25:00Z"
     },
     {
@@ -1900,7 +1900,7 @@
         "AwayTeam": "Denver Broncos",
         "PredScore": "24-24",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "17-13",
         "date": "2021-12-26 21:25:00Z"
     },
     {
@@ -1908,7 +1908,7 @@
         "AwayTeam": "Washington",
         "PredScore": "25-21",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "56-14",
         "date": "2021-12-27 01:20:00Z"
     },
     {
@@ -1916,7 +1916,7 @@
         "AwayTeam": "Miami Dolphins",
         "PredScore": "25-24",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "3-20",
         "date": "2021-12-28 01:15:00Z"
     },
     {
@@ -1924,7 +1924,7 @@
         "AwayTeam": "Philadelphia Eagles",
         "PredScore": "21-23",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "16-20",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1932,15 +1932,15 @@
         "AwayTeam": "Carolina Panthers",
         "PredScore": "28-18",
         "Probability": 3,
-        "RealScore": "",
-        "date": "2022-01-02 18:00:00Z"
+        "RealScore": "18-10",
+        "date": "2022-01-02 21:25:00Z"
     },
     {
         "HomeTeam": "New York Jets",
         "AwayTeam": "Tampa Bay Buccaneers",
         "PredScore": "23-23",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "24-28",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1948,7 +1948,7 @@
         "AwayTeam": "Miami Dolphins",
         "PredScore": "23-21",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "34-3",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1956,7 +1956,7 @@
         "AwayTeam": "Jacksonville Jaguars",
         "PredScore": "20-15",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "50-10",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1964,7 +1964,7 @@
         "AwayTeam": "Las Vegas Raiders",
         "PredScore": "19-22",
         "Probability": 2,
-        "RealScore": "",
+        "RealScore": "20-23",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1972,7 +1972,7 @@
         "AwayTeam": "Kansas City Chiefs",
         "PredScore": "22-32",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "34-31",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1980,7 +1980,7 @@
         "AwayTeam": "New York Giants",
         "PredScore": "27-17",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "29-3",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1988,7 +1988,7 @@
         "AwayTeam": "Atlanta Falcons",
         "PredScore": "26-21",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "29-15",
         "date": "2022-01-02 18:00:00Z"
     },
     {
@@ -1996,15 +1996,15 @@
         "AwayTeam": "Arizona Cardinals",
         "PredScore": "22-23",
         "Probability": 3,
-        "RealScore": "",
-        "date": "2022-01-02 18:00:00Z"
+        "RealScore": "22-25",
+        "date": "2022-01-02 21:25:00Z"
     },
     {
         "HomeTeam": "San Francisco 49ers",
         "AwayTeam": "Houston Texans",
         "PredScore": "24-23",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "23-7",
         "date": "2022-01-02 21:05:00Z"
     },
     {
@@ -2012,7 +2012,7 @@
         "AwayTeam": "Denver Broncos",
         "PredScore": "21-22",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "34-13",
         "date": "2022-01-02 21:05:00Z"
     },
     {
@@ -2020,15 +2020,15 @@
         "AwayTeam": "Los Angeles Rams",
         "PredScore": "28-20",
         "Probability": 3,
-        "RealScore": "",
-        "date": "2022-01-02 21:25:00Z"
+        "RealScore": "19-20",
+        "date": "2022-01-02 18:00:00Z"
     },
     {
         "HomeTeam": "Seattle Seahawks",
         "AwayTeam": "Detroit Lions",
         "PredScore": "19-26",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "51-29",
         "date": "2022-01-02 21:25:00Z"
     },
     {
@@ -2036,7 +2036,7 @@
         "AwayTeam": "Minnesota Vikings",
         "PredScore": "24-22",
         "Probability": 3,
-        "RealScore": "",
+        "RealScore": "37-10",
         "date": "2022-01-03 01:20:00Z"
     },
     {
@@ -2044,7 +2044,7 @@
         "AwayTeam": "Cleveland Browns",
         "PredScore": "28-21",
         "Probability": 4,
-        "RealScore": "",
+        "RealScore": "26-14",
         "date": "2022-01-04 01:15:00Z"
     },
     {
