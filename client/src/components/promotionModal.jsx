@@ -58,7 +58,11 @@ export default class PromotionModal extends Component {
             .catch(() => {
                 this.setState({ stories: defaultStories, loading: false })
             })
+        document.body.classList.add('noscroll');
+    }
 
+    componentWillUnmount() {
+        document.body.classList.remove('noscroll');
     }
 
     render() {
