@@ -634,8 +634,10 @@ class Sport extends Component {
                         return (events.length > 0 &&
                             <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                    <div className="table-title d-flex align-items-center"><img src={sportNameImage(sportName, leagueName)}
-                                        style={{ marginRight: '6px', width: '14px', height: '14px' }} /> {leagueName}</div>
+                                    <div className="table-title d-flex align-items-center">
+                                        <img src={sportNameImage(sportName, leagueName)}
+                                            style={{ marginRight: '6px', width: '14px', height: '14px' }} /> {leagueName}
+                                    </div>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                         <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
