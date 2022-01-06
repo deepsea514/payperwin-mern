@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { Button } from '@material-ui/core';
-import axios from 'axios';
 import dateformat from "dateformat";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { selfExclusion } from '../redux/services';
 
 class SelfExcusion extends Component {
     constructor(props) {
@@ -36,7 +34,7 @@ class SelfExcusion extends Component {
     selfExcusion = () => {
         const { peorid } = this.state;
         const { getUser } = this.props;
-        axios.post(`${serverUrl}/self-exclusion`, { peorid }, { withCredentials: true })
+        selfExclusion(peorid)
             .then(() => {
                 window.scrollTo(0, 0);
                 getUser();

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
@@ -7,14 +6,12 @@ import timeHelper from "../helpers/timehelper";
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import convertOdds from '../helpers/convertOdds';
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
-import _env from '../env.json';
 import SBModal from './sbmodal';
 import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
 import dateFormat from 'dateformat';
 import sportNameImage from '../helpers/sportNameImage';
-
-const serverUrl = _env.appUrl;
+import { getLiveSports, getSports } from '../redux/services';
 
 const emptyBoxLine = (
     <li>
@@ -78,8 +75,8 @@ class Sport extends Component {
     }
 
     getLiveSport = () => {
-        const { sportName, league: league } = this.props;
-        axios.get(`${serverUrl}/livesport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
+        const { sportName, league } = this.props;
+        getLiveSports(sportName, league)
             .then(({ data }) => {
                 if (data) {
                     this.setState({ liveData: data });
@@ -92,11 +89,11 @@ class Sport extends Component {
     }
 
     getSport = (setLoading = true) => {
-        const { sportName, league: league } = this.props;
+        const { sportName, league } = this.props;
         if (setLoading) {
             this.setState({ loading: true });
         }
-        axios.get(`${serverUrl}/sport`, { params: league ? { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } : { name: sportName ? sportName.replace("_", " ") : "" } })
+        getSports(sportName, league)
             .then(({ data }) => {
                 if (data) {
                     this.setState({ data, loading: false });

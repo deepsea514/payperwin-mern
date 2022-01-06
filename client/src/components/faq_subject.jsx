@@ -1,11 +1,9 @@
 
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getFAQSubject } from '../redux/services';
 
 class FaqSubject extends Component {
     constructor(props) {
@@ -35,7 +33,7 @@ class FaqSubject extends Component {
 
     loadSubject = (id) => {
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/faq_subject/${id}`, { withCredentials: true })
+        getFAQSubject(id)
             .then(({ data }) => {
                 this.setState({ loading: false, faq_subject: data });
             })

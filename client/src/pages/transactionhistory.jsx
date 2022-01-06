@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-import axios from "axios";
 import dateformat from "dateformat";
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getTransactions } from '../redux/services';
 
 class TransactionHistory extends Component {
     constructor(props) {
@@ -46,7 +44,7 @@ class TransactionHistory extends Component {
     getHistory = (page = 0, clear = true) => {
         const { filter, daterange, transactions } = this.state;
         this.setState({ loading: true, noMore: false });
-        axios.post(`${serverUrl}/transactions`, { filter, daterange, page }, { withCredentials: true })
+        getTransactions({ filter, daterange, page })
             .then(({ data }) => {
                 this.setState({ transactions: clear ? data : [...transactions, ...data], page, noMore: data.length == 0 });
             }).finally(() => this.setState({ loading: false }));

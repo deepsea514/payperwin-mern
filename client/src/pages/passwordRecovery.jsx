@@ -6,12 +6,10 @@ import TextField from '@material-ui/core/TextField';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
-import _env from '../env.json';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { sendPasswordRecovery } from '../redux/services';
 
 const Form = ({
     email, // eslint-disable-line react/prop-types
@@ -87,26 +85,21 @@ export default class Login extends Component {
             .then((result) => {
                 if (result === true) {
                     const { email } = this.state;
-                    const url = `${serverUrl}/sendPasswordRecovery?email=${email}`;
-                    axios({
-                        method: 'get',
-                        url,
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    }).then(({ data }) => {
-                        if (data) {
-                            this.setState({ ...initState, message: data });
-                        }
-                    }).catch((err) => {
-                        if (err.response) {
-                            const { data } = err.response;
-                            if (data.error) {
-                                this.setState({ errors: { ...errors, server: data.error } });
+
+                    sendPasswordRecovery(email)
+                        .then(({ data }) => {
+                            if (data) {
+                                this.setState({ ...initState, message: data });
                             }
-                        }
-                    });
+                        })
+                        .catch((err) => {
+                            if (err.response) {
+                                const { data } = err.response;
+                                if (data.error) {
+                                    this.setState({ errors: { ...errors, server: data.error } });
+                                }
+                            }
+                        });
                 } else {
                     this.setState({
                         errors: result,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { withRouter, Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { connect } from "react-redux";
@@ -9,12 +8,11 @@ import Line from "../components/line.jsx";
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
 import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
-import _env from '../env.json';
 import SBModal from '../components/sbmodal';
 import { FormattedMessage } from 'react-intl';
 import LinesBreadcrumb from '../components/linesbreadcrumb';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-const serverUrl = _env.appUrl;
+import { getSportsLine } from '../redux/services';
 
 class Lines extends Component {
     constructor(props) {
@@ -79,7 +77,7 @@ class Lines extends Component {
         this.setState({ loading: true });
         const { match: { params: { sportName, leagueId, eventId } }, live } = this.props;
         if (sportName) {
-            axios.get(`${serverUrl}/${live ? 'livesport' : 'sport'}`, { params: { name: sportName ? sportName.replace("_", " ") : "", leagueId: leagueId, eventId } })
+            getSportsLine(live, sportName, leagueId, eventId)
                 .then(({ data }) => {
                     if (data) { this.setState({ data: data, loading: false, }) }
                     else {

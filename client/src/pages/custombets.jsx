@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dayjs from 'dayjs';
 import sportNameImage from "../helpers/sportNameImage";
 import CreateCustomBetModal from '../components/createCustomBetModal';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getBets } from '../redux/services';
 
 export default class CustomBets extends Component {
     constructor(props) {
@@ -37,7 +35,7 @@ export default class CustomBets extends Component {
 
     getCustomBetsHistory = () => {
         this.setState({ loading: true });
-        axios.post(`${serverUrl}/bets`, { custom: true }, { withCredentials: true })
+        getBets({ custom: true })
             .then(({ data }) => {
                 if (data) {
                     this.setState({ bets: data, loading: false })

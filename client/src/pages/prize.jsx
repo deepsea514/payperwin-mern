@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
 import { Link, withRouter } from 'react-router-dom';
 import WinWheel from '../libs/WinWheel';
-import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import rouletteSelection from '../libs/rouletteSelection';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getPrize, postPrize } from '../redux/services';
 
 class Prize extends Component {
     constructor(props) {
@@ -96,16 +94,7 @@ class Prize extends Component {
 
     getPrizeData = () => {
         this.setState({ loading: true });
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const date = today.getDate();
-        axios.get(`${serverUrl}/prize`, {
-            withCredentials: true,
-            params: {
-                date: new Date(year, month, date)
-            }
-        })
+        getPrize()
             .then(({ data }) => {
                 if (data.used) {
                     this.remainingTimeHandler();
@@ -174,7 +163,7 @@ class Prize extends Component {
 
     finishPrize = (indicatedSegment) => {
         const { tadaSound } = this.state;
-        if(tadaSound) {
+        if (tadaSound) {
             tadaSound.pause();
             tadaSound.currentTime = 0;
             tadaSound.play();
@@ -190,14 +179,7 @@ class Prize extends Component {
         this.remainingTimeHandler();
         const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 60 * 1000);
         this.setState({ used: true, remainingTimer });
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const date = today.getDate();
-        axios.post(`${serverUrl}/prize`,
-            { prize: indicatedSegment.id, date: new Date(year, month, date) },
-            { withCredentials: true },
-        );
+        postPrize(indicatedSegment.id)
     }
 
     render() {

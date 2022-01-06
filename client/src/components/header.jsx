@@ -10,7 +10,7 @@ import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
 import numberFormat from '../helpers/numberFormat';
-import { logout } from '../libs/logout';
+import logout from '../libs/logout';
 
 class Header extends Component {
     constructor(props) {

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import convertOdds from '../helpers/convertOdds';
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getCustomEvent } from '../redux/services';
 
 class Others extends Component {
     constructor(props) {
@@ -26,8 +24,8 @@ class Others extends Component {
 
     getSport() {
         const { id } = this.props;
-        const url = `${serverUrl}/others`;
-        axios.get(url, { params: { id } })
+
+        getCustomEvent(id)
             .then(({ data }) => {
                 if (data) {
                     this.setState({ data })

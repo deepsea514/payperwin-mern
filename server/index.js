@@ -31,6 +31,7 @@ const LoyaltyLog = require('./models/loyaltylog');
 const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
 const GiftCard = require('./models/giftcard');
+const PromotionBanner = require('./models/promotion_banner');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -5115,6 +5116,19 @@ expressApp.post('/getSlipLatestOdds', async (req, res) => {
         return res.json(null);
     }
 })
+
+expressApp.get(
+    '/promotion/banners',
+    async (req, res) => {
+        try {
+            const banners = await PromotionBanner.find().sort({ priority: -1, createdAt: -1 });
+            return res.json(banners);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error.' });
+        }
+    }
+)
 
 // Router
 expressApp.use('/admin', adminRouter);

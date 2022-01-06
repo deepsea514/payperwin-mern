@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import { Link } from "react-router-dom";
-import _env from '../env.json';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { deleteInbox, getInboxDetail } from '../redux/services';
 
 class InboxDetail extends Component {
     constructor(props) {
@@ -19,7 +17,7 @@ class InboxDetail extends Component {
     componentDidMount() {
         setTitle({ pageTitle: 'Inbox' });
         const id = this.props.match.params.id;
-        axios.get(`${serverUrl}/inbox/${id}`, { withCredentials: true })
+        getInboxDetail(id)
             .then(({ data }) => {
                 this.setState({ message: data })
             })
@@ -31,7 +29,7 @@ class InboxDetail extends Component {
     deleteMessage = () => {
         const { history, match } = this.props;
         const id = match.params.id;
-        axios.delete(`${serverUrl}/inbox/${id}`, { withCredentials: true })
+        deleteInbox(id)
             .then(() => {
                 history.push("/");
             })

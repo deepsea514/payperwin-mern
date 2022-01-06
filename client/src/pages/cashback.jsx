@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import ReactApexChart from "react-apexcharts";
@@ -8,8 +7,7 @@ import { Tabs, Tab, } from 'react-bootstrap';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getCashbak } from '../redux/services';
 
 export default class Cashback extends Component {
     constructor(props) {
@@ -113,7 +111,7 @@ export default class Cashback extends Component {
 
     getCashBackHistory() {
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/cashback`, { withCredentials: true })
+        getCashbak()
             .then(({ data }) => {
                 this.setState({ loading: false, data });
             })

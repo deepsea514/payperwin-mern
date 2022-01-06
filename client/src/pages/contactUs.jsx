@@ -1,5 +1,4 @@
 import React, { Component, useRef } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
@@ -12,8 +11,7 @@ import 'react-phone-input-2/lib/style.css';
 import JoditEditor from "jodit-react";
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { submitTicket } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -70,12 +68,7 @@ class ContactUs extends Component {
         const keys = Object.keys(values);
         keys.forEach(key => postData.append(key, values[key]));
 
-        const config = {
-            headers: { 'content-type': 'multipart/form-data' },
-            withCredentials: true,
-        }
-
-        axios.post(`${serverUrl}/submitticket`, postData, config)
+        submitTicket(postData)
             .then(() => {
                 this.setState({ submitSuccess: true });
                 formik.setSubmitting(false);

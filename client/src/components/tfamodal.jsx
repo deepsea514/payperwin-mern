@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import axios from 'axios';
 import { withRouter } from 'react-router-dom';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { resend2FACode, verify2FACode } from "../redux/services";
 
 class TfaModal extends Component {
     constructor(props) {
@@ -24,7 +22,7 @@ class TfaModal extends Component {
         this.setState({ verification_code });
         if (verification_code.length == 6) {
             this.setState({ verifying: true });
-            axios.post(`${serverUrl}/verify-2fa-code`, { verification_code }, { withCredentials: true })
+            verify2FACode(verification_code)
                 .then(({ data }) => {
                     if (data.success) {
                         this.setState({ verifying: false });
@@ -49,7 +47,7 @@ class TfaModal extends Component {
 
     sendAgain = (evt) => {
         this.setState({ resending_code: true });
-        axios.post(`${serverUrl}/resend-2fa-code`, {}, { withCredentials: true })
+        resend2FACode()
             .then(() => {
                 this.setState({ resending_code: false, message: 'Verification was resent to your email.' });
             })

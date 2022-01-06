@@ -68,10 +68,6 @@ import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
 import Invite from '../pages/invite';
 
-import _env from '../env.json';
-import axios from 'axios';
-const serverUrl = _env.appUrl;
-
 import '../style/all.css';
 import '../style/all.min.css';
 import '../style/bootstrap.min.css';
@@ -79,6 +75,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import { getBetSlipLastOdds } from '../redux/services';
 
 const ShowAccountLinks = [
     '/bets',
@@ -203,7 +200,7 @@ class App extends Component {
     getLatestOdds = () => {
         const { betSlip } = this.state;
         if (betSlip.length == 0) return;
-        axios.post(`${serverUrl}/getSlipLatestOdds`, betSlip)
+        getBetSlipLastOdds(betSlip)
             .then(({ data }) => {
                 this._Mounted && this.setState({ betSlipOdds: data });
             })

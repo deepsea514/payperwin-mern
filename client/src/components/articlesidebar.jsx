@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
-import axios from 'axios';
-
-const _env = require('../env.json');
-const serverUrl = _env.appUrl;
+import { getArticles, getPopularArticles, getRecentArticles, getRelatedArticles } from '../redux/services';
 
 class ArticleSidebar extends Component {
     constructor(props) {
@@ -29,7 +26,7 @@ class ArticleSidebar extends Component {
     getData = () => {
         const { showPreview, showrRecentPopular, relatedArticle } = this.props;
         if (showPreview) {
-            axios.get(`${serverUrl}/articles/home`, { withCredentials: true })
+            getArticles()
                 .then(({ data }) => {
                     this.setState({ previewArticles: data });
                 })
@@ -38,7 +35,7 @@ class ArticleSidebar extends Component {
                 })
         }
         if (relatedArticle) {
-            axios.get(`${serverUrl}/articles/related/${relatedArticle._id}`, { withCredentials: true })
+            getRelatedArticles(relatedArticle._id)
                 .then(({ data }) => {
                     this.setState({ relatedArticles: data });
                 })
@@ -47,7 +44,7 @@ class ArticleSidebar extends Component {
                 })
         }
         if (showrRecentPopular) {
-            axios.get(`${serverUrl}/articles/recent`, { withCredentials: true })
+            getRecentArticles()
                 .then(({ data }) => {
                     this.setState({ recentArticles: data });
                 })
@@ -55,7 +52,7 @@ class ArticleSidebar extends Component {
                     this.setState({ recentArticles: null });
                 })
 
-            axios.get(`${serverUrl}/articles/popular`, { withCredentials: true })
+            getPopularArticles()
                 .then(({ data }) => {
                     this.setState({ popularArticles: data });
                 })

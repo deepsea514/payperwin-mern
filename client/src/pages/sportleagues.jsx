@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
 import { FormattedMessage } from 'react-intl';
-import { toggleFavorites } from '../redux/services';
+import { getSportLeagues, toggleFavorites } from '../redux/services';
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -39,9 +36,10 @@ class SportsLeagues extends Component {
     getLeagues = () => {
         const { sportName } = this.props;
         this.setState({ leagues: [] });
-        axios.get(`${serverUrl}/sportleague?name=${sportName ? sportName.replace("_", " ") : ""}`).then(({ data }) => {
-            this.setState({ leagues: data });
-        });
+        getSportLeagues(sportName ? sportName.replace("_", " ") : "")
+            .then(({ data }) => {
+                this.setState({ leagues: data });
+            });
     }
 
     componentDidUpdate(prevProps) {

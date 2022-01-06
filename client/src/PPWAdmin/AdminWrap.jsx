@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Login from "./pages/Login";
 import App from "./pages/App";
-import axios from 'axios';
 import AdminAPI from './redux/adminAPI';
 import Favicon from 'react-favicon';
 
@@ -33,7 +32,6 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import * as _redux from "./redux";
 
 _redux.setupAxios(AdminAPI);
-_redux.setupAxios(axios);
 
 const MTheme = React.lazy(() => import('./theme'));
 

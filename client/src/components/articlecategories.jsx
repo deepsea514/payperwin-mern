@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import ArticleWrapper from './articlewrapper';
-import axios from 'axios';
-
-const _env = require('../env.json');
-const serverUrl = _env.appUrl;
+import { getArticleCategories, getArticles } from '../redux/services';
 
 class ArticleCategories extends Component {
     constructor(props) {
@@ -19,14 +16,14 @@ class ArticleCategories extends Component {
     }
 
     componentDidMount() {
-        axios.get(`${serverUrl}/article-category`, { withCredentials: true })
+        getArticleCategories()
             .then(({ data }) => {
                 this.setState({ categories: data });
             })
             .catch((error) => {
                 this.setState({ categories: [] });
             })
-        axios.get(`${serverUrl}/articles/home`, { withCredentials: true })
+        getArticles()
             .then(({ data }) => {
                 this.setState({ articles: data });
             })

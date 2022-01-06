@@ -4,10 +4,8 @@ import CustomDatePicker from "./customDatePicker";
 import { FormControl, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
-import axios from 'axios';
-import _env from '../env.json';
 import { FormattedMessage, injectIntl } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { createCustomBet } from "../redux/services";
 
 const WhiteRadio = withStyles({
     root: {
@@ -112,20 +110,7 @@ class CreateCustomBetModal extends React.Component {
                                     wagerAmount: undefined,
                                 },
                             })
-                            axios.post(
-                                `${serverUrl}/customBet`,
-                                {
-                                    name,
-                                    option_1,
-                                    option_2,
-                                    startDate,
-                                    favorite,
-                                    odds,
-                                    visiblity,
-                                    wagerAmount,
-                                },
-                                { withCredentials: true }
-                            )
+                            createCustomBet({ name, option_1, option_2, startDate, favorite, odds, visiblity, wagerAmount, })
                                 .then(() => {
                                     this.setState({ activeStep: activeStep + 1 })
                                 })

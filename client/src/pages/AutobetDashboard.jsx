@@ -4,12 +4,10 @@ import AutobetHistory from '../components/autobethistory';
 import AutobetSummary from '../components/autobetsummary';
 import AutobetChart from '../components/autobechart';
 import AutobetHistoryTable from "../components/autobethistorytable"
-import axios from 'axios';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getAutobet } from '../redux/services';
 
 class AutobetDashboard extends Component {
     constructor(props) {
@@ -50,7 +48,7 @@ class AutobetDashboard extends Component {
     getAutobetData = () => {
         const { daterange } = this.state;
         this._Mounted && this.setState({ loading: true });
-        axios.get(`${serverUrl}/autobet`, { withCredentials: true, params: daterange })
+        getAutobet(daterange)
             .then(({ data }) => {
                 this._Mounted && this.setState({ loading: false, data, detail: null });
             })

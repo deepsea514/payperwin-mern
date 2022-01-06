@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import ReactApexChart from "react-apexcharts";
@@ -7,8 +6,6 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
 
 export default class Loyalty extends Component {
     constructor(props) {

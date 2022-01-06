@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import { Link, Switch, Route, BrowserRouter } from "react-router-dom";
 import InboxDetail from "./inboxDetail";
-import _env from '../env.json';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { getInbox } from '../redux/services';
 
 class Inbox extends Component {
     constructor(props) {
@@ -18,11 +16,10 @@ class Inbox extends Component {
     }
     componentDidMount() {
         const { getUser } = this.props;
-
         const title = 'Message Inbox';
         setTitle({ pageTitle: title })
 
-        axios.get(`${serverUrl}/inbox`, { withCredentials: true })
+        getInbox()
             .then(({ data }) => {
                 this.setState({ messages: data })
                 getUser();

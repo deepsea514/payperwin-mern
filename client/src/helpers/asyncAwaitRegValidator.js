@@ -1,6 +1,4 @@
-import axios from 'axios';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getEmailTaken, getReferralCodeExists, getUsernameTaken, getVIPCodeExists } from "../redux/services";
 
 function isString(options) {
     return typeof options.value === 'string'
@@ -68,14 +66,7 @@ function isSameAs(options) {
 
 async function usernameNotTaken(options) {
     const username = options.value;
-    const url = `${serverUrl}/usernameTaken?username=${username}`;
-    const { data } = await axios({
-        method: 'get',
-        url,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const { data } = await getUsernameTaken(username);
     if (!data) {
         throw Error('Username validation server error.');
     } else if (data && data.usernameTaken === false) {
@@ -89,14 +80,7 @@ async function usernameNotTaken(options) {
 
 async function emailNotTaken(options) {
     const email = options.value;
-    const url = `${serverUrl}/emailTaken?email=${email}`;
-    const { data } = await axios({
-        method: 'get',
-        url,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const { data } = await getEmailTaken(email);
     if (!data) {
         throw Error('Username validation server error.');
     } else if (data && data.emailTaken === false) {
@@ -130,14 +114,7 @@ async function vipCodeExist(options) {
     const vipcode = options.value;
     if (!vipcode || vipcode == '')
         return true;
-    const url = `${serverUrl}/vipCodeExist?vipcode=${vipcode}`;
-    const { data } = await axios({
-        method: 'get',
-        url,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const { data } = await getVIPCodeExists(vipcode);
     if (!data) {
         throw Error('Username validation server error.');
     } else if (data && data.success === 1) {
@@ -153,14 +130,7 @@ async function referralCodeExist(options) {
     const referral_code = options.value;
     if (!referral_code || referral_code == '')
         return true;
-    const url = `${serverUrl}/referralCodeExist?referral_code=${referral_code}`;
-    const { data } = await axios({
-        method: 'get',
-        url,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const { data } = await getReferralCodeExists(referral_code);
     if (!data) {
         throw Error('Username validation server error.');
     } else if (data && data.success === 1) {

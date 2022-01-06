@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Button } from "@material-ui/core";
-import axios from 'axios';
 import { Form, InputGroup } from "react-bootstrap";
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { changePassword, enable2FA } from '../redux/services';
 
 class Security extends Component {
     constructor(props) {
@@ -53,7 +51,7 @@ class Security extends Component {
         const { getUser } = this.props;
         const value = evt.target.value;
         this.setState({ enable_2fa: value });
-        axios.post(`${serverUrl}/enable-2fa`, { enable_2fa: value == 'true' }, { withCredentials: true })
+        enable2FA(value)
             .then(() => {
                 getUser();
             });
@@ -92,15 +90,7 @@ class Security extends Component {
             .then((result) => {
                 if (result === true) {
                     const { oldPassword, password } = this.state;
-                    axios.patch(`${serverUrl}/changePassword`,
-                        { oldPassword, password },
-                        {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            withCredentials: true,
-                        }
-                    )
+                    changePassword(oldPassword, password)
                         .then((/* { data } */) => {
                             getUser();
                             this.setState({ passwordChangeSuccess: true });

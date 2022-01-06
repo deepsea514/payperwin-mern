@@ -3,11 +3,9 @@ import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import * as frontend from "../redux/reducer";
-import axios from 'axios';
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { sendPasswordRecovery } from "../redux/services";
 
 class ForgotPasswordModal extends React.Component {
     constructor(props) {
@@ -29,13 +27,7 @@ class ForgotPasswordModal extends React.Component {
     handleSubmit = (values, formik) => {
         const { errors } = this.state;
 
-        const url = `${serverUrl}/sendPasswordRecovery?email=${values.email}`;
-        axios.get(url, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-        })
+        sendPasswordRecovery(values.email)
             .then(({ data }) => {
                 if (data) {
                     this.setState({ message: data });

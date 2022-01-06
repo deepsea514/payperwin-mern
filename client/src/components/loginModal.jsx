@@ -4,13 +4,11 @@ import { Link, withRouter } from 'react-router-dom';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import * as frontend from "../redux/reducer";
-import axios from 'axios';
 import { connect } from "react-redux";
 import Recaptcha from 'react-recaptcha';
 import config from '../../../config.json';
-import _env from '../env.json';
 import { FormattedMessage, injectIntl } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { googleLogin, login } from "../redux/services";
 const recaptchaSiteKey = config.recaptchaSiteKey;
 
 class LoginModal extends React.Component {
@@ -47,8 +45,7 @@ class LoginModal extends React.Component {
             return;
         }
 
-        const url = `${serverUrl}/googleLogin`;
-        axios.post(url, { token: googleData.tokenId }, { withCredentials: true })
+        googleLogin(googleData.tokenId)
             .then(({ data }) => {
                 if (data._2fa_required == false) {
                     getUser();
@@ -78,8 +75,7 @@ class LoginModal extends React.Component {
             return;
         }
 
-        const url = `${serverUrl}/login`;
-        axios.post(url, values, { withCredentials: true })
+        login(values)
             .then(({ data }) => {
                 if (data._2fa_required == false) {
                     getUser((user) => {
