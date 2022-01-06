@@ -4302,7 +4302,7 @@ adminRouter.post(
     '/promotions/banners',
     authenticateJWT,
     limitRoles('promotions'),
-    fileUpload(),
+    fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }),
     async (req, res) => {
         try {
             const { files } = req;
