@@ -345,7 +345,7 @@ class Sport extends Component {
                                         </Link>
                                         <Link to={{ pathname: pathname }} className="widh-adf mt-3">
                                             {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
-                                            <strong>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
+                                            <strong className='lineCount'>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
                                         </Link>
                                     </li>
                                     <React.Fragment key={lineId}>

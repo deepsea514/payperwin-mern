@@ -2105,6 +2105,7 @@ a.fav-link:hover {
     display: inline-block;
     text-align: left;
     padding: 0 10px;
+    text-transform: uppercase;
 }
 
 .promotion-botton-wrap {
