@@ -63,17 +63,17 @@ export default class PromotionModal extends Component {
 
     render() {
         const { stories, loading } = this.state;
+        const { closePromotion } = this.props;
 
         return (
             <div className="modal promotion">
                 {stories && <Stories
-                    loop
                     defaultInterval={10000}
                     stories={stories}
                     storyContainerStyles={{ width: '100%', height: '100%' }}
                     width='100%'
                     height='100%'
-                    // preventDefault
+                    onAllStoriesEnd={closePromotion}
                     renderers={this.renderers}
                 />}
                 {loading && <>
