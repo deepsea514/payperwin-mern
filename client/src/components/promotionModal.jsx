@@ -11,7 +11,7 @@ const defaultStories = [
         type: 'video',
     },
     {
-        url: 'banners/hs-banner.jpg',
+        url: '/banners/hs-banner.jpg',
         type: 'image',
     },
 ];
