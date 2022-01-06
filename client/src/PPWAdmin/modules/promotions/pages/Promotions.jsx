@@ -166,7 +166,7 @@ class Promotions extends React.Component {
                             </div>
                             <div className="card-toolbar">
                                 <Link to={"/banners"} className="btn btn-success font-weight-bolder font-size-sm mr-2">
-                                    Promotion Banners
+                                    What's New
                                 </Link>
                                 <Button className="btn btn-success font-weight-bolder font-size-sm" onClick={() => this.setState({ addModal: true })}>
                                     <i className="fas fa-credit-card"></i>&nbsp; Add Promotion
