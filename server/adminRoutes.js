@@ -5696,6 +5696,60 @@ adminRouter.post(
     }
 )
 
+
+adminRouter.get(
+    '/articles/categories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const categories = await ArticleCategory.find().sort({ createdAt: -1 });
+        res.json(categories);
+    }
+)
+
+adminRouter.post(
+    '/articles/categories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const data = req.body;
+        try {
+            await ArticleCategory.create(data);
+            res.json({ success: true });
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/categories/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await ArticleCategory.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/searchcategories',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { name } = req.query;
+        const categories = await ArticleCategory.find({ title: { "$regex": name, "$options": "i" } });
+        res.json(categories.map(category => ({ label: category.title, value: category.title })));
+    }
+)
+
+
 adminRouter.get(
     '/articles',
     authenticateJWT,
@@ -5787,58 +5841,6 @@ adminRouter.delete(
             console.error(error);
             res.status(400).json({ success: false });
         }
-    }
-)
-
-adminRouter.get(
-    '/articles/categories',
-    authenticateJWT,
-    limitRoles('articles'),
-    async (req, res) => {
-        const categories = await ArticleCategory.find().sort({ createdAt: -1 });
-        res.json(categories);
-    }
-)
-
-adminRouter.post(
-    '/articles/categories',
-    authenticateJWT,
-    limitRoles('articles'),
-    async (req, res) => {
-        const data = req.body;
-        try {
-            await ArticleCategory.create(data);
-            res.json({ success: true });
-        } catch (error) {
-            res.status(400).json({ success: false });
-        }
-    }
-)
-
-adminRouter.delete(
-    '/articles/categories/:id',
-    authenticateJWT,
-    limitRoles('articles'),
-    async (req, res) => {
-        const { id } = req.params;
-        try {
-            await ArticleCategory.deleteOne({ _id: id });
-            res.json({ success: true });
-        } catch (error) {
-            console.error(error);
-            res.status(400).json({ success: false });
-        }
-    }
-)
-
-adminRouter.get(
-    '/articles/searchcategories',
-    authenticateJWT,
-    limitRoles('articles'),
-    async (req, res) => {
-        const { name } = req.query;
-        const categories = await ArticleCategory.find({ title: { "$regex": name, "$options": "i" } });
-        res.json(categories.map(category => ({ label: category.title, value: category.title })));
     }
 )
 
