@@ -29,7 +29,7 @@ export function getCategories() {
 }
 
 export function searchCategories(name) {
-    return AdminAPI.get(`/articles/searchcategories?name=${name}`);
+    return AdminAPI.get(`/articles/searchcategories`, { params: { name } });
 }
 
 export function createCategory(data) {
