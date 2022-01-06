@@ -254,7 +254,7 @@ class OpenBets extends Component {
                 <div className="main-cnt">
                     {openBets && showedTourTimes < 3 && showTour && <TourModal />}
                     {shareModal && <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.setState({ shareModal: false })} />
+                        <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
                             <div>
@@ -306,7 +306,7 @@ class OpenBets extends Component {
                         </div>
                     </div>}
                     {forwardBet != null && <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
+                        <div className="background-closer" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                             <div>
@@ -323,7 +323,7 @@ class OpenBets extends Component {
                         </div>
                     </div>}
                     {forwardResult != null && <div className="modal confirmation">
-                        <div className="background-closer bg-modal" onClick={() => this.setState({ forwardResult: null })} />
+                        <div className="background-closer" onClick={() => this.setState({ forwardResult: null })} />
                         <div className="col-in">
                             <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ forwardResult: null })} />
                             <div>
@@ -353,7 +353,7 @@ class OpenBets extends Component {
                             <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> <FormattedMessage id="PAGES.OPENBETS.FILTER" /> </a>
                             {showFilter &&
                                 <>
-                                    <div className="background-closer bg-modal" onClick={() => this.setState({ showFilter: false })} />
+                                    <div className="background-closer" onClick={() => this.setState({ showFilter: false })} />
                                     <div className="filter-dropdown">
                                         <FormGroup>
                                             <FormControlLabel

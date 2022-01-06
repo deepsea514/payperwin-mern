@@ -449,7 +449,7 @@ a.log-in-btn {
     position: absolute;
     border-radius: 3px;
     width: 160px;
-    z-index: 1;
+    z-index: 4;
     box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
     -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
     filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
@@ -519,7 +519,7 @@ a.log-in-btn {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 3;
+    z-index: 2;
 }
 
 .bg-modal {
@@ -752,7 +752,7 @@ a.log-in-btn {
 
 .modal.confirmation .col-in {
     position: relative;
-    z-index: 2;
+    z-index: 4;
     max-width: 500px;
     margin: 50vh auto;
     transform: translateY(-50%);
@@ -1154,7 +1154,7 @@ a.log-in-btn {
     position: absolute;
     border-radius: 3px;
     width: 200px;
-    z-index: 1;
+    z-index: 4;
     box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
     -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
     filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
@@ -1198,7 +1198,7 @@ a.log-in-btn {
     background: white;
     position: absolute;
     border-radius: 3px;
-    z-index: 1;
+    z-index: 4;
     box-shadow: 0 0 80px rgba(30, 30, 30, 0.2);
     -webket-filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
     filter: drop-shadow(rgba(0, 0, 0, .5) 0 4px 25px);
@@ -1249,6 +1249,7 @@ a.log-in-btn {
     padding: 0 15px;
     color: white;
     font-family: Roboto, sans-serif;
+    z-index: 5;
 }
 
 .create_bet_modal_container {

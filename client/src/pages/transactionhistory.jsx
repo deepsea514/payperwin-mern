@@ -201,7 +201,7 @@ class TransactionHistory extends Component {
                         <li>
                             <a onClick={() => this.setState({ showFilter: true })}> <i className="fas fa-business-time"></i> Filter </a>
                             {showFilter && <>
-                                <div className="background-closer bg-modal" onClick={() => this.setState({ showFilter: false })} />
+                                <div className="background-closer" onClick={() => this.setState({ showFilter: false })} />
                                 <div className="filter-dropdown">
                                     <FormGroup>
                                         <FormControlLabel
