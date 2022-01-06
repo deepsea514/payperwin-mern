@@ -3991,3 +3991,12 @@ footer .toggle {
     width: 16px;
     height: 16px;
 }
+
+.lineCount {
+    background-color: #ED254E;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-top: 5px;
+}
