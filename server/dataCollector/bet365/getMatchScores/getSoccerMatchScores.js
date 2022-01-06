@@ -5,8 +5,9 @@ const getSoccerMatchScores = (type, subtype, ss, scores, timer, time_status) => 
         awayScore: 0,
     }
     try {
-        matchResult.homeScore = parseInt(scores["2"].home);
-        matchResult.awayScore = parseInt(scores["2"].away);
+        const finalCcores = ss.split('-');
+        matchResult.homeScore += Number(getTotal(finalCcores[0]));
+        matchResult.awayScore += Number(getTotal(finalCcores[1]));
         return matchResult;
     } catch (error) {
         console.error(error);
