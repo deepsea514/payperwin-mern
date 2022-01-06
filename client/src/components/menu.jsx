@@ -42,6 +42,17 @@ class Menu extends Component {
         toggleField('menuOpen');
     }
 
+    getSportName = (sport) => {
+        switch (sport) {
+            case 'American Football':
+                return 'Football';
+            case 'Ice Hockey':
+                return 'Hockey';
+            default:
+                return sport;
+        }
+    }
+
     render() {
         const {
             location, toggleField, oddsFormat, display_mode, lang,
@@ -158,23 +169,19 @@ class Menu extends Component {
                                 </a>
                             </li>}
                         </>}
-                        {showMenu == 'az-sports' && <ul style={{
-                            // maxHeight: '300px',
-                            // overflowX: 'hidden',
-                            // overflowY: 'scroll'
-                        }}>
+                        {showMenu == 'az-sports' && <ul className='row pt-2'>
                             {sports.map(sport => {
                                 const { name, eventCount } = sport;
                                 if (eventCount <= 0) return null;
 
                                 return (
-                                    <li className="nav-item" key={name}>
+                                    <li className="nav-item col-6" key={name}>
                                         <Link
                                             to={{ pathname: name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}` }}
                                             className="nav-link menu-sports-item"
                                             onClick={() => toggleField('menuOpen')}>
                                             <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
-                                            {name}
+                                            {this.getSportName(name)}
                                         </Link>
                                     </li>
                                 )
