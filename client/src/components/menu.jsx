@@ -71,7 +71,7 @@ class Menu extends Component {
                             <i className="fas fa-times" />
                         </button>
                     </div>
-                    {!user && <div className='d-flex justify-content-around px-4'>
+                    {!user && <div className='d-flex justify-content-around px-4 py-3'>
                         <Link className={`mobile-menu-quick-icon-container ${pathname === '/signup' ? 'active' : ''}`}
                             to="/signup" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
@@ -96,7 +96,7 @@ class Menu extends Component {
                             <p>FAQ</p>
                         </Link>
                     </div>}
-                    {user && <div className='d-flex justify-content-around px-4'>
+                    {user && <div className='d-flex justify-content-around px-4 py-3'>
                         <Link className={`mobile-menu-quick-icon-container ${pathname === '/bets' ? 'active' : ''}`}
                             to="/bets" onClick={() => toggleField('menuOpen')}>
                             <div className='mobile-menu-quick-icon'>
@@ -169,7 +169,7 @@ class Menu extends Component {
                                 </a>
                             </li>}
                         </>}
-                        {showMenu == 'az-sports' && <ul className='row pt-2'>
+                        {showMenu == 'az-sports' && <ul className='row'>
                             {sports.map(sport => {
                                 const { name, eventCount } = sport;
                                 if (eventCount <= 0) return null;
