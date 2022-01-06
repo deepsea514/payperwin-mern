@@ -160,6 +160,7 @@ a.log-in-btn {
 .tab-pane-leagues {
     width: fit-content;
     min-width: 100%;
+    background: linear-gradient(90deg, #f0b631, #FF00FE);
 }
 
 .bet-slip-count {
@@ -1698,11 +1699,6 @@ button.loginButton span {
 
 .dashboard_bottombar_scroller_container::-webkit-scrollbar {
     display: none;
-}
-
-
-.tab-pane-leagues {
-    background-color: #E5E5E5;
 }
 
 .label-inline {
