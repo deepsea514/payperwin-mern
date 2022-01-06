@@ -6,6 +6,7 @@ const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store);
 const sgMail = require('@sendgrid/mail');
+const bodyParser = require('body-parser');
 //Models
 const User = require("./models/user");
 const FinancialLog = require('./models/financiallog');
@@ -76,6 +77,12 @@ const signatureCheck = async (req, res, next) => {
 
 tripleARouter.post('/deposit',
     bruteforce.prevent,
+    bodyParser.json({
+        limit: '100mb',
+        verify: (req, res, buf) => {
+            req.rawBody = buf;
+        }
+    }),
     signatureCheck,
     async (req, res) => {
         let { receive_amount, payment_tier, webhook_data, crypto_currency } = req.body;
@@ -195,6 +202,12 @@ tripleARouter.post('/deposit',
 
 tripleARouter.post('/withdraw',
     bruteforce.prevent,
+    bodyParser.json({
+        limit: '100mb',
+        verify: (req, res, buf) => {
+            req.rawBody = buf;
+        }
+    }),
     signatureCheck,
     async (req, res) => {
         const { payout_reference, status } = req.body;
