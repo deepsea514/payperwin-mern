@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import sportNameImage from "../helpers/sportNameImage";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getSportLeagues, getSportsDir } from '../redux/services';
 
 const defaultTopSports = [
     'American Football',
@@ -33,7 +31,7 @@ class SportsList extends Component {
 
     getSports() {
         const { topSports } = this.props;
-        axios.get(`${serverUrl}/sportsdir`)
+        getSportsDir()
             .then(({ data }) => {
                 if (data) {
                     if (topSports) {
@@ -60,7 +58,7 @@ class SportsList extends Component {
         evt.stopPropagation();
         const { leaguesData } = this.state;
         const newLeaguesData = leaguesData.filter(league => league.name != name);
-        axios(`${serverUrl}/sportleague?name=${name}`)
+        getSportLeagues(name)
             .then(({ data }) => {
                 newLeaguesData.push({ name, leagues: data.slice(0, 6) })
                 this.setState({ leaguesData: newLeaguesData });

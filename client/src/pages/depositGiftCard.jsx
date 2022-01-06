@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
@@ -11,8 +10,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { submitDeposit } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -52,7 +50,7 @@ class DepositGiftCard extends Component {
 
     onSubmit = (values, formik) => {
         const { getUser } = this.props;
-        axios.post(`${serverUrl}/deposit`, values, { withCredentials: true })
+        submitDeposit(values)
             .then(({ data }) => {
                 const { success, message } = data;
                 if (success) {

@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { logout } from '../libs/logout';
-import axios from 'axios';
-import _env from '../env.json';
+import logout from '../libs/logout';
 import sportNameImage from '../helpers/sportNameImage';
-const serverUrl = _env.appUrl;
+import { getSportsDir } from '../redux/services';
 
 
 class Menu extends Component {
@@ -22,7 +20,7 @@ class Menu extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        axios.get(`${serverUrl}/sportsdir`)
+        getSportsDir()
             .then(({ data }) => {
                 if (data) {
                     this._isMounted && this.setState({ sports: data })

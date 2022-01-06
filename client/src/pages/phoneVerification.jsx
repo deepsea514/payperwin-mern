@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
@@ -10,10 +9,8 @@ import { Formik } from "formik";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { FormattedMessage } from 'react-intl';
-
 import { getInputClasses } from "../helpers/getInputClasses";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { phoneVerify } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -59,7 +56,7 @@ class PhoneVerification extends Component {
     }
 
     sendVerificationCode = (values, formik) => {
-        axios.post(`${serverUrl}/phone-verify?step=1`, values, { withCredentials: true })
+        phoneVerify(1, values)
             .then(() => {
                 formik ? formik.setSubmitting(false) : null;
                 this.setState({
@@ -81,7 +78,7 @@ class PhoneVerification extends Component {
         const { getUser } = this.props;
         this.setState({ veryfing: true });
 
-        axios.post(`${serverUrl}/phone-verify?step=2`, { verification_code }, { withCredentials: true })
+        phoneVerify(2, { verification_code })
             .then(() => {
                 getUser();
                 this.setState({ status: 'initial', msg: '' });

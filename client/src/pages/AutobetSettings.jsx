@@ -6,11 +6,9 @@ import { Form, Button } from "react-bootstrap";
 import { getInputClasses } from "../helpers/getInputClasses";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
-import axios from 'axios';
 import SVG from "react-inlinesvg";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { searchSports, updateAUtobetSetting } from '../redux/services';
 
 const sideOptions = [
     { value: 'Underdog', label: 'Underdog' },
@@ -100,13 +98,15 @@ class AutobetSettings extends Component {
 
     getSports = (name, cb) => {
         this.setState({ loadingSports: true });
-        axios.get(`${serverUrl}/searchsports?name=${name}`).then(({ data }) => {
-            cb(data);
-            this.setState({ loadingSports: false });
-        }).catch(() => {
-            cb([]);
-            this.setState({ loadingSports: false });
-        })
+        searchSports(name)
+            .then(({ data }) => {
+                cb(data);
+                this.setState({ loadingSports: false });
+            })
+            .catch(() => {
+                cb([]);
+                this.setState({ loadingSports: false });
+            })
     }
 
     onSubmit = (values, formik) => {
@@ -120,7 +120,7 @@ class AutobetSettings extends Component {
             side: values.side.map(side => side.value),
             betType: values.betType.map(betType => betType.value),
         }
-        axios.post(`${serverUrl}/autobet/settings`, newValues, { withCredentials: true })
+        updateAUtobetSetting(newValues)
             .then(() => {
                 this.setState({ submitSuccess: true });
                 formik.setSubmitting(false);

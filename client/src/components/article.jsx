@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
-import axios from 'axios';
 import ArticleSidebar from "./articlesidebar";
-const _env = require('../env.json');
-const serverUrl = _env.appUrl;
+import { getArticle, getArticleCategories } from '../redux/services';
 
 class Article extends Component {
     constructor(props) {
@@ -23,14 +21,14 @@ class Article extends Component {
 
     getData = () => {
         const { match: { params: { id } } } = this.props;
-        axios.get(`${serverUrl}/article/${id}`, { withCredentials: true })
+        getArticle(id)
             .then(({ data }) => {
                 this.setState({ article: data });
             })
             .catch(() => {
                 this.setState({ article: null });
             })
-        axios.get(`${serverUrl}/article-category`, { withCredentials: true })
+        getArticleCategories()
             .then(({ data }) => {
                 this.setState({ categories: data });
             })
@@ -53,8 +51,8 @@ class Article extends Component {
         if (!article) {
             return (
                 <center><h3>
-                    <FormattedMessage id="COMPONENTS.ARTICLE.NODATA"/>
-                    </h3></center>
+                    <FormattedMessage id="COMPONENTS.ARTICLE.NODATA" />
+                </h3></center>
             )
         }
         return (
@@ -62,7 +60,7 @@ class Article extends Component {
                 <div className="social-bar article social-bar-area">
                     <Link to="/articles" className="back-to-help-wrap">
                         <i className="fas fa-chevron-left" /> &nbsp;
-                        <span className="back-to-help-text"><FormattedMessage id="COMPONENTS.ARTICLE.BACK"/></span>
+                        <span className="back-to-help-text"><FormattedMessage id="COMPONENTS.ARTICLE.BACK" /></span>
                     </Link>
                 </div>
 
@@ -109,7 +107,7 @@ class Article extends Component {
                                 <div className="article-divider" />
                                 <div className="lower-button-container social-bar-area">
                                     <ul className="tags">
-                                        <li className="tag-list-header"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY"/>:</li>
+                                        <li className="tag-list-header"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY" />:</li>
                                         {article.categories.map((category, index) => (
                                             <li key={index} className="category-tags-item">
                                                 <Link to={`/articles/category/${category}`}>
@@ -122,7 +120,7 @@ class Article extends Component {
                                         <Link to="/articles" className="br-home-link">
                                             <div className="br-home-button">
                                                 <i className="fas fa-chevron-left" /> &nbsp;
-                                                <span className="br-home-label"><FormattedMessage id="COMPONENTS.ARTICLE.HOME"/></span>
+                                                <span className="br-home-label"><FormattedMessage id="COMPONENTS.ARTICLE.HOME" /></span>
                                             </div>
                                         </Link>
                                     </div>

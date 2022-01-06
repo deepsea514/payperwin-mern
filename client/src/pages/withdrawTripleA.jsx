@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Form } from "react-bootstrap";
@@ -9,8 +8,7 @@ import { Formik } from "formik";
 import { Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { checkFreeWithdraw, submitWithdraw } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -51,7 +49,7 @@ class WithdrawTripleA extends Component {
     }
 
     getFreeWithdraw = () => {
-        axios.get(`${serverUrl}/freeWithdraw`, { withCredentials: true })
+        checkFreeWithdraw()
             .then(({ data }) => {
                 this.setState({ usedFreeWithdraw: data.used });
             })
@@ -68,7 +66,7 @@ class WithdrawTripleA extends Component {
 
     onSubmit = (values, formik) => {
         const { getUser } = this.props;
-        axios.post(`${serverUrl}/withdraw`, values, { withCredentials: true })
+        submitWithdraw(values)
             .then(({ data }) => {
                 const { success, message } = data;
                 if (success) {

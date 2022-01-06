@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
@@ -12,8 +11,7 @@ import 'react-phone-input-2/lib/style.css';
 import Iframe from 'react-iframe';
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { submitDeposit } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -60,7 +58,7 @@ class DepositTripleA extends Component {
     }
 
     onSubmit = (values, formik) => {
-        axios.post(`${serverUrl}/deposit`, values, { withCredentials: true })
+        submitDeposit(values)
             .then(({ data }) => {
                 formik.setSubmitting(false);
                 this.setState({ depositSuccess: true, hosted_url: data.hosted_url });

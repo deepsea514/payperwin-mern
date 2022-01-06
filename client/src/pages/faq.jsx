@@ -3,13 +3,11 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
-import axios from 'axios';
 import FaqSubject from "../components/faq_subject";
 import FaqHome from "../components/faq_home";
 import FaqArticle from "../components/faq_article";
 import FaqSearch from "../components/faq_search";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getFAQSubjects } from '../redux/services';
 
 class Faq extends Component {
     constructor(props) {
@@ -26,7 +24,7 @@ class Faq extends Component {
         setTitle({ pageTitle: title })
 
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/faqs`, { withCredentials: true })
+        getFAQSubjects()
             .then(({ data }) => {
                 this.setState({ loading: false, faq_subjects: data });
             })

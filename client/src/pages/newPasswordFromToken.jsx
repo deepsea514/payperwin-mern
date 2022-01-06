@@ -7,12 +7,10 @@ import TextField from '@material-ui/core/TextField';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { newPasswordFromToken } from '../redux/services';
 
 const Form = ({
     password, // eslint-disable-line react/prop-types
@@ -106,32 +104,23 @@ class NewPasswordFromToken extends Component {
             .then((result) => {
                 if (result === true) {
                     const { password } = this.state;
-                    const url = `${serverUrl}/newPasswordFromToken${queryParams}`;
-                    axios({
-                        method: 'post',
-                        url,
-                        data: {
-                            password,
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    }).then(({ data }) => {
-                        if (data) {
-                            this.setState({ ...initState, message: data });
-                            setTimeout(() => {
-                                history.replace({ pathname: '/login' });
-                            }, 2000);
-                        }
-                    }).catch((err) => {
-                        if (err.response) {
-                            const { data } = err.response;
-                            if (data.error) {
-                                this.setState({ errors: { ...errors, server: data.error } });
+                    newPasswordFromToken(queryParams, password)
+                        .then(({ data }) => {
+                            if (data) {
+                                this.setState({ ...initState, message: data });
+                                setTimeout(() => {
+                                    history.replace({ pathname: '/login' });
+                                }, 2000);
                             }
-                        }
-                    });
+                        })
+                        .catch((err) => {
+                            if (err.response) {
+                                const { data } = err.response;
+                                if (data.error) {
+                                    this.setState({ errors: { ...errors, server: data.error } });
+                                }
+                            }
+                        });
                 } else {
                     this.setState({
                         errors: result,

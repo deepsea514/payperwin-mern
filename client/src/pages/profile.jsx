@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { setTitle } from '../libs/documentTitleBuilder';
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -10,9 +9,8 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { getInputClasses } from "../helpers/getInputClasses";
 import CustomDatePicker from '../components/customDatePicker';
-import _env from '../env.json';
 import { FormattedMessage, injectIntl } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { getProfile, postProfile } from '../redux/services';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -69,37 +67,37 @@ export default class Profile extends Component {
         const title = 'Account Detail';
         setTitle({ pageTitle: title })
 
-        const url = `${serverUrl}/profile`;
         this.setState({ loading: true });
-        axios.get(url, { withCredentials: true }).then(({ data: profile }) => {
-            const initialValues = {
-                username: profile.username ? profile.username : "",
-                title: profile.title ? profile.title : "",
-                firstname: profile.firstname ? profile.firstname : "",
-                lastname: profile.lastname ? profile.lastname : "",
-                email: profile.email ? profile.email : "",
-                dateofbirth: profile.dateofbirth ? new Date(profile.dateofbirth) : "",
+        getProfile()
+            .then(({ data: profile }) => {
+                const initialValues = {
+                    username: profile.username ? profile.username : "",
+                    title: profile.title ? profile.title : "",
+                    firstname: profile.firstname ? profile.firstname : "",
+                    lastname: profile.lastname ? profile.lastname : "",
+                    email: profile.email ? profile.email : "",
+                    dateofbirth: profile.dateofbirth ? new Date(profile.dateofbirth) : "",
 
-                country: profile.country ? profile.country : "",
-                currency: profile.currency ? profile.currency : "",
-                region: profile.region ? profile.region : "",
-                city: profile.city ? profile.city : "",
-                address: profile.address ? profile.address : "",
-                address2: profile.address2 ? profile.address2 : "",
-                postalcode: profile.postalcode ? profile.postalcode : "",
-                phone: profile.phone ? profile.phone : "",
-            }
-            this.setState({ profileData: profile, initialValues });
-        }).finally(() => {
-            this.setState({ loading: false });
-        })
+                    country: profile.country ? profile.country : "",
+                    currency: profile.currency ? profile.currency : "",
+                    region: profile.region ? profile.region : "",
+                    city: profile.city ? profile.city : "",
+                    address: profile.address ? profile.address : "",
+                    address2: profile.address2 ? profile.address2 : "",
+                    postalcode: profile.postalcode ? profile.postalcode : "",
+                    phone: profile.phone ? profile.phone : "",
+                }
+                this.setState({ profileData: profile, initialValues });
+            })
+            .finally(() => {
+                this.setState({ loading: false });
+            })
     }
 
     saveProfile = (values, formik) => {
         formik.setSubmitting(true);
         this.setState({ isError: false, isSuccess: false });
-        const url = `${serverUrl}/profile`;
-        axios.post(url, values, { withCredentials: true })
+        postProfile(values)
             .then(() => {
                 this.setState({ isSuccess: true });
                 formik.setSubmitting(false);

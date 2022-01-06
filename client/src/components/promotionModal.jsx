@@ -2,6 +2,19 @@ import React, { Component } from "react";
 import Stories from 'react-insta-stories';
 import SVG from 'react-inlinesvg'
 import { ImageRenderer, ImageTester, VideoRenderer, VideoTester } from "../libs/promotionRenderer";
+import { getPromotionBanners } from "../redux/services";
+import _env from '../env.json';
+
+const defaultStories = [
+    {
+        url: '/banners/video banner.mp4',
+        type: 'video',
+    },
+    {
+        url: 'banners/hs-banner.jpg',
+        type: 'image',
+    },
+];
 
 export default class PromotionModal extends Component {
     constructor(props) {
@@ -26,19 +39,26 @@ export default class PromotionModal extends Component {
 
     componentDidMount() {
         this.setState({ loading: true });
-        setTimeout(() => this.setState({
-            stories: [
-                {
-                    url: '/banners/video banner.mp4',
-                    type: 'video',
-                },
-                {
-                    url: 'banners/hs-banner.jpg',
-                    type: 'image',
-                },
-            ],
-            loading: false,
-        }), 2000);
+        getPromotionBanners()
+            .then(({ data }) => {
+                if (data.length > 0) {
+                    this.setState({
+                        stories: data.map(banner => {
+                            return {
+                                type: banner.type,
+                                url: `${_env.appUrl}/banners/${banner.path}`,
+                            }
+                        }),
+                        loading: false,
+                    })
+                } else {
+                    this.setState({ stories: defaultStories, loading: false })
+                }
+            })
+            .catch(() => {
+                this.setState({ stories: defaultStories, loading: false })
+            })
+
     }
 
     render() {

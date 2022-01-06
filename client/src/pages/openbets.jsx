@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
@@ -11,9 +10,8 @@ import { connect } from "react-redux";
 import TourModal from '../components/tourModal';
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import _env from '../env.json';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { forwardBet, getBets, getLatestOdds, shareLine } from '../redux/services';
 
 const StatusPopOver = (
     <Popover>
@@ -88,18 +86,7 @@ class OpenBets extends Component {
         const { openBets, settledBets } = this.props;
         const { filter, daterange, bets } = this.state;
         this.setState({ loading: true, noMore: false });
-        axios.post(`${serverUrl}/bets`,
-            {
-                openBets: openBets,
-                settledBets: settledBets,
-                filter: filter,
-                daterange: daterange,
-                page: page
-            },
-            {
-                headers: { 'Content-Type': 'application/json', },
-                withCredentials: true,
-            })
+        getBets({ openBets, settledBets, filter, daterange, page })
             .then(({ data }) => {
                 if (data) {
                     this.setState({ bets: clear ? data : [...bets, ...data], page: page, noMore: data.length == 0 })
@@ -135,16 +122,14 @@ class OpenBets extends Component {
         const { type, sportName, leagueId, eventId, index, subtype } = lineQuery;
         const generatedLineUrl = `${window.location.origin}/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
         this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
-        axios.put(
-            `${serverUrl}/share-line`,
-            { url: generatedLineUrl, eventDate: matchStartDate, type, index, subtype },
-            { withCredentials: true }
-        ).then(({ data }) => {
-            const { url, index, type, uniqueId, subtype } = data;
-            this.setState({ loadingUrl: false, lineUrl: `${url}?type=${type}${isNaN(index) ? '' : `&index=${index}`}${subtype ? `&subtype=${subtype}` : ''}&uniqueId=${uniqueId}` });
-        }).catch(() => {
-            this.setState({ loadingUrl: false, lineUrl: '' });
-        })
+        shareLine({ url: generatedLineUrl, eventDate: matchStartDate, type, index, subtype })
+            .then(({ data }) => {
+                const { url, index, type, uniqueId, subtype } = data;
+                this.setState({ loadingUrl: false, lineUrl: `${url}?type=${type}${isNaN(index) ? '' : `&index=${index}`}${subtype ? `&subtype=${subtype}` : ''}&uniqueId=${uniqueId}` });
+            })
+            .catch(() => {
+                this.setState({ loadingUrl: false, lineUrl: '' });
+            })
     }
 
     copyUrl = () => {
@@ -228,7 +213,7 @@ class OpenBets extends Component {
     forwardSportsbook = (bet) => {
         const bodyData = { lineQuery: bet.lineQuery, pick: bet.pick };
         this.setState({ loadingOdds: true });
-        axios.post(`${serverUrl}/getLatestOdds`, bodyData, { withCredentials: true })
+        getLatestOdds(bodyData)
             .then(({ data }) => {
                 this.setState({
                     forwardLatestOdd: data.latestOdds,
@@ -243,8 +228,8 @@ class OpenBets extends Component {
     }
 
     confirmForward = () => {
-        const { forwardBet, bets } = this.state;
-        axios.post(`${serverUrl}/bets/${forwardBet._id}/forward`, null, { withCredentials: true })
+        const { forwardBet: bet, bets } = this.state;
+        forwardBet(bet._id)
             .then(({ data }) => {
                 this.setState({
                     bets: bets.map(bet => {

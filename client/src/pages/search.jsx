@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
-import _env from '../env.json';
 import resObjPath from '../libs/resObjPath';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import sportNameImage from '../helpers/sportNameImage';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { search } from '../redux/services';
 
 class Search extends Component {
     constructor(props) {
@@ -41,7 +39,7 @@ class Search extends Component {
         const { match } = this.props;
         const param = resObjPath(match, 'params.param');
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/search`, { params: { param } })
+        search(param)
             .then(({ data }) => {
                 this.setState({ results: data, loading: false });
             })

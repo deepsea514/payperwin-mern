@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Form } from "react-bootstrap";
@@ -11,8 +10,7 @@ import 'react-phone-input-2/lib/style.css';
 import { withStyles } from "@material-ui/core/styles";
 import { getInputClasses } from "../helpers/getInputClasses";
 import { FormattedMessage } from 'react-intl';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { checkVerified, getAddress, submitVerification } from '../redux/services';
 
 const useStyles = (theme) => ({
     formContent: {
@@ -58,7 +56,7 @@ class Verification extends Component {
         const title = 'Customer Verification';
         setTitle({ pageTitle: title })
 
-        axios.get(`${serverUrl}/checkverified`, { withCredentials: true })
+        checkVerified()
             .then(({ data }) => {
                 const { verify_submitted } = data;
                 const { address, identification } = verify_submitted;
@@ -68,7 +66,7 @@ class Verification extends Component {
                 });
             });
 
-        axios.get(`${serverUrl}/address`, { withCredentials: true })
+        getAddress()
             .then(({ data }) => {
                 if (data.address && data.address != '')
                     this.setState({ addressInfo: data, submitSuccess: true });
@@ -85,12 +83,10 @@ class Verification extends Component {
 
         let data = new FormData();
         data.append(name, file, file.name);
-
         const config = {
-            headers: { 'content-type': 'multipart/form-data' },
-            withCredentials: true,
+            headers: { 'content-type': 'multipart/form-data' }
         }
-        axios.post(`${serverUrl}/verification`, data, config)
+        submitVerification(data, config)
             .then(() => {
                 this.setState({ [name]: 'submitted' });
             })
@@ -107,7 +103,7 @@ class Verification extends Component {
 
     onSubmit = (values, formik) => {
         this.setState({ submitSuccess: false, submitError: false });
-        axios.post(`${serverUrl}/verification`, values, { withCredentials: true })
+        submitVerification(values)
             .then(() => {
                 this.setState({ submitSuccess: true, addressInfo: values });
                 formik.setSubmitting(false);
@@ -270,7 +266,7 @@ class Verification extends Component {
                         </>}
 
                         <h4 className="mt-5 mb-3">DOCUMENT STATUS</h4>
-                        
+
                         <p className="verification-items" onClick={() => this.clickUpload('address')}>
                             Address verification
                             &nbsp;{address == 'required' && <span className="badge badge-primary">REQUIRED</span>}

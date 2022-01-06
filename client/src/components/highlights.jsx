@@ -3,10 +3,8 @@ import Sport from './sport';
 import Others from "./others";
 import { FormattedMessage, injectIntl } from "react-intl";
 import sportNameImage from "../helpers/sportNameImage";
-import axios from "axios";
-import _env from '../env.json';
 import PromotionModal from './promotionModal';
-const serverUrl = _env.appUrl;
+import { getFeaturedSports } from '../redux/services';
 
 const topLeagues = [
     {
@@ -51,7 +49,7 @@ export default class Highlights extends Component {
     componentDidMount() {
         this._isMounted = true;
         this._isMounted && this.setState({ loading: true });
-        axios.get(`${serverUrl}/frontend/featured_sports`)
+        getFeaturedSports()
             .then(({ data }) => {
                 this._isMounted && this.setState({
                     loading: false,

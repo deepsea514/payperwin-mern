@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-import _env from '../env.json';
-import SBModal from './sbmodal';
 import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { getSports } from '../redux/services';
 
 const teaserPoints = {
     'American Football': [6, 6.5, 7],
@@ -81,7 +78,7 @@ class SportTeaser extends Component {
         const { sportName } = this.props;
         const sport = sportName ? sportName.replace("_", " ") : '';
         if (sportName) {
-            axios.get(`${serverUrl}/sport`, { params: { name: sport } })
+            getSports(sportName)
                 .then(({ data }) => {
                     if (data) {
                         this.setState({ data });

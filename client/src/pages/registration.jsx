@@ -7,7 +7,6 @@ import {
     RadioGroup, FormControlLabel, Radio, Checkbox, TextField
 } from '@material-ui/core';
 import { Form, InputGroup } from "react-bootstrap";
-import axios from 'axios';
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
@@ -21,8 +20,7 @@ import GoogleLogin from "react-google-login";
 import CustomDatePicker from '../components/customDatePicker';
 import { FormattedMessage } from 'react-intl';
 import config from '../../../config.json';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { googleRegister, register } from '../redux/services';
 const CountryInfo = config.CountryInfo;
 
 const useStyles = (theme) => ({
@@ -254,14 +252,12 @@ class Registration extends Component {
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
                         title, dateofbirth, vipcode, referral_code, invite } = this.state;
-                    axios.post(`${serverUrl}/register`,
-                        {
-                            email, password, firstname, lastname, region,
-                            country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                            vipcode, referral_code, invite
-                        },
-                        { withCredentials: true, }
-                    )
+
+                    register({
+                        email, password, firstname, lastname, region,
+                        country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
+                        vipcode, referral_code, invite
+                    })
                         .then((/* { data } */) => {
                             getUser();
                             history.replace({ pathname: '/' });
@@ -695,11 +691,8 @@ class Registration extends Component {
     handleGoogleSignup = (googleData) => {
         const { errors, invite } = this.state;
         const { getUser, history } = this.props;
-        axios.post(`${serverUrl}/googleRegister`,
-            { token: googleData.tokenId, invite },
-            { withCredentials: true }
-        )
-            .then((/* { data } */) => {
+        googleRegister(googleData.tokenId, invite)
+            .then(() => {
                 getUser();
                 history.replace({ pathname: '/' });
             })

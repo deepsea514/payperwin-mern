@@ -1,11 +1,9 @@
 
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getFAQArticles } from '../redux/services';
 
 class FaqSearch extends Component {
     constructor(props) {
@@ -20,7 +18,7 @@ class FaqSearch extends Component {
     componentDidMount() {
         const { history } = this.props;
         this.setState({ loading: true });
-        axios.get(`${serverUrl}/faqs_general${history.location.search}`, { withCredentials: true })
+        getFAQArticles(history.location.search)
             .then(({ data }) => {
                 this.setState({ loading: false, faq_articles: data });
             })

@@ -7,9 +7,7 @@ import { I18nProvider, MetronicI18nProvider, setLanguage } from "../PPWAdmin/_me
 import store, { persistor } from "../PPWAdmin/redux/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import axios from "axios";
-import _env from '../env.json';
-const serverUrl = _env.appUrl;
+import { getMaintenanceMode } from '../redux/services';
 
 export default class Main extends Component {
     constructor(props) {
@@ -21,9 +19,8 @@ export default class Main extends Component {
     }
 
     componentDidMount() {
-        // setLanguage('ch');
         this.setState({ loading: true })
-        axios.get(`${serverUrl}/frontend/maintenance_mode`)
+        getMaintenanceMode()
             .then(({ data }) => {
                 if (data)
                     this.setState({

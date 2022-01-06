@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import Bet from "./bet";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import _env from '../env.json';
 import BetParlay from './betparlay';
 import BetTeaser from './betteaser';
 import { FormattedMessage, injectIntl } from 'react-intl';
-const serverUrl = _env.appUrl;
+import { placeBets, placeParlayBets, placeTeaserBets } from '../redux/services';
 
 class BetSlip extends Component {
     constructor(props) {
@@ -86,7 +84,7 @@ class BetSlip extends Component {
         }
 
         this.setState({ submitting: true });
-        axios.post(`${serverUrl}/placeBets`, { betSlip }, { withCredentials: true })
+        placeBets(betSlip)
             .then(({ data: { balance, errors } }) => {
                 const successCount = betSlip.length - (errors ? errors.length : 0);
                 const stateChanges = {};
@@ -149,7 +147,7 @@ class BetSlip extends Component {
             return this.setState({ errors: [`Parlay wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
-        axios.post(`${serverUrl}/placeParlayBets`, { betSlip, totalStake, totalWin }, { withCredentials: true })
+        placeParlayBets(betSlip, totalStake, totalWin)
             .then(({ data: { balance, errors } }) => {
                 if (errors.length == 0) {
                     updateUser('balance', balance);
@@ -188,7 +186,7 @@ class BetSlip extends Component {
             return this.setState({ errors: [`Teaser wager could not be placed. Exceed maximum win amount.`] });
         }
         this.setState({ submitting: true });
-        axios.post(`${serverUrl}/placeTeaserBets`, { teaserBetSlip, totalStake, totalWin }, { withCredentials: true })
+        placeTeaserBets(teaserBetSlip, totalStake, totalWin)
             .then(({ data: { balance, errors } }) => {
                 if (errors.length == 0) {
                     updateUser('balance', balance);
