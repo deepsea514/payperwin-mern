@@ -175,6 +175,7 @@ const getAllSportsLines = async () => {
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
+            console.log('before arrange')
             arrangeLeagues(sportEvents.leagues, sport.name);
 
             // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
