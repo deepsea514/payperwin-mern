@@ -12,6 +12,7 @@ const ArticleSchema = new Schema({
     meta_description: { type: String, },
     meta_keywords: { type: String, },
     published_at: { type: Date, default: null },
+    posted_at: { type: Date, default: Date.now }
 }, {
     timestamps: true,
 });

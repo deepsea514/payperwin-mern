@@ -31,7 +31,7 @@ class ArticleWrapper extends Component {
                                             </Link>
                                         </span>))}
                                         <span className="date">
-                                            {dateformat(article.published_at, 'mediumDate')}
+                                            {dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}
                                         </span>
                                     </p>
                                     <div className="subtitle">

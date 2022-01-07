@@ -73,6 +73,7 @@ export default class CustomDatePicker extends React.Component {
                         </button>
                     </div>
                 )}
+                dateFormat={"MMMM d, yyyy"}
                 {...this.props}
             />
         )

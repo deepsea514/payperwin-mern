@@ -89,7 +89,7 @@ class ArticleSidebar extends Component {
                                             {article.categories.map(category => (
                                                 <Link key={category} className="tag" to={`/articles/category/${category}`}>{category}</Link>
                                             ))}
-                                            <span className="date">{dateformat(article.published_at, 'mediumDate')}</span>
+                                            <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
                                         </div>
                                         <h4 className="subtitle">
                                             <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
@@ -113,7 +113,7 @@ class ArticleSidebar extends Component {
                                                 {article.categories.map(category => (
                                                     <Link key={category} className="tag" to={`/articles/category/${category}`}>{category}</Link>
                                                 ))}
-                                                <span className="date">{dateformat(article.published_at, 'mediumDate')}</span>
+                                                <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
                                             </div>
                                             <h4 className="subtitle">
                                                 <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
@@ -147,7 +147,7 @@ class ArticleSidebar extends Component {
                                         {article.categories.map(category => (
                                             <Link key={category} className="tag" to={`/articles/category/${category}`}>{category}</Link>
                                         ))}
-                                        <span className="date">{dateformat(article.published_at, 'mediumDate')}</span>
+                                        <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
                                     </div>
                                     <h4 className="subtitle">
                                         <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
@@ -177,7 +177,7 @@ class ArticleSidebar extends Component {
                                         </Link>
                                     </span>))}
                                     <span className="date">
-                                        {dateformat(article.published_at, 'mediumDate')}
+                                        {dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}
                                     </span>
                                 </p>
                                 <div className="subtitle mb-0">
