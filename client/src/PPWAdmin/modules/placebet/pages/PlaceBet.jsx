@@ -1,6 +1,5 @@
 import React from "react"
 import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
-import { createTheme } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
@@ -40,7 +39,6 @@ class PlaceBet extends React.Component {
         getPlaceBetsAction();
     }
 
-
     getBetStatus = (status) => {
         switch (status) {
             case "Pending":
@@ -63,7 +61,6 @@ class PlaceBet extends React.Component {
                 return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">Partial Accepted</span>
         }
     }
-
 
     getBetMatch = (bet) => {
         switch (bet.status) {
@@ -108,7 +105,7 @@ class PlaceBet extends React.Component {
         return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
     }
 
-    getPickName = (formValues ) => {
+    getPickName = (formValues) => {
         let { teamA, teamB, points, betType, placeBetOnTeamB } = formValues;
         let pickName = 'Pick: ';
         betType = betType.value.toLowerCase();
@@ -159,7 +156,6 @@ class PlaceBet extends React.Component {
 
         return placebets.map((bet, index) => {
             let isAutobet = false;
-            //if (autobets && autobets.find(autobet => autobet.userId && bet.userId ? autobet.userId._id == bet.userId._id : false)) isAutobet = true;
             return <tr key={index} className={isAutobet ? 'bg-light-primary' : ''}>
                 <td scope="col">{index + 1}</td>
                 <td scope="col">{this.getBetHouse(bet.sportsbook)}</td>
@@ -167,13 +163,8 @@ class PlaceBet extends React.Component {
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                {/* <td scope="col">{bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}</td> */}
                 <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                 <td scope="col">{dateformat(bet.matchStartDate)}</td>
-                {/* <td scope="col">{this.getBetDogFav(bet, index)}</td> */}
-                {/* <td scope="col">{this.getBetStatus(bet.status)}</td>
-                <td scope="col">{this.getBetMatch(bet)}</td>
-                <td scope="col">{this.getWinLoss(bet)}</td> */}
             </tr>
         });
     }
@@ -196,17 +187,6 @@ class PlaceBet extends React.Component {
             getPlaceBetsAction(page);
     }
 
-
-    handleChangeCalcWinAmount = (e) => {
-        const {
-            values: { teamAOdds },
-            touched,
-            setFieldValue,
-          } = useFormikContext();
-        
-    }
- 
-
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
 
@@ -214,11 +194,10 @@ class PlaceBet extends React.Component {
         let pick = isPlaceBetOnTeamB ? "away" : "home";
 
         const placebet = {
-            //...values,
-             user: {
+            user: {
                 _id: values.user.value,
                 balance: 3000,
-            }, 
+            },
             userId: values.user.value,
             autoBetUser: values.autoBetUser.value,
             autoBetUserId: values.autoBetUser.autoBetUserId._id,
@@ -231,7 +210,6 @@ class PlaceBet extends React.Component {
             odds: { home: values.teamAOdds, away: values.teamBOdds },
             pick: pick,
             stake: values.wager,
-            //win: 30.3,
             win: values.teamToWin,
             home: values.teamA,
             away: values.teamB,
@@ -256,12 +234,10 @@ class PlaceBet extends React.Component {
             sportsbook: false,
             startDate: values.registrationDate
         };
-        
-        //delete placebet.user;
 
         formik.setSubmitting(false);
 
-         createPlaceBet(placebet)
+        createPlaceBet(placebet)
             .then(({ data }) => {
                 formik.setSubmitting(false);
                 if (data.errors.length === 0) {
@@ -299,7 +275,7 @@ class PlaceBet extends React.Component {
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
-                            <table className="table">
+                                <table className="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -308,22 +284,16 @@ class PlaceBet extends React.Component {
                                             <th scope="col">Wager</th>
                                             <th scope="col">Pick</th>
                                             <th scope="col">User</th>
-                                            {/* <th scope="col">Sport</th> */}
                                             <th scope="col">Event</th>
                                             <th scope="col">Start Date</th>
-                                            {/* <th scope="col">Dog/Fav</th> */}
-                                            {/* <th scope="col">Status</th>
-                                            <th scope="col">Match</th>
-                                            <th scope="col">Win/Loss Amount</th> */}
-
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.tableBody()} 
+                                        {this.tableBody()}
                                     </tbody>
                                 </table>
                             </div>
-                          
+
                         </div>
                     </div>
                 </div>
@@ -332,8 +302,6 @@ class PlaceBet extends React.Component {
                     onHide={() => this.setState({ addModal: false })}
                     title="Add a Bet"
                     onSubmit={this.addPlaceBetUser}
-
-                    handleChangeCalcWinAmount= {this.handleChangeCalcWinAmount}
                 />
 
                 <Modal show={modal} onHide={() => this.setState({ modal: false })}>

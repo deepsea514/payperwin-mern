@@ -6539,7 +6539,7 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
                     break;
                 case 'moneyline':
                     if (pick == 'home') {
-                        pickName += teamA;
+                        pickName += bet.teamA.name;
                     }
                     else if (pick == 'draw') {
                         pickName += "Draw";
@@ -6547,7 +6547,7 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
                     else if (pick == 'nondraw') {
                         pickName += "Non Draw";
                     } else {
-                        pickName += teamB;
+                        pickName += bet.teamB.name;
                     }
                     break;
                 default:
@@ -6636,29 +6636,7 @@ adminRouter.post(
     async (req, res) => {
         const betSlip = req.body;
 
-        const { user } = req;
         const errors = [];
-        /*    if (user.roles.selfExcluded &&
-               (new Date()).getTime() < (new Date(user.roles.selfExcluded)).getTime()
-           ) {
-               errors.push(`You are self-excluded till ${dateformat(new Date(user.roles.selfExcluded), "mediumDate")}`)
-               return res.json({
-                   balance: user.balance,
-                   errors,
-               });
-           }
-   
-           let autobet = await AutoBet
-               .findOne({
-                   userId: user._id
-               });
-           if (autobet) {
-               errors.push(`Autobet user can't place bet.`)
-               return res.json({
-                   balance: user.balance,
-                   errors,
-               });
-           } */
 
         const {
             odds,
@@ -6675,7 +6653,6 @@ adminRouter.post(
             sportsbook,
         } = betSlip;
 
-        //Assign Unique Event ID
         lineQuery.eventId = `E${ID()}`;
 
         if (!odds || !pick || !toBet || !toWin || !lineQuery) {
@@ -6717,13 +6694,6 @@ adminRouter.post(
                 const oddsA = teamAOdds;
                 const oddsB = teamBOdds
 
-                //
-                //TOASK: Snowman Why its calculated by 10 times
-                /*   let newLineOdds = calculateNewOdds(oddsA, oddsB, pick, lineQuery.type, lineQuery.subtype);
-                      if (sportsbook) {
-                          newLineOdds = pick == 'home' ? oddsA : oddsB;
-                      }  */
-
                 newLineOdds = pick == 'home' ? oddsA : oddsB;
 
                 const betAfterFee = toBet /* * 0.98 */;
@@ -6762,7 +6732,6 @@ adminRouter.post(
                             sportsbook: sportsbook
                         };
                         const newBet = new Bet(newBetObj);
-                        // save the user
                         try {
                             const savedBet = await newBet.save();
 
@@ -6771,14 +6740,6 @@ adminRouter.post(
                                 point: toBet * loyaltyPerBet
                             })
 
-                            const preference = await Preference.findOne({ user: user._id });
-                            let timezone = "00:00";
-                            if (preference && preference.timezone) {
-                                timezone = preference.timezone;
-                            }
-                            // const timeString = convertTimeLineDate(new Date(), timezone);
-
-                            //const matchTimeString = convertTimeLineDate(new Date(startDate), timezone);
                             let betType = '';
                             switch (type) {
                                 case 'total':
@@ -6812,7 +6773,6 @@ adminRouter.post(
                                     { uid: JSON.stringify(lineQuery) },
                                     docChanges,
                                 );
-                                //await checkAutoBet(betSlip, exists, user, sportData, line);
                                 await placeAutoBet(betId, autoBetUserId, toWin);
                                 betpoolId = exists.uid;
                             } else {
@@ -6849,8 +6809,6 @@ adminRouter.post(
 
                                 try {
                                     await newBetPool.save();
-                                    //await checkAutoBet(betSlip, newBetPool, user, sportData, line);
-
                                     await placeAutoBet(betId, autoBetUserId, toWin);
                                     betpoolId = newBetPool.uid;
                                 } catch (err) {
@@ -6889,7 +6847,6 @@ adminRouter.post(
 
         res.json({
             success: true,
-            balance: 3000,//user.balance,
             errors,
         });
     }
