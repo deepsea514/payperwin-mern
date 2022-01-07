@@ -37,9 +37,9 @@ const getAmericanFootballMatchScores = (type, subtype, ss, scores, timer, time_s
                 break;
             default:
                 if (time_status == "1") return 'inplay';
-                const finalCcores = ss.split('-');
-                matchResult.homeScore += Number(getTotal(finalCcores[0]));
-                matchResult.awayScore += Number(getTotal(finalCcores[1]));
+                const finalScores = ss.split('-');
+                matchResult.homeScore += Number(finalScores[0]);
+                matchResult.awayScore += Number(finalScores[1]);
                 break;
         }
         return matchResult;
