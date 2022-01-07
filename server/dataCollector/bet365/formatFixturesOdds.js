@@ -25,7 +25,7 @@ const formatWaterPoloFixturesOdds = require('./formatFixturresSports/formatWater
 const formatESportsFixturesOdds = require('./formatFixturresSports/formatESportsFixturesOdds');
 
 const formatFixturesOdds = (event, sport) => {
-    if (!event.odds) return;
+    if (!event.odds) return null;
     try {
         switch (sport) {
             case "Soccer":

@@ -155,7 +155,10 @@ const formatAmericanFootballFixturesOdds = (event) => {
             while (alternative_point_spread_2_way.length > 0) {
                 const first = alternative_point_spread_2_way[0];
                 const second = alternative_point_spread_2_way.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
-                if (!second) continue;
+                if (!second) {
+                    alternative_point_spread_2_way = alternative_point_spread_2_way.filter(spread => spread.id != first.id);
+                    continue;
+                }
                 const home = first.header == '1' ? first : second;
                 const away = first.header == '2' ? first : second;
                 line.alternative_spreads.push({
@@ -164,7 +167,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
                     home: convertDecimalToAmericanOdds(home.odds),
                     away: convertDecimalToAmericanOdds(away.odds),
                 });
-                alternative_point_spread_2_way = alternative_point_spread_2_way.filter(total => total.id != home.id && total.id != away.id);
+                alternative_point_spread_2_way = alternative_point_spread_2_way.filter(spread => spread.id != home.id && spread.id != away.id);
             }
 
             other = others.find(other => other.sp && other.sp["alternative_total_2_way"]);
@@ -172,7 +175,10 @@ const formatAmericanFootballFixturesOdds = (event) => {
             while (alternative_total_2_way.length > 0) {
                 const first = alternative_total_2_way[0];
                 const second = alternative_total_2_way.find(total => total.name == first.name && total.header != first.header);
-                if (!second) continue;
+                if (!second) {
+                    alternative_total_2_way = alternative_total_2_way.filter(total => total.name != first.name);
+                    continue;
+                }
                 const over = first.header == 'Over' ? first : second;
                 const under = first.header == 'Under' ? first : second;
                 line.alternative_totals.push({
