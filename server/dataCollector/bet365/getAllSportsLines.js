@@ -147,6 +147,7 @@ const getAllSportsLines = async () => {
                         results[ei + i].odds = oddsResult[i];
                     }
                 }
+                console.log('got odds');
                 results.map(result => {
                     if (result.time_status != 0) return;
                     let league = sportEvents.leagues.find(league => league.originId == result.league.id);
@@ -172,6 +173,7 @@ const getAllSportsLines = async () => {
                     }
 
                 });
+                console.log('before break', total, per_page, page);
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
