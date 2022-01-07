@@ -1,21 +1,5 @@
 [
     {
-        "id": 1,
-        "name": "Soccer"
-    },
-    {
-        "id": 3,
-        "name": "Cricket"
-    },
-    {
-        "id": 8,
-        "name": "Rugby Union"
-    },
-    {
-        "id": 9,
-        "name": "Boxing-UFC"
-    },
-    {
         "id": 12,
         "name": "American Football",
         "liveSupport": true

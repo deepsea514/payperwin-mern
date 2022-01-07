@@ -81,6 +81,7 @@ const getAllSportsLines = async () => {
 
             let page = 1;
             while (true) {
+                console.log('%d out of %d in %s', page * per_page, total, sport.name);
                 let success = false;
                 let results = [];
                 let total = 0;
@@ -171,7 +172,6 @@ const getAllSportsLines = async () => {
                     }
 
                 });
-                console.log('%d out of %d in %s', page * per_page, total, sport.name);
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
