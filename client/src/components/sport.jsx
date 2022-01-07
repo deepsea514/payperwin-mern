@@ -211,7 +211,7 @@ class Sport extends Component {
             )
         }
         const { leagues, origin } = data;
-        const selectedLeague = leagues.find(league => leagueId == leagueId);
+        const selectedLeague = leagues.find(league => league.originId == leagueId);
         return (
             <div>
                 {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
