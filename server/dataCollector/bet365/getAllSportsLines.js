@@ -81,7 +81,6 @@ const getAllSportsLines = async () => {
 
             let page = 1;
             while (true) {
-                console.log('%d out of %d in %s', page * per_page, total, sport.name);
                 let success = false;
                 let results = [];
                 let total = 0;
@@ -100,8 +99,7 @@ const getAllSportsLines = async () => {
                     results = results_result;
                     if (pager)
                         total = pager.total;
-                }
-                catch (error) {
+                } catch (error) {
                     ErrorLog.create({
                         name: 'Bet365 Error',
                         error: {
@@ -111,6 +109,8 @@ const getAllSportsLines = async () => {
                         }
                     });
                 }
+                console.log('%d out of %d in %s', page * per_page, total, sport.name);
+
                 if (!success) continue;
                 for (let ei = 0; ei < results.length; ei += 10) {
                     let ids = [];
