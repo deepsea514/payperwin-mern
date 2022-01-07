@@ -170,6 +170,7 @@ const getAllSportsLines = async () => {
                     }
 
                 });
+                console.log('%d out of %d in %s', page * per_page, total, sport.name);
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
@@ -187,7 +188,7 @@ const getAllSportsLines = async () => {
             else {
                 await Sport.create(sportEvents);
             }
-            console.log('All done')
+            console.log(`${sport.name} Got Odds`)
         } catch (error) {
             console.error(error);
         }
