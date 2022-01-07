@@ -5,9 +5,9 @@ const getSoccerMatchScores = (type, subtype, ss, scores, timer, time_status) => 
         awayScore: 0,
     }
     try {
-        const finalCcores = ss.split('-');
-        matchResult.homeScore += Number(getTotal(finalCcores[0]));
-        matchResult.awayScore += Number(getTotal(finalCcores[1]));
+        const finalScores = ss.split('-');
+        matchResult.homeScore += Number(finalScores[0]);
+        matchResult.awayScore += Number(finalScores[1]);
         return matchResult;
     } catch (error) {
         console.error(error);
