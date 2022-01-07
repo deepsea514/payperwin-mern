@@ -6,6 +6,7 @@ const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don
 const bruteforce = new ExpressBrute(store);
 const { ObjectId } = require('bson');
 const sgMail = require('@sendgrid/mail');
+const dateformat = require("dateformat");
 //Models
 const User = require("./models/user");
 const FinancialLog = require('./models/financiallog');
@@ -16,6 +17,7 @@ const { generatePremierNotificationSignature } = require('./libs/generatePremier
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
 const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
+const adminEmailAddress = 'admin@payperwin.com';
 const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
@@ -151,6 +153,35 @@ premierRouter.post('/etransfer-deposit',
                 await deposit.update({
                     status: "On-hold"
                 });
+                const user = await User.findById(user_id);
+                if (!user) {
+                    return res.json({
+                        error: "Doesn't make changes"
+                    });
+                }
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: adminEmailAddress,
+                    subject: ' E-Transfer Deposit Not Completed',
+                    text: ` E-Transfer Deposit Not Completed`,
+                    html: simpleresponsive(
+                        `<ul>
+                            <li>Email: <b>${user.email}</b></li>
+                            <li>Name: <b>${user.firstname}</b></li>
+                            <li>Date of Deposit: <b>${dateformat(deposit.createdAt, "mediumDate")}</b></li>
+                            <li>Amount: <b>${deposit.amount}</b></li>
+                        </ul>`),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
+                });
                 return res.json({
                     success: "Deposit declined"
                 });
@@ -223,6 +254,30 @@ premierRouter.post('/etransfer-withdraw',
                 });
                 await user.update({
                     $inc: { balance: withdraw.amount + withdraw.fee }
+                });
+
+                const msg = {
+                    from: `${fromEmailName} <${fromEmailAddress}>`,
+                    to: adminEmailAddress,
+                    subject: ' E-Transfer Withdraw Not Completed',
+                    text: ` E-Transfer Withdraw Not Completed`,
+                    html: simpleresponsive(
+                        `<ul>
+                            <li>Email: <b>${user.email}</b></li>
+                            <li>Name: <b>${user.firstname}</b></li>
+                            <li>Date of Withdraw: <b>${dateformat(withdraw.createdAt, "mediumDate")}</b></li>
+                            <li>Amount: <b>${withdraw.amount}</b></li>
+                        </ul>`),
+                };
+                sgMail.send(msg).catch(error => {
+                    ErrorLog.create({
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    });
                 });
                 return res.json({
                     success: "Withdraw declined"
