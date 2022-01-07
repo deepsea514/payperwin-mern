@@ -31,3 +31,7 @@ export function uploadPromotionBanner(formdata) {
 export function deletePromotionBanner(id) {
     return AdminAPI.delete(`/promotions/banners/${id}`);
 }
+
+export function updatePromotionBanner(id, data) {
+    return AdminAPI.put(`/promotions/banners/${id}`, data);
+}

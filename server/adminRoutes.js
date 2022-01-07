@@ -4365,6 +4365,26 @@ adminRouter.delete(
     }
 )
 
+adminRouter.put(
+    '/promotions/banners/:id',
+    authenticateJWT,
+    limitRoles('promotions'),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { priority } = req.body;
+            const banner = await PromotionBanner.findById(id);
+            if (banner) {
+                await banner.update({ priority });
+            }
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
+        }
+    }
+)
+
 adminRouter.get(
     '/verifications',
     authenticateJWT,

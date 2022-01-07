@@ -3,9 +3,10 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Dropdown, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import dateformat from "dateformat";
-import { deletePromotionBanner, loadPromotionBanners, uploadPromotionBanner } from "../redux/services";
+import { deletePromotionBanner, loadPromotionBanners, updatePromotionBanner, uploadPromotionBanner } from "../redux/services";
 import AddPromotionBannerModal from "../components/AddPromotionBannerModal";
 import _env from '../../../../env.json';
+import EditPromotionBannerModal from "../components/EditPromotionBannerModal";
 const serverUrl = _env.appUrl;
 
 export default class PromotionBanners extends Component {
@@ -16,6 +17,7 @@ export default class PromotionBanners extends Component {
             loading: false,
             banners: [],
             deleteId: null,
+            editId: null,
 
             modal: false,
             resMessage: '',
@@ -86,7 +88,6 @@ export default class PromotionBanners extends Component {
                             {banner.type == 'video' &&
                                 <video src={`${serverUrl}/banners/${banner.path}`}
                                     playsInline
-                                    autoPlay
                                     controls={true}
                                     style={{ width: '150px', height: 'auto', display: 'block' }} />}
                         </div>
@@ -101,6 +102,7 @@ export default class PromotionBanners extends Component {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                                <Dropdown.Item onClick={() => this.setState({ editId: banner })}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: banner._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -138,8 +140,22 @@ export default class PromotionBanners extends Component {
             })
     }
 
+    editPromotionBanner = (values, formik) => {
+        const { editId } = this.state;
+        updatePromotionBanner(editId._id, values)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, editId: null, resMessage: "Successfully updated!", modalvariant: "success" });
+                this.loadBanners();
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ modal: true, editId: null, resMessage: "Update Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { addModal, modal, resMessage, modalvariant, deleteId, } = this.state;
+        const { addModal, modal, resMessage, modalvariant, deleteId, editId } = this.state;
 
         return (
             <div className="row">
@@ -195,6 +211,13 @@ export default class PromotionBanners extends Component {
                         onHide={() => this.setState({ addModal: false })}
                         onSubmit={this.addPromotionBanner}
                     />
+
+                    {editId != null && < EditPromotionBannerModal
+                        show={editId != null}
+                        onHide={() => this.setState({ editId: null })}
+                        priority={editId.priority}
+                        onSubmit={this.editPromotionBanner}
+                    />}
 
                     <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
                         <Modal.Header closeButton>
