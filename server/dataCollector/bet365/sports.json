@@ -40,5 +40,21 @@
     {
         "id": 151,
         "name": "E-sports"
+    },
+    {
+        "id": 1,
+        "name": "Soccer"
+    },
+    {
+        "id": 3,
+        "name": "Cricket"
+    },
+    {
+        "id": 8,
+        "name": "Rugby Union"
+    },
+    {
+        "id": 9,
+        "name": "Boxing-UFC"
     }
 ]

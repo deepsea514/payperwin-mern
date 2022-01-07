@@ -64,7 +64,6 @@ const getAllSportsLines = async () => {
     }
     const { bet365ApiKey } = bet365Addon.value;
     sportsData = sportsData.filter(sport => sport.name != 'Boxing-UFC');
-    console.log(sportsData)
     let sportsDir = await SportsDir.findOne({ origin: "bet365" });
     if (!sportsDir) {
         sportsDir = await SportsDir.create({ origin: "bet365", sports: sportsData });
@@ -109,7 +108,6 @@ const getAllSportsLines = async () => {
                         }
                     });
                 }
-                console.log('%d out of %d in %s', page * per_page, total, sport.name);
 
                 if (!success) continue;
                 for (let ei = 0; ei < results.length; ei += 10) {
@@ -147,7 +145,6 @@ const getAllSportsLines = async () => {
                         results[ei + i].odds = oddsResult[i];
                     }
                 }
-                console.log('got odds');
                 results.map(result => {
                     if (result.time_status != 0) return;
                     let league = sportEvents.leagues.find(league => league.originId == result.league.id);
@@ -173,11 +170,9 @@ const getAllSportsLines = async () => {
                     }
 
                 });
-                console.log('before break', total, per_page, page);
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
-            console.log('before arrange')
             arrangeLeagues(sportEvents.leagues, sport.name);
 
             // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
