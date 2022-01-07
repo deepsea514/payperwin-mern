@@ -5675,28 +5675,6 @@ adminRouter.put(
     }
 )
 
-adminRouter.post(
-    '/articles',
-    authenticateJWT,
-    limitRoles('articles'),
-    async (req, res) => {
-        const data = req.body;
-        let articleObj = {
-            ...data,
-            published_at: data.publish ? new Date() : null
-        };
-        delete articleObj.publish;
-        try {
-            await Article.create(articleObj);
-            res.json({ success: true });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false });
-        }
-    }
-)
-
-
 adminRouter.get(
     '/articles/categories',
     authenticateJWT,
@@ -5783,6 +5761,27 @@ adminRouter.get(
                 .skip(page * perPage)
                 .limit(perPage);
             res.json({ total, perPage, page: page + 1, data: articles });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.post(
+    '/articles',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const data = req.body;
+        let articleObj = {
+            ...data,
+            published_at: data.publish ? new Date() : null
+        };
+        delete articleObj.publish;
+        try {
+            await Article.create(articleObj);
+            res.json({ success: true });
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false });

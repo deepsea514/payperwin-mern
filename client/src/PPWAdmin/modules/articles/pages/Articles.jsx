@@ -56,6 +56,7 @@ class Articles extends React.Component {
                 <td>{index + 1}</td>
                 <td><img src={article.logo} width="60" height="30" /></td>
                 <td>{article.title}</td>
+                <td>{article.posted_at && this.getDateFormat(article.posted_at)}</td>
                 <td>{this.getDateFormat(article.createdAt)}</td>
                 <td>{article.published_at ? this.getDateFormat(article.published_at) : null}</td>
                 <td>
@@ -75,7 +76,7 @@ class Articles extends React.Component {
     }
 
     getDateFormat = (date) => {
-        return dateformat(new Date(date), "yyyy-mm-dd HH:MM");
+        return dateformat(new Date(date), "mmm d, yyyy HH:MM TT");
     }
 
     onPageChange = (page) => {
@@ -143,8 +144,9 @@ class Articles extends React.Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col"></th>
+                                            <th scope="col">Logo</th>
                                             <th scope="col">Title</th>
+                                            <th scope="col">Posted At</th>
                                             <th scope="col">Created At</th>
                                             <th scope="col">Published At</th>
                                             <th scope="col"></th>

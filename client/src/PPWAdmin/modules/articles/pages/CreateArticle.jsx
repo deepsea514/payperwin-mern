@@ -9,6 +9,7 @@ import { createArticle, searchCategories } from "../redux/services";
 import Resizer from "react-image-file-resizer";
 import AsyncSelect from 'react-select/async';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import CustomDatePicker from "../../../../components/customDatePicker";
 
 class CreateArticle extends React.Component {
     constructor(props) {
@@ -24,13 +25,14 @@ class CreateArticle extends React.Component {
                 meta_title: '',
                 meta_description: '',
                 meta_keywords: '',
+                posted_at: new Date(),
             },
             articleSchema: Yup.object().shape({
                 logo: Yup.string()
                     .required("You should upload logo"),
                 title: Yup.string()
                     .min(3, "Minimum 3 symbols")
-                    .max(50, "Maximum 50 symbols")
+                    // .max(50, "Maximum 50 symbols")
                     .required("Title is required."),
                 subtitle: Yup.string()
                     .min(3, "Minimum 3 symbols")
@@ -39,13 +41,14 @@ class CreateArticle extends React.Component {
                     .min(1, "Article should have at least a category"),
                 permalink: Yup.string()
                     .min(3, "Minimum 3 symbols")
-                    .max(50, "Maximum 50 symbols")
+                    // .max(50, "Maximum 50 symbols")
                     .required("Type is required."),
                 content: Yup.string()
                     .required("Content is required."),
                 meta_title: Yup.string(),
                 meta_description: Yup.string(),
                 meta_keywords: Yup.string(),
+                posted_at: Yup.date()
             }),
             isError: false,
             isSuccess: false,
@@ -360,6 +363,32 @@ class CreateArticle extends React.Component {
                                             {formik.touched.content && formik.errors.content ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.content}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Posted At <span className="text-danger">*</span></label>
+                                            <CustomDatePicker
+                                                name="posted_at"
+                                                showTimeSelect
+                                                dateFormat="MMMM d, yyyy HH:mm aa"
+                                                className="form-control"
+                                                wrapperClassName="input-group"
+                                                selected={formik.values.posted_at}
+                                                {...formik.getFieldProps("posted_at")}
+                                                {...{
+                                                    onChange: (posted_at) => {
+                                                        formik.setFieldError("posted_at", false);
+                                                        formik.setFieldTouched("posted_at", true);
+                                                        formik.setFieldValue("posted_at", posted_at);
+                                                    },
+                                                }}
+                                                isInvalid={formik.errors.posted_at !== undefined}
+                                                required
+                                            />
+                                            {formik.touched.posted_at && formik.errors.posted_at ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.posted_at}
                                                 </div>
                                             ) : null}
                                         </div>

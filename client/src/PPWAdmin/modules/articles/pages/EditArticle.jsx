@@ -10,6 +10,7 @@ import Resizer from "react-image-file-resizer";
 import AsyncSelect from 'react-select/async';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import CustomDatePicker from "../../../../components/customDatePicker";
 
 class EditArticle extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class EditArticle extends React.Component {
                     .required("You should upload logo"),
                 title: Yup.string()
                     .min(3, "Minimum 3 symbols")
-                    .max(50, "Maximum 50 symbols")
+                    // .max(50, "Maximum 50 symbols")
                     .required("Title is required."),
                 subtitle: Yup.string()
                     .min(3, "Minimum 3 symbols")
@@ -31,13 +32,14 @@ class EditArticle extends React.Component {
                     .min(1, "Article should have at least a category"),
                 permalink: Yup.string()
                     .min(3, "Minimum 3 symbols")
-                    .max(50, "Maximum 50 symbols")
+                    // .max(50, "Maximum 50 symbols")
                     .required("Type is required."),
                 content: Yup.string()
                     .required("Content is required."),
                 meta_title: Yup.string(),
                 meta_description: Yup.string(),
                 meta_keywords: Yup.string(),
+                posted_at: Yup.date()
             }),
             isError: false,
             isSuccess: false,
@@ -62,7 +64,8 @@ class EditArticle extends React.Component {
                         content: data.content,
                         meta_title: data.meta_title,
                         meta_description: data.meta_description,
-                        meta_keywords: data.meta_keywords
+                        meta_keywords: data.meta_keywords,
+                        posted_at: data.posted_at ? new Date(data.posted_at) : (new Date()),
                     }
                 })
             })
@@ -81,11 +84,11 @@ class EditArticle extends React.Component {
             return false;
         }
         if (!meta_description || meta_description == '') {
-            formik.setFieldError('meta_title', 'Meta Description is required for publish.');
+            formik.setFieldError('meta_description', 'Meta Description is required for publish.');
             return false;
         }
         if (!meta_keywords || meta_keywords == '') {
-            formik.setFieldError('meta_title', 'Meta Keywords are required for publish.');
+            formik.setFieldError('meta_keywords', 'Meta Keywords are required for publish.');
             return false;
         }
         return true;
@@ -381,6 +384,32 @@ class EditArticle extends React.Component {
                                             {formik.touched.content && formik.errors.content ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.content}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Posted At <span className="text-danger">*</span></label>
+                                            <CustomDatePicker
+                                                name="posted_at"
+                                                showTimeSelect
+                                                dateFormat="MMMM d, yyyy HH:mm aa"
+                                                className="form-control"
+                                                wrapperClassName="input-group"
+                                                selected={formik.values.posted_at}
+                                                {...formik.getFieldProps("posted_at")}
+                                                {...{
+                                                    onChange: (posted_at) => {
+                                                        formik.setFieldError("posted_at", false);
+                                                        formik.setFieldTouched("posted_at", true);
+                                                        formik.setFieldValue("posted_at", posted_at);
+                                                    },
+                                                }}
+                                                isInvalid={formik.errors.posted_at !== undefined}
+                                                required
+                                            />
+                                            {formik.touched.posted_at && formik.errors.posted_at ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.posted_at}
                                                 </div>
                                             ) : null}
                                         </div>

@@ -81,7 +81,7 @@ class Article extends Component {
                                     ))}
                                 </div>
                                 <div className="date-container">
-                                    {dateformat(article.published_at, 'mediumDate')}
+                                    {dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}
                                 </div>
                                 <div className="text">
                                     <h1 className="title"> &nbsp;</h1>
