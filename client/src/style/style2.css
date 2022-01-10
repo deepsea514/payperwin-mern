@@ -2788,6 +2788,10 @@ input.special {
     font-size: 15px;
 }
 
+.help-center .category-container .categories a {
+    color: #FF00FE;
+}
+
 .help-center .category-container .categories a.active {
     border-bottom: 2px solid #ED254E;
 }
@@ -2853,7 +2857,7 @@ input.special {
     font-size: 12px;
     font-weight: bold;
     line-height: 14px;
-    color: #0A74EF;
+    color: #FF00FE;
     text-align: center;
     text-transform: uppercase;
 }
@@ -2861,7 +2865,7 @@ input.special {
 .fc-article-inner {
     margin-top: 20px;
     position: relative;
-    padding: 15px 15px 0px 15px;
+    padding: 15px;
     border-radius: 3px;
     background-color: #F7F8FA;
     box-shadow: 0 1px 3px 0 rgb(11 20 34 / 20%);

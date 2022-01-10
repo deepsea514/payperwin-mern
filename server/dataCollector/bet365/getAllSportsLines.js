@@ -63,7 +63,6 @@ const getAllSportsLines = async () => {
         return;
     }
     const { bet365ApiKey } = bet365Addon.value;
-    sportsData = sportsData.filter(sport => sport.name != 'Boxing-UFC');
     let sportsDir = await SportsDir.findOne({ origin: "bet365" });
     if (!sportsDir) {
         sportsDir = await SportsDir.create({ origin: "bet365", sports: sportsData });
