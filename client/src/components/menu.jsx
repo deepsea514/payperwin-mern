@@ -159,8 +159,8 @@ class Menu extends Component {
                                 </a>
                             </li>
                             <li className={`nav-item ${pathname === '/about-us' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-briefcase"></i>About Us
+                                <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                    <i className="fas fa-briefcase"></i><FormattedMessage id="COMPONENTS.ABOUTUS" />
                                 </Link>
                             </li>
                             {user && <li className="nav-item">

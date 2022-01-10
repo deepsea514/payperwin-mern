@@ -932,6 +932,15 @@ footer ul li a:hover {
     color: rgb(52, 59, 72);
 }
 
+.footer-inner ul i {
+    font-size: 14px;
+}
+
+.footer-inner ul li {
+    display: flex;
+    align-items: center;
+}
+
 footer p {
     font-size: 14px;
 }

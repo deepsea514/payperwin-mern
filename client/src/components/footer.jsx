@@ -23,6 +23,7 @@ const Footer = (props) => {
                             <ul>
                                 <li><Link to="/privacy-policy"><FormattedMessage id="COMPONENTS.PRIVACY_POLICY" /> </Link></li>
                                 <li><Link to="/terms-and-conditions"><FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" /> </Link></li>
+                                <li><Link to="/about-us"><FormattedMessage id="COMPONENTS.ABOUTUS" /> </Link></li>
                             </ul>
                         </div>
                         <div className="footer-inner">
@@ -44,6 +45,7 @@ const Footer = (props) => {
                             <h3 className="footer-heading"><FormattedMessage id="COMPONENTS.SOCIAL" /> </h3>
                             <ul>
                                 <li><a href="https://www.instagram.com/payperwin/?hl=en"><i className="fab fa-instagram"></i><FormattedMessage id="COMPONENTS.INSTAGRAM" /></a></li>
+                                <li><a href="https://twitter.com/payperwin"><i className="fab fa-twitter"></i><FormattedMessage id="COMPONENTS.TWITTER" /></a></li>
                             </ul>
                         </div>
                     </div>
