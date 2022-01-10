@@ -7,15 +7,16 @@ const getTopLeagueInSport = (sport) => {
                 return 'MLB'
             case 'Basketball':
                 return 'NBA';
+            case "Ice Hockey":
+                return 'NHL'
+            case "Boxing-UFC":
+                return 'UFC';
             case "Soccer":
             case "Cricket":
             case "Rugby Union":
-            case "Boxing-UFC":
             case "Tennis":
             case "Snooker":
             case "Darts":
-            case "Ice Hockey":
-                return 'NHL'
             case "Rugby League":
             case "Australian Rules":
             case "Bowls":
