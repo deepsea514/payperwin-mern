@@ -7,7 +7,6 @@ const axios = require("axios");
 const datefomart = require("dateformat");
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
-const config = require("../config.json");
 const _env = require("./src/env.json");
 const serverUrl = _env.appUrl;
 const port = _env.port;
@@ -20,6 +19,9 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
     );
+    if(serverUrl != 'https://api.payperwin.com') {
+        res.header("X-Robots-Tag", "noindex");
+    }
     next();
 });
 
