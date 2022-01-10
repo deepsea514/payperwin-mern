@@ -190,7 +190,7 @@ class Sport extends Component {
         const {
             betSlip, removeBet, timezone, oddsFormat, team, sportName,
             league: leagueId, hideBreacrumb, user, getUser,
-            location
+            location, collapsedLeague, toggleCollapseLeague
         } = this.props;
         const { pathname } = location;
         const {
@@ -318,7 +318,9 @@ class Sport extends Component {
                     }
                     const filteredLeagues = leagues.map(league => {
                         const { name: leagueName, originId: leagueId, sportName } = league;
-                        let events = league.events.map((event, i) => {
+                        const collapsed = collapsedLeague.find(league => league == leagueId);
+
+                        let events = collapsed ? null : league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
                             if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
                                 return null;
@@ -631,21 +633,27 @@ class Sport extends Component {
                                 </ul>
                             );
                         }).filter(event => event);
-                        return (events.length > 0 &&
+                        return ((events == null || events.length > 0) &&
                             <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                                    <div className="table-title d-flex align-items-center">
-                                        <img src={sportNameImage(sportName, leagueName)}
-                                            style={{ marginRight: '6px', width: '14px', height: '14px' }} /> {leagueName}
+                                    <div className="table-title d-flex align-items-center justify-content-between">
+                                        <div className='d-flex align-items-center'>
+                                            <img src={sportNameImage(sportName, leagueName)}
+                                                style={{ marginRight: '6px', width: '14px', height: '14px' }} /> {leagueName}
+                                        </div>
+                                        <i className={`fas ${collapsed ? 'fa-chevron-up' : 'fa-chevron-down'}`}
+                                            onClick={() => toggleCollapseLeague(leagueId)} />
                                     </div>
-                                    <ul className="table-list table-list-top d-flex">
-                                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
-                                        <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
-                                        <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
-                                        <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
-                                        <li className="detailed-lines-link not-mobile"></li>
-                                    </ul>
-                                    {events}
+                                    <div className='leagues-content'>
+                                        {events != null && <ul className="table-list table-list-top d-flex">
+                                            <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
+                                            <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
+                                            <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
+                                            <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
+                                            <li className="detailed-lines-link not-mobile"></li>
+                                        </ul>}
+                                        {events}
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -674,9 +682,10 @@ class Sport extends Component {
                                 </div>
                             </div>
                             <div className="content">
-                                {filteredLeagues.length > 0 ? filteredLeagues : (
-                                    <h3 className='no-games'>There are no games for the selected date. Please choose all or select a different league.</h3>
-                                )}
+                                {filteredLeagues.length > 0 ? filteredLeagues :
+                                    (
+                                        <h3 className='no-games'>There are no games for the selected date. Please choose all or select a different league.</h3>
+                                    )}
                             </div>
                         </>
                     )
@@ -690,6 +699,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
     timezone: state.frontend.timezone,
+    collapsedLeague: state.frontend.collapsedLeague,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(Sport))
