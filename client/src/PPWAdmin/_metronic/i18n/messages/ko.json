@@ -640,7 +640,7 @@
     "PAGES.DEPOSIT.INTERAC.LIMITS": "Interac E-Transfer 예금 한도",
     "PAGES.DEPOSIT.INTERAC.LIMITS.MIN": "최소 보증금: CAD 25.00",
     "PAGES.DEPOSIT.INTERAC.LIMITS.MAX": "최대 보증금: CAD 3000.00",
-    "PAGES.HOWITWORKS.TITLE": "{image} 작동 방식",
+    "PAGES.HOWITWORKS.TITLE": "작동 방식",
     "PAGES.HOWITWORKS.SUMMARY": "PAYPER WIN은 부키를 배제함으로써 더 나은 확률을 제공하는 P2P 베팅 플랫폼입니다. 쥬스도 없고, 비그도 없고, 하우스도 없다. 당신이 가장 좋아하는 스포츠에 내기를 하세요",
     "PAGES.HOWITWORKS.SUBTITLE": "저위험 고수익",
     "PAGES.HOWITWORKS.SELECTSPORT": "당신의 스포츠를 선택하세요",

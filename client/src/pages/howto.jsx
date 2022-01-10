@@ -28,7 +28,7 @@ class HowTo extends Component {
             <div className="col-in">
                 <div className="how-it-works">
                     <h2>
-                        <FormattedMessage id="PAGES.HOWITWORKS.TITLE" values={{ image: <img src={dark_light == 'light' ? "/images/logo-blue.png" : '/images/logo-white.png'} style={{ width: 200, height: 49, margin: '0 15px', }} /> }} />
+                        <FormattedMessage id="PAGES.HOWITWORKS.TITLE" />
                     </h2>
                     <div className="summary">
                         Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or Sportsbook and we are not affiliated with any Sportsbook. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
@@ -94,6 +94,21 @@ class HowTo extends Component {
                             </p>
                         </div>
                         <div className="how-it-works-info">
+                            <strong>PEER to PEER BETTING</strong>
+                            <br />
+                            <p>
+                                Here is where you beat the bookie.
+                                The odds are even and better than you will find anywhere else online.
+                                The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete.
+                                PAYPER WIN will take 5% from only the winner for facilitating the transaction and making sure you get paid.
+
+                            </p>
+                            <p>
+                                PAYPER WIN gurantees all winning bets will be paid.
+                                If patience isn’t your virtue, say no more; we suggest doing an Instant bet with a High Staker.
+                            </p>
+                        </div>
+                        <div className="how-it-works-info">
                             <strong>HIGH STAKER INSTANT BETTING</strong>
                             <br />
                             <p>
@@ -101,7 +116,7 @@ class HowTo extends Component {
                                 Your bets do not need to wait for a peer to accept.
                                 These bets are instantly accepted.
                                 The only catch is that the odds are different than PEER to PEER.
-                                The bets here are forwarded on to a High Staker.
+                                The bets here are forwarded on to a HIGH STAKER.
                                 The odds will be similar to a Sportsbooks odds.
                                 We are in no way affiliated with a Sportsbook.
                                 A High Staker is a high net worth individual or group willing to take all bets.
@@ -109,7 +124,7 @@ class HowTo extends Component {
                                 PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets.
                                 All live betting or non matching bets are done here such soccer draw bets and parlays.
                                 PAYPER WIN will take a 5% fee only from the HIGH STAKER, NOT from you if you are to bet against one.
-                                You are charged no FEES whether you win or lose betting against a High Staker.
+                                You are charged no FEES whether you win or lose betting against a HIGH STAKER.
                             </p>
                         </div>
                     </div>
