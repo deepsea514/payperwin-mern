@@ -8,7 +8,7 @@ const Footer = (props) => {
     return (
         <footer className={`${display_mode == 'light' ? 'light' : 'dark'}`}>
             <div className="container">
-                <div className='mobile d-flex justify-content-center toggle mb-3'>
+                <div className='d-flex d-sm-none justify-content-center toggle mb-3'>
                     <i className={`fas fa-chevron-${show ? 'up' : 'down'}`}
                         style={{
                             fontSize: '16px',
