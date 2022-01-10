@@ -4019,3 +4019,12 @@ footer .toggle {
 a {
     color: #FF00FE;
 }
+
+a:hover {
+    color: #FF00FE;
+    opacity: 0.8;
+}
+
+/* footer.toggle {
+    display: none !important;
+} */
