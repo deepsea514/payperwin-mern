@@ -31,6 +31,7 @@ export const actionTypes = {
     dismissAdminMessage: "[Dismiss Admin Message]",
     getBetStatusAction: "[Get Bet Status Action]",
     getBetStatusSuccess: "[Get Bet Status Success]",
+    toggleCollapseLeague: '[Toggle Collapse League]',
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -64,11 +65,12 @@ const initialState = {
     betEnabled: null,
     adminMessage: null,
     adminMessageDismiss: null,
+    collapsedLeague: [],
 };
 
 export const reducer = persistReducer(
     {
-        storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie',
+        storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'collapsedLeague',
             'timezone', 'showedTourTimes', 'loginFailed', 'user', 'betEnabled', 'adminMessageDismiss']
     },
     (state = initialState, action) => {
@@ -132,6 +134,15 @@ export const reducer = persistReducer(
             case actionTypes.getBetStatusSuccess:
                 return { ...state, betEnabled: action.betEnabled };
 
+            case actionTypes.toggleCollapseLeague:
+                const collapsed = state.collapsedLeague.find(leagueId => leagueId == action.leagueId);
+                return {
+                    ...state,
+                    collapsedLeague: collapsed ?
+                        state.collapsedLeague.filter(leagueId => leagueId != action.leagueId) :
+                        [...state.collapsedLeague, action.leagueId]
+                }
+
             default:
                 return state;
         }
@@ -162,6 +173,7 @@ export const actions = {
     dismissAdminMessage: (date) => ({ type: actionTypes.dismissAdminMessage, date }),
     getBetStatusAction: () => ({ type: actionTypes.getBetStatusAction }),
     getBetStatusSuccess: (betEnabled) => ({ type: actionTypes.getBetStatusSuccess, betEnabled }),
+    toggleCollapseLeague: (leagueId) => ({ type: actionTypes.toggleCollapseLeague, leagueId }),
 };
 
 export function* saga() {

@@ -142,13 +142,19 @@ a.log-in-btn {
 }
 
 .content {
+    overflow-x: hidden;
+    border-bottom: none;
+}
+
+.leagues-content {
+    width: 100%;
     overflow-x: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-bottom: none;
 }
 
-.content::-webkit-scrollbar {
+.leagues-content::-webkit-scrollbar {
     display: none;
 }
 
@@ -158,8 +164,7 @@ a.log-in-btn {
 }
 
 .tab-pane-leagues {
-    width: fit-content;
-    min-width: 100%;
+    width: 100%;
     background: linear-gradient(90deg, #f0b631, #FF00FE);
 }
 
