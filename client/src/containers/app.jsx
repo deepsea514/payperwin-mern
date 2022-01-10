@@ -58,6 +58,7 @@ import CustomBets from '../pages/custombets';
 import SportsLeagues from '../pages/sportleagues';
 import AutobetSettings from '../pages/AutobetSettings';
 import AutobetDashboard from '../pages/AutobetDashboard';
+import AboutUs from '../pages/aboutus';
 import Prize from '../pages/prize';
 import Loyalty from '../pages/loyalty';
 import { connect } from "react-redux";
@@ -586,6 +587,9 @@ class App extends Component {
                                                 <Route path="/terms-and-conditions" render={(props) =>
                                                     <ErrorBoundary><TermsAndConditions {...props} /></ErrorBoundary>
                                                 } />
+                                                <Route path="/about-us" render={(props) => (
+                                                    <ErrorBoundary><AboutUs {...props} /></ErrorBoundary>
+                                                )} />
                                                 <Route path="/betting-rules" render={(props) =>
                                                     <ErrorBoundary><BettingRules {...props} /></ErrorBoundary>
                                                 } />
