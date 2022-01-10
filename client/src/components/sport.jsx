@@ -89,18 +89,71 @@ class Sport extends Component {
     }
 
     getSport = (setLoading = true) => {
-        const { sportName, league } = this.props;
+        const { sportName, league, setCollapsedLeagues, team } = this.props;
+        const { dateSelected } = this.state;
         if (setLoading) {
             this.setState({ loading: true });
         }
         getSports(sportName, league)
             .then(({ data }) => {
                 if (data) {
-                    this.setState({ data, loading: false });
+                    if (data) {
+                        let minDate = null;
+                        let maxDate = null;
+                        switch (dateSelected) {
+                            case null:
+                                break;
+                            default:
+                                const today = new Date();
+                                const year = today.getFullYear();
+                                const month = today.getMonth();
+                                const date = today.getDate();
+                                const newDate = new Date(year, month, date);
+                                minDate = new Date(newDate.addDates(dateSelected));
+                                maxDate = new Date(newDate.addDates(1));
+                        }
+                        const { leagues } = data;
+                        const filteredLeagues = leagues.map(league => {
+                            let events = league.events.map((event) => {
+                                const { teamA, teamB, startDate, lines } = event;
+                                if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
+                                    return null;
+                                }
+
+                                if (minDate && new Date(startDate).getTime() < minDate.getTime() ||
+                                    maxDate && new Date(startDate).getTime() >= maxDate.getTime()) {
+                                    return null;
+                                }
+
+                                if (team && teamA != team && teamB != team) {
+                                    return null;
+                                }
+                                const { moneyline, spreads, totals, originId: lineId } = lines[0];
+                                if (!moneyline && !spreads && !totals) {
+                                    return null;
+                                }
+
+                                return event;
+                            }).filter(event => event);
+                            if (events.length > 0) {
+                                return { ...league, events }
+                            }
+                            return null;
+                        }).filter(league => league);
+
+                        if(sportName == null) {
+                            const leagueIds = filteredLeagues.slice(8, leagues.length).map(league => league.originId);
+                            setCollapsedLeagues(leagueIds);
+                        }
+                        this.setState({ data: { ...data, leagues: filteredLeagues }, loading: false });
+                    } else {
+                        this.setState({ data: null, loading: false });
+                    }
                 } else {
                     this.setState({ data: null, loading: false })
                 }
             }).catch((err) => {
+                console.log(err)
                 this.setState({ error: err, loading: false });
             });
     }
@@ -184,6 +237,11 @@ class Sport extends Component {
                 const date = new Date().addDates(day);
                 return dateFormat(date, "mmm d");
         }
+    }
+
+    onChangeDate = (date) => {
+        this.setState({ dateSelected: date });
+        this.getSport();
     }
 
     render() {
@@ -302,41 +360,14 @@ class Sport extends Component {
                 })()}
 
                 {(() => {
-                    let minDate = null;
-                    let maxDate = null;
-                    switch (dateSelected) {
-                        case null:
-                            break;
-                        default:
-                            const today = new Date();
-                            const year = today.getFullYear();
-                            const month = today.getMonth();
-                            const date = today.getDate();
-                            const newDate = new Date(year, month, date);
-                            minDate = new Date(newDate.addDates(dateSelected));
-                            maxDate = new Date(newDate.addDates(1));
-                    }
                     const filteredLeagues = leagues.map(league => {
                         const { name: leagueName, originId: leagueId, sportName } = league;
                         const collapsed = collapsedLeague.find(league => league == leagueId);
 
                         let events = collapsed ? null : league.events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, originId: eventId } = event;
-                            if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
-                                return null;
-                            }
-                            if (minDate && new Date(startDate).getTime() < minDate.getTime() ||
-                                maxDate && new Date(startDate).getTime() >= maxDate.getTime()) {
-                                return null;
-                            }
-
-                            if (team && teamA != team && teamB != team) {
-                                return null;
-                            }
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
-                            if (!moneyline && !spreads && !totals) {
-                                return null;
-                            }
+
                             const lineCount = this.getLineCount(lines[0]);
                             const pathname = `/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
                             return (
@@ -632,8 +663,8 @@ class Sport extends Component {
                                     </li>
                                 </ul>
                             );
-                        }).filter(event => event);
-                        return ((events == null || events.length > 0) &&
+                        });
+                        return (
                             <div className="tab-content" key={leagueName}>
                                 <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <div className="table-title d-flex align-items-center justify-content-between">
@@ -657,7 +688,7 @@ class Sport extends Component {
                                 </div>
                             </div>
                         );
-                    }).filter(league => league);
+                    });
                     return (
                         <>
                             <div className={`dashboard_bottombar date_bottombar_container${pathname == '/' ? '_dashboard' : ''}`}>
@@ -673,7 +704,7 @@ class Sport extends Component {
                                                     return (
                                                         <a key={index}
                                                             className={dateSelected == date ? "dashboard_bottombar_selected" : ''}
-                                                            onClick={() => this.setState({ dateSelected: date })}><span>{this.getDateStr(date)}</span></a>
+                                                            onClick={() => this.onChangeDate(date)}><span>{this.getDateStr(date)}</span></a>
                                                     )
                                                 })}
                                             </div>
