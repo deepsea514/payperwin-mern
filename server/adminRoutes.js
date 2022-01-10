@@ -3540,15 +3540,14 @@ const getTotalDeposit = async (datefrom, dateto) => {
                 createdAt: {
                     $gte: datefrom,
                     $lte: dateto
-                }
+                },
+                status: FinancialStatus.success
             }
         },
         {
             $group: {
                 _id: null,
-                total: {
-                    $sum: "$amount"
-                }
+                total: { $sum: "$amount" }
             }
         }
     );
