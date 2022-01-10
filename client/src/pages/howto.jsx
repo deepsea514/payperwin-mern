@@ -94,21 +94,7 @@ class HowTo extends Component {
                             </p>
                         </div>
                         <div className="how-it-works-info">
-                            <strong>PEER to PEER BETTING</strong>
-                            <br />
-                            <p>
-                                Here is where you beat the bookie.
-                                The odds are even and better than you will find anywhere else online.
-                                The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete.
-                                PAYPER WIN will take 5% from only the winner for facilitating the transaction and making sure you get paid.
-                            </p>
-                            <p>
-                                PAYPER WIN gurantees all winning bets will be paid.
-                                If patience isn’t your virtue, say no more; we suggest doing an Instant bet with a High Staker.
-                            </p>
-                        </div>
-                        <div className="how-it-works-info">
-                            <strong>PEER to PEER BETTING</strong>
+                            <strong>HIGH STAKER INSTANT BETTING</strong>
                             <br />
                             <p>
                                 Welcome, here is where you can bet instantly.
