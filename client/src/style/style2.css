@@ -1650,7 +1650,7 @@ sup {
 }
 
 .content-container a {
-    color: #0A74EF;
+    color: #FF00FE;
     font-weight: 700;
     font-size: 13px
 }
@@ -1820,7 +1820,7 @@ sup {
 }
 
 .content-container .terms-and-conditions .mobile-container a {
-    color: #ED254E;
+    color: #FF00FE;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -1911,7 +1911,7 @@ sup {
 }
 
 .content-container .privacy-policy-paragraph a {
-    color: #ED254E;
+    color: #FF00FE;
     text-decoration: underline;
     font-weight: 400;
     line-height: 13px
@@ -4003,4 +4003,8 @@ footer .toggle {
     border-radius: 20px;
     width: fit-content;
     margin-top: 5px;
+}
+
+a {
+    color: #FF00FE;
 }
