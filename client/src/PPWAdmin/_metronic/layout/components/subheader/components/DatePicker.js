@@ -101,6 +101,11 @@ const dateRanges = [
 ]
 
 class DatePicker extends React.Component {
+    componentDidMount() {
+        const { daterange } = this.props;
+        this.changeDateRange(daterange.selected)
+    }
+
     changeDateRange = (selected) => {
         const { changeDateRange } = this.props;
 
