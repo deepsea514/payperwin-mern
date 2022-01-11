@@ -105,7 +105,7 @@ class BetParlay extends Component {
                         />
                     </div>
                     <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
-                    <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses High Staker odds in parlay bets.</div>
+                    <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses HIGH STAKER odds in parlay bets.</div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, betIdx) => {
                         const { name, type, subtype, index, league, sportName, pickName, lineQuery, lineId, originOdds, pick } = bet;

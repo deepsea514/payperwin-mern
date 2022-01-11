@@ -79,7 +79,7 @@ class CashbackDetail extends React.Component {
                     <div className="card card-custom gutter-b text-left">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">High Staker Loss History</h3>
+                                <h3 className="card-label">HIGH STAKER Loss History</h3>
                             </div>
                         </div>
                         <div className="card-body">

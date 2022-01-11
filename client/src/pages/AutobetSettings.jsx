@@ -35,8 +35,8 @@ class AutobetSettings extends Component {
                     .moreThan(0, "Budget should be more than 0")
                     .required("Budget field is required"),
                 sportsbookBudget: Yup.number()
-                    .moreThan(0, "High Staker Budget should be more than 0")
-                    .required("High Staker Budget field is required"),
+                    .moreThan(0, "HIGH STAKER Budget should be more than 0")
+                    .required("HIGH STAKER Budget field is required"),
                 parlayBudget: Yup.number()
                     .required("Parlay Budget field is required"),
                 maxRisk: Yup.number()
@@ -218,7 +218,7 @@ class AutobetSettings extends Component {
                                             </div>
                                             <div className="form-group col-md-6">
                                                 <label><FormattedMessage id="PAGES.AUTOBET.SBMAXBUDGET" /><span className="text-danger">*</span></label>
-                                                <input name="sportsbookBudget" placeholder="Enter High Staker Budget"
+                                                <input name="sportsbookBudget" placeholder="Enter HIGH STAKER Budget"
                                                     className={`form-control ${getInputClasses(formik, "sportsbookBudget")}`}
                                                     {...formik.getFieldProps("sportsbookBudget")}
                                                 />

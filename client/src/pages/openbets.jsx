@@ -241,7 +241,7 @@ class OpenBets extends Component {
                 })
             })
             .catch((data) => {
-                this.setState({ forwardBet: null, forwardResult: 'Can\'t forward bet to High Staker.' });
+                this.setState({ forwardBet: null, forwardResult: 'Can\'t forward bet to HIGH STAKER.' });
             })
     }
 
@@ -369,7 +369,7 @@ class OpenBets extends Component {
                                                     checked={filter.sportsbook}
                                                     onChange={this.changeFilter}
                                                     name="sportsbook" />}
-                                                label="High Staker Bets"
+                                                label="HIGH STAKER Bets"
                                                 className="p-0 mb-0"
                                             />
                                             <FormControlLabel
@@ -597,7 +597,7 @@ class OpenBets extends Component {
                                     {`${teamA.name} vs ${teamB.name}`}
                                     <div>
                                         <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                        {sportsbook && <strong className="float-right bg-light-info px-2 py-1 text-dark">High Staker</strong>}
+                                        {sportsbook && <strong className="float-right bg-light-info px-2 py-1 text-dark">HIGH STAKER</strong>}
                                         {!sportsbook && <strong className="float-right bg-light-danger px-2 py-1 text-dark">Peer To Peer</strong>}
                                     </div>
                                     {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
@@ -609,7 +609,7 @@ class OpenBets extends Component {
                                     {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
                                         <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
                                             disabled={loadingOdds}
-                                            onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to High Staker</button>}
+                                            onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to HIGH STAKER</button>}
                                 </div>
                             </div>
                         );
