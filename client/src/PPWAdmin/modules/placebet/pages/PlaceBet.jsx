@@ -163,8 +163,6 @@ class PlaceBet extends React.Component {
         return pickName;
     }
 
-
-
     tableBody = () => {
         const { placebets, loading } = this.props;
 
@@ -259,7 +257,7 @@ class PlaceBet extends React.Component {
                 eventId: '0',
                 lineId: '0',
                 type: values.betType.value,
-                subtype: values.peorid,
+                subtype: values.peorid || null,
                 index: null,
                 points: values.points || null,
             },

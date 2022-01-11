@@ -28,7 +28,7 @@ export default class PlaceBetModal extends React.Component {
                 betType: null,
                 teamAOdds: 0,
                 teamBOdds: 0,
-                peorid: null,
+                peorid: '',
                 wager: 0,
                 toWin: '',
                 registrationDate: '',
@@ -49,8 +49,7 @@ export default class PlaceBetModal extends React.Component {
                     .required("Name of Team A field is required"),
                 teamB: Yup.string()
                     .required("Name of Team B field is required"),
-                peorid: Yup.string()
-                    .nullable(),
+                peorid: Yup.string(),
                 betType: Yup.object()
                     .nullable()
                     .required("Bet type field is required"),
@@ -256,8 +255,8 @@ export default class PlaceBetModal extends React.Component {
 
                                 <div className="form-row">
                                     <div className="form-group col-md-6">
-                                        <label>Name of Team A<span className="text-danger">*</span></label>
-                                        <input name="teamA" placeholder="Name of Team A"
+                                        <label>Team A<span className="text-danger">*</span></label>
+                                        <input name="teamA" placeholder="Team A"
                                             className={`form-control ${getInputClasses(formik, "teamA")}`}
                                             {...formik.getFieldProps("teamA")}
                                         />
@@ -268,8 +267,8 @@ export default class PlaceBetModal extends React.Component {
                                         ) : null}
                                     </div>
                                     <div className="form-group col-md-6">
-                                        <label>Name of Team B<span className="text-danger">*</span></label>
-                                        <input name="teamB" placeholder="Name of Team B"
+                                        <label>Team B<span className="text-danger">*</span></label>
+                                        <input name="teamB" placeholder="Team B"
                                             className={`form-control ${getInputClasses(formik, "teamB")}`}
                                             {...formik.getFieldProps("teamB")}
                                         />
@@ -286,7 +285,7 @@ export default class PlaceBetModal extends React.Component {
                                     <select name="peorid"
                                         className={`form-control ${getInputClasses(formik, "peorid")}`}
                                         {...formik.getFieldProps("peorid")}>
-                                        <option value={null}>Full Time</option>
+                                        <option value={''}>Full Time</option>
                                         <option value='first_half'>1st Half</option>
                                         <option value='second_half'>2nd Half</option>
                                         <option value='first_quarter'>1st Quarter</option>
