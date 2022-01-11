@@ -95,7 +95,7 @@ const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 const shopRouter = require('./shopRoutes');
-const sortSearchResults = require('./libs/sortSearchResults');
+const { sortSearchResults } = require('./libs/sortSearchResults');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
