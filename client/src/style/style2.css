@@ -3097,6 +3097,11 @@ input.special {
     text-transform: uppercase;
 }
 
+.center-block-see-more:hover {
+    color: #FFF;
+    background-color: #1f83f5;
+}
+
 .sidebar-block {
     margin: 0 0 15px;
     clear: both;
