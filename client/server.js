@@ -32,6 +32,13 @@ const pathToIndex = path.join(__dirname, "serve/index.html");
 app.use(express.static("dist"));
 app.use(express.static("public"));
 
+app.get(
+    '/loaderio-3a03f54df9f87682c844b4fd4b9f87bf.txt',
+    (req, res) => {
+        res.send('loaderio-3a03f54df9f87682c844b4fd4b9f87bf');
+    }
+)
+
 app.get("/*", (req, res) => {
     const { path } = req;
     fs.readFile(pathToIndex, "utf8", async (err, htmlData) => {
