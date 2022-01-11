@@ -106,22 +106,59 @@ class PlaceBet extends React.Component {
     }
 
     getPickName = (formValues) => {
-        let { teamA, teamB, points, betType, placeBetOnTeamB } = formValues;
-        let pickName = 'Pick: ';
+        let { teamA, teamB, points, betType, pick, peorid } = formValues;
+        let pickName = '';
         betType = betType.value.toLowerCase();
-        let isPlaceBetOnTeamB = placeBetOnTeamB;
-        let pick = isPlaceBetOnTeamB ? "away" : "home";
+        switch (peorid) {
+            case 'first_half':
+                pickName += '1st Half: ';
+                break;
+            case 'second_half':
+                pickName += '2nd Half: ';
+                break;
+            case 'first_quarter':
+                pickName += '1st Quarter: ';
+                break;
+            case 'second_quarter':
+                pickName += '2nd Quarter: ';
+                break;
+            case 'third_quarter':
+                pickName += '3rd Quarter: ';
+                break;
+            case 'forth_quarter':
+                pickName += '4th Quarter: ';
+                break;
+            case 'fifth_innings':
+                pickName += '5th Innings: ';
+                break;
+            default:
+                pickName += 'Pick: ';
+                break;
+        }
+
         switch (betType) {
-            case 'moneyline':
-                pickName += pick == 'home' ? teamA : teamB;
+            case 'total':
+                if (pick == 'home') {
+                    pickName += `Over ${points}`;
+                } else {
+                    pickName += `Under ${points}`;
+                }
                 break;
             case 'spread':
-                pickName += pick == 'home' ?
-                    `${teamA} ${points > 0 ? '+' : ''}${points}` :
-                    `${teamB} ${(-1 * points) > 0 ? '+' : ''}${-1 * points}`;
+                if (pick == 'home') {
+                    pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
+                } else {
+                    pickName += `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                }
                 break;
-            case 'total':
-                pickName += pick == 'home' ? `Over ${points}` : `Under ${points}`;
+            case 'moneyline':
+                if (pick == 'home') {
+                    pickName += teamA;
+                }
+                else if (pick == 'away') {
+                    pickName += teamB;
+                }
+                break;
         }
         return pickName;
     }
@@ -190,8 +227,7 @@ class PlaceBet extends React.Component {
     addPlaceBetUser = (values, formik) => {
         const { getPlaceBetsAction } = this.props;
 
-        let isPlaceBetOnTeamB = values.placeBetOnTeamB;
-        let pick = isPlaceBetOnTeamB ? "away" : "home";
+        let pick = values.pick;
 
         const placebet = {
             user: {
@@ -210,7 +246,7 @@ class PlaceBet extends React.Component {
             odds: { home: values.teamAOdds, away: values.teamBOdds },
             pick: pick,
             stake: values.wager,
-            win: values.teamToWin,
+            win: values.toWin,
             home: values.teamA,
             away: values.teamB,
             teamA: values.teamA,
@@ -223,7 +259,7 @@ class PlaceBet extends React.Component {
                 eventId: '0',
                 lineId: '0',
                 type: values.betType.value,
-                subtype: null,
+                subtype: values.peorid,
                 index: null,
                 points: values.points || null,
             },

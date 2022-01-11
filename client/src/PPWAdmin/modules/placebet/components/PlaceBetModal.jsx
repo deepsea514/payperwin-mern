@@ -1,15 +1,12 @@
 import * as Yup from "yup";
-import { Formik, Form, Field } from "formik";
-import React, { useEffect } from "react";
+import { Formik, Form } from "formik";
+import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { searchUsers, searchSports } from "../../customers/redux/services";
 import { searchAutoBetUsers, searchSportsLeague } from "../redux/services";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
-import config from "../../../../../../config.json";
-const PlaceBetStatus = config.PlaceBetStatus;
-const PlaceBetPeorid = config.PlaceBetPeorid;
 
 const betTypeOptions = [
     { value: 'moneyline', label: 'Moneyline' },
@@ -31,13 +28,12 @@ export default class PlaceBetModal extends React.Component {
                 betType: null,
                 teamAOdds: 0,
                 teamBOdds: 0,
+                peorid: null,
                 wager: 0,
-                maxRisk: 0,
-                teamToWin: '',
+                toWin: '',
                 registrationDate: '',
-                status: PlaceBetStatus.active,
                 points: 0,
-                placeBetOnTeamB: false
+                pick: 'home',
             },
             placebetSchema: Yup.object().shape({
                 user: Yup.object()
@@ -49,9 +45,15 @@ export default class PlaceBetModal extends React.Component {
                 wager: Yup.number()
                     .moreThan(0, "Wager should be more than 0")
                     .required("Wager field is required"),
-                teamA: Yup.string().required("Name of Team A field is required"),
-                teamB: Yup.string().required("Name of Team B field is required"),
-                betType: Yup.object().nullable().required("Bet type field is required"),
+                teamA: Yup.string()
+                    .required("Name of Team A field is required"),
+                teamB: Yup.string()
+                    .required("Name of Team B field is required"),
+                peorid: Yup.string()
+                    .nullable(),
+                betType: Yup.object()
+                    .nullable()
+                    .required("Bet type field is required"),
                 sports: Yup.object()
                     .nullable()
                     .required("Sports field is required."),
@@ -59,9 +61,12 @@ export default class PlaceBetModal extends React.Component {
                     .required("Team A Odds field is required"),
                 teamBOdds: Yup.number()
                     .required("Team B Odds field is required"),
-                teamToWin: Yup.string().required("Team to Win field is required"),
+                toWin: Yup.number()
+                    .required("Team to Win field is required"),
+                points: Yup.number(),
+                pick: Yup.string()
+                    .required("Pick Team is required"),
                 registrationDate: Yup.string().nullable()
-
             }),
             loadingUser: false,
             loadingAutoBetUser: false,
@@ -74,7 +79,6 @@ export default class PlaceBetModal extends React.Component {
             sportsLeague: [],
         }
     }
-
 
     getOptions = (name, cb) => {
         this.setState({ loadingUser: true });
@@ -136,18 +140,6 @@ export default class PlaceBetModal extends React.Component {
         const leagues = this.state.sportsLeague?.leagues ? this.state.sportsLeague?.leagues : [];
         return Object.keys(leagues).map(function (key, index) {
             return <option key={leagues[key].originId} value={leagues[key].originId}>{leagues[key].name}</option>
-        });
-    }
-
-    renderStatus = () => {
-        return Object.keys(PlaceBetStatus).map(function (key, index) {
-            return <option key={PlaceBetStatus[key]} value={PlaceBetStatus[key]}>{PlaceBetStatus[key]}</option>
-        });
-    }
-
-    renderPeorid = () => {
-        return Object.keys(PlaceBetPeorid).map(function (key, index) {
-            return <option key={PlaceBetPeorid[key]} value={PlaceBetPeorid[key]}>{PlaceBetPeorid[key]}</option>
         });
     }
 
@@ -290,6 +282,27 @@ export default class PlaceBetModal extends React.Component {
                                 </div>
 
                                 <div className="form-group">
+                                    <label>Peorid</label>
+                                    <select name="peorid"
+                                        className={`form-control ${getInputClasses(formik, "peorid")}`}
+                                        {...formik.getFieldProps("peorid")}>
+                                        <option value={null}>Full Time</option>
+                                        <option value='first_half'>1st Half</option>
+                                        <option value='second_half'>2nd Half</option>
+                                        <option value='first_quarter'>1st Quarter</option>
+                                        <option value='second_quarter'>2nd Quarter</option>
+                                        <option value='third_quarter'>2nd Quarter</option>
+                                        <option value='forth_quarter'>2nd Quarter</option>
+                                        <option value='fifth_innings'>5th Innings</option>
+                                    </select>
+                                    {formik.touched.peorid && formik.errors.peorid ? (
+                                        <div className="invalid-feedback">
+                                            {formik.errors.peorid}
+                                        </div>
+                                    ) : null}
+                                </div>
+
+                                <div className="form-group">
                                     <label>Bet Type<span className="text-danger">*</span></label>
                                     <Select
                                         className={`basic-single ${getInputClasses(formik, "betType")}`}
@@ -355,19 +368,19 @@ export default class PlaceBetModal extends React.Component {
                                         ) : null}
                                     </div>
                                 </div>
-                                <div className="form-row form-group">
-                                    <div className="col-md-12">
-                                        <input type="checkbox" id="placeBetOnTeamB" name="placeBetOnTeamB"
-                                            {...formik.getFieldProps("placeBetOnTeamB")}
-                                            checked={formik.values.placeBetOnTeamB}
-                                        />
-                                        <label htmlFor="placeBetOnTeamB"> &nbsp;&nbsp; Check to Place bet on Team B</label>
-                                        {formik.touched.placeBetOnTeamB && formik.errors.placeBetOnTeamB ? (
-                                            <div className="invalid-feedback">
-                                                {formik.errors.placeBetOnTeamB}
-                                            </div>
-                                        ) : null}
-                                    </div>
+                                <div className="form-group">
+                                    <label>Pick</label>
+                                    <select name="pick"
+                                        className={`form-control ${getInputClasses(formik, "pick")}`}
+                                        {...formik.getFieldProps("pick")}>
+                                        <option value='home'>Team A</option>
+                                        <option value='away'>Team B</option>
+                                    </select>
+                                    {formik.touched.pick && formik.errors.pick ? (
+                                        <div className="invalid-feedback">
+                                            {formik.errors.pick}
+                                        </div>
+                                    ) : null}
                                 </div>
 
                                 <div className="form-group">
@@ -380,16 +393,16 @@ export default class PlaceBetModal extends React.Component {
                                         onChange={(e) => {
                                             const stake = e.target.value
                                             formik.setFieldValue("wager", stake);
-                                            const placeOnTeamB = formik.getFieldProps("placeBetOnTeamB").value;
-                                            const teamAOdd = formik.getFieldProps("teamAOdds").value;
-                                            const teamBOdd = formik.getFieldProps("teamBOdds").value;
-                                            const odd = placeOnTeamB ? teamBOdd : teamAOdd;
-                                            const americanOdds = Math.abs(Number(Number(odd).toFixed(2)));
+                                            const pick = formik.values.pick;
+                                            const teamAOdd = formik.values.teamAOdds;
+                                            const teamBOdd = formik.values.teamBOdds;
+                                            const odd = pick == 'home' ? teamAOdd : teamBOdd;
+                                            const americanOdds = Number(Number(odd).toFixed(2));
                                             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
                                             const calculateWin = stake * decimalOdds;
                                             const roundToPennies = Number((calculateWin).toFixed(2));
                                             const win = roundToPennies;
-                                            formik.setFieldValue("teamToWin", win);
+                                            formik.setFieldValue("toWin", win);
                                             formik.setFieldTouched("wager", true);
                                             formik.setFieldError("wager", false);
                                         }}
@@ -403,14 +416,15 @@ export default class PlaceBetModal extends React.Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Team to Win<span className="text-danger">*</span></label>
-                                    <input name="teamToWin" placeholder="Enter Team to Win"
-                                        className={`form-control ${getInputClasses(formik, "teamToWin")}`}
-                                        {...formik.getFieldProps("teamToWin")}
+                                    <label>To Win<span className="text-danger">*</span></label>
+                                    <input name="toWin"
+                                        readOnly
+                                        className={`form-control ${getInputClasses(formik, "toWin")}`}
+                                        {...formik.getFieldProps("toWin")}
                                     />
-                                    {formik.touched.teamToWin && formik.errors.teamToWin ? (
+                                    {formik.touched.toWin && formik.errors.toWin ? (
                                         <div className="invalid-feedback">
-                                            {formik.errors.teamToWin}
+                                            {formik.errors.toWin}
                                         </div>
                                     ) : null}
                                 </div>
