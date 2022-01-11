@@ -241,8 +241,8 @@ class Sport extends Component {
         }
     }
 
-    onChangeDate = (date) => {
-        this.setState({ dateSelected: date });
+    onChangeDate = async (date) => {
+        await this.setState({ dateSelected: date });
         this.getSport();
     }
 
