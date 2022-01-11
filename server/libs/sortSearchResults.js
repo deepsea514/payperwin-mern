@@ -53,11 +53,11 @@ const sortSearchResults = (results) => {
         } else {
             const sport = sortsOrder[a.sportName];
             if (!sport) return 0;
-            const orderA = sport.leagues[a.leagueId ? a.leagueId : a.originId];
-            const orderB = sport.leagues[b.leagueId ? b.leagueId : b.originId];
-            if (orderA && orderB) {
-                return orderA.order - orderB.order;
-            } else if (orderB) {
+            const leagueOrderA = leaguesOrder[a.leagueId ? a.leagueId : a.originId];
+            const leagueOrderB = leaguesOrder[b.leagueId ? b.leagueId : b.originId];
+            if (leagueOrderA && leagueOrderB) {
+                return leagueOrderA.order - leagueOrderB.order;
+            } else if (leagueOrderB) {
                 return 1;
             }
             return -1;
