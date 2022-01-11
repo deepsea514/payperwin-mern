@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
-import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
 import { connect } from "react-redux";
 
 class HowTo extends Component {
@@ -126,6 +124,36 @@ class HowTo extends Component {
                                 PAYPER WIN will take a 5% fee only from the HIGH STAKER, NOT from you if you are to bet against one.
                                 You are charged no FEES whether you win or lose betting against a HIGH STAKER.
                             </p>
+                        </div>
+                        <div className="how-it-works-steps">
+                            <div className="how-it-works-info">
+                                <ul>
+                                    <li className='mt-2'>
+                                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b>
+                                        &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH_CONTENT" />
+                                    </li>
+                                    <li className='mt-2'>
+                                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED" />:</b>
+                                        &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.MATCHED_CONTENT" />
+                                    </li>
+                                    <li className='mt-2'>
+                                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED" />:</b>
+                                        &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.PARTIALMATCHED_CONTENT" />
+                                    </li>
+                                    <li className='mt-2'>
+                                        <b><FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED" />:</b>
+                                        &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED_CONTENT" />
+                                    </li>
+                                    <li className='mt-2'>
+                                        <b>Peer to Peer:</b>
+                                        &nbsp;Your bet is placed on the Peer to Peer marketplace.
+                                    </li>
+                                    <li className='mt-2'>
+                                        <b>High Staker:</b>
+                                        &nbsp;Your bet is accepted on the High Staker marketplace.
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

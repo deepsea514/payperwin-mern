@@ -25,11 +25,11 @@ class BetStatus extends Component {
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.SETTLED_CONTENT" />
                         </li>
                         <li>
-                            <b style={{ background: '#FFE2E5', padding: '2px', color: 'dark' }}>Peer to Peer:</b>
+                            <b style={{ background: '#FFE2E5', padding: '2px', color: 'black' }}>Peer to Peer:</b>
                             &nbsp;Your bet is placed on the Peer to Peer marketplace.
                         </li>
                         <li>
-                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'dark' }}>High Staker:</b>
+                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}>High Staker:</b>
                             &nbsp;Your bet is accepted on the High Staker marketplace.
                         </li>
                     </ul>
