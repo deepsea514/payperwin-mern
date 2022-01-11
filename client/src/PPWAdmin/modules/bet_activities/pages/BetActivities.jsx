@@ -523,7 +523,7 @@ class BetActivities extends React.Component {
                                         }} >
                                         <option value="">All</option>
                                         <option value="p2p">P2P Bets</option>
-                                        <option value="sportsbook">High Staker Bets</option>
+                                        <option value="sportsbook">HIGH STAKER Bets</option>
                                         <option value="parlay">Parlay Bets</option>
                                     </select>
                                     <small className="form-text text-muted">

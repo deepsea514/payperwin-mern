@@ -29,7 +29,7 @@ class HowTo extends Component {
                         <FormattedMessage id="PAGES.HOWITWORKS.TITLE" />
                     </h2>
                     <div className="summary">
-                        Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or High Staker and we are not affiliated with any High Staker. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
+                        Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or HIGH STAKER and we are not affiliated with any HIGH STAKER. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
                     </div>
                     <div className="how-it-works-steps">
                         <div className="how-it-works-info">
@@ -103,7 +103,7 @@ class HowTo extends Component {
                             </p>
                             <p>
                                 PAYPER WIN gurantees all winning bets will be paid.
-                                If patience isn’t your virtue, say no more; we suggest doing an Instant bet with a High Staker.
+                                If patience isn’t your virtue, say no more; we suggest doing an Instant bet with a HIGH STAKER.
                             </p>
                         </div>
                         <div className="how-it-works-info">
@@ -115,9 +115,9 @@ class HowTo extends Component {
                                 These bets are instantly accepted.
                                 The only catch is that the odds are different than PEER to PEER.
                                 The bets here are forwarded on to a HIGH STAKER.
-                                The odds will be similar to a High Staker odds.
-                                We are in no way affiliated with a High Staker.
-                                A High Staker is a high net worth individual or group willing to take all bets.
+                                The odds will be similar to a HIGH STAKER odds.
+                                We are in no way affiliated with a HIGH STAKER.
+                                A HIGH STAKER is a high net worth individual or group willing to take all bets.
                                 PAYPER WIN guarantees you will be paid on all winning bets and we have found the best odds for you.
                                 PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets.
                                 All live betting or non matching bets are done here such soccer draw bets and parlays.
@@ -127,6 +127,7 @@ class HowTo extends Component {
                         </div>
                         <div className="how-it-works-steps">
                             <div className="how-it-works-info">
+                                <strong>BET STATUS</strong>
                                 <ul>
                                     <li className='mt-2'>
                                         <b><FormattedMessage id="COMPONENTS.BETSTATUS.WAITINGFORMATCH" />:</b>
@@ -149,8 +150,8 @@ class HowTo extends Component {
                                         &nbsp;Your bet is placed on the Peer to Peer marketplace.
                                     </li>
                                     <li className='mt-2'>
-                                        <b>High Staker:</b>
-                                        &nbsp;Your bet is accepted on the High Staker marketplace.
+                                        <b>HIGH STAKER:</b>
+                                        &nbsp;Your bet is accepted on the HIGH STAKER marketplace.
                                     </li>
                                 </ul>
                             </div>

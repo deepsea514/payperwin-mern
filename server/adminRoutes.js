@@ -3416,7 +3416,7 @@ adminRouter.get(
                     winLoss = '+ $' + Number(bet.bet).toFixed(2);
                 }
                 data.push([
-                    bet.sportsbook ? 'High Staker' : 'P2P',
+                    bet.sportsbook ? 'HIGH STAKER' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
                     bet.isParlay ? 'Parlay' : bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
