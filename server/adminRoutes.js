@@ -6597,22 +6597,22 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
             };
             switch (pick) {
                 case 'home':
-                    docChanges.$push['homeBets'] = bet._id;
+                    docChanges.$push['homeBets'] = newBet._id;
                     docChanges.$inc['teamA.betTotal'] = betAfterFee;
                     docChanges.$inc['teamA.toWinTotal'] = toWin;
                     break;
                 case 'draw':
-                    docChanges.$push['drawBets'] = bet._id;
+                    docChanges.$push['drawBets'] = newBet._id;
                     docChanges.$inc['teamDraw.betTotal'] = betAfterFee;
                     docChanges.$inc['teamDraw.toWinTotal'] = toWin;
                     break;
                 case 'nondraw':
-                    docChanges.$push['nonDrawBets'] = bet._id;
+                    docChanges.$push['nonDrawBets'] = newBet._id;
                     docChanges.$inc['teamNonDraw.betTotal'] = betAfterFee;
                     docChanges.$inc['teamNonDraw.toWinTotal'] = toWin;
                     break;
                 default:
-                    docChanges.$push['awayBets'] = bet._id;
+                    docChanges.$push['awayBets'] = newBet._id;
                     docChanges.$inc['teamB.betTotal'] = betAfterFee;
                     docChanges.$inc['teamB.toWinTotal'] = toWin;
                     break;
@@ -6639,10 +6639,9 @@ adminRouter.post(
 
         const {
             odds,
-            pick, // TODO: fix over under pick
+            pick,
             stake: toBet,
             win: toWin,
-            lineId,
             lineQuery,
             pickName,
             origin,
@@ -6664,7 +6663,6 @@ adminRouter.post(
                 lineId,
                 type,
                 subtype,
-                altLineId,
                 points,
             } = lineQuery;
             const sportData = await Sport.findOne({ name: new RegExp(`^${sportName}$`, 'i') });
@@ -6675,20 +6673,6 @@ adminRouter.post(
                 const { teamA, teamB, startDate, home, userId, away, teamAOdds, teamBOdds } = betSlip;
                 const user = await User.findById(userId);
 
-                const existingBet = await Bet.findOne({
-                    userId: user._id,
-                    "lineQuery.sportName": lineQuery.sportName,
-                    "lineQuery.leagueId": lineQuery.leagueId,
-                    "lineQuery.eventId": lineQuery.eventId,
-                    "lineQuery.lineId": lineQuery.lineId,
-                    "lineQuery.type": lineQuery.type,
-                    "lineQuery.subtype": lineQuery.subtype,
-                    "lineQuery.altLineId": lineQuery.altLineId
-                });
-                if (existingBet) {
-                    errors.push(`${pickName} @${odds[pick]} wager could not be placed. Already placed a bet on this line.`);
-                }
-                const pickWithOverUnder = ['total', 'alternative_total'].includes(lineQuery.type) ? (pick === 'home' ? 'over' : 'under') : pick;
                 const lineOdds = null;
                 const oddsA = teamAOdds;
                 const oddsB = teamBOdds
