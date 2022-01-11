@@ -313,7 +313,7 @@ class Header extends Component {
                         </div>
                     </div>
                 </div>
-                {pathname !== '/sportsbook' && <div className={`header-search ${dark_light == 'light' ? 'light' : 'dark'}`}>
+                <div className={`header-search ${dark_light == 'light' ? 'light' : 'dark'}`}>
                     <div className="container">
                         <div className="d-flex justify-content-between">
                             <div className="">
@@ -382,7 +382,7 @@ class Header extends Component {
                             </div>
                         </div>
                     </div>
-                </div>}
+                </div>
                 {!user && showLoginModal && <LoginModal
                     closeModal={() => {
                         showLoginModalAction(false)

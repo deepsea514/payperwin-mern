@@ -148,13 +148,13 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                         html: simpleresponsive(
                             `Hi <b>${user.email}</b>.
                                 <br><br>
-                                Good news! Your bet on ${lineQuery.sportName} ${lineQuery.type} was accepted to PAYPER WIN Sportsbook
+                                Good news! Your bet on ${lineQuery.sportName} ${lineQuery.type} was accepted to PAYPER WIN High Staker
                                 <br><br>
                                 <ul>
                                     <li>Wager: $${betAmount.toFixed(2)}</li>
                                     <li>Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}</li>
                                     <li>Accepted Amount: $${payableToWin.toFixed(2)}</li>
-                                    <li>Platform: PAYPER WIN Sportsbook</li>
+                                    <li>Platform: PAYPER WIN High Staker</li>
                                 </ul>
                                 Good luck!
                                 `),
@@ -171,7 +171,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                     });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
-                    sendSMS(`Good news! Your bet on ${lineQuery.sportName} ${lineQuery.type} was accepted to PAYPER WIN Sportsbook\n
+                    sendSMS(`Good news! Your bet on ${lineQuery.sportName} ${lineQuery.type} was accepted to PAYPER WIN High Staker\n
                             Wager: $${betAmount.toFixed(2)}\n 
                             Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 
                             Matched Amount: $${payableToWin.toFixed(2)}\n

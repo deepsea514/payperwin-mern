@@ -26,11 +26,11 @@ class BetStatus extends Component {
                         </li>
                         <li>
                             <b style={{ background: '#FFE2E5', padding: '2px', color: 'dark' }}>Peer to Peer:</b>
-                            &nbsp;Your bet is placed on the peer to peer marketplace.
+                            &nbsp;Your bet is placed on the Peer to Peer marketplace.
                         </li>
                         <li>
-                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'dark' }}>Sportsbook:</b>
-                            &nbsp;Your bet is accepted on the sportsbook marketplace.
+                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'dark' }}>High Staker:</b>
+                            &nbsp;Your bet is accepted on the High Staker marketplace.
                         </li>
                     </ul>
                 </div>

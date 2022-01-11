@@ -49,8 +49,8 @@ export default class AutoBetModal extends React.Component {
                     .moreThan(0, "Budget should be more than 0")
                     .required("Budget field is required"),
                 sportsbookBudget: Yup.number()
-                    .moreThan(0, "Sportsbook Budget should be more than 0")
-                    .required("Sportsbook Budget field is required"),
+                    .moreThan(0, "High Staker Budget should be more than 0")
+                    .required("High Staker Budget field is required"),
                 acceptParlay: Yup.boolean().default(false),
                 parlayBudget: Yup.number()
                     .required("Parlay Budget field is required"),
@@ -206,8 +206,8 @@ export default class AutoBetModal extends React.Component {
                                             ) : null}
                                         </div>
                                         <div className="form-group col-md-6">
-                                            <label>Sportsbook Budget<span className="text-danger">*</span></label>
-                                            <input name="sportsbookBudget" placeholder="Enter Sportsbook Budget"
+                                            <label>High Staker Budget<span className="text-danger">*</span></label>
+                                            <input name="sportsbookBudget" placeholder="Enter High Staker Budget"
                                                 className={`form-control ${getInputClasses(formik, "sportsbookBudget")}`}
                                                 {...formik.getFieldProps("sportsbookBudget")}
                                             />
