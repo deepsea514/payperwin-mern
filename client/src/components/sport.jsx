@@ -141,9 +141,11 @@ class Sport extends Component {
                             return null;
                         }).filter(league => league);
 
-                        if(sportName == null) {
+                        if (sportName == null) {
                             const leagueIds = filteredLeagues.slice(8, leagues.length).map(league => league.originId);
                             setCollapsedLeagues(leagueIds);
+                        } else {
+                            setCollapsedLeagues([]);
                         }
                         this.setState({ data: { ...data, leagues: filteredLeagues }, loading: false });
                     } else {
