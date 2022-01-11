@@ -17,6 +17,7 @@ import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 import { WinPercentage } from "../../components/WinPercentage";
 import { UsedCredit } from "../../components/UsedCredit";
 import { InPlay } from "../../components/InPlay";
+import { NetBalance } from "../../components/NetBalance";
 
 class ProfileOverview extends React.Component {
     constructor(props) {
@@ -131,10 +132,16 @@ class ProfileOverview extends React.Component {
                                 className="mt-2" />
                         </div>
                         <div className="col-md-4">
+                            <NetBalance
+                                balance={(Number(balance) - Number(usedCredit)).toFixed(2)}
+                                currency={currency}
+                                className="mt-2" />
+                        </div>
+                        {/* <div className="col-md-4">
                             <WinLoss
                                 className="mt-2"
                                 winloss={winloss} />
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                             <TotalWager
                                 totalwagers={totalwagers}
