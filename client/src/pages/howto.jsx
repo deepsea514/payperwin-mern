@@ -31,7 +31,7 @@ class HowTo extends Component {
                         <FormattedMessage id="PAGES.HOWITWORKS.TITLE" />
                     </h2>
                     <div className="summary">
-                        Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or Sportsbook and we are not affiliated with any Sportsbook. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
+                        Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or High Staker and we are not affiliated with any High Staker. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
                     </div>
                     <div className="how-it-works-steps">
                         <div className="how-it-works-info">
@@ -117,8 +117,8 @@ class HowTo extends Component {
                                 These bets are instantly accepted.
                                 The only catch is that the odds are different than PEER to PEER.
                                 The bets here are forwarded on to a HIGH STAKER.
-                                The odds will be similar to a Sportsbooks odds.
-                                We are in no way affiliated with a Sportsbook.
+                                The odds will be similar to a High Staker odds.
+                                We are in no way affiliated with a High Staker.
                                 A High Staker is a high net worth individual or group willing to take all bets.
                                 PAYPER WIN guarantees you will be paid on all winning bets and we have found the best odds for you.
                                 PAYPER WIN does not profit off of or charge any fees whatsoever on live or instant bets.

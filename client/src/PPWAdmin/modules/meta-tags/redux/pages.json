@@ -4,10 +4,6 @@
         "path": "/"
     },
     {
-        "title": "Instant/Live Betting",
-        "path": "/sportsbook"
-    },
-    {
         "title": "Registration",
         "path": "/signup"
     },

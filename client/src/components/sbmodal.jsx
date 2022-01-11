@@ -10,10 +10,10 @@ export default class SBModal extends React.Component {
                 <div className="col-in">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
-                        <b><FormattedMessage id="COMPONENTS.SPORTSBOOK.TITLE" /></b>
+                        <b><FormattedMessage id="COMPONENTS.HIGHSTAKER.TITLE" /></b>
                         <hr />
                         <p>
-                            <FormattedMessage id="COMPONENTS.SPORTSBOOK.CONTENT" />
+                            <FormattedMessage id="COMPONENTS.HIGHSTAKER.CONTENT" />
                         </p>
                         <b>{sportsbookInfo.name}: {sportsbookInfo.pickName}@{sportsbookInfo.originOdds[sportsbookInfo.pick]}</b>
                         <div className="text-right">

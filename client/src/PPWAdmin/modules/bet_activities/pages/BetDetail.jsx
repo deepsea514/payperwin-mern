@@ -146,7 +146,7 @@ class BetDetail extends React.Component {
                                             <th>User</th>
                                             <td>{bet.userId.email}</td>
                                             <th>House</th>
-                                            <td>{bet.isParlay ? 'Parlay' : bet.sportsbook ? 'Sportsbook' : 'Peer to Peer'}</td>
+                                            <td>{bet.isParlay ? 'Parlay' : bet.sportsbook ? 'High Staker' : 'Peer to Peer'}</td>
                                         </tr>
                                         <tr>
                                             <th>Amount</th>
