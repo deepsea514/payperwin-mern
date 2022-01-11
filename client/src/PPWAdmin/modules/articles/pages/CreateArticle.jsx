@@ -168,7 +168,12 @@ class CreateArticle extends React.Component {
         const { initialValues, articleSchema, isError, isSuccess, loadingCategories } = this.state;
         const config = {
             readonly: false,
-            height: 350
+            height: 350,
+            enableDragAndDropFileToEditor: true,
+            spellcheck: true,
+            uploader: {
+                insertImageAsBase64URI: true
+            },
         };
         return (
             <div className="row">
