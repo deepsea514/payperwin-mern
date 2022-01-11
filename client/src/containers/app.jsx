@@ -388,7 +388,7 @@ class App extends Component {
 
         return (
             <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
-                <Favicon url={'/images/favicon-2.ico'} />
+                <Favicon url={'/images/favicon.png'} />
                 <Header
                     toggleField={this.toggleField}
                     user={user}

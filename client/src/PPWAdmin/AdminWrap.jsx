@@ -44,7 +44,7 @@ export default class AdminWrap extends Component {
                         {/* <Provider store={store}>
                             <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}> */}
                         <React.Suspense fallback={<LayoutSplashScreen />}>
-                            <Favicon url={'/images/favicon-2.ico'} />
+                            <Favicon url={'/images/favicon.png'} />
                             <MTheme />
                             <MaterialThemeProvider>
                                 <BrowserRouter basename={"RP1021"}>
