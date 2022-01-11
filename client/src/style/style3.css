@@ -134,11 +134,11 @@ a.log-in-btn {
 }
 
 .hide {
-    display: none !important;
+    display: none;
 }
 
 .mobile {
-    display: none !important;
+    display: none;
 }
 
 .content {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import AuthWrap from "./authWrap";
+import App from './app';
 import AdminWrap from "../PPWAdmin/AdminWrap";
 import Maintenance from "./Maintenance";
 import { I18nProvider, MetronicI18nProvider, setLanguage } from "../PPWAdmin/_metronic/i18n";
@@ -44,7 +44,7 @@ export default class Main extends Component {
                                 <Switch>
                                     <Route path="/RP1021" render={(props) => <AdminWrap {...props} />} />
                                     <Route path="/maintenance" render={(props) => <Maintenance maintenance={maintenance} {...props} />} />
-                                    {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <AuthWrap {...props} />} />}
+                                    {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <App {...props} />} />}
                                 </Switch>
                             </BrowserRouter>
                         </I18nProvider>
