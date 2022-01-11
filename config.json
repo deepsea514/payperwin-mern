@@ -49,13 +49,6 @@
     "AutoBetPeorid": {
         "daily": "Daily"
     },
-    "PlaceBetStatus": {
-        "active": "Active",
-        "inActive": "Inactive"
-    },
-    "PlaceBetPeorid": {
-        "daily": "Daily"
-    },
     "PromotionTypes": {
         "straightCredit": {
             "name": "Straight Credit",
