@@ -16,8 +16,8 @@ class AboutUs extends Component {
                         <div className='how-it-works-info'>
                             <p>
                                 PAYPER WIN is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online.
-                                We are not a Bookie or HIGH STAKER, and we are not affiliated with any.
-                                Payper Win prides itself providing a model where fans RISK Less and WIN More!
+                                We are not a Bookie or Sportsbook, and we are not affiliated with any.
+                                Payper Win prides itself providing a model where fans <i>RISK Less and WIN More!</i>
                             </p>
                             <p>
                                 What does it mean to risk less and win more?
@@ -31,26 +31,26 @@ class AboutUs extends Component {
                             </p>
                             <p>
                                 The companys founder had knowledge and experience in the secondary ticket industry which goes hand in hand with sporting events.
-                                The Scalper selling tickets in a dark alley soon became a storefront Ticket Broker with a website, compared to the Bookie sometimes depicted in a back room of a deli shop to eventually graduating to a HIGH STAKER website.
+                                The Scalper selling tickets in a dark alley soon became a storefront Ticket Broker with a website, compared to the Bookie sometimes depicted in a back room of a deli shop to eventually graduating to a Sportsbook website.
                                 It was meshing concepts from these already linked industry’s into what is now Payper Win.
-                                The business model eventually began its transition to a Peer to Peer Betting Exchange January 29th 2021
+                                The business model eventually began its transition to a Peer to Peer Betting Exchange January 29th 2021.
                             </p>
                             <p>
                                 Ticket Brokers would choose the mark up they wanted on a ticket based on supply and demand.
-                                Similarly, how a HIGH STAKER would set it odds or lines for a bet.
+                                Similarly, how a Sportsbook would set it odds or lines for a bet.
                                 Stubhub inspired the creation of the Peer to Peer model for Payper Win.
                             </p>
                             <p>
                                 What is a Peer to Peer?
-                                A Peer to Peer is where you bet against a person rather than with a HIGH STAKER or Bookie.
+                                A Peer to Peer is where you bet against a person rather than with a Sportsbook or Bookie.
                                 Stubhubs concept is buyers and sellers bypassing Ticket Brokers to exchange their tickets, Stubhub charges a fee for facilitating payments and tickets between both individuals.
                                 Payper Win is a Exchange to bypass a Bookie and bet against another bettor.
                                 The site officially launched August 17th 2021.
                             </p>
                             <p>
-                                Its concept is a transaction based service site versus the norm of betting with a HIGH STAKER or Bookie.
+                                Its concept is a transaction based service site versus the norm of betting with a Sportsbook or Bookie.
                                 Payper Win takes a small five percent fee from the winner for facilitating the transaction between both individuals.
-                                After deducting Payper Wins transaction fee from the winner, the winner still sees a higher profit than betting with a HIGH STAKER.
+                                After deducting Payper Wins transaction fee from the winner, the winner still sees a higher profit than betting with a Sportsbook.
                             </p>
                         </div>
                     </div>
