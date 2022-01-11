@@ -183,15 +183,15 @@
 }
 
 .main-section.dark .origin-odds, .main-section.dark .old-odds {
-    color: #ED254E;
+    color: #f0b631;
 }
 
 .main-section.dark .new-odds {
-    color: #0a74ef
+    color: #ff00fe
 }
 
 .main-section.dark .old-odds::before {
-    background: #ED254E;
+    background: #f0b631;
 }
 
 .main-section.dark .table-list li.detailed-lines-link a {
@@ -421,26 +421,15 @@ footer.dark .toggle {
     color: white;
 }
 
+
+.orange .new-odds {
+    color: #FFF !important;
+}
+
 @media(max-width:767px) {
     .main-section.dark .box-odds {
         background: #121212;
         border: none;
-    }
-
-    .main-section.dark .origin-odds, .main-section.dark .old-odds {
-        color: #f0b631;
-    }
-
-    .main-section.dark .old-odds::before {
-        background: #f0b631;
-    }
-
-    .main-section.dark .new-odds {
-        color: #ff00fe;
-    }
-
-    .orange .new-odds {
-        color: #FFF !important;
     }
 
     .main-section.dark .table-list>li:nth-child(2), .main-section.dark .table-list>li:nth-child(3) {
