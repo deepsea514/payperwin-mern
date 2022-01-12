@@ -45,6 +45,7 @@ class Sport extends Component {
             timer: null,
             liveTimer: null,
             dateSelected: 0,
+            selectedLeague: null,
         };
     }
 
@@ -113,6 +114,8 @@ class Sport extends Component {
                                 maxDate = new Date(newDate.addDates(1));
                         }
                         const { leagues } = data;
+                        const selectedLeague = leagues.find(_league => _league.originId == league);
+
                         const filteredLeagues = leagues.map(league => {
                             let events = league.events.map((event) => {
                                 const { teamA, teamB, startDate, lines } = event;
@@ -147,7 +150,14 @@ class Sport extends Component {
                         } else {
                             setCollapsedLeagues([]);
                         }
-                        this.setState({ data: { ...data, leagues: filteredLeagues }, loading: false });
+                        this.setState({
+                            selectedLeague: selectedLeague ? {
+                                name: selectedLeague.name,
+                                originId: selectedLeague.originId
+                            } : null,
+                            data: { ...data, leagues: filteredLeagues },
+                            loading: false,
+                        });
                     } else {
                         this.setState({ data: null, loading: false });
                     }
@@ -249,12 +259,13 @@ class Sport extends Component {
     render() {
         const {
             betSlip, removeBet, timezone, oddsFormat, team, sportName,
-            league: leagueId, hideBreacrumb, user, getUser,
+            hideBreacrumb, user, getUser,
             location, collapsedLeague, toggleCollapseLeague
         } = this.props;
         const { pathname } = location;
         const {
-            loading, data, error, sportsbookInfo, liveData, dateSelected
+            loading, data, error, sportsbookInfo, liveData, dateSelected,
+            selectedLeague
         } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -271,7 +282,6 @@ class Sport extends Component {
             )
         }
         const { leagues, origin } = data;
-        const selectedLeague = leagues.find(league => league.originId == leagueId);
         return (
             <div>
                 {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
