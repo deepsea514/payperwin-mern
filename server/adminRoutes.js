@@ -22,6 +22,7 @@ const MetaTag = require("./models/meta-tag");
 const Addon = require("./models/addon");
 const Article = require("./models/article");
 const ArticleCategory = require("./models/article_category");
+const ArticleAuthor = require('./models/article_author');
 const Frontend = require("./models/frontend");
 const Ticket = require('./models/ticket');
 const FAQItem = require('./models/faq_item');
@@ -5746,6 +5747,58 @@ adminRouter.get(
     }
 )
 
+
+adminRouter.get(
+    '/articles/authors',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const authors = await ArticleAuthor.find().sort({ createdAt: -1 });
+        res.json(authors);
+    }
+)
+
+adminRouter.post(
+    '/articles/authors',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const data = req.body;
+        try {
+            await ArticleAuthor.create(data);
+            res.json({ success: true });
+        } catch (error) {
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.delete(
+    '/articles/authors/:id',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            await ArticleAuthor.deleteOne({ _id: id });
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/articles/searchauthors',
+    authenticateJWT,
+    limitRoles('articles'),
+    async (req, res) => {
+        const { name } = req.query;
+        const authors = await ArticleAuthor.find({ name: { "$regex": name, "$options": "i" } });
+        res.json(authors.map(author => ({ label: author.name, value: author.logo })));
+    }
+)
 
 adminRouter.get(
     '/articles',

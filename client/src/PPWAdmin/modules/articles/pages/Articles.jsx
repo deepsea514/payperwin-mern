@@ -111,7 +111,10 @@ class Articles extends React.Component {
                                 <h3 className="card-label">Article Drafts</h3>
                             </div>
                             <div className="card-toolbar">
-                                <Link to="/categories" className="btn btn-success font-weight-bolder font-size-sm">
+                                <Link to="/authors" className="btn btn-success font-weight-bolder font-size-sm">
+                                    <i className="fas fa-user"></i>&nbsp; Authors
+                                </Link>
+                                <Link to="/categories" className="btn btn-success font-weight-bolder font-size-sm ml-3">
                                     <i className="fas fa-list"></i>&nbsp; Categories
                                 </Link>
                                 <Link to="/create" className="btn btn-success font-weight-bolder font-size-sm ml-3">
