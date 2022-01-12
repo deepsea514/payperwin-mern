@@ -93,12 +93,14 @@ class Article extends Component {
                                     <div className="mt-2" dangerouslySetInnerHTML={{ __html: article.content }} />
                                 </article>
                                 <div className='article-share-twitter'>
-                                    <a href='#' class="article-share-btn-twitter">
-                                        <span class="article-share-btn-icon">
-                                            <i class="fab fa-twitter" />
+                                    <a href={`https://twitter.com/intent/tweet?url=${window.location.toString()}`}
+                                        target="_blank"
+                                        className="article-share-btn-twitter">
+                                        <span className="article-share-btn-icon">
+                                            <i className="fab fa-twitter" />
                                         </span>
-                                        <div class="article-share-btn-text">
-                                            <span class="article-share-btn-title">Twitter</span>
+                                        <div className="article-share-btn-text">
+                                            <span className="article-share-btn-title">Twitter</span>
                                         </div>
                                     </a>
                                 </div>
