@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Articles from "./Articles";
 import CreateArticle from "./CreateArticle";
 import Categories from "./Categories";
-import EditArticle from "./EditArticle";
 
 export default class ArticlesModule extends Component {
     render() {
@@ -11,7 +10,7 @@ export default class ArticlesModule extends Component {
             <BrowserRouter basename="/RP1021/articles">
                 <Switch>
                     <Route path="/create" component={CreateArticle} />
-                    <Route path="/edit/:id" component={EditArticle} />
+                    <Route path="/edit/:id" component={CreateArticle} />
                     <Route path="/categories" component={Categories} />
                     <Route exact path="/" component={Articles} />
                 </Switch>
