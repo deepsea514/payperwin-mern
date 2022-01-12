@@ -46,12 +46,12 @@ class SidebarAccount extends Component {
                         <li>
                             <Link to={{ pathname: '/payment-options' }}><i className="far fa-money-bill-alt"></i><FormattedMessage id="COMPONENTS.SIDEBAR.PAYMENT_METHODS" /> </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link to={{ pathname: '/cashback' }}><i className="fas fa-comment-dollar"></i> <FormattedMessage id="COMPONENTS.SIDEBAR.CASHBACK" /> </Link>
-                        </li>
-                        <li>
+                        </li> */}
+                        {/* <li>
                             <Link to={{ pathname: '/loyalty' }}><i className="fas fa-file-invoice-dollar"></i> <FormattedMessage id="COMPONENTS.SIDEBAR.LOYALTY" /> </Link>
-                        </li>
+                        </li> */}
                     </ul>
                 </>}
 
