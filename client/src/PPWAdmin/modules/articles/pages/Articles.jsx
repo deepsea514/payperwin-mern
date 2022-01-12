@@ -54,7 +54,7 @@ class Articles extends React.Component {
         return article_drafts.map((article, index) => (
             <tr key={index}>
                 <td>{index + 1}</td>
-                <td><img src={article.logo} width="60" height="30" /></td>
+                <td><img src={article.logo} style={{ width: '60px', height: 'auto', display: 'block' }} /></td>
                 <td>{article.title}</td>
                 <td>{article.posted_at && this.getDateFormat(article.posted_at)}</td>
                 <td>{this.getDateFormat(article.createdAt)}</td>
