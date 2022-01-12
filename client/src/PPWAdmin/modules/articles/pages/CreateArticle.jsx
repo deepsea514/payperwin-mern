@@ -5,17 +5,21 @@ import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
 import "react-datepicker/dist/react-datepicker.css";
-import { createArticle, searchCategories } from "../redux/services";
+import { createArticle, getArticleDraft, searchCategories, updateArticle } from "../redux/services";
 import Resizer from "react-image-file-resizer";
 import AsyncSelect from 'react-select/async';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import CustomDatePicker from "../../../../components/customDatePicker";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 
 class CreateArticle extends React.Component {
     constructor(props) {
         super(props);
+        const { match: { params: { id } } } = props;
         this.state = {
-            initialValues: {
+            article_id: id ? id : null,
+            loading: false,
+            initialValues: id ? null : {
                 logo: '',
                 title: '',
                 subtitle: '',
@@ -60,6 +64,34 @@ class CreateArticle extends React.Component {
     }
 
     componentDidMount() {
+        const { article_id } = this.state;
+        if (article_id) {
+            this.setState({ loading: true });
+            getArticleDraft(article_id)
+                .then(({ data }) => {
+                    this.setState({
+                        loading: false,
+                        initialValues: {
+                            logo: data.logo,
+                            title: data.title,
+                            subtitle: data.subtitle,
+                            categories: data.categories.map(category => ({ label: category, value: category })),
+                            permalink: data.permalink,
+                            content: data.content,
+                            meta_title: data.meta_title,
+                            meta_description: data.meta_description,
+                            meta_keywords: data.meta_keywords,
+                            posted_at: data.posted_at ? new Date(data.posted_at) : (new Date()),
+                        }
+                    })
+                })
+                .catch(() => {
+                    this.setState({
+                        loading: false,
+                        initialValues: null
+                    })
+                })
+        }
     }
 
     validateArticle = (values, formik) => {
@@ -80,6 +112,15 @@ class CreateArticle extends React.Component {
     }
 
     onSubmit = (values, formik) => {
+        const { article_id } = this.state;
+        if (article_id) {
+            this.onUpdateArticle(values, formik);
+        } else {
+            this.onCreateArticle(values, formik);
+        }
+    }
+
+    onCreateArticle = (values, formik) => {
         const { history } = this.props;
         if (!this.validateArticle(values, formik)) {
             formik.setSubmitting(false);
@@ -106,7 +147,44 @@ class CreateArticle extends React.Component {
             })
     }
 
+    onUpdateArticle = (values, formik) => {
+        const { article_id } = this.state;
+        const { history } = this.props;
+        if (!this.validateArticle(values, formik)) {
+            formik.setSubmitting(false);
+            return;
+        }
+        formik.setSubmitting(true);
+        this.setState({ isSuccess: false, isError: false });
+        const saveValue = {
+            ...values,
+            categories: values.categories.map((category) => category.value),
+            publish: true
+        }
+        updateArticle(article_id, saveValue)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ isSuccess: true });
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ isError: true });
+            })
+    }
+
     onSaveDraft = (values, formik) => {
+        const { article_id } = this.state;
+        if (article_id) {
+            this.onUpdateDraft(values, formik);
+        } else {
+            this.onCreateDraft(values, formik);
+        }
+    }
+
+    onCreateDraft = (values, formik) => {
         const { history } = this.props;
         formik.setSubmitting(true);
         this.setState({ isSuccess: false, isError: false });
@@ -129,6 +207,31 @@ class CreateArticle extends React.Component {
             })
     }
 
+    onUpdateDraft = (values, formik) => {
+        const { article_id } = this.state;
+        const { history } = this.props;
+        formik.setSubmitting(true);
+        this.setState({ isSuccess: false, isError: false });
+        const saveValue = {
+            ...values,
+            categories: values.categories.map((category) => category.value),
+            publish: false
+        }
+
+        updateArticle(article_id, saveValue)
+            .then(() => {
+                formik.setSubmitting(false);
+                this.setState({ isSuccess: true });
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
+            })
+            .catch(() => {
+                formik.setSubmitting(false);
+                this.setState({ isError: true });
+            })
+    }
+
     clickUploadButton = () => {
         this.logoRef.current.click();
     }
@@ -137,12 +240,6 @@ class CreateArticle extends React.Component {
         const file = e.target.files[0];
         const image = await this.resizeFile(file);
         formik.setFieldValue('logo', image);
-        // let reader = new FileReader();
-        // reader.readAsDataURL(file);
-        // reader.onload = function () {
-        // };
-        // reader.onerror = function (error) {
-        // };
     }
 
     resizeFile = (file) => {
@@ -156,6 +253,7 @@ class CreateArticle extends React.Component {
     }
 
     getCategories = (name, cb) => {
+        console.log(name)
         this.setState({ loadingCategories: true });
         searchCategories(name).then(({ data }) => {
             cb(data);
@@ -167,7 +265,7 @@ class CreateArticle extends React.Component {
     }
 
     render() {
-        const { initialValues, articleSchema, isError, isSuccess, loadingCategories } = this.state;
+        const { initialValues, articleSchema, isError, isSuccess, loadingCategories, article_id, loading } = this.state;
         const config = {
             readonly: false,
             height: 350,
@@ -183,15 +281,24 @@ class CreateArticle extends React.Component {
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Create a New Article</h3>
+                                <h3 className="card-label">{article_id ? 'Update an Article' : 'Create a New Article'}</h3>
                             </div>
                         </div>
                         <div className="card-body">
-                            <Formik
+                            {!loading && !initialValues && <center>
+                                <h2>No Available data.</h2>
+                            </center>}
+                            {loading && <center>
+                                <Preloader use={ThreeDots}
+                                    size={100}
+                                    strokeWidth={10}
+                                    strokeColor="#F0AD4E"
+                                    duration={800} />
+                            </center>}
+                            {initialValues && <Formik
                                 validationSchema={articleSchema}
                                 initialValues={initialValues}
-                                onSubmit={this.onSubmit}
-                            >
+                                onSubmit={this.onSubmit}>
                                 {(formik) => {
                                     return <form onSubmit={formik.handleSubmit}>
                                         {isError && (
@@ -255,7 +362,6 @@ class CreateArticle extends React.Component {
 
                                         <div className="form-row form-group">
                                             <div className="col">
-                                                <p>Please keep ratio as 1:2</p>
                                                 <button type="button" className="btn btn-success mr-2" onClick={this.clickUploadButton}>Upload Logo File</button>
                                                 <input ref={this.logoRef}
                                                     className={`form-control ${getInputClasses(formik, "logo")}`}
@@ -268,7 +374,7 @@ class CreateArticle extends React.Component {
                                                 ) : null}
                                             </div>
                                             <div className="col">
-                                                <img src={formik.values.logo} style={{ width: '200px', height: '100px' }} />
+                                                <img src={formik.values.logo} style={{ width: '200px', height: 'auto', display: 'block' }} />
                                             </div>
                                         </div>
                                         <div className="form-row form-group">
@@ -313,7 +419,7 @@ class CreateArticle extends React.Component {
                                                 <label>Sub Title<span className="text-danger">*</span></label>
                                                 <textarea type="text" name="subtitle"
                                                     className={`form-control ${getInputClasses(formik, "subtitle")}`}
-                                                    rows={5}
+                                                    rows={2}
                                                     {...formik.getFieldProps("subtitle")}
                                                     placeholder="Sub Title" />
                                                 {formik.touched.subtitle && formik.errors.subtitle ? (
@@ -336,15 +442,13 @@ class CreateArticle extends React.Component {
                                                 noOptionsMessage={() => "No Categories"}
                                                 value={formik.values.categories}
                                                 isLoading={loadingCategories}
+                                                defaultOptions={true}
                                                 {...formik.getFieldProps("categories")}
-                                                {...{
-                                                    onChange: (categories) => {
-                                                        if (!categories) return;
-                                                        formik.setFieldValue("categories", categories);
-                                                        formik.setFieldTouched("categories", true);
-                                                        formik.setFieldError("categories", false);
-                                                    },
-
+                                                onChange={(categories) => {
+                                                    if (!categories) return;
+                                                    formik.setFieldValue("categories", categories);
+                                                    formik.setFieldTouched("categories", true);
+                                                    formik.setFieldError("categories", false);
                                                 }}
                                             />
                                             {formik.touched.categories && formik.errors.categories ? (
@@ -460,7 +564,7 @@ class CreateArticle extends React.Component {
                                         </div>
                                     </form>
                                 }}
-                            </Formik>
+                            </Formik>}
                         </div>
                     </div>
                 </div>
