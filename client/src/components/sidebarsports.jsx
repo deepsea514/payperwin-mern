@@ -3,6 +3,7 @@ import SportsList from './sportsList';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import Favorites from './favorites';
+import Search from './search';
 
 class SidebarSports extends Component {
     render() {
@@ -11,6 +12,7 @@ class SidebarSports extends Component {
             <div className={`col-md-2 col-sm-6 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
                 style={sportsMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
                     toggleField('sportsMenuMobileOpen', false)}>
+                <Search />
                 <div className="fabrt-d">
                     <h3 className="cat-heading">Favorites</h3>
                     {!user && <div className="favorites">

@@ -3,8 +3,9 @@ import Sport from './sport';
 import Others from "./others";
 import { FormattedMessage, injectIntl } from "react-intl";
 import sportNameImage from "../helpers/sportNameImage";
-import PromotionModal from './promotionModal';
 import { getFeaturedSports } from '../redux/services';
+import { connect } from 'react-redux';
+import * as frontend from "../redux/reducer";
 
 const topLeagues = [
     {
@@ -34,7 +35,7 @@ const topLeagues = [
     }
 ]
 
-export default class Highlights extends Component {
+class Highlights extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,7 +43,6 @@ export default class Highlights extends Component {
             leagueIndex: null,
             sports: [],
             loading: false,
-            showPromotion: false,
         };
         this._isMounted = false;
         this.listRef = createRef();
@@ -89,17 +89,17 @@ export default class Highlights extends Component {
     }
 
     render() {
-        const { sportIndex, leagueIndex, sports, showPromotion } = this.state;
-        const { addBet, betSlip, removeBet } = this.props;
+        const { sportIndex, leagueIndex, sports } = this.state;
+        const { addBet, betSlip, removeBet, showPromotionAction } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         return (
             <div className="highlights">
-                {showPromotion && <PromotionModal closePromotion={() => this.setState({ showPromotion: false })} />}
+
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
                     <p className='promotion-header'>Peer-to-Peer Betting Exchange.<br /> Risk less Win more!</p>
                     <div className='p-3'>
-                        <div className='promotion-botton-wrap' onClick={() => this.setState({ showPromotion: true })}>
+                        <div className='promotion-botton-wrap' onClick={() => showPromotionAction(true)}>
                             <div className='promotion-botton'><span>What's New</span></div>
                         </div>
                     </div>
@@ -173,3 +173,5 @@ export default class Highlights extends Component {
         );
     }
 }
+
+export default connect(null, frontend.actions)(Highlights);

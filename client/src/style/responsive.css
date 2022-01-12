@@ -57,10 +57,6 @@
         background: #ccc;
     }
 
-    .header-search {
-        display: none;
-    }
-
     .mobile-menu .navbar-nav {
         -ms-flex-direction: column;
         /* flex-direction: column; */
@@ -264,5 +260,14 @@
 
     .sports-scroller {
         display: none !important;
+    }
+
+    .promotion-botton {
+        background-color: #f1f3f7;
+        color: #000;
+    }
+
+    .header-bottom {
+        display: none;
     }
 }

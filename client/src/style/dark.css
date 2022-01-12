@@ -2,48 +2,6 @@
     background-color: #121212;
 }
 
-/* //Header */
-
-.header-search.dark, .header-search.dark * {
-    transition: all 0.5s ease;
-}
-
-.header-search.dark {
-    background: linear-gradient(90deg, #171717, #313131);
-    color: white;
-}
-
-.header-search.dark .search-box, .header-search.dark .searh-f, .header-search.dark .displaymode_container {
-    background-color: #333333;
-    color: white;
-}
-
-.header-search.dark .displaymode_container:hover {
-    background-color: #606468;
-}
-
-.header-search.dark ul.list-s li:not(:first-child) i, .header-search.dark ul.list-s li a, .header-search.dark ul.list-s li {
-    color: white;
-}
-
-.header-search.dark .odds-dropdown ul li, .header-search.dark .odds-dropdown ul li i {
-    color: #0B1422 !important;
-}
-
-@media (max-width: 767px) {
-    .header-bottom.dark .navbar-mobile, .header-bottom.dark .navbar-mobile * {
-        color: white !important;
-    }
-
-    .header-bottom.dark {
-        background: linear-gradient(90deg, #171717, #313131);
-    }
-
-    .header-bottom.dark .responsive-cat .navbar-toggler-icon {
-        background: white !important;
-    }
-}
-
 /* Content/ */
 
 .main-section.dark, .main-section.dark * {
@@ -388,6 +346,11 @@
 
 .main-section.dark .sports-scroller-icon {
     background-color: #FFF8;
+}
+
+.main-section.dark .search-box, .main-section.dark .searh-f {
+    background-color: #333333;
+    color: white;
 }
 
 /* Footer */
