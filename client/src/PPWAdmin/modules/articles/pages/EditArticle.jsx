@@ -36,8 +36,10 @@ class EditArticle extends React.Component {
                     .required("Type is required."),
                 content: Yup.string()
                     .required("Content is required."),
-                meta_title: Yup.string(),
-                meta_description: Yup.string(),
+                meta_title: Yup.string()
+                    .max(84, "Meta title is maximum 84 symbols"),
+                meta_description: Yup.string()
+                    .max(140, "Meta title is maximum 140 symbols"),
                 meta_keywords: Yup.string(),
                 posted_at: Yup.date()
             }),
@@ -296,6 +298,17 @@ class EditArticle extends React.Component {
                                                 <input type="text" name="title"
                                                     className={`form-control ${getInputClasses(formik, "title")}`}
                                                     {...formik.getFieldProps("title")}
+                                                    onChange={(evt) => {
+                                                        formik.getFieldProps("title").onChange(evt);
+                                                        const value = evt.target.value;
+                                                        const permalink = value.toLowerCase()
+                                                            .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                                                            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+                                                            .replace(/-+/g, '-');
+                                                        formik.setFieldError('permalink', false);
+                                                        formik.setFieldTouched('permalink', true);
+                                                        formik.setFieldValue('permalink', permalink);
+                                                    }}
                                                     placeholder="Title" />
                                                 {formik.touched.title && formik.errors.title ? (
                                                     <div className="invalid-feedback">
@@ -425,6 +438,7 @@ class EditArticle extends React.Component {
                                                     className={`form-control ${getInputClasses(formik, "meta_title")}`}
                                                     {...formik.getFieldProps("meta_title")}
                                                     placeholder="Meta Title" />
+                                                <span className="mt-1 ml-1 text-muted">{formik.values.meta_title.length} Out of 84 Characters</span>
                                                 {formik.touched.meta_title && formik.errors.meta_title ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.meta_title}
@@ -452,6 +466,7 @@ class EditArticle extends React.Component {
                                                     rows={5}
                                                     {...formik.getFieldProps("meta_description")}
                                                     placeholder="Meta Description" />
+                                                <span className="mt-1 ml-1 text-muted">{formik.values.meta_description.length} Out of 140 Characters</span>
                                                 {formik.touched.meta_description && formik.errors.meta_description ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.meta_description}
