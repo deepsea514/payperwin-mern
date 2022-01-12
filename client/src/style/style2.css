@@ -2654,23 +2654,23 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     color: white;
 }
 
-@media (max-width: 45em) {
-    .help-center {
-        position: relative;
-        margin: 0;
-        padding: 40px 20px 30px;
-        width: 100%;
-        top: 0;
-    }
-}
-
 .help-center {
     margin: 0;
     padding: 60px 20px 47px;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     color: #000;
-    *zoom: 1;
+}
+
+@media (max-width: 768px) {
+    .help-center {
+        margin: 0;
+        padding: 20px !important;
+        width: 100%;
+    }
+    .faq-content {
+        margin: 0 auto !important;
+    }
 }
 
 .hc-search {
@@ -2711,7 +2711,7 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 }
 
 .help-center .hc-search-input {
-    width: 90%;
+    width: calc(100% - 50px);
     float: left;
     position: relative;
 }
@@ -2747,7 +2747,7 @@ input.special {
 }
 
 .help-center .hc-search-button {
-    width: 10%;
+    width: 50px;
     height: 44px;
     right: 0;
     float: right;
