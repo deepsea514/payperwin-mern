@@ -686,6 +686,7 @@ footer ul li a i {
 
 .sport-list-item>a:hover {
     text-decoration: none;
+    color: #72777f;
 }
 
 .sport-league-item label {
@@ -4131,6 +4132,30 @@ a:hover {
     opacity: 0.8;
 }
 
-/* footer.toggle {
-    display: none !important;
-} */
+.sports-scroller {
+    position: absolute;
+    height: 50px;
+}
+
+.sports-scroller.sports-scroller-left {
+    left: 0;
+}
+
+.sports-scroller.sports-scroller-right {
+    right: 0;
+}
+
+.sports-scroller-icon {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: #0005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sports-scroller-icon i {
+    color: white;
+}
