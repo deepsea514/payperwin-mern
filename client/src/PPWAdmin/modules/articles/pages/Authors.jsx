@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createRef } from "react"
 import { Button, Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
@@ -6,18 +6,21 @@ import { Link } from "react-router-dom";
 import * as articles from "../redux/reducers";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { createCategory, deleteCategory } from "../redux/services.js";
+import { createAuthor, deleteAuthor } from "../redux/services.js";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
+import Resizer from "react-image-file-resizer";
 
-class Categories extends React.Component {
+class Authors extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categorySchema: Yup.object().shape({
-                title: Yup.string().required("Category title is required."),
+            authorSchema: Yup.object().shape({
+                name: Yup.string().required("Author Name is required."),
+                logo: Yup.string().required("Author logo is required."),
             }),
             initialValues: {
-                title: ''
+                name: '',
+                logo: ''
             },
             addModal: false,
             modal: false,
@@ -25,17 +28,38 @@ class Categories extends React.Component {
             modalvariant: '',
             deleteId: null,
         }
+        this.logoRef = createRef();
     }
 
     componentDidMount() {
-        const { getArticleCategoriesAction } = this.props;
-        getArticleCategoriesAction();
+        const { getArticleAuthorsAction } = this.props;
+        getArticleAuthorsAction();
     }
 
-    showCategories = () => {
-        const { categories, loading_categories } = this.props;
+    clickUploadButton = () => {
+        this.logoRef.current.click();
+    }
 
-        if (loading_categories) {
+    handleFileUpload = async (e, formik) => {
+        const file = e.target.files[0];
+        const image = await this.resizeFile(file);
+        formik.setFieldValue('logo', image);
+    }
+
+    resizeFile = (file) => {
+        return new Promise((resolve) => {
+            Resizer.imageFileResizer(
+                file, 100, 100, "png", 100, 0,
+                (uri) => resolve(uri),
+                "base64", 100, 100
+            );
+        });
+    }
+
+    showAuthors = () => {
+        const { authors, loading_authors } = this.props;
+
+        if (loading_authors) {
             return (
                 <center>
                     <Preloader use={ThreeDots}
@@ -46,35 +70,40 @@ class Categories extends React.Component {
                 </center>
             );
         }
-        if (categories.length == 0) {
+        if (authors.length == 0) {
             return (
                 <center>
-                    <h3>No Categories</h3>
+                    <h3>No Authors</h3>
                 </center>
             );
         }
 
         return (
             <div className="row">
-                {categories.map(category => <div key={category._id} className="col-md-4 p-3" >
-                    <div style={{ border: '1px solid #ebedf3' }} className="p-3">
-                        {category.title}
-                        <a className="float-right" style={{ cursor: 'pointer' }} onClick={() => this.setState({ deleteId: category._id })}>
-                            <i className='fas fa-trash' />
-                        </a>
+                {authors.map(author => (
+                    <div key={author._id} className="col-md-4 p-3" >
+                        <div style={{ border: '1px solid #ebedf3' }} className="p-3 d-flex justify-content-between align-items-center">
+                            <div className="d-flex align-items-center">
+                                <img src={author.logo} style={{ width: '40px', height: '40px', display: 'block' }} />
+                                <span className="ml-4">{author.name}</span>
+                            </div>
+                            <a className="float-right" style={{ cursor: 'pointer' }} onClick={() => this.setState({ deleteId: author._id })}>
+                                <i className='fas fa-trash' />
+                            </a>
+                        </div>
                     </div>
-                </div>)}
+                ))}
             </div>
         )
     }
 
-    addCategory = (values, formik) => {
-        const { getArticleCategoriesAction } = this.props;
-        createCategory(values)
+    addAuthor = (values, formik) => {
+        const { getArticleAuthorsAction } = this.props;
+        createAuthor(values)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ modal: true, addModal: false, resMessage: "Successfully added!", modalvariant: "success" });
-                getArticleCategoriesAction();
+                getArticleAuthorsAction();
             })
             .catch(() => {
                 formik.setSubmitting(false);
@@ -82,13 +111,13 @@ class Categories extends React.Component {
             })
     }
 
-    deleteCategory = () => {
-        const { getArticleCategoriesAction } = this.props;
+    deleteAuthor = () => {
+        const { getArticleAuthorsAction } = this.props;
         const { deleteId } = this.state
-        deleteCategory(deleteId)
+        deleteAuthor(deleteId)
             .then(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Successfully deleted!", modalvariant: "success" });
-                getArticleCategoriesAction();
+                getArticleAuthorsAction();
             })
             .catch(() => {
                 this.setState({ modal: true, deleteId: null, resMessage: "Deletion Failed!", modalvariant: "danger" });
@@ -96,26 +125,26 @@ class Categories extends React.Component {
     }
 
     render() {
-        const { addModal, initialValues, categorySchema, modal, resMessage, modalvariant, deleteId } = this.state;
+        const { addModal, initialValues, authorSchema, modal, resMessage, modalvariant, deleteId } = this.state;
         return (
             <div className="row">
                 <div className="col-lg-12 col-xxl-12 order-1 order-xxl-12">
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Categories</h3>
+                                <h3 className="card-label">Authors</h3>
                             </div>
                             <div className="card-toolbar">
                                 <Link to="/" className="btn btn-primary font-weight-bolder font-size-sm">
                                     Back
                                 </Link>
                                 <button className="btn btn-success font-weight-bolder font-size-sm ml-3" onClick={() => this.setState({ addModal: true })}>
-                                    <i className="fas fa-list"></i>&nbsp; Add a Category
+                                    <i className="fas fa-list"></i>&nbsp; Add a Author
                                 </button>
                             </div>
                         </div>
                         <div className="card-body">
-                            {this.showCategories()}
+                            {this.showAuthors()}
 
                             <Modal show={modal} onHide={() => this.setState({ modal: false })}>
                                 <Modal.Header closeButton>
@@ -130,26 +159,43 @@ class Categories extends React.Component {
 
                             {addModal && <Modal show={addModal} onHide={() => this.setState({ addModal: false })}>
                                 <Modal.Header closeButton>
-                                    <Modal.Title>Add a Categiry</Modal.Title>
+                                    <Modal.Title>Add a Aurhot</Modal.Title>
                                 </Modal.Header>
                                 <Formik
                                     initialValues={initialValues}
-                                    validationSchema={categorySchema}
-                                    onSubmit={this.addCategory}>
+                                    validationSchema={authorSchema}
+                                    onSubmit={this.addAuthor}>
                                     {(formik) => {
                                         return <form onSubmit={formik.handleSubmit}>
                                             <Modal.Body>
                                                 <div className="form-group">
-                                                    <label>Category Title<span className="text-danger">*</span></label>
-                                                    <input name="title" placeholder="Enter Category Title"
-                                                        className={`form-control ${getInputClasses(formik, "title")}`}
-                                                        {...formik.getFieldProps("title")}
+                                                    <label>Author Name<span className="text-danger">*</span></label>
+                                                    <input name="name" placeholder="Enter Author Name"
+                                                        className={`form-control ${getInputClasses(formik, "name")}`}
+                                                        {...formik.getFieldProps("name")}
                                                     />
-                                                    {formik.touched.title && formik.errors.title ? (
+                                                    {formik.touched.name && formik.errors.name ? (
                                                         <div className="invalid-feedback">
-                                                            {formik.errors.title}
+                                                            {formik.errors.name}
                                                         </div>
                                                     ) : null}
+                                                </div>
+                                                <div className="form-row form-group">
+                                                    <div className="col">
+                                                        <button type="button" className="btn btn-success mr-2" onClick={this.clickUploadButton}>Upload Logo File</button>
+                                                        <input ref={this.logoRef}
+                                                            className={`form-control ${getInputClasses(formik, "logo")}`}
+                                                            onChange={(e) => this.handleFileUpload(e, formik)} type="file"
+                                                            style={{ display: "none" }} accept="image/x-png,image/gif,image/jpeg" />
+                                                        {formik.touched.logo && formik.errors.logo ? (
+                                                            <div className="invalid-feedback">
+                                                                {formik.errors.logo}
+                                                            </div>
+                                                        ) : null}
+                                                    </div>
+                                                    <div className="col">
+                                                        <img src={formik.values.logo} style={{ width: '60px', height: '60px', display: 'block' }} />
+                                                    </div>
                                                 </div>
                                             </Modal.Body>
                                             <Modal.Footer>
@@ -167,13 +213,13 @@ class Categories extends React.Component {
 
                             <Modal show={deleteId != null} onHide={() => this.setState({ deleteId: null })}>
                                 <Modal.Header closeButton>
-                                    <Modal.Title>Do you want to delete this Category?</Modal.Title>
+                                    <Modal.Title>Do you want to delete this Author?</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Footer>
                                     <Button variant="secondary" onClick={() => this.setState({ deleteId: null })}>
                                         Cancel
                                     </Button>
-                                    <Button variant="primary" onClick={this.deleteCategory}>
+                                    <Button variant="primary" onClick={this.deleteAuthor}>
                                         Confirm
                                     </Button>
                                 </Modal.Footer>
@@ -186,11 +232,9 @@ class Categories extends React.Component {
     }
 }
 
-
 const mapStateToProps = (state) => ({
-    categories: state.articles.categories,
-    loading_categories: state.articles.loading_categories,
+    authors: state.articles.authors,
+    loading_authors: state.articles.loading_authors,
 })
 
-
-export default connect(mapStateToProps, articles.actions)(Categories)
+export default connect(mapStateToProps, articles.actions)(Authors)

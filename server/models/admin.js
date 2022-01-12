@@ -3,16 +3,18 @@ const { Schema } = mongoose;
 const SALT_WORK_FACTOR = 10;
 const bcrypt = require('bcrypt');
 
-const AdminSchema = new Schema({
-    username: { type: String, required: true, index: { unique: true } },
-    password: { type: String, required: true },
-    email: { type: String, required: true, index: { unique: true } },
-    phone: { type: String, default: null },
-    _2fa_enabled: { type: Boolean, default: true },
-    role: { type: String, default: 'Customer Service' },
-    twoFactorAuthenticationCode: String,
-    otpauthUrl: String,
-});
+const AdminSchema = new Schema(
+    {
+        username: { type: String, required: true, index: { unique: true } },
+        password: { type: String, required: true },
+        email: { type: String, required: true, index: { unique: true } },
+        phone: { type: String, default: null },
+        _2fa_enabled: { type: Boolean, default: true },
+        role: { type: String, default: 'Customer Service' },
+        twoFactorAuthenticationCode: String,
+        otpauthUrl: String,
+    }
+);
 
 AdminSchema.pre('save', function (next) { // eslint-disable-line func-names
     const user = this;

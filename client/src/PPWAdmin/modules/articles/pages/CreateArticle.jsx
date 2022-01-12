@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import SVG from "react-inlinesvg";
 import JoditEditor from "jodit-react";
 import "react-datepicker/dist/react-datepicker.css";
-import { createArticle, getArticleDraft, searchCategories, updateArticle } from "../redux/services";
+import { createArticle, getArticleDraft, searchAuthors, searchCategories, updateArticle } from "../redux/services";
 import Resizer from "react-image-file-resizer";
 import AsyncSelect from 'react-select/async';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
@@ -24,6 +24,7 @@ class CreateArticle extends React.Component {
                 title: '',
                 subtitle: '',
                 categories: [],
+                authors: [],
                 content: '',
                 permalink: '',
                 meta_title: '',
@@ -43,6 +44,8 @@ class CreateArticle extends React.Component {
                     .required("Sub Title is required."),
                 categories: Yup.array().of(Yup.object())
                     .min(1, "Article should have at least a category"),
+                authors: Yup.array().of(Yup.object())
+                    .min(1, "Article should have at least an author"),
                 permalink: Yup.string()
                     .min(3, "Minimum 3 symbols")
                     // .max(50, "Maximum 50 symbols")
@@ -59,6 +62,7 @@ class CreateArticle extends React.Component {
             isError: false,
             isSuccess: false,
             loadingCategories: false,
+            loadingAuthors: false,
         }
         this.logoRef = createRef();
     }
@@ -76,6 +80,7 @@ class CreateArticle extends React.Component {
                             title: data.title,
                             subtitle: data.subtitle,
                             categories: data.categories.map(category => ({ label: category, value: category })),
+                            authors: data.authors ? data.authors.map(author => ({ label: author.name, value: author.logo })) : [],
                             permalink: data.permalink,
                             content: data.content,
                             meta_title: data.meta_title,
@@ -131,6 +136,7 @@ class CreateArticle extends React.Component {
         const saveValue = {
             ...values,
             categories: values.categories.map((category) => category.value),
+            authors: values.authors.map(author => ({ name: author.label, logo: author.value })),
             publish: true
         }
         createArticle(saveValue)
@@ -159,6 +165,7 @@ class CreateArticle extends React.Component {
         const saveValue = {
             ...values,
             categories: values.categories.map((category) => category.value),
+            authors: values.authors.map(author => ({ name: author.label, logo: author.value })),
             publish: true
         }
         updateArticle(article_id, saveValue)
@@ -191,6 +198,7 @@ class CreateArticle extends React.Component {
         const saveValue = {
             ...values,
             categories: values.categories.map((category) => category.value),
+            authors: values.authors.map(author => ({ name: author.label, logo: author.value })),
             publish: false
         }
         createArticle(saveValue)
@@ -215,6 +223,7 @@ class CreateArticle extends React.Component {
         const saveValue = {
             ...values,
             categories: values.categories.map((category) => category.value),
+            authors: values.authors.map(author => ({ name: author.label, logo: author.value })),
             publish: false
         }
 
@@ -253,7 +262,6 @@ class CreateArticle extends React.Component {
     }
 
     getCategories = (name, cb) => {
-        console.log(name)
         this.setState({ loadingCategories: true });
         searchCategories(name).then(({ data }) => {
             cb(data);
@@ -264,8 +272,24 @@ class CreateArticle extends React.Component {
         })
     }
 
+    getAuthors = (name, cb) => {
+        this.setState({ loadingAuthors: true });
+        searchAuthors(name).then(({ data }) => {
+            cb(data);
+            this.setState({ loadingAuthors: false });
+        }).catch(() => {
+            cb([]);
+            this.setState({ loadingAuthors: false });
+        })
+    }
+
     render() {
-        const { initialValues, articleSchema, isError, isSuccess, loadingCategories, article_id, loading } = this.state;
+        const {
+            initialValues, articleSchema,
+            isError, isSuccess,
+            loadingCategories, loadingAuthors,
+            article_id, loading
+        } = this.state;
         const config = {
             readonly: false,
             height: 350,
@@ -454,6 +478,34 @@ class CreateArticle extends React.Component {
                                             {formik.touched.categories && formik.errors.categories ? (
                                                 <div className="invalid-feedback">
                                                     {formik.errors.categories}
+                                                </div>
+                                            ) : null}
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label>Authors<span className="text-danger">*</span></label>
+                                            <AsyncSelect
+                                                className={`basic-single ${getInputClasses(formik, "authors")}`}
+                                                classNamePrefix="select"
+                                                isSearchable={true}
+                                                isMulti
+                                                name="authors"
+                                                loadOptions={this.getAuthors}
+                                                noOptionsMessage={() => "No Authors"}
+                                                value={formik.values.authors}
+                                                isLoading={loadingAuthors}
+                                                defaultOptions={true}
+                                                {...formik.getFieldProps("authors")}
+                                                onChange={(authors) => {
+                                                    if (!authors) return;
+                                                    formik.setFieldValue("authors", authors);
+                                                    formik.setFieldTouched("authors", true);
+                                                    formik.setFieldError("authors", false);
+                                                }}
+                                            />
+                                            {formik.touched.authors && formik.errors.authors ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.authors}
                                                 </div>
                                             ) : null}
                                         </div>
