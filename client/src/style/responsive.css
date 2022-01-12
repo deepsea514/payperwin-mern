@@ -261,4 +261,8 @@
     .leagues-content {
         overflow: hidden;
     }
+
+    .sports-scroller {
+        display: none !important;
+    }
 }

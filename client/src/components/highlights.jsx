@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import Sport from './sport';
 import Others from "./others";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -45,6 +45,7 @@ export default class Highlights extends Component {
             showPromotion: false,
         };
         this._isMounted = false;
+        this.listRef = createRef();
     }
 
     componentWillUnmount() {
@@ -77,6 +78,16 @@ export default class Highlights extends Component {
         }
     }
 
+    scrollLeft = () => {
+        const position = this.listRef.current?.scrollLeft - 200;
+        this.listRef.current?.scrollTo({ left: position > 0 ? position : 0, behavior: 'smooth' })
+    }
+
+    scrollRight = () => {
+        const position = this.listRef.current?.scrollLeft + 200;
+        this.listRef.current?.scrollTo({ left: position, behavior: 'smooth' })
+    }
+
     render() {
         const { sportIndex, leagueIndex, sports, showPromotion } = this.state;
         const { addBet, betSlip, removeBet } = this.props;
@@ -93,7 +104,12 @@ export default class Highlights extends Component {
                         </div>
                     </div>
                 </div>
-                <ul className="nav nav-tabs pt-2">
+                <ul className="nav nav-tabs pt-2" ref={this.listRef}>
+                    <li className="d-flex align-items-center sports-scroller sports-scroller-left" onClick={this.scrollLeft}>
+                        <span className='sports-scroller-icon'>
+                            <i className='fas fa-arrow-left' />
+                        </span>
+                    </li>
                     <li className="nav-item"
                         onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
                         <center>
@@ -133,6 +149,11 @@ export default class Highlights extends Component {
                             </li>
                         );
                     })}
+                    <li className="d-flex align-items-center sports-scroller sports-scroller-right" onClick={this.scrollRight}>
+                        <span className='sports-scroller-icon'>
+                            <i className='fas fa-arrow-right' />
+                        </span>
+                    </li>
                 </ul>
                 {sportName == "Other" ?
                     <Others

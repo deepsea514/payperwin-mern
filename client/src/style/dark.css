@@ -386,6 +386,10 @@
     background-color: #121212;
 }
 
+.main-section.dark .sports-scroller-icon {
+    background-color: #FFF8;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {
