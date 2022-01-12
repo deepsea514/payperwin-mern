@@ -96,12 +96,6 @@ class Header extends Component {
         return balance / 100;
     }
 
-    onSearch = (evt) => {
-        const { search, history } = this.props;
-        if (evt.key !== 'Enter') return;
-        history.push(`/search/${search}`);
-    }
-
     getImageSource = () => {
         const { lang } = this.props;
         switch (lang) {
@@ -141,7 +135,8 @@ class Header extends Component {
             showForgotPasswordModalAction,
             adminMessage,
             dismissAdminMessage,
-            userDropDownOpen
+            userDropDownOpen,
+            showPromotionAction
         } = this.props;
         const showMessage = this.checkShowMessage();
         const { pathname } = location;
@@ -229,157 +224,38 @@ class Header extends Component {
                         </div>
                     </div>
                 </div>
-                <div className={`header-bottom not-mobile ${dark_light == 'light' ? 'light' : 'dark'}`}>
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <div className="navbar-mobile">
-                                    <button className="navbar-toggler responsive-cat" onClick={() => toggleField('sportsMenuMobileOpen')}>
-                                        <span className="navbar-toggler-icon"></span>
-                                        <span className="navbar-toggler-icon"></span>
-                                        <span className="navbar-toggler-icon"></span>
-                                        <FormattedMessage id="COMPONENTS.AZ.SPORTS" />
-                                    </button>
-                                    <ul className="navbar-nav-mobile navbar-nav">
-                                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <Link to={{ pathname: '/' }} className="nav-link">
-                                                    <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
-                                                </Link>
-                                            </center>
-                                        </li>
-                                        <li className="nav-item">
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
-                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
-                                                </a>
-                                            </center>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                    <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
-                                                </Link>
-                                            </center>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <Link to={{ pathname: '/faq' }} className="nav-link">
-                                                    <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
-                                                </Link>
-                                            </center>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <Link to={{ pathname: '/articles' }} className="nav-link">
-                                                    <i className="fas fa-newspaper"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
-                                                </Link>
-                                            </center>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                                    <ul className="navbar-nav">
-                                        <li className={`nav-item ${pathname === '/' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/' }} className="nav-link">
-                                                <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
-                                            </Link>
-                                        </li>
-                                        <li className="nav-item">
-                                            <center style={{ whiteSpace: "nowrap" }}>
-                                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
-                                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
-                                                </a>
-                                            </center>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/how-it-works' }} className="nav-link">
-                                                <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
-                                            </Link>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/faq' }} className="nav-link">
-                                                <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
-                                            </Link>
-                                        </li>
-                                        <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
-                                            <Link to={{ pathname: '/articles' }} className="nav-link">
-                                                <i className="fas fa-newspaper"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
-                                            </Link>
-                                        </li>
-                                    </ul>
+                <div className={`header-bottom`}>
+                    <div className="container p-0">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div className='promotion-botton-wrap' onClick={() => showPromotionAction(true)}>
+                                    <div className='promotion-botton'><span>What's New</span></div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={`header-search ${dark_light == 'light' ? 'light' : 'dark'}`}>
-                    <div className="container">
-                        <div className="d-flex justify-content-between">
-                            <div className="">
-                                <div className="search-box">
-                                    <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input
-                                        className="searh-f"
-                                        type="search"
-                                        placeholder="Search"
-                                        value={search}
-                                        onChange={(evt) => setSearch(evt.target.value)}
-                                        onKeyDown={this.onSearch}
-                                    />
-                                </div>
-                            </div>
-                            <div className="">
-                                <ul className="list-s">
-                                    <li style={{ padding: '0 15px' }}>
-                                        <div className={`displaymode_container ${dark_light == 'light' ? 'lightmode' : 'darkmode'}`}
-                                            onClick={() => this.setDisplayMode(dark_light == 'light' ? 'dark' : 'light')}
-                                        >
-                                            <i className="far fa-sun lightmode_ico"></i>
-                                            <i className="far fa-moon darkmode_ico"></i>
-                                            <div className="lightmode_switch"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
-                                            <i className="fa fa-info-circle" aria-hidden="true"></i>{this.getOddsFormatString()}<i className="fa fa-caret-down" aria-hidden="true"></i>
-                                        </a>
-                                        {oddsDropDownOpen && (
-                                            <React.Fragment>
-                                                <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
-                                                <div className="odds-dropdown">
-                                                    <ul>
-                                                        <li onClick={() => this.setOddsFormat('american')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.AMERICAN.ODDS" />
-                                                        </li>
-                                                        <li onClick={() => this.setOddsFormat('decimal')}>
-                                                            <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.DECIMAL.ODDS" />
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </React.Fragment>
-                                        )}
-                                    </li>
-                                    <li>
-                                        <ul>
-                                            <li onClick={() => this.setLanguage('en')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/ca.png" className="language-flag" />
-                                            </li>
-                                            <li onClick={() => this.setLanguage('es')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/co.png" className="language-flag" />
-                                            </li>
-                                            <li onClick={() => this.setLanguage('ko')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/ko.png" className="language-flag" />
-                                            </li>
-                                            <li onClick={() => this.setLanguage('vi')} className="language-li border-0 px-1 cursor-pointer">
-                                                <img src="/images/flag/vi.png" className="language-flag" />
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>{timeString}</li>
-                                    <li><Link to="/faq"><i className="fa fa-question-circle" aria-hidden="true"></i> <FormattedMessage id="COMPONENTS.HELP" /> </Link></li>
-                                </ul>
-                            </div>
+                            <ul className="list-s">
+                                <li>
+                                    <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
+                                        <i className="fa fa-info-circle" aria-hidden="true"></i>&nbsp;{this.getOddsFormatString()}&nbsp;<i className="fa fa-caret-down" aria-hidden="true"></i>
+                                    </a>
+                                    {oddsDropDownOpen && (
+                                        <React.Fragment>
+                                            <div className="background-closer" onClick={() => this.toggleField('oddsDropDownOpen')} />
+                                            <div className="odds-dropdown">
+                                                <ul>
+                                                    <li onClick={() => this.setOddsFormat('american')}>
+                                                        <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.AMERICAN.ODDS" />
+                                                    </li>
+                                                    <li onClick={() => this.setOddsFormat('decimal')}>
+                                                        <i className="fa fa-info-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.DECIMAL.ODDS" />
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </React.Fragment>
+                                    )}
+                                </li>
+
+                                <li>{timeString}</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

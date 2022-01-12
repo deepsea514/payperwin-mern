@@ -188,7 +188,8 @@ const styles = {
         filter: 'drop-shadow(0 0px 2px rgba(0, 0, 0, 0.5))',
         display: 'flex',
         alignItems: 'center',
-        background: '#0004'
+        background: '#0004',
+        cursor: 'pointer'
     },
     closeIcon: {
         margin: 'auto',

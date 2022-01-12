@@ -68,6 +68,7 @@ import ErrorBoundary from '../libs/ErrorBoundary';
 import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
 import Invite from '../pages/invite';
+import PromotionModal from '../components/promotionModal';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -373,7 +374,9 @@ class App extends Component {
             location,
             require_2fa,
             dark_light,
-            showLoginModalAction
+            showLoginModalAction,
+            showPromotion,
+            showPromotionAction
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
@@ -405,6 +408,7 @@ class App extends Component {
                     toggleField={this.toggleField} />}
                 <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
+                    {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
                     <div className="container">
                         <Switch>
                             <Route path="/signup" render={(props) =>
@@ -432,7 +436,7 @@ class App extends Component {
                                                 getUser={getUser}
                                             />
                                         </ErrorBoundary>
-                                        <div className={`${fullWidth ? 'col-md-10' : 'col-md-7'} p-0`}>
+                                        <div className={`${fullWidth ? 'col-md-10 col-sm-12' : 'col-md-7 col-sm-12'} p-0`}>
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" render={(props) =>
                                                     <ErrorBoundary><NewPasswordFromToken {...props} /></ErrorBoundary>
@@ -723,7 +727,8 @@ const mapStateToProps = (state) => ({
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,
     user: state.frontend.user,
-    betEnabled: state.frontend.betEnabled
+    betEnabled: state.frontend.betEnabled,
+    showPromotion: state.frontend.showPromotion,
 });
 
 export default connect(mapStateToProps, frontend.actions)(withRouter(App))

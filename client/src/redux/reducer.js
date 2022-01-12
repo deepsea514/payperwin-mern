@@ -33,6 +33,7 @@ export const actionTypes = {
     getBetStatusSuccess: "[Get Bet Status Success]",
     setCollapsedLeagues: '[Set Collapsed Leagues]',
     toggleCollapseLeague: '[Toggle Collapse League]',
+    showPromotionAction: '[Show Promotion Action]',
 };
 const showedTourTimes = Cookie.get('showedTourTimes');
 const initialState = {
@@ -67,6 +68,7 @@ const initialState = {
     adminMessage: null,
     adminMessageDismiss: null,
     collapsedLeague: [],
+    showPromotion: false,
 };
 
 export const reducer = persistReducer(
@@ -147,6 +149,9 @@ export const reducer = persistReducer(
             case actionTypes.setCollapsedLeagues:
                 return { ...state, collapsedLeague: action.leagueIds }
 
+            case actionTypes.showPromotionAction:
+                return { ...state, showPromotion: action.show }
+
             default:
                 return state;
         }
@@ -179,6 +184,7 @@ export const actions = {
     getBetStatusSuccess: (betEnabled) => ({ type: actionTypes.getBetStatusSuccess, betEnabled }),
     toggleCollapseLeague: (leagueId) => ({ type: actionTypes.toggleCollapseLeague, leagueId }),
     setCollapsedLeagues: (leagueIds) => ({ type: actionTypes.setCollapsedLeagues, leagueIds }),
+    showPromotionAction: (show) => ({ type: actionTypes.showPromotionAction, show }),
 };
 
 export function* saga() {
