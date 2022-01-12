@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link, Switch, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import dateformat from "dateformat";
-import ArticleSidebar from "./articlesidebar";
-import { getArticle, getArticleCategories } from '../redux/services';
+import { getArticle } from '../redux/services';
 
 class Article extends Component {
     constructor(props) {
@@ -11,7 +10,6 @@ class Article extends Component {
 
         this.state = {
             article: null,
-            categories: [],
         }
     }
 
@@ -28,13 +26,6 @@ class Article extends Component {
             .catch(() => {
                 this.setState({ article: null });
             })
-        getArticleCategories()
-            .then(({ data }) => {
-                this.setState({ categories: data });
-            })
-            .catch((error) => {
-                this.setState({ categories: [] });
-            })
     }
 
     componentDidUpdate(prevProps) {
@@ -47,7 +38,7 @@ class Article extends Component {
     }
 
     render() {
-        const { article, categories } = this.state;
+        const { article } = this.state;
         if (!article) {
             return (
                 <center><h3>
@@ -68,24 +59,6 @@ class Article extends Component {
                     <div className="block article">
                         <div className="article-header">
                             <div className="left articleV2">
-                                <div className="author-photo-container">
-                                    <div className="author-photo">
-                                        <img src="/images/logo-blue.png" />
-                                    </div>
-                                </div>
-                                <div className="author-container">
-                                    {article.categories.map((category, index) => (
-                                        <Link to={`/articles/category/${category}`} key={index} className="sport-name">
-                                            {category}
-                                        </Link>
-                                    ))}
-                                </div>
-                                <div className="date-container">
-                                    {dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}
-                                </div>
-                                <div className="text">
-                                    <h1 className="title"> &nbsp;</h1>
-                                </div>
                                 <div className="text">
                                     <h1 className="title">{article.title}</h1>
                                 </div>
@@ -96,6 +69,21 @@ class Article extends Component {
                         </div>
                     </div>
                     <div className="row">
+                        <div className="col-md-4">
+                            <div className='d-flex justify-content-center'>
+                                <div>
+                                    {article.authors && article.authors.map((author, index) => (
+                                        <div className='d-flex align-items-center mt-2' key={index}>
+                                            <img src={author.logo} className='article-author-image' />
+                                            <div className='ml-3'>
+                                                <div className='article-author-name'>{author.name}</div>
+                                                <div className='article-author-date'>{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                         <div className="col-md-8">
                             <div className="common-wrap">
                                 <article className="content articleV2">
@@ -104,6 +92,16 @@ class Article extends Component {
                                     </div>
                                     <div className="mt-2" dangerouslySetInnerHTML={{ __html: article.content }} />
                                 </article>
+                                <div className='article-share-twitter'>
+                                    <a href='#' class="article-share-btn-twitter">
+                                        <span class="article-share-btn-icon">
+                                            <i class="fab fa-twitter" />
+                                        </span>
+                                        <div class="article-share-btn-text">
+                                            <span class="article-share-btn-title">Twitter</span>
+                                        </div>
+                                    </a>
+                                </div>
                                 <div className="article-divider" />
                                 <div className="lower-button-container social-bar-area">
                                     <ul className="tags">
@@ -126,14 +124,6 @@ class Article extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-md-4">
-                            <ArticleSidebar
-                                categories={categories}
-                                showrRecentPopular={true}
-                                relatedArticle={article}
-                                showPreview={false}
-                            />
                         </div>
                     </div>
                 </div>
