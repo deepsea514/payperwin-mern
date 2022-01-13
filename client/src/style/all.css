@@ -5746,6 +5746,10 @@ readers do not read off random characters that represent icons */
     content: "\f028";
 }
 
+.fa-volume-slash:before {
+    content: "\f2e2";
+}
+
 .fa-vote-yea:before {
     content: "\f772";
 }
