@@ -34,9 +34,10 @@ class ArticleHome extends Component {
     }
 
     render() {
-        const { articles, categories } = this.state;
+        const { articles, categories, loading } = this.state;
         return (
             <ArticleWrapper
+                loading={loading}
                 showMore={true}
                 showCategories={false}
                 categories={categories}
