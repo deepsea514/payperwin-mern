@@ -428,7 +428,7 @@ class App extends Component {
                                                 toggleField={this.toggleField}
                                                 sportsMenuMobileOpen={sportsMenuMobileOpen}
                                                 sidebarShowAccountLinks={sidebarShowAccountLinks}
-                                                showLoginModal={() => showLoginModalAction(true)}
+                                                showLoginModalAction={() => showLoginModalAction(true)}
                                                 user={user}
                                                 getUser={getUser}
                                             />

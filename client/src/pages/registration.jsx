@@ -168,7 +168,7 @@ const initState = {
         referral_code: false,
     },
     activeStep: 0,
-    steps: ['', ''],
+    steps: ['1', '2'],
     showPass: false,
     showPassConfirm: false,
 };
@@ -712,7 +712,7 @@ class Registration extends Component {
 
         return (
             <div className="content pb-5">
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card style={{ backgroundColor: '#ffffff' }}>
                             <CardHeader

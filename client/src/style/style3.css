@@ -5,7 +5,7 @@ header {
 }
 
 .main-section {
-    padding-top: 155px;
+    padding-top: 140px;
 }
 
 .form-error {
@@ -1145,7 +1145,7 @@ a.log-in-btn {
 }
 
 .logo>img {
-    height: 70px;
+    height: 55px;
 }
 
 @media (max-width: 767px) {
