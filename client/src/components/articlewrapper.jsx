@@ -69,7 +69,7 @@ class ArticleWrapper extends Component {
                         categories={categories}
                         showrRecentPopular={true}
                         relatedArticle={null}
-                        showPreview={true}
+                        showPreview={false}
                     />
                 </div>
             </div>

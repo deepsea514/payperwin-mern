@@ -87,9 +87,9 @@ class Article extends Component {
                         <div className="col-md-8">
                             <div className="common-wrap">
                                 <article className="content articleV2">
-                                    <div className="introduction">
+                                    {/* <div className="introduction">
                                         <p>{article.subtitle}</p>
-                                    </div>
+                                    </div> */}
                                     <div className="mt-2" dangerouslySetInnerHTML={{ __html: article.content }} />
                                 </article>
                                 <div className='article-share-twitter'>
@@ -104,9 +104,8 @@ class Article extends Component {
                                         </div>
                                     </a>
                                 </div>
-                                <div className="article-divider" />
                                 <div className="lower-button-container social-bar-area">
-                                    <ul className="tags">
+                                    {/* <ul className="tags">
                                         <li className="tag-list-header"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY" />:</li>
                                         {article.categories.map((category, index) => (
                                             <li key={index} className="category-tags-item">
@@ -115,7 +114,7 @@ class Article extends Component {
                                                 </Link>
                                             </li>
                                         ))}
-                                    </ul>
+                                    </ul> */}
                                     <div className="buttons-wrapper">
                                         <Link to="/articles" className="br-home-link">
                                             <div className="br-home-button">
