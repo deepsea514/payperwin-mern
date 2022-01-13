@@ -867,6 +867,10 @@ a.log-in-btn {
     text-transform: uppercase;
 }
 
+.mobile-menu .nav-item:not(:last-child) {
+    padding-bottom: 10px;
+}
+
 .mobile-menu .nav-item .nav-link {
     display: inline-flex;
     align-items: center;
