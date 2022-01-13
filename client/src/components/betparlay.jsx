@@ -74,7 +74,7 @@ class BetParlay extends Component {
                 </div>}
 
                 {correlated && <div className="bet-parlay-error-message">
-                    <div><i className="fas fa-info-circle" /> <b>Correlated Selection</b></div>
+                    <div><i className="fas fa-info-circle" /> <b>“Correlated bets (bet against the spread and a moneyline bet from the same game) are not permitted for parlays</b></div>
                 </div>}
 
                 <div className={`bet-parlay-container ${correlated ? 'bet-error' : (win > maxBetLimitTier ? 'bet-warn' : '')}`}>
