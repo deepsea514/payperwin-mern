@@ -2430,10 +2430,6 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
     .verification-proof-container {
         display: none;
     }
-
-    .login-nav {
-        padding-top: 10px !important;
-    }
 }
 
 .verification-items {
