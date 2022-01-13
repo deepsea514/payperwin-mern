@@ -4,13 +4,18 @@ import SVG from 'react-inlinesvg'
 export const ImageRenderer = ({ story, action, config, closePromotion }) => {
     const [loaded, setLoaded] = useState(false);
     const { width, height, loader, storyStyles } = config;
+    const bodyWidth = document.body.offsetWidth;
+    let isMobile = true;
+    if (bodyWidth > 768) {// Not Mobile
+        isMobile = false;
+    }
     let computedStyles = {
         ...styles.storyContent,
         ...(storyStyles || {}),
-        width: '100%',
+        width: isMobile ? '100%' : 'auto',
         display: 'block',
         height: 'auto',
-        maxHeight: 'auto',
+        maxHeight: isMobile ? 'auto' : '100%',
         position: 'absolute',
         top: '-100%',
         left: 0,
@@ -51,10 +56,11 @@ export const ImageRenderer = ({ story, action, config, closePromotion }) => {
                     </div>
                 )}
             </div>
-            <div style={{ position: "absolute", right: 12, top: 20, zIndex: 1000 }}>
-                <div style={styles.header}>
-                    <div style={styles.close} onClick={closePromotion}>
-                        <i className="fa fa-times" style={styles.closeIcon} />
+            <div className="promotion-renderer-header-wrapper">
+                <div className="promotion-renderer-header">
+                    <div className="promotion-renderer-header-close"
+                        onClick={closePromotion}>
+                        <i className="fa fa-times promotion-renderer-header-close-icon" />
                     </div>
                 </div>
             </div>
@@ -99,7 +105,11 @@ export const VideoRenderer = ({ story, action, isPaused, config, messageHandler,
     }
 
     const videoLoaded = () => {
-        const res = messageHandler('UPDATE_VIDEO_DURATION', { duration: vid.current.duration });
+        messageHandler('UPDATE_VIDEO_DURATION', { duration: vid.current.duration });
+        const width = document.body.offsetWidth;
+        if (width > 768) {// Not Mobile
+            setMuted(true)
+        }
         setLoaded(true);
         vid.current.play().then(() => {
             action('play');
@@ -152,10 +162,15 @@ export const VideoRenderer = ({ story, action, isPaused, config, messageHandler,
                     </div>
                 )}
             </div>
-            <div className="header-close" style={{ position: "absolute", right: 12, top: 20, zIndex: 1000 }}>
-                <div style={styles.header}>
-                    <div style={styles.close} onClick={closePromotion}>
-                        <i className="fa fa-times" style={styles.closeIcon} />
+            <div className="promotion-renderer-header-wrapper">
+                <div className="promotion-renderer-header">
+                    <div className="promotion-renderer-header-close mr-2"
+                        onClick={() => setMuted(!muted)}>
+                        <i className={`fas fa-volume-${muted ? 'slash' : 'up'} promotion-renderer-header-close-icon`} />
+                    </div>
+                    <div className="promotion-renderer-header-close"
+                        onClick={closePromotion}>
+                        <i className="fa fa-times promotion-renderer-header-close-icon" />
                     </div>
                 </div>
             </div>
@@ -176,26 +191,6 @@ const styles = {
         maxWidth: "100%",
         maxHeight: "100%",
         margin: "auto"
-    },
-    header: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    close: {
-        width: 40,
-        height: 40,
-        borderRadius: 40,
-        filter: 'drop-shadow(0 0px 2px rgba(0, 0, 0, 0.5))',
-        display: 'flex',
-        alignItems: 'center',
-        background: '#0004',
-        cursor: 'pointer'
-    },
-    closeIcon: {
-        margin: 'auto',
-        fontSize: '20px',
-        padding: '0',
-        color: 'white'
     },
     videoContainer: {
         display: 'flex',
