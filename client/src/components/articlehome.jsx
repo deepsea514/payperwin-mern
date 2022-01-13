@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { getArticleCategories, getArticleCategory, getArticles } from '../redux/services';
+import { getArticleCategories, getArticles } from '../redux/services';
 import ArticleWrapper from './articlewrapper';
 
 class ArticleHome extends Component {
@@ -11,16 +11,18 @@ class ArticleHome extends Component {
         this.state = {
             articles: [],
             categories: [],
+            loading: false
         }
     }
 
     componentDidMount() {
+        this.setState({ loading: true });
         getArticles()
             .then(({ data }) => {
-                this.setState({ articles: data });
+                this.setState({ articles: data, loading: false });
             })
             .catch(() => {
-                this.setState({ articles: null });
+                this.setState({ articles: null, loading: false });
             })
         getArticleCategories()
             .then(({ data }) => {

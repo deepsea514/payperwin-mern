@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
 import ArticleSidebar from "./articlesidebar";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 
 class ArticleWrapper extends Component {
     constructor(props) {
@@ -11,12 +12,19 @@ class ArticleWrapper extends Component {
     }
 
     render() {
-        const { showMore, showCategories, categories, articles, title } = this.props;
+        const { showMore, showCategories, categories, articles, title, loading } = this.props;
 
         return (
-            <div className="col-in row article-container">
+            <div className="row article-container">
                 <div className="col-lg-8 col-md-8">
-                    {title && <h3>{title}</h3>}
+                    {title && <h3 className='text-center my-2'>{title}</h3>}
+                    {loading && <center className="mt-5">
+                        <Preloader use={ThreeDots}
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />
+                    </center>}
                     {articles && articles.length > 0 && articles.map((article, index) => (
                         <div className={`block feature-articles left ${index == 0 ? '' : 'mt-5'}`} key={article._id}>
                             <div className="item">

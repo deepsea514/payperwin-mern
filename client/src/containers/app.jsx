@@ -116,7 +116,6 @@ const ShowAccountLinks = [
 ];
 
 const exceptDarkLinks = [
-    '/articles',
     '/signup',
     '/bets',
     '/deposit',
