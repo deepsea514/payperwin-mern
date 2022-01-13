@@ -145,6 +145,22 @@ class Header extends Component {
                                 </Link>
                             </div>
                             <div className="d-flex justify-content-end align-items-center">
+                                <ul className="navbar-nav-mobile navbar-nav not-mobile">
+                                    <li className={`nav-item`}>
+                                        <center style={{ whiteSpace: "nowrap" }}>
+                                            <Link to={{ pathname: '/' }} className="nav-link">
+                                                <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
+                                            </Link>
+                                        </center>
+                                    </li>
+                                    <li className="nav-item">
+                                        <center style={{ whiteSpace: "nowrap" }}>
+                                            <Link to={{ pathname: '/' }} className="nav-link">
+                                                <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
+                                            </Link>
+                                        </center>
+                                    </li>
+                                </ul>
                                 {!user && <SimpleLogin />}
                                 <button className="navbar-toggler responsive-menu"
                                     onClick={() => toggleField('menuOpen')}>
