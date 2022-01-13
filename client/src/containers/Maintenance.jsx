@@ -11,7 +11,7 @@ export default function Maintenance({ maintenance, history }) {
     setTitle({ pageTitle: 'We are in maintenance mode.' });
     return (
         <div className="maintenance-container">
-            <Favicon url={'/images/favicon-2.ico'} />
+            <Favicon url={'/images/favicon.png'} />
             <article className="maintenance-article">
                 <center><img src="/images/logo-blue.png" /></center>
                 <h1 className="pt-5">We'll be back soon!</h1>

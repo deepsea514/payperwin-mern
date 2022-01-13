@@ -52,28 +52,7 @@ const Footer = (props) => {
                     <div className="glambing">
                         <a href="#" className="min-age">19+</a><FormattedMessage id="COMPONENTS.GAMBLING.CANBE.ADDICTIVE" />
                     </div>
-                    {/* <div className="payment_container">
-                        <span><img alt="Visa, Master Card" title="Visa, Master Card" src="/images/credit-card-gray.png" /></span>
-                        <span><img alt="Etransfer" title="Etransfer" src="/images/eTransfer-gray.png" /></span>
-                        <span><img alt="Bitcoin" title="Bitcoin" src="/images/bitcoin-gray.png" /></span>
-                        <span><img alt="Ethereum" title="Ethereum" src="/images/Ethereum-gray.png" /></span>
-                        <span><img alt="Tether" title="Tether" src="/images/USDT-gray.png" /></span>
-                    </div> */}
                     <p>©2021 PAYPER WIN</p>
-                    {/* <div className="d-flex justify-content-between pt-3">
-                        <a href="#" >
-                            <img alt="eCogra" src="/images/ecogra.png" style={{ maxHeight: '32px' }} />
-                        </a>
-                        <a href="#">
-                            <img alt="Antillephone" src="/images/antillephone.png" style={{ maxHeight: '32px' }} />
-                        </a>
-                        <a href="#">
-                            <img alt="Gamecare" src="/images/gamcare.png" style={{ maxHeight: '32px' }} />
-                        </a>
-                        <a href="#">
-                            <img alt="Network Solution" src="/images/networksolution.png" style={{ maxHeight: '32px' }} />
-                        </a>
-                    </div> */}
                 </div>
             </div>
         </footer>

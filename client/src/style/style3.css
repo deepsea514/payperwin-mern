@@ -1655,23 +1655,6 @@ button.loginButton span {
     margin-top: 15px;
 }
 
-.coming-soon {
-    width: 100%;
-    height: 50vh;
-    background: url(/images/bg-login.jpg) no-repeat;
-    -ms-flex-align: center;
-    align-items: center;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.coming-soon h2 {
-    color: white;
-}
-
 .leagues-list li {
     padding: 5px 20px;
     position: relative;
@@ -2054,14 +2037,10 @@ a.fav-link:hover {
     display: block;
 }
 
-.language-flag-menu.ko {
-    height: 20px;
-}
-
 .language-flag-menu {
     margin-right: 10px;
-    height: 18px;
-    width: 24px;
+    height: 20px;
+    width: AUTO;
     display: block;
 }
 

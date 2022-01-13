@@ -1,8 +1,5 @@
 import React from "react"
-// import Pinnacle from "../components/Pinnacle";
-// import PinnacleSandbox from "../components/PinnacleSandbox";
 import PremierPay from "../components/PremierPay";
-// import TheRundown from "../components/TheRundown";
 import TripleA from "../components/TripleA";
 import SendGrid from "../components/SendGrid";
 import Twilio from "../components/Twilio";
