@@ -61,7 +61,7 @@ class Article extends Component {
             )
         }
         return (
-            <div className="article-container px-5">
+            <div className="article-container px-4 px-sm-5">
                 <div className="social-bar article social-bar-area">
                     <Link to="/articles" className="back-to-help-wrap">
                         <i className="fas fa-chevron-left" /> &nbsp;

@@ -455,6 +455,10 @@
     color: #DDD;
 }
 
+.main-section.dark .articleV2 .content, .main-section.dark .articleV2 .content p {
+    color: white;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {

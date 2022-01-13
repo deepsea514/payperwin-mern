@@ -536,6 +536,10 @@ class OpenBets extends Component {
                                     {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                     {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
+                                    <div className='d-flex align-items-center py-2'>
+                                        <strong>Score Powered By </strong>&nbsp;
+                                        <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>
+                                    </div>
                                 </div>}
                             </div>
                         }
@@ -610,6 +614,10 @@ class OpenBets extends Component {
                                         <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
                                             disabled={loadingOdds}
                                             onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to HIGH STAKER</button>}
+                                    {settledBets && <div className='d-flex align-items-center py-2'>
+                                        <strong>Score Powered By </strong>&nbsp;
+                                        <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>
+                                    </div>}
                                 </div>
                             </div>
                         );
