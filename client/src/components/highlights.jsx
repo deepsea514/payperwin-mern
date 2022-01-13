@@ -43,6 +43,8 @@ class Highlights extends Component {
             leagueIndex: null,
             sports: [],
             loading: false,
+            showLeft: false,
+            showRight: true,
         };
         this._isMounted = false;
         this.listRef = createRef();
@@ -80,16 +82,32 @@ class Highlights extends Component {
 
     scrollLeft = () => {
         const position = this.listRef.current?.scrollLeft - 200;
-        this.listRef.current?.scrollTo({ left: position > 0 ? position : 0, behavior: 'smooth' })
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        const newPos = position > 0 ? position : 0;
+        this.listRef.current?.scrollTo({ left: newPos, behavior: 'smooth' })
+        this.setState({
+            showRight: offsetWidth < scrollWidth,
+            showLeft: newPos != 0
+        })
     }
 
     scrollRight = () => {
         const position = this.listRef.current?.scrollLeft + 200;
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        const scrollLimit = scrollWidth - offsetWidth;
+        const newPos = position > scrollLimit ? scrollLimit : position;
+
         this.listRef.current?.scrollTo({ left: position, behavior: 'smooth' })
+        this.setState({
+            showLeft: newPos != 0,
+            showRight: newPos < scrollLimit
+        });
     }
 
     render() {
-        const { sportIndex, leagueIndex, sports } = this.state;
+        const { sportIndex, leagueIndex, sports, showLeft, showRight } = this.state;
         const { addBet, betSlip, removeBet, showPromotionAction } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         return (
@@ -105,11 +123,13 @@ class Highlights extends Component {
                     </div>
                 </div>
                 <ul className="nav nav-tabs pt-2" ref={this.listRef}>
-                    <li className="d-flex align-items-center sports-scroller sports-scroller-left" onClick={this.scrollLeft}>
+                    {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
+                        ref={this.leftButtonRef}
+                        onClick={this.scrollLeft}>
                         <span className='sports-scroller-icon'>
                             <i className='fas fa-arrow-left' />
                         </span>
-                    </li>
+                    </li>}
                     <li className="nav-item"
                         onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
                         <center>
@@ -149,11 +169,13 @@ class Highlights extends Component {
                             </li>
                         );
                     })}
-                    <li className="d-flex align-items-center sports-scroller sports-scroller-right" onClick={this.scrollRight}>
+                    {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
+                        ref={this.rightButtonRef}
+                        onClick={this.scrollRight}>
                         <span className='sports-scroller-icon'>
                             <i className='fas fa-arrow-right' />
                         </span>
-                    </li>
+                    </li>}
                 </ul>
                 {sportName == "Other" ?
                     <Others
