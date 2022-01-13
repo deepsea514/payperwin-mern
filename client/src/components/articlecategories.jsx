@@ -12,6 +12,7 @@ class ArticleCategories extends Component {
         this.state = {
             categories: [],
             articles: [],
+            loading: false,
         }
     }
 
@@ -23,23 +24,24 @@ class ArticleCategories extends Component {
             .catch((error) => {
                 this.setState({ categories: [] });
             })
+        this.setState({ loading: true });
         getArticles()
             .then(({ data }) => {
-                this.setState({ articles: data });
+                this.setState({ articles: data, loading: false, });
             })
             .catch(() => {
-                this.setState({ articles: null });
+                this.setState({ articles: null, loading: false, });
             })
     }
 
     render() {
         const { intl } = this.props;
-        const { categories, articles } = this.state;
+        const { categories, articles, loading } = this.state;
         return (
             <div>
                 <div className="category-intro-container">
                     <div className="global-width">
-                        <h1 className="default"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY"/></h1>
+                        <h1 className="default"><FormattedMessage id="COMPONENTS.ARTICLE.CATEGORY" /></h1>
                         <div className="archive-anchors">
                             <nav className="anchors">
                                 <ul className="list">
@@ -54,6 +56,7 @@ class ArticleCategories extends Component {
                     </div>
                 </div>
                 <ArticleWrapper
+                    loading={loading}
                     showMore={false}
                     showCategories={true}
                     categories={categories}

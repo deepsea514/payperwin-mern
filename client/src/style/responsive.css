@@ -197,4 +197,8 @@
     .header-bottom {
         display: none;
     }
+
+    .articleV2 .title {
+        font-size: 30px;
+    }
 }

@@ -25,14 +25,12 @@ class Articles extends Component {
         const { intl } = this.props;
 
         return (
-            <div>
-                <Switch>
-                    <Route path="/articles/category/:categoryname" component={ArticleCategory} />
-                    <Route path="/articles/category" render={ArticleCategories} />
-                    <Route path="/articles/:permalink/:id" component={Article} />
-                    <Route path="/articles" component={ArticleHome} />
-                </Switch>
-            </div>
+            <Switch>
+                <Route path="/articles/category/:categoryname" component={ArticleCategory} />
+                <Route path="/articles/category" render={ArticleCategories} />
+                <Route path="/articles/:permalink/:id" component={Article} />
+                <Route path="/articles" component={ArticleHome} />
+            </Switch>
         );
     }
 }

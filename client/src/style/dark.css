@@ -353,6 +353,108 @@
     color: white;
 }
 
+.main-section.dark .block.feature-articles.left .item,
+.main-section.dark .block.feature-articles .item .text {
+    background-color: #080808;
+}
+
+.main-section.dark .details .detail-info {
+    color: #1A84FF;
+}
+
+.main-section.dark .block.feature-articles .item .date {
+    color: #DDD;
+}
+
+.main-section.dark .block.feature-articles .subtitle a {
+    color: #FFF;
+}
+
+.main-section.dark .short-intro p {
+    color: #888;
+}
+
+.main-section.dark .recent-popular-related .article-sidebar-tab li {
+    background-color: #2d2d2d;
+}
+
+.main-section.dark .recent-popular-related .popular-tab.active,
+.main-section.dark .recent-popular-related .recent-tab.active {
+    border-bottom: 2px solid #ED254E;
+}
+
+.main-section.dark .recent-popular-related ul li {
+    background-color: #1d1d1d;
+    border-bottom: 1px solid #3d3d3d;
+}
+
+.main-section.dark .recent-popular-related .details a {
+    color: #1A84FF;
+}
+
+.main-section.dark .recent-popular-related .details .date {
+    color: #DDD;
+}
+
+.main-section.dark .recent-popular-related .subtitle a {
+    color: #EEE;
+}
+
+.main-section.dark .recent-popular-related .sidebar-tab-more a {
+    color: #DDD;
+}
+
+.main-section.dark .tags-categories {
+    background-color: #1d1d1d;
+}
+
+.main-section.dark .tags-categories li a {
+    color: #1A84FF;
+}
+
+.main-section.dark .tags-categories .see-all {
+    border-top: 1px solid #3d3d3d;
+}
+
+.main-section.dark .tags-categories .see-all span {
+    color: #DDD;
+}
+
+.main-section.dark .archive-anchors.lower .anchors a,
+.main-section.dark .archive-anchors .anchors a {
+    color: #1A84FF;
+}
+
+.main-section.dark .social-bar.article {
+    background-color: #121212;
+}
+
+.main-section.dark .article .back-to-help-wrap {
+    color: white;
+}
+
+.main-section.dark .articleV2 h1 {
+    color: white;
+}
+
+.main-section.dark .article-author-name {
+    color: white;
+}
+
+.main-section.dark .article-author-date {
+    color: #CCC;
+}
+
+.main-section.dark .articleV2 .buttons-wrapper {
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+.main-section.dark .articleV2 .br-home-button {
+    border: 1px solid #DDD;
+    color: #DDD;
+}
+
 /* Footer */
 
 footer.dark, footer.dark * {

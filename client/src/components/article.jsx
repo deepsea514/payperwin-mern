@@ -3,6 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from "react-router-dom";
 import dateformat from "dateformat";
 import { getArticle } from '../redux/services';
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 
 class Article extends Component {
     constructor(props) {
@@ -10,6 +11,7 @@ class Article extends Component {
 
         this.state = {
             article: null,
+            loading: false,
         }
     }
 
@@ -19,12 +21,13 @@ class Article extends Component {
 
     getData = () => {
         const { match: { params: { id } } } = this.props;
+        this.setState({ loading: true });
         getArticle(id)
             .then(({ data }) => {
-                this.setState({ article: data });
+                this.setState({ article: data, loading: false, });
             })
             .catch(() => {
-                this.setState({ article: null });
+                this.setState({ article: null, loading: false, });
             })
     }
 
@@ -38,7 +41,18 @@ class Article extends Component {
     }
 
     render() {
-        const { article } = this.state;
+        const { article, loading } = this.state;
+        if (loading) {
+            return (
+                <center className="mt-5">
+                    <Preloader use={ThreeDots}
+                        size={100}
+                        strokeWidth={10}
+                        strokeColor="#F0AD4E"
+                        duration={800} />
+                </center>
+            );
+        }
         if (!article) {
             return (
                 <center><h3>
@@ -47,7 +61,7 @@ class Article extends Component {
             )
         }
         return (
-            <div className="col-in article-container px-5">
+            <div className="article-container px-5">
                 <div className="social-bar article social-bar-area">
                     <Link to="/articles" className="back-to-help-wrap">
                         <i className="fas fa-chevron-left" /> &nbsp;
@@ -70,7 +84,7 @@ class Article extends Component {
                     </div>
                     <div className="row">
                         <div className="col-md-4">
-                            <div className='d-flex justify-content-center'>
+                            <div className='d-flex justify-content-start justify-content-sm-center'>
                                 <div>
                                     {article.authors && article.authors.map((author, index) => (
                                         <div className='d-flex align-items-center mt-2' key={index}>

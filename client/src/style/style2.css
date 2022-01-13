@@ -2981,7 +2981,7 @@ input.special {
 
 .block.feature-articles.left .item {
     border-radius: 3px;
-    background-color: #f1f2f5;
+    background-color: #FFF;
     overflow: hidden;
     padding: 20px;
 }
@@ -2997,7 +2997,7 @@ input.special {
 .block.feature-articles .item .text {
     position: relative;
     padding: 20px 25px;
-    background: #f1f2f5;
+    background: #FFF;
 }
 
 .feature-articles .item .text .details {
@@ -3085,7 +3085,7 @@ input.special {
 
 .short-intro p {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 25px;
     color: #3d4658;
 }
@@ -3139,7 +3139,7 @@ input.special {
     float: left;
     border: none;
     text-align: center;
-    background-color: #072443;
+    background-color: #2d2d2d;
     color: rgba(255, 255, 255, 0.8);
     font-size: 12px;
     line-height: 14px;
@@ -3156,7 +3156,7 @@ input.special {
 .recent-popular-related ul li {
     padding: 15px 20px;
     text-align: left;
-    background-color: #F1F3F7;
+    background-color: #FFF;
     border-bottom: 1px solid #DADBDC;
 }
 
@@ -3229,13 +3229,13 @@ input.special {
 }
 
 .tags-categories {
-    border-radius: 3px;
-    background-color: #F1F3F7;
+    border-radius: 5px;
+    background-color: #FFF;
 }
 
 .tags-categories h6 {
     padding: 12px 20px;
-    background-color: #072443;
+    background-color: #2d2d2d;
     border-radius: 3px 3px 0 0;
     color: #fff;
     font-size: 13px;
@@ -3293,7 +3293,7 @@ input.special {
 
 .social-bar.article {
     position: relative;
-    background-color: #fff;
+    background-color: #f1f3f7;
     width: 100%;
     height: inherit;
     margin: 0 auto;
@@ -3423,7 +3423,8 @@ input.special {
 
 .articleV2 .title {
     text-transform: none;
-    margin-top: 35px;
+    margin-top: 15px;
+    font-weight: 300;
 }
 
 .articleV2 .block.article .article-header .image {
@@ -3649,8 +3650,9 @@ input.special {
 }
 
 .category-intro-container {
-    padding: 40px 0;
-    background: linear-gradient(90deg, #0b1422, #273043);
+    padding: 30px 0;
+    margin-bottom: 20px;
+    background: #202020;
 }
 
 .category-intro-container .global-width {
@@ -3693,7 +3695,7 @@ input.special {
     width: auto;
     font-size: 14px;
     line-height: 16px;
-    color: #fff;
+    color: #0A74EF;
     text-transform: uppercase;
     border-bottom: 2px solid transparent;
     font-weight: 700;
