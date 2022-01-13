@@ -384,14 +384,6 @@ a.log-in-btn {
     text-align: center;
 }
 
-.login-nav-contain {
-    position: relative;
-}
-
-.login-nav {
-    padding-top: 15px;
-}
-
 .login-nav i:hover {
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.75);
 }
@@ -407,16 +399,12 @@ a.log-in-btn {
 .login-nav li {
     display: inline-block;
     margin-right: 15px;
+    color: white;
 }
 
 .login-nav i {
-    font-size: 16px;
+    font-size: 12px;
     margin: 0 10px;
-}
-
-.login-nav .username {
-    cursor: pointer;
-    text-transform: none !important;
 }
 
 .deposit {
@@ -1106,24 +1094,6 @@ a.log-in-btn {
         flex-direction: column;
     }
 
-    .login-nav {
-        padding-top: 20px;
-    }
-
-    .login-nav i {
-        margin: 0;
-        font-size: 15px;
-    }
-
-    .login-nav .blue-icon {
-        padding: 7px;
-        border-radius: 2px;
-    }
-
-    .login-nav li:nth-child(2) {
-        margin-right: 0;
-    }
-
     .deposit {
         background: inherit;
         padding: 7px;
@@ -1133,10 +1103,6 @@ a.log-in-btn {
     .deposit i {
         display: inline-block;
         margin: 0;
-    }
-
-    .login-nav li {
-        margin-right: 5px;
     }
 
     .how-it-works h2 {

@@ -10,6 +10,7 @@ import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
 import logout from '../libs/logout';
+import numberFormat from '../helpers/numberFormat';
 
 class Header extends Component {
     constructor(props) {
@@ -162,6 +163,16 @@ class Header extends Component {
                                     </li>
                                 </ul>
                                 {!user && <SimpleLogin />}
+                                {user && <ul className="login-nav">
+                                    <li>
+                                        <span className="blue-icon">
+                                            <Link to={{ pathname: '/deposit' }}>
+                                                CAD ${user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
+                                            </Link>
+                                            &nbsp;<i className="fa fa-refresh cursor-pointer not-mobile" onClick={() => getUser()} />
+                                        </span>
+                                    </li>
+                                </ul>}
                                 <button className="navbar-toggler responsive-menu"
                                     onClick={() => toggleField('menuOpen')}>
                                     <span className="navbar-toggler-icon"></span>
