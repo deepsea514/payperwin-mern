@@ -7,7 +7,7 @@ import Search from './search';
 
 class SidebarSports extends Component {
     render() {
-        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen, user, getUser, showLoginModal } = this.props;
+        const { sidebarShowAccountLinks, toggleField, sportsMenuMobileOpen, user, getUser, showLoginModalAction } = this.props;
         return (
             <div className={`col-md-2 col-sm-6 responsive-v ${sidebarShowAccountLinks ? 'hide' : ''}`}
                 style={sportsMenuMobileOpen ? { display: 'block' } : null} onClick={() =>
@@ -16,7 +16,7 @@ class SidebarSports extends Component {
                 <div className="fabrt-d">
                     <h3 className="cat-heading">Favorites</h3>
                     {!user && <div className="favorites">
-                        <a className="cursor-pointer fav-link" onClick={showLoginModal}><b>Log in</b></a> or <Link to={{ pathname: '/signup' }} className="fav-link"><b>Join</b></Link> to change your <br />favorites.
+                        <a className="cursor-pointer fav-link" onClick={showLoginModalAction}><b>Log in</b></a> or <Link to={{ pathname: '/signup' }} className="fav-link"><b>Join</b></Link> to change your <br />favorites.
                     </div>}
                     {user && <Favorites user={user} getUser={getUser} />}
                 </div>

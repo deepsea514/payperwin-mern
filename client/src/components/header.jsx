@@ -144,7 +144,8 @@ class Header extends Component {
                                     <img src="/images/logo-white.png" />
                                 </Link>
                             </div>
-                            <div className="d-flex justify-content-end">
+                            <div className="d-flex justify-content-end align-items-center">
+                                {!user && <SimpleLogin />}
                                 <button className="navbar-toggler responsive-menu"
                                     onClick={() => toggleField('menuOpen')}>
                                     <span className="navbar-toggler-icon"></span>
