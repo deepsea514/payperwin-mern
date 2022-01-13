@@ -440,6 +440,19 @@ a.log-in-btn {
     margin-left: auto;
 }
 
+.responsive-menu .navbar-toggler-icon {
+    width: 18px;
+    padding: 0;
+}
+
+.navbar-toggler-icon {
+    width: 25px;
+    height: 2px;
+    background: #fff;
+    display: block;
+    margin-bottom: 6px;
+}
+
 .login-dropdown {
     color: #333;
     background: white;
@@ -806,16 +819,30 @@ a.log-in-btn {
 }
 
 .mobile-menu {
-    background: linear-gradient(90deg, #171717, #313131);
+    background: #171717;
     height: 100%;
     display: flex !important;
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
     flex-direction: column;
+    max-width: 450px;
+    pointer-events: auto;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 0.3rem;
+    outline: 0;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+    width: 86%;
+    right: 0;
 }
 
 .mobile-menu .navbar-nav {
     flex: 1 1 auto;
     font-size: 14px;
     position: relative;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 .mobile-menu .navbar-nav>.nav-item:last-child {
@@ -824,14 +851,43 @@ a.log-in-btn {
     width: 100%;
 }
 
+.mobile-menu .navbar-nav a {
+    padding: 6px;
+    font-size: 14px;
+}
+
+.mobile-menu .nav-item.active {
+    border: none;
+    border-left: 3px solid #ED254E;
+}
+
 .mobile-menu .nav-item {
     padding-left: 10px;
+    padding-right: 0;
     text-transform: uppercase;
 }
 
-.mobile-menu .logo {
-    max-width: 45%;
-    padding: 9px 0;
+.mobile-menu .nav-item .nav-link {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.mobile-menu .nav-item .nav-link.next span {
+    width: calc(100% - 40px);
+}
+
+.mobile-menu .nav-item .nav-link span {
+    width: calc(100% - 20px);
+    display: block;
+    /* max-width: 190px; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mobile-menu .nav-item .nav-link i {
+    width: 20px;
 }
 
 .mobile-menu .list-fab {
@@ -854,13 +910,17 @@ a.log-in-btn {
     margin-right: 8px;
 }
 
-.mobile-menu .close {
-    height: 56px;
+.mobile-menu .list-fab select option {
+    background-color: #121212;
+    color: white;
 }
 
-.mobile-menu .close i {
-    font-size: 28px;
-    display: block;
+.mobile-menu i.fa-times {
+    color: #ED254E;
+}
+
+.mobile-menu ul.navbar-nav li.nav-item i {
+    color: #ED254E;
 }
 
 .modal-content {
@@ -1095,10 +1155,6 @@ a.log-in-btn {
 
     .navbar-mobile, .navbar-mobile * {
         color: #70777F !important;
-    }
-
-    .responsive-cat .navbar-toggler-icon {
-        background: #70777F !important;
     }
 
     .mobile {

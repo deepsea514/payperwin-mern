@@ -9,7 +9,6 @@ import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
-import numberFormat from '../helpers/numberFormat';
 import logout from '../libs/logout';
 
 class Header extends Component {
@@ -60,7 +59,6 @@ class Header extends Component {
         const { getUser, history, toggleField } = this.props;
         logout(getUser, history);
         this.setState({ oddsDropDownOpen: false, langDropDownOpen: false });
-        toggleField('userDropDownOpen');
     }
 
     getOddsFormatString = () => {
@@ -122,12 +120,8 @@ class Header extends Component {
         } = this.state;
         const { toggleField,
             user,
-            location,
-            search,
-            setSearch,
             acceptCookie,
             acceptCookieAction,
-            dark_light,
             getUser,
             showLoginModal,
             showForgotPasswordModal,
@@ -135,11 +129,9 @@ class Header extends Component {
             showForgotPasswordModalAction,
             adminMessage,
             dismissAdminMessage,
-            userDropDownOpen,
             showPromotionAction
         } = this.props;
         const showMessage = this.checkShowMessage();
-        const { pathname } = location;
         return (
             <header className="header">
                 {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
@@ -153,67 +145,6 @@ class Header extends Component {
                                 </Link>
                             </div>
                             <div className="d-flex justify-content-end">
-                                {user ? (
-                                    <div className="login-nav-contain">
-                                        <ul className="login-nav">
-                                            <li className="not-mobile"><Link to={{ pathname: '/inbox' }} className="blue-icon"><i className="fas fa-envelope mx-0" />{user.messages ? <span className="inbox-count">{user.messages}</span> : null}</Link></li>
-                                            {!user.autobet && <li>
-                                                <span className="blue-icon">
-                                                    <Link to={{ pathname: '/deposit' }}>
-                                                        CAD {user.currency} {user.balance ? numberFormat(this.balanceString(user.balance)) : 0}
-                                                    </Link>
-                                                    &nbsp;<i className="fa fa-refresh cursor-pointer not-mobile" onClick={() => getUser()} />
-                                                </span>
-                                            </li>}
-                                            <li className="not-mobile">
-                                                <Link to={{ pathname: '/deposit' }} className="deposit">
-                                                    <span>{<FormattedMessage id="COMPONENTS.DEPOSIT" />}</span>
-                                                </Link>
-                                            </li>
-                                            <li className="not-mobile">
-                                                <a className="username blue-icon" onClick={() => toggleField('userDropDownOpen')}>
-                                                    <i className="fas fa-user" />&nbsp;<span className="not-mobile emailspan"><FormattedMessage id="COMPONENTS.MY.ACCOUNT" /></span>&nbsp;<i className="fa fa-caret-down not-mobile" />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        {userDropDownOpen && (
-                                            <React.Fragment>
-                                                <div className="background-closer" onClick={() => toggleField('userDropDownOpen')} />
-                                                <div className="login-dropdown">
-                                                    <ul>
-                                                        <li className="mobile username">
-                                                            <FormattedMessage id="COMPONENTS.MY.ACCOUNT" />
-                                                        </li>
-                                                        <li className="mobile" onClick={() => toggleField('accountMenuMobileOpen')}>
-                                                            <FormattedMessage id="COMPONENTS.MY.ACCOUNT" />
-                                                        </li>
-                                                        {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/preferences' }}><FormattedMessage id="COMPONENTS.PREFERENCES" /></Link>
-                                                        </li>}
-                                                        {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/deposit' }}><FormattedMessage id="COMPONENTS.DEPOSIT" /></Link>
-                                                        </li>}
-                                                        {!user.autobet && <li>
-                                                            <Link to={{ pathname: '/withdraw' }}><FormattedMessage id="COMPONENTS.WITHDRAW" /></Link>
-                                                        </li>}
-                                                        {user.autobet && <li>
-                                                            <Link to={{ pathname: '/autobet-dashboard' }}><FormattedMessage id="COMPONENTS.HEADER.DASHBOARD" /></Link>
-                                                        </li>}
-                                                        <li>
-                                                            <Link to={{ pathname: '/bets' }}><FormattedMessage id="COMPONENTS.OPENBETS" /></Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link to={{ pathname: '/invite' }}><FormattedMessage id="COMPONENTS.INVITE" /></Link>
-                                                        </li>
-                                                        <li>
-                                                            <button onClick={this.logout}><FormattedMessage id="COMPONENTS.LOGOUT" /><i className="fap fa-sign-out" /></button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </React.Fragment>
-                                        )}
-                                    </div>
-                                ) : <SimpleLogin showLoginModal={() => showLoginModalAction(true)} />}
                                 <button className="navbar-toggler responsive-menu"
                                     onClick={() => toggleField('menuOpen')}>
                                     <span className="navbar-toggler-icon"></span>

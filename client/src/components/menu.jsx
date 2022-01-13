@@ -7,7 +7,6 @@ import logout from '../libs/logout';
 import sportNameImage from '../helpers/sportNameImage';
 import { getSportsDir } from '../redux/services';
 
-
 class Menu extends Component {
     constructor(props) {
         super(props);
@@ -64,7 +63,7 @@ class Menu extends Component {
         return (
             <>
                 <div className="background-closer bg-modal" onClick={() => toggleField('menuOpen')} />
-                <div className="mobile-menu modal-content">
+                <div className="mobile-menu">
                     <div className='d-flex justify-content-between p-4' style={{ alignItems: 'center' }}>
                         <h3 className='menu-title' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user ? 'Hi, ' + user.firstname : 'Welcome'}</h3>
                         <button type="button" className="close-header" onClick={() => toggleField('menuOpen')}>
@@ -111,10 +110,7 @@ class Menu extends Component {
                             </div>
                             <p>Deposit</p>
                         </Link>
-                        <a className='mobile-menu-quick-icon-container' onClick={() => {
-                            toggleField('accountMenuMobileOpen');
-                            toggleField('menuOpen');
-                        }}>
+                        <a className='mobile-menu-quick-icon-container' onClick={() => this.setState({ showMenu: 'account' })}>
                             <div className='mobile-menu-quick-icon'>
                                 <i className='fas fa-user' />
                             </div>
@@ -123,120 +119,199 @@ class Menu extends Component {
                     </div>}
                     <ul className="navbar-nav">
                         {!showMenu && <>
-                            <li className={`nav-item ${pathname === '/' ? 'active' : ''}`} >
-                                <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-users"></i><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'az-sports' })}>
-                                    <i className="fas fa-list" /><FormattedMessage id="COMPONENTS.AZ.SPORTS" /><i className="fas fa-chevron-right float-right" />
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
-                                    <i className="fas fa-money-check"></i><FormattedMessage id="COMPONENTS.BUYGIFTCARD" />
-                                </a>
-                            </li>
-                            <li className={`nav-item ${pathname === '/articles' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/articles' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-pencil"></i><FormattedMessage id="COMPONENTS.ARTICLES" />
-                                </Link>
-                            </li>
-                            <li className={`nav-item ${pathname === '/how-it-works' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
-                                </Link>
-                            </li>
-                            <li className={`nav-item ${pathname === '/faq' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/faq' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-question"></i><FormattedMessage id="COMPONENTS.FAQ" />
-                                </Link>
-                            </li>
-                            <li className={`nav-item`}>
-                                <a className="nav-link" onClick={() => this.setState({ showMenu: 'help' })}>
-                                    <i className="fa fa-question-circle" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.HELP" /><i className="fas fa-chevron-right float-right" />
-                                </a>
-                            </li>
-                            <li className={`nav-item ${pathname === '/about-us' ? 'active' : ''}`}>
-                                <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-briefcase"></i><FormattedMessage id="COMPONENTS.ABOUTUS" />
-                                </Link>
-                            </li>
-                            {user && <li className="nav-item">
-                                <a className="nav-link" onClick={this.logout}>
-                                    <i className="fas fa-sign-out-alt" aria-hidden="true"></i><FormattedMessage id="COMPONENTS.LOGOUT" />
-                                </a>
-                            </li>}
+                            <ul className='row mx-0'>
+                                <li className={`nav-item col-6 ${pathname === '/' ? 'active' : ''}`} >
+                                    <Link to={{ pathname: '/' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-users" />
+                                        <span><FormattedMessage id="COMPONENTS.PEERTOPEER.BETTING" /></span>
+                                    </Link>
+                                </li>
+                                <li className="nav-item col-6">
+                                    <a className="nav-link next" href='#' onClick={() => this.setState({ showMenu: 'az-sports' })}>
+                                        <i className="fas fa-list" />
+                                        <span><FormattedMessage id="COMPONENTS.AZ.SPORTS" /></span>
+                                        <i className="fas fa-chevron-right float-right" />
+                                    </a>
+                                </li>
+                                <li className="nav-item col-6">
+                                    <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
+                                        <i className="fas fa-money-check" />
+                                        <span><FormattedMessage id="COMPONENTS.BUYGIFTCARD" /></span>
+                                    </a>
+                                </li>
+                                <li className={`nav-item col-6 ${pathname === '/articles' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/articles' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-pencil" />
+                                        <span><FormattedMessage id="COMPONENTS.ARTICLES" /></span>
+                                    </Link>
+                                </li>
+                                <li className={`nav-item col-6 ${pathname === '/how-it-works' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-info" />
+                                        <span><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" /></span>
+                                    </Link>
+                                </li>
+                                <li className={`nav-item col-6 ${pathname === '/faq' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/faq' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-question" />
+                                        <span><FormattedMessage id="COMPONENTS.FAQ" /></span>
+                                    </Link>
+                                </li>
+                                <li className="nav-item col-6">
+                                    <a className="nav-link next" href='#' onClick={() => this.setState({ showMenu: 'help' })}>
+                                        <i className="fa fa-question-circle" />
+                                        <span><FormattedMessage id="COMPONENTS.HELP" /></span>
+                                        <i className="fas fa-chevron-right float-right" />
+                                    </a>
+                                </li>
+                                <li className={`nav-item col-6 ${pathname === '/about-us' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-briefcase" />
+                                        <span><FormattedMessage id="COMPONENTS.ABOUTUS" /></span>
+                                    </Link>
+                                </li>
+                                {user && <li className="nav-item col-6">
+                                    <a className="nav-link" href='#' onClick={this.logout}>
+                                        <i className="fas fa-sign-out-alt" />
+                                        <span><FormattedMessage id="COMPONENTS.LOGOUT" /></span>
+                                    </a>
+                                </li>}
+                            </ul>
                         </>}
-                        {showMenu == 'az-sports' && <ul className='row'>
-                            {sports.map(sport => {
-                                const { name, eventCount } = sport;
-                                if (eventCount <= 0) return null;
+                        {showMenu == 'az-sports' && <>
+                            {/* <li className={`nav-item`} >
+                                <a href="#" className="nav-link" onClick={() => this.setState({ showMenu: null })}>
+                                    <i className="fas fa-chevron-left" />
+                                    <span><FormattedMessage id="PAGES.BACK" /></span>
+                                </a>
+                            </li> */}
+                            <ul className='row px-2'>
+                                {sports.map(sport => {
+                                    const { name, eventCount } = sport;
+                                    if (eventCount <= 0) return null;
 
-                                return (
-                                    <li className="nav-item col-6" key={name}>
-                                        <Link
-                                            to={{ pathname: name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}` }}
-                                            className="nav-link menu-sports-item"
-                                            onClick={() => toggleField('menuOpen')}>
-                                            <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
-                                            {this.getSportName(name)}
-                                        </Link>
-                                    </li>
-                                )
-                            })}
-                        </ul>}
-                        {showMenu == 'help' && <ul style={{ maxHeight: '300px' }}>
-                            <li className="nav-item">
-                                <Link to="/payment-options"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="far fa-money-bill-alt" />
-                                    <FormattedMessage id="COMPONENTS.PAYMENT.OPTIONS" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/betting-rules"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-tasks" />
-                                    <FormattedMessage id="COMPONENTS.BETTING.RULES" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/support"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-phone" />
-                                    <FormattedMessage id="COMPONENTS.CONTACTUS" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/faq"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-question" />
-                                    <FormattedMessage id="COMPONENTS.CASHBACK.FAQ" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/privacy-policy"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-book" />
-                                    <FormattedMessage id="COMPONENTS.PRIVACY_POLICY" />
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/terms-and-conditions"
-                                    className="nav-link"
-                                    onClick={() => toggleField('menuOpen')}>
-                                    <i className="fas fa-journal-whills" />
-                                    <FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" />
-                                </Link>
-                            </li>
-                        </ul>}
+                                    return (
+                                        <li className="nav-item col-6" key={name}>
+                                            <Link
+                                                to={{ pathname: name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}` }}
+                                                className="nav-link menu-sports-item"
+                                                onClick={() => toggleField('menuOpen')}>
+                                                <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
+                                                {this.getSportName(name)}
+                                            </Link>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </>}
+                        {showMenu == 'help' && <>
+                            {/* <li className={`nav-item`} >
+                                <a href="#" className="nav-link" onClick={() => this.setState({ showMenu: null })}>
+                                    <i className="fas fa-chevron-left" />
+                                    <span><FormattedMessage id="PAGES.BACK" /></span>
+                                </a>
+                            </li> */}
+                            <ul>
+                                <li className="nav-item">
+                                    <Link to="/payment-options"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="far fa-money-bill-alt" />
+                                        <FormattedMessage id="COMPONENTS.PAYMENT.OPTIONS" />
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/betting-rules"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-tasks" />
+                                        <FormattedMessage id="COMPONENTS.BETTING.RULES" />
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/support"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-phone" />
+                                        <FormattedMessage id="COMPONENTS.CONTACTUS" />
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/faq"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-question" />
+                                        <FormattedMessage id="COMPONENTS.CASHBACK.FAQ" />
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/privacy-policy"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-book" />
+                                        <FormattedMessage id="COMPONENTS.PRIVACY_POLICY" />
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/terms-and-conditions"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-journal-whills" />
+                                        <FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" />
+                                    </Link>
+                                </li>
+                            </ul>
+                        </>}
+                        {showMenu == 'account' && <>
+                            {/* <li className={`nav-item`} >
+                                <a href="#" className="nav-link" onClick={() => this.setState({ showMenu: null })}>
+                                    <i className="fas fa-chevron-left" />
+                                    <span><FormattedMessage id="PAGES.BACK" /></span>
+                                </a>
+                            </li> */}
+                            <ul>
+                                <li className={`nav-item ${pathname === '/account' ? 'active' : ''}`}>
+                                    <Link to="/account"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-info-circle i-color" />
+                                        <FormattedMessage id="COMPONENTS.SIDEBAR.MYACCOUNT" />
+                                    </Link>
+                                </li>
+                                <li className={`nav-item ${pathname === '/bets' ? 'active' : ''}`}>
+                                    <Link to="/bets"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-gamepad" />
+                                        <FormattedMessage id="COMPONENTS.SIDEBAR.OPENBETS" />
+                                    </Link>
+                                </li>
+                                <li className={`nav-item ${pathname === '/preferences' ? 'active' : ''}`}>
+                                    <Link to="/preferences"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-asterisk" />
+                                        <FormattedMessage id="COMPONENTS.PREFERENCES" />
+                                    </Link>
+                                </li>
+                                <li className={`nav-item ${pathname === '/deposit' ? 'active' : ''}`}>
+                                    <Link to="/deposit"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-money-check" />
+                                        <FormattedMessage id="COMPONENTS.SIDEBAR.DEPOSIT" />
+                                    </Link>
+                                </li>
+                                <li className={`nav-item ${pathname === '/withdraw' ? 'active' : ''}`}>
+                                    <Link to="/withdraw"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-money-check-alt" />
+                                        <FormattedMessage id="COMPONENTS.SIDEBAR.WITHDRAW" />
+                                    </Link>
+                                </li>
+                            </ul>
+                        </>}
                         <li className="nav-item">
                             <ul>
                                 <li onClick={() => setLanguage('en')} className="language-li-menu border-0 px-1 cursor-pointer">

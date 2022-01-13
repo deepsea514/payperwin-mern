@@ -167,7 +167,6 @@ class App extends Component {
             menuOpen: false,
             sportsMenuMobileOpen: false,
             accountMenuMobileOpen: false,
-            userDropDownOpen: false,
             openBetSlipMenu: false,
             betSlipType: 'single',
             betSlip: [],
@@ -366,7 +365,6 @@ class App extends Component {
             betSlipType,
             teaserBetSlip,
             betSlipOdds,
-            userDropDownOpen
         } = this.state;
         const { user,
             getUser,
@@ -398,7 +396,6 @@ class App extends Component {
                     getUser={getUser}
                     history={history}
                     location={location}
-                    userDropDownOpen={userDropDownOpen}
                 />
                 {menuOpen && <Menu user={user}
                     location={location}

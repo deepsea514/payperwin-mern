@@ -477,13 +477,6 @@ footer ul li a i {
     border-bottom: 2px solid #ED254E !important;
 }
 
-.navbar-toggler.responsive-cat {
-    position: absolute;
-    padding: 0;
-    top: 15px;
-    z-index: 9;
-}
-
 .total-btn {
     padding: 7px 20px;
     background: #ED254E;
