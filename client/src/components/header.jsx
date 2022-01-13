@@ -156,7 +156,7 @@ class Header extends Component {
                                     </li>
                                     <li className="nav-item">
                                         <center style={{ whiteSpace: "nowrap" }}>
-                                            <Link to={{ pathname: '/' }} className="nav-link">
+                                            <Link to={{ pathname: '/how-it-works' }} className="nav-link">
                                                 <i className="fas fa-info"></i><FormattedMessage id="COMPONENTS.HOW.IT.WORKS" />
                                             </Link>
                                         </center>
