@@ -4323,7 +4323,7 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
+                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle'])
                 .sort({ published_at: -1 })
                 .limit(10);
             res.json(articles);
@@ -4338,7 +4338,7 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
+                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle'])
                 .sort({ createdAt: 1 })
                 .limit(10);
             res.json(articles);
