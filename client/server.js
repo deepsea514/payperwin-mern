@@ -13,17 +13,17 @@ const port = _env.port;
 const app = express();
 
 // CORS
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     if (serverUrl != 'https://api.payperwin.com') {
-//         res.header("X-Robots-Tag", "noindex");
-//     }
-//     next();
-// });
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    if (serverUrl != 'https://api.payperwin.com') {
+        res.header("X-Robots-Tag", "noindex");
+    }
+    next();
+});
 
 app.use(compression());
 
@@ -31,13 +31,6 @@ const pathToIndex = path.join(__dirname, "serve/index.html");
 
 app.use(express.static("dist"));
 app.use(express.static("public"));
-
-app.get(
-    '/loaderio-3a03f54df9f87682c844b4fd4b9f87bf.txt',
-    (req, res) => {
-        res.send('loaderio-3a03f54df9f87682c844b4fd4b9f87bf');
-    }
-)
 
 app.get("/*", (req, res) => {
     const { path } = req;
@@ -50,13 +43,12 @@ app.get("/*", (req, res) => {
         let title = "Peer to Peer Betting";
         let description = "Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or HIGH STAKER and we are not affiliated with any HIGH STAKER. Place bets on your favorite sporting events worldwide. RISK less and WIN More!";
         let keywords = "payperwin,payper win,peer to peer,online betting,betting,sport";
+        let metaimage = "https://www.payperwin.com/images/PPW%20Meta.png";
 
         let staticPageFound = pagesData.find((page) => page.path == path);
         if (staticPageFound) {
             try {
-                const { data } = await axios.get(
-                    `${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`
-                );
+                const { data } = await axios.get(`${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`);
                 if (data) {
                     const { title: metaTitle, description: metaDescription, keywords: metaKeywords } = data;
                     title = metaTitle;
@@ -135,6 +127,27 @@ app.get("/*", (req, res) => {
             }
         }
 
+        if (!staticPageFound && path.startsWith("/articles")) {
+            const urlParams = path.split("/");
+            const metalink = urlParams[2];
+            const article_id = urlParams[3];
+            if (metalink != 'category') {
+                try {
+                    const { data } = await axios.get(`${serverUrl}/article/${article_id}`);
+                    if (data) {
+                        title = data.meta_title;
+                        description = data.meta_description;
+                        keywords = data.meta_keywords;
+                        if (data.logo.startsWith('/banners')) {
+                            metaimage = serverUrl + data.logo;
+                        }
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+
         const meta = `
         <title>${title} | PAYPER WIN | Risk Less, Win more</title>
         <meta name="description" content="${description}">
@@ -143,16 +156,16 @@ app.get("/*", (req, res) => {
         <meta itemprop="name" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta itemprop="description" content="${description}">
         <meta itemprop="keywords" content="${keywords}">
-        <meta itemprop="image" content="https://www.payperwin.com/images/PPW Meta.png">
+        <meta itemprop="image" content="${metaimage}">
 
         <meta property="og:type" content="website">
         <meta property="og:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta property="og:description" content="${description}">
-        <meta property="og:image" content="https://www.payperwin.com/images/PPW Meta.png">
+        <meta property="og:image" content="${metaimage}">
 
         <meta name="twitter:title" content="${title} | PAYPER WIN | Risk Less, Win more">
         <meta name="twitter:description" content="${description}">
-        <meta name="twitter:image" content="https://www.payperwin.com/images/PPW Meta.png">
+        <meta name="twitter:image" content="${metaimage}">
         `;
 
         // TODO inject meta tags
