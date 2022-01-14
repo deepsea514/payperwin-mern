@@ -6,7 +6,6 @@ import update from 'immutability-helper';
 import Favicon from 'react-favicon';
 import Registration from '../pages/registration';
 import PasswordRecovery from '../pages/passwordRecovery';
-import Sports from '../pages/sports';
 import Sport from '../components/sport';
 import Lines from '../pages/lines';
 import Header from '../components/header';
@@ -454,9 +453,6 @@ class App extends Component {
                                                 } />}
                                                 <Route path="/how-it-works" render={(props) =>
                                                     <ErrorBoundary><HowTo {...props} /></ErrorBoundary>
-                                                } />
-                                                <Route path="/sports" render={(props) =>
-                                                    <ErrorBoundary><Sports {...props} /></ErrorBoundary>
                                                 } />
                                                 <Route path="/sport/:sportName/league/:leagueId/event/:eventId/live" exact render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}

@@ -80,6 +80,16 @@ class Highlights extends Component {
         }
     }
 
+    onScroll = () => {
+        const position = this.listRef.current?.scrollLeft;
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        this.setState({
+            showRight: position < scrollWidth - offsetWidth,
+            showLeft: position != 0
+        })
+    }
+
     scrollLeft = () => {
         const position = this.listRef.current?.scrollLeft - 200;
         const offsetWidth = this.listRef.current?.offsetWidth;
@@ -122,7 +132,7 @@ class Highlights extends Component {
                         </div>
                     </div>
                 </div>
-                <ul className="nav nav-tabs pt-2" ref={this.listRef}>
+                <ul className="nav nav-tabs pt-2" ref={this.listRef} onScroll={this.onScroll}>
                     {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
                         ref={this.leftButtonRef}
                         onClick={this.scrollLeft}>
