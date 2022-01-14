@@ -4245,8 +4245,8 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
-                .sort({ published_at: -1 })
+                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle', 'posted_at'])
+                .sort({ posted_at: -1 })
                 .limit(6);
             res.json(articles);
         } catch (error) {
