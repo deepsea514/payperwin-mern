@@ -174,5 +174,61 @@
     {
         "title": "Search",
         "path": "/search/:term"
+    },
+    {
+        "title": "Soccer Events",
+        "path": "/sport/soccer"
+    },
+    {
+        "title": "American Football Events",
+        "path": "/sport/football"
+    },
+    {
+        "title": "Tennis Events",
+        "path": "/sport/tennis"
+    },
+    {
+        "title": "Baseball Events",
+        "path": "/sport/baseball"
+    },
+    {
+        "title": "Ice Hockey Events",
+        "path": "/sport/ice-hockey"
+    },
+    {
+        "title": "Basketball Events",
+        "path": "/sport/basketball"
+    },
+    {
+        "title": "Rugby League Events",
+        "path": "/sport/rubgy-league"
+    },
+    {
+        "title": "Volleyball Events",
+        "path": "/sport/volleyball"
+    },
+    {
+        "title": "Table Tennis Events",
+        "path": "/sport/table-tennis"
+    },
+    {
+        "title": "Badminton Events",
+        "path": "/sport/badminton"
+    },
+    {
+        "title": "E-sports Events",
+        "path": "/sport/esports"
+    },
+    {
+        "title": "Cricket Events",
+        "path": "/sport/cricket"
+    },
+    {
+        "title": "Rugby Union Events",
+        "path": "/sport/rugby-union"
+    },
+    {
+        "title": "Boxing/MMA Events",
+        "path": "/sport/boxing"
     }
 ]
