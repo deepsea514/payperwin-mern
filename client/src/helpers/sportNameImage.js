@@ -2,31 +2,19 @@ const sportImages = {
     'Soccer': '/images/sports/soccer.png',
     'Baseball': '/images/sports/baseball.png',
     'Tennis': '/images/sports/tennis.png',
-    'Cricket': '/images/icons/cricket.png',
-    'Rugby Union': '/images/icons/rugby.png',
+    'Cricket': '/images/sports/cricket.png',
+    'Rugby Union': '/images/sports/rugby.png',
     'Boxing-UFC': '/images/sports/boxing.png',
     'American Football': '/images/sports/football.png',
-    'Snooker': '/images/icons/snooker.png',
-    'Darts': '/images/icons/darts.png',
     'Ice Hockey': '/images/sports/hockey.png',
     'Basketball': '/images/sports/basketball.png',
-    'Rugby League': '/images/icons/rugby.png',
-    'Australian Rules': '/images/icons/australian_rules.png',
-    'Bowls': '/images/icons/bowls.png',
-    'Gaelic Sports': '/images/icons/gaelic_sports.png',
-    'Handball': '/images/icons/handball.png',
-    'Futsal': '/images/icons/futsal.png',
-    'Floorball': '/images/icons/floorball.png',
-    'Volleyball': '/images/icons/volleyball.png',
-    'Table Tennis': '/images/icons/table_tennis.png',
-    'Badminton': '/images/icons/badminton.png',
-    'Beach Volleyball': '/images/icons/beach_volleyball.png',
-    'Squash': '/images/icons/squash.png',
-    'Water Polo': '/images/icons/water_polo.png',
+    'Rugby League': '/images/sports/rugby.png',
+    'Volleyball': '/images/sports/volleyball.png',
+    'Table Tennis': '/images/sports/pingpong.png',
+    'Badminton': '/images/sports/badminton.png',
     'E-sports': '/images/sports/esports.png',
-
     'Football': '/images/sports/football.png',
-    'Other': '/images/icons/other.png'
+    'Other': '/images/sports/other.png'
 };
 
 const leagueImages = {
