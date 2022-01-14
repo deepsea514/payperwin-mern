@@ -5845,13 +5845,38 @@ adminRouter.post(
     authenticateJWT,
     limitRoles('articles'),
     async (req, res) => {
-        const data = req.body;
-        let articleObj = {
-            ...data,
-            published_at: data.publish ? new Date() : null
-        };
-        delete articleObj.publish;
         try {
+            const data = req.body;
+            const logoImage = data.logo;
+            if (logoImage.startsWith('data:image/')) {
+                const base64Data = logoImage.replace(/^data:image\/png;base64,/, "");
+                const filename = 'article_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + "png";
+                fs.writeFile(`./banners/${filename}`, base64Data, 'base64', async function (error) {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).json({ success: false });
+                    }
+                    let articleObj = {
+                        ...data,
+                        published_at: data.publish ? new Date() : null,
+                        logo: `/banners/${filename}`
+                    };
+                    try {
+                        await Article.create(articleObj);
+                        res.json({ success: true });
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).json({ success: false });
+                    }
+                });
+                return;
+            }
+            let articleObj = {
+                ...data,
+                published_at: data.publish ? new Date() : null
+            };
+            delete articleObj.publish;
+
             await Article.create(articleObj);
             res.json({ success: true });
         } catch (error) {
@@ -5884,7 +5909,38 @@ adminRouter.put(
     async (req, res) => {
         try {
             const { id } = req.params;
+            const article = await Article.findById(id);
+            if (!article) {
+                return res.status(404).json({ success: false });
+            }
             const data = req.body;
+            const logoImage = data.logo;
+            if (logoImage.startsWith('data:image/')) {
+                const base64Data = logoImage.replace(/^data:image\/png;base64,/, "");
+                const filename = 'article_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + "png";
+                fs.writeFile(`./banners/${filename}`, base64Data, 'base64', async function (error) {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).json({ success: false });
+                    }
+                    try {
+                        let articleObj = {
+                            ...data,
+                            published_at: data.publish ? new Date() : null,
+                            logo: `/banners/${filename}`
+                        };
+                        await Article.findByIdAndUpdate(id, articleObj);
+                        res.json({ success: true });
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).json({ success: false });
+                    }
+                });
+                if (article.logo.startsWith('/banners')) {
+                    fs.unlink(`.${article.logo}`, function () { })
+                }
+                return;
+            }
             let articleObj = {
                 ...data,
                 published_at: data.publish ? new Date() : null
