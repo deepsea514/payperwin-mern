@@ -3037,7 +3037,12 @@ expressApp.get(
         const { name, leagueId, eventId } = req.query;
         try {
             if (name) {
-                const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+                const sportData = await Sport.findOne({
+                    $or: [
+                        { name: new RegExp(`^${name}$`, 'i') },
+                        { shortName: new RegExp(`^${name}$`, 'i') }
+                    ]
+                });
                 if (sportData) {
                     if (leagueId) {
                         const sportLeague = sportData.leagues.find(league => league.originId == leagueId)

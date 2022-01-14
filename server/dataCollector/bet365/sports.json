@@ -2,59 +2,73 @@
     {
         "id": 12,
         "name": "American Football",
+        "shortName": "football",
         "liveSupport": true
     },
     {
         "id": 13,
-        "name": "Tennis"
+        "name": "Tennis",
+        "shortName": "tennis"
     },
     {
         "id": 16,
-        "name": "Baseball"
+        "name": "Baseball",
+        "shortName": "baseball"
     },
     {
         "id": 17,
-        "name": "Ice Hockey"
+        "name": "Ice Hockey",
+        "shortName": "ice-hockey"
     },
     {
         "id": 18,
         "name": "Basketball",
-        "liveSupport": true
+        "liveSupport": true,
+        "shortName": "basketball"
     },
     {
         "id": 19,
-        "name": "Rugby League"
+        "name": "Rugby League",
+        "shortName": "rubgy-league"
     },
     {
         "id": 91,
-        "name": "Volleyball"
+        "name": "Volleyball",
+        "shortName": "volleyball"
     },
     {
         "id": 92,
-        "name": "Table Tennis"
+        "name": "Table Tennis",
+        "shortName": "table-tennis"
     },
     {
         "id": 94,
-        "name": "Badminton"
+        "name": "Badminton",
+        "shortName": "badminton"
     },
     {
         "id": 151,
-        "name": "E-sports"
+        "name": "E-sports",
+        "shortName": "esports"
     },
     {
         "id": 1,
-        "name": "Soccer"
+        "name": "Soccer",
+        "shortName": "soccer"
     },
     {
         "id": 3,
-        "name": "Cricket"
+        "name": "Cricket",
+        "shortName": "cricket"
     },
     {
         "id": 8,
-        "name": "Rugby Union"
+        "name": "Rugby Union",
+        "shortName": "rugby-union"
     },
     {
         "id": 9,
-        "name": "Boxing-UFC"
+        "name": "Boxing/MMA",
+        "shortName": "boxing"
     }
 ]
