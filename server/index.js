@@ -4301,6 +4301,7 @@ expressApp.get(
             const article = await Article.findOne({ _id: id, published_at: { $ne: null } })
             res.json(article);
         } catch (error) {
+            console.error(error);
             res.status(500).json({ success: false });
         }
     }
