@@ -3052,7 +3052,7 @@ input.special {
     line-height: 16px;
     text-transform: uppercase;
     color: #fff;
-    background-color: #0A74EF;
+    background-color: #ED254E;
     border-radius: 2px;
 }
 
@@ -3096,7 +3096,7 @@ input.special {
     line-height: 18px;
     text-align: center;
     color: #fff;
-    background-color: #0A74EF;
+    background-color: #ED254E;
     border-radius: 2px;
     box-sizing: border-box;
     text-transform: uppercase;
@@ -3104,7 +3104,6 @@ input.special {
 
 .center-block-see-more:hover {
     color: #FFF;
-    background-color: #1f83f5;
 }
 
 .sidebar-block {
