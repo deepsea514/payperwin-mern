@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import dateformat from "dateformat";
 import { getArticle } from '../redux/services';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Article extends Component {
     constructor(props) {
@@ -77,7 +79,7 @@ class Article extends Component {
                                     <h1 className="title">{article.title}</h1>
                                 </div>
                                 <div className="image">
-                                    <img src={article.logo} alt={article.title} />
+                                    <img src={article.logo.startsWith('data:image/') ? article.logo : serverUrl + article.logo} alt={article.title} />
                                 </div>
                             </div>
                         </div>

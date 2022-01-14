@@ -5,6 +5,8 @@ import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
 import ArticleSidebar from "./articlesidebar";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class ArticleWrapper extends Component {
     constructor(props) {
@@ -29,7 +31,7 @@ class ArticleWrapper extends Component {
                         <div className={`block feature-articles left ${index == 0 ? '' : 'mt-5'}`} key={article._id}>
                             <div className="item">
                                 <Link to={`/articles/${article.permalink}/${article._id}`} className="item-image">
-                                    <img src={article.logo} alt={article.title} style={{ visibility: 'visible' }} />
+                                    <img src={article.logo.startsWith('data:image/') ? article.logo : serverUrl + article.logo} alt={article.title} style={{ visibility: 'visible' }} />
                                 </Link>
                                 <div className="text">
                                     <p className="details">

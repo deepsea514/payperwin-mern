@@ -4,6 +4,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
 import { getArticles, getPopularArticles, getRecentArticles, getRelatedArticles } from '../redux/services';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class ArticleSidebar extends Component {
     constructor(props) {
@@ -167,7 +169,7 @@ class ArticleSidebar extends Component {
                     <div className={`sidebar-block block feature-articles left mt-2`} key={article._id}>
                         <div className="item pb-0">
                             <Link to={`/articles/${article.permalink}/${article._id}`}>
-                                <img src={article.logo} alt={article.title} style={{ visibility: 'visible' }} />
+                                <img src={article.logo.startsWith('data:image/') ? article.logo : serverUrl + article.logo} alt={article.title} style={{ visibility: 'visible' }} />
                             </Link>
                             <div className="text pt-3 px-3 pb-0  mb-0">
                                 <p className="details">

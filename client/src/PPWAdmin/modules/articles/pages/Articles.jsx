@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import * as articles from "../redux/reducers";
 import dateformat from "dateformat";
 import { deleteArticle } from "../redux/services.js";
+import _env from '../../../../env.json';
+const appUrl = _env.appUrl;
 
 class Articles extends React.Component {
     constructor(props) {
@@ -54,7 +56,7 @@ class Articles extends React.Component {
         return article_drafts.map((article, index) => (
             <tr key={index}>
                 <td>{index + 1}</td>
-                <td><img src={article.logo} style={{ width: '60px', height: 'auto', display: 'block' }} /></td>
+                <td><img src={article.logo.startsWith('data:image/') ? article.logo : `${appUrl}${article.logo}`} style={{ width: '60px', height: 'auto', display: 'block' }} /></td>
                 <td>{article.title}</td>
                 <td>{article.posted_at && this.getDateFormat(article.posted_at)}</td>
                 <td>{this.getDateFormat(article.createdAt)}</td>

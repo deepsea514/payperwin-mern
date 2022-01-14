@@ -11,6 +11,8 @@ import AsyncSelect from 'react-select/async';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import CustomDatePicker from "../../../../components/customDatePicker";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import _env from '../../../../env.json';
+const appUrl = _env.appUrl;
 
 class CreateArticle extends React.Component {
     constructor(props) {
@@ -398,7 +400,7 @@ class CreateArticle extends React.Component {
                                                 ) : null}
                                             </div>
                                             <div className="col">
-                                                <img src={formik.values.logo} style={{ width: '200px', height: 'auto', display: 'block' }} />
+                                                <img src={formik.values.logo.startsWith('data:image/') ? formik.values.logo : `${appUrl}${formik.values.logo}`} style={{ width: '200px', height: 'auto', display: 'block' }} />
                                             </div>
                                         </div>
                                         <div className="form-row form-group">
