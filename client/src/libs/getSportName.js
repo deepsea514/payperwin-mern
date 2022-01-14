@@ -1,11 +1,16 @@
-import sportsData from '../libs/sports.json';
+const sportsData = require('../libs/sports.json');
 
-export const getSportName = (shortName) => {
+const getSportName = (shortName) => {
     const sport = sportsData.find(sport => sport.shortName == shortName);
     return sport?.name;
 }
 
-export const getShortSportName = (name) => {
+const getShortSportName = (name) => {
     const sport = sportsData.find(sport => sport.name == name);
     return sport?.shortName;
+}
+
+module.exports = {
+    getSportName,
+    getShortSportName,
 }
