@@ -4247,7 +4247,7 @@ expressApp.get(
             const articles = await Article.find({ published_at: { $ne: null } })
                 .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle', 'posted_at'])
                 .sort({ posted_at: -1 })
-                .limit(6);
+                .limit(10);
             res.json(articles);
         } catch (error) {
             res.status(500).json({ success: false });
