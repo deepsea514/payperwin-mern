@@ -5,6 +5,8 @@ const sportImages = {
     'Cricket': '/images/sports/cricket.png',
     'Rugby Union': '/images/sports/rugby.png',
     'Boxing-UFC': '/images/sports/boxing.png',
+    'Boxing/MMA': '/images/sports/boxing.png',
+    'Boxing': '/images/sports/boxing.png',
     'American Football': '/images/sports/football.png',
     'Ice Hockey': '/images/sports/hockey.png',
     'Basketball': '/images/sports/basketball.png',
@@ -23,6 +25,7 @@ const leagueImages = {
     'MLB': '/images/sports/mlb.png',
     'NHL': '/images/sports/nhl.png',
     'UFC': '/images/sports/ufc.png',
+    'Boxing/MMA': 'images/sports/mma.png'
 }
 
 function sportNameImage(name, leagueName) {
