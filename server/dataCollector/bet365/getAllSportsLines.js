@@ -74,6 +74,7 @@ const getAllSportsLines = async () => {
                 originSportId: sport.id,
                 origin: 'bet365',
                 name: sport.name,
+                shortName: sport.shortName,
                 leagues: [],
             };
 
