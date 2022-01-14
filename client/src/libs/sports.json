@@ -1,0 +1,72 @@
+[
+    {
+        "id": 12,
+        "name": "American Football",
+        "shortName": "football"
+    },
+    {
+        "id": 13,
+        "name": "Tennis",
+        "shortName": "tennis"
+    },
+    {
+        "id": 16,
+        "name": "Baseball",
+        "shortName": "baseball"
+    },
+    {
+        "id": 17,
+        "name": "Ice Hockey",
+        "shortName": "ice-hockey"
+    },
+    {
+        "id": 18,
+        "name": "Basketball",
+        "shortName": "basketball"
+    },
+    {
+        "id": 19,
+        "name": "Rugby League",
+        "shortName": "rubgy-league"
+    },
+    {
+        "id": 91,
+        "name": "Volleyball",
+        "shortName": "volleyball"
+    },
+    {
+        "id": 92,
+        "name": "Table Tennis",
+        "shortName": "table-tennis"
+    },
+    {
+        "id": 94,
+        "name": "Badminton",
+        "shortName": "badminton"
+    },
+    {
+        "id": 151,
+        "name": "E-sports",
+        "shortName": "esports"
+    },
+    {
+        "id": 1,
+        "name": "Soccer",
+        "shortName": "soccer"
+    },
+    {
+        "id": 3,
+        "name": "Cricket",
+        "shortName": "cricket"
+    },
+    {
+        "id": 8,
+        "name": "Rugby Union",
+        "shortName": "rugby-union"
+    },
+    {
+        "id": 9,
+        "name": "Boxing/MMA",
+        "shortName": "boxing"
+    }
+]

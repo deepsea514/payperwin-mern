@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
 import dayjs from 'dayjs';
@@ -12,6 +11,7 @@ import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { FormattedMessage } from 'react-intl';
 import { forwardBet, getBets, getLatestOdds, shareLine } from '../redux/services';
+import { getShortSportName } from '../libs/getSportName';
 
 const StatusPopOver = (
     <Popover>
@@ -120,7 +120,9 @@ class OpenBets extends Component {
 
     shareLink = (lineQuery, matchStartDate) => () => {
         const { type, sportName, leagueId, eventId, index, subtype } = lineQuery;
-        const generatedLineUrl = `${window.location.origin}/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
+        const shortName = getShortSportName(sportName)
+        if (!shortName) return;
+        const generatedLineUrl = `${window.location.origin}/sport/${shortName}/league/${leagueId}/event/${eventId}`;
         this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
         shareLine({ url: generatedLineUrl, eventDate: matchStartDate, type, index, subtype })
             .then(({ data }) => {

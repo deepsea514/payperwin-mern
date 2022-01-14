@@ -6,6 +6,7 @@ import sportNameImage from "../helpers/sportNameImage";
 import { getFeaturedSports } from '../redux/services';
 import { connect } from 'react-redux';
 import * as frontend from "../redux/reducer";
+import { getShortSportName } from '../libs/getSportName';
 
 const topLeagues = [
     {
@@ -120,6 +121,8 @@ class Highlights extends Component {
         const { sportIndex, leagueIndex, sports, showLeft, showRight } = this.state;
         const { addBet, betSlip, removeBet, showPromotionAction } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
+        const shortName = getShortSportName(sportName);
+
         return (
             <div className="highlights">
 
@@ -187,20 +190,14 @@ class Highlights extends Component {
                         </span>
                     </li>}
                 </ul>
-                {sportName == "Other" ?
-                    <Others
-                        addBet={addBet}
-                        betSlip={betSlip}
-                        removeBet={removeBet}
-                    /> :
-                    <Sport
-                        addBet={addBet}
-                        betSlip={betSlip}
-                        removeBet={removeBet}
-                        sportName={sportName}
-                        league={sportIndex == null && leagueIndex != null ? topLeagues[leagueIndex].leagueId : null}
-                        hideBreacrumb={true}
-                    />}
+                <Sport
+                    addBet={addBet}
+                    betSlip={betSlip}
+                    removeBet={removeBet}
+                    shortName={shortName}
+                    league={sportIndex == null && leagueIndex != null ? topLeagues[leagueIndex].leagueId : null}
+                    hideBreacrumb={true}
+                />
             </div>
         );
     }

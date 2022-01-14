@@ -86,7 +86,7 @@ class SportsList extends Component {
         return (
             <ul className="sport-list sport-desktop-list sport-list-compact">
                 {sports.sort((a, b) => b.eventCount - a.eventCount).map(sport => {
-                    const { name, eventCount } = sport;
+                    const { name, eventCount, shortName } = sport;
                     const hasEvents = eventCount > 0;
                     return (hasEvents || showNoEvents) && (
                         name == "Other" ?
@@ -106,7 +106,7 @@ class SportsList extends Component {
                             : (showleagues ? (
                                 <li className="sport-list-item sport-sublist-item" key={name}>
                                     <a
-                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}`) }}
+                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${shortName}/league` : `/sport/${shortName}`) }}
                                         style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                         className="sport-list-compact"
                                     >
@@ -125,7 +125,7 @@ class SportsList extends Component {
                                             <li key={league.name} className="sport-list-item sport-league-item sport-hide-league">
                                                 <Link
                                                     className="sport-list-compact"
-                                                    to={{ pathname: `/sport/${name.replace(" ", "_")}/league/${league.originId}` }}
+                                                    to={{ pathname: `/sport/${shortName}/league/${league.originId}` }}
                                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                                 >
                                                     <label><span>{league.name}</span></label>
@@ -136,7 +136,7 @@ class SportsList extends Component {
                                         <li className="sport-list-item sport-league-item sport-hide-league">
                                             <Link
                                                 className="sport-list-compact"
-                                                to={{ pathname: `/sport/${name.replace(" ", "_")}/league` }}
+                                                to={{ pathname: `/sport/${shortName}/league` }}
                                             >
                                                 <label><span>All Leagues</span></label>
                                                 <span className="sport-list-count">&nbsp;</span>
@@ -147,7 +147,7 @@ class SportsList extends Component {
                             ) : (
                                 <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
                                     <a
-                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${name.replace(" ", "_")}/league` : `/sport/${name.replace(" ", "_")}`) }}
+                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${shortName}/league` : `/sport/${shortName}`) }}
                                         style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                         className="sport-list-compact"
                                     >

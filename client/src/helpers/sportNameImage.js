@@ -28,13 +28,13 @@ const leagueImages = {
     'Boxing/MMA': 'images/sports/mma.png'
 }
 
-function sportNameImage(name, leagueName) {
+function sportNameImage(sportName, leagueName) {
     if (leagueName) {
         if (leagueImages[leagueName]) {
             return leagueImages[leagueName];
         }
     }
-    return sportImages[name.replace("_", " ")];
+    return sportImages[sportName];
 }
 
 module.exports = sportNameImage;

@@ -3053,12 +3053,14 @@ expressApp.get(
                                     return res.json({
                                         leagueName: sportLeague.name,
                                         sportName: sportData.name,
+                                        shortName: sportData.shortName,
                                         origin: sportData.origin,
                                         ...event
                                     });
                                 return res.json(null);
                             }
                             sportLeague.sportName = sportData.name;
+                            sportLeague.shortName = sportData.shortName;
                             return res.json({
                                 name: sportData.name,
                                 leagues: [sportLeague],
@@ -3073,6 +3075,7 @@ expressApp.get(
                         leagues: sportData.leagues.map(league => ({
                             ...league,
                             sportName: sportData.name,
+                            shortName: sportData.shortName,
                         })),
                         origin: sportData.origin,
                         originSportId: sportData.originSportId
@@ -3087,6 +3090,7 @@ expressApp.get(
                     leagues = [...leagues, ...sportData.leagues.map(league => ({
                         ...league,
                         sportName: sportData.name,
+                        shortName: sportData.shortName,
                     }))]
                 }
 
@@ -3107,7 +3111,12 @@ expressApp.get(
     '/livesport',
     async (req, res) => {
         const { name, leagueId, eventId } = req.query;
-        const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+        const sportData = await Sport.findOne({
+            $or: [
+                { name: new RegExp(`^${name}$`, 'i') },
+                { shortName: new RegExp(`^${name}$`, 'i') }
+            ]
+        });
         if (sportData) {
             if (leagueId) {
                 const sportLeague = sportData.liveLeagues.find(league => league.originId == leagueId)
@@ -3147,7 +3156,12 @@ expressApp.get(
     '/sportleague',
     async (req, res) => {
         const { name } = req.query;
-        const sportData = await Sport.findOne({ name: new RegExp(`^${name}$`, 'i') });
+        const sportData = await Sport.findOne({
+            $or: [
+                { name: new RegExp(`^${name}$`, 'i') },
+                { shortName: new RegExp(`^${name}$`, 'i') }
+            ]
+        });
         if (sportData) {
             let data = sportData.leagues.map(league => {
                 const { name, events, originId } = league;
@@ -3208,21 +3222,24 @@ expressApp.get(
                         sports.push({
                             eventCount: eventCount,
                             hasOfferings: true,
-                            name: sp.name
+                            name: sp.name,
+                            shortName: sp.shortName,
                         })
-                        continue;
+                    } else {
+                        sports.push({
+                            eventCount: 0,
+                            hasOfferings: true,
+                            name: sp.name,
+                            shortName: sp.shortName,
+                        })
                     }
-                    sports.push({
-                        eventCount: 0,
-                        hasOfferings: true,
-                        name: sp.name
-                    })
                 }
             }
             sports.push({
                 eventCount: customBets,
                 hasOfferings: true,
-                name: "Other"
+                name: "Other",
+                shortName: 'other',
             });
             res.json(sports);
         } else {
@@ -3288,6 +3305,7 @@ expressApp.get(
                         results.push({
                             type: 'league',
                             sportName: sport.name,
+                            shortName: sport.shortName,
                             leagueName: league.name,
                             leagueId: league.originId,
                         })
@@ -3298,6 +3316,7 @@ expressApp.get(
                                 results.push({
                                     type: 'team',
                                     sportName: sport.name,
+                                    shortName: sport.shortName,
                                     leagueName: league.name,
                                     leagueId: league.originId,
                                     team: event.teamA,
@@ -3307,6 +3326,7 @@ expressApp.get(
                                 results.push({
                                     type: 'team',
                                     sportName: sport.name,
+                                    shortName: sport.shortName,
                                     leagueName: league.name,
                                     leagueId: league.originId,
                                     team: event.teamB,

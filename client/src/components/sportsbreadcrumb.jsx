@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { toggleFavorites } from '../redux/services';
+import { getSportName } from '../libs/getSportName';
 
 class SportsBreadcrumb extends Component {
+    constructor(props) {
+        super(props);
+        const { shortName } = props;
+        this.state = {
+            displaySportName: getSportName(shortName)
+        }
+    }
+
     getFavoritesSelected = (league) => {
         const { user } = this.props;
         const unSelectedImage = <img src="/images/sports/star-unselected.svg" alt="Favourite" className="dashboard_starimg_unselect" />;
@@ -16,18 +24,19 @@ class SportsBreadcrumb extends Component {
     }
 
     toggleFavoriteLeague = (evt) => {
-        const { user, getUser, sportName, league } = this.props;
+        const { user, getUser, league } = this.props;
+        const { displaySportName } = this.state;
         evt.preventDefault();
         if (!user) return;
-        toggleFavorites({ sport: sportName, type: 'league', name: league.name })
+        toggleFavorites({ sport: displaySportName, type: 'league', name: league.name })
             .then(() => {
                 getUser();
             })
     }
 
     render() {
-        const { sportName, league, team, active } = this.props;
-        const displaySportName = sportName ? sportName.replace("_", " ") : ""
+        const { shortName, league, team, active } = this.props;
+        const { displaySportName } = this.state;
         const importTeaser = ['American Football', 'Basketball'].includes(displaySportName);
         const sportLink = !league && !team && active != 'teaser';
         return (
@@ -38,7 +47,7 @@ class SportsBreadcrumb extends Component {
                             <li><Link className="dashboard_breadcrumb_textLabel" to="/">Home</Link></li>
                             <span className="dashboard_breadcrumb_separator">/</span>
                             {sportLink && <li><span className="dashboard_breadcrumb_textLabel">{displaySportName}</span></li>}
-                            {!sportLink && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${sportName}`}>{displaySportName}</Link></li>}
+                            {!sportLink && <li><Link className="dashboard_breadcrumb_textLabel" to={`/sport/${shortName}`}>{displaySportName}</Link></li>}
                             {league && <>
                                 <span className="dashboard_breadcrumb_separator">/</span>
                                 <li><span className="dashboard_breadcrumb_textLabel">{league.name}</span></li>
@@ -73,9 +82,9 @@ class SportsBreadcrumb extends Component {
                         <div className="dashboard_bottombar_wrapper" style={{ width: '100%' }}>
                             <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden' }}>
                                 <div className="dashboard_bottombar_scroller" style={{ transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)', transitionDuration: '0ms', transform: 'translate(0px, 0px) translateZ(0px)' }}>
-                                    <Link to={`/sport/${sportName}`} className={active == 'matchup' ? "dashboard_bottombar_selected" : ''}><span>Matchups</span></Link>
-                                    <Link to={`/sport/${sportName}/league`} className={active == 'league' ? "dashboard_bottombar_selected" : ''}><span>leagues</span></Link>
-                                    {importTeaser && <Link to={`/sport/${sportName}/teaser`} className={active == 'teaser' ? "dashboard_bottombar_selected" : ''}><span>teasers</span></Link>}
+                                    <Link to={`/sport/${shortName}`} className={active == 'matchup' ? "dashboard_bottombar_selected" : ''}><span>Matchups</span></Link>
+                                    <Link to={`/sport/${shortName}/league`} className={active == 'league' ? "dashboard_bottombar_selected" : ''}><span>leagues</span></Link>
+                                    {importTeaser && <Link to={`/sport/${shortName}/teaser`} className={active == 'teaser' ? "dashboard_bottombar_selected" : ''}><span>teasers</span></Link>}
                                 </div>
                             </div>
                         </div>
