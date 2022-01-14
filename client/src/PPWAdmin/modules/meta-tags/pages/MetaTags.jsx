@@ -12,9 +12,6 @@ class MetaTags extends React.Component {
         }
     }
 
-    componentDidMount() {
-    }
-
     tableBody = () => {
         const { pages } = this.props;
 
@@ -32,6 +29,7 @@ class MetaTags extends React.Component {
             <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{page.title}</td>
+                <td>{page.path}</td>
                 <td><Link to={`/edit/${page.title}`} ><i className="fas fa-edit"></i></Link></td>
             </tr>
         ));
@@ -54,6 +52,7 @@ class MetaTags extends React.Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Page Name</th>
+                                            <th scope="col">Path</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>

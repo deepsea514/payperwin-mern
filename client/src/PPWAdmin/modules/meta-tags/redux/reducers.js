@@ -1,6 +1,5 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { put, takeLatest, select } from "redux-saga/effects";
 import pages from "./pages.json";
 
 export const actionTypes = {

@@ -44,6 +44,10 @@
         "path": "/deposit-tether"
     },
     {
+        "title": "Deposit with Gift Card",
+        "path": "/deposit-giftcard"
+    },
+    {
         "title": "Withdraw",
         "path": "/withdraw"
     },
@@ -74,10 +78,6 @@
     {
         "title": "How it works",
         "path": "/how-it-works"
-    },
-    {
-        "title": "Sports List",
-        "path": "/sports"
     },
     {
         "title": "Betting on Custom Events",
@@ -118,6 +118,10 @@
     {
         "title": "Terms and Conditions",
         "path": "/terms-and-conditions"
+    },
+    {
+        "title": "About Us",
+        "path": "/about-us"
     },
     {
         "title": "Betting Rules",
@@ -166,5 +170,9 @@
     {
         "title": "Invite Friends",
         "path": "/invite"
+    },
+    {
+        "title": "Search",
+        "path": "/search/:term"
     }
 ]
