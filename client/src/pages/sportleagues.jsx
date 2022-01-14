@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { getSportLeagues, toggleFavorites } from '../redux/services';
+import { getSportName } from '../libs/getSportName';
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -34,27 +35,28 @@ class SportsLeagues extends Component {
     }
 
     getLeagues = () => {
-        const { sportName } = this.props;
+        const { shortName } = this.props;
         this.setState({ leagues: [] });
-        getSportLeagues(sportName ? sportName.replace("_", " ") : "")
+        getSportLeagues(shortName)
             .then(({ data }) => {
                 this.setState({ leagues: data });
             });
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName } = this.props;
-        const { sportName: prevsportName } = prevProps;
-        const sportChanged = (sportName !== prevsportName);
+        const { shortName } = this.props;
+        const { shortName: prevshortName } = prevProps;
+        const sportChanged = (shortName !== prevshortName);
         if (sportChanged) {
             this.getLeagues();
         }
     }
 
     toggleFavoriteLeague = (evt, league) => {
-        const { user, getUser, sportName } = this.props;
+        const { user, getUser, shortName } = this.props;
         evt.preventDefault();
         if (!user) return;
+        const sportName = getSportName(shortName)
         toggleFavorites({ sport: sportName, type: 'league', name: league.name })
             .then(() => {
                 getUser();
@@ -73,7 +75,7 @@ class SportsLeagues extends Component {
 
     render() {
         const { leagues, letters } = this.state;
-        const { sportName } = this.props;
+        const { shortName } = this.props;
 
         return (
             <>
@@ -84,7 +86,7 @@ class SportsLeagues extends Component {
                             {leagues.slice(0, 6).map(league => (
                                 <li key={league.name}
                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                    <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                    <Link to={{ pathname: `/sport/${shortName}/league/${league.originId}` }}>
                                         <span style={sportNameSpanStyle}>
                                             <b className="mr-3">{league.name}</b> {league.eventCount}
                                         </span>
@@ -108,7 +110,7 @@ class SportsLeagues extends Component {
                                     {filteredLeagues.map(league => (
                                         <li key={`${letter}-${league.name}`}
                                             style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null} >
-                                            <Link to={{ pathname: `/sport/${sportName ? sportName.replace(" ", "_") : ""}/league/${league.originId}` }}>
+                                            <Link to={{ pathname: `/sport/${shortName}/league/${league.originId}` }}>
                                                 <span style={sportNameSpanStyle}>
                                                     <b className="mr-3">{league.name}</b> {league.eventCount}
                                                 </span>

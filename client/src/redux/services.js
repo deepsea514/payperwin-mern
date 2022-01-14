@@ -166,16 +166,16 @@ export function getCustomEvent(id) {
 export function getLiveSports(sportName, league) {
     return FrontendAPI.get(`/livesport`, {
         params: league ?
-            { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } :
-            { name: sportName ? sportName.replace("_", " ") : "" }
+            { name: sportName, leagueId: league } :
+            { name: sportName }
     })
 }
 
 export function getSports(sportName, league) {
     return FrontendAPI.get(`/sport`, {
         params: league ?
-            { name: sportName ? sportName.replace("_", " ") : "", leagueId: league } :
-            { name: sportName ? sportName.replace("_", " ") : "" }
+            { name: sportName, leagueId: league } :
+            { name: sportName }
     })
 }
 
@@ -183,7 +183,7 @@ export function getSportsLine(live, sportName, leagueId, eventId) {
     return FrontendAPI.get(`/${live ? 'livesport' : 'sport'}`,
         {
             params: {
-                name: sportName ? sportName.replace("_", " ") : "",
+                name: sportName,
                 leagueId,
                 eventId
             }

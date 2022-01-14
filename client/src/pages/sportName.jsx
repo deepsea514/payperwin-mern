@@ -1,21 +1,21 @@
 import React from "react";
 import { setTitle } from '../libs/documentTitleBuilder';
 import Sport from "../components/sport";
+import { getSportName } from "../libs/getSportName";
 
 export default class SportName extends React.Component {
     componentDidMount() {
-        let { sportName } = this.props;
-        sportName = sportName.replace("_", " ");
-        const title = `Bet on ${sportName}`;
+        let { shortName } = this.props;
+        const title = `Bet on ${getSportName(shortName)}`;
         setTitle({ pageTitle: title })
     }
 
     render() {
-        const { sportName, addBet, removeBet, betSlip } = this.props;
+        const { shortName, addBet, removeBet, betSlip } = this.props;
         return (
             <React.Fragment >
                 <Sport addBet={addBet} betSlip={betSlip}
-                    removeBet={removeBet} sportName={sportName}
+                    removeBet={removeBet} shortName={shortName}
                 />
             </React.Fragment>
         )

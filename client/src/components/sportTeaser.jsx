@@ -6,10 +6,11 @@ import timeHelper from "../helpers/timehelper";
 import SportsBreadcrumb from './sportsbreadcrumb';
 import { FormattedMessage } from 'react-intl';
 import { getSports } from '../redux/services';
+import { getSportName } from "../libs/getSportName";
 
 const teaserPoints = {
-    'American Football': [6, 6.5, 7],
-    'Basketball': [4, 4.5, 5]
+    'football': [6, 6.5, 7],
+    'basketball': [4, 4.5, 5]
 }
 
 const emptyBoxLine = (
@@ -39,13 +40,12 @@ class SportTeaser extends Component {
     }
 
     componentDidMount() {
-        const { setBetSlipType, history, sportName } = this.props;
-        const sport = sportName ? sportName.replace("_", " ") : '';
-        if (!sport || !(['American Football', 'Basketball'].includes(sport))) {
+        const { setBetSlipType, history, shortName } = this.props;
+        if (!shortName || !(['football', 'basketball'].includes(shortName))) {
             history.push('/');
             return;
         }
-        this.setState({ teaserPoint: teaserPoints[sport][0] });
+        this.setState({ teaserPoint: teaserPoints[shortName][0] });
 
         setBetSlipType('teaser');
         this.getSport();
@@ -60,25 +60,23 @@ class SportTeaser extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName, history } = this.props;
-        const { sportName: prevSportName } = prevProps;
-        const sportChanged = sportName !== prevSportName;
+        const { shortName, history } = this.props;
+        const { shortName: prevShortName } = prevProps;
+        const sportChanged = shortName !== prevShortName;
         if (sportChanged) {
-            const sport = sportName ? sportName.replace("_", " ") : '';
-            if (!sport || !(['American Football', 'Basketball'].includes(sport))) {
+            if (!shortName || !(['American Football', 'Basketball'].includes(shortName))) {
                 history.push('/');
                 return;
             }
-            this.setState({ teaserPoint: teaserPoints[sport][0], error: null });
+            this.setState({ teaserPoint: teaserPoints[shortName][0], error: null });
             this.getSport();
         }
     }
 
     getSport = () => {
-        const { sportName } = this.props;
-        const sport = sportName ? sportName.replace("_", " ") : '';
-        if (sportName) {
-            getSports(sportName)
+        const { shortName } = this.props;
+        if (shortName) {
+            getSports(shortName)
                 .then(({ data }) => {
                     if (data) {
                         this.setState({ data });
@@ -92,9 +90,10 @@ class SportTeaser extends Component {
     }
 
     render() {
-        const { addBet, removeBet, timezone, sportName, user, getUser, teaserBetSlip } = this.props;
+        const { addBet, removeBet, timezone, shortName, user, getUser, teaserBetSlip } = this.props;
         const { data, error, teaserPoint } = this.state;
-        const sport = sportName ? sportName.replace("_", " ") : '';
+        const sportName = getSportName(shortName);
+        
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
@@ -105,7 +104,7 @@ class SportTeaser extends Component {
         const { leagues, origin } = data;
         return (
             <div>
-                <SportsBreadcrumb sportName={sportName}
+                <SportsBreadcrumb shortName={shortName}
                     user={user} getUser={getUser} active='teaser' />
 
                 {(() => {
@@ -130,7 +129,7 @@ class SportTeaser extends Component {
                                         {spreads && spreads[0] ? (
                                             (() => {
                                                 const lineQuery = {
-                                                    sportName: sportName.replace("_", " "),
+                                                    sportName,
                                                     leagueId,
                                                     eventId,
                                                     lineId,
@@ -155,7 +154,7 @@ class SportTeaser extends Component {
                                                                     pick: 'home',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sport,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: { ...lineQuery, points: pointHome },
                                                                     pickName: `Pick: ${teamA} ${pointHome >= 0 ? '+' : ''}${pointHome} (${spreads[0].hdp} + ${teaserPoint} pts)`,
@@ -178,7 +177,7 @@ class SportTeaser extends Component {
                                                                     pick: 'away',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sport,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: { ...lineQuery, points: pointAway },
                                                                     pickName: `Pick: ${teamB} ${pointAway >= 0 ? '+' : ''}${pointAway} (${-spreads[0].hdp} + ${teaserPoint} pts)`,
@@ -197,7 +196,7 @@ class SportTeaser extends Component {
                                         {totals && totals[0] ? (
                                             (() => {
                                                 const lineQuery = {
-                                                    sportName: sportName.replace("_", " "),
+                                                    sportName,
                                                     leagueId,
                                                     eventId,
                                                     lineId,
@@ -223,7 +222,7 @@ class SportTeaser extends Component {
                                                                     pick: 'home',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sport,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: { ...lineQuery, points: pointHome },
                                                                     pickName: `Pick: Over ${pointHome} (${totals[0].points} - ${teaserPoint} pts)`,
@@ -246,7 +245,7 @@ class SportTeaser extends Component {
                                                                     pick: 'away',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sport,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: { ...lineQuery, points: pointAway },
                                                                     pickName: `Pick: Under ${pointAway} (${totals[0].points} + ${teaserPoint} pts)`,
@@ -291,7 +290,7 @@ class SportTeaser extends Component {
                                     <div className="teaser-markets-wrapper" style={{ width: '100%' }}>
                                         <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden' }}>
                                             <div className="teaser-markets-scroller" style={{ transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)', transitionDuration: '0ms', transform: 'translate(0px, 0px) translateZ(0px)' }}>
-                                                {teaserPoints[sport].map(point => (
+                                                {teaserPoints[shortName].map(point => (
                                                     <span
                                                         key={point}
                                                         className={point == teaserPoint ? 'dashboard_bottombar_selected' : ''}

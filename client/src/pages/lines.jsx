@@ -6,7 +6,6 @@ import * as frontend from "../redux/reducer";
 import timeHelper from "../helpers/timehelper";
 import Line from "../components/line.jsx";
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
-import MetaTags from "react-meta-tags";
 import QRCode from "react-qr-code";
 import SBModal from '../components/sbmodal';
 import { FormattedMessage } from 'react-intl';
@@ -34,8 +33,6 @@ class Lines extends Component {
             type: type,
             subtype: subtype,
             index: index,
-            ogTitle: '',
-            ogDescription: '',
             showAll: type != null || subtype != null || index != null || true,
             loading: false,
         };
@@ -64,9 +61,9 @@ class Lines extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName } = this.props;
-        const { sportName: prevSportName } = prevProps;
-        const sportChanged = sportName !== prevSportName;
+        const { shortName } = this.props;
+        const { shortName: prevShortName } = prevProps;
+        const sportChanged = shortName !== prevShortName;
         if (sportChanged) {
             this.setState({ error: null });
             this.getSportLine();
@@ -75,9 +72,9 @@ class Lines extends Component {
 
     getSportLine() {
         this.setState({ loading: true });
-        const { match: { params: { sportName, leagueId, eventId } }, live } = this.props;
-        if (sportName) {
-            getSportsLine(live, sportName, leagueId, eventId)
+        const { match: { params: { shortName, leagueId, eventId } }, live } = this.props;
+        if (shortName) {
+            getSportsLine(live, shortName, leagueId, eventId)
                 .then(({ data }) => {
                     if (data) { this.setState({ data: data, loading: false, }) }
                     else {
@@ -113,9 +110,9 @@ class Lines extends Component {
 
     render() {
         const { match, betSlip, removeBet, timezone, oddsFormat, user, getUser, live } = this.props;
-        const { sportName, leagueId } = match.params;
+        const { shortName, leagueId } = match.params;
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
-            type, subtype, index, ogTitle, ogDescription, showAll, loading
+            type, subtype, index, showAll, loading
         } = this.state;
         if (loading) {
             return <center className="mt-5">
@@ -134,18 +131,13 @@ class Lines extends Component {
 
         return (
             <div className="content detailed-lines mb-5">
-                <LinesBreadcrumb sportName={sportName}
+                <LinesBreadcrumb shortName={shortName}
                     league={{ name: leagueName, leagueId: leagueId }}
                     teams={{ teamA, teamB }}
                     time={timeHelper.convertTimeLineDate(new Date(startDate), timezone)}
                     user={user}
                     getUser={getUser}
                 />
-                {ogTitle && <MetaTags>
-                    <meta property="og:type" content="article" />
-                    <meta property="og:title" content={ogTitle} />
-                    <meta property="og:description" content={ogDescription} />
-                </MetaTags>}
                 {sportsbookInfo && <SBModal
                     sportsbookInfo={sportsbookInfo}
                     onClose={() => this.setState({ sportsbookInfo: null })}
@@ -242,7 +234,7 @@ class Lines extends Component {
                                             betSlip={betSlip}
                                             removeBet={removeBet}
                                             addBet={this.addBet}
-                                            sportName={sportName}
+                                            shortName={shortName}
                                             leagueId={leagueId}
                                             oddsFormat={oddsFormat}
                                             live={live}

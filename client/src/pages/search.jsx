@@ -77,7 +77,7 @@ class Search extends Component {
                         return (
                             <li key={index}>
                                 <Link
-                                    to={{ pathname: `/sport/${result.sportName ? result.sportName.replace(" ", "_") : ""}/league/${result.leagueId}` }}>
+                                    to={{ pathname: `/sport/${result.shortName}/league/${result.leagueId}` }}>
                                     <span style={{ float: 'initial' }}>
                                         <img src={sportNameImage(result.sportName, result.leagueName)} width="16" height="16" className="mr-2" />
                                         {result.leagueName}
@@ -90,7 +90,7 @@ class Search extends Component {
                         return (
                             <li key={index}>
                                 <Link
-                                    to={{ pathname: `/sport/${result.sportName ? result.sportName.replace(" ", "_") : ""}/league/${result.leagueId}/event/${result.eventId}` }}>
+                                    to={{ pathname: `/sport/${result.shortName}/league/${result.leagueId}/event/${result.eventId}` }}>
                                     <span style={{ float: 'initial' }}>
                                         <img src={sportNameImage(result.sportName)} width="16" height="16" className="mr-2" />
                                         {result.team} ({result.leagueName})

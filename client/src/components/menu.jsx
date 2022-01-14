@@ -187,13 +187,13 @@ class Menu extends Component {
                             </li> */}
                             <ul className='row px-2'>
                                 {sports.map(sport => {
-                                    const { name, eventCount } = sport;
+                                    const { name, eventCount, shortName } = sport;
                                     if (eventCount <= 0) return null;
 
                                     return (
                                         <li className="nav-item col-6" key={name}>
                                             <Link
-                                                to={{ pathname: name == 'Soccer' ? `/sport/${name}/league` : `/sport/${name.replace(" ", "_")}` }}
+                                                to={{ pathname: name == 'Soccer' ? `/sport/${shortName}/league` : `/sport/${shortName}` }}
                                                 className="nav-link menu-sports-item"
                                                 onClick={() => toggleField('menuOpen')}>
                                                 <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />

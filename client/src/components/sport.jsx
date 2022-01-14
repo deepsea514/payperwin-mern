@@ -65,9 +65,9 @@ class Sport extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { sportName, league } = this.props;
-        const { sportName: prevSportName, league: prevLeague } = prevProps;
-        const sportChanged = (sportName !== prevSportName || league !== prevLeague);
+        const { shortName, league } = this.props;
+        const { shortName: prevShortName, league: prevLeague } = prevProps;
+        const sportChanged = (shortName !== prevShortName || league !== prevLeague);
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
@@ -76,8 +76,8 @@ class Sport extends Component {
     }
 
     getLiveSport = () => {
-        const { sportName, league } = this.props;
-        getLiveSports(sportName, league)
+        const { shortName, league } = this.props;
+        getLiveSports(shortName, league)
             .then(({ data }) => {
                 if (data) {
                     this.setState({ liveData: data });
@@ -90,12 +90,12 @@ class Sport extends Component {
     }
 
     getSport = (setLoading = true) => {
-        const { sportName, league, setCollapsedLeagues, team } = this.props;
+        const { shortName, league, setCollapsedLeagues, team } = this.props;
         const { dateSelected } = this.state;
         if (setLoading) {
             this.setState({ loading: true });
         }
-        getSports(sportName, league)
+        getSports(shortName, league)
             .then(({ data }) => {
                 if (data) {
                     if (data) {
@@ -144,7 +144,7 @@ class Sport extends Component {
                             return null;
                         }).filter(league => league);
 
-                        if (sportName == null) {
+                        if (shortName == null) {
                             const leagueIds = filteredLeagues.slice(8, leagues.length).map(league => league.originId);
                             setCollapsedLeagues(leagueIds);
                         } else {
@@ -258,7 +258,7 @@ class Sport extends Component {
 
     render() {
         const {
-            betSlip, removeBet, timezone, oddsFormat, team, sportName,
+            betSlip, removeBet, timezone, oddsFormat, team, shortName,
             hideBreacrumb, user, getUser,
             location, collapsedLeague, toggleCollapseLeague
         } = this.props;
@@ -284,7 +284,7 @@ class Sport extends Component {
         const { leagues, origin } = data;
         return (
             <div>
-                {!hideBreacrumb && <SportsBreadcrumb sportName={sportName}
+                {!hideBreacrumb && <SportsBreadcrumb shortName={shortName}
                     league={selectedLeague ? {
                         name: selectedLeague.name,
                         leagueId: selectedLeague.originId
@@ -300,14 +300,14 @@ class Sport extends Component {
                     if (!leagues || !leagues.length) return null;
 
                     const filteredLeagues = leagues.map(league => {
-                        const { name: leagueName, originId: leagueId, events, sportName } = league;
+                        const { name: leagueName, originId: leagueId, events, shortName } = league;
                         const filteredEvents = events.map((event, i) => {
                             const { teamA, teamB, startDate, lines, timer, originId: eventId } = event;
                             if (!lines || !lines.length)
                                 return null;
                             const lineCount = this.getLineCount(lines[0], timer);
                             if (!lineCount) return null;
-                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}/live`;
+                            const pathname = `/sport/${shortName}/league/${leagueId}/event/${eventId}/live`;
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
@@ -373,7 +373,7 @@ class Sport extends Component {
 
                 {(() => {
                     const filteredLeagues = leagues.map(league => {
-                        const { name: leagueName, originId: leagueId, sportName } = league;
+                        const { name: leagueName, originId: leagueId, sportName, shortName } = league;
                         const collapsed = collapsedLeague.find(league => league == leagueId);
 
                         let events = collapsed ? null : league.events.map((event, i) => {
@@ -381,7 +381,7 @@ class Sport extends Component {
                             const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
                             const lineCount = this.getLineCount(lines[0]);
-                            const pathname = `/sport/${sportName.replace(" ", "_")}/league/${leagueId}/event/${eventId}`;
+                            const pathname = `/sport/${shortName}/league/${leagueId}/event/${eventId}`;
                             return (
                                 <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
                                     <li>
@@ -398,7 +398,7 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
                                                 const lineQuery = {
-                                                    sportName: sportName.replace("_", " "),
+                                                    sportName,
                                                     leagueId,
                                                     eventId,
                                                     lineId,
@@ -422,7 +422,7 @@ class Sport extends Component {
                                                                     pick: 'home',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: ${teamA}`,
@@ -456,7 +456,7 @@ class Sport extends Component {
                                                                     pick: 'away',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: ${teamB}`,
@@ -486,7 +486,7 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
                                                 const lineQuery = {
-                                                    sportName: sportName.replace("_", " "),
+                                                    sportName,
                                                     leagueId,
                                                     eventId,
                                                     lineId,
@@ -511,7 +511,7 @@ class Sport extends Component {
                                                                     pick: 'home',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
@@ -547,7 +547,7 @@ class Sport extends Component {
                                                                     pick: 'away',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
@@ -578,7 +578,7 @@ class Sport extends Component {
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
                                                 const lineQuery = {
-                                                    sportName: sportName.replace("_", " "),
+                                                    sportName,
                                                     leagueId,
                                                     eventId,
                                                     lineId,
@@ -604,7 +604,7 @@ class Sport extends Component {
                                                                     pick: 'home',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: Over ${totals[0].points}`,
@@ -640,7 +640,7 @@ class Sport extends Component {
                                                                     pick: 'away',
                                                                     home: teamA,
                                                                     away: teamB,
-                                                                    sportName: sportName,
+                                                                    sportName,
                                                                     lineId: lineId,
                                                                     lineQuery: lineQuery,
                                                                     pickName: `Pick: Under ${totals[0].points}`,
@@ -677,7 +677,7 @@ class Sport extends Component {
                             );
                         });
                         return (
-                            <div className="tab-content" key={leagueName}>
+                            <div className="tab-content" key={`${sportName} - ${leagueName}`}>
                                 <div className="tab-pane fade show active tab-pane-leagues border-0" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <div className="table-title d-flex align-items-center justify-content-between">
                                         <div className='d-flex align-items-center'>

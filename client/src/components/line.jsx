@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LineDetail from './linedetail';
 import classnames from "classnames";
 import { FormattedMessage } from 'react-intl';
+import { getSportName } from '../libs/getSportName';
 const maximumShows = 3;
 
 const EmptyLine = () => {
@@ -103,7 +104,7 @@ export default class Line extends Component {
     render() {
         const {
             type, subtype, index, event, line, betSlip, removeBet,
-            addBet, sportName, leagueId, oddsFormat, live
+            addBet, shortName, leagueId, oddsFormat, live
         } = this.props;
         const { showMoreASpread, showMoreATotal } = this.state;
 
@@ -111,9 +112,10 @@ export default class Line extends Component {
         const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line.line;
         const { originId: eventId, teamA, teamB } = event;
         const enabled = line.enabled;
+        const sportName = getSportName(shortName);
 
         const lineQueryMoneyLine = {
-            sportName: sportName.replace("_", " "),
+            sportName,
             leagueId,
             eventId,
             lineId: eventId,
@@ -149,7 +151,7 @@ export default class Line extends Component {
                                 return <DisabledLine key={i} />
                             }
                             const lineQuery = {
-                                sportName: sportName.replace("_", " "),
+                                sportName,
                                 leagueId,
                                 eventId,
                                 lineId: eventId,
@@ -181,7 +183,7 @@ export default class Line extends Component {
                             return <DisabledLine key={i} />
                         }
                         const lineQuery = {
-                            sportName: sportName.replace("_", " "),
+                            sportName,
                             leagueId,
                             eventId,
                             lineId: eventId,
@@ -217,7 +219,7 @@ export default class Line extends Component {
                             }
 
                             const lineQuery = {
-                                sportName: sportName.replace("_", " "),
+                                sportName,
                                 leagueId,
                                 eventId,
                                 lineId: eventId,
@@ -260,7 +262,7 @@ export default class Line extends Component {
                             }
 
                             const lineQuery = {
-                                sportName: sportName.replace("_", " "),
+                                sportName,
                                 leagueId,
                                 eventId,
                                 lineId: eventId,

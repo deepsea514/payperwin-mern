@@ -386,10 +386,10 @@ class BetSlip extends Component {
                                     />
                                     : (
                                         <div className="no-bets teaser">
-                                            <h4>To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.</h4>
+                                            <h4>To place a teaser bet, add a minimum of two selections to the bet slip from Football or Basketball matchups.</h4>
                                             <ul className="teaser-links">
-                                                <li><Link to='/sport/Basketball/teaser'><img src='/images/sports/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
-                                                <li><Link to="/sport/American_Football/teaser"><img src="/images/sports/football.png" className='teaser-image' /> Football Teasers</Link></li>
+                                                <li><Link to='/sport/basketball/teaser'><img src='/images/sports/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
+                                                <li><Link to="/sport/football/teaser"><img src="/images/sports/football.png" className='teaser-image' /> Football Teasers</Link></li>
                                             </ul>
                                         </div>
                                     )}

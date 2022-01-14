@@ -454,11 +454,11 @@ class App extends Component {
                                                 <Route path="/how-it-works" render={(props) =>
                                                     <ErrorBoundary><HowTo {...props} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId/live" exact render={(props) =>
+                                                <Route path="/sport/:shortName/league/:leagueId/event/:eventId/live" exact render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={true} /></ErrorBoundary>
                                                 } />
-                                                <Route path="/sport/:sportName/league/:leagueId/event/:eventId" exact render={(props) =>
+                                                <Route path="/sport/:shortName/league/:leagueId/event/:eventId" exact render={(props) =>
                                                     <ErrorBoundary><Lines addBet={this.addBet} betSlip={betSlip}
                                                         removeBet={this.removeBet} {...props} user={user} getUser={getUser} live={false} /></ErrorBoundary>
                                                 } />
@@ -470,7 +470,7 @@ class App extends Component {
                                                         <ErrorBoundary>
                                                             <React.Fragment>
                                                                 <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                    removeBet={this.removeBet} sportName={name}
+                                                                    removeBet={this.removeBet} shortName={name}
                                                                     league={league} user={user} getUser={getUser}
                                                                 />
                                                             </React.Fragment>
@@ -479,13 +479,13 @@ class App extends Component {
                                                 }} />
                                                 <Route path="/sport/:name/team/:team" exact render={(props) => {
                                                     const { match } = props;
-                                                    const sportName = resObjPath(match, 'params.name');
+                                                    const name = resObjPath(match, 'params.name');
                                                     const team = resObjPath(match, 'params.team');
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
                                                                 <Sport addBet={this.addBet} betSlip={betSlip}
-                                                                    removeBet={this.removeBet} sportName={sportName}
+                                                                    removeBet={this.removeBet} shortName={name}
                                                                     user={user} getUser={getUser} team={team}
                                                                 />
                                                             </React.Fragment>
@@ -498,8 +498,8 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <SportsBreadcrumb sportName={name} user={user} active='league' />
-                                                                <SportsLeagues sportName={name} user={user} getUser={getUser} />
+                                                                <SportsBreadcrumb shortName={name} user={user} active='league' />
+                                                                <SportsLeagues shortName={name} user={user} getUser={getUser} />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
                                                     );
@@ -513,7 +513,7 @@ class App extends Component {
                                                                 setBetSlipType={this.setBetSlipType}
                                                                 teaserBetSlip={teaserBetSlip}
                                                                 removeBet={this.removeTeaserBet}
-                                                                sportName={name} />
+                                                                shortName={name} />
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
@@ -523,7 +523,7 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <SportName addBet={this.addBet} betSlip={betSlip}
-                                                                removeBet={this.removeBet} sportName={name} />
+                                                                removeBet={this.removeBet} shortName={name} />
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
