@@ -4250,9 +4250,9 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle'])
-                .sort({ published_at: -1 })
-                .limit(6);
+                .select(['permalink', 'logo', 'categories', 'published_at', 'title', 'subtitle', 'posted_at'])
+                .sort({ posted_at: -1 })
+                .limit(10);
             res.json(articles);
         } catch (error) {
             res.status(500).json({ success: false });
@@ -4292,7 +4292,7 @@ expressApp.get(
         const { categoryname } = req.params;
         try {
             const articles = await Article.find({ published_at: { $ne: null }, categories: categoryname })
-                .sort({ published_at: -1 })
+                .sort({ posted_at: -1 })
             res.json(articles);
         } catch (error) {
             console.error(error)
@@ -4328,8 +4328,8 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle'])
-                .sort({ published_at: -1 })
+                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle', 'posted_at'])
+                .sort({ posted_at: -1 })
                 .limit(10);
             res.json(articles);
         } catch (error) {
@@ -4343,7 +4343,7 @@ expressApp.get(
     async (req, res) => {
         try {
             const articles = await Article.find({ published_at: { $ne: null } })
-                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle'])
+                .select(['permalink', 'categories', 'published_at', 'title', 'subtitle', 'posted_at'])
                 .sort({ createdAt: 1 })
                 .limit(10);
             res.json(articles);
