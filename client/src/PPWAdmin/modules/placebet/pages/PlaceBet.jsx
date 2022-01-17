@@ -106,7 +106,7 @@ class PlaceBet extends React.Component {
     }
 
     getPickName = (formValues) => {
-        let { teamA, teamB, points, betType, pick, peorid } = formValues;
+        let { teamA, teamB, points, betType, pick, peorid, points } = formValues;
         let pickName = '';
         betType = betType.value.toLowerCase();
         switch (peorid) {
@@ -146,9 +146,9 @@ class PlaceBet extends React.Component {
                 break;
             case 'spread':
                 if (pick == 'home') {
-                    pickName += `${teamA} ${hdp > 0 ? '+' : ''}${hdp}`;
+                    pickName += `${teamA} ${points > 0 ? '+' : ''}${points}`;
                 } else {
-                    pickName += `${teamB} ${-1 * hdp > 0 ? '+' : ''}${-1 * hdp}`;
+                    pickName += `${teamB} ${-1 * points > 0 ? '+' : ''}${-1 * points}`;
                 }
                 break;
             case 'moneyline':
