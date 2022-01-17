@@ -147,7 +147,7 @@ class BetActivities extends React.Component {
                                     </Dropdown.Item>}
                                 </>}
 
-                            {['Settled - Win', 'Settled - Lose'].includes(bet.status) && !bet.isParlay &&
+                            {['Settled - Win', 'Settled - Lose', 'Draw'].includes(bet.status) && !bet.isParlay &&
                                 <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
                                     <i className="fas fa-wrench"></i>&nbsp; Fix Bet
                                 </Dropdown.Item>
