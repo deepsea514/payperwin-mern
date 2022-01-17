@@ -1,0 +1,1077 @@
+{
+    "declaration": {
+        "attributes": {
+            "version": "1.0",
+            "encoding": "UTF-8"
+        }
+    },
+    "elements": [
+        {
+            "type": "element",
+            "name": "urlset",
+            "attributes": {
+                "xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9"
+            },
+            "elements": [
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "1.0"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/soccer"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/football"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/tennis"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/baseball"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/ice-hockey"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/basketball"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/rubgy-league"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/volleyball"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/table-tennis"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/badminton"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/esports"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/cricket"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/rugby-union"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/sport/boxing"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/signup"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.5"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/faq"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/how-it-works"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/privacy-policy"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/terms-and-conditions"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/about-us"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/betting-rules"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://www.payperwin.com/articles"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-01-10"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.8"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

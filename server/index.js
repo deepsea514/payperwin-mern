@@ -4266,6 +4266,20 @@ expressApp.get(
 );
 
 expressApp.get(
+    '/articles/meta',
+    async (req, res) => {
+        try {
+            const articles = await Article.find({ published_at: { $ne: null } })
+                .select(['permalink', 'updated_at']);
+            res.json(articles);
+        } catch (error) {
+            console.error(error);
+            res.json([]);
+        }
+    }
+)
+
+expressApp.get(
     '/articles/home',
     async (req, res) => {
         try {
