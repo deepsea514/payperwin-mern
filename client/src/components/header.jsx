@@ -11,6 +11,7 @@ import LoginModal from './loginModal';
 import ForgotPasswordModal from './forgotPasswordModal';
 import logout from '../libs/logout';
 import numberFormat from '../helpers/numberFormat';
+import Switch from './switch';
 
 class Header extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class Header extends Component {
             langDropDownOpen: false,
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
+            viewMode: 'pro'
         };
         this._isMounted = false;
     }
@@ -118,6 +120,7 @@ class Header extends Component {
         const {
             oddsDropDownOpen,
             timeString,
+            viewMode
         } = this.state;
         const { toggleField,
             user,
@@ -192,6 +195,12 @@ class Header extends Component {
                                 </div>
                             </div>
                             <ul className="list-s">
+                                <li className='d-flex align-items-center'>
+                                    <span>View</span>
+                                    <Switch isOn={viewMode == 'pro'}
+                                        handleToggle={() => this.setState({ viewMode: viewMode == 'pro' ? 'basic' : 'pro' })}
+                                    />
+                                </li>
                                 <li>
                                     <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
                                         <i className="fa fa-info-circle" aria-hidden="true"></i>&nbsp;{this.getOddsFormatString()}&nbsp;<i className="fa fa-caret-down" aria-hidden="true"></i>
