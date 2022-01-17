@@ -106,7 +106,7 @@ class PlaceBet extends React.Component {
     }
 
     getPickName = (formValues) => {
-        let { teamA, teamB, points, betType, pick, peorid, points } = formValues;
+        const { teamA, teamB, points, betType, pick, peorid } = formValues;
         let pickName = '';
         betType = betType.value.toLowerCase();
         switch (peorid) {
