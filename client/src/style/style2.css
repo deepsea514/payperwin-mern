@@ -211,6 +211,8 @@ ul.list-s li {
 ul.list-s {
     float: right;
     margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .modal-footer .btn.btn-default {
