@@ -4,13 +4,16 @@ const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 const datefomart = require("dateformat");
+const convert = require('xml-js');
+const dateformat = require('dateformat');
+const app = express();
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
 const _env = require("./src/env.json");
 const { getSportName } = require("./src/libs/getSportName");
 const serverUrl = _env.appUrl;
 const port = _env.port;
-const app = express();
+const sitemap = require('./sitemap.json');
 
 // CORS
 app.use((req, res, next) => {
@@ -31,6 +34,66 @@ const pathToIndex = path.join(__dirname, "serve/index.html");
 
 app.use(express.static("dist"));
 app.use(express.static("public"));
+
+app.get(
+    '/sitemap_index.xml',
+    async (req, res) => {
+        try {
+            const { data: articles } = await axios.get(`${serverUrl}/articles/meta`);
+            articles.map(article => {
+                sitemap.elements[0].elements.push({
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": `https://www.payperwin.com/articles/${article.permalink}/${article._id}`
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": dateformat(article.updated_at, "yyyy-mm-dd")
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "0.5"
+                                }
+                            ]
+                        }
+                    ]
+                })
+            })
+        } catch (error) { }
+        const result = convert.js2xml(sitemap);
+        res.set('Content-Type', 'text/xml');
+        return res.send(result);
+    }
+)
 
 app.get("/*", (req, res) => {
     const { path } = req;

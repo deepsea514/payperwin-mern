@@ -106,6 +106,7 @@
     "seedrandom": "^3.0.1",
     "socket.io-client": "^4.0.0",
     "winwheel": "^1.0.1",
+    "xml-js": "^1.6.11",
     "yup": "^0.32.8"
   },
   "browserslist": [
