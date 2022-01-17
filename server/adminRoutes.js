@@ -2406,18 +2406,14 @@ adminRouter.post(
                 const lineQuery = bet.lineQuery;
                 const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
-                const betpoolQuery = {
-                    sportId: lineQuery.sportId,
-                    leagueId: lineQuery.leagueId,
-                    eventId: lineQuery.eventId,
-                    lineId: lineQuery.lineId,
-                    lineType: lineQuery.type,
-                    lineSubType: lineQuery.subtype,
-                    sportName: lineQuery.sportName,
-                    origin: bet.origin,
-                    points: linePoints
-                };
-                const betpool = await BetPool.findOne(betpoolQuery);
+                const betpool = await BetPool.findOne({
+                    $or: [
+                        { homeBets: bet._id },
+                        { awayBets: bet._id },
+                        { drawBets: bet._id },
+                        { nonDrawBets: bet._id },
+                    ]
+                });
                 if (!betpool) {
                     return res.status(404).json({ error: 'BetPool not found' });
                 }
@@ -7465,18 +7461,14 @@ adminRouter.post(
                 const lineQuery = bet.lineQuery;
                 const linePoints = lineQuery.points ? lineQuery.points : getLinePoints(bet.pickName, bet.pick, lineQuery)
 
-                const betpoolQuery = {
-                    sportId: lineQuery.sportId,
-                    leagueId: lineQuery.leagueId,
-                    eventId: lineQuery.eventId,
-                    lineId: lineQuery.lineId,
-                    lineType: lineQuery.type,
-                    lineSubType: lineQuery.subtype,
-                    sportName: lineQuery.sportName,
-                    origin: bet.origin,
-                    points: linePoints
-                };
-                const betpool = await BetPool.findOne(betpoolQuery);
+                const betpool = await BetPool.findOne({
+                    $or: [
+                        { homeBets: bet._id },
+                        { awayBets: bet._id },
+                        { drawBets: bet._id },
+                        { nonDrawBets: bet._id },
+                    ]
+                });
                 if (!betpool) {
                     return res.status(404).json({ error: 'BetPool not found' });
                 }
