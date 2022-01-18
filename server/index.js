@@ -5175,7 +5175,7 @@ expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 expressApp.use('/shop', shopRouter);
-expressApp.use('/banners', express.static('banners'));
+expressApp.use('/static', express.static('banners'));
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
 

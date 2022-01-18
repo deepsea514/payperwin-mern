@@ -5855,7 +5855,7 @@ adminRouter.post(
                     let articleObj = {
                         ...data,
                         published_at: data.publish ? new Date() : null,
-                        logo: `/banners/${filename}`
+                        logo: `/static/${filename}`
                     };
                     try {
                         await Article.create(articleObj);
@@ -5923,7 +5923,7 @@ adminRouter.put(
                         let articleObj = {
                             ...data,
                             published_at: data.publish ? new Date() : null,
-                            logo: `/banners/${filename}`
+                            logo: `/static/${filename}`
                         };
                         await Article.findByIdAndUpdate(id, articleObj);
                         res.json({ success: true });

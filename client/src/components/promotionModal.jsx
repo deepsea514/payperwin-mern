@@ -7,11 +7,11 @@ import _env from '../env.json';
 
 const defaultStories = [
     {
-        url: '/banners/video banner.mp4',
+        url: '/promotions/video banner.mp4',
         type: 'video',
     },
     {
-        url: '/banners/hs banner.png',
+        url: '/promotions/hs banner.png',
         type: 'image',
     },
 ];
@@ -46,7 +46,7 @@ export default class PromotionModal extends Component {
                         stories: data.map(banner => {
                             return {
                                 type: banner.type,
-                                url: `${_env.appUrl}/banners/${banner.path}`,
+                                url: `${_env.appUrl}/static/${banner.path}`,
                             }
                         }),
                         loading: false,

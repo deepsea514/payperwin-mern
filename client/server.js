@@ -201,7 +201,7 @@ app.get("/*", (req, res) => {
                         title = data.meta_title;
                         description = data.meta_description;
                         keywords = data.meta_keywords;
-                        if (data.logo.startsWith('/banners')) {
+                        if (data.logo.startsWith('/static')) {
                             metaimage = serverUrl + data.logo;
                         }
                     }
