@@ -102,14 +102,25 @@ app.get("/*", (req, res) => {
             console.error("Error during file reading", err);
             return res.status(404).end();
         }
-        // TODO get post info
+        // Change Meta Infos
         let title = "Peer to Peer Betting | PAYPER WIN | Risk Less, Win more";
         let description = "Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or HIGH STAKER and we are not affiliated with any HIGH STAKER. Place bets on your favorite sporting events worldwide. RISK less and WIN More!";
         let keywords = "payperwin,payper win,peer to peer,online betting,betting,sport";
         let metaimage = "https://www.payperwin.com/images/PPW%20Meta.png";
+        try {
+            const { data } = await axios.get(`${serverUrl}/meta/Peer to Peer Betting`);
+            if (data) {
+                const { title: metaTitle, description: metaDescription, keywords: metaKeywords } = data;
+                title = metaTitle;
+                description = metaDescription;
+                keywords = metaKeywords;
+            } else {
+                staticPageFound = false;
+            }
+        } catch (error) { }
 
         let staticPageFound = pagesData.find((page) => page.path == path);
-        if (staticPageFound) {
+        if (staticPageFound && path != '/') {
             try {
                 const { data } = await axios.get(`${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`);
                 if (data) {
