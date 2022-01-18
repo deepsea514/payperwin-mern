@@ -3,6 +3,10 @@
         display: none;
     }
 
+    .promotion-botton-wrap {
+        min-width: 200px;
+    }
+
     /* .join-mobile{ display:none;} */
 }
 

@@ -119,7 +119,7 @@ class Highlights extends Component {
 
     render() {
         const { sportIndex, leagueIndex, sports, showLeft, showRight } = this.state;
-        const { addBet, betSlip, removeBet, showPromotionAction } = this.props;
+        const { addBet, betSlip, removeBet, showPromotionAction, toggleField } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         const shortName = getShortSportName(sportName);
 
@@ -129,9 +129,12 @@ class Highlights extends Component {
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
                     <p className='promotion-header'>Peer-to-Peer Betting Exchange.<br /> Risk less Win more!</p>
-                    <div className='p-3'>
+                    <div className='p-3 d-flex justify-content-between'>
                         <div className='promotion-botton-wrap' onClick={() => showPromotionAction(true)}>
                             <div className='promotion-botton'><span>What's New</span></div>
+                        </div>
+                        <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showViewModeModal')}>
+                            <div className='promotion-botton'><span>Pro View <i className='far fa-chevron-down' /></span></div>
                         </div>
                     </div>
                 </div>

@@ -44,7 +44,7 @@ class Dashboard extends Component {
 
     render() {
         const { showModal } = this.state;
-        const { addBet, betSlip, removeBet } = this.props;
+        const { addBet, betSlip, removeBet, toggleField } = this.props;
 
         return (
             <React.Fragment>
@@ -75,7 +75,9 @@ class Dashboard extends Component {
                         <img src="/images/Banner 2.png" />
                     </Link>
                 </Carousel> */}
-                <Highlights addBet={addBet} betSlip={betSlip}
+                <Highlights addBet={addBet}
+                    toggleField={toggleField}
+                    betSlip={betSlip}
                     removeBet={removeBet} />
             </React.Fragment>
         );

@@ -776,6 +776,7 @@ a.log-in-btn {
 
 .modal.confirmation .col-in .fa-times {
     float: right;
+    font-size: 16px;
 }
 
 .form-button:disabled {
@@ -2101,9 +2102,13 @@ a.fav-link:hover {
 .promotion-botton-wrap {
     background: linear-gradient(45deg, #f0b631, #FF00FE);
     padding: 2px;
-    width: 100%;
+    width: 48%;
     border-radius: 6px;
     cursor: pointer;
+}
+
+.promotion-botton-wrap.view-wrapper {
+    background: #666;
 }
 
 .promotion-botton {
@@ -2114,7 +2119,6 @@ a.fav-link:hover {
     font-size: 14px;
     padding: 6px 0;
     background-color: #171717;
-    min-width: 200px;
 }
 
 .no-games {
@@ -2124,4 +2128,21 @@ a.fav-link:hover {
 
 .noscroll {
     overflow: hidden !important;
+}
+
+.view-modal-link {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 15px;
+    color: inherit;
+    border-top: 1px solid #666;
+}
+
+.view-modal-link.pro {
+    color: #ED254E;
+}
+
+.view-modal-link:hover {
+    color: inherit;
 }

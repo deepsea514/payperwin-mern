@@ -77,6 +77,7 @@ import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
 import { getBetSlipLastOdds } from '../redux/services';
+import ViewModeModal from '../components/viewmode_modal';
 
 const ShowAccountLinks = [
     '/bets',
@@ -174,6 +175,7 @@ class App extends Component {
             },
             betSlipTimer: null,
             betSlipOdds: null,
+            showViewModeModal: false
         };
         setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
         this._Mounted = true;
@@ -363,6 +365,7 @@ class App extends Component {
             betSlipType,
             teaserBetSlip,
             betSlipOdds,
+            showViewModeModal,
         } = this.state;
         const { user,
             getUser,
@@ -404,6 +407,7 @@ class App extends Component {
                 <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
+                    {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} />}
                     <div className="container">
                         <Switch>
                             <Route path="/signup" render={(props) =>
@@ -654,6 +658,7 @@ class App extends Component {
                                                             addBet={this.addBet}
                                                             betSlip={betSlip}
                                                             removeBet={this.removeBet}
+                                                            toggleField={this.toggleField}
                                                         />
                                                     </ErrorBoundary>
                                                 } />
