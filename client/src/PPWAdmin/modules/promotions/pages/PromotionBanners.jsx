@@ -82,11 +82,11 @@ export default class PromotionBanners extends Component {
                     <th scope="col">
                         <div>
                             {banner.type == 'image' &&
-                                <img src={`${serverUrl}/banners/${banner.path}`}
+                                <img src={`${serverUrl}/static/${banner.path}`}
                                     style={{ width: '150px', height: 'auto', display: 'block' }} />}
 
                             {banner.type == 'video' &&
-                                <video src={`${serverUrl}/banners/${banner.path}`}
+                                <video src={`${serverUrl}/static/${banner.path}`}
                                     playsInline
                                     controls={true}
                                     style={{ width: '150px', height: 'auto', display: 'block' }} />}
