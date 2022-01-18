@@ -108,7 +108,7 @@ app.get("/*", (req, res) => {
         let keywords = "payperwin,payper win,peer to peer,online betting,betting,sport";
         let metaimage = "https://www.payperwin.com/images/PPW%20Meta.png";
         try {
-            const { data } = await axios.get(`${serverUrl}/meta/Peer to Peer Betting`);
+            const { data } = await axios.get(`${serverUrl}/meta`, { params: { title: 'Peer to Peer Betting' } });
             if (data) {
                 const { title: metaTitle, description: metaDescription, keywords: metaKeywords } = data;
                 title = metaTitle;
@@ -122,7 +122,7 @@ app.get("/*", (req, res) => {
         let staticPageFound = pagesData.find((page) => page.path == path);
         if (staticPageFound && path != '/') {
             try {
-                const { data } = await axios.get(`${serverUrl}/meta/${encodeURIComponent(staticPageFound.title)}`);
+                const { data } = await axios.get(`${serverUrl}/meta`, { params: { title: staticPageFound.title } });
                 if (data) {
                     const { title: metaTitle, description: metaDescription, keywords: metaKeywords } = data;
                     title = metaTitle;

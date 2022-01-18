@@ -149,7 +149,7 @@ export function submitWithdraw(values) {
 
 // Meta Tag
 export function getMetaTag(title) {
-    return FrontendAPI.get(`/meta/${title}`);
+    return FrontendAPI.get(`/meta/`, { params: { title } });
 }
 
 // Bet Releated
