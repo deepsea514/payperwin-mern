@@ -659,10 +659,6 @@ footer ul li a i {
 
 .sport-list-dropdown-league {
     padding: 0 10px;
-    display: none;
-}
-
-.sport-desktop-list li.active .sport-list-dropdown-league, .sport-desktop-list li:hover .sport-list-dropdown-league {
     display: block;
 }
 
