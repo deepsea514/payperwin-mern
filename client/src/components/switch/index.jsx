@@ -14,7 +14,6 @@ class ReactSwitch extends Component {
         this.$handleDiameter = handleDiameter || height - 2;
         this.$checkedPos = width / 2;
         this.$uncheckedPos = Math.max(0, (height - this.$handleDiameter) / 2);
-        console.log(this.$checkedPos, this.$uncheckedPos)
         this.state = {
             $pos: checked ? this.$checkedPos : this.$uncheckedPos
         };

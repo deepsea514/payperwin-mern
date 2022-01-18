@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import SimpleLogin from './simpleLogin';
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -12,7 +12,7 @@ import ForgotPasswordModal from './forgotPasswordModal';
 import logout from '../libs/logout';
 import numberFormat from '../helpers/numberFormat';
 import Switch from './switch';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import ReactTooltip from 'react-tooltip';
 
 
 class Header extends Component {
@@ -24,7 +24,7 @@ class Header extends Component {
             langDropDownOpen: false,
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
-            viewMode: 'pro'
+            showTooltip: false,
         };
         this._isMounted = false;
     }
@@ -122,7 +122,6 @@ class Header extends Component {
         const {
             oddsDropDownOpen,
             timeString,
-            viewMode
         } = this.state;
         const { toggleField,
             user,
@@ -197,74 +196,73 @@ class Header extends Component {
                                 </div>
                             </div>
                             <ul className="list-s">
-                                <li className='d-flex align-items-center'>
+                                <li className='d-flex align-items-center' data-tip data-for='coming-soon-tip'>
                                     <span className='pr-2'>View</span>
-                                    <OverlayTrigger
-                                        placement={'top'}
-                                        overlay={
-                                            <Tooltip id={`tooltip-coming-soon`}>
-                                                Coming soon.
-                                            </Tooltip>
-                                        }>
-                                        <Switch checked={viewMode == 'pro'}
-                                            onChange={(checked) => { }}
-                                            handleDiameter={20}
-                                            offColor="#FFF"
-                                            onColor="#FFF"
-                                            offHandleColor="#ED254E"
-                                            onHandleColor="#ED254E"
-                                            height={20}
-                                            width={80}
-                                            borderRadius={10}
-                                            activeBoxShadow="none"
-                                            uncheckedIcon={
-                                                <div style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    height: "100%",
-                                                    fontSize: 12,
-                                                    color: "#ED254E",
-                                                    paddingRight: 2
-                                                }}>Pro</div>
-                                            }
-                                            checkedIcon={
-                                                <div style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    height: "100%",
-                                                    fontSize: 12,
-                                                    color: "#ED254E",
-                                                    paddingRight: 2
-                                                }}>Basic</div>
-                                            }
-                                            uncheckedHandleIcon={
-                                                <div style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    height: "100%",
-                                                    fontSize: 12,
-                                                    color: "#fff",
-                                                    paddingRight: 2
-                                                }}>Basic</div>
-                                            }
-                                            checkedHandleIcon={
-                                                <div style={{
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    height: "100%",
-                                                    fontSize: 12,
-                                                    color: "#fff",
-                                                    paddingRight: 2
-                                                }}>Pro</div>
-                                            }
-                                            className="react-switch-viewmode"
-                                            id="small-radius-switch"
-                                        />
-                                    </OverlayTrigger>
+                                    <Switch checked={true}
+                                        onChange={(checked) => { }}
+                                        handleDiameter={20}
+                                        offColor="#FFF"
+                                        onColor="#FFF"
+                                        offHandleColor="#ED254E"
+                                        onHandleColor="#ED254E"
+                                        height={20}
+                                        width={100}
+                                        borderRadius={10}
+                                        activeBoxShadow="none"
+                                        uncheckedIcon={
+                                            <div style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                fontSize: 12,
+                                                color: "#ED254E",
+                                                paddingRight: 1,
+                                                paddingLeft: 1
+                                            }}>Pro</div>
+                                        }
+                                        checkedIcon={
+                                            <div style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                fontSize: 12,
+                                                color: "#ED254E",
+                                                paddingRight: 1,
+                                                paddingLeft: 1
+                                            }}>Basic</div>
+                                        }
+                                        uncheckedHandleIcon={
+                                            <div style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                fontSize: 12,
+                                                color: "#fff",
+                                                paddingRight: 1,
+                                                paddingLeft: 1
+                                            }}>Basic</div>
+                                        }
+                                        checkedHandleIcon={
+                                            <div style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "100%",
+                                                fontSize: 12,
+                                                color: "#fff",
+                                                paddingRight: 1,
+                                                paddingLeft: 1
+                                            }}>Pro</div>
+                                        }
+                                        className="react-switch-viewmode"
+                                        id="small-radius-switch"
+                                    />
+                                    <ReactTooltip id='coming-soon-tip' type='dark' effect="solid">
+                                        <span>Coming Soon!</span>
+                                    </ReactTooltip>
                                 </li>
                                 <li>
                                     <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>

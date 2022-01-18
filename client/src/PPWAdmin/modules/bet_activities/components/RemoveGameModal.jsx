@@ -56,7 +56,6 @@ export default class RemoveGameModal extends React.Component {
                                         {...{
                                             onChange: (removeIds) => {
                                                 if (!removeIds) return;
-                                                console.log(removeIds)
                                                 setFieldValue("removeIds", removeIds);
                                                 setFieldTouched("removeIds", true);
                                                 setFieldError("removeIds", false);
