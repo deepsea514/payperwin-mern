@@ -103,7 +103,7 @@ app.get("/*", (req, res) => {
             return res.status(404).end();
         }
         // TODO get post info
-        let title = "Peer to Peer Betting";
+        let title = "Peer to Peer Betting | PAYPER WIN | Risk Less, Win more";
         let description = "Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or HIGH STAKER and we are not affiliated with any HIGH STAKER. Place bets on your favorite sporting events worldwide. RISK less and WIN More!";
         let keywords = "payperwin,payper win,peer to peer,online betting,betting,sport";
         let metaimage = "https://www.payperwin.com/images/PPW%20Meta.png";
@@ -212,21 +212,21 @@ app.get("/*", (req, res) => {
         }
 
         const meta = `
-        <title>${title} | PAYPER WIN | Risk Less, Win more</title>
+        <title>${title}</title>
         <meta name="description" content="${description}">
         <meta name="keywords" content="${keywords}">
 
-        <meta itemprop="name" content="${title} | PAYPER WIN | Risk Less, Win more">
+        <meta itemprop="name" content="${title}">
         <meta itemprop="description" content="${description}">
         <meta itemprop="keywords" content="${keywords}">
         <meta itemprop="image" content="${metaimage}">
 
         <meta property="og:type" content="website">
-        <meta property="og:title" content="${title} | PAYPER WIN | Risk Less, Win more">
+        <meta property="og:title" content="${title}">
         <meta property="og:description" content="${description}">
         <meta property="og:image" content="${metaimage}">
 
-        <meta name="twitter:title" content="${title} | PAYPER WIN | Risk Less, Win more">
+        <meta name="twitter:title" content="${title}">
         <meta name="twitter:description" content="${description}">
         <meta name="twitter:image" content="${metaimage}">
         `;
