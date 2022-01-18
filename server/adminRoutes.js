@@ -4311,7 +4311,7 @@ adminRouter.post(
             const { files } = req;
             const { priority } = req.body;
             const ext = files.file.name.split('.').pop();
-            const filename = 'banner_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
+            const filename = 'whatsnew_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
             files.file.mv('./banners/' + filename);
             let type = 'image';
             if (['m4v', 'mp4', 'avi'].includes(ext)) {
