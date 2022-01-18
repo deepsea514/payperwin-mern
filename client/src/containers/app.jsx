@@ -68,6 +68,7 @@ import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
 import Invite from '../pages/invite';
 import PromotionModal from '../components/promotionModal';
+import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -76,7 +77,6 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
-import { getBetSlipLastOdds } from '../redux/services';
 
 const ShowAccountLinks = [
     '/bets',
@@ -175,7 +175,6 @@ class App extends Component {
             betSlipTimer: null,
             betSlipOdds: null,
         };
-        setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
         this._Mounted = true;
     }
 
@@ -194,6 +193,19 @@ class App extends Component {
         getAdminMessageAction();
         getBetStatusAction();
         this.setState({ betSlipTimer: setInterval(this.getLatestOdds, 10 * 1000) });
+
+        getMetaTag('Peer to Peer Betting')
+            .then(({ data }) => {
+                if (data) {
+                    console.log(data)
+                    setTitle({ pageTitle: data.title });
+                } else {
+                    setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
+                }
+            })
+            .catch(() => {
+                setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });
+            })
     }
 
     getLatestOdds = () => {
