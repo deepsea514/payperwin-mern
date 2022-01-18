@@ -146,6 +146,12 @@ export function checkFreeWithdraw() {
 export function submitWithdraw(values) {
     return FrontendAPI.post(`/withdraw`, values)
 }
+
+// Meta Tag
+export function getMetaTag(title) {
+    return FrontendAPI.get(`/meta/`, { params: { title } });
+}
+
 // Bet Releated
 export function getSportsDir() {
     return FrontendAPI.get(`/sportsdir`);
