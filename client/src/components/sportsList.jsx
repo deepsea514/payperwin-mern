@@ -78,7 +78,7 @@ class SportsList extends Component {
     }
 
     render() {
-        const { showNoEvents, showleagues, history } = this.props;
+        const { showNoEvents, history } = this.props;
         const { sports, leaguesData } = this.state;
         if (!sports) {
             return null;
@@ -99,11 +99,11 @@ class SportsList extends Component {
                                     >
                                         <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
                                         <label><span><span>{name}</span></span></label>
-                                        <span className="sport-list-count">{eventCount}</span>
+                                        {/* <span className="sport-list-count">{eventCount}</span> */}
                                     </Link>
                                 </li>
                             )
-                            : (showleagues ? (
+                            : (
                                 <li className="sport-list-item sport-sublist-item" key={name}>
                                     <a
                                         onClick={() => { history.push(name == 'Soccer' ? `/sport/${shortName}/league` : `/sport/${shortName}`) }}
@@ -112,7 +112,7 @@ class SportsList extends Component {
                                     >
                                         <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
                                         <label><span><span>{name}</span></span></label>
-                                        <span className="sport-list-count">{eventCount}</span>
+                                        {/* <span className="sport-list-count">{eventCount}</span> */}
                                         {(leaguesData.length == 0 || !leaguesData.find(league => league.name == name)) && <span className="sport-list-dropdown-league" onClick={(evt) => this.getLeagues(evt, name)}>
                                             <i style={{ borderLeft: '#72777f solid 1px' }} className="fas fa-chevron-down mr-0 pl-2"></i>
                                         </span>}
@@ -129,7 +129,7 @@ class SportsList extends Component {
                                                     style={!league.eventCount ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                                 >
                                                     <label><span>{league.name}</span></label>
-                                                    <span className="sport-list-count">{league.eventCount}</span>
+                                                    {/* <span className="sport-list-count">{league.eventCount}</span> */}
                                                 </Link>
                                             </li>
                                         ))}
@@ -144,19 +144,7 @@ class SportsList extends Component {
                                         </li>
                                     </ul>}
                                 </li>
-                            ) : (
-                                <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
-                                    <a
-                                        onClick={() => { history.push(name == 'Soccer' ? `/sport/${shortName}/league` : `/sport/${shortName}`) }}
-                                        style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
-                                        className="sport-list-compact"
-                                    >
-                                        <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
-                                        <label><span><span>{name}</span></span></label>
-                                        <span className="sport-list-count">{eventCount}</span>
-                                    </a>
-                                </li>
-                            ))
+                            )
                     )
                 })}
             </ul >

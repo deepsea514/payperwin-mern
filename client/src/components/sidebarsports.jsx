@@ -21,9 +21,9 @@ class SidebarSports extends Component {
                     {user && <Favorites user={user} getUser={getUser} />}
                 </div>
                 <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.TOP.SPORTS" /></h3>
-                <SportsList showleagues={true} topSports={true} />
+                <SportsList topSports={true} />
                 <h3 className="cat-heading"><FormattedMessage id="COMPONENTS.AZ.SPORTS" /></h3>
-                <SportsList showNoEvents={true} showleagues={false} />
+                <SportsList showNoEvents={true} />
             </div>
         );
     }
