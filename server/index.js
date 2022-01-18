@@ -4257,9 +4257,9 @@ expressApp.get(
 )
 
 expressApp.get(
-    '/meta/:title',
+    '/meta',
     async (req, res) => {
-        const { title } = req.params;
+        const { title } = req.query;
         const meta_tag = await MetaTag.findOne({ pageTitle: title });
         res.json(meta_tag);
     }
