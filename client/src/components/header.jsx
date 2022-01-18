@@ -31,8 +31,8 @@ class Header extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        const timerInterval = setInterval(this.headerTimer.bind(this), 1000);
-        this._isMounted && this.setState({ timerInterval });
+        // const timerInterval = setInterval(this.headerTimer.bind(this), 1000);
+        // this._isMounted && this.setState({ timerInterval });
     }
 
     headerTimer = () => {
@@ -285,7 +285,7 @@ class Header extends Component {
                                     )}
                                 </li>
 
-                                <li>{timeString}</li>
+                                {/* <li>{timeString}</li> */}
                             </ul>
                         </div>
                     </div>
