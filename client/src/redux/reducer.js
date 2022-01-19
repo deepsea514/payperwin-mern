@@ -16,6 +16,7 @@ export const actionTypes = {
     setDateFormat: "[Set Date Format Action]",
     setDisplayMode: "[Set Display Mode Action]",
     setTimezone: "[Set Timezone Action]",
+    setProMode: "[Set Pro Mode Action]",
     setSearch: "[Set Search Action]",
     acceptCookieAction: "[Accept Cookie Action]",
     hideTourAction: "[Hide Tour Action]",
@@ -43,6 +44,7 @@ const initialState = {
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
     display_mode: 'dark',
+    pro_mode: true,
     dark_light: timeHelper.getDisplayModeBasedOnSystemTime(null),
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
@@ -73,7 +75,7 @@ const initialState = {
 
 export const reducer = persistReducer(
     {
-        storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie',
+        storage, key: "ppw-frontend", whitelist: ['lang', 'oddsFormat', 'acceptCookie', 'pro_mode',
             'timezone', 'showedTourTimes', 'loginFailed', 'user', 'betEnabled', 'adminMessageDismiss']
     },
     (state = initialState, action) => {
@@ -97,6 +99,9 @@ export const reducer = persistReducer(
 
             case actionTypes.setTimezone:
                 return { ...state, timezone: action.timezone };
+
+            case actionTypes.setProMode:
+                return { ...state, pro_mode: action.pro_mode == undefined || action.pro_mode == null ? true : action.pro_mode };
 
             case actionTypes.setSearch:
                 return { ...state, search: action.search };
@@ -165,6 +170,7 @@ export const actions = {
     setTimezone: (timezone) => ({ type: actionTypes.setTimezone, timezone }),
     setDisplayMode: (display_mode) => ({ type: actionTypes.setDisplayMode, display_mode }),
     setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
+    setProMode: (pro_mode) => ({ type: actionTypes.setProMode, pro_mode }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
     acceptCookieAction: () => ({ type: actionTypes.acceptCookieAction }),
     require2FAAction: (require_2fa = true) => ({ type: actionTypes.require2FAAction, require_2fa }),
@@ -196,11 +202,14 @@ export function* saga() {
             }
             if (user) {
                 yield put(actions.getUserSuccess(user));
-                yield put(actions.setMaxBetLimitTierAction(user.maxBetLimitTier));
-                yield put(actions.setDateFormat(user.preference.dateFormat));
-                yield put(actions.setDisplayMode(user.preference.display_mode));
-                yield put(actions.setTimezone(user.preference.timezone));
-                yield put(actions.setOddsFormat(user.preference.oddsFormat));
+                yield put(actions.setPreference({
+                    maxBetLimitTier: user.maxBetLimitTier,
+                    dateFormat: user.preference.dateFormat,
+                    display_mode: user.preference.display_mode,
+                    timezone: user.preference.timezone,
+                    oddsFormat: user.preference.oddsFormat,
+                    pro_mode: user.preference.pro_mode,
+                }));
 
                 const lang = yield select((state) => state.frontend.lang);
                 if (lang != user.preference.lang) {
@@ -221,6 +230,17 @@ export function* saga() {
             const user = yield select((state) => state.frontend.user);
             if (user) {
                 yield setPreferences({ oddsFormat });
+            }
+        } catch (error) {
+        }
+    });
+
+    yield takeLatest(actionTypes.setProMode, function* setOddsFormatSaga() {
+        try {
+            const pro_mode = yield select((state) => state.frontend.pro_mode);
+            const user = yield select((state) => state.frontend.user);
+            if (user) {
+                yield setPreferences({ pro_mode });
             }
         } catch (error) {
         }

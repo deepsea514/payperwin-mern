@@ -199,7 +199,6 @@ class App extends Component {
         getMetaTag('Peer to Peer Betting')
             .then(({ data }) => {
                 if (data) {
-                    console.log(data)
                     setTitle({ pageTitle: data.title });
                 } else {
                     setTitle({ siteName: 'PAYPER WIN', tagline: 'Risk Less, Win More', delimiter: '|' });

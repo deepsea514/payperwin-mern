@@ -9,7 +9,8 @@ const PreferenceSchema = new Schema(
         dateFormat: { type: String, default: 'dd-MM-yyyy' },
         timezone: { type: String, default: 'pacific_time' },
         lang: { type: String, default: 'en' },
-        display_mode: { type: String, default: 'system' },
+        display_mode: { type: String, default: 'dark' },
+        pro_mode: { type: Boolean, default: true },
         notification_settings: {
             win_confirmation: {
                 email: { type: Boolean, default: true },

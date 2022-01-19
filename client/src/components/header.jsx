@@ -12,8 +12,6 @@ import ForgotPasswordModal from './forgotPasswordModal';
 import logout from '../libs/logout';
 import numberFormat from '../helpers/numberFormat';
 import Switch from './switch';
-import ReactTooltip from 'react-tooltip';
-
 
 class Header extends Component {
     constructor(props) {
@@ -24,7 +22,6 @@ class Header extends Component {
             langDropDownOpen: false,
             timerInterval: null,
             timeString: timeHelper.convertTimeClock(new Date(), timezone),
-            showTooltip: false,
         };
         this._isMounted = false;
     }
@@ -134,7 +131,9 @@ class Header extends Component {
             showForgotPasswordModalAction,
             adminMessage,
             dismissAdminMessage,
-            showPromotionAction
+            showPromotionAction,
+            pro_mode,
+            setProMode
         } = this.props;
         const showMessage = this.checkShowMessage();
         return (
@@ -196,10 +195,10 @@ class Header extends Component {
                                 </div>
                             </div>
                             <ul className="list-s">
-                                <li className='d-flex align-items-center' data-tip data-for='coming-soon-tip'>
+                                <li className='d-flex align-items-center'>
                                     <span className='pr-2'>View</span>
-                                    <Switch checked={true}
-                                        onChange={(checked) => { }}
+                                    <Switch checked={pro_mode}
+                                        onChange={(checked) => setProMode(checked)}
                                         handleDiameter={20}
                                         offColor="#FFF"
                                         onColor="#FFF"
@@ -260,9 +259,6 @@ class Header extends Component {
                                         className="react-switch-viewmode"
                                         id="small-radius-switch"
                                     />
-                                    <ReactTooltip id='coming-soon-tip' type='dark' effect="solid">
-                                        <span>Coming Soon!</span>
-                                    </ReactTooltip>
                                 </li>
                                 <li>
                                     <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
@@ -321,6 +317,7 @@ const mapStateToProps = (state) => ({
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,
+    pro_mode: state.frontend.pro_mode,
     maxBetLimitTier: state.frontend.maxBetLimitTier,
     adminMessage: state.frontend.adminMessage,
     adminMessageDismiss: state.frontend.adminMessageDismiss
