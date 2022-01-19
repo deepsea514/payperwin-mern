@@ -69,7 +69,7 @@ class Sport extends Component {
     componentDidUpdate(prevProps) {
         const { shortName, league, pro_mode } = this.props;
         const { shortName: prevShortName, league: prevLeague, pro_mode: prevProMode } = prevProps;
-        const sportChanged = (shortName !== prevShortName || league !== prevLeague || pro_mode != prevProMode);
+        const sportChanged = (shortName !== prevShortName || league !== prevLeague);
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
@@ -963,7 +963,7 @@ class Sport extends Component {
                                             onClick={() => toggleCollapseLeague(leagueId)} />
                                     </div>
                                     <div className='leagues-content'>
-                                        {events != null && <ul className="table-list table-list-top basic-mode border-0 d-flex">
+                                        {events != null && <ul className={`table-list table-list-top ${pro_mode ? '' : 'basic-mode'} border-0 d-flex`}>
                                             <li></li>
                                             <li>
                                                 {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}
