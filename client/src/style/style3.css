@@ -2150,3 +2150,8 @@ a.fav-link:hover {
 .view-modal-link:hover {
     color: inherit;
 }
+
+.basic-mode .table-bottom li:first-child {
+    display: flex;
+    align-items: center;
+}
