@@ -12,7 +12,7 @@ import { FormattedMessage } from 'react-intl';
 import dateFormat from 'dateformat';
 import sportNameImage from '../helpers/sportNameImage';
 import { getLiveSports, getSports } from '../redux/services';
-import ReactTooltip from 'react-tooltip'
+import BasicModal from './basicmodal';
 
 const emptyBoxLine = (
     <li>
@@ -47,6 +47,7 @@ class Sport extends Component {
             liveTimer: null,
             dateSelected: 0,
             selectedLeague: null,
+            showHelp: false,
         };
     }
 
@@ -145,7 +146,7 @@ class Sport extends Component {
                             return null;
                         }).filter(league => league);
 
-                        if (shortName == null) {
+                        if (!shortName) {
                             const leagueIds = filteredLeagues.slice(8, leagues.length).map(league => league.originId);
                             setCollapsedLeagues(leagueIds);
                         } else {
@@ -266,7 +267,7 @@ class Sport extends Component {
         const { pathname } = location;
         const {
             loading, data, error, sportsbookInfo, liveData, dateSelected,
-            selectedLeague
+            selectedLeague, showHelp,
         } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -295,7 +296,7 @@ class Sport extends Component {
                     onClose={() => this.setState({ sportsbookInfo: null })}
                     onAccept={this.addSportsbookBet}
                 />}
-
+                {showHelp && <BasicModal onClose={() => this.setState({ showHelp: false })} />}
                 {liveData && pro_mode && (() => {
                     const { leagues } = liveData;
                     if (!leagues || !leagues.length) return null;
@@ -962,41 +963,23 @@ class Sport extends Component {
                                             onClick={() => toggleCollapseLeague(leagueId)} />
                                     </div>
                                     <div className='leagues-content'>
-                                        {events != null && <ul className="table-list table-list-top d-flex">
+                                        {events != null && <ul className="table-list table-list-top basic-mode border-0 d-flex">
                                             <li></li>
                                             <li>
-                                                {pro_mode ? 'ML' : <span className='cursor-pointer'
-                                                    data-tip
-                                                    data-event='click focus'
-                                                    data-for={`moneyline-tip-${leagueId}`}>MONEYLINE<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
-                                                <ReactTooltip id={`moneyline-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
-                                                    <span>The money line is simply choosing the outright winner, which team will win the the game.</span>
-                                                </ReactTooltip>
+                                                {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             <li>
-                                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer'
-                                                    data-tip
-                                                    data-event='click focus'
-                                                    data-for={`spread-tip-${leagueId}`}>POINT SPREAD<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
-                                                <ReactTooltip id={`spread-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
-                                                    <span>The spread, also referred to as the line, is used to even the odds between two unevenly matched teams.</span>
-                                                </ReactTooltip>
+                                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>POINT SPREAD<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             <li>
-                                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer'
-                                                    data-tip
-                                                    data-event='click focus'
-                                                    data-for={`total-tip-${leagueId}`}>TOTAL POINTS<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
-                                                <ReactTooltip id={`total-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
-                                                    <span>This is a bet on the total number of points scored by both teams.</span>
-                                                </ReactTooltip>
+                                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>TOTAL POINTS<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             {pro_mode && <li className="detailed-lines-link not-mobile"></li>}
                                         </ul>}
                                         {events}
                                     </div>
                                 </div>
-                            </div >
+                            </div>
                         );
                     });
                     return (
