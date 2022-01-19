@@ -101,7 +101,7 @@
     }
 
     .table-list li:nth-child(1) {
-        width: 140px;
+        width: 140px !important;
     }
 
     .flex-wr {

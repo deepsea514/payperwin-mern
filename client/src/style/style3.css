@@ -53,6 +53,10 @@ header {
     width: 180px;
 }
 
+.basic-mode.table-list li:nth-child(1) {
+    width: 280px;
+}
+
 .box-odds {
     width: 60px;
     height: 74px;
@@ -2154,4 +2158,8 @@ a.fav-link:hover {
 .basic-mode .table-bottom li:first-child {
     display: flex;
     align-items: center;
+}
+
+.popover {
+    z-index: 1;
 }
