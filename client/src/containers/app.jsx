@@ -386,7 +386,8 @@ class App extends Component {
             dark_light,
             showLoginModalAction,
             showPromotion,
-            showPromotionAction
+            showPromotionAction,
+            pro_mode
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
@@ -681,7 +682,7 @@ class App extends Component {
                                                 {!sidebarShowAccountLinks &&
                                                     <BetSlip
                                                         betSlip={betSlip}
-                                                        betSlipType={betSlipType}
+                                                        betSlipType={pro_mode ? betSlipType : 'single'}
                                                         teaserBetSlip={teaserBetSlip}
                                                         setBetSlipType={this.setBetSlipType}
                                                         className="hide-mobile"
@@ -711,7 +712,7 @@ class App extends Component {
                 {!sidebarShowAccountLinks &&
                     <BetSlip
                         betSlip={betSlip}
-                        betSlipType={betSlipType}
+                        betSlipType={pro_mode ? betSlipType : 'single'}
                         teaserBetSlip={teaserBetSlip}
                         setBetSlipType={this.setBetSlipType}
                         className="show-mobile"
@@ -731,6 +732,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
+    pro_mode: state.frontend.pro_mode,
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
     dark_light: state.frontend.dark_light,

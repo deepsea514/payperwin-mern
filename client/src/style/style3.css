@@ -155,6 +155,10 @@ a.log-in-btn {
     width: fit-content;
 }
 
+.table-list.basic-mode {
+    border-bottom: #888 2px solid;
+}
+
 .tab-pane-leagues {
     width: 100%;
     background: linear-gradient(90deg, #f0b631, #FF00FE);

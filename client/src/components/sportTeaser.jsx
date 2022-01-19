@@ -273,8 +273,8 @@ class SportTeaser extends Component {
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
                                         <li className='not-mobile'></li>
-                                        <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
-                                        <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
+                                        <li>SPREAD</li>
+                                        <li>TOTAL</li>
                                         <li className="detailed-lines-link not-mobile"></li>
                                     </ul>
                                     {events}

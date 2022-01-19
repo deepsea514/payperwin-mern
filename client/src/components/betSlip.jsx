@@ -225,7 +225,7 @@ class BetSlip extends Component {
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
             className, showLoginModalAction, betSlipType, setBetSlipType, teaserBetSlip,
-            removeTeaserBet, betEnabled, betSlipOdds
+            removeTeaserBet, betEnabled, betSlipOdds, pro_mode
         } = this.props;
 
         let totalStake = 0;
@@ -274,7 +274,7 @@ class BetSlip extends Component {
                 <div className="bet-slip-content">
                     <div className="tab-content">
                         <div className="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
-                            <div className="row bet-slip-type-container mx-0 shadow-sm">
+                            {pro_mode && <div className="row bet-slip-type-container mx-0 shadow-sm">
                                 <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'single' ? 'active' : ''}`}
                                     onClick={() => setBetSlipType('single')}>
                                     Single
@@ -287,7 +287,7 @@ class BetSlip extends Component {
                                     onClick={() => setBetSlipType('teaser')}>
                                     Teaser
                                 </div>
-                            </div>
+                            </div>}
                             {betSlipType == 'single' && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
@@ -438,6 +438,7 @@ class BetSlip extends Component {
 
 const mapStateToProps = (state) => ({
     maxBetLimitTier: state.frontend.maxBetLimitTier,
+    pro_mode: state.frontend.pro_mode,
     betEnabled: state.frontend.betEnabled,
 });
 
