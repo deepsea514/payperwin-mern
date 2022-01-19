@@ -47,7 +47,7 @@ class Sport extends Component {
             liveTimer: null,
             dateSelected: 0,
             selectedLeague: null,
-            showHelp: false,
+            showHelp: null,
         };
     }
 
@@ -226,9 +226,9 @@ class Sport extends Component {
     }
 
     addBet = (bet) => {
-        const { addBet } = this.props;
+        const { addBet, pro_mode } = this.props;
         const { type, odds, originOdds, pick, subtype } = bet;
-        if (checkOddsAvailable(originOdds, odds, pick, type, subtype)) {
+        if (pro_mode == false || checkOddsAvailable(originOdds, odds, pick, type, subtype)) {
             return addBet(bet);
         }
         this.setState({ sportsbookInfo: bet });
@@ -296,7 +296,7 @@ class Sport extends Component {
                     onClose={() => this.setState({ sportsbookInfo: null })}
                     onAccept={this.addSportsbookBet}
                 />}
-                {showHelp && <BasicModal onClose={() => this.setState({ showHelp: false })} />}
+                {showHelp && <BasicModal showHelp={showHelp} onClose={() => this.setState({ showHelp: null })} />}
                 {liveData && pro_mode && (() => {
                     const { leagues } = liveData;
                     if (!leagues || !leagues.length) return null;
@@ -966,13 +966,13 @@ class Sport extends Component {
                                         {events != null && <ul className={`table-list table-list-top ${pro_mode ? '' : 'basic-mode'} border-0 d-flex`}>
                                             <li></li>
                                             <li>
-                                                {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}
+                                                {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: 'moneyline' })}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             <li>
-                                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>POINT SPREAD<i className='ml-3 fas fa-question-circle' /></span>}
+                                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: 'spread' })}>POINT SPREAD<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             <li>
-                                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: true })}>TOTAL POINTS<i className='ml-3 fas fa-question-circle' /></span>}
+                                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer' onClick={() => this.setState({ showHelp: 'total' })}>TOTAL POINTS<i className='ml-3 fas fa-question-circle' /></span>}
                                             </li>
                                             {pro_mode && <li className="detailed-lines-link not-mobile"></li>}
                                         </ul>}
