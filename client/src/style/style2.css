@@ -725,7 +725,7 @@ footer ul li a i {
 .box-odds {
     color: #0a74ef;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 500;
     border: 1px solid rgb(213, 213, 213);
     border-radius: 4px;
     background: #fff;
@@ -836,7 +836,12 @@ footer ul li a i {
 .table-list-top {
     padding: 3px 10px 4px 10px;
     background: #F9F9F9;
-    /* margin-bottom: 1px; */
+}
+
+.table-list-top li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .table-title {
@@ -857,11 +862,6 @@ footer ul li a i {
     display: block;
     line-height: 1;
 }
-
-/* .table-list.table-list-top li:nth-child(5) {
-    width: 60px;
-    min-width: 60px;
-} */
 
 .table-list li:first-child a {
     font-size: 10px;
@@ -4192,4 +4192,23 @@ a:hover {
     font-size: 20px;
     padding: 0;
     color: white;
+}
+
+.basic-team-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.basic-event-date {
+    font-size: 12px;
+    font-weight: 200;
+}
+
+.basic-mode .table-list:not(:last-child) li:not(:first-child) {
+    border-left: 1px solid hsla(0, 0%, 100%, .2);
+    border-right: none !important;
+}
+
+.basic-mode .table-list li:not(:first-child) {
+    border-right: none !important;
 }

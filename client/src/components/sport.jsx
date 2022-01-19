@@ -12,6 +12,7 @@ import { FormattedMessage } from 'react-intl';
 import dateFormat from 'dateformat';
 import sportNameImage from '../helpers/sportNameImage';
 import { getLiveSports, getSports } from '../redux/services';
+import ReactTooltip from 'react-tooltip'
 
 const emptyBoxLine = (
     <li>
@@ -65,9 +66,9 @@ class Sport extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { shortName, league } = this.props;
-        const { shortName: prevShortName, league: prevLeague } = prevProps;
-        const sportChanged = (shortName !== prevShortName || league !== prevLeague);
+        const { shortName, league, pro_mode } = this.props;
+        const { shortName: prevShortName, league: prevLeague, pro_mode: prevProMode } = prevProps;
+        const sportChanged = (shortName !== prevShortName || league !== prevLeague || pro_mode != prevProMode);
         if (sportChanged) {
             this.setState({ error: null });
             this.getSport();
@@ -259,7 +260,7 @@ class Sport extends Component {
     render() {
         const {
             betSlip, removeBet, timezone, oddsFormat, team, shortName,
-            hideBreacrumb, user, getUser,
+            hideBreacrumb, user, getUser, pro_mode,
             location, collapsedLeague, toggleCollapseLeague
         } = this.props;
         const { pathname } = location;
@@ -295,7 +296,7 @@ class Sport extends Component {
                     onAccept={this.addSportsbookBet}
                 />}
 
-                {liveData && (() => {
+                {liveData && pro_mode && (() => {
                     const { leagues } = liveData;
                     if (!leagues || !leagues.length) return null;
 
@@ -350,9 +351,9 @@ class Sport extends Component {
                                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
                                     <ul className="table-list table-list-top d-flex">
                                         <li>{leagueName}&nbsp;<i className="fas fa-chevron-right"></i></li>
-                                        <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
-                                        <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
-                                        <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
+                                        <li>ML</li>
+                                        <li>SPREAD</li>
+                                        <li>TOTAL</li>
                                         <li className="detailed-lines-link not-mobile"></li>
                                     </ul>
                                     {filteredEvents}
@@ -382,18 +383,18 @@ class Sport extends Component {
 
                             const lineCount = this.getLineCount(lines[0]);
                             const pathname = `/sport/${shortName}/league/${leagueId}/event/${eventId}`;
-                            return (
-                                <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
-                                    <li>
-                                        <Link to={{ pathname: pathname }} className="widh-adf">
-                                            <strong>{teamA}</strong> <strong>{teamB}</strong>
-                                        </Link>
-                                        <Link to={{ pathname: pathname }} className="widh-adf mt-3">
-                                            {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
-                                            <strong className='lineCount'>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
-                                        </Link>
-                                    </li>
-                                    <React.Fragment key={lineId}>
+                            if (pro_mode) {
+                                return (
+                                    <ul className="table-list d-flex table-bottom" key={`${teamA}${teamB}${startDate}${i}`}>
+                                        <li>
+                                            <Link to={{ pathname: pathname }} className="widh-adf">
+                                                <strong>{teamA}</strong> <strong>{teamB}</strong>
+                                            </Link>
+                                            <Link to={{ pathname: pathname }} className="widh-adf mt-3">
+                                                {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                                <strong className='lineCount'>{lineCount}+ <FormattedMessage id="COMPONENTS.SPORT.ADDITIONAL" /> <i className="fas fa-angle-right" /></strong>
+                                            </Link>
+                                        </li>
                                         {moneyline ? (
                                             (() => {
                                                 const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
@@ -667,13 +668,286 @@ class Sport extends Component {
                                                 );
                                             })()
                                         ) : emptyBoxLine}
-                                    </React.Fragment>
-                                    <li className="detailed-lines-link not-mobile">
-                                        <Link to={{ pathname: pathname }}>
-                                            +{lineCount}<i className="fas fa-angle-right" />
-                                        </Link>
-                                    </li>
-                                </ul>
+                                        <li className="detailed-lines-link not-mobile">
+                                            <Link to={{ pathname: pathname }}>
+                                                +{lineCount}<i className="fas fa-angle-right" />
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                );
+                            }
+                            return (
+                                <div className='table-list basic-mode' key={`${teamA}${teamB}${startDate}${i}`}>
+                                    <ul className="table-list d-flex table-bottom" >
+                                        <li><span className='basic-team-name'>{teamA}</span></li>
+                                        <li>
+                                            {moneyline && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'moneyline',
+                                                    subtype: null,
+                                                    index: null
+                                                };
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span className={`box-odds ${homeExist ? 'orange' : null}`}
+                                                        onClick={homeExist ?
+                                                            () => removeBet(lineId, 'moneyline', 'home', null, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'moneyline',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: moneyline,
+                                                                pick: 'home',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: ${teamA}`,
+                                                                index: null,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">Win</div>
+                                                            <div className="new-odds">Outright</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                        <li>
+                                            {spreads && spreads[0] && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'spread',
+                                                    index: 0,
+                                                    subtype: null,
+                                                };
+                                                if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span className={`box-odds ${homeExist ? 'orange' : null}`}
+                                                        onClick={homeExist
+                                                            ? () => removeBet(lineId, 'spread', 'home', 0, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'spread',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: spreads[0],
+                                                                pick: 'home',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
+                                                                index: 0,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`} Pts</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                        <li>
+                                            {totals && totals[0] && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'total',
+                                                    index: 0,
+                                                    subtype: null
+                                                };
+                                                if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
+                                                const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span
+                                                        className={`box-odds ${homeExist ? 'orange' : null}`}
+                                                        onClick={homeExist
+                                                            ? () => removeBet(lineId, 'total', 'home', 0, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'total',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: { home: totals[0].over, away: totals[0].under },
+                                                                pick: 'home',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: Over ${totals[0].points}`,
+                                                                index: 0,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">Over</div>
+                                                            <div className="new-odds">{`${totals[0].points}`} Pts</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                    </ul>
+                                    <ul className="table-list d-flex table-bottom">
+                                        <li><span className='basic-team-name'>{teamB}</span></li>
+                                        <li>
+                                            {moneyline && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'moneyline',
+                                                    subtype: null,
+                                                    index: null
+                                                };
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span className={`box-odds ${awayExist ? 'orange' : null}`}
+                                                        onClick={awayExist ?
+                                                            () => removeBet(lineId, 'moneyline', 'away', null, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'moneyline',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: moneyline,
+                                                                pick: 'away',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: ${teamB}`,
+                                                                index: null,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">Win</div>
+                                                            <div className="new-odds">Outright</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                        <li>
+                                            {spreads && spreads[0] && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'spread',
+                                                    index: 0,
+                                                    subtype: null,
+                                                };
+                                                if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span
+                                                        className={`box-odds ${awayExist ? 'orange' : null}`}
+                                                        onClick={awayExist
+                                                            ? () => removeBet(lineId, 'spread', 'away', 0, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'spread',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: spreads[0],
+                                                                pick: 'away',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
+                                                                index: 0,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`} Pts</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                        <li>
+                                            {totals && totals[0] && (() => {
+                                                const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
+                                                const lineQuery = {
+                                                    sportName,
+                                                    leagueId,
+                                                    eventId,
+                                                    lineId,
+                                                    type: 'total',
+                                                    index: 0,
+                                                    subtype: null
+                                                };
+                                                if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
+                                                const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
+                                                return (
+                                                    <span
+                                                        className={`box-odds ${awayExist ? 'orange' : null}`}
+                                                        onClick={awayExist
+                                                            ? () => removeBet(lineId, 'total', 'away', 0, null)
+                                                            : () => this.addBet({
+                                                                name: `${teamA} - ${teamB}`,
+                                                                type: 'total',
+                                                                league: leagueName,
+                                                                odds: { home: newHome, away: newAway },
+                                                                originOdds: { home: totals[0].over, away: totals[0].under },
+                                                                pick: 'away',
+                                                                home: teamA,
+                                                                away: teamB,
+                                                                sportName,
+                                                                lineId: lineId,
+                                                                lineQuery: lineQuery,
+                                                                pickName: `Pick: Under ${totals[0].points}`,
+                                                                index: 0,
+                                                                origin: origin,
+                                                                subtype: null
+                                                            })}>
+                                                        <div className="vertical-align">
+                                                            <div className="new-odds">Under</div>
+                                                            <div className="new-odds">{`${totals[0].points}`} Pts</div>
+                                                        </div>
+                                                    </span>
+                                                );
+                                            })()}
+                                        </li>
+                                    </ul>
+                                    <ul className="table-list d-flex table-bottom">
+                                        <li><span className='basic-event-date'>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}</span></li>
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </div>
                             );
                         });
                         return (
@@ -689,16 +963,40 @@ class Sport extends Component {
                                     </div>
                                     <div className='leagues-content'>
                                         {events != null && <ul className="table-list table-list-top d-flex">
-                                            <li>{leagueName}&nbsp;<i className="fas fa-chevron-right" style={{ display: 'initial' }}></i></li>
-                                            <li><FormattedMessage id="COMPONENTS.MONEYLINE" /></li>
-                                            <li><FormattedMessage id="COMPONENTS.HANDICAP" /></li>
-                                            <li><FormattedMessage id="COMPONENTS.OVERUNDER" /></li>
-                                            <li className="detailed-lines-link not-mobile"></li>
+                                            <li></li>
+                                            <li>
+                                                {pro_mode ? 'ML' : <span className='cursor-pointer'
+                                                    data-tip
+                                                    data-event='click focus'
+                                                    data-for={`moneyline-tip-${leagueId}`}>MONEYLINE<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
+                                                <ReactTooltip id={`moneyline-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
+                                                    <span>The money line is simply choosing the outright winner, which team will win the the game.</span>
+                                                </ReactTooltip>
+                                            </li>
+                                            <li>
+                                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer'
+                                                    data-tip
+                                                    data-event='click focus'
+                                                    data-for={`spread-tip-${leagueId}`}>POINT SPREAD<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
+                                                <ReactTooltip id={`spread-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
+                                                    <span>The spread, also referred to as the line, is used to even the odds between two unevenly matched teams.</span>
+                                                </ReactTooltip>
+                                            </li>
+                                            <li>
+                                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer'
+                                                    data-tip
+                                                    data-event='click focus'
+                                                    data-for={`total-tip-${leagueId}`}>TOTAL POINTS<i className='ml-3 fas fa-question-circle not-mobile' /></span>}
+                                                <ReactTooltip id={`total-tip-${leagueId}`} type='dark' effect="solid" globalEventOff='click'>
+                                                    <span>This is a bet on the total number of points scored by both teams.</span>
+                                                </ReactTooltip>
+                                            </li>
+                                            {pro_mode && <li className="detailed-lines-link not-mobile"></li>}
                                         </ul>}
                                         {events}
                                     </div>
                                 </div>
-                            </div>
+                            </div >
                         );
                     });
                     return (
@@ -733,7 +1031,7 @@ class Sport extends Component {
                         </>
                     )
                 })()}
-            </div>
+            </div >
         );
     }
 }
@@ -742,6 +1040,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     oddsFormat: state.frontend.oddsFormat,
     timezone: state.frontend.timezone,
+    pro_mode: state.frontend.pro_mode,
     collapsedLeague: state.frontend.collapsedLeague,
 });
 
