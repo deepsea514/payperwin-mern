@@ -119,7 +119,7 @@ class Highlights extends Component {
 
     render() {
         const { sportIndex, leagueIndex, sports, showLeft, showRight } = this.state;
-        const { addBet, betSlip, removeBet, showPromotionAction, toggleField } = this.props;
+        const { addBet, betSlip, removeBet, showPromotionAction, toggleField, pro_mode } = this.props;
         const sportName = sportIndex == null ? (leagueIndex == null ? null : topLeagues[leagueIndex].sportName) : sports[sportIndex];
         const shortName = getShortSportName(sportName);
 
@@ -134,7 +134,7 @@ class Highlights extends Component {
                             <div className='promotion-botton'><span>What's New</span></div>
                         </div>
                         <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showViewModeModal')}>
-                            <div className='promotion-botton'><span>Pro View <i className='far fa-chevron-down' /></span></div>
+                            <div className='promotion-botton'><span>{pro_mode ? 'Pro' : 'Basic'} View&nbsp;&nbsp;&nbsp;<i className='far fa-chevron-down' /></span></div>
                         </div>
                     </div>
                 </div>
@@ -206,4 +206,8 @@ class Highlights extends Component {
     }
 }
 
-export default connect(null, frontend.actions)(Highlights);
+const mapStateToProps = (state) => ({
+    pro_mode: state.frontend.pro_mode,
+});
+
+export default connect(mapStateToProps, frontend.actions)(Highlights);

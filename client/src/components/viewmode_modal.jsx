@@ -1,6 +1,14 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as frontend from "../redux/reducer";
 
-export default class ViewModeModal extends React.Component {
+class ViewModeModal extends React.Component {
+    setPromode = (pro_mode) => {
+        const { onClose, setProMode } = this.props;
+        setProMode(pro_mode);
+        onClose();
+    }
+
     render() {
         const { onClose } = this.props;
         return (
@@ -21,8 +29,8 @@ export default class ViewModeModal extends React.Component {
                         <hr />
 
                         <div className="d-flex flex-column">
-                            <a href="#" onClick={onClose} className="view-modal-link pro py-3"><b>Pro View</b></a>
-                            <a href="#" onClick={onClose} className="view-modal-link pt-3"><b>Basic View</b></a>
+                            <a href="#" onClick={() => this.setPromode(true)} className="view-modal-link pro py-3"><b>Pro View</b></a>
+                            <a href="#" onClick={() => this.setPromode(false)} className="view-modal-link pt-3"><b>Basic View</b></a>
                         </div>
                     </div>
                 </div>
@@ -30,3 +38,5 @@ export default class ViewModeModal extends React.Component {
         );
     }
 }
+
+export default connect(null, { setProMode: frontend.actions.setProMode })(ViewModeModal)
