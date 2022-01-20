@@ -29,6 +29,7 @@ export default class BasicModal extends React.Component {
                         </p>}
                         {showHelp == 'spread' && <p>
                             The spread, also referred to as the line, is used to even the odds between two unevenly matched teams.
+                            Each team is + plus  or  - minus  points. The winner is based on the score with these points added or taken away, not the actual score.
                         </p>}
                         {showHelp == 'total' && <p>
                             This is a bet on the total number of points scored by both teams.
