@@ -1,30 +1,17 @@
 import React, { Component } from 'react';
-// import "react-app-polyfill/ie11";
-// import "react-app-polyfill/stable";
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Favicon from 'react-favicon';
 import Login from "./pages/Login";
 import App from "./pages/App";
 import AdminAPI from './redux/adminAPI';
-import Favicon from 'react-favicon';
-
-// import "./assets/css/style.bundle.css";
-// import "./assets/css/themes/layout/header/base/light.css";
-// import "./assets/css/themes/layout/header/menu/light.css";
-// import "./assets/css/themes/layout/brand/dark.css";
-// import "./assets/css/themes/layout/aside/dark.css";
-
-import './index.scss';
-
 import { LayoutSplashScreen, MaterialThemeProvider } from "./_metronic/layout";
 
+import './index.scss';
 import {
     MetronicLayoutProvider,
     MetronicSplashScreenProvider,
     MetronicSubheaderProvider
 } from "./_metronic/layout";
-import { Provider } from "react-redux";
-import store, { persistor } from "./redux/store";
-import { PersistGate } from "redux-persist/integration/react";
 import "./_metronic/_assets/plugins/flaticon/flaticon.css";
 import "./_metronic/_assets/plugins/flaticon2/flaticon.css";
 import "./_metronic/_assets/plugins/keenthemes-icons/font/ki.css";
