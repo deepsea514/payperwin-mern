@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import App from './app';
 import AdminWrap from "../PPWAdmin/AdminWrap";
+import AffiliateWrap from "../Affiliate/AffiliateWrap";
 import Maintenance from "./Maintenance";
 import { I18nProvider, MetronicI18nProvider, setLanguage } from "../PPWAdmin/_metronic/i18n";
 import store, { persistor } from "../PPWAdmin/redux/store";
@@ -43,6 +44,7 @@ export default class Main extends Component {
                             <BrowserRouter basename="">
                                 <Switch>
                                     <Route path="/RP1021" render={(props) => <AdminWrap {...props} />} />
+                                    <Route path="/affiliate" render={(props) => <AffiliateWrap {...props} />} />
                                     <Route path="/maintenance" render={(props) => <Maintenance maintenance={maintenance} {...props} />} />
                                     {maintenance ? <Redirect to="/maintenance" /> : <Route path="/" render={(props) => <App {...props} />} />}
                                 </Switch>
