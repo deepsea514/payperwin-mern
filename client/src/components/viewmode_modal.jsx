@@ -20,7 +20,7 @@ class ViewModeModal extends React.Component {
                         <b>View Mode</b>
                         <hr />
                         <p>
-                            The <strong>PRO</strong> view offers an advance interface that is familiar to professional betters.
+                            The <strong>PRO</strong> view offers an advance interface that is familiar to experienced betters.
                         </p>
                         <p>
                             The <strong>BASIC</strong> view is recommended for users new to sportsbetting.
