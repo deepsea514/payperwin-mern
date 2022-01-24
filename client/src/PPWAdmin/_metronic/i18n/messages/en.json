@@ -743,7 +743,7 @@
     "PAGES.REGISTRATION.SECURITYQUIZ": "Security Question",
     "PAGES.REGISTRATION.SECURITYANS": "Security Answer",
     "PAGES.REGISTRATION.VIPCODE": "How did you know about us? Do you have a VIP code?(optional)",
-    "PAGES.REGISTRATION.AGREETERMS": "I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's {termslink} and {rulelink}</span>",
+    "PAGES.REGISTRATION.AGREETERMS": "I am at least 18 years of age (or the legal age applicable for my jurisdiction) and have read and agreed to PayperWin's {termslink} and {rulelink}",
     "PAGES.REGISTRATION.AGREEPRIVACY": "I have read and agree to PayPerWin's {privacylink}.",
     "PAGES.REGISTRATION.FINISH": "Finish",
     "PAGES.REGISTRATION.NEXT": "Next",
