@@ -45,7 +45,7 @@ class Inbox extends Component {
                                 <div className="main-cnt">
                                     {error && <h6>{error}</h6>}
                                     {!error && messages.length == 0 && <div className="text-center mb-0">
-                                        <img src="images/announ-img.jpg" />
+                                        <img src="images/announ-img.jpg" className='my-4' />
                                         <br />
                                         <strong><FormattedMessage id="PAGES.NO.ANNOUNCEMENTS" /></strong>
                                     </div>}
