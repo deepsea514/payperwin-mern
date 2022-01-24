@@ -28,8 +28,6 @@ export default class AdminWrap extends Component {
             <MetronicLayoutProvider>
                 <MetronicSubheaderProvider>
                     <MetronicSplashScreenProvider>
-                        {/* <Provider store={store}>
-                            <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}> */}
                         <React.Suspense fallback={<LayoutSplashScreen />}>
                             <Favicon url={'/images/favicon.png'} />
                             <MTheme />
@@ -42,8 +40,6 @@ export default class AdminWrap extends Component {
                                 </BrowserRouter>
                             </MaterialThemeProvider>
                         </React.Suspense>
-                        {/* </PersistGate>
-                        </Provider> */}
                     </MetronicSplashScreenProvider>
                 </MetronicSubheaderProvider>
             </MetronicLayoutProvider>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
+import SimpleLogin from './simpleLogin';
 
 class Header extends Component {
     render() {
@@ -15,7 +16,7 @@ class Header extends Component {
                                 </Link>
                             </div>
                             <div className="d-flex justify-content-end align-items-center">
-                                <h1>a</h1>
+                                <SimpleLogin />
                             </div>
                         </div>
                     </div>

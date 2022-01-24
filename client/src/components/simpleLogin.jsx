@@ -5,12 +5,6 @@ import * as frontend from "../redux/reducer";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 class SimpleLogin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
     render() {
         const { showLoginModalAction } = this.props;
 
