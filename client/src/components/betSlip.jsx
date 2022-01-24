@@ -166,7 +166,7 @@ class BetSlip extends Component {
     placeTeaserBets = () => {
         const { updateUser, user, teaserBetSlip, removeTeaserBet, maxBetLimitTier, betEnabled } = this.props;
 
-        if (teaserBetSlip.length < 2) {
+        if (teaserBetSlip.betSlip.length < 2) {
             return this.setState({ errors: [`Wager could not be placed. To place a teaser bet, add a minimum of two selections to the bet slip from football or basketball matchups.`] });
         }
 
@@ -217,6 +217,12 @@ class BetSlip extends Component {
         }
     }
 
+    setBetSlipType = (type) => {
+        const { setBetSlipType } = this.props;
+        setBetSlipType(type);
+        this.setState({ errors: [] });
+    }
+
     render() {
         const {
             errors, confirmationOpen, parlayWin, parlayStake, teaserWin,
@@ -224,7 +230,7 @@ class BetSlip extends Component {
         } = this.state;
         const {
             betSlip, openBetSlipMenu, toggleField, removeBet, updateBet, user,
-            className, showLoginModalAction, betSlipType, setBetSlipType, teaserBetSlip,
+            className, showLoginModalAction, betSlipType, teaserBetSlip,
             removeTeaserBet, betEnabled, betSlipOdds, pro_mode
         } = this.props;
 
@@ -265,10 +271,12 @@ class BetSlip extends Component {
                     </div>
                 </div>}
                 <div
-                    className={`bet-slip ${betSlip.length > 0 ? '' : 'empty'}`}
+                    className={`bet-slip ${(betSlip.length > 0 || teaserBetSlip.betSlip.length > 0) ? '' : 'empty'}`}
                     onClick={() => toggleField('openBetSlipMenu')}>
                     <FormattedMessage id="COMPONENTS.BETSLIP" />
-                    {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : null}
+                    {betSlip.length > 0 ? <span className="bet-slip-count">{betSlip.length}</span> : (
+                        teaserBetSlip.betSlip.length > 0 ? <span className="bet-slip-count">{teaserBetSlip.betSlip.length}</span> : null
+                    )}
                     <i className="fas fa-minus" />
                 </div>
                 <div className="bet-slip-content">
@@ -276,15 +284,15 @@ class BetSlip extends Component {
                         <div className="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
                             {pro_mode && <div className="row bet-slip-type-container mx-0 shadow-sm">
                                 <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'single' ? 'active' : ''}`}
-                                    onClick={() => setBetSlipType('single')}>
+                                    onClick={() => this.setBetSlipType('single')}>
                                     Single
                                 </div>
                                 <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'parlay' ? 'active' : ''}`}
-                                    onClick={() => setBetSlipType('parlay')}>
+                                    onClick={() => this.setBetSlipType('parlay')}>
                                     Parlay
                                 </div>
                                 <div className={`col-4 cursor-pointer bet-slip-type ${betSlipType == 'teaser' ? 'active' : ''}`}
-                                    onClick={() => setBetSlipType('teaser')}>
+                                    onClick={() => this.setBetSlipType('teaser')}>
                                     Teaser
                                 </div>
                             </div>}
@@ -388,8 +396,8 @@ class BetSlip extends Component {
                                         <div className="no-bets teaser">
                                             <h4>To place a teaser bet, add a minimum of two selections to the bet slip from Football or Basketball matchups.</h4>
                                             <ul className="teaser-links">
-                                                <li><Link to='/sport/basketball/teaser'><img src='/images/sports/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
-                                                <li><Link to="/sport/football/teaser"><img src="/images/sports/football.png" className='teaser-image' /> Football Teasers</Link></li>
+                                                <li><Link to='/sport/basketball/teaser' onClick={() => toggleField('openBetSlipMenu')}><img src='/images/sports/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
+                                                <li><Link to="/sport/football/teaser" onClick={() => toggleField('openBetSlipMenu')}><img src="/images/sports/football.png" className='teaser-image' /> Football Teasers</Link></li>
                                             </ul>
                                         </div>
                                     )}
