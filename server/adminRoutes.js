@@ -1268,7 +1268,7 @@ adminRouter.patch(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            const { id, data, status } = req.body;
+            const { id, data } = req.body;
 
             const deposit = await FinancialLog.findById(id);
             // if (deposit.status == FinancialStatus.success) {
@@ -1285,8 +1285,7 @@ adminRouter.patch(
                 return res.status(400).json({ error: 'Can\'t find user.' });
             }
             await deposit.update(data, { new: true }).exec();
-            console.log(status, FinancialStatus.success, FinancialStatus.success == status);
-            if (status == FinancialStatus.success) {
+            if (data.status == FinancialStatus.success) {
                 const afterBalance = user.balance + deposit.amount;
                 await deposit.update({
                     beforeBalance: user.balance ? user.balance : 0,
@@ -1303,7 +1302,7 @@ adminRouter.patch(
                         user: user._id,
                         amount: deposit.amount,
                         method: deposit.method,
-                        status: status,
+                        status: FinancialStatus.success,
                         beforeBalance: afterBalance,
                         afterBalance: afterBalance + deposit.amount
                     });
