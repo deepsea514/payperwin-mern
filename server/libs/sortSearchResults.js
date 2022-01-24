@@ -21,7 +21,7 @@ const sortsOrder = {
     "Ice Hockey": {
         order: 3,
     },
-    "Boxing-UFC": {
+    "Boxing/MMA": {
         order: 4,
     },
     "Soccer": {
