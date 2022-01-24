@@ -215,7 +215,6 @@ class Registration extends Component {
                 break;
             case "referral_code":
             case "vipcode":
-                console.log('should return');
                 isReturn = true;
             default:
                 this.setState({
