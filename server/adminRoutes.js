@@ -1278,8 +1278,6 @@ adminRouter.patch(
             if (!deposit) {
                 return res.status(400).json({ error: 'Can\'t find deposit.' });
             }
-            const result = await FinancialLog.findById(id).populate('user', ['email']).populate('reason', ['title']);
-
             const user = await User.findById(deposit.user);
             if (!user) {
                 return res.status(400).json({ error: 'Can\'t find user.' });
@@ -1333,6 +1331,7 @@ adminRouter.patch(
                     }
                 }
             }
+            const result = await FinancialLog.findById(id).populate('user', ['email']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
             console.error(error);
