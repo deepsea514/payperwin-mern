@@ -205,7 +205,7 @@ app.get("/*", (req, res) => {
             const urlParams = path.split("/");
             const metalink = urlParams[2];
             const article_id = urlParams[3];
-            if (metalink != 'category') {
+            if (metalink != 'category' && article_id) {
                 try {
                     const { data } = await axios.get(`${serverUrl}/article/${article_id}`);
                     if (data) {
