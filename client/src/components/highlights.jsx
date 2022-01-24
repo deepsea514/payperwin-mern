@@ -31,7 +31,7 @@ const topLeagues = [
     },
     {
         name: 'UFC',
-        sportName: 'Boxing-UFC',
+        sportName: 'Boxing/MMA',
         leagueId: '10036983',
     }
 ]

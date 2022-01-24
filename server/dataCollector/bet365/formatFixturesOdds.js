@@ -35,6 +35,7 @@ const formatFixturesOdds = (event, sport) => {
             case "Rugby Union":
                 return formatRugbyUnionFixturesOdds(event);
             case "Boxing-UFC":
+            case "Boxing/MMA":
                 return formatBoxingUFCFixturesOdds(event);
             case "American Football":
                 return formatAmericanFootballFixturesOdds(event);
