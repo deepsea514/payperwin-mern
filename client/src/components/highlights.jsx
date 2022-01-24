@@ -19,11 +19,11 @@ const topLeagues = [
         sportName: 'Basketball',
         leagueId: '10041830',
     },
-    // {
-    //     name: 'MLB',
-    //     sportName: 'Baseball',
-    //     leagueId: '10037485',
-    // },
+    {
+        name: 'MLB',
+        sportName: 'Baseball',
+        leagueId: '10037485',
+    },
     {
         name: 'NHL',
         sportName: 'Ice Hockey',
