@@ -1268,25 +1268,25 @@ adminRouter.patch(
     limitRoles('deposit_logs'),
     async (req, res) => {
         try {
-            let { id, data, status } = req.body;
+            const { id, data } = req.body;
 
             const deposit = await FinancialLog.findById(id);
             // if (deposit.status == FinancialStatus.success) {
             //     res.status(400).json({ error: 'Can\'t update finished deposit.' });
             //     return;
             // }
-            await deposit.update(data, { new: true }).exec();
-            const result = await FinancialLog.findById(id).populate('user', ['username']).populate('reason', ['title']);
-
+            if (!deposit) {
+                return res.status(400).json({ error: 'Can\'t find deposit.' });
+            }
             const user = await User.findById(deposit.user);
             if (!user) {
-                res.status(400).json({ error: 'Can\'t find user.' });
-                return;
+                return res.status(400).json({ error: 'Can\'t find user.' });
             }
-            if (status == FinancialStatus.success) {
+            await deposit.update(data, { new: true }).exec();
+            if (data.status == FinancialStatus.success) {
                 const afterBalance = user.balance + deposit.amount;
                 await deposit.update({
-                    beforeBalance: user.balance,
+                    beforeBalance: user.balance ? user.balance : 0,
                     afterBalance: afterBalance
                 })
                 await user.update({ $inc: { balance: deposit.amount } });
@@ -1300,7 +1300,7 @@ adminRouter.patch(
                         user: user._id,
                         amount: deposit.amount,
                         method: deposit.method,
-                        status: status,
+                        status: FinancialStatus.success,
                         beforeBalance: afterBalance,
                         afterBalance: afterBalance + deposit.amount
                     });
@@ -1331,6 +1331,7 @@ adminRouter.patch(
                     }
                 }
             }
+            const result = await FinancialLog.findById(id).populate('user', ['email']).populate('reason', ['title']);
             res.json(result);
         } catch (error) {
             console.error(error);

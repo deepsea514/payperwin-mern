@@ -192,6 +192,7 @@ class Registration extends Component {
 
     handleChange = (e) => {
         const { touched } = this.state;
+        let isReturn = false;
         switch (e.target.name) {
             case "agreeTerms":
             case "agreePrivacy":
@@ -212,11 +213,15 @@ class Registration extends Component {
                     });
                 }
                 break;
+            case "referral_code":
+            case "vipcode":
+                isReturn = true;
             default:
                 this.setState({
                     [e.target.name]: e.target.value,
                     touched: { ...touched, [e.target.name]: true, }
                 });
+                if (isReturn) return;
         }
         this.handleDirty(e);
     }
@@ -444,7 +449,6 @@ class Registration extends Component {
                             name="referral_code"
                             value={referral_code}
                             onChange={this.handleChange}
-                            onBlur={this.handleDirty}
                             placeholder="Enter Referral Code"
                             isInvalid={errors.referral_code !== undefined}
                         />
@@ -457,7 +461,6 @@ class Registration extends Component {
                             name="vipcode"
                             value={vipcode}
                             onChange={this.handleChange}
-                            onBlur={this.handleDirty}
                             placeholder="Enter VIP Code"
                             isInvalid={errors.vipcode !== undefined}
                         />

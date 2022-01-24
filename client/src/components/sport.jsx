@@ -167,7 +167,6 @@ class Sport extends Component {
                     this.setState({ data: null, loading: false })
                 }
             }).catch((err) => {
-                console.log(err)
                 this.setState({ error: err, loading: false });
             });
     }
