@@ -2182,7 +2182,7 @@ adminRouter.post(
                         }
 
                         if (draw) {
-                            if (lineQuery.sportName == 'Boxing-UFC') {
+                            if (['Boxing-UFC', 'Boxing/MMA'].includes(lineQuery.sportName)) {
                                 draw = false;
                                 betWin = false;
                             } else {

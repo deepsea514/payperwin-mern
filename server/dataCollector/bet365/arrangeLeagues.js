@@ -10,6 +10,7 @@ const getTopLeagueInSport = (sport) => {
             case "Ice Hockey":
                 return 'NHL'
             case "Boxing-UFC":
+            case "Boxing/MMA":
                 return 'UFC';
             case "Soccer":
             case "Cricket":

@@ -54,6 +54,7 @@ const getMatchScores = (sport, type, subtype, ss, scores, timer, time_status) =>
             case "Futsal":
             case "Darts":
             case "Boxing-UFC":
+            case "Boxing/MMA":
             case "Ice Hockey":
                 return getDefaultMatchScores(type, subtype, ss, scores, time_status);
         }
