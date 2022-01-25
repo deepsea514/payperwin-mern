@@ -34,9 +34,7 @@ const UserSchema = new Schema(
         maxBetLimitTier: { type: String, default: '2000' },
         invite: { type: String, default: null }
     },
-    {
-        timestamps: true,
-    },
+    { timestamps: true },
 );
 
 UserSchema.pre("save", async function (next) {
