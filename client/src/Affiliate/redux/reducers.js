@@ -2,19 +2,19 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 export const actionTypes = {
-    setAdminUserAction: "Set Admin User Action",
+    setAffiliateUserAction: "Set Affiliate User Action",
 };
 
 const initialState = {
-    adminUser: null,
+    affiliateUser: null,
 };
 
 export const reducer = persistReducer(
-    { storage, key: "admin-user", whitelist: ['filter'] },
+    { storage, key: "affiliate-user", whitelist: ['affiliateUser'] },
     (state = initialState, action) => {
         switch (action.type) {
-            case actionTypes.setAdminUserAction:
-                return { adminUser: action.payload }
+            case actionTypes.setAffiliateUserAction:
+                return { affiliateUser: action.payload }
 
             default:
                 return state;
@@ -23,7 +23,7 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-    setAdminUserAction: (payload = null) => ({ type: actionTypes.setAdminUserAction, payload }),
+    setAffiliateUserAction: (payload = null) => ({ type: actionTypes.setAffiliateUserAction, payload }),
 };
 
 export function* saga() {

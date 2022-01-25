@@ -18,7 +18,7 @@ function AsideMenuList({
     kyc_total,
     getWithdrawLog,
     pending_withdraw_total,
-    currentUser,
+    adminUser,
     getEvents,
     pending_event_total
 }) {
@@ -38,8 +38,8 @@ function AsideMenuList({
     })
 
     const isAvailable = (module) => {
-        if (currentUser) {
-            if (AdminRoles[currentUser.role] && AdminRoles[currentUser.role][module])
+        if (adminUser) {
+            if (AdminRoles[adminUser.role] && AdminRoles[adminUser.role][module])
                 return true;
             return false;
         }
@@ -49,7 +49,7 @@ function AsideMenuList({
     return (
         <>
             <ul className={`menu-nav ${layoutProps.ulClasses}`}>
-                {currentUser && isAvailable('dashboard') && <li className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
+                {adminUser && isAvailable('dashboard') && <li className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/dashboard/">
                         <span className="svg-icon menu-icon">
@@ -71,7 +71,7 @@ function AsideMenuList({
                     </NavLink>
                     <div className="menu-submenu">
                         <ul className="menu-subnav">
-                            {currentUser && isAvailable('admins') && <li className={`menu-item ${getMenuItemActive("/admin", false)}`}
+                            {adminUser && isAvailable('admins') && <li className={`menu-item ${getMenuItemActive("/admin", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/admin">
                                     <span className="svg-icon menu-icon">
@@ -81,7 +81,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('api-settings') && <li className={`menu-item ${getMenuItemActive("/api-settings", false)}`}
+                            {adminUser && isAvailable('api-settings') && <li className={`menu-item ${getMenuItemActive("/api-settings", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/api-settings/">
                                     <span className="svg-icon menu-icon">
@@ -91,7 +91,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('frontend') && <li className={`menu-item ${getMenuItemActive("/frontend", false)}`}
+                            {adminUser && isAvailable('frontend') && <li className={`menu-item ${getMenuItemActive("/frontend", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/frontend/">
                                     <span className="svg-icon menu-icon">
@@ -101,7 +101,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('email_templates') && <li className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
+                            {adminUser && isAvailable('email_templates') && <li className={`menu-item ${getMenuItemActive("/email-templates", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/email-templates/">
                                     <span className="svg-icon menu-icon">
@@ -111,7 +111,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('page-metas') && <li className={`menu-item ${getMenuItemActive("/page-metas", false)}`}
+                            {adminUser && isAvailable('page-metas') && <li className={`menu-item ${getMenuItemActive("/page-metas", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/page-metas/">
                                     <span className="svg-icon menu-icon">
@@ -121,7 +121,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('faq') && <li className={`menu-item ${getMenuItemActive("/faq", false)}`}
+                            {adminUser && isAvailable('faq') && <li className={`menu-item ${getMenuItemActive("/faq", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/faq/">
                                     <span className="svg-icon menu-icon">
@@ -131,7 +131,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('articles') && <li className={`menu-item ${getMenuItemActive("/articles", false)}`}
+                            {adminUser && isAvailable('articles') && <li className={`menu-item ${getMenuItemActive("/articles", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/articles/">
                                     <span className="svg-icon menu-icon">
@@ -141,7 +141,7 @@ function AsideMenuList({
                                 </NavLink>
                             </li>}
 
-                            {currentUser && isAvailable('errorlogs') && <li className={`menu-item ${getMenuItemActive("/errorlogs", false)}`}
+                            {adminUser && isAvailable('errorlogs') && <li className={`menu-item ${getMenuItemActive("/errorlogs", false)}`}
                                 aria-haspopup="true">
                                 <NavLink className="menu-link border-0" to="/errorlogs/">
                                     <span className="svg-icon menu-icon">
@@ -154,7 +154,7 @@ function AsideMenuList({
                     </div>
                 </li>
 
-                {currentUser && isAvailable('kyc') && <li className={`menu-item ${getMenuItemActive("/kyc", false)}`}
+                {adminUser && isAvailable('kyc') && <li className={`menu-item ${getMenuItemActive("/kyc", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/kyc/">
                         <span className="svg-icon menu-icon">
@@ -165,7 +165,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('users') && <li className={`menu-item ${getMenuItemActive("/users", false)}`}
+                {adminUser && isAvailable('users') && <li className={`menu-item ${getMenuItemActive("/users", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/users/">
                         <span className="svg-icon menu-icon">
@@ -175,7 +175,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('autobet') && <li className={`menu-item ${getMenuItemActive("/placebet", false)}`}
+                {adminUser && isAvailable('autobet') && <li className={`menu-item ${getMenuItemActive("/placebet", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/placebet/">
                         <span className="svg-icon menu-icon">
@@ -186,7 +186,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('messages') && <li className={`menu-item ${getMenuItemActive("/message-center", false)}`}
+                {adminUser && isAvailable('messages') && <li className={`menu-item ${getMenuItemActive("/message-center", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/message-center/">
                         <span className="svg-icon menu-icon">
@@ -196,7 +196,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('bet_activities') && <li className={`menu-item ${getMenuItemActive("/bet-activities", false)}`}
+                {adminUser && isAvailable('bet_activities') && <li className={`menu-item ${getMenuItemActive("/bet-activities", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/bet-activities/">
                         <span className="svg-icon menu-icon">
@@ -206,7 +206,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('withdraw_logs') && <li className={`menu-item ${getMenuItemActive("/withdraw-log", false)}`}
+                {adminUser && isAvailable('withdraw_logs') && <li className={`menu-item ${getMenuItemActive("/withdraw-log", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/withdraw-log/">
                         <span className="svg-icon menu-icon">
@@ -217,7 +217,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('deposit_logs') && <li className={`menu-item ${getMenuItemActive("/deposit-log", false)}`}
+                {adminUser && isAvailable('deposit_logs') && <li className={`menu-item ${getMenuItemActive("/deposit-log", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/deposit-log/">
                         <span className="svg-icon menu-icon">
@@ -227,7 +227,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('cashback') && <li className={`menu-item ${getMenuItemActive("/cashback", false)}`}
+                {adminUser && isAvailable('cashback') && <li className={`menu-item ${getMenuItemActive("/cashback", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/cashback/">
                         <span className="svg-icon menu-icon">
@@ -237,7 +237,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('credits') && <li className={`menu-item ${getMenuItemActive("/credits", false)}`}
+                {adminUser && isAvailable('credits') && <li className={`menu-item ${getMenuItemActive("/credits", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/credits/">
                         <span className="svg-icon menu-icon">
@@ -247,7 +247,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('autobet') && <li className={`menu-item ${getMenuItemActive("/autobet", false)}`}
+                {adminUser && isAvailable('autobet') && <li className={`menu-item ${getMenuItemActive("/autobet", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/autobet/">
                         <span className="svg-icon menu-icon">
@@ -258,7 +258,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('custom-events') && <li className={`menu-item ${getMenuItemActive("/custom-events", false)}`}
+                {adminUser && isAvailable('custom-events') && <li className={`menu-item ${getMenuItemActive("/custom-events", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/custom-events/">
                         <span className="svg-icon menu-icon">
@@ -268,7 +268,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('promotions') && <li className={`menu-item ${getMenuItemActive("/promotions", false)}`}
+                {adminUser && isAvailable('promotions') && <li className={`menu-item ${getMenuItemActive("/promotions", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/promotions/">
                         <span className="svg-icon menu-icon">
@@ -278,7 +278,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('support-tickets') && <li className={`menu-item ${getMenuItemActive("/support-tickets", false)}`}
+                {adminUser && isAvailable('support-tickets') && <li className={`menu-item ${getMenuItemActive("/support-tickets", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/support-tickets/">
                         <span className="svg-icon menu-icon">
@@ -288,7 +288,7 @@ function AsideMenuList({
                     </Link>
                 </li>}
 
-                {currentUser && isAvailable('reports') && <li className={`menu-item menu-item-submenu ${getMenuItemActive("/reports", true)}`}
+                {adminUser && isAvailable('reports') && <li className={`menu-item menu-item-submenu ${getMenuItemActive("/reports", true)}`}
                     aria-haspopup="true"
                     data-menu-toggle="hover">
                     <NavLink className="menu-link menu-toggle border-0" to="/reports">
@@ -349,7 +349,7 @@ function AsideMenuList({
                     </div>
                 </li>}
 
-                {currentUser && isAvailable('predictions') && <li className={`menu-item ${getMenuItemActive("/predictions", false)}`}
+                {adminUser && isAvailable('predictions') && <li className={`menu-item ${getMenuItemActive("/predictions", false)}`}
                     aria-haspopup="true">
                     <Link className="menu-link" to="/predictions/">
                         <span className="svg-icon menu-icon">
@@ -369,7 +369,7 @@ const mapStateToProps = (state) => ({
     kyc_total: state.kyc.total,
     pending_withdraw_total: state.withdrawlog.pending_total,
     pending_event_total: state.events.pending_total,
-    currentUser: state.currentUser.currentUser,
+    adminUser: state.adminUser.adminUser,
 });
 
 const mapActionsToProps = {

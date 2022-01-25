@@ -24,9 +24,9 @@ import * as cashback from "../modules/cashback/redux/reducers";
 import * as reports from "../modules/reports/redux/reducers";
 import * as errorlogs from "../modules/errorlogs/redux/reducers";
 import * as credits from "../modules/credit/redux/reducers";
-import * as currentUser from "./reducers";
 import * as gift_cards from '../modules/giftcard/redux/reducers';
 import * as mismatch_scores from '../modules/mismatchscores/redux/reducers';
+import * as adminUser from "./reducers";
 
 import * as frontend from "../../redux/reducer";
 
@@ -53,7 +53,7 @@ export const rootReducer = combineReducers({
     cashback: cashback.reducer,
     reports: reports.reducer,
     errorlogs: errorlogs.reducer,
-    currentUser: currentUser.reducer,
+    adminUser: adminUser.reducer,
     credits: credits.reducer,
     gift_cards: gift_cards.reducer,
     mismatch_scores: mismatch_scores.reducer,
