@@ -123,7 +123,7 @@ class Deposit extends React.Component {
                 return <span className="label label-lg label-light-success label-inline">{status}</span>
             case FinancialStatus.onhold:
                 return <span className="label label-lg label-light-warning label-inline">{status}</span>
-            case FinancialStatus.inprogress:
+            case FinancialStatus.approved:
             default:
                 return <span className="label label-lg label-light-info label-inline">{status}</span>
 
