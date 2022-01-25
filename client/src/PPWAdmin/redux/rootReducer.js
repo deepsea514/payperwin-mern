@@ -26,8 +26,9 @@ import * as errorlogs from "../modules/errorlogs/redux/reducers";
 import * as credits from "../modules/credit/redux/reducers";
 import * as gift_cards from '../modules/giftcard/redux/reducers';
 import * as mismatch_scores from '../modules/mismatchscores/redux/reducers';
-import * as adminUser from "./reducers";
 
+import * as adminUser from "./reducers";
+import * as affiliate from "../../Affiliate/redux/reducers";
 import * as frontend from "../../redux/reducer";
 
 export const rootReducer = combineReducers({
@@ -53,11 +54,12 @@ export const rootReducer = combineReducers({
     cashback: cashback.reducer,
     reports: reports.reducer,
     errorlogs: errorlogs.reducer,
-    adminUser: adminUser.reducer,
     credits: credits.reducer,
     gift_cards: gift_cards.reducer,
     mismatch_scores: mismatch_scores.reducer,
 
+    adminUser: adminUser.reducer,
+    affiliate: affiliate.reducer,
     frontend: frontend.reducer,
 });
 
@@ -81,14 +83,15 @@ export function* rootSaga() {
         active_users.saga(),
         meta_tags.saga(),
         articles.saga(),
-        admin.saga(),
         cashback.saga(),
         reports.saga(),
         errorlogs.saga(),
         credits.saga(),
         gift_cards.saga(),
         mismatch_scores.saga(),
+        admin.saga(),
 
+        affiliate.saga(),
         frontend.saga(),
     ]);
 }

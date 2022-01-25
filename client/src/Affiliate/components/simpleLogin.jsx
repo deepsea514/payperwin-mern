@@ -8,7 +8,7 @@ class SimpleLogin extends Component {
             <div className="form">
                 <div className="form-join">
                     <div className="form-group">
-                        <button className="log-in-btn" onClick={showLoginModalAction ? () => showLoginModalAction(true) : null}>Log In</button>
+                        <button className="log-in-btn" onClick={() => showLoginModalAction(true)}>Log In</button>
                     </div>
                 </div>
             </div>
