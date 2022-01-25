@@ -28,7 +28,7 @@ class Admins extends Component {
     }
 
     tableBody = () => {
-        const { admins, loading, currentUser } = this.props;
+        const { admins, loading, adminUser } = this.props;
 
         if (loading) {
             return (
@@ -68,7 +68,7 @@ class Admins extends Component {
 
                         <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
                             <Dropdown.Item as={Link} to={`/edit/${admin._id}`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
-                            {currentUser && currentUser._id != admin._id && <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>}
+                            {adminUser && adminUser._id != admin._id && <Dropdown.Item onClick={() => this.setState({ deleteId: admin._id })}><i className="fas fa-trash"></i>&nbsp; Delete Admin</Dropdown.Item>}
                         </Dropdown.Menu>
                     </Dropdown>
                 </td>
@@ -153,7 +153,7 @@ const mapStateToProps = (state) => ({
     total: state.admin.total,
     currentPage: state.admin.currentPage,
     filter: state.admin.filter,
-    currentUser: state.currentUser.currentUser,
+    adminUser: state.adminUser.adminUser,
 })
 
 export default connect(mapStateToProps, admin.actions)(Admins)

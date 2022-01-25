@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
-import * as currentUser from "../redux/reducers";
+import * as adminUser from "../redux/reducers";
 import config from '../../../../config.json';
 const AdminRoles = config.AdminRoles;
 
@@ -52,13 +52,13 @@ class App extends Component {
     }
 
     checkUser = () => {
-        const { setCurrentUserAction } = this.props;
+        const { setAdminUserAction } = this.props;
         getUser()
             .then(({ data: user }) => {
-                this._Mounted && setCurrentUserAction(user);
+                this._Mounted && setAdminUserAction(user);
             })
             .catch(err => {
-                this._Mounted && setCurrentUserAction(null);
+                this._Mounted && setAdminUserAction(null);
                 this.props.history.push("/login");
             })
     }
@@ -68,9 +68,9 @@ class App extends Component {
     }
 
     isAvailable = (module) => {
-        const { currentUser } = this.props;
-        if (currentUser) {
-            if (AdminRoles[currentUser.role] && AdminRoles[currentUser.role][module])
+        const { adminUser } = this.props;
+        if (adminUser) {
+            if (AdminRoles[adminUser.role] && AdminRoles[adminUser.role][module])
                 return true;
             return false;
         }
@@ -78,7 +78,7 @@ class App extends Component {
     }
 
     render() {
-        const { history, currentUser } = this.props;
+        const { history } = this.props;
         return (
             <Layout history={history}>
                 {/* <BrowserRouter basename="RP1021"> */}
@@ -232,8 +232,8 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    currentUser: state.currentUser.currentUser,
+    adminUser: state.adminUser.adminUser,
 });
 
 
-export default connect(mapStateToProps, currentUser.actions)(App)
+export default connect(mapStateToProps, adminUser.actions)(App)
