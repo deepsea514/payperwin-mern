@@ -22,9 +22,9 @@ class Article extends Component {
     }
 
     getData = () => {
-        const { match: { params: { id } } } = this.props;
+        const { match: { params: { permalink } } } = this.props;
         this.setState({ loading: true });
-        getArticle(id)
+        getArticle(permalink)
             .then(({ data }) => {
                 this.setState({ article: data, loading: false, });
             })
@@ -34,9 +34,9 @@ class Article extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { match: { params: { id } } } = this.props;
-        const { match: { params: { id: prevId } } } = prevProps;
-        const articleChanged = (id !== prevId);
+        const { match: { params: { permalink } } } = this.props;
+        const { match: { params: { permalink: prevPermalink } } } = prevProps;
+        const articleChanged = (permalink !== prevPermalink);
         if (articleChanged) {
             this.getData();
         }

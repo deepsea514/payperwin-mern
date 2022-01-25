@@ -51,7 +51,7 @@ app.get(
                             "elements": [
                                 {
                                     "type": "text",
-                                    "text": `https://www.payperwin.com/articles/${article.permalink}/${article._id}`
+                                    "text": `https://payperwin.com/articles/${article.permalink}`
                                 }
                             ]
                         },
@@ -203,11 +203,10 @@ app.get("/*", (req, res) => {
 
         if (!staticPageFound && path.startsWith("/articles")) {
             const urlParams = path.split("/");
-            const metalink = urlParams[2];
-            const article_id = urlParams[3];
-            if (metalink != 'category' && article_id) {
+            const permalink = urlParams[2];
+            if (permalink != 'category') {
                 try {
-                    const { data } = await axios.get(`${serverUrl}/article/${article_id}`);
+                    const { data } = await axios.get(`${serverUrl}/article/detail`, { params: { permalink } });
                     if (data) {
                         title = data.meta_title;
                         description = data.meta_description;
