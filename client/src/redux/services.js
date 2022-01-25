@@ -229,16 +229,12 @@ export function search(param) {
 }
 
 // Articles
-export function getArticle(id) {
-    return FrontendAPI.get(`/article/${id}`)
+export function getArticle(permalink) {
+    return FrontendAPI.get(`/article/detail`, { params: { permalink } })
 }
 
 export function getArticles() {
     return FrontendAPI.get(`/articles/home`)
-}
-
-export function getRelatedArticles(id) {
-    return FrontendAPI.get(`/articles/related/${id}`)
 }
 
 export function getRecentArticles() {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Switch, Route } from "react-router-dom";
 import dateformat from "dateformat";
-import { getArticles, getPopularArticles, getRecentArticles, getRelatedArticles } from '../redux/services';
+import { getArticles, getPopularArticles, getRecentArticles } from '../redux/services';
 import _env from '../env.json';
 const serverUrl = _env.appUrl;
 
@@ -15,7 +15,6 @@ class ArticleSidebar extends Component {
             previewArticles: [],
             active_tab: 'popular',
             see_more: false,
-            relatedArticles: [],
             recentArticles: [],
             popularArticles: [],
         }
@@ -26,7 +25,7 @@ class ArticleSidebar extends Component {
     }
 
     getData = () => {
-        const { showPreview, showrRecentPopular, relatedArticle } = this.props;
+        const { showPreview, showrRecentPopular } = this.props;
         if (showPreview) {
             getArticles()
                 .then(({ data }) => {
@@ -34,15 +33,6 @@ class ArticleSidebar extends Component {
                 })
                 .catch(() => {
                     this.setState({ previewArticles: null });
-                })
-        }
-        if (relatedArticle) {
-            getRelatedArticles(relatedArticle._id)
-                .then(({ data }) => {
-                    this.setState({ relatedArticles: data });
-                })
-                .catch(() => {
-                    this.setState({ relatedArticles: null });
                 })
         }
         if (showrRecentPopular) {
@@ -65,8 +55,8 @@ class ArticleSidebar extends Component {
     }
 
     render() {
-        const { previewArticles, active_tab, see_more, relatedArticles, recentArticles, popularArticles } = this.state;
-        const { categories, showPreview, showrRecentPopular, relatedArticle } = this.props;
+        const { previewArticles, active_tab, see_more, recentArticles, popularArticles } = this.state;
+        const { categories, showPreview, showrRecentPopular } = this.props;
 
         return (
             <>
@@ -94,7 +84,7 @@ class ArticleSidebar extends Component {
                                             <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
                                         </div>
                                         <h4 className="subtitle">
-                                            <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
+                                            <Link to={`/articles/${article.permalink}`}>{article.title}</Link>
                                         </h4>
                                     </li>
                                 ))}
@@ -118,7 +108,7 @@ class ArticleSidebar extends Component {
                                                 <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
                                             </div>
                                             <h4 className="subtitle">
-                                                <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
+                                                <Link to={`/articles/${article.permalink}`}>{article.title}</Link>
                                             </h4>
                                         </li>
                                     ))}
@@ -134,41 +124,10 @@ class ArticleSidebar extends Component {
                     </div>
                 </div>}
 
-                {relatedArticle && <div className="sidebar-block mt-2">
-                    <div className="recent-popular-related">
-                        <h6><span><FormattedMessage id="COMPONENTS.ARTICLE.RELATED" /></span></h6>
-                        <ul className="hover-li">
-                            {relatedArticles.length == 0 && <li>
-                                <div className="details">
-                                    <span className="date"><FormattedMessage id="COMPONENTS.ARTICLE.NORELATED" /></span>
-                                </div>
-                            </li>}
-                            {relatedArticles.length > 0 && relatedArticles.map(article => (
-                                <li key={article._id}>
-                                    <div className="details">
-                                        {article.categories.map(category => (
-                                            <Link key={category} className="tag" to={`/articles/category/${category}`}>{category}</Link>
-                                        ))}
-                                        <span className="date">{dateformat(article.posted_at ? article.posted_at : article.published_at, 'mediumDate')}</span>
-                                    </div>
-                                    <h4 className="subtitle">
-                                        <Link to={`/articles/${article.permalink}/${article._id}`}>{article.title}</Link>
-                                    </h4>
-                                </li>
-                            ))}
-                            <li className="sidebar-tab-more">
-                                <Link to={`/articles/category`}>
-                                    <FormattedMessage id="COMPONENTS.ARTICLE.MORE" />&nbsp;&nbsp;<i className="fas fa-chevron-right"></i>
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>}
-
                 {showPreview && previewArticles.slice(0, 2).map((article, index) => (
                     <div className={`sidebar-block block feature-articles left mt-2`} key={article._id}>
                         <div className="item pb-0">
-                            <Link to={`/articles/${article.permalink}/${article._id}`}>
+                            <Link to={`/articles/${article.permalink}`}>
                                 <img src={article.logo.startsWith('data:image/') ? article.logo : serverUrl + article.logo} alt={article.title} style={{ visibility: 'visible' }} />
                             </Link>
                             <div className="text pt-3 px-3 pb-0  mb-0">
@@ -183,7 +142,7 @@ class ArticleSidebar extends Component {
                                     </span>
                                 </p>
                                 <div className="subtitle mb-0">
-                                    <Link to={`/articles/${article.permalink}/${article._id}`}>
+                                    <Link to={`/articles/${article.permalink}`}>
                                         {article.title}
                                     </Link>
                                 </div>
