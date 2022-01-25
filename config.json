@@ -30,7 +30,7 @@
         "success": "Successful",
         "pending": "Pending",
         "onhold": "On-hold",
-        "inprogress": "In Progress"
+        "approved": "Approve by Admin"
     },
     "PaymentMethod": [
         "eTransfer",
