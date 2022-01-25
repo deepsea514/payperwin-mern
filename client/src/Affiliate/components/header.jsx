@@ -5,6 +5,7 @@ import SimpleLogin from './simpleLogin';
 
 class Header extends Component {
     render() {
+        const { showLoginModalAction } = this.props;
         return (
             <header className="header">
                 <div className="header-top">
@@ -16,7 +17,7 @@ class Header extends Component {
                                 </Link>
                             </div>
                             <div className="d-flex justify-content-end align-items-center">
-                                <SimpleLogin />
+                                <SimpleLogin showLoginModalAction={showLoginModalAction} />
                             </div>
                         </div>
                     </div>
