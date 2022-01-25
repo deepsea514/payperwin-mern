@@ -9,16 +9,14 @@ const ArticleSchema = new Schema(
         content: { type: String, required: true },
         categories: [{ type: String, required: true }],
         authors: [{ name: String, logo: String }],
-        permalink: { type: String, required: true, unique: true },
+        permalink: { type: String, required: true, index: { unique: true } },
         meta_title: { type: String, },
         meta_description: { type: String, },
         meta_keywords: { type: String, },
         published_at: { type: Date, default: null },
         posted_at: { type: Date, default: Date.now }
     },
-    {
-        timestamps: true,
-    }
+    { timestamps: true }
 );
 
 const Article = mongoose.model('Article', ArticleSchema);

@@ -51,7 +51,7 @@ app.get(
                             "elements": [
                                 {
                                     "type": "text",
-                                    "text": `https://www.payperwin.com/articles/${article.permalink}/${article._id}`
+                                    "text": `https://payperwin.com/articles/${article.permalink}/${article._id}`
                                 }
                             ]
                         },
