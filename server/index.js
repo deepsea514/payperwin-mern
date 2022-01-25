@@ -4308,11 +4308,11 @@ expressApp.get(
 )
 
 expressApp.get(
-    '/article/:id',
+    '/article/detail',
     async (req, res) => {
-        const { id } = req.params;
+        const { permalink } = req.query;
         try {
-            const article = await Article.findOne({ _id: id, published_at: { $ne: null } })
+            const article = await Article.findOne({ permalink: permalink, published_at: { $ne: null } })
             res.json(article);
         } catch (error) {
             console.error(error);
@@ -4331,28 +4331,6 @@ expressApp.get(
             res.json(articles);
         } catch (error) {
             console.error(error)
-            res.status(500).json({ success: false });
-        }
-    }
-)
-
-expressApp.get(
-    '/articles/related/:id',
-    async (req, res) => {
-        const { id } = req.params;
-        try {
-            const article = await Article.findById(id);
-            if (article) {
-                const articles = await Article.find({ _id: { $ne: article._id }, published_at: { $ne: null }, categories: article.categories })
-                    .select(['categories', 'permalink', 'title', 'published_at'])
-                    .sort({ published_at: -1 })
-                    .limit(10);
-                res.json(articles);
-            }
-            else {
-                res.status(404).json({ success: false });
-            }
-        } catch (error) {
             res.status(500).json({ success: false });
         }
     }

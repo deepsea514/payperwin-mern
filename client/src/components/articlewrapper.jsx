@@ -30,7 +30,7 @@ class ArticleWrapper extends Component {
                     {articles && articles.length > 0 && articles.map((article, index) => (
                         <div className={`block feature-articles left ${index == 0 ? '' : 'mt-5'}`} key={article._id}>
                             <div className="item">
-                                <Link to={`/articles/${article.permalink}/${article._id}`} className="item-image">
+                                <Link to={`/articles/${article.permalink}`} className="item-image">
                                     <img src={article.logo.startsWith('data:image/') ? article.logo : serverUrl + article.logo} alt={article.title} style={{ visibility: 'visible' }} />
                                 </Link>
                                 <div className="text">
@@ -45,7 +45,7 @@ class ArticleWrapper extends Component {
                                         </span>
                                     </p>
                                     <div className="subtitle">
-                                        <Link to={`/articles/${article.permalink}/${article._id}`}>
+                                        <Link to={`/articles/${article.permalink}`}>
                                             {article.title}
                                         </Link>
                                     </div>
@@ -53,7 +53,7 @@ class ArticleWrapper extends Component {
                                         <p>{article.subtitle}</p>
                                     </div>
                                     <div className="cta-wrapper">
-                                        <Link to={`/articles/${article.permalink}/${article._id}`} className="read-more-link">
+                                        <Link to={`/articles/${article.permalink}`} className="read-more-link">
                                             <FormattedMessage id="COMPONENTS.ARTICLE.READMORE" />&nbsp;&nbsp;<i className="fas fa-caret-down" />
                                         </Link>
                                     </div>
@@ -78,7 +78,6 @@ class ArticleWrapper extends Component {
                     <ArticleSidebar
                         categories={categories}
                         showrRecentPopular={true}
-                        relatedArticle={null}
                         showPreview={false}
                     />
                 </div>
