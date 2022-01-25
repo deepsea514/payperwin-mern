@@ -3,6 +3,7 @@ const Sport = require('../../models/sport');
 const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
 const ErrorLog = require("../../models/errorlog");
+const Team = require("../../models/team");
 //local helpers
 const config = require('../../../config.json');
 let sportsData = require('./sports.json')
@@ -145,7 +146,7 @@ const getAllSportsLines = async () => {
                         results[ei + i].odds = oddsResult[i];
                     }
                 }
-                results.map(result => {
+                await Promise.all(results.map(async (result, index) => {
                     if (result.time_status != 0) return;
                     let league = sportEvents.leagues.find(league => league.originId == result.league.id);
                     if (!league) {
@@ -156,20 +157,27 @@ const getAllSportsLines = async () => {
                         }
                         sportEvents.leagues.push(league);
                     }
-
+                    let logo_teamA = null, logo_teamB = null;
+                    try {
+                        const homeTeam = await Team.findOne({ name: result.home.name, "sport.id": sport.id });
+                        const awayTeam = await Team.findOne({ name: result.away.name, "sport.id": sport.id });
+                        logo_teamA = homeTeam ? homeTeam.image_id : null;
+                        logo_teamB = awayTeam ? awayTeam.image_id : null;
+                    } catch (error) { }
                     let line = formatFixturesOdds(result, sport.name);
                     if (line) {
                         league.events.push({
                             originId: result.id,
                             startDate: new Date(parseInt(result.time) * 1000),
                             teamA: result.home.name,
+                            logo_teamA: logo_teamA,
                             teamB: result.away.name,
+                            logo_teamB: logo_teamB,
                             lines: [line],
                             // odds: result.odds,
                         });
                     }
-
-                });
+                }))
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
