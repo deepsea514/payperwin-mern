@@ -1653,7 +1653,7 @@ adminRouter.patch(
                 return;
             }
 
-            if (data.status == FinancialStatus.inprogress) {
+            if (data.status == FinancialStatus.approved) {
                 if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
                     const result = tripleAWithdraw(req, res, data, user, withdraw)
                     if (!result)
