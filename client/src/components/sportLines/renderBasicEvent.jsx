@@ -2,21 +2,6 @@ import React from 'react';
 import timeHelper from "../../helpers/timehelper";
 import calculateNewOdds from '../../helpers/calculateNewOdds';
 
-const emptyBoxLine = (
-    <li>
-        <span className="box-odds">
-            <div className="vertical-align">
-                <i className="fap fa-do-not-enter" />
-            </div>
-        </span>
-        <span className="box-odds">
-            <div className="vertical-align">
-                <i className="fap fa-do-not-enter" />
-            </div>
-        </span>
-    </li>
-);
-
 const RenderBasicEvent = (props) => {
     const {
         betSlip, timezone, addBet, removeBet, event, sportName, leagueId, leagueName
