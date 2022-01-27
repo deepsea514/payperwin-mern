@@ -2151,11 +2151,6 @@ a.fav-link:hover {
     color: inherit;
 }
 
-.basic-mode .table-bottom li:first-child {
-    display: flex;
-    align-items: center;
-}
-
 .popover {
     z-index: 1;
 }

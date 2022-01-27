@@ -2,285 +2,325 @@ import React from 'react';
 import timeHelper from "../../helpers/timehelper";
 import calculateNewOdds from '../../helpers/calculateNewOdds';
 
+const RenderTeamNames = (props) => {
+    const { teamA, teamB, startDate, timezone } = props;
+    return (
+        <li>
+            <p className='basic-team-name'>{teamA}</p>
+            <p className='basic-team-name'>{teamB}</p>
+            <p className='basic-event-date'>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}</p>
+        </li>
+    )
+}
+
+const RenderMoneyline = (props) => {
+    const {
+        moneyline, sportName, leagueId, eventId, lineId, betSlip, teamA, teamB, leagueName, origin,
+        logo_teamA, logo_teamB, addBet, removeBet
+    } = props;
+    const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
+    const lineQuery = {
+        sportName,
+        leagueId,
+        eventId,
+        lineId,
+        type: 'moneyline',
+        subtype: null,
+        index: null
+    };
+    const moneylineExist = betSlip.find((b) => b.lineId === lineId && b.type === lineQuery.type && b.subtype == null);
+    return (
+        <span className='basic-box-odds'
+            onClick={moneylineExist ? () => removeBet(lineId, 'moneyline', 'home', null, null) :
+                () => addBet({
+                    name: `${teamA} - ${teamB}`,
+                    type: 'moneyline',
+                    league: leagueName,
+                    odds: { home: newHome, away: newAway },
+                    originOdds: moneyline,
+                    pick: 'home',
+                    home: teamA,
+                    away: teamB,
+                    sportName,
+                    lineId: lineId,
+                    lineQuery: lineQuery,
+                    pickName: `Pick: ${teamA}`,
+                    index: null,
+                    origin: origin,
+                    subtype: null
+                })}>
+            <span className='bet-type moneyline'>
+                <span>moneyline</span>
+            </span>
+            <span className='bet-type-logo moneyline'>
+                {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
+                    className='bet-type-team'
+                    onLoad={({ target }) => target.style.display = 'block'}
+                />}
+                <span className='bet-type-logo-title'></span>
+                {logo_teamB && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`}
+                    className='bet-type-team'
+                    onLoad={({ target }) => target.style.display = 'block'}
+                />}
+            </span>
+            <span className='bet-type-title'>
+                <p className='bet-type-subtitle'>Guess</p>
+                <p className='bet-type-maintitle moneyline'>WHO WINS</p>
+            </span>
+        </span>
+    );
+}
+
+const RenderSpread = (props) => {
+    const {
+        spread, sportName, leagueId, eventId, lineId, betSlip, teamA, teamB, leagueName, origin,
+        logo_teamA, logo_teamB, addBet, removeBet
+    } = props;
+    const { newHome, newAway } = calculateNewOdds(spread.home, spread.away, 'spread');
+    const lineQuery = {
+        sportName,
+        leagueId,
+        eventId,
+        lineId,
+        type: 'spread',
+        index: 0,
+        subtype: null,
+    };
+    if (spread.altLineId) lineQuery.altLineId = spread.altLineId;
+    const spreadExist = betSlip.find((b) => b.lineId === lineId && b.type === lineQuery.type && b.subtype == null);
+    return (
+        <span className='basic-box-odds'
+            onClick={spreadExist ? () => removeBet(lineId, 'spread', 'home', null, null) :
+                () => addBet({
+                    name: `${teamA} - ${teamB}`,
+                    type: 'spread',
+                    league: leagueName,
+                    odds: { home: newHome, away: newAway },
+                    originOdds: spread,
+                    pick: 'home',
+                    home: teamA,
+                    away: teamB,
+                    sportName,
+                    lineId: lineId,
+                    lineQuery: lineQuery,
+                    pickName: `Pick: ${teamA} ${spread.hdp > 0 ? '+' : ''}${spread.hdp}`,
+                    index: 0,
+                    origin: origin,
+                    subtype: null
+                })}>
+            <span className='bet-type spread'>
+                <span>points spread</span>
+            </span>
+            <span className='bet-type-logo spread'>
+                {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
+                    className='bet-type-team'
+                    onLoad={(event) => event.target.style.display = 'block'} />}
+                <span className='bet-type-logo-title'></span>
+                {logo_teamB && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`}
+                    className='bet-type-team'
+                    onLoad={(event) => event.target.style.display = 'block'} />}
+            </span>
+            <span className='bet-type-title'>
+                <p className='bet-type-subtitle'>take the</p>
+                <p className='bet-type-maintitle spread'>points</p>
+            </span>
+        </span>
+    );
+}
+
+const RenderTotal = (props) => {
+    const {
+        total, sportName, leagueId, eventId, lineId, betSlip, teamA, teamB, leagueName, origin,
+        logo_teamA, logo_teamB, addBet, removeBet
+    } = props;
+    const { newHome, newAway } = calculateNewOdds(total.over, total.under, 'total');
+    const lineQuery = {
+        sportName,
+        leagueId,
+        eventId,
+        lineId,
+        type: 'total',
+        index: 0,
+        subtype: null
+    };
+    if (total.altLineId) lineQuery.altLineId = total.altLineId;
+    const totalExist = betSlip.find((b) => b.lineId === lineId && b.type === lineQuery.type && b.subtype == null);
+    return (
+        <span className='basic-box-odds'
+            onClick={totalExist ? () => removeBet(lineId, 'total', 'home', null, null) :
+                () => addBet({
+                    name: `${teamA} - ${teamB}`,
+                    type: 'total',
+                    league: leagueName,
+                    odds: { home: newHome, away: newAway },
+                    originOdds: { home: total.over, away: total.under },
+                    pick: 'home',
+                    home: teamA,
+                    away: teamB,
+                    sportName,
+                    lineId: lineId,
+                    lineQuery: lineQuery,
+                    pickName: `Pick: Over ${total.points}`,
+                    index: 0,
+                    origin: origin,
+                    subtype: null
+                })}>
+            <span className='bet-type total'>
+                <span>total score</span>
+            </span>
+            <span className='bet-type-logo total'>
+                {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
+                    className='bet-type-team'
+                    onLoad={(event) => event.target.style.display = 'block'} />}
+                <span className='bet-type-logo-title'></span>
+                {logo_teamB && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`}
+                    className='bet-type-team'
+                    onLoad={(event) => event.target.style.display = 'block'} />}
+            </span>
+            <span className='bet-type-title'>
+                <p className='bet-type-subtitle'>guess the</p>
+                <p className='bet-type-maintitle total'>total</p>
+            </span>
+        </span>
+    );
+}
+
 const RenderBasicEvent = (props) => {
     const {
         betSlip, timezone, addBet, removeBet, event, sportName, leagueId, leagueName
     } = props;
 
-    const { teamA, teamB, startDate, lines, originId: eventId } = event;
+    const { teamA, teamB, startDate, lines, originId: eventId, logo_teamA, logo_teamB } = event;
     const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
     return (
         <div className='table-list basic-mode'>
-            <ul className="table-list d-flex table-bottom" >
-                <li><span className='basic-team-name'>{teamA}</span></li>
+            <ul className="table-list d-flex table-bottom not-mobile" >
+                <RenderTeamNames teamA={teamA}
+                    teamB={teamB}
+                    startDate={startDate}
+                    timezone={timezone} />
                 <li>
-                    {moneyline && (() => {
-                        const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'moneyline',
-                            subtype: null,
-                            index: null
-                        };
-                        const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span className={`box-odds ${homeExist ? 'orange' : null}`}
-                                onClick={homeExist ?
-                                    () => removeBet(lineId, 'moneyline', 'home', null, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'moneyline',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: moneyline,
-                                        pick: 'home',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: ${teamA}`,
-                                        index: null,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">Win</div>
-                                    <div className="new-odds">Outright</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    {moneyline && <RenderMoneyline moneyline={moneyline}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />}
                 </li>
                 <li>
-                    {spreads && spreads[0] && (() => {
-                        const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'spread',
-                            index: 0,
-                            subtype: null,
-                        };
-                        if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
-                        const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span className={`box-odds ${homeExist ? 'orange' : null}`}
-                                onClick={homeExist
-                                    ? () => removeBet(lineId, 'spread', 'home', 0, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'spread',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: spreads[0],
-                                        pick: 'home',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: ${teamA} ${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`,
-                                        index: 0,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`} Pts</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    {spreads && spreads[0] && <RenderSpread spread={spreads[0]}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />}
                 </li>
                 <li>
-                    {totals && totals[0] && (() => {
-                        const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'total',
-                            index: 0,
-                            subtype: null
-                        };
-                        if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
-                        const homeExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'home' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span
-                                className={`box-odds ${homeExist ? 'orange' : null}`}
-                                onClick={homeExist
-                                    ? () => removeBet(lineId, 'total', 'home', 0, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'total',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: { home: totals[0].over, away: totals[0].under },
-                                        pick: 'home',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: Over ${totals[0].points}`,
-                                        index: 0,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">Over</div>
-                                    <div className="new-odds">{`${totals[0].points}`} Pts</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    {totals && totals[0] && <RenderTotal total={totals[0]}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />}
                 </li>
             </ul>
-            <ul className="table-list d-flex table-bottom">
-                <li><span className='basic-team-name'>{teamB}</span></li>
+            {moneyline && <ul className="table-list d-flex d-md-none table-bottom" >
+                <RenderTeamNames teamA={teamA}
+                    teamB={teamB}
+                    startDate={startDate}
+                    timezone={timezone} />
                 <li>
-                    {moneyline && (() => {
-                        const { newHome, newAway } = calculateNewOdds(moneyline.home, moneyline.away, 'moneyline');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'moneyline',
-                            subtype: null,
-                            index: null
-                        };
-                        const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span className={`box-odds ${awayExist ? 'orange' : null}`}
-                                onClick={awayExist ?
-                                    () => removeBet(lineId, 'moneyline', 'away', null, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'moneyline',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: moneyline,
-                                        pick: 'away',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: ${teamB}`,
-                                        index: null,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">Win</div>
-                                    <div className="new-odds">Outright</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    <RenderMoneyline moneyline={moneyline}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />
                 </li>
+            </ul>}
+            {spreads && spreads[0] && <ul className="table-list d-flex d-md-none table-bottom" >
+                <RenderTeamNames teamA={teamA}
+                    teamB={teamB}
+                    startDate={startDate}
+                    timezone={timezone} />
                 <li>
-                    {spreads && spreads[0] && (() => {
-                        const { newHome, newAway } = calculateNewOdds(spreads[0].home, spreads[0].away, 'spread');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'spread',
-                            index: 0,
-                            subtype: null,
-                        };
-                        if (spreads[0].altLineId) lineQuery.altLineId = spreads[0].altLineId;
-                        const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span
-                                className={`box-odds ${awayExist ? 'orange' : null}`}
-                                onClick={awayExist
-                                    ? () => removeBet(lineId, 'spread', 'away', 0, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'spread',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: spreads[0],
-                                        pick: 'away',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: ${teamB} ${-1 * spreads[0].hdp > 0 ? '+' : ''}${-1 * spreads[0].hdp}`,
-                                        index: 0,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`} Pts</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    <RenderSpread spread={spreads[0]}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />
                 </li>
+            </ul>}
+            {totals && totals[0] && <ul className="table-list d-flex d-md-none table-bottom" >
+                <RenderTeamNames teamA={teamA}
+                    teamB={teamB}
+                    startDate={startDate}
+                    timezone={timezone} />
                 <li>
-                    {totals && totals[0] && (() => {
-                        const { newHome, newAway } = calculateNewOdds(totals[0].over, totals[0].under, 'total');
-                        const lineQuery = {
-                            sportName,
-                            leagueId,
-                            eventId,
-                            lineId,
-                            type: 'total',
-                            index: 0,
-                            subtype: null
-                        };
-                        if (totals[0].altLineId) lineQuery.altLineId = totals[0].altLineId;
-                        const awayExist = betSlip.find((b) => b.lineId === lineId && b.pick === 'away' && b.type === lineQuery.type && b.subtype == null);
-                        return (
-                            <span
-                                className={`box-odds ${awayExist ? 'orange' : null}`}
-                                onClick={awayExist
-                                    ? () => removeBet(lineId, 'total', 'away', 0, null)
-                                    : () => addBet({
-                                        name: `${teamA} - ${teamB}`,
-                                        type: 'total',
-                                        league: leagueName,
-                                        odds: { home: newHome, away: newAway },
-                                        originOdds: { home: totals[0].over, away: totals[0].under },
-                                        pick: 'away',
-                                        home: teamA,
-                                        away: teamB,
-                                        sportName,
-                                        lineId: lineId,
-                                        lineQuery: lineQuery,
-                                        pickName: `Pick: Under ${totals[0].points}`,
-                                        index: 0,
-                                        origin: origin,
-                                        subtype: null
-                                    })}>
-                                <div className="vertical-align">
-                                    <div className="new-odds">Under</div>
-                                    <div className="new-odds">{`${totals[0].points}`} Pts</div>
-                                </div>
-                            </span>
-                        );
-                    })()}
+                    <RenderTotal total={totals[0]}
+                        sportName={sportName}
+                        leagueId={leagueId}
+                        eventId={eventId}
+                        lineId={lineId}
+                        betSlip={betSlip}
+                        teamA={teamA}
+                        teamB={teamB}
+                        leagueName={leagueName}
+                        origin={origin}
+                        logo_teamA={logo_teamA}
+                        logo_teamB={logo_teamB}
+                        addBet={addBet}
+                        removeBet={removeBet}
+                    />
                 </li>
-            </ul>
-            <ul className="table-list d-flex table-bottom">
-                <li><span className='basic-event-date'>{timeHelper.convertTimeEventDate(new Date(startDate), timezone)}</span></li>
-                <li></li>
-                <li></li>
-                <li></li>
-            </ul>
+            </ul>}
         </div>
     );
 }

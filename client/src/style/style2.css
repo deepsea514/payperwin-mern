@@ -441,7 +441,7 @@ footer ul li a i {
     padding-bottom: 30px;
 }
 
-.total {
+.total-content {
     background: #2d2d2d;
     padding: 15px;
 }
@@ -885,6 +885,27 @@ footer ul li a i {
 .table-list li:nth-child(4) {
     width: 144px;
     min-width: 144px;
+}
+
+.basic-mode .table-bottom li:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.basic-mode .table-list li:nth-child(2) {
+    width: 175px;
+    min-width: 175px;
+}
+
+.basic-mode .table-list li:nth-child(3) {
+    width: 175px;
+    min-width: 175px;
+}
+
+.basic-mode .table-list li:nth-child(4) {
+    width: 175px;
+    min-width: 175px;
 }
 
 .table-list li:nth-child(5) {
@@ -4197,18 +4218,117 @@ a:hover {
 .basic-team-name {
     font-size: 12px;
     font-weight: 500;
+    margin: 0;
 }
 
 .basic-event-date {
     font-size: 11px;
     font-weight: 200;
+    margin: 10px 0 0 0;
 }
 
-.basic-mode .table-list:not(:last-child) li:not(:first-child) {
+.basic-mode .table-list li:not(:first-child) {
     border-left: 1px solid hsla(0, 0%, 100%, .2);
     border-right: none !important;
 }
 
-.basic-mode .table-list li:not(:first-child) {
-    border-right: none !important;
+.basic-box-odds {
+    width: 100%;
+    /* background-color: #121212; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.basic-box-odds .bet-type {
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0px 6px;
+    font-family: "Roboto", Sans-serif;
+    font-weight: 500;
+    border-radius: 50px;
+}
+
+.basic-box-odds .bet-type.moneyline {
+    background-color: #FF14D8;
+}
+
+.basic-box-odds .bet-type.spread {
+    background-color: #BEF001;
+    color: #000 !important;
+}
+
+.basic-box-odds .bet-type.total {
+    background-color: #2df3e9;
+    color: #000 !important;
+}
+
+.basic-box-odds .bet-type-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.basic-box-odds .bet-type-logo.moneyline {
+    background-image: url(/images/icons/moneyline.png);
+}
+
+.basic-box-odds .bet-type-logo.spread {
+    background-image: url(/images/icons/spread.png);
+}
+
+.basic-box-odds .bet-type-logo.total {
+    background-image: url(/images/icons/total.png);
+}
+
+.basic-box-odds .bet-type-team {
+    width: 30px;
+    height: 30px;
+    display: none;
+}
+
+.basic-box-odds .bet-type-logo-title {
+    width: 80px;
+    height: 100px;
+}
+
+.basic-box-odds .bet-type-title {
+    text-align: center;
+}
+
+.basic-box-odds .bet-type-subtitle {
+    font-size: 16px;
+    color: #796e6e;
+    font-family: "Roboto", Sans-serif;
+    font-weight: 400;
+    text-shadow: 0px 0px 10px rgb(0 0 0 / 30%);
+    margin: -10px 0 0 0;
+    text-transform: uppercase;
+}
+
+.basic-box-odds .bet-type-maintitle {
+    font-size: 24px;
+    font-family: "Roboto", Sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.basic-box-odds .bet-type-maintitle.moneyline {
+    color: #FF14D8 !important;
+    text-shadow: 0px 0px 22px #ff00b7;
+}
+
+.basic-box-odds .bet-type-maintitle.spread {
+    color: #BEF001 !important;
+    text-shadow: 0px 0px 22px #BEF001;
+}
+
+.basic-box-odds .bet-type-maintitle.total {
+    color: #2df3e9 !important;
+    text-shadow: 0px 0px 22px #2df3e9;
 }

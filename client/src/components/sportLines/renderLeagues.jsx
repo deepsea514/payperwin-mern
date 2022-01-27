@@ -92,8 +92,8 @@ const RenderLeagues = (props) => {
                         <i className={`fas ${collapsed ? 'fa-chevron-up' : 'fa-chevron-down'}`}
                             onClick={() => toggleCollapseLeague(leagueId)} />
                     </div>
-                    <div className='leagues-content'>
-                        {events != null && <ul className={`table-list table-list-top ${pro_mode ? '' : 'basic-mode'} border-0 d-flex`}>
+                    <div className={`leagues-content ${pro_mode ? '' : 'basic-mode'}`}>
+                        {events != null && <ul className={`table-list table-list-top border-0 ${pro_mode ? 'd-flex' : 'd-none d-md-flex'}`}>
                             <li></li>
                             <li>
                                 {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => showHelpAction('moneyline')}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}

@@ -285,6 +285,7 @@ class App extends Component {
 
     removeBet = (lineId, type, pick, index, subtype = null, all = false) => {
         const { betSlip } = this.state;
+        const { pro_mode } = this.props;
         if (all) {
             this.setState({
                 betSlip: update(betSlip, {
@@ -292,7 +293,13 @@ class App extends Component {
                 })
             });
         } else {
-            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true) && b.subtype == subtype);
+            const indexOfBet = betSlip.findIndex((b) => {
+                return (b.lineId === lineId &&
+                    b.pick === pick &&
+                    (pro_mode ? b.type == type : true) &&
+                    (typeof index === 'number' ? b.index === index : true) &&
+                    b.subtype == subtype)
+            });
             if (typeof indexOfBet === 'number') {
                 this.setState({
                     betSlip: update(betSlip, {
