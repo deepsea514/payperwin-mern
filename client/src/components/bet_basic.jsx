@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
 import convertOdds from '../helpers/convertOdds';
@@ -57,7 +56,7 @@ class BetBasic extends Component {
         const { stake, win } = this.state;
         const {
             bet, removeBet, updateBet, maxBetLimitTier, placeBets, user,
-            showLoginModalAction, toggleField, errors, submitting
+            showLoginModalAction, toggleField, errors, submitting, oddsFormat
         } = this.props;
         const {
             type, subtype, league, lineQuery, home, away,
@@ -110,7 +109,7 @@ class BetBasic extends Component {
                             lineQuery, pick,
                             { pick: { $set: 'home' }, pickName: { $set: homePickName } },
                         )}>
-                            {homePickName} @ {odds['home']}
+                            {homePickName} @ {oddsFormat == 'decimal' ? convertOdds(odds['home'], oddsFormat) : odds['home']}
                         </span>
                     </div>
                     <div className='d-flex justify-content-center'>
@@ -118,7 +117,7 @@ class BetBasic extends Component {
                             lineQuery, pick,
                             { pick: { $set: 'away' }, pickName: { $set: awayPickName } },
                         )}>
-                            {awayPickName} @ {odds['away']}
+                            {awayPickName} @ {oddsFormat == 'decimal' ? convertOdds(odds['away'], oddsFormat) : odds['away']}
                         </span>
                     </div>
                     {pick && <>
