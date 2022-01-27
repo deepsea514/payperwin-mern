@@ -209,6 +209,20 @@ class App extends Component {
             })
     }
 
+    componentDidUpdate(prevProps) {
+        const { pro_mode } = this.props;
+        const { pro_mode: prevProMode } = prevProps;
+        if (pro_mode !== prevProMode) {
+            this.setState({
+                betSlip: [],
+                teaserBetSlip: {
+                    type: null,
+                    betSlip: []
+                }
+            });
+        }
+    }
+
     getLatestOdds = () => {
         const { betSlip } = this.state;
         if (betSlip.length == 0) return;
@@ -268,19 +282,26 @@ class App extends Component {
         const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false, originOdds } = bet;
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live, originOdds };
         let { betSlip } = this.state;
-        betSlip = betSlip.filter(bet => {
-            const exists = bet.lineId === lineQuery.lineId &&
-                bet.type === lineQuery.type &&
-                bet.index === lineQuery.index &&
-                bet.subtype == lineQuery.subtype &&
-                bet.pick == pick;
-            return !exists;
-        });
-        this.setState({
-            betSlip: update(betSlip, {
-                $push: [newBet]
-            })
-        });
+        const { pro_mode } = this.props;
+        if (pro_mode) {
+            betSlip = betSlip.filter(bet => {
+                const exists = bet.lineId === lineQuery.lineId &&
+                    bet.type === lineQuery.type &&
+                    bet.index === lineQuery.index &&
+                    bet.subtype == lineQuery.subtype &&
+                    bet.pick == pick;
+                return !exists;
+            });
+            this.setState({
+                betSlip: update(betSlip, {
+                    $push: [newBet]
+                })
+            });
+        } else {
+            this.setState({
+                betSlip: [newBet]
+            });
+        }
     }
 
     removeBet = (lineId, type, pick, index, subtype = null, all = false) => {
