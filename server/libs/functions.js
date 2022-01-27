@@ -314,18 +314,25 @@ const getLinePoints = (pickName, pick, lineQuery) => {
     return linePoints;
 }
 
-const sendBetWinConfirmEmail = async (user, winAmount) => {
+const sendBetWinConfirmEmail = async (user, bet) => {
+    const { payableToWin, isParlay, bet: betAmount, pickOdds, teamA, teamB } = bet;
+    const numberOdds = Number(Number(pickOdds).toFixed(0));
     const preference = await Preference.findOne({ user: user._id });
     if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
         const msg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: user.email,
             subject: 'You won a wager!',
-            text: `Congratulations! You won $${winAmount.toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
+            text: `Congratulations! You won $${Number(payableToWin).toFixed(2)}. View Result Details: https://www.payperwin.com/history`,
             html: simpleresponsive(`
                     <p>
-                        Congratulations! You won $${winAmount.toFixed(2)}. View Result Details:
+                        Congratulations! You won $${Number(payableToWin).toFixed(2)}.
                     </p>
+                    <ul>
+                        <li><b>Game:</b> ${isParlay ? 'Parlay Bet' : `${teamA.name} VS ${teamB.name}`}</li>
+                        <li><b>Wager:</b> $${Number(betAmount).toFixed(2)}</li>
+                        <li><b>Odds:</b> ${numberOdds > 0 ? '+' + numberOdds : numberOdds}</li>
+                    </ul>
                 `,
                 { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
             ),
@@ -342,7 +349,7 @@ const sendBetWinConfirmEmail = async (user, winAmount) => {
         });
     }
     if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
-        sendSMS(`Congratulations! You won $${winAmount.toFixed(2)}.`, user.phone);
+        sendSMS(`Congratulations! You won $${payableToWin.toFixed(2)}.`, user.phone);
     }
 }
 
