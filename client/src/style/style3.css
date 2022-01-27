@@ -187,6 +187,10 @@ a.log-in-btn {
     max-height: 350px;
 }
 
+.bet-slip-list.basic-mode {
+    min-height: 360px;
+}
+
 .bet-container {
     margin: 0 10px 10px 10px;
 }
@@ -340,6 +344,11 @@ a.log-in-btn {
     padding: 4px 8px;
     color: rgb(11, 20, 34);
     margin-top: 10px;
+}
+
+.bet-stake.full-width, .bet-win.full-width {
+    width: 100%;
+    margin-left: 0;
 }
 
 .bet-stake::placeholder, .bet-win::placeholder {

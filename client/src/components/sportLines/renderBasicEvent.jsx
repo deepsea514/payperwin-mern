@@ -38,13 +38,13 @@ const RenderMoneyline = (props) => {
                     league: leagueName,
                     odds: { home: newHome, away: newAway },
                     originOdds: moneyline,
-                    pick: 'home',
+                    pick: null,
                     home: teamA,
                     away: teamB,
                     sportName,
                     lineId: lineId,
                     lineQuery: lineQuery,
-                    pickName: `Pick: ${teamA}`,
+                    pickName: null,
                     index: null,
                     origin: origin,
                     subtype: null
@@ -85,6 +85,7 @@ const RenderSpread = (props) => {
         type: 'spread',
         index: 0,
         subtype: null,
+        points: spread.hdp
     };
     if (spread.altLineId) lineQuery.altLineId = spread.altLineId;
     const spreadExist = betSlip.find((b) => b.lineId === lineId && b.type === lineQuery.type && b.subtype == null);
@@ -97,13 +98,13 @@ const RenderSpread = (props) => {
                     league: leagueName,
                     odds: { home: newHome, away: newAway },
                     originOdds: spread,
-                    pick: 'home',
+                    pick: null,
                     home: teamA,
                     away: teamB,
                     sportName,
                     lineId: lineId,
                     lineQuery: lineQuery,
-                    pickName: `Pick: ${teamA} ${spread.hdp > 0 ? '+' : ''}${spread.hdp}`,
+                    pickName: null,
                     index: 0,
                     origin: origin,
                     subtype: null
@@ -141,7 +142,8 @@ const RenderTotal = (props) => {
         lineId,
         type: 'total',
         index: 0,
-        subtype: null
+        subtype: null,
+        points: total.points
     };
     if (total.altLineId) lineQuery.altLineId = total.altLineId;
     const totalExist = betSlip.find((b) => b.lineId === lineId && b.type === lineQuery.type && b.subtype == null);
@@ -154,13 +156,13 @@ const RenderTotal = (props) => {
                     league: leagueName,
                     odds: { home: newHome, away: newAway },
                     originOdds: { home: total.over, away: total.under },
-                    pick: 'home',
+                    pick: null,
                     home: teamA,
                     away: teamB,
                     sportName,
                     lineId: lineId,
                     lineQuery: lineQuery,
-                    pickName: `Pick: Over ${total.points}`,
+                    pickName: null,
                     index: 0,
                     origin: origin,
                     subtype: null
