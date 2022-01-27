@@ -402,7 +402,7 @@ class BetSlip extends Component {
                                         </div>
                                     )}
                             </div>}
-                            <div className="total">
+                            <div className="total-content">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         <FormattedMessage id="COMPONENTS.TOTAL.RISK" />
