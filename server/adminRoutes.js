@@ -7333,7 +7333,6 @@ adminRouter.post(
 
             if (bet.isParlay) {
                 const results = req.body;
-                console.log("parley results", results);
                 const parlayQuery = JSON.parse(JSON.stringify(bet.parlayQuery));
                 const betpool = await ParlayBetPool.findOne({ $or: [{ homeBets: id }, { awayBets: id }] });
                 if (!betpool) {
