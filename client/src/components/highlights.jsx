@@ -140,7 +140,6 @@ class Highlights extends Component {
                 </div>
                 <ul className="nav nav-tabs pt-2" ref={this.listRef} onScroll={this.onScroll}>
                     {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
-                        ref={this.leftButtonRef}
                         onClick={this.scrollLeft}>
                         <span className='sports-scroller-icon'>
                             <i className='fas fa-arrow-left' />
@@ -186,7 +185,6 @@ class Highlights extends Component {
                         );
                     })}
                     {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
-                        ref={this.rightButtonRef}
                         onClick={this.scrollRight}>
                         <span className='sports-scroller-icon'>
                             <i className='fas fa-arrow-right' />

@@ -830,7 +830,7 @@ footer ul li a i {
 .table-bottom {
     background: #fff;
     padding: 10px 10px 6px 10px;
-    border-bottom: 1px solid #444;
+    border-bottom: 2px solid #444;
 }
 
 .table-list-top {
@@ -4155,6 +4155,29 @@ a {
 a:hover {
     color: #FF00FE;
     opacity: 0.8;
+}
+
+.bet-scroller {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: 10px;
+    bottom: 55px;
+}
+
+.bet-scroller-icon {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: #0005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bet-scroller-icon i {
+    color: white;
 }
 
 .sports-scroller {

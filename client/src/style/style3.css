@@ -51,6 +51,7 @@ header {
 
 .table-list li:nth-child(1) {
     width: 180px;
+    min-width: 180px;
 }
 
 .box-odds {
@@ -144,6 +145,7 @@ a.log-in-btn {
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-bottom: none;
+    position: relative;
 }
 
 .leagues-content::-webkit-scrollbar {
@@ -157,6 +159,15 @@ a.log-in-btn {
 
 .table-list.basic-mode {
     border-bottom: #888 2px solid;
+    max-width: 100%;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-bottom: none;
+}
+
+.table-list.basic-mode::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-pane-leagues {

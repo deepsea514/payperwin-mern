@@ -1,30 +1,9 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import timeHelper from "../../helpers/timehelper";
-import calculateNewOdds from '../../helpers/calculateNewOdds';
-import convertOdds from '../../helpers/convertOdds';
-import checkOddsAvailable from '../../helpers/checkOddsAvailable';
-import { FormattedMessage } from 'react-intl';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import sportNameImage from '../../helpers/sportNameImage';
-import getLineCount from '../../helpers/getLineCount';
 import RenderBasicEvent from './renderBasicEvent';
 import RenderProEvent from './renderProEvent';
-
-const emptyBoxLine = (
-    <li>
-        <span className="box-odds">
-            <div className="vertical-align">
-                <i className="fap fa-do-not-enter" />
-            </div>
-        </span>
-        <span className="box-odds">
-            <div className="vertical-align">
-                <i className="fap fa-do-not-enter" />
-            </div>
-        </span>
-    </li>
-);
 
 const RenderLeagues = (props) => {
     const {
@@ -68,6 +47,7 @@ const RenderLeagues = (props) => {
             }
             return (
                 <RenderBasicEvent key={idx}
+                    showHelpAction={showHelpAction}
                     oddsFormat={oddsFormat}
                     leagueName={leagueName}
                     leagueId={leagueId}
@@ -93,18 +73,12 @@ const RenderLeagues = (props) => {
                             onClick={() => toggleCollapseLeague(leagueId)} />
                     </div>
                     <div className={`leagues-content ${pro_mode ? '' : 'basic-mode'}`}>
-                        {events != null && <ul className={`table-list table-list-top border-0 ${pro_mode ? 'd-flex' : 'd-none d-md-flex'}`}>
+                        {events != null && <ul className={`table-list table-list-top border-0 ${pro_mode ? 'd-flex' : 'd-none'}`}>
                             <li></li>
-                            <li>
-                                {pro_mode ? 'ML' : <span className='cursor-pointer' onClick={() => showHelpAction('moneyline')}>MONEYLINE<i className='ml-3 fas fa-question-circle' /></span>}
-                            </li>
-                            <li>
-                                {pro_mode ? 'SPREAD' : <span className='cursor-pointer' onClick={() => showHelpAction('spread')}>POINT SPREAD<i className='ml-3 fas fa-question-circle' /></span>}
-                            </li>
-                            <li>
-                                {pro_mode ? 'TOTAL' : <span className='cursor-pointer' onClick={() => showHelpAction('total')}>TOTAL POINTS<i className='ml-3 fas fa-question-circle' /></span>}
-                            </li>
-                            {pro_mode && <li className="detailed-lines-link not-mobile"></li>}
+                            <li>ML</li>
+                            <li>SPREAD</li>
+                            <li>TOTAL</li>
+                            <li className="detailed-lines-link not-mobile"></li>
                         </ul>}
                         {events}
                     </div>
