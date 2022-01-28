@@ -436,7 +436,8 @@ footer ul li a i {
 
 .no-bets {
     text-align: center;
-    background-color: #b8bcbf;
+    background: #1d1d1d;
+    color: white;
     padding-top: 100px;
     padding-bottom: 30px;
 }
@@ -462,7 +463,7 @@ footer ul li a i {
 }
 
 .bet-slip-type-container {
-    background-color: #333;
+    background: #333;
     color: white;
     border-bottom: none !important;
 }
@@ -4368,5 +4369,10 @@ a:hover {
 }
 
 .bet-type-pick:hover, .bet-type-pick.selected {
-    background: #121212;
+    background: #BEF001;
+    color: black;
+}
+
+.betslip-deposit-message, .betslip-deposit-message i {
+    color: black !important;
 }
