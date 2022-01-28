@@ -309,7 +309,7 @@ const RenderBasicEvent = (props) => {
                     showHelpAction={showHelpAction}
                 />
             </li>)
-            arrayRotate(initialListBox, (eventIndex - 1) % 3);
+            arrayRotate(initialListBox, (eventIndex - 1) % initialListBox.length);
             setListBoxes(initialListBox);
         }
         onScroll();
