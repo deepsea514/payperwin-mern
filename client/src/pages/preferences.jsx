@@ -213,7 +213,7 @@ class Preferences extends Component {
                                         <h3> <FormattedMessage id="PAGES.PREFERENCES.DESIPAY" /></h3>
                                         <br />
 
-                                        <Form.Group>
+                                        {/* <Form.Group>
                                             <Form.Label><FormattedMessage id="PAGES.PREFERENCES.ODDSDISPLAY" /></Form.Label>
                                             <Form.Control
                                                 as="select"
@@ -230,7 +230,7 @@ class Preferences extends Component {
                                                     {formik.errors.oddsFormat}
                                                 </div>
                                             ) : null}
-                                        </Form.Group>
+                                        </Form.Group> */}
 
                                         <Form.Group>
                                             <Form.Label><FormattedMessage id="PAGES.PREFERENCES.DATEDISPLAY" /></Form.Label>

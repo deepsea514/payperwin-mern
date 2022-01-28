@@ -303,6 +303,7 @@ class App extends Component {
             this.setState({
                 betSlip: [newBet]
             });
+            this.toggleField('openBetSlipMenu', true)
         }
     }
 

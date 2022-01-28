@@ -341,13 +341,13 @@ class Menu extends Component {
                                 <option value="decimal">{intl.formatMessage({ id: "COMPONENTS.MENU.ODDS.DECIMAL" })}</option>
                             </select>
                         </li>
-                        <li>
+                        {/* <li>
                             <FormattedMessage id="COMPONENTS.DISPLAY" />
                             <select value={display_mode} onChange={(evt) => setDisplayMode(evt.target.value)}>
                                 <option value="light">{intl.formatMessage({ id: "COMPONENTS.DISPLAY.LIGHT" })}</option>
                                 <option value="dark">{intl.formatMessage({ id: "COMPONENTS.DISPLAY.DARK" })}</option>
                             </select>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </>
