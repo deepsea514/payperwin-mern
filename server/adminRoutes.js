@@ -7357,8 +7357,6 @@ adminRouter.post(
                         await FinancialLog.deleteOne({ _id: oldfinancialLog._id });
                     }
 
-
-
                     for (const query of parlayQuery) {
                         const lineQuery = query.lineQuery;
                         const result = results.find(result => {
