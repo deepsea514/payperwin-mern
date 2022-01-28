@@ -126,7 +126,7 @@ class TeamMemberForm extends React.Component {
     handleFileUpload = async (e, formik) => {
         const file = e.target.files[0];
         const image = await this.resizeFile(file);
-        formik.setFieldValue('logo', image);
+        formik.setFieldValue('photo', image);
     }
 
     resizeFile = (file) => {
@@ -245,7 +245,10 @@ class TeamMemberForm extends React.Component {
                                                 ) : null}
                                             </div>
                                             <div className="col">
-                                                <img src={formik.values.photo.startsWith('data:image/') ? formik.values.photo : `${appUrl}${formik.values.photo}`} style={{ width: '300px', height: 'auto', display: 'block' }} />
+                                                {formik.values.photo && <img src={formik.values.photo.startsWith('data:image/') ?
+                                                    formik.values.photo :
+                                                    `${appUrl}${formik.values.photo}`}
+                                                    style={{ width: '300px', height: 'auto', display: 'block' }} />}
                                             </div>
                                         </div>
                                         <div className="form-row form-group">

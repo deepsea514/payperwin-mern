@@ -32,6 +32,7 @@ const LoyaltyLog = require('./models/loyaltylog');
 const ParlayBetPool = require('./models/parlaybetpool');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
+const Member = require('./models/member');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -8027,6 +8028,130 @@ adminRouter.get(
             return res.json({ total: total, perPage, page, data });
         } catch (error) {
             return res.status(500).json({ error: 'Can\'t find bets.', message: error });
+        }
+    }
+)
+
+adminRouter.get(
+    '/members',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const members = await Member.find().sort({ priority: -1 });
+            return res.json(members);
+        } catch (error) {
+            console.error(error);
+            return res.json([]);
+        }
+    }
+)
+
+adminRouter.post(
+    '/members',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const data = req.body;
+            const photoImage = data.photo;
+            if (photoImage.startsWith('data:image/')) {
+                const base64Data = photoImage.replace(/^data:image\/png;base64,/, "");
+                const filename = 'photo_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + "png";
+                fs.writeFile(`./banners/${filename}`, base64Data, 'base64', async function (error) {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).json({ success: false });
+                    }
+                    let memberObj = {
+                        ...data,
+                        photo: `/static/${filename}`
+                    };
+                    try {
+                        await Member.create(memberObj);
+                        res.json({ success: true });
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).json({ success: false });
+                    }
+                });
+                return;
+            }
+            await Member.create(data);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
+        }
+    }
+)
+
+adminRouter.patch(
+    '/members/:id',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const member = await Member.findById(id);
+            if (!member) {
+                return res.status(404).json({ success: false });
+            }
+            const data = req.body;
+            const photoImage = data.photo;
+            if (photoImage.startsWith('data:image/')) {
+                const base64Data = photoImage.replace(/^data:image\/png;base64,/, "");
+                const filename = 'photo_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + "png";
+                fs.writeFile(`./banners/${filename}`, base64Data, 'base64', async function (error) {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).json({ success: false });
+                    }
+                    let memberObj = {
+                        ...data,
+                        photo: `/static/${filename}`
+                    };
+                    try {
+                        await member.update(memberObj);
+                        res.json({ success: true });
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).json({ success: false });
+                    }
+                });
+                return;
+            }
+            await member.update(data);
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
+        }
+    }
+)
+
+adminRouter.get(
+    '/members/:id',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const member = await Member.findById(id);
+            return res.json(member);
+        } catch (error) {
+            console.error(error);
+            return res.json(null);
+        }
+    }
+)
+
+adminRouter.delete(
+    '/members/:id',
+    authenticateJWT,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            await Member.deleteMany({ _id: id });
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false });
         }
     }
 )
