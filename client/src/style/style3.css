@@ -2146,7 +2146,7 @@ a.fav-link:hover {
 }
 
 .promotion-botton-wrap.view-wrapper {
-    background: #666;
+    background: linear-gradient(45deg, #00F, #FF0);
 }
 
 .promotion-botton {
