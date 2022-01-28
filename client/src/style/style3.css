@@ -320,6 +320,13 @@ a.log-in-btn {
     margin: 2px 0;
 }
 
+.bet-type-league.help {
+    background-color: #1d1d1d;
+    margin: 0;
+    padding: 0 0 6px 0;
+    text-align: center;
+}
+
 .bet-max-win {
     cursor: pointer;
     text-decoration: underline;
@@ -2139,7 +2146,7 @@ a.fav-link:hover {
 }
 
 .promotion-botton-wrap.view-wrapper {
-    background: #666;
+    background: linear-gradient(45deg, #2df3e9, #BEF001);
 }
 
 .promotion-botton {

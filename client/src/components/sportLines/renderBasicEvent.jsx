@@ -57,9 +57,9 @@ const RenderMoneyline = (props) => {
                 })}>
             <div className='bet-type-wrapper d-flex justify-content-center'>
                 <span className='bet-type moneyline'>
-                    <span onClick={onClickBetType}>moneyline</span>
+                    <span>moneyline</span>
                 </span>
-                <i className='ml-2 fas fa-question-circle' />
+                <i onClick={onClickBetType} className='ml-2 fas fa-question-circle' />
             </div>
             <span className='bet-type-logo moneyline'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
@@ -126,9 +126,9 @@ const RenderSpread = (props) => {
                 })}>
             <div className='bet-type-wrapper d-flex justify-content-center'>
                 <span className='bet-type spread'>
-                    <span onClick={onClickBetType}>points spread</span>
+                    <span>points spread</span>
                 </span>
-                <i className='ml-2 fas fa-question-circle' />
+                <i onClick={onClickBetType} className='ml-2 fas fa-question-circle' />
             </div>
             <span className='bet-type-logo spread'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
@@ -193,9 +193,9 @@ const RenderTotal = (props) => {
                 })}>
             <div className='bet-type-wrapper d-flex justify-content-center'>
                 <span className='bet-type total'>
-                    <span onClick={onClickBetType}>total score</span>
+                    <span>total score</span>
                 </span>
-                <i className='ml-2 fas fa-question-circle' />
+                <i onClick={onClickBetType} className='ml-2 fas fa-question-circle' />
             </div>
             <span className='bet-type-logo total'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
@@ -309,7 +309,7 @@ const RenderBasicEvent = (props) => {
                     showHelpAction={showHelpAction}
                 />
             </li>)
-            arrayRotate(initialListBox, (eventIndex - 1) % 3);
+            arrayRotate(initialListBox, (eventIndex - 1) % initialListBox.length);
             setListBoxes(initialListBox);
         }
         onScroll();

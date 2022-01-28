@@ -341,11 +341,14 @@ class BetSlip extends Component {
                                     )
                                     : (
                                         <div className="no-bets">
-                                            <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
-                                            <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
+                                            <div>
+                                                <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
+                                                <small><FormattedMessage id="COMPONENTS.CLICK.ODD" /></small>
+                                            </div>
                                         </div>
                                     )}
                             </div>}
+                            {!pro_mode && <div className="bet-type-league help"><a href='https://wa.me/message/TICMRPXRFQRCN1' target="_blank" className="bet-max-win">Need Help?</a></div>}
                             {betSlipType == 'parlay' && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
