@@ -205,21 +205,6 @@ const RenderTotal = (props) => {
     );
 }
 
-function shuffle(array) {
-    let currentIndex = array.length, randomIndex;
-
-    while (currentIndex != 0) {
-
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-    }
-
-    return array;
-}
-
 const RenderBasicEvent = (props) => {
     const [showRight, setShowRight] = useState(false);
     const [listBoxes, setListBoxes] = useState([]);
@@ -227,7 +212,7 @@ const RenderBasicEvent = (props) => {
 
     const {
         betSlip, timezone, addBet, removeBet, event, sportName, leagueId, leagueName,
-        showHelpAction
+        showHelpAction, eventIndex
     } = props;
 
     const { teamA, teamB, startDate, lines, originId: eventId, logo_teamA, logo_teamB } = event;
@@ -250,90 +235,93 @@ const RenderBasicEvent = (props) => {
         setShowRight(newPos < scrollLimit);
     }
 
+    const arrayRotate = (arr, times) => {
+        for (let nI = 0; nI < times; nI++)
+            arr.unshift(arr.pop());
+    }
+
     useEffect(() => {
         if (listBoxes.length == 0) {
             const initialListBox = [];
-            if (moneyline) {
-                initialListBox.push(<li key='moneyline'>
-                    <RenderMoneyline moneyline={moneyline}
-                        sportName={sportName}
-                        leagueId={leagueId}
-                        eventId={eventId}
-                        lineId={lineId}
-                        betSlip={betSlip}
-                        teamA={teamA}
-                        teamB={teamB}
-                        leagueName={leagueName}
-                        origin={origin}
-                        logo_teamA={logo_teamA}
-                        logo_teamB={logo_teamB}
-                        addBet={addBet}
-                        removeBet={removeBet}
-                        showHelpAction={showHelpAction}
-                    />
-                </li>);
-            }
-            if (spreads && spreads[0]) {
-                initialListBox.push(<li key='spread'>
-                    <RenderSpread spread={spreads[0]}
-                        sportName={sportName}
-                        leagueId={leagueId}
-                        eventId={eventId}
-                        lineId={lineId}
-                        betSlip={betSlip}
-                        teamA={teamA}
-                        teamB={teamB}
-                        leagueName={leagueName}
-                        origin={origin}
-                        logo_teamA={logo_teamA}
-                        logo_teamB={logo_teamB}
-                        addBet={addBet}
-                        removeBet={removeBet}
-                        showHelpAction={showHelpAction}
-                    />
-                </li>)
-            }
-            if (totals && totals[0]) {
-                initialListBox.push(<li key='total'>
-                    <RenderTotal total={totals[0]}
-                        sportName={sportName}
-                        leagueId={leagueId}
-                        eventId={eventId}
-                        lineId={lineId}
-                        betSlip={betSlip}
-                        teamA={teamA}
-                        teamB={teamB}
-                        leagueName={leagueName}
-                        origin={origin}
-                        logo_teamA={logo_teamA}
-                        logo_teamB={logo_teamB}
-                        addBet={addBet}
-                        removeBet={removeBet}
-                        showHelpAction={showHelpAction}
-                    />
-                </li>)
-            }
-            setListBoxes(shuffle(initialListBox));
+            initialListBox.push(moneyline ? <li key='moneyline'>
+                <RenderMoneyline moneyline={moneyline}
+                    sportName={sportName}
+                    leagueId={leagueId}
+                    eventId={eventId}
+                    lineId={lineId}
+                    betSlip={betSlip}
+                    teamA={teamA}
+                    teamB={teamB}
+                    leagueName={leagueName}
+                    origin={origin}
+                    logo_teamA={logo_teamA}
+                    logo_teamB={logo_teamB}
+                    addBet={addBet}
+                    removeBet={removeBet}
+                    showHelpAction={showHelpAction}
+                />
+            </li> : null);
+
+            initialListBox.push(spreads && spreads[0] ? <li key='spread'>
+                <RenderSpread spread={spreads[0]}
+                    sportName={sportName}
+                    leagueId={leagueId}
+                    eventId={eventId}
+                    lineId={lineId}
+                    betSlip={betSlip}
+                    teamA={teamA}
+                    teamB={teamB}
+                    leagueName={leagueName}
+                    origin={origin}
+                    logo_teamA={logo_teamA}
+                    logo_teamB={logo_teamB}
+                    addBet={addBet}
+                    removeBet={removeBet}
+                    showHelpAction={showHelpAction}
+                />
+            </li> : null)
+
+            initialListBox.push(totals && totals[0] ? <li key='total'>
+                <RenderTotal total={totals[0]}
+                    sportName={sportName}
+                    leagueId={leagueId}
+                    eventId={eventId}
+                    lineId={lineId}
+                    betSlip={betSlip}
+                    teamA={teamA}
+                    teamB={teamB}
+                    leagueName={leagueName}
+                    origin={origin}
+                    logo_teamA={logo_teamA}
+                    logo_teamB={logo_teamB}
+                    addBet={addBet}
+                    removeBet={removeBet}
+                    showHelpAction={showHelpAction}
+                />
+            </li> : null)
+            arrayRotate(initialListBox, (eventIndex - 1) % 3);
+            setListBoxes(initialListBox);
         }
         onScroll();
     }, [listBoxes]);
 
-
     return (
-        <ul className="table-list d-flex table-bottom basic-mode" onScroll={onScroll}
-            ref={listRef}>
-            <RenderTeamNames teamA={teamA}
-                teamB={teamB}
-                startDate={startDate}
-                timezone={timezone} />
-            {listBoxes}
-            {showRight && <span className="d-flex align-items-center bet-scroller"
-                onClick={scrollRight}>
-                <span className='bet-scroller-icon'>
-                    <i className='fas fa-chevron-right' />
-                </span>
-            </span>}
-        </ul>
+        <div className='leagues-content basic-mode'>
+            <ul className="table-list d-flex table-bottom basic-mode" onScroll={onScroll}
+                ref={listRef}>
+                <RenderTeamNames teamA={teamA}
+                    teamB={teamB}
+                    startDate={startDate}
+                    timezone={timezone} />
+                {listBoxes}
+                {showRight && <span className="d-flex align-items-center bet-scroller"
+                    onClick={scrollRight}>
+                    <span className='bet-scroller-icon'>
+                        <i className='fas fa-chevron-right' />
+                    </span>
+                </span>}
+            </ul>
+        </div>
     );
 }
 

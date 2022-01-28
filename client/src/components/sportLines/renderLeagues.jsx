@@ -25,11 +25,13 @@ const RenderLeagues = (props) => {
         }
     }
 
+    let eventIndex = 0;
     const filteredLeagues = leagues.map(league => {
         const { name: leagueName, originId: leagueId, sportName, shortName } = league;
         const collapsed = collapsedLeague.find(league => league == leagueId);
 
         let events = collapsed ? null : league.events.map((event, idx) => {
+            eventIndex++;
             if (pro_mode) {
                 return (
                     <RenderProEvent key={idx}
@@ -47,6 +49,7 @@ const RenderLeagues = (props) => {
             }
             return (
                 <RenderBasicEvent key={idx}
+                    eventIndex={eventIndex}
                     showHelpAction={showHelpAction}
                     oddsFormat={oddsFormat}
                     leagueName={leagueName}
