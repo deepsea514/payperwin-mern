@@ -243,7 +243,8 @@ const RenderBasicEvent = (props) => {
     useEffect(() => {
         if (listBoxes.length == 0) {
             const initialListBox = [];
-            initialListBox.push(moneyline ? <li key='moneyline'>
+
+            moneyline && initialListBox.push(<li key='moneyline'>
                 <RenderMoneyline moneyline={moneyline}
                     sportName={sportName}
                     leagueId={leagueId}
@@ -260,9 +261,9 @@ const RenderBasicEvent = (props) => {
                     removeBet={removeBet}
                     showHelpAction={showHelpAction}
                 />
-            </li> : null);
+            </li>);
 
-            initialListBox.push(spreads && spreads[0] ? <li key='spread'>
+            spreads && spreads[0] && initialListBox.push(<li key='spread'>
                 <RenderSpread spread={spreads[0]}
                     sportName={sportName}
                     leagueId={leagueId}
@@ -279,9 +280,9 @@ const RenderBasicEvent = (props) => {
                     removeBet={removeBet}
                     showHelpAction={showHelpAction}
                 />
-            </li> : null)
+            </li>)
 
-            initialListBox.push(totals && totals[0] ? <li key='total'>
+            totals && totals[0] && initialListBox.push(<li key='total'>
                 <RenderTotal total={totals[0]}
                     sportName={sportName}
                     leagueId={leagueId}
@@ -298,7 +299,7 @@ const RenderBasicEvent = (props) => {
                     removeBet={removeBet}
                     showHelpAction={showHelpAction}
                 />
-            </li> : null)
+            </li>)
             arrayRotate(initialListBox, (eventIndex - 1) % 3);
             setListBoxes(initialListBox);
         }
