@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { getSportLeagues, toggleFavorites } from '../redux/services';
 import { getSportName } from '../libs/getSportName';
+import { toast } from 'react-toastify';
 
 const sportNameSpanStyle = {
     float: 'initial',
@@ -55,7 +56,19 @@ class SportsLeagues extends Component {
     toggleFavoriteLeague = (evt, league) => {
         const { user, getUser, shortName } = this.props;
         evt.preventDefault();
-        if (!user) return;
+        if (!user) {
+            toast('Please Login or Join to add your Favorites.', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark'
+            });
+            return;
+        }
         const sportName = getSportName(shortName)
         toggleFavorites({ sport: sportName, type: 'league', name: league.name })
             .then(() => {

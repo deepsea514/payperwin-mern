@@ -70,6 +70,7 @@ import Invite from '../pages/invite';
 import PromotionModal from '../components/promotionModal';
 import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
+import { ToastContainer, toast } from 'react-toastify';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -78,6 +79,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ShowAccountLinks = [
     '/bets',
@@ -431,6 +433,7 @@ class App extends Component {
         return (
             <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon.png'} />
+                <ToastContainer />
                 <Header
                     toggleField={this.toggleField}
                     user={user}
