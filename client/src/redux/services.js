@@ -319,3 +319,8 @@ export function getInboxDetail(id) {
 export function deleteInbox(id) {
     return FrontendAPI.delete(`/inbox/${id}`)
 }
+
+// Team
+export function getTeamMembers() {
+    return FrontendAPI.get('/members');
+}

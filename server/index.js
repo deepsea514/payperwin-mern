@@ -32,6 +32,7 @@ const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
+const Member = require('./models/member');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -5144,6 +5145,19 @@ expressApp.get(
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: 'Internal Server Error.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/members',
+    async (req, res) => {
+        try {
+            const members = await Member.find().sort({ priority: -1 });
+            return res.json(members);
+        } catch (error) {
+            console.error(error);
+            return res.json([]);
         }
     }
 )

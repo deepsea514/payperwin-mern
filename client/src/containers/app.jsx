@@ -71,6 +71,7 @@ import PromotionModal from '../components/promotionModal';
 import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
 import { ToastContainer, toast } from 'react-toastify';
+import Team from '../pages/team';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -157,7 +158,8 @@ const exceptDarkLinks = [
 const fullWidthRoutes = [
     '/loyalty',
     '/autobet-dashboard',
-    '/invite'
+    '/invite',
+    '/team',
 ];
 
 class App extends Component {
@@ -458,6 +460,7 @@ class App extends Component {
                                 <ErrorBoundary><Registration getUser={getUser} {...props} /></ErrorBoundary>} />
                             <Route path="/faq" render={(props) => <ErrorBoundary><Faq {...props} /></ErrorBoundary>} />
                             <Route path="/articles" render={(props) => <ErrorBoundary><Articles {...props} /></ErrorBoundary>} />
+                            <Route path="/team" component={Team} />
                             <Route path="/">
                                 {() => {
                                     return <div className="row">
