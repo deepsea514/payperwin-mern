@@ -94,8 +94,8 @@ export const reducer = persistReducer(
             case actionTypes.setDateFormat:
                 return { ...state, dateFormat: action.dateFormat };
 
-            case actionTypes.setDisplayMode:
-                return { ...state, display_mode: action.display_mode };
+            // case actionTypes.setDisplayMode:
+            //     return { ...state, display_mode: action.display_mode };
 
             case actionTypes.setTimezone:
                 return { ...state, timezone: action.timezone };
