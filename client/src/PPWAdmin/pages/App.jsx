@@ -37,6 +37,7 @@ import CreditsModule from '../modules/credit/pages';
 import Prediction from '../modules/prediction/pages';
 import GiftCardsModule from '../modules/giftcard/pages';
 import MismatchScoresModule from '../modules/mismatchscores/pages';
+import TeamModule from "../modules/team/pages";
 import { getUser } from '../redux/services';
 
 class App extends Component {
@@ -221,6 +222,11 @@ class App extends Component {
                     {this.isAvailable('bet_activities') && <Route path="/mismatch-scores" render={(props) =>
                         <ErrorBoundary><MismatchScoresModule {...props} /></ErrorBoundary>
                     } />}
+
+                    {/* Team Module */}
+                    <Route path="/team" render={(props) =>
+                        <ErrorBoundary><TeamModule {...props} /></ErrorBoundary>
+                    } />
 
                     <Redirect exact from="/" to="/dashboard" />
                     <Redirect to="/dashboard" />
