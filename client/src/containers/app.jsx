@@ -70,6 +70,7 @@ import Invite from '../pages/invite';
 import PromotionModal from '../components/promotionModal';
 import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
+import { ToastContainer, toast } from 'react-toastify';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -78,6 +79,7 @@ import '../style/dark.css';
 import '../style/style2.css';
 import '../style/style3.css';
 import '../style/responsive.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ShowAccountLinks = [
     '/bets',
@@ -209,6 +211,20 @@ class App extends Component {
             })
     }
 
+    componentDidUpdate(prevProps) {
+        const { pro_mode } = this.props;
+        const { pro_mode: prevProMode } = prevProps;
+        if (pro_mode !== prevProMode) {
+            this.setState({
+                betSlip: [],
+                teaserBetSlip: {
+                    type: null,
+                    betSlip: []
+                }
+            });
+        }
+    }
+
     getLatestOdds = () => {
         const { betSlip } = this.state;
         if (betSlip.length == 0) return;
@@ -268,23 +284,31 @@ class App extends Component {
         const { name, type, league, odds, pick, home, away, sportName, lineId, lineQuery, pickName, index, origin, subtype, sportsbook = false, live = false, originOdds } = bet;
         const newBet = { name, type, subtype, league, odds, pick, stake: 0, win: 0, home, away, sportName, lineId, lineQuery, pickName, index, origin, sportsbook, live, originOdds };
         let { betSlip } = this.state;
-        betSlip = betSlip.filter(bet => {
-            const exists = bet.lineId === lineQuery.lineId &&
-                bet.type === lineQuery.type &&
-                bet.index === lineQuery.index &&
-                bet.subtype == lineQuery.subtype &&
-                bet.pick == pick;
-            return !exists;
-        });
-        this.setState({
-            betSlip: update(betSlip, {
-                $push: [newBet]
-            })
-        });
+        const { pro_mode } = this.props;
+        if (pro_mode) {
+            betSlip = betSlip.filter(bet => {
+                const exists = bet.lineId === lineQuery.lineId &&
+                    bet.type === lineQuery.type &&
+                    bet.index === lineQuery.index &&
+                    bet.subtype == lineQuery.subtype &&
+                    bet.pick == pick;
+                return !exists;
+            });
+            this.setState({
+                betSlip: update(betSlip, {
+                    $push: [newBet]
+                })
+            });
+        } else {
+            this.setState({
+                betSlip: [newBet]
+            });
+        }
     }
 
     removeBet = (lineId, type, pick, index, subtype = null, all = false) => {
         const { betSlip } = this.state;
+        const { pro_mode } = this.props;
         if (all) {
             this.setState({
                 betSlip: update(betSlip, {
@@ -292,7 +316,13 @@ class App extends Component {
                 })
             });
         } else {
-            const indexOfBet = betSlip.findIndex((b) => b.lineId === lineId && b.pick === pick && b.type == type && (typeof index === 'number' ? b.index === index : true) && b.subtype == subtype);
+            const indexOfBet = betSlip.findIndex((b) => {
+                return (b.lineId === lineId &&
+                    b.pick === pick &&
+                    (pro_mode ? b.type == type : true) &&
+                    (typeof index === 'number' ? b.index === index : true) &&
+                    b.subtype == subtype)
+            });
             if (typeof indexOfBet === 'number') {
                 this.setState({
                     betSlip: update(betSlip, {
@@ -403,6 +433,7 @@ class App extends Component {
         return (
             <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon.png'} />
+                <ToastContainer />
                 <Header
                     toggleField={this.toggleField}
                     user={user}

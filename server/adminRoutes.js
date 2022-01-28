@@ -2359,7 +2359,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, bet);
                             }
                         }
                     }
@@ -2520,7 +2520,7 @@ adminRouter.post(
                                         }
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, payableToWin);
+                                    sendBetWinConfirmEmail(user, bet);
                                 }
                             } else if (betWin === false) {
                                 const user = await User.findById(userId);
@@ -2686,7 +2686,7 @@ adminRouter.post(
                                         await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                     }
                                     // TODO: email winner
-                                    sendBetWinConfirmEmail(user, payableToWin);
+                                    sendBetWinConfirmEmail(user, bet);
                                 }
                             } else if (betWin === false) {
                                 const betChanges = {
@@ -5060,7 +5060,7 @@ const matchResults = async (eventId, matchResult) => {
                                 afterBalance: afterBalance - betFee
                             });
                             await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
-                            sendBetWinConfirmEmail(user, payableToWin);
+                            sendBetWinConfirmEmail(user, bet);
                         }
                         // TODO: email winner
                     } else if (betWin === false) {
@@ -7333,7 +7333,6 @@ adminRouter.post(
 
             if (bet.isParlay) {
                 const results = req.body;
-                console.log("parley results", results);
                 const parlayQuery = JSON.parse(JSON.stringify(bet.parlayQuery));
                 const betpool = await ParlayBetPool.findOne({ $or: [{ homeBets: id }, { awayBets: id }] });
                 if (!betpool) {
@@ -7357,8 +7356,6 @@ adminRouter.post(
                         //Remove wiiner previous financial log
                         await FinancialLog.deleteOne({ _id: oldfinancialLog._id });
                     }
-
-
 
                     for (const query of parlayQuery) {
                         const lineQuery = query.lineQuery;
@@ -7446,7 +7443,7 @@ adminRouter.post(
                                     });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, bet);
                             }
                         }
                     }
@@ -7644,7 +7641,7 @@ adminRouter.post(
                                     }
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, bet);
                             }
                         } else if (betWin === false) {
                             const user = await User.findById(userId);
@@ -7823,7 +7820,7 @@ adminRouter.post(
                                     await user.update({ $inc: { balance: betAmount + payableToWin - betFee } });
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, bet);
                             }
                         } else if (betWin === false) {
                             const betChanges = {

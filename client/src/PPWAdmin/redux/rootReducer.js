@@ -26,6 +26,7 @@ import * as errorlogs from "../modules/errorlogs/redux/reducers";
 import * as credits from "../modules/credit/redux/reducers";
 import * as gift_cards from '../modules/giftcard/redux/reducers';
 import * as mismatch_scores from '../modules/mismatchscores/redux/reducers';
+import * as team from '../modules/team/redux/reducers';
 
 import * as adminUser from "./reducers";
 import * as affiliate from "../../Affiliate/redux/reducers";
@@ -57,6 +58,7 @@ export const rootReducer = combineReducers({
     credits: credits.reducer,
     gift_cards: gift_cards.reducer,
     mismatch_scores: mismatch_scores.reducer,
+    team: team.reducer,
 
     adminUser: adminUser.reducer,
     affiliate: affiliate.reducer,
@@ -89,8 +91,9 @@ export function* rootSaga() {
         credits.saga(),
         gift_cards.saga(),
         mismatch_scores.saga(),
-        admin.saga(),
+        team.saga(),
 
+        admin.saga(),
         affiliate.saga(),
         frontend.saga(),
     ]);

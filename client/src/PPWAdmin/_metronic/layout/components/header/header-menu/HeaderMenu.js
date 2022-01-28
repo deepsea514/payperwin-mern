@@ -142,6 +142,16 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                                             <span className="menu-text">Error Logs</span>
                                         </NavLink>
                                     </li>}
+
+                                    {adminUser && <li className={`menu-item ${getMenuItemActive("/team", false)}`}
+                                        aria-haspopup="true">
+                                        <Link className="menu-link" to="/team/">
+                                            <span className="svg-icon menu-icon">
+                                                <SVG src={"/media/svg/icons/General/User.svg"} />
+                                            </span>
+                                            <span className="menu-text">Team Members</span>
+                                        </Link>
+                                    </li>}
                                 </ul>
                             </div>
                         </li>

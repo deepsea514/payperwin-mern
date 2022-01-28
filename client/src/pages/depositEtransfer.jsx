@@ -179,6 +179,7 @@ class DepositETransfer extends Component {
                         {depositSuccess && <div>
                             <center><h3><FormattedMessage id="PAGES.DEPOSIT.PENDING" /></h3></center>
                             <p><FormattedMessage id="PAGES.DEPOSIT.PENDINGMSG" values={{ email: <b style={{ borderBottom: '1px solid #000' }}>{user.email}</b> }} /></p>
+                            <p>You will soon receive an email from <b>BNA Smart Payment System</b>. Please follow the link in their email to complete the deposit. Be sure to check your spam folder.</p>
                         </div>}
                     </div>
                 </div>

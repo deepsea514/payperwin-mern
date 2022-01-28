@@ -51,10 +51,7 @@ header {
 
 .table-list li:nth-child(1) {
     width: 180px;
-}
-
-.basic-mode.table-list li:nth-child(1) {
-    width: 280px;
+    min-width: 180px;
 }
 
 .box-odds {
@@ -148,6 +145,7 @@ a.log-in-btn {
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-bottom: none;
+    position: relative;
 }
 
 .leagues-content::-webkit-scrollbar {
@@ -161,6 +159,15 @@ a.log-in-btn {
 
 .table-list.basic-mode {
     border-bottom: #888 2px solid;
+    max-width: 100%;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-bottom: none;
+}
+
+.table-list.basic-mode::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-pane-leagues {
@@ -189,6 +196,10 @@ a.log-in-btn {
     padding-bottom: 10px;
     overflow-y: auto;
     max-height: 350px;
+}
+
+.bet-slip-list.basic-mode {
+    min-height: 360px;
 }
 
 .bet-container {
@@ -344,6 +355,11 @@ a.log-in-btn {
     padding: 4px 8px;
     color: rgb(11, 20, 34);
     margin-top: 10px;
+}
+
+.bet-stake.full-width, .bet-win.full-width {
+    width: 100%;
+    margin-left: 0;
 }
 
 .bet-stake::placeholder, .bet-win::placeholder {
@@ -2153,11 +2169,6 @@ a.fav-link:hover {
 
 .view-modal-link:hover {
     color: inherit;
-}
-
-.basic-mode .table-bottom li:first-child {
-    display: flex;
-    align-items: center;
 }
 
 .popover {

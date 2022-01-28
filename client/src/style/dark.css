@@ -90,7 +90,7 @@
     background-color: white;
 }
 
-.main-section.dark .total {
+.main-section.dark .total-content {
     background: #2d2d2d;
 }
 
@@ -113,7 +113,7 @@
 
 .main-section.dark .table-bottom {
     background: #121212;
-    border-bottom: 1px solid hsla(0, 0%, 100%, .2);
+    border-bottom: 2px solid hsla(0, 0%, 100%, .2);
 }
 
 .main-section.dark .table-list li:first-child a {
