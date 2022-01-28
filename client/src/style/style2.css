@@ -4265,8 +4265,13 @@ a:hover {
     cursor: pointer;
 }
 
+.basic-box-odds .bet-type-wrapper {
+    font-size: 10px;
+    align-items: center;
+}
+
 .basic-box-odds .bet-type {
-    font-size: 8px;
+    font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 0px 6px;

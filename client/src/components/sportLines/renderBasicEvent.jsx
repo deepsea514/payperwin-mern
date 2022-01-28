@@ -55,9 +55,12 @@ const RenderMoneyline = (props) => {
                     origin: origin,
                     subtype: null
                 })}>
-            <span className='bet-type moneyline'>
-                <span onClick={onClickBetType}>moneyline <i className='ml-1 fas fa-question-circle' /></span>
-            </span>
+            <div className='bet-type-wrapper d-flex justify-content-center'>
+                <span className='bet-type moneyline'>
+                    <span onClick={onClickBetType}>moneyline</span>
+                </span>
+                <i className='ml-2 fas fa-question-circle' />
+            </div>
             <span className='bet-type-logo moneyline'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
                     className='bet-type-team'
@@ -121,9 +124,12 @@ const RenderSpread = (props) => {
                     origin: origin,
                     subtype: null
                 })}>
-            <span className='bet-type spread'>
-                <span onClick={onClickBetType}>points spread <i className='ml-1 fas fa-question-circle' /></span>
-            </span>
+            <div className='bet-type-wrapper d-flex justify-content-center'>
+                <span className='bet-type spread'>
+                    <span onClick={onClickBetType}>points spread</span>
+                </span>
+                <i className='ml-2 fas fa-question-circle' />
+            </div>
             <span className='bet-type-logo spread'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
                     className='bet-type-team'
@@ -185,9 +191,12 @@ const RenderTotal = (props) => {
                     origin: origin,
                     subtype: null
                 })}>
-            <span className='bet-type total'>
-                <span onClick={onClickBetType}>total score <i className='ml-1 fas fa-question-circle' /></span>
-            </span>
+            <div className='bet-type-wrapper d-flex justify-content-center'>
+                <span className='bet-type total'>
+                    <span onClick={onClickBetType}>total score</span>
+                </span>
+                <i className='ml-2 fas fa-question-circle' />
+            </div>
             <span className='bet-type-logo total'>
                 {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
                     className='bet-type-team'
