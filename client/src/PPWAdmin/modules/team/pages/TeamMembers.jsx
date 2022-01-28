@@ -50,6 +50,11 @@ class TeamMembers extends React.Component {
                             <div className="card-title">
                                 <h3 className="card-label">Wager Feeds</h3>
                             </div>
+                            <div className="card-toolbar">
+                                <Link to={"/create"} className="btn btn-success font-weight-bolder font-size-sm mr-2">
+                                    Add a New Member
+                                </Link>
+                            </div>
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
