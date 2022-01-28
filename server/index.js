@@ -3558,8 +3558,8 @@ expressApp.post('/deposit',
                         const msg = {
                             to: user.email,
                             from: `${fromEmailName} <${fromEmailAddress}>`,
-                            subject: "E-Transfer Deposit Instructions",
-                            text: `E-Transfer Deposit Instructions`,
+                            subject: "🔥 E-Transfer Deposit Instructions",
+                            text: `🔥 E-Transfer Deposit Instructions`,
                             html: simpleresponsive(
                                 `We have received your request for an e-Transfer deposit. You will soon receive an email from <b>“BNA Smart Payment System“</b>. Please follow the link in their email to complete the deposit. Be sure to check your spam folder.`,
                             ),

@@ -101,7 +101,8 @@
     }
 
     .table-list li:nth-child(1) {
-        width: 140px !important;
+        width: 140px;
+        min-width: 140px;
     }
 
     .flex-wr {
@@ -132,6 +133,26 @@
     .table-list li:nth-child(4) {
         width: 72px;
         min-width: 72px;
+    }
+
+    .basic-mode .table-list li:nth-child(2) {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .basic-mode .table-list li:nth-child(3) {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .basic-mode .table-list li:nth-child(4) {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .basic-box-odds .bet-type {
+        font-size: 10px;
+        letter-spacing: 2px;
     }
 
     .box-odds:not(:first-child) {
@@ -186,6 +207,10 @@
 
     .leagues-content {
         overflow: hidden;
+    }
+
+    .leagues-content.basic-mode {
+        overflow: auto;
     }
 
     .sports-scroller {

@@ -7,6 +7,7 @@ import BetParlay from './betparlay';
 import BetTeaser from './betteaser';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { placeBets, placeParlayBets, placeTeaserBets } from '../redux/services';
+import BetBasic from './bet_basic';
 
 class BetSlip extends Component {
     constructor(props) {
@@ -296,7 +297,7 @@ class BetSlip extends Component {
                                     Teaser
                                 </div>
                             </div>}
-                            {betSlipType == 'single' && <div className="bet-slip-list">
+                            {betSlipType == 'single' && <div className={`bet-slip-list ${pro_mode ? '' : 'basic-mode'}`}>
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
@@ -317,12 +318,27 @@ class BetSlip extends Component {
                                     </div>
                                 </div>}
                                 {betSlip.length > 0 ?
-                                    betSlip.map(bet => <Bet
-                                        bet={bet}
-                                        removeBet={removeBet}
-                                        updateBet={updateBet}
-                                        betSlipOdds={betSlipOdds}
-                                        key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
+                                    betSlip.map(bet => (pro_mode ?
+                                        (<Bet
+                                            bet={bet}
+                                            removeBet={removeBet}
+                                            updateBet={updateBet}
+                                            betSlipOdds={betSlipOdds}
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />) :
+                                        (<BetBasic
+                                            bet={bet}
+                                            removeBet={removeBet}
+                                            updateBet={updateBet}
+                                            betSlipOdds={betSlipOdds}
+                                            placeBets={this.placeBets}
+                                            user={user}
+                                            showLoginModalAction={showLoginModalAction}
+                                            toggleField={toggleField}
+                                            errors={errors}
+                                            submitting={submitting}
+                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
+                                    )
+                                    )
                                     : (
                                         <div className="no-bets">
                                             <h4><FormattedMessage id="COMPONENTS.NOBET" /></h4>
@@ -402,7 +418,7 @@ class BetSlip extends Component {
                                         </div>
                                     )}
                             </div>}
-                            <div className="total">
+                            {pro_mode && <div className="total-content">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         <FormattedMessage id="COMPONENTS.TOTAL.RISK" />
@@ -435,7 +451,7 @@ class BetSlip extends Component {
                                     }>
                                     {user ? <FormattedMessage id="COMPONENTS.BETSLIP.PLACEALL" /> : <FormattedMessage id="COMPONENTS.BETSLIP.LOGIN" />}
                                 </button>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 </div>

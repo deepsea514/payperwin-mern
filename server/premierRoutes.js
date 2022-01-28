@@ -162,8 +162,8 @@ premierRouter.post('/etransfer-deposit',
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: adminEmailAddress,
-                    subject: ' E-Transfer Deposit Not Completed',
-                    text: ` E-Transfer Deposit Not Completed`,
+                    subject: '🔥 E-Transfer Deposit Not Completed',
+                    text: `🔥 E-Transfer Deposit Not Completed`,
                     html: simpleresponsive(
                         `<ul>
                             <li>Email: <b>${user.email}</b></li>
@@ -259,8 +259,8 @@ premierRouter.post('/etransfer-withdraw',
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: adminEmailAddress,
-                    subject: ' E-Transfer Withdraw Not Completed',
-                    text: ` E-Transfer Withdraw Not Completed`,
+                    subject: '🔥 E-Transfer Withdraw Not Completed',
+                    text: `🔥 E-Transfer Withdraw Not Completed`,
                     html: simpleresponsive(
                         `<ul>
                             <li>Email: <b>${user.email}</b></li>

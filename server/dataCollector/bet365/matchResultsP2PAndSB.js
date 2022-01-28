@@ -224,7 +224,7 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                                     }
                                 }
                                 // TODO: email winner
-                                sendBetWinConfirmEmail(user, payableToWin);
+                                sendBetWinConfirmEmail(user, bet);
                             }
                         } else if (betWin === false) {
                             const betChanges = {
