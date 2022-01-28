@@ -103,7 +103,6 @@ class BetBasic extends Component {
                             'This is a bet on the total number of points scored by both teams.'
                         }
                     </div>
-                    <div className="bet-type-league mt-2"><a href='https://wa.me/message/TICMRPXRFQRCN1' target="_blank" className="bet-max-win">Need Help?</a></div>
                     <div className='mt-3'>STEP 1: SELECT A TEAM</div>
                     <div className='d-flex justify-content-center'>
                         <span className={`bet-type-pick ${pick == 'home' ? 'selected' : ''}`} onClick={() => updateBet(
