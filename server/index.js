@@ -3930,7 +3930,7 @@ expressApp.post(
                 {
                     $match: searchObj
                 },
-                { $sort: { "createdAt": -1 } },
+                { $sort: { "updatedAt": -1 } },
                 { $skip: perPage * page },
                 { $limit: 20 }
             ]);
