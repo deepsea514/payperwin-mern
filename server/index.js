@@ -4107,7 +4107,7 @@ expressApp.post(
                 }
             }
 
-            const ticket = await Ticket.create({
+            await Ticket.create({
                 email,
                 phone,
                 subject,
