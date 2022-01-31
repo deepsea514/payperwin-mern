@@ -7,7 +7,6 @@ import CustomPagination from "../../../../components/CustomPagination.jsx";
 import config from "../../../../../../../config.json";
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
-const FinancialStatus = config.FinancialStatus;
 
 class TransactionHistory extends React.Component {
     constructor(props) {
