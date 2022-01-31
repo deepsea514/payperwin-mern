@@ -71,6 +71,7 @@ import PromotionModal from '../components/promotionModal';
 import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
 import { ToastContainer, toast } from 'react-toastify';
+import Team from '../pages/team';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -112,7 +113,6 @@ const ShowAccountLinks = [
     '/autobet-dashboard',
     '/autobet-settings',
     '/loyalty',
-    '/support',
     '/deposit-giftcard',
     '/invite'
 ];
@@ -145,7 +145,6 @@ const exceptDarkLinks = [
     '/verification',
     '/phone-verification',
     '/cashback',
-    '/support',
     '/custom-bets',
     '/autobet-dashboard',
     '/autobet-settings',
@@ -157,7 +156,8 @@ const exceptDarkLinks = [
 const fullWidthRoutes = [
     '/loyalty',
     '/autobet-dashboard',
-    '/invite'
+    '/invite',
+    '/team',
 ];
 
 class App extends Component {
@@ -188,10 +188,8 @@ class App extends Component {
 
     componentDidMount() {
         this._Mounted = true;
-        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction, getBetStatusAction } = this.props;
+        const { getUser, getAdminMessageAction, getBetStatusAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
-        setInterval(() => setDisplayModeBasedOnSystem(), 1000);
-        setDisplayModeBasedOnSystem();
 
         getUser(this.redirectToDashboard);
         getAdminMessageAction();
@@ -414,7 +412,6 @@ class App extends Component {
             history,
             location,
             require_2fa,
-            dark_light,
             showLoginModalAction,
             showPromotion,
             showPromotionAction,
@@ -432,7 +429,7 @@ class App extends Component {
         const verified = user && user.roles.verified;
 
         return (
-            <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
+            <div className={`background dark-theme ${!exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon.png'} />
                 <ToastContainer />
                 <Header
@@ -448,7 +445,7 @@ class App extends Component {
                     history={history}
                     showLoginModalAction={showLoginModalAction}
                     toggleField={this.toggleField} />}
-                <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
+                <section className={`main-section ${!exceptDark ? 'dark' : ''}`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
                     {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} />}
@@ -458,6 +455,7 @@ class App extends Component {
                                 <ErrorBoundary><Registration getUser={getUser} {...props} /></ErrorBoundary>} />
                             <Route path="/faq" render={(props) => <ErrorBoundary><Faq {...props} /></ErrorBoundary>} />
                             <Route path="/articles" render={(props) => <ErrorBoundary><Articles {...props} /></ErrorBoundary>} />
+                            <Route path="/team" component={Team} />
                             <Route path="/">
                                 {() => {
                                     return <div className="row">
@@ -675,9 +673,9 @@ class App extends Component {
                                                 {user && <Route path="/custom-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>
                                                 } />}
-                                                {user && <Route path="/support" render={(props) =>
+                                                <Route path="/support" render={(props) =>
                                                     <ErrorBoundary><ContactUs {...props} /></ErrorBoundary>
-                                                } />}
+                                                } />
                                                 {user && <Route path="/autobet-dashboard" render={(props) =>
                                                     <ErrorBoundary><AutobetDashboard {...props} user={user} /></ErrorBoundary>
                                                 } />}
@@ -740,7 +738,7 @@ class App extends Component {
                         <GoToTop />
                     </div>
                 </section>
-                <Footer user={user} display_mode={dark_light} />
+                <Footer user={user} />
                 {!sidebarShowAccountLinks &&
                     <BetSlip
                         betSlip={betSlip}
@@ -767,7 +765,6 @@ const mapStateToProps = (state) => ({
     pro_mode: state.frontend.pro_mode,
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
-    dark_light: state.frontend.dark_light,
     user: state.frontend.user,
     betEnabled: state.frontend.betEnabled,
     showPromotion: state.frontend.showPromotion,

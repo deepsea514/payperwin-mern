@@ -80,11 +80,6 @@ class Header extends Component {
         this._isMounted && this.setState({ oddsDropDownOpen: false });
     }
 
-    setDisplayMode = (display_mode) => {
-        const { setDisplayMode } = this.props;
-        setDisplayMode(display_mode);
-    }
-
     setLanguage = (lang) => {
         const { setLanguage } = this.props;
         setLanguage(lang);
@@ -313,7 +308,6 @@ const mapStateToProps = (state) => ({
     search: state.frontend.search,
     timezone: state.frontend.timezone,
     acceptCookie: state.frontend.acceptCookie,
-    dark_light: state.frontend.dark_light,
     showLoginModal: state.frontend.showLoginModal,
     showForgotPasswordModal: state.frontend.showForgotPasswordModal,
     lang: state.frontend.lang,

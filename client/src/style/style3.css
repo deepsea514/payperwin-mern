@@ -199,7 +199,7 @@ a.log-in-btn {
 }
 
 .bet-slip-list.basic-mode {
-    min-height: 360px;
+    min-height: 400px;
 }
 
 .bet-container {
@@ -2187,4 +2187,87 @@ a.fav-link:hover {
 
 .popover {
     z-index: 1;
+}
+
+.member-wrapper {}
+
+.member-photo {
+    width: 70%;
+    height: 70%;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 100px;
+}
+
+.member-photo-detail {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    padding: 0.25rem;
+    background-color: #2d2d2d;
+    border: 1px solid #303030;
+    border-radius: 0.25rem;
+}
+
+.member-position {
+    color: orange;
+}
+
+.member-short-description {
+    font-style: italic;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.member-back-button {
+    font-size: 16px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #ddd;
+}
+
+.member-back-button:hover {
+    margin-top: 16px;
+    color: #FFF;
+}
+
+.main-section .react-tel-input .flag-dropdown {
+    background: #121212;
+    border: 1px solid #000;
+    border-radius: 3px 0 0 3px;
+}
+
+.main-section .react-tel-input .flag-dropdown:hover {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .flag-dropdown.open .selected-flag,
+.main-section .react-tel-input .selected-flag:hover,
+.main-section .react-tel-input .selected-flag:focus {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .country-list {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .country-list .country.highlight,
+.main-section .react-tel-input .country-list .country:hover {
+    background: #121212;
+    border-bottom: none;
+}
+
+.jodit_theme_custom .jodit-workplace {
+    background-color: #121212;
+}
+
+.jodit_theme_custom .jodit-toolbar__box,
+.jodit_theme_custom .jodit-status-bar,
+.jodit_theme_custom .jodit-editor__resize {
+    background: #121212;
+}
+
+.jodit_theme_custom .jodit-toolbar__box svg {
+    fill: #FFF;
 }

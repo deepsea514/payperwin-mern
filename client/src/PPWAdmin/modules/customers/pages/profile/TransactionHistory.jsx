@@ -7,7 +7,6 @@ import CustomPagination from "../../../../components/CustomPagination.jsx";
 import config from "../../../../../../../config.json";
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
-const FinancialStatus = config.FinancialStatus;
 
 class TransactionHistory extends React.Component {
     constructor(props) {
@@ -18,7 +17,7 @@ class TransactionHistory extends React.Component {
             transactions: [],
             total: 0,
             page: 1,
-            perPage: 30,
+            perPage: 100,
         }
     }
 
@@ -41,7 +40,7 @@ class TransactionHistory extends React.Component {
                     transactions: [],
                     total: 0,
                     page: 1,
-                    perPage: 30,
+                    perPage: 100,
                 });
             })
             .finally(() => this.setState({ loading: false }));
@@ -57,38 +56,13 @@ class TransactionHistory extends React.Component {
 
     getInOut = (type) => {
         switch (type) {
-            case "deposit":
-                return '';
-            case "signupbonus":
-                return "+"
             case "depositheld":
-                return '-';
             case 'withdraw':
-                return '-';
             case 'withdrawfee':
-                return `-`;
-            case 'cashback':
-                return '+';
-            case 'betwon':
-                return '+';
             case 'betfee':
-                return '-';
-            case 'betcancel':
-                return '+';
-            case 'betdraw':
-                return '+';
-            case "prize":
-                return '+';
             case 'bet':
-                return '-';
-            case 'betrefund':
-                return '+';
-            case 'transfer-out':
-                return '+';
             case 'transfer-in':
                 return '-';
-            case 'invitebonus':
-                return '+';
             default:
                 return '';
         }
@@ -134,12 +108,22 @@ class TransactionHistory extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {this.getInOut(transaction.financialtype)} ${transaction.amount}
+                        {transaction.betId ? transaction.betId.pickName + ' @' + transaction.betId.pickOdds : null}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className=" font-weight-500">
+                        {this.getInOut(transaction.financialtype)}${transaction.amount}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
                         {transaction.financialtype}
+                    </span>
+                </td>
+                <td className="pl-0">
+                    <span className=" font-weight-500">
+                        {transaction.uniqid}
                     </span>
                 </td>
                 <td className="pl-0">
@@ -191,10 +175,12 @@ class TransactionHistory extends React.Component {
                                 <tr>
                                     <th className="p-0">#</th>
                                     <th className="p-0">Time</th>
+                                    <th className="p-0">Game</th>
                                     <th className="p-0">Amount</th>
                                     <th className="p-0">Financial Type</th>
-                                    <th className="p-0">Balance Before Transaction</th>
-                                    <th className="p-0">Balance After Transaction</th>
+                                    <th className="p-0">Tx ID</th>
+                                    <th className="p-0">Balance Before</th>
+                                    <th className="p-0">Balance After</th>
                                 </tr>
                             </thead>
                             <tbody>
