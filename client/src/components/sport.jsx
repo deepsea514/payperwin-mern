@@ -199,7 +199,7 @@ class Sport extends Component {
                 </div>
             )
         }
-        const { leagues } = data;
+        const { leagues, origin } = data;
         return (
             <div>
                 {!hideBreacrumb && <SportsBreadcrumb shortName={shortName}
@@ -214,6 +214,7 @@ class Sport extends Component {
                 />}
                 {showHelp && <BasicModal showHelp={showHelp} onClose={() => this.setState({ showHelp: null })} />}
                 {liveData && pro_mode && <RenderLiveEvents liveData={liveData}
+                    origin={origin}
                     timezone={timezone} />}
 
                 <RenderLeagues leagues={leagues}
@@ -227,6 +228,7 @@ class Sport extends Component {
                     oddsFormat={oddsFormat}
                     addBet={this.addBet}
                     removeBet={removeBet}
+                    origin={origin}
                     showHelpAction={(type) => this.setState({ showHelp: type })} />
             </div >
         );

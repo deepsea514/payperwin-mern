@@ -221,7 +221,7 @@ const RenderBasicEvent = (props) => {
 
     const {
         betSlip, timezone, addBet, removeBet, event, sportName, leagueId, leagueName,
-        showHelpAction, eventIndex
+        showHelpAction, eventIndex, origin
     } = props;
 
     const { teamA, teamB, startDate, lines, originId: eventId, logo_teamA, logo_teamB } = event;
