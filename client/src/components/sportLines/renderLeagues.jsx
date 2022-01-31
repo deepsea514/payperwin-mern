@@ -9,7 +9,7 @@ const RenderLeagues = (props) => {
     const {
         leagues, collapsedLeague, toggleCollapseLeague, pro_mode, betSlip,
         timezone, location, dateSelected, onChangeDate, oddsFormat, addBet,
-        showHelpAction, removeBet
+        showHelpAction, removeBet, origin
     } = props;
     const { pathname } = location;
 
@@ -44,6 +44,7 @@ const RenderLeagues = (props) => {
                         betSlip={betSlip}
                         timezone={timezone}
                         addBet={addBet}
+                        origin={origin}
                         removeBet={removeBet} />
                 );
             }
@@ -60,6 +61,7 @@ const RenderLeagues = (props) => {
                     betSlip={betSlip}
                     timezone={timezone}
                     addBet={addBet}
+                    origin={origin}
                     removeBet={removeBet} />
             );
         });
