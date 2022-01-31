@@ -190,10 +190,8 @@ class App extends Component {
 
     componentDidMount() {
         this._Mounted = true;
-        const { setDisplayModeBasedOnSystem, getUser, getAdminMessageAction, getBetStatusAction } = this.props;
+        const { getUser, getAdminMessageAction, getBetStatusAction } = this.props;
         window.addEventListener("scroll", this.updateScrollStatus);
-        setInterval(() => setDisplayModeBasedOnSystem(), 1000);
-        setDisplayModeBasedOnSystem();
 
         getUser(this.redirectToDashboard);
         getAdminMessageAction();
@@ -416,7 +414,6 @@ class App extends Component {
             history,
             location,
             require_2fa,
-            dark_light,
             showLoginModalAction,
             showPromotion,
             showPromotionAction,
@@ -434,7 +431,7 @@ class App extends Component {
         const verified = user && user.roles.verified;
 
         return (
-            <div className={`background dark-theme ${dark_light == 'dark' && !exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
+            <div className={`background dark-theme ${!exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon.png'} />
                 <ToastContainer />
                 <Header
@@ -450,7 +447,7 @@ class App extends Component {
                     history={history}
                     showLoginModalAction={showLoginModalAction}
                     toggleField={this.toggleField} />}
-                <section className={`main-section ${dark_light == 'dark' && !exceptDark ? 'dark' : ''}`}>
+                <section className={`main-section ${!exceptDark ? 'dark' : ''}`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
                     {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} />}
@@ -743,7 +740,7 @@ class App extends Component {
                         <GoToTop />
                     </div>
                 </section>
-                <Footer user={user} display_mode={dark_light} />
+                <Footer user={user} />
                 {!sidebarShowAccountLinks &&
                     <BetSlip
                         betSlip={betSlip}
@@ -770,7 +767,6 @@ const mapStateToProps = (state) => ({
     pro_mode: state.frontend.pro_mode,
     oddsFormat: state.frontend.oddsFormat,
     require_2fa: state.frontend.require_2fa,
-    dark_light: state.frontend.dark_light,
     user: state.frontend.user,
     betEnabled: state.frontend.betEnabled,
     showPromotion: state.frontend.showPromotion,

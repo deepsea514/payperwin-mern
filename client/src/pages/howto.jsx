@@ -21,7 +21,6 @@ class HowTo extends Component {
     }
 
     render() {
-        const { intl, dark_light } = this.props;
         return (
             <div className="col-in">
                 <div className="how-it-works">
@@ -164,7 +163,6 @@ class HowTo extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    dark_light: state.frontend.dark_light,
 });
 
 export default connect(mapStateToProps, null)(injectIntl(HowTo))

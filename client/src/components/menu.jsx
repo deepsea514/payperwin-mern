@@ -54,8 +54,8 @@ class Menu extends Component {
 
     render() {
         const {
-            location, toggleField, oddsFormat, display_mode, lang,
-            setOddsFormat, setDisplayMode, setLanguage, user,
+            location, toggleField, oddsFormat,
+            setOddsFormat, setLanguage, user,
             intl, showLoginModalAction
         } = this.props;
         const { pathname } = location;
@@ -341,13 +341,6 @@ class Menu extends Component {
                                 <option value="decimal">{intl.formatMessage({ id: "COMPONENTS.MENU.ODDS.DECIMAL" })}</option>
                             </select>
                         </li>
-                        {/* <li>
-                            <FormattedMessage id="COMPONENTS.DISPLAY" />
-                            <select value={display_mode} onChange={(evt) => setDisplayMode(evt.target.value)}>
-                                <option value="light">{intl.formatMessage({ id: "COMPONENTS.DISPLAY.LIGHT" })}</option>
-                                <option value="dark">{intl.formatMessage({ id: "COMPONENTS.DISPLAY.DARK" })}</option>
-                            </select>
-                        </li> */}
                     </ul>
                 </div>
             </>
@@ -357,7 +350,6 @@ class Menu extends Component {
 
 const mapStateToProps = (state) => ({
     oddsFormat: state.frontend.oddsFormat,
-    display_mode: state.frontend.display_mode,
     lang: state.frontend.lang,
 });
 

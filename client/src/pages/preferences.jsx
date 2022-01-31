@@ -72,7 +72,6 @@ class Preferences extends Component {
             lang,
             dateFormat,
             timezone,
-            display_mode,
             notification_settings,
             user,
             intl
@@ -83,7 +82,6 @@ class Preferences extends Component {
             lang,
             dateFormat,
             timezone,
-            display_mode: display_mode ? display_mode : 'system',
             notification_settings: notification_settings ? {
                 win_confirmation: notification_settings.win_confirmation ? notification_settings.win_confirmation : { email: true, sms: true },
                 lose_confirmation: notification_settings.lose_confirmation ? notification_settings.lose_confirmation : { email: false, sms: false },
@@ -106,7 +104,6 @@ class Preferences extends Component {
                 .required("You shuld select Date Format."),
             lang: Yup.string()
                 .required("You shuld select Language."),
-            display_mode: Yup.string(),
             notification_settings: Yup.object().shape({
                 win_confirmation: Yup.object().shape({
                     email: Yup.bool().default(true),
@@ -287,19 +284,6 @@ class Preferences extends Component {
                                             ) : null}
                                         </Form.Group>
 
-                                        <Form.Group>
-                                            <Form.Label>Display Mode</Form.Label>
-                                            <FormControl component="fieldset">
-                                                <RadioGroup
-                                                    name="display_mode"
-                                                    row
-                                                    {...formik.getFieldProps("display_mode")}>
-                                                    <FormControlLabel value="light" control={<Radio />} label="Light Mode" />
-                                                    <FormControlLabel value="dark" control={<Radio />} label="Dark Mode" />
-                                                    <FormControlLabel value="system" control={<Radio />} label="System Base Mode" />
-                                                </RadioGroup>
-                                            </FormControl>
-                                        </Form.Group>
                                     </div>
                                     <br />
 
@@ -568,7 +552,6 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     dateFormat: state.frontend.dateFormat,
     timezone: state.frontend.timezone,
-    display_mode: state.frontend.display_mode,
     notification_settings: state.frontend.notification_settings
 });
 
