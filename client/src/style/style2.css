@@ -759,6 +759,7 @@ footer ul li a i {
 .mobile-menu .menu-title {
     color: white;
     font-size: 2rem !important;
+    font-weight: 300;
 }
 
 .mobile-menu-quick-icon-container {

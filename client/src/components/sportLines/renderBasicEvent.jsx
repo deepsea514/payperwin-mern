@@ -221,7 +221,7 @@ const RenderBasicEvent = (props) => {
 
     const {
         betSlip, timezone, addBet, removeBet, event, sportName, leagueId, leagueName,
-        showHelpAction, eventIndex
+        showHelpAction, eventIndex, origin
     } = props;
 
     const { teamA, teamB, startDate, lines, originId: eventId, logo_teamA, logo_teamB } = event;
@@ -250,70 +250,68 @@ const RenderBasicEvent = (props) => {
     }
 
     useEffect(() => {
-        if (listBoxes.length == 0) {
-            const initialListBox = [];
+        const initialListBox = [];
 
-            moneyline && initialListBox.push(<li key='moneyline'>
-                <RenderMoneyline moneyline={moneyline}
-                    sportName={sportName}
-                    leagueId={leagueId}
-                    eventId={eventId}
-                    lineId={lineId}
-                    betSlip={betSlip}
-                    teamA={teamA}
-                    teamB={teamB}
-                    leagueName={leagueName}
-                    origin={origin}
-                    logo_teamA={logo_teamA}
-                    logo_teamB={logo_teamB}
-                    addBet={addBet}
-                    removeBet={removeBet}
-                    showHelpAction={showHelpAction}
-                />
-            </li>);
+        moneyline && initialListBox.push(<li key='moneyline'>
+            <RenderMoneyline moneyline={moneyline}
+                sportName={sportName}
+                leagueId={leagueId}
+                eventId={eventId}
+                lineId={lineId}
+                betSlip={betSlip}
+                teamA={teamA}
+                teamB={teamB}
+                leagueName={leagueName}
+                origin={origin}
+                logo_teamA={logo_teamA}
+                logo_teamB={logo_teamB}
+                addBet={addBet}
+                removeBet={removeBet}
+                showHelpAction={showHelpAction}
+            />
+        </li>);
 
-            spreads && spreads[0] && initialListBox.push(<li key='spread'>
-                <RenderSpread spread={spreads[0]}
-                    sportName={sportName}
-                    leagueId={leagueId}
-                    eventId={eventId}
-                    lineId={lineId}
-                    betSlip={betSlip}
-                    teamA={teamA}
-                    teamB={teamB}
-                    leagueName={leagueName}
-                    origin={origin}
-                    logo_teamA={logo_teamA}
-                    logo_teamB={logo_teamB}
-                    addBet={addBet}
-                    removeBet={removeBet}
-                    showHelpAction={showHelpAction}
-                />
-            </li>)
+        spreads && spreads[0] && initialListBox.push(<li key='spread'>
+            <RenderSpread spread={spreads[0]}
+                sportName={sportName}
+                leagueId={leagueId}
+                eventId={eventId}
+                lineId={lineId}
+                betSlip={betSlip}
+                teamA={teamA}
+                teamB={teamB}
+                leagueName={leagueName}
+                origin={origin}
+                logo_teamA={logo_teamA}
+                logo_teamB={logo_teamB}
+                addBet={addBet}
+                removeBet={removeBet}
+                showHelpAction={showHelpAction}
+            />
+        </li>)
 
-            totals && totals[0] && initialListBox.push(<li key='total'>
-                <RenderTotal total={totals[0]}
-                    sportName={sportName}
-                    leagueId={leagueId}
-                    eventId={eventId}
-                    lineId={lineId}
-                    betSlip={betSlip}
-                    teamA={teamA}
-                    teamB={teamB}
-                    leagueName={leagueName}
-                    origin={origin}
-                    logo_teamA={logo_teamA}
-                    logo_teamB={logo_teamB}
-                    addBet={addBet}
-                    removeBet={removeBet}
-                    showHelpAction={showHelpAction}
-                />
-            </li>)
-            arrayRotate(initialListBox, (eventIndex - 1) % initialListBox.length);
-            setListBoxes(initialListBox);
-        }
+        totals && totals[0] && initialListBox.push(<li key='total'>
+            <RenderTotal total={totals[0]}
+                sportName={sportName}
+                leagueId={leagueId}
+                eventId={eventId}
+                lineId={lineId}
+                betSlip={betSlip}
+                teamA={teamA}
+                teamB={teamB}
+                leagueName={leagueName}
+                origin={origin}
+                logo_teamA={logo_teamA}
+                logo_teamB={logo_teamB}
+                addBet={addBet}
+                removeBet={removeBet}
+                showHelpAction={showHelpAction}
+            />
+        </li>)
+        arrayRotate(initialListBox, (eventIndex - 1) % initialListBox.length);
+        setListBoxes(initialListBox);
         onScroll();
-    }, [listBoxes]);
+    }, [betSlip]);
 
     return (
         <div className='leagues-content basic-mode'>

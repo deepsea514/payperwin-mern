@@ -27,7 +27,7 @@ const emptyBoxLine = (
 const RenderProEvent = (props) => {
     const {
         betSlip, timezone, addBet, removeBet, event, leagueId, shortName, oddsFormat, leagueName,
-        sportName
+        sportName, origin
     } = props;
 
     const { teamA, teamB, startDate, lines, originId: eventId } = event;

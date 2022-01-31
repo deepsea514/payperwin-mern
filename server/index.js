@@ -32,6 +32,7 @@ const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
+const Member = require('./models/member');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -3929,7 +3930,7 @@ expressApp.post(
                 {
                     $match: searchObj
                 },
-                { $sort: { "createdAt": -1 } },
+                { $sort: { "updatedAt": -1 } },
                 { $skip: perPage * page },
                 { $limit: 20 }
             ]);
@@ -4106,7 +4107,7 @@ expressApp.post(
                 }
             }
 
-            const ticket = await Ticket.create({
+            await Ticket.create({
                 email,
                 phone,
                 subject,
@@ -5144,6 +5145,19 @@ expressApp.get(
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: 'Internal Server Error.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/members',
+    async (req, res) => {
+        try {
+            const members = await Member.find().sort({ priority: -1 });
+            return res.json(members);
+        } catch (error) {
+            console.error(error);
+            return res.json([]);
         }
     }
 )

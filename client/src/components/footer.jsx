@@ -4,9 +4,9 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 const Footer = (props) => {
     const [show, setShow] = useState(false);
-    const { user, display_mode } = props;
+    const { user } = props;
     return (
-        <footer className={`${display_mode == 'light' ? 'light' : 'dark'}`}>
+        <footer className="dark">
             <div className="container">
                 <div className='d-flex d-sm-none justify-content-center toggle mb-3'>
                     <i className={`fas fa-chevron-${show ? 'up' : 'down'}`}
