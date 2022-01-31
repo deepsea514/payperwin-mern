@@ -113,7 +113,6 @@ const ShowAccountLinks = [
     '/autobet-dashboard',
     '/autobet-settings',
     '/loyalty',
-    '/support',
     '/deposit-giftcard',
     '/invite'
 ];
@@ -146,7 +145,6 @@ const exceptDarkLinks = [
     '/verification',
     '/phone-verification',
     '/cashback',
-    '/support',
     '/custom-bets',
     '/autobet-dashboard',
     '/autobet-settings',
@@ -675,9 +673,9 @@ class App extends Component {
                                                 {user && <Route path="/custom-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>
                                                 } />}
-                                                {user && <Route path="/support" render={(props) =>
+                                                <Route path="/support" render={(props) =>
                                                     <ErrorBoundary><ContactUs {...props} /></ErrorBoundary>
-                                                } />}
+                                                } />
                                                 {user && <Route path="/autobet-dashboard" render={(props) =>
                                                     <ErrorBoundary><AutobetDashboard {...props} user={user} /></ErrorBoundary>
                                                 } />}

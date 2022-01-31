@@ -156,6 +156,11 @@
     color: white;
 }
 
+.main-section.dark .bg-color-box {
+    color: white;
+    background-color: #1d1d1d;
+}
+
 .main-section.dark .line-type-header-teams {
     background-color: #080808 !important;
     color: white !important;
@@ -293,8 +298,12 @@
 
 .main-section.dark .form-control {
     color: white;
-    background: #0a294e;
-    border-color: #154785;
+    background: #121212;
+    border-color: #070707;
+}
+
+.main-section.dark .form-control::placeholder {
+    color: #999;
 }
 
 .main-section.dark .form-control:focus {

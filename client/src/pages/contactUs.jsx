@@ -92,7 +92,8 @@ class ContactUs extends Component {
         };
         const config = {
             readonly: false,
-            height: 250
+            height: 250,
+            theme: 'custom'
         };
         return (
             <div className="col-in">
@@ -111,167 +112,156 @@ class ContactUs extends Component {
                                 initialValues={initialValues}
                                 validationSchema={ticketSchema}
                                 onSubmit={this.onSubmit}>
-                                {
-                                    (formik) => {
-                                        const fileRef = useRef();
-                                        return <form onSubmit={formik.handleSubmit}>
-                                            <Form.Group>
-                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.EMAIL" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                                <Form.Control
-                                                    type="email"
-                                                    name="email"
-                                                    placeholder="Enter Email"
-                                                    required
-                                                    className={`form-control ${getInputClasses(formik, "email")}`}
-                                                    {...formik.getFieldProps("email")}
-                                                />
-                                                {formik.touched.email && formik.errors.email ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.email}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                                <PhoneInput
-                                                    type="text"
-                                                    name="phone"
-                                                    country="us"
-                                                    placeholder="Enter Phone Number"
-                                                    containerClass="input-group"
-                                                    dropdownClass="input-group-append"
-                                                    inputClass={`form-control ${getInputClasses(formik, "phone")}`}
-                                                    required
-                                                    value={formik.values.phone}
-                                                    {...formik.getFieldProps("phone")}
-                                                    {...{
-                                                        onChange: (value, data, event, formattedValue) => {
-                                                            formik.setFieldTouched('phone', true);
-                                                            formik.setFieldValue('phone', formattedValue);
-                                                        },
-                                                        onBlur: () => {
-                                                            formik.setFieldTouched('phone', true);
-                                                        }
-                                                    }}
-                                                />
-                                                {formik.touched.phone && formik.errors.phone ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.phone}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.SUBJECT" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="subject"
-                                                    placeholder=""
-                                                    required
-                                                    className={`form-control ${getInputClasses(formik, "subject")}`}
-                                                    {...formik.getFieldProps("subject")}
-                                                />
-                                                {formik.touched.subject && formik.errors.subject ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.subject}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DEPARTMENT" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                                <Form.Control
-                                                    as="select"
-                                                    name="department"
-                                                    placeholder=""
-                                                    required
-                                                    className={`form-control ${getInputClasses(formik, "department")}`}
-                                                    {...formik.getFieldProps("department")}
-                                                >
-                                                    <option value="">...</option>
-                                                    <option value="My Account">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MYACCOUNT" })}</option>
-                                                    <option value="Betting enquiry">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.BETTING" })}</option>
-                                                    <option value="Deposit/Withdrawal">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.DW" })}</option>
-                                                    <option value="General Request">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.GENERAL" })}</option>
-                                                    <option value="Affilliates">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.AFFILIATES" })}</option>
-                                                    <option value="Marketing & Commercial">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MARKETING" })}</option>
-                                                    <option value="Feedback">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.FEEDBACK" })}</option>
-                                                </Form.Control>
-                                                {formik.touched.department && formik.errors.department ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.department}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DESCRIPTION" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                                <JoditEditor
-                                                    config={config}
-                                                    name="description"
-                                                    tabIndex={1} // tabIndex of textarea
-                                                    {...formik.getFieldProps("description")}
-                                                    {...{
-                                                        onChange: (description) => {
-                                                            formik.setFieldError("description", false);
-                                                            formik.setFieldTouched("description", true);
-                                                            formik.setFieldValue("description", description);
-                                                        },
-                                                        onBlur: (description) => {
-                                                            formik.setFieldError("description", false);
-                                                            formik.setFieldTouched("description", true);
-                                                            // formik.setFieldValue("description", description);
-                                                        }
-                                                    }}
-                                                />
-                                                {formik.touched.description && formik.errors.description ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.description}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Label style={{ cursor: 'pointer' }} onClick={() => fileRef.current.click()}>Attach file</Form.Label>
-                                                <Form.Control
-                                                    type="file"
-                                                    name="file"
-                                                    ref={fileRef}
-                                                    hidden
-                                                    accept="image/x-png,image/gif,image/jpeg"
-                                                    {...{
-                                                        onChange: (event) => {
-                                                            formik.setFieldError("file", false);
-                                                            formik.setFieldTouched("file", true);
-                                                            formik.setFieldValue("file", event.target.files[0]);
-                                                        }
-                                                    }}
-                                                />
-                                                {formik.touched.file && formik.errors.file ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.file}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <div className={classes.formbutton}>
-                                                <Link
-                                                    to={{ pathname: '/deposit' }}>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="default"
-                                                        className={classes.button}>
-                                                        <FormattedMessage id="PAGES.INBOX.BACKTOINBOX" />
-                                                    </Button>
-                                                </Link>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    type="submit"
-                                                    disabled={formik.isSubmitting}
-                                                    className={classes.button}
-                                                >
-                                                    <FormattedMessage id="COMPONENTS.SUBMIT" />
-                                                </Button>
-                                            </div>
-                                        </form>
-                                    }
-                                }
+                                {(formik) => {
+                                    const fileRef = useRef();
+                                    return <form onSubmit={formik.handleSubmit}>
+                                        <Form.Group>
+                                            <Form.Label><FormattedMessage id="PAGES.DEPOSIT.EMAIL" />&nbsp;<span className="text-danger">*</span></Form.Label>
+                                            <Form.Control
+                                                type="email"
+                                                name="email"
+                                                placeholder="Enter Email"
+                                                required
+                                                className={`form-control ${getInputClasses(formik, "email")}`}
+                                                {...formik.getFieldProps("email")}
+                                            />
+                                            {formik.touched.email && formik.errors.email ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.email}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label><FormattedMessage id="PAGES.DEPOSIT.PHONE" />&nbsp;<span className="text-danger">*</span></Form.Label>
+                                            <PhoneInput
+                                                type="text"
+                                                name="phone"
+                                                country="us"
+                                                placeholder="Enter Phone Number"
+                                                containerClass="input-group"
+                                                dropdownClass="input-group-append"
+                                                inputClass={`form-control ${getInputClasses(formik, "phone")}`}
+                                                required
+                                                value={formik.values.phone}
+                                                {...formik.getFieldProps("phone")}
+                                                {...{
+                                                    onChange: (value, data, event, formattedValue) => {
+                                                        formik.setFieldTouched('phone', true);
+                                                        formik.setFieldValue('phone', formattedValue);
+                                                    },
+                                                    onBlur: () => {
+                                                        formik.setFieldTouched('phone', true);
+                                                    }
+                                                }}
+                                            />
+                                            {formik.touched.phone && formik.errors.phone ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.phone}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label><FormattedMessage id="PAGES.CONTACTUS.SUBJECT" />&nbsp;<span className="text-danger">*</span></Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="subject"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${getInputClasses(formik, "subject")}`}
+                                                {...formik.getFieldProps("subject")}
+                                            />
+                                            {formik.touched.subject && formik.errors.subject ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.subject}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DEPARTMENT" />&nbsp;<span className="text-danger">*</span></Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="department"
+                                                placeholder=""
+                                                required
+                                                className={`form-control ${getInputClasses(formik, "department")}`}
+                                                {...formik.getFieldProps("department")}
+                                            >
+                                                <option value="">...</option>
+                                                <option value="My Account">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MYACCOUNT" })}</option>
+                                                <option value="Betting enquiry">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.BETTING" })}</option>
+                                                <option value="Deposit/Withdrawal">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.DW" })}</option>
+                                                <option value="General Request">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.GENERAL" })}</option>
+                                                <option value="Affilliates">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.AFFILIATES" })}</option>
+                                                <option value="Marketing & Commercial">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.MARKETING" })}</option>
+                                                <option value="Feedback">{intl.formatMessage({ id: "PAGES.CONTACTUS.DEPARTMENT.FEEDBACK" })}</option>
+                                            </Form.Control>
+                                            {formik.touched.department && formik.errors.department ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.department}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DESCRIPTION" />&nbsp;<span className="text-danger">*</span></Form.Label>
+                                            <JoditEditor
+                                                config={config}
+                                                name="description"
+                                                tabIndex={1} // tabIndex of textarea
+                                                {...formik.getFieldProps("description")}
+                                                {...{
+                                                    onChange: (description) => {
+                                                        formik.setFieldError("description", false);
+                                                        formik.setFieldTouched("description", true);
+                                                        formik.setFieldValue("description", description);
+                                                    },
+                                                    onBlur: (description) => {
+                                                        formik.setFieldError("description", false);
+                                                        formik.setFieldTouched("description", true);
+                                                        // formik.setFieldValue("description", description);
+                                                    }
+                                                }}
+                                            />
+                                            {formik.touched.description && formik.errors.description ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.description}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label style={{ cursor: 'pointer' }} onClick={() => fileRef.current.click()}>Attach file</Form.Label>
+                                            <Form.Control
+                                                type="file"
+                                                name="file"
+                                                ref={fileRef}
+                                                hidden
+                                                accept="image/x-png,image/gif,image/jpeg"
+                                                {...{
+                                                    onChange: (event) => {
+                                                        formik.setFieldError("file", false);
+                                                        formik.setFieldTouched("file", true);
+                                                        formik.setFieldValue("file", event.target.files[0]);
+                                                    }
+                                                }}
+                                            />
+                                            {formik.touched.file && formik.errors.file ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.file}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <div className={classes.formbutton}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                type="submit"
+                                                disabled={formik.isSubmitting}
+                                                className={classes.button}
+                                            >
+                                                <FormattedMessage id="COMPONENTS.SUBMIT" />
+                                            </Button>
+                                        </div>
+                                    </form>
+                                }}
                             </Formik>
                         </div>}
                         {submitSuccess && <div>
