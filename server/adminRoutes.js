@@ -850,7 +850,11 @@ adminRouter.get(
         try {
             const searchObj = { user: id };
             const total = await FinancialLog.find(searchObj).count();
-            const transactions = await FinancialLog.find(searchObj).sort({ createdAt: -1 }).skip((page - 1) * perPage).limit(perPage);
+            const transactions = await FinancialLog.find(searchObj)
+                .sort({ updatedAt: -1 })
+                .skip((page - 1) * perPage)
+                .limit(perPage)
+                .populate('betId');
             return res.json({ total, page, perPage, transactions });
         }
         catch (error) {
