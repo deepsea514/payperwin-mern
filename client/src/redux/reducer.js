@@ -14,7 +14,6 @@ export const actionTypes = {
     setLanguage: "[Set Language Action]",
     setOddsFormat: "[Set Odd Format Action]",
     setDateFormat: "[Set Date Format Action]",
-    setDisplayMode: "[Set Display Mode Action]",
     setTimezone: "[Set Timezone Action]",
     setProMode: "[Set Pro Mode Action]",
     setSearch: "[Set Search Action]",
@@ -24,7 +23,6 @@ export const actionTypes = {
     setLoginFailedAction: "[Set Login Failed Action]",
     showLoginModalAction: "[Show Login Modal Action]",
     showForgotPasswordModalAction: "[Show Forgot Password Modal Action]",
-    setDisplayModeBasedOnSystem: "[Set Display Mode Based On System]",
     setMaxBetLimitTierAction: "[Set Max Bet Limit Tier Action]",
     enableBetAction: "[Enable Bet Action]",
     getAdminMessageAction: "[Get Admin Message Action]",
@@ -43,9 +41,7 @@ const initialState = {
     oddsFormat: 'american',
     dateFormat: 'DD-MM-YYYY',
     timezone: null,
-    display_mode: 'dark',
     pro_mode: true,
-    dark_light: timeHelper.getDisplayModeBasedOnSystemTime(null),
     search: '',
     acceptCookie: Cookie.get('acceptCookie'),
     showedTourTimes: showedTourTimes ? showedTourTimes : 0,
@@ -93,9 +89,6 @@ export const reducer = persistReducer(
 
             case actionTypes.setDateFormat:
                 return { ...state, dateFormat: action.dateFormat };
-
-            // case actionTypes.setDisplayMode:
-            //     return { ...state, display_mode: action.display_mode };
 
             case actionTypes.setTimezone:
                 return { ...state, timezone: action.timezone };
@@ -168,7 +161,6 @@ export const actions = {
     setLanguage: (lang = 'en') => ({ type: actionTypes.setLanguage, lang }),
     setOddsFormat: (oddsFormat = 'american') => ({ type: actionTypes.setOddsFormat, oddsFormat }),
     setTimezone: (timezone) => ({ type: actionTypes.setTimezone, timezone }),
-    setDisplayMode: (display_mode) => ({ type: actionTypes.setDisplayMode, display_mode }),
     setDateFormat: (dateFormat) => ({ type: actionTypes.setDateFormat, dateFormat }),
     setProMode: (pro_mode) => ({ type: actionTypes.setProMode, pro_mode }),
     setSearch: (search = '') => ({ type: actionTypes.setSearch, search }),
@@ -178,7 +170,6 @@ export const actions = {
     setLoginFailedAction: (times) => ({ type: actionTypes.setLoginFailedAction, times }),
     showLoginModalAction: (showLoginModal) => ({ type: actionTypes.showLoginModalAction, showLoginModal }),
     showForgotPasswordModalAction: (showForgotPasswordModal) => ({ type: actionTypes.showForgotPasswordModalAction, showForgotPasswordModal }),
-    setDisplayModeBasedOnSystem: () => ({ type: actionTypes.setDisplayModeBasedOnSystem }),
     setMaxBetLimitTierAction: (maxBetLimitTier) => ({ type: actionTypes.setMaxBetLimitTierAction, maxBetLimitTier }),
     getUser: (callback) => ({ type: actionTypes.getUser, callback }),
     getUserSuccess: (user) => ({ type: actionTypes.getUserSuccess, user }),
@@ -205,7 +196,6 @@ export function* saga() {
                 yield put(actions.setPreference({
                     maxBetLimitTier: user.maxBetLimitTier,
                     dateFormat: user.preference.dateFormat,
-                    display_mode: user.preference.display_mode,
                     timezone: user.preference.timezone,
                     oddsFormat: user.preference.oddsFormat,
                     pro_mode: user.preference.pro_mode,
@@ -242,29 +232,6 @@ export function* saga() {
             if (user) {
                 yield setPreferences({ pro_mode });
             }
-        } catch (error) {
-        }
-    });
-
-    yield takeLatest(actionTypes.setDisplayMode, function* setDisplayModeSaga() {
-        try {
-            const display_mode = yield select((state) => state.frontend.display_mode);
-            const user = yield select((state) => state.frontend.user);
-            if (user) {
-                yield setPreferences({ display_mode });
-            }
-            const dark_light = display_mode == 'system' ? timeHelper.getDisplayModeBasedOnSystemTime(timezone) : display_mode;
-            yield put(actions.setPreference({ dark_light }));
-        } catch (error) {
-        }
-    });
-
-    yield takeLatest(actionTypes.setDisplayModeBasedOnSystem, function* setDisplayModeBasedOnSystemSaga() {
-        try {
-            const timezone = yield select((state) => state.frontend.timezone);
-            const display_mode = yield select((state) => state.frontend.display_mode);
-            const dark_light = display_mode == 'system' ? timeHelper.getDisplayModeBasedOnSystemTime(timezone) : display_mode;
-            yield put(actions.setPreference({ dark_light }));
         } catch (error) {
         }
     });
