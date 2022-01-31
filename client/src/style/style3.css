@@ -2231,3 +2231,43 @@ a.fav-link:hover {
     margin-top: 16px;
     color: #FFF;
 }
+
+.main-section .react-tel-input .flag-dropdown {
+    background: #121212;
+    border: 1px solid #000;
+    border-radius: 3px 0 0 3px;
+}
+
+.main-section .react-tel-input .flag-dropdown:hover {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .flag-dropdown.open .selected-flag,
+.main-section .react-tel-input .selected-flag:hover,
+.main-section .react-tel-input .selected-flag:focus {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .country-list {
+    background: #1d1d1d;
+}
+
+.main-section .react-tel-input .country-list .country.highlight,
+.main-section .react-tel-input .country-list .country:hover {
+    background: #121212;
+    border-bottom: none;
+}
+
+.jodit_theme_custom .jodit-workplace {
+    background-color: #121212;
+}
+
+.jodit_theme_custom .jodit-toolbar__box,
+.jodit_theme_custom .jodit-status-bar,
+.jodit_theme_custom .jodit-editor__resize {
+    background: #121212;
+}
+
+.jodit_theme_custom .jodit-toolbar__box svg {
+    fill: #FFF;
+}
