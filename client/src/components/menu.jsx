@@ -266,6 +266,14 @@ class Menu extends Component {
                                         <FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" />
                                     </Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link to="/team"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-chalkboard-teacher" />
+                                        Meet Team
+                                    </Link>
+                                </li>
                             </ul>
                         </>}
                         {showMenu == 'account' && <>
