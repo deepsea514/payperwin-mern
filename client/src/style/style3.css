@@ -2271,3 +2271,7 @@ a.fav-link:hover {
 .jodit_theme_custom .jodit-toolbar__box svg {
     fill: #FFF;
 }
+
+.tab-content {
+    background-color: inherit !important;
+}
