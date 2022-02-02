@@ -1016,6 +1016,7 @@ footer p {
     color: #000;
     text-decoration: none;
     font-size: 12px;
+    margin-right: 7px;
 }
 
 .col-in.invite-container {
@@ -1040,11 +1041,6 @@ footer p {
     background: #fff;
     margin-right: 0;
     border-radius: 5px;
-}
-
-.main-cnt a {
-    margin-right: 7px;
-    color: #72777f;
 }
 
 .main-cnt img {
@@ -2460,7 +2456,7 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 .card-name {
     margin-top: 50px;
     font-size: 30px;
-    color: #444444;
+    color: #444;
 }
 
 .right-image {
