@@ -2216,8 +2216,9 @@ a.fav-link:hover {
 
 .member-short-description {
     font-style: italic;
-    margin-top: 20px;
     font-size: 14px;
+    text-align: center;
+    margin: 20px 1rem 0 1rem;
 }
 
 .member-back-button {
