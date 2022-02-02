@@ -1070,6 +1070,52 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "type": "element",
+                    "name": "url",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name": "loc",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "https://payperwin.com/team"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "lastmod",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "2021-02-02"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "changefreq",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "weekly"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "name": "priority",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "1.0"
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }
