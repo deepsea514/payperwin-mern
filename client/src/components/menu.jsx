@@ -164,6 +164,14 @@ class Menu extends Component {
                                         <i className="fas fa-chevron-right float-right" />
                                     </a>
                                 </li>
+                                <li className="nav-item">
+                                    <Link to="/team"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-chalkboard-teacher" />
+                                        Meet Team
+                                    </Link>
+                                </li>
                                 <li className={`nav-item col-6 ${pathname === '/about-us' ? 'active' : ''}`}>
                                     <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-briefcase" />
@@ -258,14 +266,6 @@ class Menu extends Component {
                                         onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-journal-whills" />
                                         <FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" />
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="/team"
-                                        className="nav-link"
-                                        onClick={() => toggleField('menuOpen')}>
-                                        <i className="fas fa-chalkboard-teacher" />
-                                        Meet Team
                                     </Link>
                                 </li>
                             </ul>

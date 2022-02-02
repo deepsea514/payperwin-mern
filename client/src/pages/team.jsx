@@ -40,6 +40,7 @@ class Team extends Component {
                                 <h3 className='member-name mt-2'>{member.name}</h3>
                                 <h5 className='member-position'>{member.position}</h5>
                                 <p className='member-short-description'>{member.shortDescription}</p>
+                                <p className='member-read-more'>Read More</p>
                             </div>
                         </div>
                     ))}
