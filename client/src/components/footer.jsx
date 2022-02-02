@@ -24,6 +24,7 @@ const Footer = (props) => {
                                 <li><Link to="/privacy-policy"><FormattedMessage id="COMPONENTS.PRIVACY_POLICY" /> </Link></li>
                                 <li><Link to="/terms-and-conditions"><FormattedMessage id="COMPONENTS.TERMS_CONDITIONS" /> </Link></li>
                                 <li><Link to="/about-us"><FormattedMessage id="COMPONENTS.ABOUTUS" /> </Link></li>
+                                <li><Link to="/team">Meet Team </Link></li>
                             </ul>
                         </div>
                         <div className="footer-inner">
