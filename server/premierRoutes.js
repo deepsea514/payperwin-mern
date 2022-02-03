@@ -94,7 +94,7 @@ premierRouter.post('/etransfer-deposit',
                     await user.update({ $inc: { balance: deposit.amount } });
                 }
 
-                if (user.invite) {
+                if (user.invite && deposit.amount >= 100) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
                         if (firstDeposit) {
