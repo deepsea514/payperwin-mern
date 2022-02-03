@@ -150,7 +150,7 @@ const exceptDarkLinks = [
     '/autobet-settings',
     '/loyalty',
     '/deposit-giftcard',
-    '/invite'
+    // '/invite'
 ];
 
 const fullWidthRoutes = [

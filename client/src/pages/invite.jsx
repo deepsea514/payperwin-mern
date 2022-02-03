@@ -20,23 +20,23 @@ class Invite extends Component {
         setTitle({ pageTitle: 'Invite Friends' });
         return (
             <React.Fragment>
-                <div className="col-in invite-container">
-                    <div className="row">
-                        <div className="col-md-7 pt-3">
-                            <h2>Invite a friend and you will get 10% Credit</h2>
-                            <h5 className="mt-5">If you enjoy PAYPER WIN, share it with friends and colleagues to earn free credits.</h5>
+                <div className="invite-container">
+                    <div className="row d-flex align-items-center">
+                        <div className="col-md-6 pt-3 not-mobile">
+                            <img src='/images/invite-logo.jpg' className='invite-logo' />
                         </div>
                         <div className="col-md-5 pt-3">
-                            <div className="shadow p-3 mb-3 bg-white rounded">
-                                <h4>Share your link</h4>
-                                <p>Copy your personal referral link and share it with your friends and followers.</p>
-                                <textarea value={inviteLink} readOnly className="invite-textarea" />
+                            <div className="p-3 mb-3">
+                                <h2 className='invite-title'>SPREAD THE WORD</h2>
+                                <p className='invite-description'>Refer a friend and you will receive 10% of your referral’s first deposit in Payper Win credits.</p>
+                                <input value={inviteLink} readOnly className="invite-textarea" />
                                 <div className="row px-3">
-                                    <div className="col-md-4 col-sm-12 invite-copybutton py-2 cursor-pointer"
+                                    <div className="col-12 invite-copybutton py-2 cursor-pointer"
                                         onClick={() => this.copyUrl(inviteLink)}>
                                         {copied ? 'Copied' : 'Copy'}
                                     </div>
                                 </div>
+                                <p className='invite-warn'>New players only, 19 or older. Available in Canada only. A minimum of $100 deposit by the referral is required for you to qualify.</p>
                             </div>
                         </div>
                     </div>

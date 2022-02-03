@@ -2284,3 +2284,38 @@ a.fav-link:hover {
 .tab-content {
     background-color: inherit !important;
 }
+
+.invite-title {
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 42px;
+    font-weight: 300;
+}
+
+.invite-description {
+    text-align: center;
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+
+.invite-warn {
+    text-align: center;
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+
+.invite-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.invite-container {
+    padding: 20px 10px 20px 10px;
+}
