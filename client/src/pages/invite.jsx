@@ -23,7 +23,7 @@ class Invite extends Component {
                 <div className="col-in invite-container">
                     <div className="row">
                         <div className="col-md-7 pt-3">
-                            <h2>Invite a friend and you will get $50 Credit</h2>
+                            <h2>Invite a friend and you will get 10% Credit</h2>
                             <h5 className="mt-5">If you enjoy PAYPER WIN, share it with friends and colleagues to earn free credits.</h5>
                         </div>
                         <div className="col-md-5 pt-3">
