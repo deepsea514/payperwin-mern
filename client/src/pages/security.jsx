@@ -132,8 +132,8 @@ class Security extends Component {
                 <div className="main-cnt">
                     <div className="row">
                         <div className="col-12">
-                            <div className="card scrity mt-3 tab-card">
-                                <div className="card-header tab-card-header">
+                            <div className="scrity mt-3 tab-card">
+                                {/* <div className="card-header tab-card-header">
                                     <ul className="nav nav-tabs card-header-tabs" role="tablist">
                                         <li className="nav-item">
                                             <a className="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">PASSWORD AND SECURITY</a>
@@ -142,7 +142,7 @@ class Security extends Component {
                                             <a className="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">LAST LOGINS</a>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> */}
 
                                 <div className="tab-content">
                                     <div className="tab-pane fade show active p-3" id="one" role="tabpanel" aria-labelledby="one-tab">
@@ -161,7 +161,7 @@ class Security extends Component {
                                                         isInvalid={errors.oldPassword !== undefined}
                                                         required
                                                     />
-                                                    <Button variant="text" color="primary" onClick={() => this.setState({ showOldPass: !showOldPass })}>
+                                                    <Button variant="text" color="secondary" onClick={() => this.setState({ showOldPass: !showOldPass })}>
                                                         <i className={showOldPass ? "far fa-eye" : "far fa-eye-slash"} />
                                                     </Button>
                                                 </InputGroup>
@@ -180,7 +180,7 @@ class Security extends Component {
                                                         isInvalid={errors.password !== undefined}
                                                         required
                                                     />
-                                                    <Button variant="text" color="primary" onClick={() => this.setState({ showPass: !showPass })}>
+                                                    <Button variant="text" color="secondary" onClick={() => this.setState({ showPass: !showPass })}>
                                                         <i className={showPass ? "far fa-eye" : "far fa-eye-slash"} />
                                                     </Button>
                                                 </InputGroup>
@@ -199,7 +199,7 @@ class Security extends Component {
                                                         isInvalid={errors.cPassword !== undefined}
                                                         required
                                                     />
-                                                    <Button variant="text" color="primary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
+                                                    <Button variant="text" color="secondary" onClick={() => this.setState({ showPassConfirm: !showPassConfirm })}>
                                                         <i className={showPassConfirm ? "far fa-eye" : "far fa-eye-slash"} />
                                                     </Button>
                                                 </InputGroup>

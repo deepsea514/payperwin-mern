@@ -212,7 +212,8 @@
 }
 
 .main-section.dark .gray-cell {
-    background-color: #000;
+    background-color: #1d1d1d;
+    color: #FFF;
 }
 
 .main-section.dark .help-center {

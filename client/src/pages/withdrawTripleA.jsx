@@ -135,7 +135,7 @@ class WithdrawTripleA extends Component {
                                                         checked={agreeWithdraw}
                                                         onChange={(e) => this.setState({ agreeWithdraw: e.target.checked })}
                                                         name="agreeWithdraw"
-                                                        color="primary"
+                                                        color="secondary"
                                                     />
                                                 }
                                                 margin="normal"
