@@ -58,7 +58,7 @@ class SelfExcusion extends Component {
                 {user && selfExcluded && <p className="text-t"><i className="fa fa-info-circle"
                     aria-hidden={true} /><FormattedMessage id="PAGES.SELFEXCLUSION.TILL" value={{ selfExcluded }} />. </p>}
                 {user && !selfExcluded && <div className="main-cnt redio-sec ml-3">
-                    <p className="text-t"><i className="fa fa-info-circle"
+                    <p className="text-t text-dark"><i className="fa fa-info-circle"
                         aria-hidden={true}></i> <FormattedMessage id="PAGES.SELFEXCLUSION.BALANCENOTZERO" /> </p>
                     <p>
                         <FormattedMessage id="PAGES.SELFEXCLUSION.RECOMMEND" />

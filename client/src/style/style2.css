@@ -1492,7 +1492,7 @@ p label {
 .amount-col small {
     font-size: 80%;
     font-weight: 400;
-    color: rgba(114, 119, 127, 0.52);
+    color: #DDD;
 }
 
 .pymnt-mthd img {
@@ -2418,9 +2418,10 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 }
 
 .verification-proof-container {
-    background: white;
+    background: #1d1d1d;
     padding: 18px;
     border-radius: 4px;
+    color: white;
 }
 
 .verification-proof-container ul {
@@ -3812,7 +3813,7 @@ input.special {
 }
 
 .preference-group {
-    background-color: #f7f8fA;
+    background-color: #2d2d2d;
 }
 
 .symbol {

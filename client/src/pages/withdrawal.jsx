@@ -25,40 +25,48 @@ class Withdraw extends Component {
                     </p>
                     <div className="deposit-in bg-color-box pad10">
                         <h4 className="header-i4"><FormattedMessage id="PAGES.WITHDRAW.SELECTMETHOD" /></h4>
-                        <ul className="diposit-list d-flex flex-wrap justify-content-space">
-                            <li>
-                                <Link to={{ pathname: '/withdraw-etransfer' }}>
-                                    <img src="images/eTransfer.png" />
-                                </Link>
-                                <Link to={{ pathname: '/withdraw-etransfer' }}>
-                                    Interac eTransfer
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
-                                    <img src="images/bitcoin.png" />
-                                </Link>
-                                <Link to={{ pathname: '/withdraw-bitcoin' }}>
-                                    Bitcoin
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/withdraw-ethereum' }}>
-                                    <img src="images/Ethereum.png" />
-                                </Link>
-                                <Link to={{ pathname: '/withdraw-ethereum' }}>
-                                    Ethereum
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/withdraw-tether' }}>
-                                    <img src="images/USDT.png" />
-                                </Link>
-                                <Link to={{ pathname: '/withdraw-tether' }}>
-                                    Tether
-                                </Link>
-                            </li>
-                        </ul>
+                        <div className='row'>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-etransfer' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/eTransfer.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Interac eTransfer</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-bitcoin' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/bitcoin.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Bitcoin</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-ethereum' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/Ethereum.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Ethereum</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-tether' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/USDT.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Tether</div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <p className="dpsit">
                         <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.1" />

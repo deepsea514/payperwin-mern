@@ -20,11 +20,11 @@ class Deactivation extends Component {
 
                 <div className="main-cnt redio-sec">
 
-                    <p className="text-t">
+                    <p className="text-t text-dark">
                         <i className="fa fa-info-circle" aria-hidden={true}></i>
-                        Your account is currently above zero. We recommend
+                        &nbsp;Your account is currently above zero. We recommend
                         you withdraw your remaining funds in your account
-                        before you deactivate your account. <a href="#"><strong></strong></a><strong>Withdraw funds here.</strong>
+                        before you deactivate your account. <a href="#" className='text-dark'><strong>Withdraw funds here.</strong></a>
                     </p>
 
                     <p>
@@ -70,10 +70,10 @@ class Deactivation extends Component {
                         <div className="form-group mar30">
                             <h4 className="h4">Why are you deactivating your account?</h4>
                             <select className="form-control">
-                                <option> select a reason</option>
+                                <option>Select a reason</option>
                             </select>
                         </div>
-                        <button type="submit" className="btn-smt clr-blue">next</button>
+                        <button className="btn-smt clr-blue">next</button>
                     </form>
                 </div>
             </div>
