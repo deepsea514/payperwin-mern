@@ -97,8 +97,8 @@ class OpenBets extends Component {
             });
     }
 
-    getBetType = (type) => {
-        switch (type) {
+    getBetType = (bet) => {
+        switch (bet.lineQuery.type) {
             case 'moneyline':
                 return 'Moneyline';
             case 'total':
@@ -107,6 +107,10 @@ class OpenBets extends Component {
             case 'spread':
             case 'alternative_spread':
                 return 'Spread';
+            case 'home_total':
+                return bet.teamA.name + ' Total';
+            case 'away_total':
+                return bet.teamB.name + ' Total';
             default:
                 return null;
         }
@@ -413,7 +417,7 @@ class OpenBets extends Component {
                                         <div className="open-bets-col">
                                             <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                             <div>
-                                                {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                                {this.getBetType(betObj)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                             </div>
                                             <div>
                                                 {pickName}
@@ -559,7 +563,7 @@ class OpenBets extends Component {
                                     <div className="open-bets-col">
                                         <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                         <div>
-                                            {this.getBetType(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                            {this.getBetType(betObj)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                         <div>
                                             {pickName}

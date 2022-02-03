@@ -20,6 +20,8 @@ export default class LineDetail extends Component {
                     `${(-1 * originOdds.hdp) > 0 ? '+' : ''}${-1 * originOdds.hdp}`;
             case 'total':
             case 'alternative_total':
+            case 'home_total':
+            case 'away_total':
                 return pick == 'home' ? `O ${originOdds.points}` : `U ${originOdds.points}`;
         }
     }
@@ -70,6 +72,13 @@ export default class LineDetail extends Component {
             case 'total':
             case 'alternative_total':
                 pickName += pick == 'home' ? `Over ${originOdds.points}` : `Under ${originOdds.points}`;
+                break;
+            case 'home_total':
+                pickName += teamA + ' ' + (pick == 'home' ? `Over ${originOdds.points}` : `Under ${originOdds.points}`);
+                break;
+            case 'away_total':
+                pickName += teamB + ' ' + (pick == 'home' ? `Over ${originOdds.points}` : `Under ${originOdds.points}`);
+                break;
         }
 
         return pickName;

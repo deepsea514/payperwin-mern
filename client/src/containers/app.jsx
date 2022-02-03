@@ -288,8 +288,8 @@ class App extends Component {
                 const exists = bet.lineId === lineQuery.lineId &&
                     bet.type === lineQuery.type &&
                     bet.index === lineQuery.index &&
-                    bet.subtype == lineQuery.subtype &&
-                    bet.pick == pick;
+                    bet.subtype == lineQuery.subtype
+                    // && bet.pick == pick;
                 return !exists;
             });
             this.setState({
