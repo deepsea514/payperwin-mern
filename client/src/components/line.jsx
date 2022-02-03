@@ -109,7 +109,7 @@ export default class Line extends Component {
         const { showMoreASpread, showMoreATotal } = this.state;
 
         if (!line.line) return null;
-        const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line.line;
+        const { moneyline, spreads, totals, alternative_spreads, alternative_totals, home_totals, away_totals } = line.line;
         const { originId: eventId, teamA, teamB } = event;
         const enabled = line.enabled;
         const sportName = getSportName(shortName);
@@ -176,7 +176,7 @@ export default class Line extends Component {
 
                 {(!type || type == 'total' && subtype == line.subtype) && <>
                     <div className="line-type-header"><FormattedMessage id="PAGES.LINE.OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
-                    <TeamNames teamA={teamA} teamB={teamB} />
+                    <TeamNames teamA="Over" teamB="Under" />
                     {totals && totals.length != 0 ? totals.map((total, i) => {
                         if (type && index && index != i) return null;
                         if (!enabled) {
@@ -252,7 +252,7 @@ export default class Line extends Component {
                 {(!type || type == 'alternative_total' && subtype == line.subtype) &&
                     alternative_totals && alternative_totals.length != 0 && <>
                         <div className="line-type-header"><FormattedMessage id="PAGES.LINE.ALTER_OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
-                        <TeamNames teamA={teamA} teamB={teamB} />
+                        <TeamNames teamA="Over" teamB="Under" />
                         {alternative_totals.map((total, i) => {
                             if (type && index && index != i) return null;
                             if (index != i && !showMoreATotal && i >= maximumShows) return null;
@@ -290,6 +290,72 @@ export default class Line extends Component {
                                 showMoreATotal && window.scrollTo(0, 0);
                             }}
                         />
+                    </>}
+
+                {(!type || type == 'home_total' && subtype == line.subtype) &&
+                    home_totals && home_totals.length != 0 && <>
+                        <div className="line-type-header">{teamA} <FormattedMessage id="PAGES.LINE.OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
+                        <TeamNames teamA="Over" teamB="Under" />
+                        {home_totals.map((home_total, i) => {
+                            if (type && index && index != i) return null;
+                            if (!enabled) {
+                                return <DisabledLine key={i} />
+                            }
+                            const lineQuery = {
+                                sportName,
+                                leagueId,
+                                eventId,
+                                lineId: eventId,
+                                type: 'home_total',
+                                index: i,
+                                subtype: line.subtype
+                            };
+                            if (home_total.altLineId) lineQuery.altLineId = home_total.altLineId;
+                            return <LineDetail
+                                key={i}
+                                originOdds={{ home: home_total.over, away: home_total.under, points: home_total.points }}
+                                betSlip={betSlip}
+                                lineQuery={lineQuery}
+                                removeBet={removeBet}
+                                addBet={addBet}
+                                event={event}
+                                oddsFormat={oddsFormat}
+                                live={live}
+                            />
+                        })}
+                    </>}
+
+                {(!type || type == 'away_total' && subtype == line.subtype) &&
+                    away_totals && away_totals.length != 0 && <>
+                        <div className="line-type-header">{teamB} <FormattedMessage id="PAGES.LINE.OVERUNDER" /> {this.getSubTypeName(line.subtype)}</div>
+                        <TeamNames teamA="Over" teamB="Under" />
+                        {away_totals.map((away_total, i) => {
+                            if (type && index && index != i) return null;
+                            if (!enabled) {
+                                return <DisabledLine key={i} />
+                            }
+                            const lineQuery = {
+                                sportName,
+                                leagueId,
+                                eventId,
+                                lineId: eventId,
+                                type: 'away_total',
+                                index: i,
+                                subtype: line.subtype
+                            };
+                            if (away_total.altLineId) lineQuery.altLineId = away_total.altLineId;
+                            return <LineDetail
+                                key={i}
+                                originOdds={{ home: away_total.over, away: away_total.under, points: away_total.points }}
+                                betSlip={betSlip}
+                                lineQuery={lineQuery}
+                                removeBet={removeBet}
+                                addBet={addBet}
+                                event={event}
+                                oddsFormat={oddsFormat}
+                                live={live}
+                            />
+                        })}
                     </>}
             </>
         );

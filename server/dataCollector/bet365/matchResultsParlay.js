@@ -161,6 +161,14 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                         betWin = pick === overUnderWinner;
                         draw = totalPoints == linePoints
+                    } else if (lineQuery.type == 'home_total') {
+                        const overUnderWinner = homeScore > linePoints ? 'home' : 'away';
+                        betWin = pick === overUnderWinner;
+                        draw = homeScore == linePoints
+                    } else if (lineQuery.type == 'away_total') {
+                        const overUnderWinner = awayScore > linePoints ? 'home' : 'away';
+                        betWin = pick === overUnderWinner;
+                        draw = awayScore == linePoints
                     }
 
                     if (draw) {
