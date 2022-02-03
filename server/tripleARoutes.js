@@ -135,7 +135,7 @@ tripleARouter.post('/deposit',
                 await user.update({ $inc: { balance: receive_amount } });
             }
 
-            if (user.invite) {
+            if (user.invite && receive_amount >= 100) {
                 try {
                     const firstDeposit = await checkFirstDeposit(user);
                     if (firstDeposit) {

@@ -1069,7 +1069,7 @@ adminRouter.post(
                     });
                     await user.update({ $inc: { balance: amount } });
                 }
-                if (user.invite) {
+                if (user.invite && deposit.amount >= 100) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
                         if (firstDeposit) {
@@ -1312,7 +1312,7 @@ adminRouter.patch(
                     await user.update({ $inc: { balance: deposit.amount } });
                 }
 
-                if (user.invite) {
+                if (user.invite && deposit.amount >= 100) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
                         if (firstDeposit) {
