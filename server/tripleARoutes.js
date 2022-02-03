@@ -135,7 +135,7 @@ tripleARouter.post('/deposit',
                 await user.update({ $inc: { balance: receive_amount } });
             }
 
-            if (user.invite && receive_amount >= 100) {
+            if (user.invite) {
                 try {
                     const firstDeposit = await checkFirstDeposit(user);
                     if (firstDeposit) {
@@ -145,13 +145,13 @@ tripleARouter.post('/deposit',
                                 financialtype: 'invitebonus',
                                 uniqid: `IB${ID()}`,
                                 user: invitor._id,
-                                amount: inviteBonus,
+                                amount: inviteBonus * receive_amount,
                                 method: method,
                                 status: FinancialStatus.success,
                                 beforeBalance: invitor.balance,
-                                afterBalance: invitor.balance + inviteBonus
+                                afterBalance: invitor.balance + inviteBonus * receive_amount
                             });
-                            await invitor.update({ $inc: { balance: inviteBonus } });
+                            await invitor.update({ $inc: { balance: inviteBonus * receive_amount } });
                         }
                     }
                 } catch (error) {
