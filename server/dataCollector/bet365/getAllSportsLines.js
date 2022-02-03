@@ -145,8 +145,36 @@ const getAllSportsLines = async () => {
                     for (let i = 0; i < 10 && results[ei + i]; i++) {
                         results[ei + i].odds = oddsResult[i];
                     }
+
+                    let eventResult = [];
+                    try {
+                        const { data: { success: success_result, results: eventResult_result } } = await axios
+                            .get(`https://api.b365api.com/v1/bet365/result`, {
+                                params: {
+                                    event_id: ids.join(','),
+                                    token: bet365ApiKey,
+                                }
+                            });
+                        success = success_result;
+                        eventResult = eventResult_result;
+                    } catch (error) {
+                        ErrorLog.create({
+                            name: 'Bet365 Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        });
+                    }
+
+                    for (let i = 0; i < 10 && results[ei + i]; i++) {
+                        results[ei + i].home.image_id = success ? eventResult[i].home.image_id : null;
+                        results[ei + i].away.image_id = success ? eventResult[i].away.image_id : null;
+                    }
                 }
-                await Promise.all(results.map(async (result, index) => {
+
+                await Promise.all(results.map(async result => {
                     if (result.time_status != 0) return;
                     let league = sportEvents.leagues.find(league => league.originId == result.league.id);
                     if (!league) {
@@ -157,24 +185,16 @@ const getAllSportsLines = async () => {
                         }
                         sportEvents.leagues.push(league);
                     }
-                    let logo_teamA = null, logo_teamB = null;
-                    try {
-                        const homeTeam = await Team.findOne({ name: result.home.name, "sport.id": sport.id });
-                        const awayTeam = await Team.findOne({ name: result.away.name, "sport.id": sport.id });
-                        logo_teamA = homeTeam ? homeTeam.image_id : null;
-                        logo_teamB = awayTeam ? awayTeam.image_id : null;
-                    } catch (error) { }
                     let line = formatFixturesOdds(result, sport.name);
                     if (line) {
                         league.events.push({
                             originId: result.id,
                             startDate: new Date(parseInt(result.time) * 1000),
                             teamA: result.home.name,
-                            logo_teamA: logo_teamA,
+                            logo_teamA: result.home.image_id,
                             teamB: result.away.name,
-                            logo_teamB: logo_teamB,
+                            logo_teamB: result.away.image_id,
                             lines: [line],
-                            // odds: result.odds,
                         });
                     }
                 }))
