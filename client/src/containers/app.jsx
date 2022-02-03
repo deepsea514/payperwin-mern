@@ -114,39 +114,6 @@ const ShowAccountLinks = [
     '/invite'
 ];
 
-const exceptDarkLinks = [
-    // '/signup',
-    // '/bets',
-    // '/deposit',
-    // '/deactivation',
-    // '/history',
-    // '/inbox',
-    // '/payment-options',
-    // '/preferences',
-    // '/security',
-    // '/self-exclusion',
-    // '/transaction-history',
-    // '/withdraw',
-    // '/account',
-    // '/deposit-etransfer',
-    // '/withdraw-etransfer',
-    // '/deposit-bitcoin',
-    // '/deposit-ethereum',
-    // '/deposit-tether',
-    // '/withdraw-bitcoin',
-    // '/withdraw-ethereum',
-    // '/withdraw-tether',
-    // '/verification',
-    // '/phone-verification',
-    '/cashback',
-    '/custom-bets',
-    '/autobet-dashboard',
-    '/autobet-settings',
-    '/loyalty',
-    // '/deposit-giftcard',
-    // '/invite'
-];
-
 const fullWidthRoutes = [
     '/loyalty',
     '/autobet-dashboard',
@@ -413,17 +380,13 @@ class App extends Component {
         } = this.props;
         const { pathname } = location;
         let sidebarShowAccountLinks = ShowAccountLinks.includes(pathname);
-        const exceptDark = exceptDarkLinks.filter(path => {
-            if (pathname.startsWith(path)) return true;
-            else return false;
-        }).length;
         const fullWidth = fullWidthRoutes.includes(pathname);
 
         sidebarShowAccountLinks = sidebarShowAccountLinks ? sidebarShowAccountLinks : (pathname.search('/inbox') != -1);
         const verified = user && user.roles.verified;
 
         return (
-            <div className={`background dark-theme ${!exceptDark ? 'dark' : ''} ${scrolledTop ? 'scrolled-top' : ''}`}>
+            <div className={`background dark-theme dark ${scrolledTop ? 'scrolled-top' : ''}`}>
                 <Favicon url={'/images/favicon.png'} />
                 <ToastContainer />
                 <Header
@@ -439,7 +402,7 @@ class App extends Component {
                     history={history}
                     showLoginModalAction={showLoginModalAction}
                     toggleField={this.toggleField} />}
-                <section className={`main-section ${!exceptDark ? 'dark' : ''}`}>
+                <section className={`main-section dark`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
                     {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} />}
