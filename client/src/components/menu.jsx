@@ -169,7 +169,7 @@ class Menu extends Component {
                                         className="nav-link"
                                         onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-chalkboard-teacher" />
-                                        Meet Team
+                                        Our Team
                                     </Link>
                                 </li>
                                 <li className={`nav-item col-6 ${pathname === '/about-us' ? 'active' : ''}`}>
