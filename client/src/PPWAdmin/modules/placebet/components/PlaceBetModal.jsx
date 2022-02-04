@@ -430,7 +430,7 @@ export default class PlaceBetModal extends React.Component {
 
                                 <div className="form-group">
                                     <label>Registration Date<span className="text-danger">*</span></label>
-                                    <input name="registrationDate" placeholder="Select Registration Date" type="date"
+                                    <input name="registrationDate" placeholder="Select Registration Date" type="datetime-local"
                                         className={`form-control ${getInputClasses(formik, "registrationDate")}`}
                                         {...formik.getFieldProps("registrationDate")}
                                     />
