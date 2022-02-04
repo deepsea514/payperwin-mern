@@ -6767,6 +6767,7 @@ adminRouter.post(
         if (!odds || !pick || !toBet || !toWin || !lineQuery) {
             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
         } else {
+            lineQuery.points = Number(lineQuery.points);
             const {
                 sportName,
                 leagueId,
@@ -6894,7 +6895,6 @@ adminRouter.post(
                                         lineType: type,
                                         lineSubType: subtype,
                                         points: points,
-                                        points: null,
                                         homeBets: pick === 'home' ? [betId] : [],
                                         awayBets: pick === 'away' ? [betId] : [],
                                         origin
