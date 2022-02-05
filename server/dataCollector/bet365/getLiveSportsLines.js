@@ -49,14 +49,21 @@ const getLiveSportsLines = async () => {
                         total = pager.total;
                 }
                 catch (error) {
-                    ErrorLog.create({
-                        name: 'Bet365 Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Bet365 Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Bet365 Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 }
                 if (!success) continue;
                 for (let ei = 0; ei < results.length; ei += 10) {
@@ -77,14 +84,21 @@ const getLiveSportsLines = async () => {
                         success = success_result;
                         oddsResult = oddsResult_result;
                     } catch (error) {
-                        ErrorLog.create({
-                            name: 'Bet365 Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Bet365 Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Bet365 Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     }
 
                     if (!success) {
@@ -108,14 +122,21 @@ const getLiveSportsLines = async () => {
                         success = success_result;
                         timerResult = timerResult_result;
                     } catch (error) {
-                        ErrorLog.create({
-                            name: 'Bet365 Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Bet365 Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Bet365 Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     }
 
                     if (!success) {

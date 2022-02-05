@@ -132,14 +132,21 @@ premierRouter.post('/etransfer-deposit',
                             <br><br>`),
                     };
                     sgMail.send(msg).catch(error => {
-                        ErrorLog.create({
-                            name: 'Send Grid Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Send Grid Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Send Grid Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
@@ -173,14 +180,21 @@ premierRouter.post('/etransfer-deposit',
                         </ul>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
                 return res.json({
                     success: "Deposit declined"
@@ -270,14 +284,21 @@ premierRouter.post('/etransfer-withdraw',
                         </ul>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
                 return res.json({
                     success: "Withdraw declined"

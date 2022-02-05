@@ -4545,14 +4545,21 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -4599,14 +4606,21 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -4715,14 +4729,21 @@ adminRouter.post(
                     <br><br>`),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             ticket.repliedAt = new Date();
@@ -5367,14 +5388,21 @@ adminRouter.post(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            ErrorLog.create({
-                                name: 'Send Grid Error',
-                                error: {
-                                    name: error.name,
-                                    message: error.message,
-                                    stack: error.stack
-                                }
-                            });
+                            ErrorLog.findOneAndUpdate(
+                                {
+                                    name: 'Send Grid Error',
+                                    "error.stack": error.stack
+                                },
+                                {
+                                    name: 'Send Grid Error',
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
+                                },
+                                { upsert: true }
+                            );
                         });
 
                     })
@@ -5536,14 +5564,21 @@ adminRouter.put(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            ErrorLog.create({
-                                name: 'Send Grid Error',
-                                error: {
-                                    name: error.name,
-                                    message: error.message,
-                                    stack: error.stack
-                                }
-                            });
+                            ErrorLog.findOneAndUpdate(
+                                {
+                                    name: 'Send Grid Error',
+                                    "error.stack": error.stack
+                                },
+                                {
+                                    name: 'Send Grid Error',
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
+                                },
+                                { upsert: true }
+                            );
                         });
 
                     })
@@ -6824,6 +6859,7 @@ adminRouter.post(
         if (!odds || !pick || !toBet || !toWin || !lineQuery) {
             errors.push(`${pickName} ${odds[pick]} wager could not be placed. Query Incomplete.`);
         } else {
+            lineQuery.points = Number(lineQuery.points);
             const {
                 sportName,
                 leagueId,
@@ -6951,7 +6987,6 @@ adminRouter.post(
                                         lineType: type,
                                         lineSubType: subtype,
                                         points: points,
-                                        points: null,
                                         homeBets: pick === 'home' ? [betId] : [],
                                         awayBets: pick === 'away' ? [betId] : [],
                                         origin
