@@ -17,14 +17,21 @@ const sendSMS = async (message, phone) => {
             to: phone
         })
     } catch (error) {
-        ErrorLog.create({
-            name: 'Twilio Error',
-            error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            }
-        });
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Twilio Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Twilio Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
     }
 }
 

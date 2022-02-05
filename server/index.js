@@ -252,14 +252,21 @@ const sendVerificationEmail = (email, req) => {
                 { href: emailValidationPath, name: 'Verify Email' }),
         };
         sgMail.send(msg).catch(error => {
-            ErrorLog.create({
-                name: 'Send Grid Error',
-                error: {
-                    name: error.name,
-                    message: error.message,
-                    stack: error.stack
-                }
-            });
+            ErrorLog.findOneAndUpdate(
+                {
+                    name: 'Send Grid Error',
+                    "error.stack": error.stack
+                },
+                {
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                },
+                { upsert: true }
+            );
         });
 
         // }
@@ -609,14 +616,21 @@ const send2FAVerifyEmail = (email, code) => {
             `),
     };
     sgMail.send(msg).catch(error => {
-        ErrorLog.create({
-            name: 'Send Grid Error',
-            error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            }
-        });
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Send Grid Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Send Grid Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
     });
 
 }
@@ -811,14 +825,21 @@ expressApp.get('/sendPasswordRecovery', bruteforce.prevent, async (req, res) => 
                 };
                 try {
                     sgMail.send(msg).catch(error => {
-                        ErrorLog.create({
-                            name: 'Send Grid Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Send Grid Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Send Grid Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     });
 
                     res.send(`Sent password recovery to ${email}.
@@ -1040,26 +1061,40 @@ expressApp.post(
                                                 </ul>`),
                                         }
                                         sgMail.send(adminMsg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
-                                            });
+                                            ErrorLog.findOneAndUpdate(
+                                                {
+                                                    name: 'Send Grid Error',
+                                                    "error.stack": error.stack
+                                                },
+                                                {
+                                                    name: 'Send Grid Error',
+                                                    error: {
+                                                        name: error.name,
+                                                        message: error.message,
+                                                        stack: error.stack
+                                                    }
+                                                },
+                                                { upsert: true }
+                                            );
                                         });
 
                                         adminMsg.to = supportEmailAddress;
                                         sgMail.send(adminMsg).catch(error => {
-                                            ErrorLog.create({
-                                                name: 'Send Grid Error',
-                                                error: {
-                                                    name: error.name,
-                                                    message: error.message,
-                                                    stack: error.stack
-                                                }
-                                            });
+                                            ErrorLog.findOneAndUpdate(
+                                                {
+                                                    name: 'Send Grid Error',
+                                                    "error.stack": error.stack
+                                                },
+                                                {
+                                                    name: 'Send Grid Error',
+                                                    error: {
+                                                        name: error.name,
+                                                        message: error.message,
+                                                        stack: error.stack
+                                                    }
+                                                },
+                                                { upsert: true }
+                                            );
                                         });
 
 
@@ -1314,26 +1349,40 @@ expressApp.post(
                                                         </ul>`),
                                             }
                                             sgMail.send(adminMsg).catch(error => {
-                                                ErrorLog.create({
-                                                    name: 'Send Grid Error',
-                                                    error: {
-                                                        name: error.name,
-                                                        message: error.message,
-                                                        stack: error.stack
-                                                    }
-                                                });
+                                                ErrorLog.findOneAndUpdate(
+                                                    {
+                                                        name: 'Send Grid Error',
+                                                        "error.stack": error.stack
+                                                    },
+                                                    {
+                                                        name: 'Send Grid Error',
+                                                        error: {
+                                                            name: error.name,
+                                                            message: error.message,
+                                                            stack: error.stack
+                                                        }
+                                                    },
+                                                    { upsert: true }
+                                                );
                                             });
 
                                             adminMsg.to = supportEmailAddress;
                                             sgMail.send(adminMsg).catch(error => {
-                                                ErrorLog.create({
-                                                    name: 'Send Grid Error',
-                                                    error: {
-                                                        name: error.name,
-                                                        message: error.message,
-                                                        stack: error.stack
-                                                    }
-                                                });
+                                                ErrorLog.findOneAndUpdate(
+                                                    {
+                                                        name: 'Send Grid Error',
+                                                        "error.stack": error.stack
+                                                    },
+                                                    {
+                                                        name: 'Send Grid Error',
+                                                        error: {
+                                                            name: error.name,
+                                                            message: error.message,
+                                                            stack: error.stack
+                                                        }
+                                                    },
+                                                    { upsert: true }
+                                                );
                                             });
 
                                             const betId = savedBet.id;
@@ -1709,26 +1758,40 @@ expressApp.post(
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             const parlayBetPool = await ParlayBetPool.create({
@@ -1984,26 +2047,40 @@ expressApp.post(
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             const teaserBetPool = await ParlayBetPool.create({
@@ -2239,14 +2316,21 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                         { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
         } catch (e2) {
@@ -2641,14 +2725,21 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                         { href: 'https://www.payperwin.com/autobet-settings', name: 'Increase daily limit' }),
                 }
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
         } catch (e2) {
@@ -3463,14 +3554,21 @@ const depositTripleA = async (req, res, data) => {
             });
         hosted_url = data.hosted_url;
     } catch (error) {
-        ErrorLog.create({
-            name: 'Triple-A Error',
-            error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            }
-        });
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Triple-A Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Triple-A Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
         return res.status(500).json({ success: 0, message: "Can't get Hosted URL." });
     }
     if (!hosted_url) {
@@ -3532,14 +3630,21 @@ expressApp.post('/deposit',
                         );
                         data = result;
                     } catch (error) {
-                        ErrorLog.create({
-                            name: 'PremierPay Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'PremierPay Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'PremierPay Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                         return res.status(400).json({ success: 0, message: "Failed to create deposit." });
                     }
 
@@ -3566,14 +3671,21 @@ expressApp.post('/deposit',
                             ),
                         };
                         sgMail.send(msg).catch(error => {
-                            ErrorLog.create({
-                                name: 'Send Grid Error',
-                                error: {
-                                    name: error.name,
-                                    message: error.message,
-                                    stack: error.stack
-                                }
-                            });
+                            ErrorLog.findOneAndUpdate(
+                                {
+                                    name: 'Send Grid Error',
+                                    "error.stack": error.stack
+                                },
+                                {
+                                    name: 'Send Grid Error',
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
+                                },
+                                { upsert: true }
+                            );
                         });
                         return res.json({ success: 1, message: "Please wait until deposit is finished." });
                     }
@@ -3727,14 +3839,21 @@ expressApp.post(
                     ),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
 
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
@@ -3818,14 +3937,21 @@ expressApp.post(
                     ),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
                 return res.json({ success: 1, message: "Please wait until withdraw is finished." });
             } catch (error) {
@@ -4036,14 +4162,21 @@ expressApp.post(
                 ),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
             res.json({ message: "success" });
         } catch (error) {
@@ -4151,14 +4284,21 @@ expressApp.post(
                 ),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             res.json({ message: "success" });

@@ -100,14 +100,21 @@ const getAllSportsLines = async () => {
                     if (pager)
                         total = pager.total;
                 } catch (error) {
-                    ErrorLog.create({
-                        name: 'Bet365 Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Bet365 Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Bet365 Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 }
 
                 if (!success) continue;
@@ -129,14 +136,21 @@ const getAllSportsLines = async () => {
                         success = success_result;
                         oddsResult = oddsResult_result;
                     } catch (error) {
-                        ErrorLog.create({
-                            name: 'Bet365 Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Bet365 Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Bet365 Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     }
 
                     if (!success) {
@@ -158,14 +172,21 @@ const getAllSportsLines = async () => {
                         success = success_result;
                         eventResult = eventResult_result;
                     } catch (error) {
-                        ErrorLog.create({
-                            name: 'Bet365 Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Bet365 Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Bet365 Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     }
 
                     for (let i = 0; i < 10 && results[ei + i]; i++) {

@@ -1109,14 +1109,21 @@ adminRouter.post(
                             <br><br>`),
                     };
                     sgMail.send(msg).catch(error => {
-                        ErrorLog.create({
-                            name: 'Send Grid Error',
-                            error: {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack
-                            }
-                        });
+                        ErrorLog.findOneAndUpdate(
+                            {
+                                name: 'Send Grid Error',
+                                "error.stack": error.stack
+                            },
+                            {
+                                name: 'Send Grid Error',
+                                error: {
+                                    name: error.name,
+                                    message: error.message,
+                                    stack: error.stack
+                                }
+                            },
+                            { upsert: true }
+                        );
                     });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.deposit_confirmation.sms)) {
@@ -1621,14 +1628,21 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         });
         payout_reference = data.payout_reference;
     } catch (error) {
-        ErrorLog.create({
-            name: 'Triple-A Error',
-            error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            }
-        });
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Triple-A Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Triple-A Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
         res.status(500).json({ success: 0, message: "Can't make withdraw." });
         return false;
     }
@@ -4502,14 +4516,21 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -4556,14 +4577,21 @@ adminRouter.post(
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
-                    ErrorLog.create({
-                        name: 'Send Grid Error',
-                        error: {
-                            name: error.name,
-                            message: error.message,
-                            stack: error.stack
-                        }
-                    });
+                    ErrorLog.findOneAndUpdate(
+                        {
+                            name: 'Send Grid Error',
+                            "error.stack": error.stack
+                        },
+                        {
+                            name: 'Send Grid Error',
+                            error: {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack
+                            }
+                        },
+                        { upsert: true }
+                    );
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.other.sms)) {
@@ -4672,14 +4700,21 @@ adminRouter.post(
                     <br><br>`),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             ticket.repliedAt = new Date();
@@ -5324,14 +5359,21 @@ adminRouter.post(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            ErrorLog.create({
-                                name: 'Send Grid Error',
-                                error: {
-                                    name: error.name,
-                                    message: error.message,
-                                    stack: error.stack
-                                }
-                            });
+                            ErrorLog.findOneAndUpdate(
+                                {
+                                    name: 'Send Grid Error',
+                                    "error.stack": error.stack
+                                },
+                                {
+                                    name: 'Send Grid Error',
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
+                                },
+                                { upsert: true }
+                            );
                         });
 
                     })
@@ -5493,14 +5535,21 @@ adminRouter.put(
                             html: simpleresponsive(content),
                         };
                         sgMail.send(msg).catch(error => {
-                            ErrorLog.create({
-                                name: 'Send Grid Error',
-                                error: {
-                                    name: error.name,
-                                    message: error.message,
-                                    stack: error.stack
-                                }
-                            });
+                            ErrorLog.findOneAndUpdate(
+                                {
+                                    name: 'Send Grid Error',
+                                    "error.stack": error.stack
+                                },
+                                {
+                                    name: 'Send Grid Error',
+                                    error: {
+                                        name: error.name,
+                                        message: error.message,
+                                        stack: error.stack
+                                    }
+                                },
+                                { upsert: true }
+                            );
                         });
 
                     })
