@@ -142,14 +142,21 @@ const checkMatchStatus = async () => {
                  `, { href: "https://www.payperwin.com/bets", name: 'View Open Bets' }),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
         }
         if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.no_match_found.sms)) {

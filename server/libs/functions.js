@@ -338,14 +338,21 @@ const sendBetWinConfirmEmail = async (user, bet) => {
             ),
         };
         sgMail.send(msg).catch(error => {
-            ErrorLog.create({
-                name: 'Send Grid Error',
-                error: {
-                    name: error.name,
-                    message: error.message,
-                    stack: error.stack
-                }
-            });
+            ErrorLog.findOneAndUpdate(
+                {
+                    name: 'Send Grid Error',
+                    "error.stack": error.stack
+                },
+                {
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                },
+                { upsert: true }
+            );
         });
     }
     if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.sms)) {
@@ -370,14 +377,21 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
             ),
         };
         sgMail.send(msg).catch(error => {
-            ErrorLog.create({
-                name: 'Send Grid Error',
-                error: {
-                    name: error.name,
-                    message: error.message,
-                    stack: error.stack
-                }
-            });
+            ErrorLog.findOneAndUpdate(
+                {
+                    name: 'Send Grid Error',
+                    "error.stack": error.stack
+                },
+                {
+                    name: 'Send Grid Error',
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }
+                },
+                { upsert: true }
+            );
         });
     }
     if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.lose_confirmation.sms)) {
