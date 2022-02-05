@@ -153,6 +153,14 @@ const matchResultsP2PAndSB = async (bet365ApiKey) => {
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
                             draw = totalPoints == points;
+                        } else if (lineType == 'home_total') {
+                            const overUnderWinner = homeScore > points ? 'home' : 'away';
+                            betWin = pick === overUnderWinner;
+                            draw = homeScore == points;
+                        } else if (lineType == 'away_total') {
+                            const overUnderWinner = awayScore > points ? 'home' : 'away';
+                            betWin = pick === overUnderWinner;
+                            draw = awayScore == points;
                         }
 
                         if (draw && !['Boxing-UFC', 'Boxing/MMA'].includes(sportName)) {

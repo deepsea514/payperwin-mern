@@ -50,6 +50,8 @@ export default class BetDetailModal extends React.Component {
                 return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">{type}@{spreads[spreads.length - 1]}</span>
             case "total":
             case "alternative_total":
+            case "home_total":
+            case "away_total":
                 return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{type}</span>
             default:
                 return null;

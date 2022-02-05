@@ -1016,16 +1016,7 @@ footer p {
     color: #000;
     text-decoration: none;
     font-size: 12px;
-}
-
-.col-in.invite-container {
-    background-color: yellow;
-    padding: 50px 30px 40px 20px;
-    background-image: url(/images/gift-box.png);
-    background-repeat: no-repeat;
-    background-position-x: right;
-    background-position-y: bottom;
-    background-size: contain;
+    margin-right: 7px;
 }
 
 .col-in {
@@ -1042,9 +1033,9 @@ footer p {
     border-radius: 5px;
 }
 
-.main-cnt a {
-    margin-right: 7px;
-    color: #72777f;
+.main-cnt img {
+    margin-bottom: 40px;
+    margin-top: 50px;
 }
 
 .pad-bt {
@@ -1501,7 +1492,7 @@ p label {
 .amount-col small {
     font-size: 80%;
     font-weight: 400;
-    color: rgba(114, 119, 127, 0.52);
+    color: #DDD;
 }
 
 .pymnt-mthd img {
@@ -2427,9 +2418,10 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 }
 
 .verification-proof-container {
-    background: white;
+    background: #1d1d1d;
     padding: 18px;
     border-radius: 4px;
+    color: white;
 }
 
 .verification-proof-container ul {
@@ -2455,7 +2447,7 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 .card-name {
     margin-top: 50px;
     font-size: 30px;
-    color: #444444;
+    color: #444;
 }
 
 .right-image {
@@ -3821,7 +3813,7 @@ input.special {
 }
 
 .preference-group {
-    background-color: #f7f8fA;
+    background-color: #2d2d2d;
 }
 
 .symbol {
@@ -4085,10 +4077,10 @@ a:hover {
 .invite-textarea {
     font-size: 1.25rem;
     line-height: 1.4;
-    background-color: #dbf4ff;
-    border: 1px solid #dbf4ff;
+    background-color: #FFF;
+    border: 1px solid #FFF;
     border-radius: 0;
-    color: #007fed;
+    color: #000;
     margin-bottom: 16px;
     padding: 8px;
     resize: none;
@@ -4097,17 +4089,20 @@ a:hover {
 
 .invite-textarea:focus {
     outline: none !important;
-    border: 1px solid #007fed !important;
+    border: 1px solid #FFF !important;
 
 }
 
 .invite-copybutton {
-    background: #007fed;
-    border: 1px solid #007fed;
+    background: #C43AD2;
+    border: 1px solid #C43AD2;
     color: #F7F7F7;
     font-weight: 700;
     text-shadow: 0 -1px transparent;
     text-align: center;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
 .invite-copybutton:hover {

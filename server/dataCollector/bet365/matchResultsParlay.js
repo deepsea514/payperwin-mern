@@ -56,7 +56,7 @@ const matchResultsParlay = async (bet365ApiKey) => {
             while (true) {
                 let success = false;
                 let results = [];
-                const resultQueryForOne = resultQuery.slice(page * 10, ++page * 10);
+                const resultQueryForOne = resultQuery.slice(page * 10, (page + 1) * 10);
                 const event_ids = resultQueryForOne.map(query => query.lineQuery.eventId).join(',');
                 try {
                     const { data: { success: success_result, results: results_result } } = await axios
@@ -79,17 +79,15 @@ const matchResultsParlay = async (bet365ApiKey) => {
                     break;
                 }
 
-                resultQuery.map(query => {
-                    const result = results.find((result) => query.lineQuery.eventId == result.bet365_id);
-                    if (result) query.result = result;
-                });
+                for (let nI = page * 10; nI < Math.min(resultQuery.length, (page + 1) * 10); nI++) {
+                    resultQuery[nI].result = results[nI - page * 10];
+                }
 
-                if (page * 10 >= resultQuery.length) break;
+                if (++page * 10 >= resultQuery.length) break;
             }
             if (breaked) {
                 continue;
             }
-
             const cancelledEvents = [];
             for (const query of resultQuery) {
                 const { lineQuery, result, pick, pickName } = query;
@@ -161,6 +159,14 @@ const matchResultsParlay = async (bet365ApiKey) => {
                         const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                         betWin = pick === overUnderWinner;
                         draw = totalPoints == linePoints
+                    } else if (lineQuery.type == 'home_total') {
+                        const overUnderWinner = homeScore > linePoints ? 'home' : 'away';
+                        betWin = pick === overUnderWinner;
+                        draw = homeScore == linePoints
+                    } else if (lineQuery.type == 'away_total') {
+                        const overUnderWinner = awayScore > linePoints ? 'home' : 'away';
+                        betWin = pick === overUnderWinner;
+                        draw = awayScore == linePoints
                     }
 
                     if (draw) {
@@ -182,7 +188,6 @@ const matchResultsParlay = async (bet365ApiKey) => {
                 }
                 delete query.result;
             }
-
             if (breaked) {
                 continue;
             }

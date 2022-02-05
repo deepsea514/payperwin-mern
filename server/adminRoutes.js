@@ -1079,13 +1079,13 @@ adminRouter.post(
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
                                     user: invitor._id,
-                                    amount: inviteBonus,
+                                    amount: inviteBonus * amount,
                                     method: method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus
+                                    afterBalance: invitor.balance + inviteBonus * amount
                                 });
-                                await invitor.update({ $inc: { balance: inviteBonus } });
+                                await invitor.update({ $inc: { balance: inviteBonus * amount } });
                             }
                         }
                     } catch (error) {
@@ -1322,13 +1322,13 @@ adminRouter.patch(
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
                                     user: invitor._id,
-                                    amount: inviteBonus,
+                                    amount: inviteBonus * deposit.amount,
                                     method: deposit.method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus
+                                    afterBalance: invitor.balance + inviteBonus * deposit.amount
                                 });
-                                await invitor.update({ $inc: { balance: inviteBonus } });
+                                await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
                             }
                         }
                     } catch (error) {
@@ -2185,6 +2185,14 @@ adminRouter.post(
                             const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                             betWin = query.pick === overUnderWinner;
                             draw = totalPoints == linePoints
+                        } else if (lineQuery.type == 'home_total') {
+                            const overUnderWinner = homeScore > linePoints ? 'home' : 'away';
+                            betWin = query.pick === overUnderWinner;
+                            draw = homeScore == linePoints
+                        } else if (lineQuery.type == 'away_total') {
+                            const overUnderWinner = awayScore > linePoints ? 'awayhome' : 'away';
+                            betWin = query.pick === overUnderWinner;
+                            draw = awayScore == linePoints
                         }
 
                         if (draw) {
@@ -2625,6 +2633,13 @@ adminRouter.post(
                             } else if (['total', 'alternative_total'].includes(lineType)) {
                                 const totalPoints = homeScore + awayScore;
                                 const overUnderWinner = totalPoints > points ? 'home' : 'away';
+                                betWin = pick === overUnderWinner;
+                                draw = totalPoints == linePoints
+                            } else if (lineType == 'home_total') {
+                                const overUnderWinner = homeScore > points ? 'home' : 'away';
+                                betWin = pick === overUnderWinner;
+                            } else if (lineType == 'away_total') {
+                                const overUnderWinner = awayScore > points ? 'home' : 'away';
                                 betWin = pick === overUnderWinner;
                             }
 
@@ -3235,6 +3250,20 @@ adminRouter.post(
                             pickName += `Over ${linePoints}`;
                         } else {
                             pickName += `Under ${linePoints}`;
+                        }
+                        break;
+                    case 'home_total':
+                        if (pick == 'home') {
+                            pickName += `${bet.teamA.name} Over ${linePoints}`;
+                        } else {
+                            pickName += `${bet.teamA.name} Under ${linePoints}`;
+                        }
+                        break;
+                    case 'away_total':
+                        if (pick == 'home') {
+                            pickName += `${bet.teamB.name} Over ${linePoints}`;
+                        } else {
+                            pickName += `${bet.teamB.name} Under ${linePoints}`;
                         }
                         break;
                     case 'spread':
@@ -6637,6 +6666,20 @@ const placeAutoBet = async (betId, autoBetUserID, toWin) => {
                         pickName += `Under ${linePoints}`;
                     }
                     break;
+                case "home_total":
+                    if (pick == "home") {
+                        pickName += `${bet.teamA.name} Over ${linePoints}`;
+                    } else {
+                        pickName += `${bet.teamA.name} Under ${linePoints}`;
+                    }
+                    break;
+                case "away_total":
+                    if (pick == "home") {
+                        pickName += `${bet.teamB.name} Over ${linePoints}`;
+                    } else {
+                        pickName += `${bet.teamB.name} Under ${linePoints}`;
+                    }
+                    break;
                 case "spread":
                 case "alternative_spread":
                     if (pick == "home") {
@@ -7395,6 +7438,12 @@ adminRouter.post(
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > linePoints ? 'home' : 'away';
                             betWin = query.pick === overUnderWinner;
+                        } else if (lineQuery.type == 'home_total') {
+                            const overUnderWinner = homeScore > linePoints ? 'home' : 'away';
+                            betWin = query.pick === overUnderWinner;
+                        } else if (lineQuery.type == 'away_total') {
+                            const overUnderWinner = awayScore > linePoints ? 'home' : 'away';
+                            betWin = query.pick === overUnderWinner;
                         }
 
                         homeWin = homeWin && betWin;
@@ -7760,6 +7809,15 @@ adminRouter.post(
                             const totalPoints = homeScore + awayScore;
                             const overUnderWinner = totalPoints > points ? 'home' : 'away';
                             betWin = pick === overUnderWinner;
+                            draw = totalPoints == points;
+                        } else if (lineType == 'home_total') {
+                            const overUnderWinner = homeScore > points ? 'home' : 'away';
+                            betWin = pick === overUnderWinner;
+                            draw = homeScore == points;
+                        } else if (lineType == 'away_total') {
+                            const overUnderWinner = awayScore > points ? 'home' : 'away';
+                            betWin = pick === overUnderWinner;
+                            draw = awayScore == points;
                         }
 
                         if (draw) {

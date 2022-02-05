@@ -190,13 +190,13 @@ class Registration extends Component {
         setTitle({ pageTitle: title })
     }
 
-    handleChange = (e) => {
+    handleChange = async (e) => {
         const { touched } = this.state;
         let isReturn = false;
         switch (e.target.name) {
             case "agreeTerms":
             case "agreePrivacy":
-                this.setState({
+                await this.setState({
                     [e.target.name]: e.target.checked,
                     touched: { ...touched, [e.target.name]: true, }
                 });
@@ -205,7 +205,7 @@ class Registration extends Component {
                 const country = CountryInfo.find(country => e.target.value == country.country);
                 if (country) {
                     const currency = country.currency;
-                    this.setState({
+                    await this.setState({
                         country: e.target.value,
                         currency,
                         region: '',
@@ -217,7 +217,7 @@ class Registration extends Component {
             case "vipcode":
                 isReturn = true;
             default:
-                this.setState({
+                await this.setState({
                     [e.target.name]: e.target.value,
                     touched: { ...touched, [e.target.name]: true, }
                 });
@@ -319,7 +319,7 @@ class Registration extends Component {
             case 0:
                 return <>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.COUNTRY" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.COUNTRY" /></Form.Label>
                         <Form.Control
                             as="select"
                             name="country"
@@ -335,7 +335,7 @@ class Registration extends Component {
                         {errors.country ? <div className="registration-feedback">{errors.country}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.REGION" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.REGION" /></Form.Label>
                         <RegionDropdown className="form-control"
                             country={country}
                             value={region}
@@ -346,7 +346,7 @@ class Registration extends Component {
                         {errors.region ? <div className="registration-feedback">{errors.region}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.EMAIL" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.EMAIL" /></Form.Label>
                         <Form.Control
                             type="email"
                             name="email"
@@ -360,7 +360,7 @@ class Registration extends Component {
                         {errors.email ? <div className="registration-feedback">{errors.email}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.PASSWORD" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.REGISTRATION.PASSWORD" /></Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPass ? "text" : "password"}
@@ -379,7 +379,7 @@ class Registration extends Component {
                         {errors.password ? <div className="registration-feedback">{errors.password}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.PASSWORDCONFIRM" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.REGISTRATION.PASSWORDCONFIRM" /></Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPassConfirm ? "text" : "password"}
@@ -401,7 +401,7 @@ class Registration extends Component {
             case 1:
                 return <>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.FIRSTNAME" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.FIRSTNAME" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="firstname"
@@ -415,7 +415,7 @@ class Registration extends Component {
                         {errors.firstname ? <div className="registration-feedback">{errors.firstname}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.LASTNAME" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.LASTNAME" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="lastname"
@@ -429,7 +429,7 @@ class Registration extends Component {
                         {errors.lastname ? <div className="registration-feedback">{errors.lastname}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.PROFILE.BIRTHDAY" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.PROFILE.BIRTHDAY" /></Form.Label>
                         <CustomDatePicker
                             name="dateofbirth"
                             className="form-control"
@@ -443,7 +443,7 @@ class Registration extends Component {
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Referral / Promotion Code (optional)</Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}>Referral / Promotion Code (optional)</Form.Label>
                         <Form.Control
                             type="text"
                             name="referral_code"
@@ -455,7 +455,7 @@ class Registration extends Component {
                         {errors.referral_code ? <div className="registration-feedback">{errors.referral_code}</div> : null}
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><FormattedMessage id="PAGES.REGISTRATION.VIPCODE" /></Form.Label>
+                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.REGISTRATION.VIPCODE" /></Form.Label>
                         <Form.Control
                             type="text"
                             name="vipcode"
@@ -479,7 +479,7 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>
+                                <span className='text-white'>
                                     <FormattedMessage id="PAGES.REGISTRATION.AGREETERMS" values={{
                                         termslink: <Link to={'/terms-and-conditions'}><FormattedMessage id="PAGES.SELFEXCLUSION.TERMS" /></Link>,
                                         rulelink: <Link to={'/betting-rules'}><FormattedMessage id="COMPONENTS.BETTING.RULES" /></Link>
@@ -501,7 +501,7 @@ class Registration extends Component {
                         labelPlacement="end"
                         label={
                             <div>
-                                <span>
+                                <span className='text-white'>
                                     <FormattedMessage id="PAGES.REGISTRATION.AGREEPRIVACY" values={{ privacylink: <Link to={'/privacy-policy'}><FormattedMessage id="COMPONENTS.PRIVACY_POLICY" /></Link> }} />
                                 </span>
                             </div>
@@ -717,17 +717,17 @@ class Registration extends Component {
             <div className="content pb-5">
                 <Grid container justifyContent="center">
                     <Grid item xs={12} sm={10} md={8} lg={6}>
-                        <Card style={{ backgroundColor: '#ffffff' }}>
+                        <Card style={{ backgroundColor: '#1d1d1d' }}>
                             <CardHeader
-                                style={{ textAlign: 'center' }}
+                                style={{ textAlign: 'center', color: '#FFF' }}
                                 title="Create Account"
                             />
                             <CardContent>
                                 <div className={classes.root}>
-                                    <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+                                    <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />} style={{ backgroundColor: '#1d1d1d' }}>
                                         {steps.map((label) => (
                                             <Step key={label}>
-                                                <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                                                <StepLabel StepIconComponent={ColorlibStepIcon}>{ }</StepLabel>
                                             </Step>
                                         ))}
                                     </Stepper>

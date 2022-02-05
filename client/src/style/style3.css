@@ -199,7 +199,7 @@ a.log-in-btn {
 }
 
 .bet-slip-list.basic-mode {
-    min-height: 400px;
+    min-height: 450px;
 }
 
 .bet-container {
@@ -587,7 +587,7 @@ a.log-in-btn {
     margin: 10px 20px;
     padding: 10px 0 0 0;
     font-size: 12px;
-    background-image: linear-gradient(to right, black 75%, #FFF0 0%);
+    background-image: linear-gradient(to right, #FFF 75%, #FFF0 0%);
     background-position: top;
     background-size: 6px 1px;
     background-repeat: repeat-x;
@@ -599,11 +599,11 @@ a.log-in-btn {
 
 .open-bets-col strong {
     font-size: 16px;
-    color: #000;
+    color: #FFF;
 }
 
 .open-bets-col {
-    color: #72777f;
+    color: #AAA;
     font-size: 12px;
 }
 
@@ -656,7 +656,7 @@ a.log-in-btn {
 .dpsit {
     font-size: 13px;
     margin-top: 30px;
-    color: #72777f;
+    color: #AAA;
 }
 
 .pad10 {
@@ -672,41 +672,33 @@ a.log-in-btn {
     margin-bottom: 26px;
 }
 
-.diposit-list li {
-    border: 1px solid #ccc;
-    padding: 10px 20px;
-    margin-bottom: 23px;
-    margin: 4px 5px;
+.deposit-item {
+    margin-bottom: 20px;
     text-align: center;
-    padding: 12px 0;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0);
-    width: 23%;
+    padding: 10px;
     text-align: center;
-    border-top: none;
-}
-
-.diposit-list li a {
-    font-weight: bold;
-    color: #000;
     display: block;
-    text-align: center;
-    margin: 0 auto;
+    box-shadow: 0 3px 6px #0008, 0 3px 6px #0008;
 }
 
-.diposit-list img {
+.deposit-item-inner {
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+
+.deposite-item-img-wrapper {
     height: 40px;
+    margin: 20px 0;
+}
+
+.deposit-item img {
+    max-height: 100%;
+    max-width: 100%;
     display: block;
     text-align: center;
     margin: auto;
     margin-bottom: 10px;
-}
-
-.diposit-list li a:last-child {
-    border-top: 1px solid rgba(204, 204, 204, 0.42);
-    padding-top: 16px;
-    display: block;
-    margin: 0;
-    padding-bottom: 7px;
 }
 
 .bg-color-box {
@@ -2216,8 +2208,17 @@ a.fav-link:hover {
 
 .member-short-description {
     font-style: italic;
-    margin-top: 20px;
     font-size: 14px;
+    text-align: center;
+    margin: 20px 1rem 0 1rem;
+}
+
+.member-read-more {
+    font-size: 16px;
+    text-align: center;
+    color: rgb(34, 135, 250) !important;
+    margin: 16px;
+    cursor: pointer;
 }
 
 .member-back-button {
@@ -2270,4 +2271,43 @@ a.fav-link:hover {
 
 .jodit_theme_custom .jodit-toolbar__box svg {
     fill: #FFF;
+}
+
+.tab-content {
+    background-color: inherit !important;
+}
+
+.invite-title {
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 42px;
+    font-weight: 300;
+}
+
+.invite-description {
+    text-align: center;
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+
+.invite-warn {
+    text-align: center;
+    color: #FFFFFF;
+    font-family: "Roboto", Sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+
+.invite-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.invite-container {
+    padding: 20px 10px 20px 10px;
 }

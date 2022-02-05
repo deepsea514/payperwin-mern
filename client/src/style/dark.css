@@ -200,6 +200,20 @@
 .main-section.dark .col-in {
     background: #1d1d1d;
     border-color: #202020;
+    color: white;
+}
+
+.main-section.dark .main-cnt a {
+    color: #FFF;
+}
+
+.main-section.dark .card-name {
+    color: #FFF;
+}
+
+.main-section.dark .gray-cell {
+    background-color: #1d1d1d;
+    color: #FFF;
 }
 
 .main-section.dark .help-center {

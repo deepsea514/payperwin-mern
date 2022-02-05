@@ -40,6 +40,7 @@ class Team extends Component {
                                 <h3 className='member-name mt-2'>{member.name}</h3>
                                 <h5 className='member-position'>{member.position}</h5>
                                 <p className='member-short-description'>{member.shortDescription}</p>
+                                <p className='member-read-more'>Read More</p>
                             </div>
                         </div>
                     ))}
@@ -51,7 +52,7 @@ class Team extends Component {
                     <div className='col-md-8'>
                         <h3 className='member-name mt-2'>{selectedMember.name}</h3>
                         <h5 className='member-position'>{selectedMember.position}</h5>
-                        <p className='member-short-description'>{selectedMember.fullDescription}</p>
+                        <div className='my-2' dangerouslySetInnerHTML={{ __html: selectedMember.fullDescription }}></div>
                         <span className='member-back-button' onClick={() => this.setState({ selectedMember: null })}><i className='fas fa-chevron-left' /> Back</span>
                     </div>
                 </div>}

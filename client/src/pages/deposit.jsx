@@ -24,48 +24,58 @@ class Deposit extends Component {
                     <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.SELECTALERT" /></p>
                     <div className="deposit-in bg-color-box pad10">
                         <h4 className="header-i4"><FormattedMessage id="PAGES.DEPOSIT.SELECTMETHOD" /></h4>
-                        <ul className="diposit-list d-flex flex-wrap justify-content-space">
-                            <li>
-                                <Link to={{ pathname: '/deposit-etransfer' }}>
-                                    <img src="images/eTransfer.png" />
-                                </Link>
-                                <Link to={{ pathname: '/deposit-etransfer' }}>
-                                    Interac eTransfer
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
-                                    <img src="images/bitcoin.png" />
-                                </Link>
-                                <Link to={{ pathname: '/deposit-bitcoin' }}>
-                                    Bitcoin
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/deposit-ethereum' }}>
-                                    <img src="images/Ethereum.png" />
-                                </Link>
-                                <Link to={{ pathname: '/deposit-ethereum' }}>
-                                    Ethereum
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/deposit-tether' }}>
-                                    <img src="images/USDT.png" />
-                                </Link>
-                                <Link to={{ pathname: '/deposit-tether' }}>
-                                    Tether
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={{ pathname: '/deposit-giftcard' }}>
-                                    <img src="images/gift-card.png" />
-                                </Link>
-                                <Link to={{ pathname: '/deposit-giftcard' }}>
-                                    Gift Card
-                                </Link>
-                            </li>
-                        </ul>
+                        <div className='row'>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-etransfer' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/eTransfer.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Interac eTransfer</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-bitcoin' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/bitcoin.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Bitcoin</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-ethereum' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/Ethereum.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Ethereum</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-tether' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/USDT.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Tether</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-giftcard' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/gift-card.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Gift Card</div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <p className="dpsit">
                         <FormattedMessage id="PAGES.WITHDRAW.MESSAGE.1" />

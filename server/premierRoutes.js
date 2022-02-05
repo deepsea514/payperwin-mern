@@ -104,13 +104,13 @@ premierRouter.post('/etransfer-deposit',
                                     financialtype: 'invitebonus',
                                     uniqid: `IB${ID()}`,
                                     user: invitor._id,
-                                    amount: inviteBonus,
+                                    amount: inviteBonus * deposit.amount,
                                     method: deposit.method,
                                     status: FinancialStatus.success,
                                     beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus
+                                    afterBalance: invitor.balance + inviteBonus * deposit.amount
                                 });
-                                await invitor.update({ $inc: { balance: inviteBonus } });
+                                await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
                             }
                         }
                     } catch (error) {

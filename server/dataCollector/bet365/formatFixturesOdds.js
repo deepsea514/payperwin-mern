@@ -81,7 +81,7 @@ const formatFixturesOdds = (event, sport) => {
                 return formatESportsFixturesOdds(event);
         }
     } catch (error) {
-        console.error(error, event);
+        console.error(error, event.id);
         return null;
     }
 }

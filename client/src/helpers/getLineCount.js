@@ -3,6 +3,7 @@ const getLineCount = (line, timer) => {
     const {
         moneyline, spreads, totals, alternative_spreads, alternative_totals,
         first_half, second_half, fifth_innings,
+        home_totals, away_totals,
         first_quarter, second_quarter, third_quarter, forth_quarter
     } = line;
     let lines = [];
@@ -19,7 +20,7 @@ const getLineCount = (line, timer) => {
         }
     } else {
         lines = [
-            { moneyline, spreads, totals, alternative_spreads, alternative_totals },
+            { moneyline, spreads, totals, alternative_spreads, alternative_totals, home_totals, away_totals },
             first_half,
             second_half,
             first_quarter,
@@ -31,7 +32,7 @@ const getLineCount = (line, timer) => {
     }
     lines.forEach(line => {
         if (!line) return;
-        const { moneyline, spreads, totals, alternative_spreads, alternative_totals } = line;
+        const { moneyline, spreads, totals, alternative_spreads, alternative_totals, home_totals, away_totals } = line;
         if (moneyline) {
             lineCount++;
         }
@@ -46,6 +47,12 @@ const getLineCount = (line, timer) => {
         }
         if (alternative_totals) {
             lineCount += alternative_totals.length;
+        }
+        if (home_totals) {
+            lineCount += home_totals.length;
+        }
+        if (away_totals) {
+            lineCount += away_totals.length;
         }
     });
     return lineCount;

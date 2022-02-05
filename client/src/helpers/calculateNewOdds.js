@@ -1,5 +1,5 @@
 function calculateNewOdds(home, away, type, subtype = null) {
-    if (subtype || subtype != null && ['alternative_total', 'alternative_spread'].includes(type)) {
+    if (subtype || subtype != null && ['alternative_total', 'alternative_spread', 'home_total', 'away_total'].includes(type)) {
         return {
             newHome: parseInt(home),
             newAway: parseInt(away),

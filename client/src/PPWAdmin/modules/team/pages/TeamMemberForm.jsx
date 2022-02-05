@@ -8,6 +8,7 @@ import { createMember, getMember, updateMember } from "../redux/services";
 import Resizer from "react-image-file-resizer";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
+import JoditEditor from "jodit-react";
 import _env from '../../../../env.json';
 const appUrl = _env.appUrl;
 
@@ -145,6 +146,16 @@ class TeamMemberForm extends React.Component {
             isError, isSuccess,
             member_id: member_id, loading
         } = this.state;
+
+        const config = {
+            readonly: false,
+            height: 350,
+            enableDragAndDropFileToEditor: true,
+            spellcheck: true,
+            uploader: {
+                insertImageAsBase64URI: true
+            },
+        };
 
         return (
             <div className="row">
@@ -296,11 +307,24 @@ class TeamMemberForm extends React.Component {
                                         <div className="form-row form-group">
                                             <div className="col">
                                                 <label>Full Description<span className="text-danger">*</span></label>
-                                                <textarea type="text" name="fullDescription"
-                                                    className={`form-control ${getInputClasses(formik, "fullDescription")}`}
-                                                    rows={5}
+                                                <JoditEditor
+                                                    config={config}
+                                                    name="fullDescription"
+                                                    tabIndex={1} // tabIndex of textarea
                                                     {...formik.getFieldProps("fullDescription")}
-                                                    placeholder="Full Description" />
+                                                    {...{
+                                                        onChange: (fullDescription) => {
+                                                            formik.setFieldError("fullDescription", false);
+                                                            formik.setFieldTouched("fullDescription", true);
+                                                            formik.setFieldValue("fullDescription", fullDescription);
+                                                        },
+                                                        onBlur: (fullDescription) => {
+                                                            formik.setFieldError("fullDescription", false);
+                                                            formik.setFieldTouched("fullDescription", true);
+                                                            // formik.setFieldValue("fullDescription", fullDescription);
+                                                        }
+                                                    }}
+                                                />
                                                 {formik.touched.fullDescription && formik.errors.fullDescription ? (
                                                     <div className="invalid-feedback">
                                                         {formik.errors.fullDescription}
