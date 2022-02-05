@@ -230,5 +230,9 @@
     {
         "title": "Boxing/MMA Events",
         "path": "/sport/boxing"
+    },
+    {
+        "title": "Our Team",
+        "path": "/team"
     }
 ]

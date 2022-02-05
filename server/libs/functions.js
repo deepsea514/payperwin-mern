@@ -308,7 +308,7 @@ const getLinePoints = (pickName, pick, lineQuery) => {
     } else if (['spread', 'alternative_spread'].includes(lineQuery.type)) {
         linePoints = Number(linePoints[linePoints.length - 1]);
         if (pick == 'away') linePoints = -linePoints;
-    } else if (['total', 'alternative_total'].includes(lineQuery.type)) {
+    } else if (['total', 'alternative_total', 'home_total', 'away_total'].includes(lineQuery.type)) {
         linePoints = Number(linePoints[linePoints.length - 1]);
     }
     return linePoints;

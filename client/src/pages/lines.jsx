@@ -203,6 +203,7 @@ class Lines extends Component {
                         const {
                             spreads, moneyline, totals, alternative_spreads, alternative_totals,
                             first_half, second_half, fifth_innings,
+                            home_totals, away_totals,
                             first_quarter, second_quarter,
                             third_quarter, forth_quarter
                         } = line;
@@ -211,7 +212,7 @@ class Lines extends Component {
                         }
 
                         let lines = [
-                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals }, subtype: null, enabled: (!live || false) },
+                            { line: { moneyline, totals, spreads, alternative_spreads, alternative_totals, home_totals, away_totals }, subtype: null, enabled: (!live || false) },
                             { line: first_half, subtype: "first_half", enabled: (!live || false) },
                             { line: second_half, subtype: "second_half", enabled: (!live || timer && timer.q && timer.q < "2") },
                             { line: first_quarter, subtype: "first_quarter", enabled: (!live || false) },

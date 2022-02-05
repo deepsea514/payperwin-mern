@@ -62,12 +62,12 @@ const RenderMoneyline = (props) => {
                 <i onClick={onClickBetType} className='ml-2 fas fa-question-circle' />
             </div>
             <span className='bet-type-logo moneyline'>
-                {logo_teamA && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
+                {logo_teamA != null && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`}
                     className='bet-type-team'
                     onLoad={({ target }) => target.style.display = 'block'}
                 />}
                 <span className='bet-type-logo-title'></span>
-                {logo_teamB && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`}
+                {logo_teamB != null && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`}
                     className='bet-type-team'
                     onLoad={({ target }) => target.style.display = 'block'}
                 />}

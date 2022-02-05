@@ -274,7 +274,7 @@ class TransactionHistory extends Component {
                             <div className="row amount-col bg-color-box" key={index}>
                                 <div className="col-sm-8">
                                     <span>{this.getDate(transaction.updatedAt)}</span>
-                                    {transaction.betDetails && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div>}
+                                    {transaction.betDetails && !transaction.betDetails.isParlay && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div>}
                                     <small>{this.getFormattedString(transaction.financialtype, transaction.method)}</small>
                                 </div>
                                 <div className="col-sm-2 text-right">

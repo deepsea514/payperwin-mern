@@ -44,7 +44,7 @@ const gotLineToOdds = (game_lines) => {
 }
 
 const formatAmericanFootballFixturesOdds = (event) => {
-    const { main, others } = event.odds;
+    const { main, others, main_props } = event.odds;
     let line = {
         originId: event.id,
         endDate: new Date(parseInt(event.time) * 1000),
@@ -52,6 +52,8 @@ const formatAmericanFootballFixturesOdds = (event) => {
         moneyline: null,
         spreads: [],
         totals: [],
+        home_totals: [],
+        away_totals: [],
         alternative_spreads: [],
         alternative_totals: [],
         first_half: null,
@@ -192,10 +194,56 @@ const formatAmericanFootballFixturesOdds = (event) => {
         }
     }
 
+    if (main_props) {
+        if (main_props.sp.result_and_total) {
+            const result_and_total = main_props.sp.result_and_total.odds;
+            let home_totals = result_and_total.filter(total => total.name == "1");
+            let away_totals = result_and_total.filter(total => total.name == "2");
+
+            while (home_totals.length > 0) {
+                const first = home_totals[0];
+                const second = home_totals.find(total => Number(total.handicap) == Number(first.handicap) && total.header != first.header);
+                if (!second) {
+                    home_totals = home_totals.filter(total => total.id != first.id);
+                    continue;
+                }
+                const over = first.header == 'Over' ? first : second;
+                const under = first.header == 'Under' ? first : second;
+                line.home_totals.push({
+                    altLineId: over.id,
+                    points: Number(over.handicap),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                home_totals = home_totals.filter(total => total.id != over.id && total.id != under.id);
+            }
+
+            while (away_totals.length > 0) {
+                const first = away_totals[0];
+                const second = away_totals.find(total => Number(total.handicap) == Number(first.handicap) && total.header != first.header);
+                if (!second) {
+                    away_totals = away_totals.filter(total => total.id != first.id);
+                    continue;
+                }
+                const over = first.header == 'Over' ? first : second;
+                const under = first.header == 'Under' ? first : second;
+                line.away_totals.push({
+                    altLineId: over.id,
+                    points: Number(over.handicap),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                away_totals = away_totals.filter(total => total.id != over.id && total.id != under.id);
+            }
+        }
+    }
+
     line.spreads = line.spreads && line.spreads.length ? line.spreads : null;
     line.totals = line.totals && line.totals.length ? line.totals : null;
     line.alternative_spreads = line.alternative_spreads && line.alternative_spreads.length ? line.alternative_spreads : null;
     line.alternative_totals = line.alternative_totals && line.alternative_totals.length ? line.alternative_totals : null;
+    line.home_totals = line.home_totals && line.home_totals.length ? line.home_totals : null;
+    line.away_totals = line.away_totals && line.away_totals.length ? line.away_totals : null;
 
     if (line.moneyline || line.spreads || line.totals) {
         return line;

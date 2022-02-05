@@ -133,12 +133,6 @@ class Menu extends Component {
                                         <i className="fas fa-chevron-right float-right" />
                                     </a>
                                 </li>
-                                <li className={`nav-item col-6 ${pathname === '/history' ? 'active' : ''}`}>
-                                    <Link to={{ pathname: '/history' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
-                                        <i className="fas fa-history" />
-                                        <span><FormattedMessage id="COMPONENTS.SIDEBAR.BETTING_HISTORY" /></span>
-                                    </Link>
-                                </li>
                                 <li className="nav-item col-6">
                                     <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
                                         <i className="fas fa-money-check" />
@@ -169,6 +163,14 @@ class Menu extends Component {
                                         <span><FormattedMessage id="COMPONENTS.HELP" /></span>
                                         <i className="fas fa-chevron-right float-right" />
                                     </a>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/team"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-chalkboard-teacher" />
+                                        Our Team
+                                    </Link>
                                 </li>
                                 <li className={`nav-item col-6 ${pathname === '/about-us' ? 'active' : ''}`}>
                                     <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
@@ -290,6 +292,14 @@ class Menu extends Component {
                                         onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-gamepad" />
                                         <FormattedMessage id="COMPONENTS.SIDEBAR.OPENBETS" />
+                                    </Link>
+                                </li>
+                                <li className={`nav-item col-6 ${pathname === '/history' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/history' }}
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-history" />
+                                        <span><FormattedMessage id="COMPONENTS.SIDEBAR.BETTING_HISTORY" /></span>
                                     </Link>
                                 </li>
                                 <li className={`nav-item ${pathname === '/preferences' ? 'active' : ''}`}>

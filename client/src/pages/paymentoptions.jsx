@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import PaymentOptionEtransfer from "../components/paymentOptionEtransfer";
 import PaymentOptionTripleA from "../components/PaymentOptionTripleA";
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import GoToTop from "../components/gotoTop";
 
@@ -28,6 +28,8 @@ class PaymentOptions extends Component {
 
     render() {
         const { option } = this.state;
+        const { intl } = this.props;
+
         return (
             <div className="col-in px-5">
                 <h1 className="main-heading-in"><FormattedMessage id="COMPONENTS.PAYMENT.METHODS" /></h1>
@@ -40,7 +42,7 @@ class PaymentOptions extends Component {
                         <div className="tab-navigation">
                             <label><FormattedMessage id="PAGES.PAYMENT.CURRENCY.SELECT" /></label>
                             <select id="select-box" className="form-control">
-                                <option value="2"><FormattedMessage id="PAGES.PAYMENT.CURRENCY.CAD" /></option>
+                                <option value="2">{intl.formatMessage({ id: "PAGES.PAYMENT.CURRENCY.CAD" })}</option>
                             </select>
                         </div>
 
@@ -192,4 +194,4 @@ class PaymentOptions extends Component {
     }
 }
 
-export default PaymentOptions;
+export default injectIntl(PaymentOptions);

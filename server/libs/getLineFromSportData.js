@@ -78,6 +78,22 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
                                                 }
                                             });
                                         }
+                                    } else if (type == 'home_total') {
+                                        if (selectedLine.home_totals) {
+                                            selectedLine.home_totals.forEach((total) => {
+                                                if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                    lineData.line = total;
+                                                }
+                                            });
+                                        }
+                                    } else if (type == 'away_total') {
+                                        if (selectedLine.away_totals) {
+                                            selectedLine.away_totals.forEach((total) => {
+                                                if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                    lineData.line = total;
+                                                }
+                                            });
+                                        }
                                     }
                                     if (lineData.line) {
                                         found = true;
@@ -156,6 +172,22 @@ const getLineFromSportData = (data, leagueId, eventId, lineId, type, subtype, al
                                     } else if (type == 'alternative_total') {
                                         if (selectedLine.alternative_totals) {
                                             selectedLine.alternative_totals.forEach((total) => {
+                                                if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                    lineData.line = total;
+                                                }
+                                            });
+                                        }
+                                    } else if (type == 'home_total') {
+                                        if (selectedLine.home_totals) {
+                                            selectedLine.home_totals.forEach((total) => {
+                                                if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
+                                                    lineData.line = total;
+                                                }
+                                            });
+                                        }
+                                    } else if (type == 'away_total') {
+                                        if (selectedLine.away_totals) {
+                                            selectedLine.away_totals.forEach((total) => {
                                                 if (altLineId === total.altLineId || (!altLineId && !total.altLineId)) {
                                                     lineData.line = total;
                                                 }

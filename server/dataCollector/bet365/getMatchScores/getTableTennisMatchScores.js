@@ -7,7 +7,7 @@ const getTableTennisMatchScores = (type, subtype, ss, scores, time_status) => {
     try {
         const sets = Object.keys(scores);
         for (let i = 0; i < sets.length; i++) {
-            if (['total', 'alternative_total'].includes(type)) {
+            if (['total', 'alternative_total', 'home_total', 'away_total'].includes(type)) {
                 matchResult.homeScore += parseInt(scores[sets[i]].home);
                 matchResult.awayScore += parseInt(scores[sets[i]].away);
             } else if (type == 'moneyline') {

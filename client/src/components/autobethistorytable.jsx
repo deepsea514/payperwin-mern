@@ -6,8 +6,8 @@ const getDateFormat = (date) => {
     return dateformat(date, "mediumDate");
 }
 
-const getBetType = (type) => {
-    switch (type) {
+const getBetType = (history) => {
+    switch (history.lineQuery.type) {
         case 'moneyline':
             return 'Moneyline';
         case 'total':
@@ -16,6 +16,10 @@ const getBetType = (type) => {
         case 'spread':
         case 'alternative_spread':
             return 'Spread';
+        case 'home_total':
+            return history.teamA.name + ' Total';
+        case 'away_total':
+            return history.teamB.name + ' Total';
         default:
             return null;
     }
@@ -52,7 +56,7 @@ const AllBets = ({ histories }) => {
                     <tr key={index}>
                         <td>{getDateFormat(history.updatedAt)}</td>
                         <td>{history.isParlay ? 'Parlay Bet' : `${history.teamA.name} vs ${history.teamA.name}`}</td>
-                        <td>{history.isParlay ? 'Multiple' : getBetType(history.lineQuery.type)} @{history.pickOdds}</td>
+                        <td>{history.isParlay ? 'Multiple' : getBetType(history)} @{history.pickOdds}</td>
                         <td>${history.bet.toFixed(2)} (Pays ${history.payableToWin.toFixed(2)})</td>
                         <td>{getBetStatus(history.status)}</td>
                     </tr>
@@ -79,7 +83,7 @@ const BetFees = ({ histories }) => {
                     <tr key={index}>
                         <td>{getDateFormat(history.updatedAt)}</td>
                         <td>{history.isParlay ? 'Parlay Bet' : `${history.teamA.name} vs ${history.teamA.name}`}</td>
-                        <td>{history.isParlay ? 'Multiple' : getBetType(history.lineQuery.type)} @{history.pickOdds}</td>
+                        <td>{history.isParlay ? 'Multiple' : getBetType(history)} @{history.pickOdds}</td>
                         <td>${history.payableToWin.toFixed(2)}</td>
                         <td>${history.fee.toFixed(2)}</td>
                     </tr>
@@ -105,7 +109,7 @@ const PendingBets = ({ histories }) => {
                     <tr key={index}>
                         <td>{getDateFormat(history.updatedAt)}</td>
                         <td>{history.isParlay ? 'Parlay Bet' : `${history.teamA.name} vs ${history.teamA.name}`}</td>
-                        <td>{history.isParlay ? 'Multiple' : getBetType(history.lineQuery.type)} @{history.pickOdds}</td>
+                        <td>{history.isParlay ? 'Multiple' : getBetType(history)} @{history.pickOdds}</td>
                         <td>${history.bet.toFixed(2)}</td>
                     </tr>
                 ))}
