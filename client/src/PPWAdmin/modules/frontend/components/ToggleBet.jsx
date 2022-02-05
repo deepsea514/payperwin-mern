@@ -12,6 +12,7 @@ export default class ToggleBet extends Component {
             single: true,
             teaser: true,
             parlay: true,
+            live: true,
             loading: false,
             isError: false,
             isSuccess: false,
@@ -26,9 +27,10 @@ export default class ToggleBet extends Component {
             .then(({ data }) => {
                 this.setState({
                     loading: false,
-                    single: data ? data.value.single : true,
-                    teaser: data ? data.value.teaser : true,
-                    parlay: data ? data.value.parlay : true
+                    single: data ? Boolean(data.value.single) : true,
+                    teaser: data ? Boolean(data.value.teaser) : true,
+                    parlay: data ? Boolean(data.value.parlay) : true,
+                    live: data ? Boolean(data.value.live) : true,
                 });
             })
             .catch(() => {
@@ -37,11 +39,11 @@ export default class ToggleBet extends Component {
     }
 
     handleChange = async (event) => {
-        const { single, teaser, parlay } = this.state;
+        const { single, teaser, parlay, live } = this.state;
         const value = event.target.checked;
         const key = event.target.name;
         this.setState({ isSuccess: false, isError: false, is_Submitting: true });
-        saveFrontendInfo('bet_settings', { ...{ single, teaser, parlay }, [key]: value })
+        saveFrontendInfo('bet_settings', { ...{ single, teaser, parlay, live }, [key]: value })
             .then(() => {
                 this.setState({ isSuccess: true, is_Submitting: false, [key]: value });
             })
@@ -51,7 +53,7 @@ export default class ToggleBet extends Component {
     }
 
     render() {
-        const { loading, isError, isSuccess, single, teaser, parlay, is_Submitting } = this.state;
+        const { loading, isError, isSuccess, single, teaser, parlay, live, is_Submitting } = this.state;
         return (
             <>
                 <h3>Bet Settins</h3>
@@ -87,6 +89,14 @@ export default class ToggleBet extends Component {
                         disabled={is_Submitting}
                         name="teaser"
                     />} label="Teaser Bets" />
+                    <FormControlLabel control={<Switch
+                        checked={live}
+                        onChange={this.handleChange}
+                        value="live"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        disabled={is_Submitting}
+                        name="live"
+                    />} label="Live Bets" />
                 </FormGroup>
 
                 {isError && (
