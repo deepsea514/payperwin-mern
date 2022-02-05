@@ -58,14 +58,16 @@ const RenderLiveEvents = (props) => {
         return filteredEvents.length > 0 && (
             <div className="tab-content" key={leagueName}>
                 <div className="tab-pane fade show active tab-pane-leagues" id="home" role="tabpanel" aria-labelledby="home-tab" key={leagueName}>
-                    <ul className="table-list table-list-top d-flex">
-                        <li>{leagueName}&nbsp;<i className="fas fa-chevron-right"></i></li>
-                        <li>ML</li>
-                        <li>SPREAD</li>
-                        <li>TOTAL</li>
-                        <li className="detailed-lines-link not-mobile"></li>
-                    </ul>
-                    {filteredEvents}
+                    <div className='leagues-content'>
+                        <ul className="table-list table-list-top d-flex">
+                            <li className='d-flex justify-content-start'>{leagueName}&nbsp;<i className="fas fa-chevron-right"></i></li>
+                            <li>ML</li>
+                            <li>SPREAD</li>
+                            <li>TOTAL</li>
+                            <li className="detailed-lines-link not-mobile"></li>
+                        </ul>
+                        {filteredEvents}
+                    </div>
                 </div>
             </div>
         );

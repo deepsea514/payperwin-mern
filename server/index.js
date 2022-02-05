@@ -958,6 +958,10 @@ expressApp.post(
             } else {
                 // TODO: error if match has already started
                 // TODO: prevent certain types of bets
+                if (live && betSettings && betSettings.value && !betSettings.value.live) {
+                    errors.push(`${pickName} @${odds[pick]} wager could not be placed. Live Bet is temporary unavailable.`);
+                    continue;
+                }
                 if (origin == 'other') {
                     const event = await Event.findById(lineId);
                     const { name, startDate, teamA, teamB, status } = event;
@@ -3163,11 +3167,15 @@ expressApp.get(
                         if (event)
                             return res.json({
                                 leagueName: sportLeague.name,
+                                shortName: sportData.shortName,
+                                sportName: sportData.name,
                                 origin: sportData.origin,
                                 ...event
                             });
                         return res.json(null);
                     }
+                    sportLeague.sportName = sportData.name;
+                    sportLeague.shortName = sportData.shortName;
                     return res.json({
                         name: sportData.name,
                         leagues: [sportLeague],
@@ -3179,7 +3187,12 @@ expressApp.get(
             }
             return res.json({
                 name: sportData.name,
-                leagues: sportData.liveLeagues,
+                shortName: sportData.shortName,
+                leagues: sportData.liveLeagues.map(league => ({
+                    ...league,
+                    sportName: sportData.name,
+                    shortName: sportData.shortName,
+                })),
                 origin: sportData.origin,
                 originSportId: sportData.originSportId
             });

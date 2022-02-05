@@ -35,11 +35,12 @@ class Sport extends Component {
     }
 
     componentDidMount() {
+        const { shortName, pro_mode } = this.props;
         this.getSport();
-        // this.getLiveSport();
+        pro_mode && shortName && this.getLiveSport();
         this.setState({
             timer: setInterval(() => this.getSport(false), 60 * 1000),
-            // liveTimer: setInterval(this.getLiveSport, 10 * 1000),
+            liveTimer: pro_mode && shortName ? setInterval(this.getLiveSport, 10 * 1000) : null,
         })
     }
 
@@ -49,14 +50,20 @@ class Sport extends Component {
         if (liveTimer) clearInterval(liveTimer);
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         const { shortName, league, pro_mode } = this.props;
+        const { liveTimer } = this.state;
+
         const { shortName: prevShortName, league: prevLeague, pro_mode: prevProMode } = prevProps;
         const sportChanged = (shortName !== prevShortName || league !== prevLeague);
         if (sportChanged) {
-            this.setState({ error: null });
+            await this.setState({ error: null, liveTimer: null });
             this.getSport();
-            // this.getLiveSport();
+            clearInterval(liveTimer);
+            if (pro_mode && shortName) {
+                this.getLiveSport();
+                this.setState({ liveTimer: setInterval(this.getLiveSport, 10 * 1000) })
+            }
         }
     }
 

@@ -114,7 +114,7 @@ class Lines extends Component {
         const { data, error, sportsbookInfo, shareModal, currentUrl, urlCopied,
             type, subtype, index, showAll, loading
         } = this.state;
-        if (loading) {
+        if (loading && !data) {
             return <center className="mt-5">
                 <Preloader use={ThreeDots}
                     size={100}
