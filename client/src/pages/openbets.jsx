@@ -523,7 +523,7 @@ class OpenBets extends Component {
                                     const { sportName } = lineQuery
                                     return (
                                         <div className="open-bets-event" key={index}>
-                                            <div className='status text-dark'>
+                                            <div className='status'>
                                                 <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                                 {`${teamA.name} vs ${teamB.name}`}
                                                 {settledBets && <div className={this.getStatusClass(status) + ' float-right text-white'}>
