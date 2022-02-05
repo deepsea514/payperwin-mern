@@ -78,14 +78,21 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                 ),
             };
             sgMail.send(msg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
         }
 
@@ -142,25 +149,39 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
                     </ul>`),
             }
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
             adminMsg.to = supportEmailAddress;
             sgMail.send(adminMsg).catch(error => {
-                ErrorLog.create({
-                    name: 'Send Grid Error',
-                    error: {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
-                    }
-                });
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
             });
 
             const betId = savedBet.id;
