@@ -49,10 +49,6 @@ export function getEmailTaken(email) {
     return FrontendAPI.get(`/emailTaken`, { params: { email } });
 }
 
-export function getVIPCodeExists(vipcode) {
-    return FrontendAPI.get(`/vipCodeExist`, { params: { vipcode } });
-}
-
 export function getReferralCodeExists(referral_code) {
     return FrontendAPI.get(`/referralCodeExist`, { params: { referral_code } });
 }

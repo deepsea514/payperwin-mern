@@ -1,4 +1,4 @@
-import { getEmailTaken, getReferralCodeExists, getUsernameTaken, getVIPCodeExists } from "../redux/services";
+import { getEmailTaken, getReferralCodeExists, getUsernameTaken } from "../redux/services";
 
 function isString(options) {
     return typeof options.value === 'string'
@@ -108,22 +108,6 @@ async function ageCanBet(options) {
         default: break;
     }
     return 'Date is invalid';
-}
-
-async function vipCodeExist(options) {
-    const vipcode = options.value;
-    if (!vipcode || vipcode == '')
-        return true;
-    const { data } = await getVIPCodeExists(vipcode);
-    if (!data) {
-        throw Error('Username validation server error.');
-    } else if (data && data.success === 1) {
-        return true;
-    } else if (data && data.success === 0) {
-        return options.message || data.message;
-    } else {
-        throw Error('Username validation client error.');
-    }
 }
 
 async function referralCodeExist(options) {
@@ -238,10 +222,6 @@ const schema = {
     securityans: [
         { validator: isString },
         { validator: required },
-    ],
-    vipcode: [
-        { validator: isString },
-        { validator: vipCodeExist, hasTag: 'registration' }
     ],
     referral_code: [
         { validator: isString },
