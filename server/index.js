@@ -285,7 +285,7 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            vipcode, referral_code, invite } = req.body;
+            referral_code, invite } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(async () => {
@@ -314,7 +314,7 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    vipcode, bet_referral_code: referral_code, invite: invite ? invite : null,
+                    bet_referral_code: referral_code, invite: invite ? invite : null,
                     roles: { registered: true },
                 };
 
@@ -324,8 +324,8 @@ passport.use('local-signup', new LocalStrategy(
                     if (err2) console.error(err2);
                     else {
                         sendVerificationEmail(email, req);
-                        if (vipcode && vipcode != "") {
-                            const promotion = await Promotion.findOne({ name: RegExp(`^${vipcode}$`, 'i') });
+                        if (referral_code && referral_code != "") {
+                            const promotion = await Promotion.findOne({ name: RegExp(`^${referral_code}$`, 'i') });
                             if (promotion) {
                                 if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
                                     if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
@@ -3486,12 +3486,16 @@ expressApp.get(
     }
 )
 
-expressApp.get('/vipCodeExist', async (req, res) => {
-    const { vipcode } = req.query;
-    if (!vipcode)
+expressApp.get('/referralCodeExist', async (req, res) => {
+    const { referral_code } = req.query;
+    if (!referral_code)
         return res.json({ success: 1 });
     try {
-        const promotion = await Promotion.findOne({ name: vipcode });
+        const autobet = await AutoBet.findOne({ referral_code: referral_code });
+        if (autobet) {
+            return res.json({ success: 1 });
+        }
+        const promotion = await Promotion.findOne({ name: referral_code });
         if (promotion) {
             if (promotion.number_of_usage == -1) {
                 return res.json({ success: 1 });
@@ -3501,25 +3505,10 @@ expressApp.get('/vipCodeExist', async (req, res) => {
                 return res.json({ success: 1 });
             return res.json({ success: 0, message: "Promotion usage reached to limit." });
         }
-        return res.json({ success: 0, message: "Can't find Promotion." });
-    } catch (error) {
-        return res.json({ success: 0, message: "Can't find Promotion." });
-    }
-});
-
-expressApp.get('/referralCodeExist', async (req, res) => {
-    const { referral_code } = req.query;
-    if (!referral_code)
-        return res.json({ success: 1 });
-    try {
-        const autobet = await AutoBet.findOne({ referral_code: new RegExp(`^${referral_code}$`, 'i') });
-        if (autobet) {
-            return res.json({ success: 1 });
-        }
-        return res.json({ success: 0, message: "Can't find Autobet User." });
+        return res.json({ success: 0, message: "Can't find Referral Code." });
     } catch (error) {
         console.error(error);
-        return res.json({ success: 0, message: "Can't find Autobet User." });
+        return res.json({ success: 0, message: "Can't find Referral Code." });
     }
 });
 

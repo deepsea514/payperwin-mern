@@ -3850,9 +3850,13 @@ adminRouter.post(
     async (req, res) => {
         const data = req.body;
         try {
-            const existing = await AutoBet.find({ userId: ObjectId(data.userId) });
-            if (existing && existing.length) {
+            const existing = await AutoBet.findOne({ userId: ObjectId(data.userId) });
+            if (existing) {
                 return res.json({ success: false, message: "He/She is already autobet user." });
+            }
+            const existingCode = data.referral_code && await Promotion.findOne({ name: data.referral_code });
+            if (existingCode) {
+                return res.json({ success: false, message: "Cannot create Autobet. Same Referral code exists." });
             }
             await AutoBet.create(data);
             res.json({ success: true });
@@ -4151,13 +4155,19 @@ adminRouter.patch(
         const data = req.body;
         const { id } = req.params;
         try {
-            const autobet = await AutoBet.findById(new ObjectId(id))
+            const autobet = await AutoBet.findById(id)
             if (!autobet) {
                 return res.status(404).json({ error: 'Can\'t find autobet data.' });
             }
+
+            const existingCode = await Promotion.findOne({ name: data.referral_code });
+            if (existingCode) {
+                return res.status(404).json({ error: 'Same Referralcode already exists.' });
+            }
+
             await autobet.update(data);
             const result = await AutoBet
-                .findById(new ObjectId(id))
+                .findById(id)
                 .populate('userId', ['username', 'balance']);
             res.json(result);
         } catch (error) {
@@ -4240,7 +4250,6 @@ adminRouter.get(
     }
 )
 
-
 adminRouter.post(
     '/promotion',
     authenticateJWT,
@@ -4248,6 +4257,11 @@ adminRouter.post(
     async (req, res) => {
         const data = req.body;
         try {
+            const { name } = data;
+            const existingAutobet = await AutoBet.findOne({ referral_code: name });
+            if (existingAutobet) {
+                return res.status(400).json({ error: 'Can\'t create promotion. Already existing code.' });
+            }
             await Promotion.create(data);
             res.json("Promotion created.");
         } catch (error) {

@@ -26,7 +26,6 @@ const UserSchema = new Schema(
         dateofbirth: { type: String, default: "" },
         securityquiz: { type: String, default: "" },
         securityans: { type: String, default: "" },
-        vipcode: { type: String, default: "" },
         bet_referral_code: { type: String, default: null },
         roles: Object,
         settings: Object,

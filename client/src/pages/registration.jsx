@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
-import {
-    Grid, Button, Card, CardContent, FormLabel,
-    CardHeader, FormControl, Stepper, Step, StepLabel,
-    RadioGroup, FormControlLabel, Radio, Checkbox, TextField
-} from '@material-ui/core';
+import { Grid, Button, Card, CardContent, CardHeader, Stepper, Step, StepLabel, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Form, InputGroup } from "react-bootstrap";
 import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
@@ -141,7 +137,6 @@ const initState = {
 
     securityquiz: '',
     securityans: '',
-    vipcode: '',
     referral_code: '',
     agreeTerms: false,
     agreePrivacy: false,
@@ -164,7 +159,6 @@ const initState = {
 
         // securityquiz: false,
         // securityans: false,
-        vipcode: false,
         referral_code: false,
     },
     activeStep: 0,
@@ -214,7 +208,6 @@ class Registration extends Component {
                 }
                 break;
             case "referral_code":
-            case "vipcode":
                 isReturn = true;
             default:
                 await this.setState({
@@ -256,12 +249,12 @@ class Registration extends Component {
             .then((result) => {
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
-                        title, dateofbirth, vipcode, referral_code, invite } = this.state;
+                        title, dateofbirth, referral_code, invite } = this.state;
 
                     register({
                         email, password, firstname, lastname, region,
                         country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                        vipcode, referral_code, invite
+                        referral_code, invite
                     })
                         .then((/* { data } */) => {
                             getUser();
@@ -310,8 +303,7 @@ class Registration extends Component {
         const {
             country, email, password, cPassword, region,
             firstname, lastname, dateofbirth,
-            vipcode, agreeTerms, agreePrivacy,
-            rcptchVerified, referral_code,
+            agreeTerms, agreePrivacy, referral_code,
             errors, showPass, showPassConfirm
         } = this.state;
 
@@ -453,18 +445,6 @@ class Registration extends Component {
                             isInvalid={errors.referral_code !== undefined}
                         />
                         {errors.referral_code ? <div className="registration-feedback">{errors.referral_code}</div> : null}
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label style={{ color: '#FFF' }}><FormattedMessage id="PAGES.REGISTRATION.VIPCODE" /></Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="vipcode"
-                            value={vipcode}
-                            onChange={this.handleChange}
-                            placeholder="Enter VIP Code"
-                            isInvalid={errors.vipcode !== undefined}
-                        />
-                        {errors.vipcode ? <div className="registration-feedback">{errors.vipcode}</div> : null}
                     </Form.Group>
                     <FormControlLabel
                         control={

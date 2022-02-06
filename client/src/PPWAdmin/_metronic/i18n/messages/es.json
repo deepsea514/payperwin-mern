@@ -742,7 +742,6 @@
     "PAGES.REGISTRATION.CONTACT": "Número de contácto",
     "PAGES.REGISTRATION.SECURITYQUIZ": "Pregunta de seguridad",
     "PAGES.REGISTRATION.SECURITYANS": "Respuesta de seguridad",
-    "PAGES.REGISTRATION.VIPCODE": "Cómo te enteraste de nosotros? Tienes un código VIP? (opcional)",
     "PAGES.REGISTRATION.AGREETERMS": "Tengo al menos 18 años de edad (o la edad legal aplicable a mi jurisdicción) y he leído y aceptado los {termslink} y {rulelink} </span> de PayperWin.",
     "PAGES.REGISTRATION.AGREEPRIVACY": "He leído y acepto el {privacylink} de PayPerWin.",
     "PAGES.REGISTRATION.FINISH": "Terminar",

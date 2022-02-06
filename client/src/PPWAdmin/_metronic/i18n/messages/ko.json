@@ -742,7 +742,6 @@
     "PAGES.REGISTRATION.CONTACT": "연락처",
     "PAGES.REGISTRATION.SECURITYQUIZ": "보안 질문",
     "PAGES.REGISTRATION.SECURITYANS": "보안 답변",
-    "PAGES.REGISTRATION.VIPCODE": "저희를 어떻게 아셨나요? VIP 코드가 있으신가요?(선택사항)",
     "PAGES.REGISTRATION.AGREETERMS": "저는 최소 18세(또는 관할 지역에 적용되는 법적 연령)이며 PayperWin의 {termslink} 및 {rulelink}를 읽고 동의했습니다",
     "PAGES.REGISTRATION.AGREEPRIVACY": "나는 PayPerWin의 {privacylink}를 읽었으며 이에 동의합니다.",
     "PAGES.REGISTRATION.FINISH": "끝",
