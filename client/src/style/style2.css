@@ -1065,7 +1065,7 @@ footer p {
 }
 
 .main-cnt .form-control {
-    height: 40px;
+    min-height: 40px;
     max-width: 458px;
 }
 

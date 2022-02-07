@@ -203,23 +203,12 @@ class ContactUs extends Component {
                                         </Form.Group>
                                         <Form.Group>
                                             <Form.Label><FormattedMessage id="PAGES.CONTACTUS.DESCRIPTION" />&nbsp;<span className="text-danger">*</span></Form.Label>
-                                            <JoditEditor
-                                                config={config}
+                                            <textarea
                                                 name="description"
-                                                tabIndex={1} // tabIndex of textarea
+                                                className={`form-control ${getInputClasses(formik, "department")}`}
                                                 {...formik.getFieldProps("description")}
-                                                {...{
-                                                    onChange: (description) => {
-                                                        formik.setFieldError("description", false);
-                                                        formik.setFieldTouched("description", true);
-                                                        formik.setFieldValue("description", description);
-                                                    },
-                                                    onBlur: (description) => {
-                                                        formik.setFieldError("description", false);
-                                                        formik.setFieldTouched("description", true);
-                                                        // formik.setFieldValue("description", description);
-                                                    }
-                                                }}
+                                                rows={5}
+                                                required
                                             />
                                             {formik.touched.description && formik.errors.description ? (
                                                 <div className="invalid-feedback">
