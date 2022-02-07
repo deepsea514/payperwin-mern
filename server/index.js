@@ -325,7 +325,7 @@ passport.use('local-signup', new LocalStrategy(
                     else {
                         sendVerificationEmail(email, req);
                         if (referral_code && referral_code != "") {
-                            const promotion = await Promotion.findOne({ name: RegExp(`^${referral_code}$`, 'i') });
+                            const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
                             if (promotion) {
                                 if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
                                     if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
@@ -3489,11 +3489,11 @@ expressApp.get('/referralCodeExist', async (req, res) => {
     if (!referral_code)
         return res.json({ success: 1 });
     try {
-        const autobet = await AutoBet.findOne({ referral_code: RegExp(`^${referral_code}$`, 'i') });
+        const autobet = await AutoBet.findOne({ referral_code: new RegExp(`^${referral_code}$`, 'i') });
         if (autobet) {
             return res.json({ success: 1 });
         }
-        const promotion = await Promotion.findOne({ name: RegExp(`^${referral_code}$`, 'i') });
+        const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
         if (promotion) {
             if (promotion.number_of_usage == -1) {
                 return res.json({ success: 1 });

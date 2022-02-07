@@ -184,13 +184,13 @@ class Registration extends Component {
         setTitle({ pageTitle: title })
     }
 
-    handleChange = async (e) => {
+    handleChange = (e) => {
         const { touched } = this.state;
         let isReturn = false;
         switch (e.target.name) {
             case "agreeTerms":
             case "agreePrivacy":
-                await this.setState({
+                this.setState({
                     [e.target.name]: e.target.checked,
                     touched: { ...touched, [e.target.name]: true, }
                 });
@@ -199,7 +199,7 @@ class Registration extends Component {
                 const country = CountryInfo.find(country => e.target.value == country.country);
                 if (country) {
                     const currency = country.currency;
-                    await this.setState({
+                    this.setState({
                         country: e.target.value,
                         currency,
                         region: '',
@@ -210,7 +210,7 @@ class Registration extends Component {
             case "referral_code":
                 isReturn = true;
             default:
-                await this.setState({
+                this.setState({
                     [e.target.name]: e.target.value,
                     touched: { ...touched, [e.target.name]: true, }
                 });
@@ -282,8 +282,8 @@ class Registration extends Component {
     handleDirty = (e) => {
         // Handle Validation on touch
         const { errors } = this.state;
-        const { name } = e.target;
-        registrationValidation.validateField(name, this.state, { tags: ['registration'] }).then((result) => {
+        const { name, value } = e.target;
+        registrationValidation.validateField(name, { ...this.state, [name]: value }, { tags: ['registration'] }).then((result) => {
             const errorsStateChange = { ...errors, server: undefined };
             if (result === true) {
                 errorsStateChange[name] = undefined;
@@ -441,6 +441,7 @@ class Registration extends Component {
                             name="referral_code"
                             value={referral_code}
                             onChange={this.handleChange}
+                            onBlur={this.handleDirty}
                             placeholder="Enter Referral Code"
                             isInvalid={errors.referral_code !== undefined}
                         />
