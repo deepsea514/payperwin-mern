@@ -784,6 +784,92 @@ adminRouter.get(
     }
 )
 
+
+adminRouter.get(
+    '/customer-referrals',
+    authenticateJWT,
+    limitRoles('users'),
+    async (req, res) => {
+        let { id, perPage, page } = req.query;
+        if (!perPage) perPage = 10;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        page--;
+        if (!id) {
+            return res.status(404).json({ error: 'Customer id is not given.' });
+        }
+        try {
+            const user = await User.findById(id);
+            if (!user) {
+                return res.status(404).json({ error: 'Customer not found.' });
+            }
+            let searchObj = { invite: user.username };
+            const total = await User.find(searchObj).count();
+            const data = await User.aggregate(
+                { $match: searchObj },
+                {
+                    $lookup: {
+                        from: 'financiallogs',
+                        let: { 'user_id': "$_id" },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$user', '$$user_id'] },
+                                        { $eq: ['$financialtype', "deposit"] },
+                                        { $eq: ['$status', FinancialStatus.success] },
+                                    ]
+                                }
+                            }
+                        }],
+                        as: 'deposits',
+                    }
+                },
+                {
+                    $project: {
+                        email: 1,
+                        createdAt: 1,
+                        firstDeposit: {
+                            $cond: {
+                                if: { $gte: [{ $size: '$deposits' }, 0] },
+                                then: true,
+                                else: false,
+                            }
+                        }
+                    }
+                },
+                { $skip: page * perPage },
+                { $limit: perPage }
+            );
+
+            let comission = await FinancialLog.aggregate(
+                {
+                    $match: {
+                        financialtype: "invitebonus",
+                        user: user._id,
+                        status: FinancialStatus.success
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: "$amount" }
+                    }
+                }
+            );
+            if (comission.length) comission = comission[0].total;
+            else comission = 0;
+
+            return res.json({ total: total, data: data, comission });
+        }
+        catch (error) {
+            console.error(error)
+            return res.status(500).json({ error: 'Can\'t find Credits.', result: error });
+        }
+    }
+)
+
 adminRouter.get(
     '/customer-deposits',
     authenticateJWT,
@@ -1820,8 +1906,6 @@ adminRouter.get(
                         from: 'users',
                         let: { user_id: "$userId" },
                         pipeline: [{
-                            // $exists: true,
-                            // $ne: null,
                             $match: {
                                 $expr: { $eq: ["$_id", "$$user_id"] },
                             },
@@ -3574,7 +3658,6 @@ adminRouter.get(
         }
     }
 )
-
 
 const getTotalDeposit = async (datefrom, dateto) => {
     datefrom = new Date(datefrom);

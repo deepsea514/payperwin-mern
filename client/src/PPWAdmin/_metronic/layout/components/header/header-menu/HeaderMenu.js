@@ -201,7 +201,7 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                             aria-haspopup="true">
                             <NavLink className="menu-link menu-toggle" to="/google-material/inputs">
                                 <span className="svg-icon menu-icon">
-                                    <SVG src={"/media/svg/icons/Design/PenAndRuller.svg"} />
+                                    <SVG src={"/media/svg/icons/Devices/Gamepad1.svg"} />
                                 </span>
                                 <span className="menu-text">
                                     Bet Activities
