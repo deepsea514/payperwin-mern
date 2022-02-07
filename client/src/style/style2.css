@@ -863,11 +863,16 @@ footer ul li a i {
     font-weight: bolder;
     display: block;
     line-height: 1;
+    white-space: nowrap;
 }
 
 .table-list li:first-child a {
     font-size: 10px;
     color: #2b2b2c;
+}
+
+.table-list li:first-child a strong {
+    font-size: 12px;
 }
 
 .table-list li:first-child {
@@ -4138,6 +4143,7 @@ footer .toggle {
     border-radius: 20px;
     width: fit-content;
     margin-top: 5px;
+    font-size: 11px !important;
 }
 
 a {
