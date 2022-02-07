@@ -3026,9 +3026,7 @@ expressApp.get(
             const messages = await Message
                 .find({ published_at: { $ne: null }, userFor: userId })
                 .count();
-            const autobet = await AutoBet.findOne({
-                userId: userId
-            });
+            const autobet = await AutoBet.findOne({ userId: userId });
             const favorites = await Favorites.find({ user: userId })
             userObj = {
                 username,
@@ -3491,11 +3489,11 @@ expressApp.get('/referralCodeExist', async (req, res) => {
     if (!referral_code)
         return res.json({ success: 1 });
     try {
-        const autobet = await AutoBet.findOne({ referral_code: referral_code });
+        const autobet = await AutoBet.findOne({ referral_code: RegExp(`^${referral_code}$`, 'i') });
         if (autobet) {
             return res.json({ success: 1 });
         }
-        const promotion = await Promotion.findOne({ name: referral_code });
+        const promotion = await Promotion.findOne({ name: RegExp(`^${referral_code}$`, 'i') });
         if (promotion) {
             if (promotion.number_of_usage == -1) {
                 return res.json({ success: 1 });
