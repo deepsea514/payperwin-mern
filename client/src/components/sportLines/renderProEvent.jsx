@@ -40,7 +40,7 @@ const RenderProEvent = (props) => {
             <li>
                 <Link to={{ pathname: pathname }} className="widh-adf">
                     <strong><img src={`https://assets.b365api.com/images/team/m/${logo_teamA ? logo_teamA : 0}.png`} className='pro-team-logo' />&nbsp;&nbsp;{teamA} </strong>
-                    <strong><img src={`https://assets.b365api.com/images/team/m/${logo_teamB ? logo_teamB : 0}.png`} className='pro-team-logo mt-2' />&nbsp;&nbsp;{teamB} </strong>
+                    <strong className='mt-2'><img src={`https://assets.b365api.com/images/team/m/${logo_teamB ? logo_teamB : 0}.png`} className='pro-team-logo' />&nbsp;&nbsp;{teamB} </strong>
                 </Link>
                 <Link to={{ pathname: pathname }} className="widh-adf mt-3">
                     {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
