@@ -15,6 +15,7 @@ import Preference from "./profile/Preference";
 import Credit from "./profile/Credit";
 import CustomerTier from "./profile/CustomerTier";
 import TransactionHistory from "./profile/TransactionHistory";
+import Referral from "./profile/Referral";
 
 class CustomerProfile extends React.Component {
     constructor(props) {
@@ -96,6 +97,9 @@ class CustomerProfile extends React.Component {
                                         <Route
                                             path={`/users/${id}/profile/transactions`}
                                             component={(props) => <TransactionHistory {...props} customer={customer} />}
+                                        />
+                                        <Route path={`/users/${id}/profile/referral`}
+                                            component={(props) => <Referral {...props} customer={customer} />}
                                         />
                                         <Redirect
                                             to={`/users/${id}/profile/overview`}

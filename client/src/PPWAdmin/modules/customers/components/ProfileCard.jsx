@@ -21,12 +21,11 @@ class ProfileCard extends React.Component {
                         <div className="d-flex justify-content-start">
                             <Button onClick={this.goToBack} className="btn btn-secondary mr-2"> Back </Button>
                         </div>
-                        <div className="d-flex align-items-center my-4">
-                            <div>
-                                <span className="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary">
-                                    {customer.email}
-                                </span>
-                            </div>
+                        <div className="d-flex align-items-start my-4 text-left">
+                            <span className="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary"
+                                style={{ wordBreak: 'break-all' }}>
+                                {customer.email}
+                            </span>
                         </div>
                         <div className="navi navi-bold navi-hover navi-active navi-link-rounded">
                             <div className="navi-item mb-2">
@@ -144,7 +143,7 @@ class ProfileCard extends React.Component {
                                     className="navi-link py-4 non-border-bottom">
                                     <span className="navi-icon mr-2">
                                         <span className="svg-icon">
-                                            <SVG src="/media/svg/icons/Layout/Layout-top-panel-6.svg" />
+                                            <SVG src="/media/svg/icons/Devices/Gamepad2.svg" />
                                         </span>
                                     </span>
                                     <span className="text-left navi-text font-size-lg">
@@ -167,7 +166,21 @@ class ProfileCard extends React.Component {
                                     </span>
                                 </NavLink>
                             </div>
+                            <div className="navi-item mb-2">
+                                <NavLink
+                                    to={`/users/${id}/profile/referral`}
+                                    className="navi-link py-4 non-border-bottom">
+                                    <span className="navi-icon mr-2">
+                                        <span className="svg-icon">
+                                            <SVG src="/media/svg/icons/Files/User-folder.svg" />
+                                        </span>
 
+                                    </span>
+                                    <span className="text-left navi-text font-size-lg">
+                                        Friend Referral
+                                    </span>
+                                </NavLink>
+                            </div>
                         </div>
                     </div>
                 </div>

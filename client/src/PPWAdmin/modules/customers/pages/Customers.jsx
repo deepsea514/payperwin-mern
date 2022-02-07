@@ -112,7 +112,6 @@ class Customers extends React.Component {
                         <span className={`label label-lg label-inline font-weight-lighter mr-2  label-${customer.roles.verified ? 'success' : 'info'}`}>
                             {customer.roles.verified ? "Verified" : "Not Verified"}
                         </span>
-
                     </td>
 
                     <td className="text-right">

@@ -73,6 +73,10 @@ export function getCustomerCredits(id, page) {
     return AdminAPI.get(`/customer-credits`, { params: { id, page } });
 }
 
+export function getCustomerReferrals(id, page) {
+    return AdminAPI.get(`/customer-referrals`, { params: { id, page } });
+}
+
 export function verifyCustomer(id) {
     return AdminAPI.put(`/customer/${id}/manualverification`);
 }
