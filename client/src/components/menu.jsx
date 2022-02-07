@@ -145,6 +145,12 @@ class Menu extends Component {
                                         <span><FormattedMessage id="COMPONENTS.ARTICLES" /></span>
                                     </Link>
                                 </li>
+                                <li className={`nav-item col-6 ${pathname === '/invite' ? 'active' : ''}`}>
+                                    <Link to={{ pathname: '/invite' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-user-friends" />
+                                        <span>Refer A Friend</span>
+                                    </Link>
+                                </li>
                                 <li className={`nav-item col-6 ${pathname === '/how-it-works' ? 'active' : ''}`}>
                                     <Link to={{ pathname: '/how-it-works' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-info" />
@@ -158,19 +164,19 @@ class Menu extends Component {
                                     </Link>
                                 </li>
                                 <li className="nav-item col-6">
-                                    <a className="nav-link next" href='#' onClick={() => this.setState({ showMenu: 'help' })}>
-                                        <i className="fa fa-question-circle" />
-                                        <span><FormattedMessage id="COMPONENTS.HELP" /></span>
-                                        <i className="fas fa-chevron-right float-right" />
-                                    </a>
-                                </li>
-                                <li className="nav-item">
                                     <Link to="/team"
                                         className="nav-link"
                                         onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-chalkboard-teacher" />
                                         Our Team
                                     </Link>
+                                </li>
+                                <li className="nav-item col-6">
+                                    <a className="nav-link next" href='#' onClick={() => this.setState({ showMenu: 'help' })}>
+                                        <i className="fa fa-question-circle" />
+                                        <span><FormattedMessage id="COMPONENTS.HELP" /></span>
+                                        <i className="fas fa-chevron-right float-right" />
+                                    </a>
                                 </li>
                                 <li className={`nav-item col-6 ${pathname === '/about-us' ? 'active' : ''}`}>
                                     <Link to={{ pathname: '/about-us' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
