@@ -30,7 +30,7 @@ const RenderProEvent = (props) => {
         sportName, origin
     } = props;
 
-    const { teamA, teamB, startDate, lines, originId: eventId } = event;
+    const { teamA, logo_teamA, teamB, logo_teamB, startDate, lines, originId: eventId } = event;
     const { moneyline, spreads, totals, originId: lineId } = lines[0];
 
     const lineCount = getLineCount(lines[0]);
@@ -39,7 +39,8 @@ const RenderProEvent = (props) => {
         <ul className="table-list d-flex table-bottom">
             <li>
                 <Link to={{ pathname: pathname }} className="widh-adf">
-                    <strong>{teamA}</strong> <strong>{teamB}</strong>
+                    <strong>{logo_teamA != null && <img src={`https://assets.b365api.com/images/team/m/${logo_teamA}.png`} className='pro-team-logo' />}&nbsp;&nbsp;{teamA} </strong>
+                    <strong>{logo_teamB != null && <img src={`https://assets.b365api.com/images/team/m/${logo_teamB}.png`} className='pro-team-logo' />}&nbsp;&nbsp;{teamB} </strong>
                 </Link>
                 <Link to={{ pathname: pathname }} className="widh-adf mt-3">
                     {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
