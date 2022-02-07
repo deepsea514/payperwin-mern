@@ -2311,3 +2311,9 @@ a.fav-link:hover {
 .invite-container {
     padding: 20px 10px 20px 10px;
 }
+
+.pro-team-logo {
+    width: 26px;
+    height: 26px;
+    /* display: block; */
+}
