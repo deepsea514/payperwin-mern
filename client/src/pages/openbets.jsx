@@ -10,8 +10,10 @@ import TourModal from '../components/tourModal';
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { FormattedMessage } from 'react-intl';
-import { forwardBet, getBets, getLatestOdds, shareLine } from '../redux/services';
+import { forwardBet, getBets, getLatestOdds, shareLine, cancelBet as cancelBetAction } from '../redux/services';
 import { getShortSportName } from '../libs/getSportName';
+import BetCancelModal from '../components/betCancelModal';
+import { showErrorToast, showSuccessToast } from '../libs/toast';
 
 const StatusPopOver = (
     <Popover>
@@ -61,6 +63,8 @@ class OpenBets extends Component {
             forwardResult: null,
             forwardLatestOdd: null,
             loadingOdds: false,
+            cancelBet: null,
+            submitting: false,
         };
     }
 
@@ -251,14 +255,52 @@ class OpenBets extends Component {
             })
     }
 
+    onCancelProceed = () => {
+        const { cancelBet, bets } = this.state;
+        this.setState({ submitting: true });
+        cancelBetAction(cancelBet._id)
+            .then(({ data }) => {
+                const { success, error } = data;
+                if (success) {
+                    this.setState({
+                        cancelBet: null,
+                        submitting: false,
+                        bets: bets.filter(bet => bet._id != cancelBet._id)
+                    });
+                    showSuccessToast('Successfully canceled a bet.');
+                    return;
+                }
+                this.setState({
+                    cancelBet: null,
+                    submitting: false,
+                });
+                showErrorToast(error);
+            })
+            .catch(() => {
+                this.setState({
+                    cancelBet: null,
+                    submitting: false,
+                });
+                showErrorToast('Cannot cancel this bet. Please try again later.')
+            })
+    }
+
     render() {
-        const { bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
-            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult, forwardLatestOdd, loadingOdds } = this.state;
+        const {
+            bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
+            daterange, showFilter, filter, page, noMore, forwardBet, forwardResult,
+            forwardLatestOdd, loadingOdds, cancelBet, submitting,
+        } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
             <div className="col-in">
                 <div className="main-cnt">
                     {openBets && showedTourTimes < 3 && showTour && <TourModal />}
+                    {cancelBet && <BetCancelModal
+                        betAmount={cancelBet.bet}
+                        submitting={submitting}
+                        onClose={() => this.setState({ cancelBet: null })}
+                        onProceed={this.onCancelProceed} />}
                     {shareModal && <div className="modal confirmation">
                         <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
                         <div className="col-in">
@@ -458,9 +500,11 @@ class OpenBets extends Component {
                                     <div className="open-bets-event">
                                         <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                         {lineQuery.eventName}
-                                        <div>
-                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                            <strong className="float-right bg-light-primary px-2 py-1 text-dark"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
+                                        <div className='d-flex justify-content-between'>
+                                            <div>
+                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                            </div>
+                                            <strong className="bg-light-primary px-2 py-1 text-dark"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
                                         </div>
                                         {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                         {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
@@ -538,6 +582,10 @@ class OpenBets extends Component {
                                         </div>
                                     );
                                 })}
+                                {openBets && <div className='open-bets-event d-flex justify-content-end'>
+                                    {!this.checkEventStarted(matchStartDate) &&
+                                        <button className="form-button pull-right" onClick={() => this.setState({ cancelBet: betObj })}><i className="fas fa-times" /> Cancel</button>}
+                                </div>}
                                 {settledBets && <div className="open-bets-event">
                                     {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                     {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
@@ -605,21 +653,29 @@ class OpenBets extends Component {
                                 <div className="open-bets-event">
                                     <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                     {`${teamA.name} vs ${teamB.name}`}
-                                    <div>
-                                        <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                        {sportsbook && <strong className="float-right bg-light-info px-2 py-1 text-dark">HIGH STAKER</strong>}
-                                        {!sportsbook && <strong className="float-right bg-light-danger px-2 py-1 text-dark">Peer To Peer</strong>}
+                                    <div className='d-flex justify-content-between'>
+                                        <div>
+                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                        </div>
+                                        {sportsbook && <strong className="bg-light-info px-2 py-1 text-dark">HIGH STAKER</strong>}
+                                        {!sportsbook && <strong className="bg-light-danger px-2 py-1 text-dark">Peer To Peer</strong>}
                                     </div>
                                     {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
                                     {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                     {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
-                                    {openBets && !this.checkEventStarted(matchStartDate) &&
-                                        <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
-                                    {openBets && !this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
-                                        <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
-                                            disabled={loadingOdds}
-                                            onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to HIGH STAKER</button>}
+                                    {openBets && <div className='d-flex justify-content-end'>
+                                        <div>
+                                            {!this.checkEventStarted(matchStartDate) &&
+                                                <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
+                                            {!this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
+                                                <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
+                                                    disabled={loadingOdds}
+                                                    onClick={() => this.forwardSportsbook(betObj)}><i className="fas fa-link" /> Forward to HIGH STAKER</button>}
+                                        </div>
+                                        {!this.checkEventStarted(matchStartDate) &&
+                                            <button className="form-button ml-2" onClick={() => this.setState({ cancelBet: betObj })}><i className="fas fa-times" /> Cancel</button>}
+                                    </div>}
                                     {settledBets && <div className='d-flex align-items-center py-2'>
                                         <strong>Score Powered By </strong>&nbsp;
                                         <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>

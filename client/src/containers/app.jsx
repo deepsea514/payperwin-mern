@@ -70,7 +70,7 @@ import Invite from '../pages/invite';
 import PromotionModal from '../components/promotionModal';
 import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import Team from '../pages/team';
 
 import '../style/all.css';

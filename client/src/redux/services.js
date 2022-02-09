@@ -224,6 +224,10 @@ export function search(param) {
     return FrontendAPI.get(`/search`, { params: { param } })
 }
 
+export function cancelBet(id) {
+    return FrontendAPI.post(`bets/${id}/cancel`)
+}
+
 // Articles
 export function getArticle(permalink) {
     return FrontendAPI.get(`/article/detail`, { params: { permalink } })
