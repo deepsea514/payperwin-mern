@@ -57,7 +57,7 @@ class Sport extends Component {
         const { shortName: prevShortName, league: prevLeague, pro_mode: prevProMode } = prevProps;
         const sportChanged = (shortName !== prevShortName || league !== prevLeague);
         if (sportChanged) {
-            await this.setState({ error: null, liveTimer: null });
+            await this.setState({ error: null, liveTimer: null, liveData: null, });
             this.getSport();
             clearInterval(liveTimer);
             if (pro_mode && shortName) {

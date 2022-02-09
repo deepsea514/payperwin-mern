@@ -623,6 +623,7 @@ a.log-in-btn {
 
 .status .partialmatched {
     background-color: #f9ec77;
+    color: black;
 }
 
 .status .cancelled {

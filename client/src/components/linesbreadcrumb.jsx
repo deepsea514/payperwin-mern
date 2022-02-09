@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getSportName } from '../libs/getSportName';
 import { toggleFavorites } from '../redux/services';
-import { toast } from 'react-toastify';
+import { showToast } from '../libs/toast';
 
 class LinesBreadcrumb extends Component {
     getFavoritesSelected = (team) => {
@@ -22,16 +22,7 @@ class LinesBreadcrumb extends Component {
         const { user, getUser, shortName } = this.props;
         evt.preventDefault();
         if (!user) {
-            toast('Please Login or Join to add your Favorites.', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-                theme: 'dark'
-            });
+            showToast('Please Login or Join to add your Favorites.');
             return;
         }
         const sportName = getSportName(shortName);
