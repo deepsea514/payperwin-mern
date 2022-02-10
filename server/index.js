@@ -5505,7 +5505,7 @@ expressApp.post(
                 return res.json({ success: true });
             }
 
-
+            return res.json({ success: false, error: 'Cannot cancel a bet. Coming soon.' });
         } catch (error) {
             console.error(error);
             return res.json({ success: false, error: 'Cannot cancel a bet. Internal Server Error.' });
