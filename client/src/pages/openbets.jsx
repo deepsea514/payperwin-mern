@@ -257,6 +257,7 @@ class OpenBets extends Component {
 
     onCancelProceed = () => {
         const { cancelBet, bets } = this.state;
+        const { getUser } = this.props;
         this.setState({ submitting: true });
         cancelBetAction(cancelBet._id)
             .then(({ data }) => {
@@ -268,6 +269,7 @@ class OpenBets extends Component {
                         bets: bets.filter(bet => bet._id != cancelBet._id)
                     });
                     showSuccessToast('Successfully canceled a bet.');
+                    getUser();
                     return;
                 }
                 this.setState({

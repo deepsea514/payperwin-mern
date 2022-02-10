@@ -449,7 +449,7 @@ class App extends Component {
                                                     <ErrorBoundary><Withdrawal {...props} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/bets" render={(props) =>
-                                                    <ErrorBoundary><OpenBets openBets={true} {...props} /></ErrorBoundary>
+                                                    <ErrorBoundary><OpenBets openBets={true} getUser={getUser} {...props} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/history" render={(props) =>
                                                     <ErrorBoundary><OpenBets settledBets={true} {...props} /></ErrorBoundary>
