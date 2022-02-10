@@ -73,6 +73,7 @@ class TransactionHistory extends Component {
             case 'betfee':
                 return '-';
             case 'betcancel':
+            case 'betcancelfee':
                 return '+';
             case 'betdraw':
                 return '+';
@@ -115,6 +116,8 @@ class TransactionHistory extends Component {
                 return 'Bet fee';
             case 'betcancel':
                 return 'Bet Cancelled';
+            case 'betcancelfee':
+                return 'Bet Cancel Fee';
             case 'betdraw':
                 return 'Bet Draw';
             case 'bet':

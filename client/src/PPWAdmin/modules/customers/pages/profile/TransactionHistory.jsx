@@ -113,7 +113,7 @@ class TransactionHistory extends React.Component {
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
-                        {this.getInOut(transaction.financialtype)}${transaction.amount}
+                        {this.getInOut(transaction.financialtype)}${Number(transaction.amount ? transaction.amount : 0).toFixed(2)}
                     </span>
                 </td>
                 <td className="pl-0">
