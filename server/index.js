@@ -5393,25 +5393,29 @@ expressApp.post(
                 return res.json({ success: true });
             }
 
-            let targetBets = [], oppositeBets = [], oppositeTeam = null;
+            let targetBets = [], oppositeBets = [], oppositeTeam = null, targetTeam = null;
             switch (pick) {
                 case 'home':
-                    oppositeBets = betpool.awayBets;
                     targetBets = betpool.homeBets;
+                    targetTeam = betpool.teamA;
+                    oppositeBets = betpool.awayBets;
                     oppositeTeam = betpool.teamB;
                     break;
                 case 'away':
                     targetBets = betpool.awayBets;
+                    targetTeam = betpool.teamB;
                     oppositeBets = betpool.homeBets;
                     oppositeTeam = betpool.teamA;
                     break;
                 case 'draw':
                     targetBets = betpool.drawBets;
+                    targetTeam = betpool.teamDraw;
                     oppositeBets = betpool.nonDrawBets;
                     oppositeTeam = betpool.teamDraw;
                     break;
                 case 'nondraw':
                     targetBets = betpool.nonDrawBets;
+                    targetTeam = betpool.teamNonDraw;
                     oppositeBets = betpool.drawBets;
                     oppositeTeam = betpool.teamNonDraw;
                     break;
@@ -5505,7 +5509,126 @@ expressApp.post(
                 return res.json({ success: true });
             }
 
-            return res.json({ success: false, error: 'Cannot cancel a bet. Coming soon.' });
+            const betTotalAfterCancelTarget = targetTeam.betTotal - betAmount;
+            const toWinTotalAfterCancelTarget = targetTeam.toWinTotal - bet.toWin;
+
+            const docChanges = {
+                $pull: { homeBets: bet_id, awayBets: bet_id, nonDrawBets: bet_id, drawBets: bet_id },
+                $inc: {}
+            };
+            switch (bet.pick) {
+                case 'home':
+                    docChanges.$inc['teamA.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamA.toWinTotal'] = -bet.toWin;
+                    break;
+                case 'draw':
+                    docChanges.$inc['teamDraw.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamDraw.toWinTotal'] = -bet.toWin;
+                    break;
+                case 'nondraw':
+                    docChanges.$inc['teamNonDraw.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamNonDraw.toWinTotal'] = -bet.toWin;
+                    break;
+                default:
+                    docChanges.$inc['teamB.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamB.toWinTotal'] = -bet.toWin;
+                    break;
+            }
+            if (toWinTotalAfterCancelTarget < oppositeTeam.betTotal) {
+                for (const opposite_bet of oppositeBets) {
+                    const bet = await Bet.findById(opposite_bet);
+                    if (bet) {
+                        const user = await User.findById(bet.userId);
+                        const betAfterCancel = toWinTotalAfterCancelTarget * bet.bet / oppositeTeam.betTotal;
+                        const toWinAfterCancel = betTotalAfterCancelTarget * bet.bet / oppositeTeam.betTotal;
+                        const cancelAmount = bet.bet - betAfterCancel;
+                        await bet.update({
+                            bet: betAfterCancel,
+                            toWin: toWinAfterCancel,
+                        });
+                        if (user) {
+                            const afterBalance = user.balance + cancelAmount;
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance,
+                            });
+                            await user.update({ $inc: { balance: cancelAmount } });
+
+                            const cancelFee = betAmount * 0.1 * bet.bet / oppositeTeam.betTotal;
+                            await FinancialLog.create({
+                                financialtype: 'betcancelfee',
+                                uniqid: `BCF${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelFee,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance + cancelFee
+                            });
+                            await sendBetCancelOpponentConfirmEmail(user, bet, cancelFee);
+                            await user.update({ $inc: { balance: cancelFee } });
+                        }
+                    }
+                }
+                switch (bet.pick) {
+                    case 'home':
+                        docChanges.teamB = {
+                            ...betpool.teamB,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    case 'draw':
+                        docChanges.teamDraw = {
+                            ...betpool.teamDraw,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    case 'nondraw':
+                        docChanges.teamNonDraw = {
+                            ...betpool.teamNonDraw,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    default:
+                        docChanges.teamA = {
+                            ...betpool.teamA,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                }
+            }
+
+            await betpool.update(docChanges);
+            bet.isParlay ? calculateParlayBetsStatus(betpool._id) : calculateBetsStatus(betpool.uid);
+
+            await bet.update({ status: 'Cancelled', })
+            await FinancialLog.create({
+                financialtype: 'betcancel',
+                uniqid: `BC${ID()}`,
+                user: user._id,
+                betId: bet_id,
+                amount: cancelAmount,
+                method: 'betcancel',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance + cancelAmount
+            });
+            await user.update({ $inc: { balance: cancelAmount } });
+            await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+
+            return res.json({ success: true });
         } catch (error) {
             console.error(error);
             return res.json({ success: false, error: 'Cannot cancel a bet. Internal Server Error.' });
