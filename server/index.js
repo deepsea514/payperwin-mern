@@ -55,6 +55,8 @@ const {
     asyncFilter,
     getLinePoints,
     getMaxWithdraw,
+    sendBetCancelConfirmEmail,
+    sendBetCancelOpponentConfirmEmail,
 } = require('./libs/functions');
 const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
@@ -5335,6 +5337,178 @@ expressApp.get(
         } catch (error) {
             console.error(error);
             return res.json([]);
+        }
+    }
+)
+
+expressApp.post(
+    '/bets/:id/cancel',
+    isAuthenticated,
+    async (req, res) => {
+        const { id: bet_id } = req.params;
+        const user = req.user;
+        try {
+            const bet = await Bet.findOne({ userId: user._id, _id: bet_id });
+            if (!bet) {
+                return res.json({ success: false, error: 'Cannot cancel a bet. Not found.' });
+            }
+            const { matchStartDate, isParlay, bet: betAmount, pick, matchingStatus } = bet;
+            if (new Date().getTime() > new Date(matchStartDate).getTime()) {
+                return res.json({ success: false, error: 'Cannot cancel a bet. Game already started.' });
+            }
+            let betpool = null;
+            if (isParlay) {
+                betpool = await ParlayBetPool.findOne({
+                    $or: [
+                        { homeBets: bet_id },
+                        { awayBets: bet_id }
+                    ]
+                })
+            } else {
+                betpool = await BetPool.findOne({
+                    $or: [
+                        { homeBets: bet_id },
+                        { awayBets: bet_id },
+                        { drawBets: bet_id },
+                        { nonDrawBets: bet_id },
+                    ]
+                })
+            }
+            const cancelAmount = Number(Number(betAmount * 0.85).toFixed(2));
+            if (!betpool) {
+                await bet.update({ status: 'Cancelled', })
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: user._id,
+                    betId: bet_id,
+                    amount: cancelAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + cancelAmount
+                });
+                await user.update({ $inc: { balance: cancelAmount } });
+                await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+                return res.json({ success: true });
+            }
+
+            let targetBets = [], oppositeBets = [], oppositeTeam = null;
+            switch (pick) {
+                case 'home':
+                    oppositeBets = betpool.awayBets;
+                    targetBets = betpool.homeBets;
+                    oppositeTeam = betpool.teamB;
+                    break;
+                case 'away':
+                    targetBets = betpool.awayBets;
+                    oppositeBets = betpool.homeBets;
+                    oppositeTeam = betpool.teamA;
+                    break;
+                case 'draw':
+                    targetBets = betpool.drawBets;
+                    oppositeBets = betpool.nonDrawBets;
+                    oppositeTeam = betpool.teamDraw;
+                    break;
+                case 'nondraw':
+                    targetBets = betpool.nonDrawBets;
+                    oppositeBets = betpool.drawBets;
+                    oppositeTeam = betpool.teamNonDraw;
+                    break;
+            }
+            if (targetBets.length == 1) { // 1:1 or n:n
+                for (const opposite_bet of oppositeBets) {
+                    const bet = await Bet.findById(opposite_bet);
+                    if (bet) {
+                        const user = await User.findById(bet.userId);
+                        await bet.update({ status: 'Cancelled' });
+                        if (user) {
+                            const afterBalance = user.balance + bet.bet;
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: bet.bet,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance,
+                            });
+                            await user.update({ $inc: { balance: bet.bet } });
+
+                            const cancelFee = betAmount * 0.1 * bet.bet / oppositeTeam.betTotal;
+                            await FinancialLog.create({
+                                financialtype: 'betcancelfee',
+                                uniqid: `BCF${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelFee,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance + cancelFee
+                            });
+                            await sendBetCancelOpponentConfirmEmail(user, bet, cancelFee);
+                            await user.update({ $inc: { balance: cancelFee } });
+                        }
+                    }
+                }
+                const updateObj = {};
+                switch (pick) {
+                    case 'home':
+                    case 'away':
+                        updateObj.awayBets = [];
+                        updateObj.homeBets = [];
+                        updateObj.teamA = {
+                            ...betpool.teamA,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        updateObj.teamB = {
+                            ...betpool.teamB,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        break;
+                    case 'draw':
+                    case 'nondraw':
+                        updateObj.drawBets = [];
+                        updateObj.nonDrawBets = [];
+                        updateObj.teamDraw = {
+                            ...betpool.teamDraw,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        updateObj.teamNonDraw = {
+                            ...betpool.teamNonDraw,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        break;
+                }
+                await betpool.update(updateObj);
+                await bet.update({ status: 'Cancelled', })
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: user._id,
+                    betId: bet_id,
+                    amount: cancelAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + cancelAmount
+                });
+                await user.update({ $inc: { balance: cancelAmount } });
+                await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+                return res.json({ success: true });
+            }
+
+
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot cancel a bet. Internal Server Error.' });
         }
     }
 )
