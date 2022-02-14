@@ -1,39 +1,35 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder'
-import { Link, withRouter } from 'react-router-dom';
-import WinWheel from '../libs/WinWheel';
+import { withRouter } from 'react-router-dom';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import rouletteSelection from '../libs/rouletteSelection';
 import { getPrize, postPrize } from '../redux/services';
+import Wheel from '../components/wheel';
 
 class Prize extends Component {
     constructor(props) {
         super(props);
-        const tickSound = new Audio('/media/tick.mp3');
         const tadaSound = new Audio('/media/tada.wav');
         this.state = {
-            prizeWheel: null,
-            isSpinning: false,
             pool: [
-                { Id: "$5 Credit", Score: 17 },
-                { Id: "$25 Credit", Score: 1.49 },
-                { Id: "+2,000 Loyalty", Score: 28 },
-                { Id: "$10 Credit", Score: 2.5 },
-                { Id: "$5 Credit", Score: 17 },
-                { Id: "$100 Credit", Score: 0.01 },
-                { Id: "+5,000 Loyalty", Score: 8 },
-                { Id: "$25 Credit", Score: 1.49 },
-                { Id: "$5 Credit", Score: 17 },
-                { Id: "$10 Credit", Score: 2.5 },
-                { Id: "+10,000 Loyalty", Score: 5 },
-                { Id: "$100 Credit", Score: 0.01 },
+                { text: "$5 Credit", Score: 17, id: 1, background: '#0F0' },
+                { text: "$25 Credit", Score: 1.49, id: 2, background: '#0F0' },
+                { text: "+2,000 Loyalty", Score: 28, id: 3, background: '#0F0' },
+                { text: "$10 Credit", Score: 2.5, id: 4, background: '#0F0' },
+                { text: "$5 Credit", Score: 17, id: 5, background: '#0F0' },
+                { text: "$100 Credit", Score: 0.01, id: 6, background: '#0F0' },
+                { text: "+5,000 Loyalty", Score: 8, id: 7, background: '#0F0' },
+                { text: "$25 Credit", Score: 1.49, id: 8, background: '#0F0' },
+                { text: "$5 Credit", Score: 17, id: 9, background: '#0F0' },
+                { text: "$10 Credit", Score: 2.5, id: 10, background: '#0F0' },
+                { text: "+10,000 Loyalty", Score: 5, id: 11, background: '#0F0' },
+                { text: "$100 Credit", Score: 0.01, id: 12, background: '#0F0' },
             ],
             used: false,
             remainingTimer: null,
             remainingTime: '',
             winMessage: null,
             error: false,
-            tickSound: tickSound,
             tadaSound: tadaSound
         };
     }
@@ -41,51 +37,6 @@ class Prize extends Component {
     componentDidMount() {
         const title = 'Prize';
         setTitle({ pageTitle: title });
-
-        let prizeWheel = new WinWheel({
-            canvasId: "prize-canvas",
-            'outerRadius': 200,
-            'innerRadius': 0,
-            'textFontSize': 24,
-            'responsive': true,
-            'textOrientation': 'vertical',
-            'textAlignment': 'outer',
-            'numSegments': 12,
-            'segments': [
-                { 'fillStyle': '#00aef0', 'text': '$5 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 1 },
-                { 'fillStyle': '#fff200', 'text': '$25 Credit', 'textFontSize': 14, 'textFillStyle': '#000', 'id': 2 },
-                { 'fillStyle': '#ee1c24', 'text': '+2,000 Loyalty', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 3 },
-                { 'fillStyle': '#e70697', 'text': '$10 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 4 },
-                { 'fillStyle': '#00aef0', 'text': '$5 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 5 },
-                { 'fillStyle': '#f26522', 'text': '$100 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 6 },
-                { 'fillStyle': '#3cb878', 'text': '+5,000 Loyalty', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 7 },
-                { 'fillStyle': '#fff200', 'text': '$25 Credit', 'textFontSize': 14, 'textFillStyle': '#000', 'id': 8 },
-                { 'fillStyle': '#00aef0', 'text': '$5 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 9 },
-                { 'fillStyle': '#e70697', 'text': '$10 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 10 },
-                { 'fillStyle': '#f6989d', 'text': '+10,000 Loyalty', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 11 },
-                { 'fillStyle': '#f26522', 'text': '$100 Credit', 'textFontSize': 14, 'textFillStyle': '#ffffff', 'id': 12 },
-            ],
-            'animation': {
-                'type': 'spinToStop',
-                'duration': 12,
-                'spins': 6,
-                'callbackFinished': this.finishPrize.bind(this),
-                'soundTrigger': 'pin',
-                'callbackSound': this.playTickSound.bind(this),
-            },
-            'pins': {
-                'number': 12,
-                'fillStyle': '#000000',
-                'outerRadius': 4,
-                'responsive': true,
-            }
-        });
-
-        this.setState({
-            prizeWheel: prizeWheel,
-            isSpinning: false,
-        });
-
         const { user } = this.props;
         if (user) {
             this.getPrizeData();
@@ -98,7 +49,7 @@ class Prize extends Component {
             .then(({ data }) => {
                 if (data.used) {
                     this.remainingTimeHandler();
-                    const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 60 * 1000);
+                    const remainingTimer = setInterval(this.remainingTimeHandler, 60 * 1000);
                     this.setState({ loading: false, error: false, used: true, remainingTimer });
                 } else {
                     this.setState({ loading: false, error: false, used: false });
@@ -107,15 +58,6 @@ class Prize extends Component {
             .catch(() => {
                 this.setState({ loading: false, error: true });
             })
-    }
-
-    playTickSound = () => {
-        const { tickSound } = this.state;
-        if (tickSound) {
-            tickSound.pause();
-            tickSound.currentTime = 0;
-            tickSound.play();
-        }
     }
 
     componentWillUnmount() {
@@ -142,48 +84,21 @@ class Prize extends Component {
         }
     }
 
-    startWheel = () => {
-        const { prizeWheel, pool } = this.state;
-        this.setState({ isSpinning: true });
-        const winner = rouletteSelection(pool);
-        const stopAt = prizeWheel.getRandomForSegment(winner + 1);
-        prizeWheel.animation.stopAngle = stopAt;
-        prizeWheel.startAnimation();
-    }
-
-    resetWheel = () => {
-        const { prizeWheel } = this.state;
-        if (prizeWheel) {
-            prizeWheel.stopAnimation(false);
-            prizeWheel.rotationAngle = 0;
-            prizeWheel.draw();
-        }
-        this.setState({ isSpinning: false });
-    }
-
-    finishPrize = (indicatedSegment) => {
-        const { tadaSound } = this.state;
+    savePrize = (selectedItem) => {
+        const { pool, tadaSound } = this.state;
         if (tadaSound) {
             tadaSound.pause();
             tadaSound.currentTime = 0;
             tadaSound.play();
         }
-        this.setState({ winMessage: 'Congratulations! You have won ' + indicatedSegment.text });
-        setTimeout(() => {
-            this.resetWheel();
-            this.savePrize(indicatedSegment);
-        }, 1000);
-    }
-
-    savePrize = (indicatedSegment) => {
         this.remainingTimeHandler();
-        const remainingTimer = setInterval(this.remainingTimeHandler.bind(this), 60 * 1000);
-        this.setState({ used: true, remainingTimer });
-        postPrize(indicatedSegment.id)
+        const remainingTimer = setInterval(this.remainingTimeHandler, 1000);
+        this.setState({ used: true, remainingTimer, winMessage: 'Congratulations! You have won ' + pool[selectedItem].text });
+        postPrize(pool[selectedItem].id)
     }
 
     render() {
-        const { isSpinning, loading, error, used, winMessage, remainingTime } = this.state;
+        const { loading, error, used, winMessage, remainingTime, pool } = this.state;
         const { user } = this.props;
 
         return (
@@ -201,23 +116,8 @@ class Prize extends Component {
                         <p style={{ fontSize: '24px' }}><b>{remainingTime}</b> remaining until next turn.</p>
                     </center>
                 </>}
-                <div className="" style={{ display: user && !loading && !error && !used ? 'block' : 'none' }}>
-                    <div className="d-flex justify-content-center">
-                        <div className="wheel_container">
-                            <canvas id="prize-canvas" width="420" height="420"
-                                data-responsiveminwidth="150"
-                                data-responsivescaleheight="true"
-                                data-responsivemargin="50"
-                            >
-                                <p align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-                            </canvas>
-                        </div>
-                    </div>
-                    <div className="d-flex justify-content-center mt-2">
-                        <div style={{ width: '50%' }}>
-                            <button disabled={isSpinning} className='spin_button' onClick={this.startWheel}>Play <b>SPIN</b></button>
-                        </div>
-                    </div>
+                <div style={{ display: user && !loading && !error && !used ? 'block' : 'none' }}>
+                    <Wheel items={pool} onSelectItem={this.savePrize} />
                 </div>
 
                 {winMessage && <div className="modal confirmation">

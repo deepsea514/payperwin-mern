@@ -434,7 +434,7 @@ class App extends Component {
                                                 getUser={getUser}
                                             />
                                         </ErrorBoundary>
-                                        <div className={`${fullWidth ? 'col-md-10 col-sm-12' : 'col-md-7 col-sm-12'} p-0`}>
+                                        <div className={`${fullWidth ? 'col-lg-10 col-sm-12' : 'col-lg-7 col-sm-12'} p-0`}>
                                             <Switch>
                                                 <Route path="/newPasswordFromToken" render={(props) =>
                                                     <ErrorBoundary><NewPasswordFromToken {...props} /></ErrorBoundary>
