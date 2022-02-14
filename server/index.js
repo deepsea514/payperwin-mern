@@ -5046,13 +5046,13 @@ expressApp.get(
                 user: user._id,
             });
             if (prize) {
-                res.json({ success: true, used: true });
+                return res.json({ success: true, used: true });
             } else {
-                res.json({ success: true, used: false });
+                return res.json({ success: true, used: false });
             }
         } catch (erorr) {
             console.error(error);
-            res.status(500).json({ success: false });
+            return res.status(500).json({ success: false });
         }
     }
 )
@@ -5062,8 +5062,8 @@ expressApp.post(
     isAuthenticated,
     async (req, res) => {
         const { prize, date } = req.body;
-        if (!date) res.status(400).json({ success: false, error: 'Date is required.' });
-        if (!prize) res.status(400).json({ success: false, error: 'Prize is required.' });
+        if (!date) return res.status(400).json({ success: false, error: 'Date is required.' });
+        if (!prize) return res.status(400).json({ success: false, error: 'Prize is required.' });
         const user = req.user;
         const prizeExist = await PrizeLog.findOne({
             createdAt: { $gte: new Date(date) },
@@ -5178,10 +5178,10 @@ expressApp.post(
                     });
                     break;
             }
-            res.json({ success: true });
+            return res.json({ success: true });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ success: false });
+            return res.status(500).json({ success: false });
         }
     }
 )
