@@ -934,7 +934,12 @@ adminRouter.get(
             return res.status(404).json({ error: 'Customer id is not given.' });
         }
         try {
-            const searchObj = { user: id };
+            const searchObj = {
+                $or: [
+                    { user: id, status: FinancialStatus.success, financialtype: { $ne: 'withdraw' } },
+                    { user: id, financialtype: 'withdraw' }
+                ]
+            };
             const total = await FinancialLog.find(searchObj).count();
             const transactions = await FinancialLog.find(searchObj)
                 .sort({ updatedAt: -1 })
