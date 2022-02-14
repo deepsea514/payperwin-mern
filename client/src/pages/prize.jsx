@@ -117,6 +117,7 @@ class Prize extends Component {
                     </center>
                 </>}
                 <div style={{ display: user && !loading && !error && !used ? 'block' : 'none' }}>
+                    <h1 className='text-center mb-3'>Please tap the spin to get prize.</h1>
                     <Wheel items={pool} onSelectItem={this.savePrize} />
                 </div>
 
