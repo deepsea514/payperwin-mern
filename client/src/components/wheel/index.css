@@ -2,8 +2,8 @@
     --wheel-font: 'Lato', 'Quicksand', sans-serif;
     --wheel-size: 400px;
     --wheel-slice-spacing: 50px;
-    --wheel-border-size: 5px;
-    --wheel-color: green;
+    --wheel-border-size: 4px;
+    --wheel-color: #990099;
     --neutral-color: white;
     --PI: 3.14159265358979;
     --nb-item: 0;
@@ -17,8 +17,6 @@
 @media(max-width:767px) {
     :root {
         --wheel-size: 300px;
-        --wheel-slice-spacing: 50px;
-        --wheel-border-size: 5px;
     }
 }
 
@@ -28,12 +26,16 @@
     box-sizing: content-box;
     width: calc(var(--wheel-size) + 2 * var(--wheel-border-size));
     height: calc(var(--wheel-size) + 2 * var(--wheel-border-size));
-    padding: 3px;
-    margin: auto;
-    background-color: var(--neutral-color);
-    border: solid var(--wheel-color) 3px;
+    padding: 12px;
+    margin: 3rem auto 0;
+    background-color: #303;
+    border: solid #770077 3px;
     border-radius: 50%;
     user-select: none;
+
+    -webkit-box-shadow: 0 0 30px #FF00FF88;
+    -moz-box-shadow: 0 0 30px #FF00FF88;
+    box-shadow: 0 0 30px #FF00FF88;
 }
 
 .wheel-container::before,
@@ -57,7 +59,7 @@
 
 .wheel-container::after {
     right: -5px;
-    border-right-color: var(--neutral-color);
+    border-right-color: #FF0;
 }
 
 .wheel {
@@ -69,7 +71,7 @@
     height: var(--wheel-size);
     overflow: hidden;
     border-radius: 50%;
-    border: solid var(--wheel-color) var(--wheel-border-size);
+    border: solid #770077 var(--wheel-border-size);
     background-color: var(--wheel-color);
     transition: transform var(--reset-duration) !important;
     transform: rotate(0deg);
@@ -83,16 +85,38 @@
 
 .wheel::after {
     display: block;
-    position: absolute;
+    position: relative;
     content: '';
-    background-color: var(--neutral-color);
-    width: 25px;
-    height: 25px;
+    /* background-color: var(--neutral-color); */
+    width: 40px;
+    height: 40px;
     z-index: 2;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
+
+    -webkit-box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
+    -moz-box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
+
+    background: -moz-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(70%, rgba(255, 255, 255, 0)));
+    /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    /* IE10+ */
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#00ffffff', GradientType=1);
+
+    -webkit-box-shadow: inset -20px -20px 40px #990099;
+    -moz-box-shadow: inset -20px -20px 40px #990099;
+    box-shadow: inset -20px -20px 40px #990099;
 }
 
 .wheel-item {
@@ -140,4 +164,18 @@
         border-left: solid transparent 0;
         border-right: solid var(--neutral-color) calc(var(--wheel-size) / 2);
     }
+}
+
+.wheel-item:after {
+    content: ' ';
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    top: calc(50% - 8px);
+    left: calc(100% - 10px);
+    background-color: #FFF;
+    border-radius: 50%;
+    z-index: 1;
 }
