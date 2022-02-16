@@ -160,10 +160,6 @@
         "path": "/autobet-settings"
     },
     {
-        "title": "Prize",
-        "path": "/prize"
-    },
-    {
         "title": "Loyalty Program",
         "path": "/loyalty"
     },

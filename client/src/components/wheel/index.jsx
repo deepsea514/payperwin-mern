@@ -9,8 +9,12 @@ export default class Wheel extends React.Component {
     }
 
     selectItem = () => {
+        const { onClose, showLoginModalAction, user, items, onSelectItem } = this.props;
+        if (!user) {
+            onClose();
+            showLoginModalAction();
+        }
         const { selectedItem } = this.state;
-        const { items, onSelectItem } = this.props;
         if (selectedItem === null) {
             const selectedItem = rouletteSelection(items);
             if (onSelectItem) {
@@ -39,7 +43,7 @@ export default class Wheel extends React.Component {
                         <div className="wheel-item"
                             key={index}
                             style={{ "--item-nb": index }}>
-                            {item.text}
+                            {item.label}
                         </div>
                     ))}
                 </div>

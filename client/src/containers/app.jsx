@@ -58,7 +58,6 @@ import SportsLeagues from '../pages/sportleagues';
 import AutobetSettings from '../pages/AutobetSettings';
 import AutobetDashboard from '../pages/AutobetDashboard';
 import AboutUs from '../pages/aboutus';
-import Prize from '../pages/prize';
 import Loyalty from '../pages/loyalty';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
@@ -72,6 +71,7 @@ import { getBetSlipLastOdds, getMetaTag } from '../redux/services';
 import ViewModeModal from '../components/viewmode_modal';
 import { ToastContainer } from 'react-toastify';
 import Team from '../pages/team';
+import PrizeModal from '../components/prizeModal';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -138,7 +138,8 @@ class App extends Component {
             },
             betSlipTimer: null,
             betSlipOdds: null,
-            showViewModeModal: false
+            showViewModeModal: false,
+            showPrizeModal: false,
         };
         this._Mounted = true;
     }
@@ -250,7 +251,7 @@ class App extends Component {
                     bet.type === lineQuery.type &&
                     bet.index === lineQuery.index &&
                     bet.subtype == lineQuery.subtype
-                    // && bet.pick == pick;
+                // && bet.pick == pick;
                 return !exists;
             });
             this.setState({
@@ -367,6 +368,7 @@ class App extends Component {
             teaserBetSlip,
             betSlipOdds,
             showViewModeModal,
+            showPrizeModal,
         } = this.state;
         const { user,
             getUser,
@@ -406,6 +408,9 @@ class App extends Component {
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
                     {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} />}
+                    {showPrizeModal && <PrizeModal onClose={() => this.toggleField('showPrizeModal')}
+                        showLoginModalAction={() => showLoginModalAction(true)}
+                        user={user} />}
                     <div className="container">
                         <Switch>
                             <Route path="/signup" render={(props) =>
@@ -638,9 +643,6 @@ class App extends Component {
                                                 } />}
                                                 {user && <Route path="/autobet-settings" render={(props) =>
                                                     <ErrorBoundary><AutobetSettings {...props} user={user} /></ErrorBoundary>
-                                                } />}
-                                                {user && <Route path="/prize" render={(props) =>
-                                                    <ErrorBoundary><Prize {...props} user={user} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/loyalty" render={(props) =>
                                                     <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
