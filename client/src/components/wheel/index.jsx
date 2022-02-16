@@ -43,7 +43,11 @@ export default class Wheel extends React.Component {
                         <div className="wheel-item"
                             key={index}
                             style={{ "--item-nb": index }}>
-                            {item.label}
+                            <span style={{
+                                backgroundImage: `linear-gradient(180deg, ${item.textColor}, ${item.textColor2})`,
+                                textShadow: `0px 0px 2px ${item.textColor}`
+                            }}
+                                className="wheel-item-text">{item.label}</span>
                         </div>
                     ))}
                 </div>

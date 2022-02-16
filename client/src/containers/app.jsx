@@ -139,7 +139,7 @@ class App extends Component {
             betSlipTimer: null,
             betSlipOdds: null,
             showViewModeModal: false,
-            showPrizeModal: false,
+            showPrizeModal: true,
         };
         this._Mounted = true;
     }

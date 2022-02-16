@@ -3,7 +3,7 @@
     --wheel-size: 400px;
     --wheel-slice-spacing: 50px;
     --wheel-border-size: 4px;
-    --wheel-color: #990099;
+    --wheel-color: rgb(87, 13, 95);
     --neutral-color: white;
     --PI: 3.14159265358979;
     --nb-item: 0;
@@ -136,11 +136,23 @@
     transform-origin: center left;
     transform: translateY(-50%) rotate(calc(var(--item-nb) * (360deg / var(--nb-item, 1))));
 
-    color: var(--neutral-color);
+    /* color: var(--neutral-color); */
     text-align: right;
     padding: 0 25px 0 50px;
     font-family: var(--wheel-font);
-    font-size: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+
+}
+
+.wheel-item-text {
+    background-size: 100%;
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
 }
 
 .wheel-item:before {
@@ -155,10 +167,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding-left: 0px;
-    opacity: 0.25;
+    opacity: 0.2;
     --slice-max-width: calc(var(--PI) * var(--wheel-size) + var(--wheel-size) / 2);
     --slice-width: calc((var(--slice-max-width) / var(--nb-item)) - var(--wheel-slice-spacing));
-    border: solid transparent calc(var(--slice-width) / 2);
+    border: solid transparent calc(var(--slice-width) / 1.6);
     border-left: solid transparent 0;
     border-right: solid var(--neutral-color) calc(var(--wheel-size) / 2);
 }
@@ -167,9 +179,13 @@
     .wheel-item:before {
         --slice-max-width: calc(var(--PI) * var(--wheel-size) + var(--wheel-size) / 2);
         --slice-width: calc((var(--slice-max-width) / var(--nb-item)) - var(--wheel-slice-spacing));
-        border: solid transparent calc(var(--slice-width) / 1.5);
+        border: solid transparent calc(var(--slice-width) / 1.3);
         border-left: solid transparent 0;
         border-right: solid var(--neutral-color) calc(var(--wheel-size) / 2);
+    }
+
+    .wheel-item {
+        font-size: 23px;
     }
 }
 
@@ -183,7 +199,7 @@
     }
 
     .wheel-item {
-        font-size: 16px;
+        font-size: 18px;
     }
 }
 
@@ -192,10 +208,10 @@
     display: block;
     position: absolute;
     box-sizing: border-box;
-    width: 16px;
-    height: 16px;
-    top: calc(50% - 8px);
-    left: calc(100% - 10px);
+    width: 14px;
+    height: 14px;
+    top: calc(50% - 7px);
+    left: calc(100% - 7px);
     background-color: #FFF;
     border-radius: 50%;
     z-index: 1;

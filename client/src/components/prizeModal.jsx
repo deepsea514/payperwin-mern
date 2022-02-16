@@ -12,18 +12,18 @@ class PrizeModal extends Component {
         const tadaSound = new Audio('/media/tada.wav');
         this.state = {
             pool: [
-                { label: "$5", text: "$5 Credit", Score: 17, id: 1, background: '#fee59e' },
-                { label: "$25", text: "$25 Credit", Score: 1.49, id: 2, background: '#6abaf7' },
-                { label: "+2,000", text: "+2,000 Loyalty", Score: 28, id: 3, background: '#ffa886' },
-                { label: "$10", text: "$10 Credit", Score: 2.5, id: 4, background: '#eff1ee' },
-                { label: "$5", text: "$5 Credit", Score: 17, id: 5, background: '#fee59e' },
-                { label: "$100", text: "$100 Credit", Score: 0.01, id: 6, background: '#d281f8' },
-                { label: "+5,000", text: "+5,000 Loyalty", Score: 8, id: 7, background: '#ffe49f' },
-                { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, background: '#6abaf7' },
-                { label: "$5", text: "$5 Credit", Score: 17, id: 9, background: '#fee59e' },
-                { label: "$10", text: "$10 Credit", Score: 2.5, id: 10, background: '#eff1ee' },
-                { label: "+10,000", text: "+10,000 Loyalty", Score: 5, id: 11, background: '#ffe49f' },
-                { label: "$100", text: "$100 Credit", Score: 0.01, id: 12, background: '#d281f8' },
+                { label: "$5", text: "$5 Credit", Score: 17, id: 1, textColor: '#73e6f7', textColor2: '#bdc7fa' },
+                { label: "$25", text: "$25 Credit", Score: 1.49, id: 2, textColor: '#ea33f4', textColor2: '#ea33f5' },
+                { label: "+2,000", text: "+2,000 Loyalty", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
+                { label: "$10", text: "$10 Credit", Score: 2.5, id: 4, textColor: '#ea3398', textColor2: '#ea339e' },
+                { label: "$5", text: "$5 Credit", Score: 17, id: 5, textColor: '#73e6f7', textColor2: '#bdc7fa' },
+                { label: "$100", text: "$100 Credit", Score: 0.01, id: 6, textColor: '#fae2a9', textColor2: '#f0c3c9' },
+                { label: "+5,000", text: "+5,000 Loyalty", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
+                { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, textColor: '#ea33f4', textColor2: '#ea33f5' },
+                { label: "$5", text: "$5 Credit", Score: 17, id: 9, textColor: '#73e6f7', textColor2: '#bdc7fa' },
+                { label: "$10", text: "$10 Credit", Score: 2.5, id: 10, textColor: '#ea3398', textColor2: '#ea339e' },
+                { label: "+10,000", text: "+10,000 Loyalty", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
+                { label: "$100", text: "$100 Credit", Score: 0.01, id: 12, textColor: '#fae2a9', textColor2: '#f0c3c9' },
             ],
             used: false,
             remainingTimer: null,
@@ -102,7 +102,7 @@ class PrizeModal extends Component {
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
-                <div className="col-in">
+                <div className="col-in prize">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
                         <b>Prize Wheel</b>
