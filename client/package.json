@@ -79,6 +79,7 @@
     "react-datepicker": "^3.4.1",
     "react-document-meta": "^3.0.0-beta.2",
     "react-dom": "^16.8.4",
+    "react-dom-confetti": "^0.2.0",
     "react-favicon": "0.0.14",
     "react-google-login": "^5.2.2",
     "react-iframe": "^1.8.0",

@@ -1,5 +1,6 @@
 import React from "react";
 import rouletteSelection from "../../libs/rouletteSelection";
+import Confetti from 'react-dom-confetti';
 import "./index.css";
 
 export default class Wheel extends React.Component {
@@ -33,25 +34,43 @@ export default class Wheel extends React.Component {
             "--selected-item": selectedItem
         };
         const spinning = selectedItem !== null ? "spinning" : "";
+        const config = {
+            angle: 90,
+            spread: 360,
+            startVelocity: 40,
+            elementCount: 70,
+            dragFriction: 0.12,
+            duration: 3000,
+            stagger: 3,
+            width: "10px",
+            height: "10px",
+            perspective: "500px",
+            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+        };
 
         return (
-            <div className="wheel-container">
-                <div className={`wheel ${spinning}`}
-                    style={wheelVars}
-                    onClick={this.selectItem}>
-                    {items.map((item, index) => (
-                        <div className="wheel-item"
-                            key={index}
-                            style={{ "--item-nb": index }}>
-                            <span style={{
-                                backgroundImage: `linear-gradient(180deg, ${item.textColor}, ${item.textColor2})`,
-                                textShadow: `0px 0px 2px ${item.textColor}`
-                            }}
-                                className="wheel-item-text">{item.label}</span>
-                        </div>
-                    ))}
+            <>
+                <div className="d-flex justify-content-center" style={{ height: 0 }}>
+                    <Confetti active={selectedItem != null} config={config} />
                 </div>
-            </div>
+                <div className="wheel-container">
+                    <div className={`wheel ${spinning}`}
+                        style={wheelVars}
+                        onClick={this.selectItem}>
+                        {items.map((item, index) => (
+                            <div className="wheel-item"
+                                key={index}
+                                style={{ "--item-nb": index }}>
+                                <span style={{
+                                    backgroundImage: `linear-gradient(180deg, ${item.textColor}, ${item.textColor2})`,
+                                    textShadow: `0px 0px 2px ${item.textColor}`
+                                }}
+                                    className="wheel-item-text">{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </>
         );
     }
 }
