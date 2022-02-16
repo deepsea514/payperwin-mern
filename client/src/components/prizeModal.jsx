@@ -132,7 +132,8 @@ class PrizeModal extends Component {
                     </div>
 
                     {winMessage && <div className="">
-                        <Confetti style={{ marginTop: '-45vh' }} />
+                        <Confetti style={{ marginTop: '-10vh' }} />
+                        <img src='/images/prize.png' style={{ width: '100%', height: 'auto' }} />
                         <p style={{ fontSize: '20px' }}>{winMessage}</p>
                         <div className="text-right">
                             <button className="form-button ml-2" onClick={onClose}> OK </button>
