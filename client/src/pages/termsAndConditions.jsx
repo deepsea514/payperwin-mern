@@ -134,6 +134,9 @@ class TermsAndConditions extends Component {
                                             <li>
                                                 <a className="title" href="#title-31">30. Casino Rules</a>
                                             </li>
+                                            <li>
+                                                <a className='title' href='#title-32'>31. Bet Cancellation</a>
+                                            </li>
                                         </ul>
                                         <div className="clear-both"></div>
                                     </div>
@@ -1064,6 +1067,24 @@ class TermsAndConditions extends Component {
                                                         </ol>
                                                     </li>
                                                 </ol>
+                                            </ul>
+                                        </div>
+
+                                        <h2 id="title-32" className="privacy-policy-section-title desktop">31. Bet Cancellation</h2>
+                                        <h2 className="privacy-policy-section-title accordion-toggle" onClick={() => this.setVisible(33)}>
+                                            31. Bet Cancellation
+                                            <div className="arrow-up" style={{ display: showMobile == 33 ? 'block' : 'none' }}></div>
+                                            <div className="arrow-down" style={{ display: showMobile != 33 ? 'block' : 'none' }}></div>
+                                        </h2>
+                                        <div className="mobile-container" style={{ display: showMobile == 33 ? 'block' : 'none' }}>
+                                            Payper Win reserves the right to not accept all or part of the wager with respect to an opposing or initial peer bet, without providing a reason to customer,. If a bet is not accepted the bet amount will be refunded to the user.
+
+                                            Before an event starts, Payper Win at its own discretion has the right to cancel part of the entire bet even after its acceptance without notice to the user.
+
+                                            After the event has started the Payper Win reserves the right to cancel or void the bet in its entirety or in part, even after its settlement for valid reasons:
+                                            <ul>
+                                                <li className='ml-4' style={{ listStyleType: 'disc' }}>A mistake in wording , offering wrong or incorrect odds, or event timing</li>
+                                                <li className='ml-4' style={{ listStyleType: 'disc' }}>An attempt to bypass site rules and regulations such as but not withstanding, risk management, placing similar bets or opening multiple accounts.</li>
                                             </ul>
                                         </div>
                                     </div>
