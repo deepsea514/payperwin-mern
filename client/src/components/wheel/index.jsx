@@ -53,10 +53,9 @@ export default class Wheel extends React.Component {
                 <div className="d-flex justify-content-center" style={{ height: 0 }}>
                     <Confetti active={selectedItem != null} config={config} />
                 </div>
-                <div className="wheel-container">
+                <div className="wheel-container" onClick={this.selectItem}>
                     <div className={`wheel ${spinning}`}
-                        style={wheelVars}
-                        onClick={this.selectItem}>
+                        style={wheelVars}>
                         {items.map((item, index) => (
                             <div className="wheel-item"
                                 key={index}
