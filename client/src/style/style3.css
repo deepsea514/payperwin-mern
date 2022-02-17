@@ -2320,5 +2320,6 @@ a.fav-link:hover {
 }
 
 .col-in.prize {
-    background: radial-gradient(#ea33f7, #4f0a3e) !important;
+    background: #3b1b57 !important;
+    overflow: hidden;
 }

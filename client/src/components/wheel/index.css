@@ -42,6 +42,7 @@
     -webkit-box-shadow: 0 0 30px #FF00FF88;
     -moz-box-shadow: 0 0 30px #FF00FF88;
     box-shadow: 0 0 30px #FF00FF88;
+    cursor: pointer;
 }
 
 .wheel-container::after {
@@ -57,6 +58,22 @@
     /* border: solid transparent 20px; */
     /* border-left-width: 0; */
     background-image: url(/images/wheel_pin.png);
+}
+
+.wheel-container::before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 540px;
+    width: 540px;
+    top: calc(50% - 270px);
+    left: calc(50% - 270px);
+    /* transform: translateY(-50%); */
+    z-index: 1;
+    /* border: solid transparent 20px; */
+    /* border-left-width: 0; */
+    background-image: url(/images/wheel_background.png);
+    background-size: cover;
 }
 
 .wheel {
@@ -93,7 +110,7 @@
 
     /* color: var(--neutral-color); */
     text-align: right;
-    padding: 0 25px 0 50px;
+    padding: 0 50px 0 60px;
     font-family: var(--wheel-font);
     font-size: 30px;
     font-weight: bold;
@@ -138,22 +155,38 @@
 
 @media(max-width:767px) {
     .wheel-item {
-        font-size: 23px;
+        font-size: 22px;
+        padding: 0 20px 0 60px;
     }
 
     .wheel-item:before {
         border: solid transparent calc(var(--slice-width) / 1.02);
         border-left: solid transparent 0;
     }
+
+    .wheel-container::before {
+        height: 440px;
+        width: 440px;
+        top: calc(50% - 218px);
+        left: calc(50% - 220px);
+    }
 }
 
 @media(max-width:400px) {
     .wheel-item {
         font-size: 18px;
+        padding: 0 20px 0 40px;
     }
 
     .wheel-item:before {
         border: solid transparent calc(var(--slice-width) / 0.75);
         border-left: solid transparent 0;
+    }
+
+    .wheel-container::before {
+        height: 366px;
+        width: 366px;
+        top: calc(50% - 181px);
+        left: calc(50% - 183px);
     }
 }
