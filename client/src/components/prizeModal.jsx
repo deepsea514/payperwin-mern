@@ -21,7 +21,7 @@ class PrizeModal extends Component {
                 { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, textColor: '#FF14D8', textColor2: '#FF14D8' },
                 { label: "$5", text: "$5 Credit", Score: 17, id: 9, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$10", text: "$10 Credit", Score: 2.5, id: 10, textColor: '#00aaff', textColor2: '#ea636e' },
-                { label: "+10,000", text: "+10,000 Loyalty Points", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
+                { label: "+8,000", text: "+8,000 Loyalty Points", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
                 { label: "$100", text: "$100 Credit", Score: 0.01, id: 12, textColor: '#BEF001', textColor2: '#f0c329' },
             ],
             used: false,
