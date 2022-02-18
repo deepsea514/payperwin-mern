@@ -40,6 +40,12 @@ const getTopLeagueInSport = (sport) => {
 }
 
 const arrangeLeagues = (leagues, sport) => {
+    if (sport == 'Boxing/MMA') {
+        const league = leagues.fine(league => league.name == 'UFC');
+        if (league) {
+            league.events.reverse();
+        }
+    }
     const topLeague = getTopLeagueInSport(sport);
     if (!topLeague) return;
     for (let i = 0; i < leagues.length; i++) {
