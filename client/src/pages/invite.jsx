@@ -22,7 +22,7 @@ class Invite extends Component {
             <React.Fragment>
                 <div className="invite-container">
                     <div className="row d-flex align-items-center">
-                        <div className="col-md-6 pt-3 not-mobile">
+                        <div className="col-md-6 pt-3">
                             <img src='/images/invite-logo.jpg' className='invite-logo' />
                         </div>
                         <div className="col-md-5 pt-3">
