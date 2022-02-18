@@ -5154,14 +5154,14 @@ expressApp.post(
                         point: 5000
                     });
                     break;
-                case 11:    // +10,000 Loyalty
+                case 11:    // +8,000 Loyalty
                     await PrizeLog.create({
                         user: user._id,
-                        type: '+10,000 Loyalty'
+                        type: '+8,000 Loyalty'
                     });
                     await LoyaltyLog.create({
                         user: user._id,
-                        point: 10000
+                        point: 8000
                     });
                     break;
             }
