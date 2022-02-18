@@ -9,20 +9,19 @@ import Confetti from 'react-confetti'
 class PrizeModal extends Component {
     constructor(props) {
         super(props);
-        const tadaSound = new Audio('/media/tada.wav');
         this.state = {
             pool: [
                 { label: "$5", text: "$5 Credit", Score: 17, id: 1, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$25", text: "$25 Credit", Score: 1.49, id: 2, textColor: '#FF14D8', textColor2: '#FF14D8' },
-                { label: "+2,000", text: "+2,000 Loyalty", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
+                { label: "+2,000", text: "+2,000 Loyalty Points", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
                 { label: "$10", text: "$10 Credit", Score: 2.5, id: 4, textColor: '#00aaff', textColor2: '#ea636e' },
                 { label: "$5", text: "$5 Credit", Score: 17, id: 5, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$100", text: "$100 Credit", Score: 0.01, id: 6, textColor: '#BEF001', textColor2: '#f0c329' },
-                { label: "+5,000", text: "+5,000 Loyalty", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
+                { label: "+5,000", text: "+5,000 Loyalty Points", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
                 { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, textColor: '#FF14D8', textColor2: '#FF14D8' },
                 { label: "$5", text: "$5 Credit", Score: 17, id: 9, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$10", text: "$10 Credit", Score: 2.5, id: 10, textColor: '#00aaff', textColor2: '#ea636e' },
-                { label: "+10,000", text: "+10,000 Loyalty", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
+                { label: "+10,000", text: "+10,000 Loyalty Points", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
                 { label: "$100", text: "$100 Credit", Score: 0.01, id: 12, textColor: '#BEF001', textColor2: '#f0c329' },
             ],
             used: false,
@@ -30,7 +29,6 @@ class PrizeModal extends Component {
             remainingTime: '',
             winMessage: null,
             error: false,
-            tadaSound: tadaSound
         };
     }
 
@@ -83,12 +81,7 @@ class PrizeModal extends Component {
     }
 
     savePrize = (selectedItem) => {
-        const { pool, tadaSound } = this.state;
-        if (tadaSound) {
-            tadaSound.pause();
-            tadaSound.currentTime = 0;
-            tadaSound.play();
-        }
+        const { pool } = this.state;
         this.remainingTimeHandler();
         const remainingTimer = setInterval(this.remainingTimeHandler, 1000);
         this.setState({ used: true, remainingTimer, winMessage: 'Congratulations! You have won ' + pool[selectedItem].text });
@@ -105,8 +98,7 @@ class PrizeModal extends Component {
                 <div className="col-in prize">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
-                        <b>Prize Wheel</b>
-                        <hr />
+                        <br />
                     </div>
                     {loading && <center>
                         <Preloader use={ThreeDots}
@@ -131,14 +123,14 @@ class PrizeModal extends Component {
                             onSelectItem={this.savePrize} />
                     </div>
 
-                    {winMessage && <div className="">
+                    <div className={winMessage ? 'd-block' : 'd-none'}>
                         <Confetti style={{ marginTop: '-10vh' }} />
                         <img src='/images/prize.png' style={{ width: '100%', height: 'auto' }} />
-                        <p style={{ fontSize: '20px' }}>{winMessage}</p>
+                        <p style={{ fontSize: '20px' }} className='text-center'>{winMessage}</p>
                         <div className="text-right">
-                            <button className="form-button ml-2" onClick={onClose}> OK </button>
+                            <button className="form-button ml-2" onClick={onClose}> DISMISS </button>
                         </div>
-                    </div>}
+                    </div>
                 </div>
             </div>
         );
