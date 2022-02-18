@@ -319,26 +319,29 @@ class BetSlip extends Component {
                                 </div>}
                                 {betSlip.length > 0 ?
                                     betSlip.map(bet => (pro_mode ?
-                                        (<Bet
-                                            bet={bet}
-                                            removeBet={removeBet}
-                                            updateBet={updateBet}
-                                            betSlipOdds={betSlipOdds}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />) :
-                                        (<BetBasic
-                                            bet={bet}
-                                            removeBet={removeBet}
-                                            updateBet={updateBet}
-                                            betSlipOdds={betSlipOdds}
-                                            placeBets={this.placeBets}
-                                            user={user}
-                                            showLoginModalAction={showLoginModalAction}
-                                            toggleField={toggleField}
-                                            errors={errors}
-                                            submitting={submitting}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
-                                    )
-                                    )
+                                        (
+                                            <Bet
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                betSlipOdds={betSlipOdds}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />
+                                        ) :
+                                        (
+                                            <BetBasic
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                betSlipOdds={betSlipOdds}
+                                                placeBets={this.placeBets}
+                                                user={user}
+                                                showLoginModalAction={showLoginModalAction}
+                                                toggleField={toggleField}
+                                                errors={errors}
+                                                submitting={submitting}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />
+                                        )
+                                    ))
                                     : (
                                         <div className="no-bets">
                                             <div>
