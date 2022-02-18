@@ -287,22 +287,14 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            referral_code, invite } = req.body;
+            referral_code, invite, pro_mode } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(async () => {
             // find a user whose username is the same as the forms username
             // we are checking to see if the user trying to login already exists
-            await User.findOne({
-                $or: [
-
-                    { email: new RegExp(`^${email}$`, 'i') },
-                ],
-            }, async (err, user) => {
-                // if there are any errors, return the error
-                if (err) return done(err);
-
-                // check to see if theres already a user with that username
+            try {
+                const user = await User.findOne({ email: new RegExp(`^${email}$`, 'i') });
                 if (user) {
                     if (user.username === username) {
                         return done(null, false, 'That username is already taken.');
@@ -311,8 +303,6 @@ passport.use('local-signup', new LocalStrategy(
                     }
                 }
 
-                // if there is no user with that username
-                // create the user
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
@@ -320,73 +310,70 @@ passport.use('local-signup', new LocalStrategy(
                     roles: { registered: true },
                 };
 
-                const newUser = await new User(newUserObj);
-                // save the user
-                await newUser.save(async (err2) => {
-                    if (err2) console.error(err2);
-                    else {
-                        sendVerificationEmail(email, req);
-                        if (referral_code && referral_code != "") {
-                            const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
-                            if (promotion) {
-                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
-                                    if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
-                                        let enable = false;
-                                        if (promotion.number_of_usage != -1) {
-                                            enable = true;
-                                        }
-                                        else {
-                                            const logs = await PromotionLog.find({ promotion: promotion._id });
-                                            if (logs.length < promotion.number_of_usage)
-                                                enable = true;
-                                        }
-                                        if (enable) {
-                                            newUser.balance = 50;
-                                            await newUser.save();
-                                            await FinancialLog.create({
-                                                financialtype: 'signupbonus',
-                                                uniqid: `SB${ID()}`,
-                                                user: newUser._id,
-                                                amount: 50,
-                                                method: 'signupbonus',
-                                                status: FinancialStatus.success,
-                                                beforeBalance: 0,
-                                                afterBalance: 50
-                                            });
-                                            await PromotionLog.create({
-                                                user: newUser._id,
-                                                promotion: promotion._id,
-                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-                                            });
-                                        }
-                                    }
+                const newUser = await User.create(newUserObj);
+                sendVerificationEmail(email, req);
+                if (referral_code && referral_code != "") {
+                    const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
+                    if (promotion) {
+                        if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                            if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
+                                let enable = false;
+                                if (promotion.number_of_usage != -1) {
+                                    enable = true;
                                 }
-                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
-                                    if (promotion && promotion.usage_for == "new" && promotion.type == "_100_SignUpBonus") {
-                                        let enable = false;
-                                        if (promotion.number_of_usage != -1) {
-                                            enable = true;
-                                        }
-                                        else {
-                                            const logs = await PromotionLog.find({ promotion: promotion._id });
-                                            if (logs.length < promotion.number_of_usage)
-                                                enable = true;
-                                        }
-                                        if (enable) {
-                                            await PromotionLog.create({
-                                                user: newUser._id,
-                                                promotion: promotion._id,
-                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-                                            });
-                                        }
-                                    }
+                                else {
+                                    const logs = await PromotionLog.find({ promotion: promotion._id });
+                                    if (logs.length < promotion.number_of_usage)
+                                        enable = true;
+                                }
+                                if (enable) {
+                                    newUser.balance = 50;
+                                    await newUser.save();
+                                    await FinancialLog.create({
+                                        financialtype: 'signupbonus',
+                                        uniqid: `SB${ID()}`,
+                                        user: newUser._id,
+                                        amount: 50,
+                                        method: 'signupbonus',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: 0,
+                                        afterBalance: 50
+                                    });
+                                    await PromotionLog.create({
+                                        user: newUser._id,
+                                        promotion: promotion._id,
+                                        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                    });
+                                }
+                            }
+                        }
+                        if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                            if (promotion && promotion.usage_for == "new" && promotion.type == "_100_SignUpBonus") {
+                                let enable = false;
+                                if (promotion.number_of_usage != -1) {
+                                    enable = true;
+                                }
+                                else {
+                                    const logs = await PromotionLog.find({ promotion: promotion._id });
+                                    if (logs.length < promotion.number_of_usage)
+                                        enable = true;
+                                }
+                                if (enable) {
+                                    await PromotionLog.create({
+                                        user: newUser._id,
+                                        promotion: promotion._id,
+                                        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                    });
                                 }
                             }
                         }
                     }
-                    return done(null, newUser);
-                });
-            });
+                }
+                await Preference.create({ user: newUser._id, pro_mode: pro_mode == 'true' ? true : false });
+                return done(null, newUser);
+            } catch (error) {
+                return done(error);
+            }
         });
     },
 ));
