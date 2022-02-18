@@ -103,13 +103,17 @@ class BetBasic extends Component {
                             'This is a bet on the total number of points scored by both teams.'
                         }
                     </div>
-                    <div className='mt-3'>STEP 1: SELECT A TEAM</div>
+                    <div className='mt-3'>
+                        {lineQuery.type == 'moneyline' && 'STEP 1: GUESS WHO WINS'}
+                        {lineQuery.type == 'spread' && 'STEP 1: CHOOSE THE POINTS'}
+                        {lineQuery.type == 'total' && 'STEP 1: GUESS THE TOTAL SCORE'}
+                    </div>
                     <div className='d-flex justify-content-center'>
                         <span className={`bet-type-pick ${pick == 'home' ? 'selected' : ''}`} onClick={() => updateBet(
                             lineQuery, pick,
                             { pick: { $set: 'home' }, pickName: { $set: homePickName } },
                         )}>
-                            {homePickName} @ {oddsFormat == 'decimal' ? convertOdds(odds['home'], oddsFormat) : odds['home']}
+                            {homePickName.slice(5)}
                         </span>
                     </div>
                     <div className='d-flex justify-content-center'>
@@ -117,15 +121,15 @@ class BetBasic extends Component {
                             lineQuery, pick,
                             { pick: { $set: 'away' }, pickName: { $set: awayPickName } },
                         )}>
-                            {awayPickName} @ {oddsFormat == 'decimal' ? convertOdds(odds['away'], oddsFormat) : odds['away']}
+                            {awayPickName.slice(5)}
                         </span>
                     </div>
                     {pick && <>
-                        <div className='mt-3'>STEP 2: ENTER A WAGER</div>
+                        <div className='mt-3'>STEP 2: ENTER YOUR BET AMOUNT</div>
                         <div>
                             <input
                                 className="bet-stake full-width"
-                                placeholder="Risk"
+                                placeholder="Bet Amount"
                                 name="stake"
                                 type="number"
                                 value={stake === 0 ? '' : stake}
@@ -137,7 +141,7 @@ class BetBasic extends Component {
                         <div>
                             <input
                                 className="bet-win full-width"
-                                placeholder="Win"
+                                placeholder="Win Amount"
                                 name="win"
                                 type="number"
                                 value={win === 0 ? '' : win}
@@ -164,7 +168,7 @@ class BetBasic extends Component {
                         </button>
                     </>}
                 </div>
-            </div >
+            </div>
         )
     }
 }
