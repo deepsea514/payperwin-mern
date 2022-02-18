@@ -3833,7 +3833,7 @@ expressApp.post(
                 else totalwithdraw = 0;
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                    return res.json({ success: 0, message: "Your withdraw request does not meet the minimum <a target='_blank' href='https://www.payperwin.com/faq/article/620c717e7884050d02d16cf2-what-are-rollover-requirements'>rollover requirements</a>. Please complete the 3x rollover before resubmitting a new withdraw request." });
                 }
 
                 if (amount + fee > user.balance) {
@@ -3932,7 +3932,7 @@ expressApp.post(
                 else totalwithdraw = 0;
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                    return res.json({ success: 0, message: "Your withdraw request does not meet the minimum <a target='_blank' href='https://www.payperwin.com/faq/article/620c717e7884050d02d16cf2-what-are-rollover-requirements'>rollover requirements</a>. Please complete the 3x rollover before resubmitting a new withdraw request." });
                 }
 
                 if (amount + fee > user.balance) {
