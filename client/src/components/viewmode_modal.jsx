@@ -10,7 +10,7 @@ class ViewModeModal extends React.Component {
     }
 
     render() {
-        const { onClose } = this.props;
+        const { onClose, pro_mode } = this.props;
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
@@ -29,8 +29,8 @@ class ViewModeModal extends React.Component {
                         <hr />
 
                         <div className="d-flex flex-column">
-                            <a href="#" onClick={() => this.setPromode(true)} className="view-modal-link pro py-3"><b>Pro View</b></a>
-                            <a href="#" onClick={() => this.setPromode(false)} className="view-modal-link pt-3"><b>Basic View</b></a>
+                            <a href="#" onClick={() => this.setPromode(true)} className={`view-modal-link py-3 ${pro_mode ? '' : 'pro'}`}><b>Pro View</b></a>
+                            <a href="#" onClick={() => this.setPromode(false)} className={`view-modal-link pt-3 ${pro_mode ? 'pro' : ''}`}><b>Basic View</b></a>
                         </div>
                     </div>
                 </div>
