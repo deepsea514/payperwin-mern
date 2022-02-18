@@ -105,74 +105,72 @@ class WithdrawTripleA extends Component {
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!withdrawSuccess && <div className={classes.formContent}>
-                            {withdrawError && <p className="text-danger">{errMsg}</p>}
+                            {withdrawError && <p className="text-danger" dangerouslySetInnerHTML={{ __html: errMsg }}></p>}
                             {user && <Formik
                                 initialValues={initialValues}
                                 validationSchema={withdrawSchema}
                                 onSubmit={this.onSubmit}>
-                                {
-                                    (formik) => {
-                                        return <form onSubmit={formik.handleSubmit}>
-                                            <Form.Group>
-                                                <Form.Label>Withdraw Amount(CAD)</Form.Label>
-                                                <Form.Control
-                                                    type="number"
-                                                    name="amount"
-                                                    placeholder="Enter Withdraw Amount"
-                                                    required
-                                                    className={`form-control ${getInputClasses(formik, "amount")}`}
-                                                    {...formik.getFieldProps("amount")}
-                                                />
-                                                {formik.touched.amount && formik.errors.amount ? (
-                                                    <div className="invalid-feedback">
-                                                        {formik.errors.amount}
-                                                    </div>
-                                                ) : null}
-                                            </Form.Group>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={agreeWithdraw}
-                                                        onChange={(e) => this.setState({ agreeWithdraw: e.target.checked })}
-                                                        name="agreeWithdraw"
-                                                        color="secondary"
-                                                    />
-                                                }
-                                                margin="normal"
-                                                labelPlacement="end"
-                                                label={
-                                                    <span>
-                                                        {usedFreeWithdraw ? <FormattedMessage id="PAGES.WITHDRAW.COLLECTFEE" /> : <FormattedMessage id="PAGES.WITHDRAW.FREE" />}<br />
-                                                        <FormattedMessage id="You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount." />
-                                                    </span>
-                                                }
+                                {(formik) => {
+                                    return <form onSubmit={formik.handleSubmit}>
+                                        <Form.Group>
+                                            <Form.Label>Withdraw Amount(CAD)</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                name="amount"
+                                                placeholder="Enter Withdraw Amount"
+                                                required
+                                                className={`form-control ${getInputClasses(formik, "amount")}`}
+                                                {...formik.getFieldProps("amount")}
                                             />
-                                            <div className={classes.formbutton}>
-                                                <Link
-                                                    to={{ pathname: '/withdraw' }}>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="default"
-                                                        className={classes.button}>
-                                                        <FormattedMessage id="PAGES.BACK" />
-                                                    </Button>
-                                                </Link>
+                                            {formik.touched.amount && formik.errors.amount ? (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.amount}
+                                                </div>
+                                            ) : null}
+                                        </Form.Group>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={agreeWithdraw}
+                                                    onChange={(e) => this.setState({ agreeWithdraw: e.target.checked })}
+                                                    name="agreeWithdraw"
+                                                    color="secondary"
+                                                />
+                                            }
+                                            margin="normal"
+                                            labelPlacement="end"
+                                            label={
+                                                <span>
+                                                    {usedFreeWithdraw ? <FormattedMessage id="PAGES.WITHDRAW.COLLECTFEE" /> : <FormattedMessage id="PAGES.WITHDRAW.FREE" />}<br />
+                                                    <FormattedMessage id="You may use any of your authorized withdrawal methods, subject to the specified minimum withdrawal amount." />
+                                                </span>
+                                            }
+                                        />
+                                        <div className={classes.formbutton}>
+                                            <Link
+                                                to={{ pathname: '/withdraw' }}>
                                                 <Button
                                                     variant="contained"
-                                                    color="primary"
-                                                    type="submit"
-                                                    disabled={formik.isSubmitting || !agreeWithdraw}
-                                                    className={classes.button}
-                                                >
-                                                    <FormattedMessage id="PAGES.SUBMIT" /> *
+                                                    color="default"
+                                                    className={classes.button}>
+                                                    <FormattedMessage id="PAGES.BACK" />
                                                 </Button>
-                                            </div>
-                                            <div>
-                                                <span className="dpsit"><strong>*<FormattedMessage id="PAGES.WITHDRAW.CLICKONLYONCE" /></strong> <FormattedMessage id="PAGES.WITHDRAW.GOINGBACK" values={{ method: method }} /></span>
-                                            </div>
-                                        </form>
-                                    }
-                                }
+                                            </Link>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                type="submit"
+                                                disabled={formik.isSubmitting || !agreeWithdraw}
+                                                className={classes.button}
+                                            >
+                                                <FormattedMessage id="PAGES.SUBMIT" /> *
+                                            </Button>
+                                        </div>
+                                        <div>
+                                            <span className="dpsit"><strong>*<FormattedMessage id="PAGES.WITHDRAW.CLICKONLYONCE" /></strong> <FormattedMessage id="PAGES.WITHDRAW.GOINGBACK" values={{ method: method }} /></span>
+                                        </div>
+                                    </form>
+                                }}
                             </Formik>}
                         </div>}
                         {withdrawSuccess && <div>
