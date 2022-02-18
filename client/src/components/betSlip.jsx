@@ -319,26 +319,29 @@ class BetSlip extends Component {
                                 </div>}
                                 {betSlip.length > 0 ?
                                     betSlip.map(bet => (pro_mode ?
-                                        (<Bet
-                                            bet={bet}
-                                            removeBet={removeBet}
-                                            updateBet={updateBet}
-                                            betSlipOdds={betSlipOdds}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />) :
-                                        (<BetBasic
-                                            bet={bet}
-                                            removeBet={removeBet}
-                                            updateBet={updateBet}
-                                            betSlipOdds={betSlipOdds}
-                                            placeBets={this.placeBets}
-                                            user={user}
-                                            showLoginModalAction={showLoginModalAction}
-                                            toggleField={toggleField}
-                                            errors={errors}
-                                            submitting={submitting}
-                                            key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />)
-                                    )
-                                    )
+                                        (
+                                            <Bet
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                betSlipOdds={betSlipOdds}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />
+                                        ) :
+                                        (
+                                            <BetBasic
+                                                bet={bet}
+                                                removeBet={removeBet}
+                                                updateBet={updateBet}
+                                                betSlipOdds={betSlipOdds}
+                                                placeBets={this.placeBets}
+                                                user={user}
+                                                showLoginModalAction={showLoginModalAction}
+                                                toggleField={toggleField}
+                                                errors={errors}
+                                                submitting={submitting}
+                                                key={`${bet.lineId}${bet.pick}${bet.type}${bet.index}${bet.subtype}`} />
+                                        )
+                                    ))
                                     : (
                                         <div className="no-bets">
                                             <div>
@@ -348,7 +351,7 @@ class BetSlip extends Component {
                                         </div>
                                     )}
                             </div>}
-                            {!pro_mode && <div className="bet-type-league help"><a href='https://wa.me/message/TICMRPXRFQRCN1' target="_blank" className="bet-max-win">Need Help?</a></div>}
+                            {!pro_mode && <div className="bet-type-league help"><a href='https://wa.me/message/TICMRPXRFQRCN1' target="_blank" className="bet-max-win"><i className='fab fa-whatsapp' /> Need Help?</a></div>}
                             {betSlipType == 'parlay' && <div className="bet-slip-list">
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>

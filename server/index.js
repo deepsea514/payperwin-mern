@@ -55,6 +55,8 @@ const {
     asyncFilter,
     getLinePoints,
     getMaxWithdraw,
+    sendBetCancelConfirmEmail,
+    sendBetCancelOpponentConfirmEmail,
 } = require('./libs/functions');
 const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
@@ -285,22 +287,14 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            referral_code, invite } = req.body;
+            referral_code, invite, pro_mode } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(async () => {
             // find a user whose username is the same as the forms username
             // we are checking to see if the user trying to login already exists
-            await User.findOne({
-                $or: [
-
-                    { email: new RegExp(`^${email}$`, 'i') },
-                ],
-            }, async (err, user) => {
-                // if there are any errors, return the error
-                if (err) return done(err);
-
-                // check to see if theres already a user with that username
+            try {
+                const user = await User.findOne({ email: new RegExp(`^${email}$`, 'i') });
                 if (user) {
                     if (user.username === username) {
                         return done(null, false, 'That username is already taken.');
@@ -309,8 +303,6 @@ passport.use('local-signup', new LocalStrategy(
                     }
                 }
 
-                // if there is no user with that username
-                // create the user
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
@@ -318,73 +310,70 @@ passport.use('local-signup', new LocalStrategy(
                     roles: { registered: true },
                 };
 
-                const newUser = await new User(newUserObj);
-                // save the user
-                await newUser.save(async (err2) => {
-                    if (err2) console.error(err2);
-                    else {
-                        sendVerificationEmail(email, req);
-                        if (referral_code && referral_code != "") {
-                            const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
-                            if (promotion) {
-                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
-                                    if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
-                                        let enable = false;
-                                        if (promotion.number_of_usage != -1) {
-                                            enable = true;
-                                        }
-                                        else {
-                                            const logs = await PromotionLog.find({ promotion: promotion._id });
-                                            if (logs.length < promotion.number_of_usage)
-                                                enable = true;
-                                        }
-                                        if (enable) {
-                                            newUser.balance = 50;
-                                            await newUser.save();
-                                            await FinancialLog.create({
-                                                financialtype: 'signupbonus',
-                                                uniqid: `SB${ID()}`,
-                                                user: newUser._id,
-                                                amount: 50,
-                                                method: 'signupbonus',
-                                                status: FinancialStatus.success,
-                                                beforeBalance: 0,
-                                                afterBalance: 50
-                                            });
-                                            await PromotionLog.create({
-                                                user: newUser._id,
-                                                promotion: promotion._id,
-                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-                                            });
-                                        }
-                                    }
+                const newUser = await User.create(newUserObj);
+                sendVerificationEmail(email, req);
+                if (referral_code && referral_code != "") {
+                    const promotion = await Promotion.findOne({ name: new RegExp(`^${referral_code}$`, 'i') });
+                    if (promotion) {
+                        if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                            if (promotion && promotion.usage_for == "new" && promotion.type == "straightCredit") {
+                                let enable = false;
+                                if (promotion.number_of_usage != -1) {
+                                    enable = true;
                                 }
-                                if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
-                                    if (promotion && promotion.usage_for == "new" && promotion.type == "_100_SignUpBonus") {
-                                        let enable = false;
-                                        if (promotion.number_of_usage != -1) {
-                                            enable = true;
-                                        }
-                                        else {
-                                            const logs = await PromotionLog.find({ promotion: promotion._id });
-                                            if (logs.length < promotion.number_of_usage)
-                                                enable = true;
-                                        }
-                                        if (enable) {
-                                            await PromotionLog.create({
-                                                user: newUser._id,
-                                                promotion: promotion._id,
-                                                ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-                                            });
-                                        }
-                                    }
+                                else {
+                                    const logs = await PromotionLog.find({ promotion: promotion._id });
+                                    if (logs.length < promotion.number_of_usage)
+                                        enable = true;
+                                }
+                                if (enable) {
+                                    newUser.balance = 50;
+                                    await newUser.save();
+                                    await FinancialLog.create({
+                                        financialtype: 'signupbonus',
+                                        uniqid: `SB${ID()}`,
+                                        user: newUser._id,
+                                        amount: 50,
+                                        method: 'signupbonus',
+                                        status: FinancialStatus.success,
+                                        beforeBalance: 0,
+                                        afterBalance: 50
+                                    });
+                                    await PromotionLog.create({
+                                        user: newUser._id,
+                                        promotion: promotion._id,
+                                        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                    });
+                                }
+                            }
+                        }
+                        if (promotion.expiration_date.getTime() > (new Date()).getTime()) {
+                            if (promotion && promotion.usage_for == "new" && promotion.type == "_100_SignUpBonus") {
+                                let enable = false;
+                                if (promotion.number_of_usage != -1) {
+                                    enable = true;
+                                }
+                                else {
+                                    const logs = await PromotionLog.find({ promotion: promotion._id });
+                                    if (logs.length < promotion.number_of_usage)
+                                        enable = true;
+                                }
+                                if (enable) {
+                                    await PromotionLog.create({
+                                        user: newUser._id,
+                                        promotion: promotion._id,
+                                        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+                                    });
                                 }
                             }
                         }
                     }
-                    return done(null, newUser);
-                });
-            });
+                }
+                await Preference.create({ user: newUser._id, pro_mode: pro_mode == 'true' ? true : false });
+                return done(null, newUser);
+            } catch (error) {
+                return done(error);
+            }
         });
     },
 ));
@@ -3831,7 +3820,7 @@ expressApp.post(
                 else totalwithdraw = 0;
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                    return res.json({ success: 0, message: "Your withdraw request does not meet the minimum <a target='_blank' href='https://www.payperwin.com/faq/article/620c717e7884050d02d16cf2-what-are-rollover-requirements'>rollover requirements</a>. Please complete the 3x rollover before resubmitting a new withdraw request." });
                 }
 
                 if (amount + fee > user.balance) {
@@ -3930,7 +3919,7 @@ expressApp.post(
                 else totalwithdraw = 0;
 
                 if ((amount + totalwithdraw) > maxwithdraw) {
-                    return res.json({ success: 0, message: "Your withdrawal request was declined. The reason we declined your withdrawal is you made a deposit and are now requesting a withdrawal without rolling (betting) your deposit by the minimum stated on our website. We require you to complete the three-time rollover requirement before you resubmit a new withdrawal request." });
+                    return res.json({ success: 0, message: "Your withdraw request does not meet the minimum <a target='_blank' href='https://www.payperwin.com/faq/article/620c717e7884050d02d16cf2-what-are-rollover-requirements'>rollover requirements</a>. Please complete the 3x rollover before resubmitting a new withdraw request." });
                 }
 
                 if (amount + fee > user.balance) {
@@ -5044,13 +5033,13 @@ expressApp.get(
                 user: user._id,
             });
             if (prize) {
-                res.json({ success: true, used: true });
+                return res.json({ success: true, used: true });
             } else {
-                res.json({ success: true, used: false });
+                return res.json({ success: true, used: false });
             }
         } catch (erorr) {
             console.error(error);
-            res.status(500).json({ success: false });
+            return res.status(500).json({ success: false });
         }
     }
 )
@@ -5060,8 +5049,8 @@ expressApp.post(
     isAuthenticated,
     async (req, res) => {
         const { prize, date } = req.body;
-        if (!date) res.status(400).json({ success: false, error: 'Date is required.' });
-        if (!prize) res.status(400).json({ success: false, error: 'Prize is required.' });
+        if (!date) return res.status(400).json({ success: false, error: 'Date is required.' });
+        if (!prize) return res.status(400).json({ success: false, error: 'Prize is required.' });
         const user = req.user;
         const prizeExist = await PrizeLog.findOne({
             createdAt: { $gte: new Date(date) },
@@ -5176,10 +5165,10 @@ expressApp.post(
                     });
                     break;
             }
-            res.json({ success: true });
+            return res.json({ success: true });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ success: false });
+            return res.status(500).json({ success: false });
         }
     }
 )
@@ -5335,6 +5324,301 @@ expressApp.get(
         } catch (error) {
             console.error(error);
             return res.json([]);
+        }
+    }
+)
+
+expressApp.post(
+    '/bets/:id/cancel',
+    isAuthenticated,
+    async (req, res) => {
+        const { id: bet_id } = req.params;
+        const user = req.user;
+        try {
+            const bet = await Bet.findOne({ userId: user._id, _id: bet_id });
+            if (!bet) {
+                return res.json({ success: false, error: 'Cannot cancel a bet. Not found.' });
+            }
+            const { matchStartDate, isParlay, bet: betAmount, pick, matchingStatus } = bet;
+            if (new Date().getTime() > new Date(matchStartDate).getTime()) {
+                return res.json({ success: false, error: 'Cannot cancel a bet. Game already started.' });
+            }
+            let betpool = null;
+            if (isParlay) {
+                betpool = await ParlayBetPool.findOne({
+                    $or: [
+                        { homeBets: bet_id },
+                        { awayBets: bet_id }
+                    ]
+                })
+            } else {
+                betpool = await BetPool.findOne({
+                    $or: [
+                        { homeBets: bet_id },
+                        { awayBets: bet_id },
+                        { drawBets: bet_id },
+                        { nonDrawBets: bet_id },
+                    ]
+                })
+            }
+            const cancelAmount = Number(Number(betAmount * 0.85).toFixed(2));
+            if (!betpool) {
+                await bet.update({ status: 'Cancelled', })
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: user._id,
+                    betId: bet_id,
+                    amount: cancelAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + cancelAmount
+                });
+                await user.update({ $inc: { balance: cancelAmount } });
+                await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+                return res.json({ success: true });
+            }
+
+            let targetBets = [], oppositeBets = [], oppositeTeam = null, targetTeam = null;
+            switch (pick) {
+                case 'home':
+                    targetBets = betpool.homeBets;
+                    targetTeam = betpool.teamA;
+                    oppositeBets = betpool.awayBets;
+                    oppositeTeam = betpool.teamB;
+                    break;
+                case 'away':
+                    targetBets = betpool.awayBets;
+                    targetTeam = betpool.teamB;
+                    oppositeBets = betpool.homeBets;
+                    oppositeTeam = betpool.teamA;
+                    break;
+                case 'draw':
+                    targetBets = betpool.drawBets;
+                    targetTeam = betpool.teamDraw;
+                    oppositeBets = betpool.nonDrawBets;
+                    oppositeTeam = betpool.teamDraw;
+                    break;
+                case 'nondraw':
+                    targetBets = betpool.nonDrawBets;
+                    targetTeam = betpool.teamNonDraw;
+                    oppositeBets = betpool.drawBets;
+                    oppositeTeam = betpool.teamNonDraw;
+                    break;
+            }
+            if (targetBets.length == 1) { // 1:1 or n:n
+                for (const opposite_bet of oppositeBets) {
+                    const bet = await Bet.findById(opposite_bet);
+                    if (bet) {
+                        const user = await User.findById(bet.userId);
+                        await bet.update({ status: 'Cancelled' });
+                        if (user) {
+                            const afterBalance = user.balance + bet.bet;
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: bet.bet,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance,
+                            });
+                            await user.update({ $inc: { balance: bet.bet } });
+
+                            const cancelFee = betAmount * 0.1 * bet.bet / oppositeTeam.betTotal;
+                            await FinancialLog.create({
+                                financialtype: 'betcancelfee',
+                                uniqid: `BCF${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelFee,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance + cancelFee
+                            });
+                            await sendBetCancelOpponentConfirmEmail(user, bet, cancelFee);
+                            await user.update({ $inc: { balance: cancelFee } });
+                        }
+                    }
+                }
+                const updateObj = {};
+                switch (pick) {
+                    case 'home':
+                    case 'away':
+                        updateObj.awayBets = [];
+                        updateObj.homeBets = [];
+                        updateObj.teamA = {
+                            ...betpool.teamA,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        updateObj.teamB = {
+                            ...betpool.teamB,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        break;
+                    case 'draw':
+                    case 'nondraw':
+                        updateObj.drawBets = [];
+                        updateObj.nonDrawBets = [];
+                        updateObj.teamDraw = {
+                            ...betpool.teamDraw,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        updateObj.teamNonDraw = {
+                            ...betpool.teamNonDraw,
+                            betTotal: 0,
+                            toWinTotal: 0
+                        };
+                        break;
+                }
+                await betpool.update(updateObj);
+                await bet.update({ status: 'Cancelled', })
+                await FinancialLog.create({
+                    financialtype: 'betcancel',
+                    uniqid: `BC${ID()}`,
+                    user: user._id,
+                    betId: bet_id,
+                    amount: cancelAmount,
+                    method: 'betcancel',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + cancelAmount
+                });
+                await user.update({ $inc: { balance: cancelAmount } });
+                await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+                return res.json({ success: true });
+            }
+
+            const betTotalAfterCancelTarget = targetTeam.betTotal - betAmount;
+            const toWinTotalAfterCancelTarget = targetTeam.toWinTotal - bet.toWin;
+
+            const docChanges = {
+                $pull: { homeBets: bet_id, awayBets: bet_id, nonDrawBets: bet_id, drawBets: bet_id },
+                $inc: {}
+            };
+            switch (bet.pick) {
+                case 'home':
+                    docChanges.$inc['teamA.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamA.toWinTotal'] = -bet.toWin;
+                    break;
+                case 'draw':
+                    docChanges.$inc['teamDraw.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamDraw.toWinTotal'] = -bet.toWin;
+                    break;
+                case 'nondraw':
+                    docChanges.$inc['teamNonDraw.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamNonDraw.toWinTotal'] = -bet.toWin;
+                    break;
+                default:
+                    docChanges.$inc['teamB.betTotal'] = -bet.bet;
+                    docChanges.$inc['teamB.toWinTotal'] = -bet.toWin;
+                    break;
+            }
+            if (toWinTotalAfterCancelTarget < oppositeTeam.betTotal) {
+                for (const opposite_bet of oppositeBets) {
+                    const bet = await Bet.findById(opposite_bet);
+                    if (bet) {
+                        const user = await User.findById(bet.userId);
+                        const betAfterCancel = toWinTotalAfterCancelTarget * bet.bet / oppositeTeam.betTotal;
+                        const toWinAfterCancel = betTotalAfterCancelTarget * bet.bet / oppositeTeam.betTotal;
+                        const cancelAmount = bet.bet - betAfterCancel;
+                        await bet.update({
+                            bet: betAfterCancel,
+                            toWin: toWinAfterCancel,
+                        });
+                        if (user) {
+                            const afterBalance = user.balance + cancelAmount;
+                            await FinancialLog.create({
+                                financialtype: 'betcancel',
+                                uniqid: `BC${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelAmount,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: user.balance,
+                                afterBalance: afterBalance,
+                            });
+                            await user.update({ $inc: { balance: cancelAmount } });
+
+                            const cancelFee = betAmount * 0.1 * bet.bet / oppositeTeam.betTotal;
+                            await FinancialLog.create({
+                                financialtype: 'betcancelfee',
+                                uniqid: `BCF${ID()}`,
+                                user: user._id,
+                                betId: bet_id,
+                                amount: cancelFee,
+                                method: 'betcancel',
+                                status: FinancialStatus.success,
+                                beforeBalance: afterBalance,
+                                afterBalance: afterBalance + cancelFee
+                            });
+                            await sendBetCancelOpponentConfirmEmail(user, bet, cancelFee);
+                            await user.update({ $inc: { balance: cancelFee } });
+                        }
+                    }
+                }
+                switch (bet.pick) {
+                    case 'home':
+                        docChanges.teamB = {
+                            ...betpool.teamB,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    case 'draw':
+                        docChanges.teamDraw = {
+                            ...betpool.teamDraw,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    case 'nondraw':
+                        docChanges.teamNonDraw = {
+                            ...betpool.teamNonDraw,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                    default:
+                        docChanges.teamA = {
+                            ...betpool.teamA,
+                            betTotal: toWinTotalAfterCancelTarget,
+                            toWinTotal: betTotalAfterCancelTarget,
+                        };
+                        break;
+                }
+            }
+
+            await betpool.update(docChanges);
+            bet.isParlay ? calculateParlayBetsStatus(betpool._id) : calculateBetsStatus(betpool.uid);
+
+            await bet.update({ status: 'Cancelled', })
+            await FinancialLog.create({
+                financialtype: 'betcancel',
+                uniqid: `BC${ID()}`,
+                user: user._id,
+                betId: bet_id,
+                amount: cancelAmount,
+                method: 'betcancel',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance + cancelAmount
+            });
+            await user.update({ $inc: { balance: cancelAmount } });
+            await sendBetCancelConfirmEmail(user, bet, betAmount * 0.15, cancelAmount);
+
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot cancel a bet. Internal Server Error.' });
         }
     }
 )
