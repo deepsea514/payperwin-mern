@@ -2318,3 +2318,8 @@ a.fav-link:hover {
     height: 26px;
     /* display: block; */
 }
+
+.col-in.prize {
+    background: #3b1b57 !important;
+    overflow: hidden;
+}

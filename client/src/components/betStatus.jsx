@@ -32,6 +32,14 @@ class BetStatus extends Component {
                             <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}>HIGH STAKER:</b>
                             &nbsp;Your bet is accepted on the HIGH STAKER marketplace.
                         </li>
+                        <li>
+                            <b style={{ background: '#EE2465', padding: '2px', color: 'black' }}>Game Cancellation:</b>
+                            The game was cancelled or postponed. Your wager was been credited back to your account.
+                        </li>
+                        <li>
+                            <b style={{ background: '#5654FF', padding: '2px', color: 'black' }}>Bet Cancellation:</b>
+                            We allow cancellation of a bet anytime before the start of the game. The fee to do this is 15%. Payper Win charges a flat 5% and the Peer with the opposing bet will receive the 10%.
+                        </li>
                     </ul>
                 </div>
             </div>

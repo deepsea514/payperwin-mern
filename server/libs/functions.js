@@ -399,6 +399,86 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
     }
 }
 
+const sendBetCancelConfirmEmail = async (user, bet, fee, credited) => {
+    const msg = {
+        from: `${fromEmailName} <${fromEmailAddress}>`,
+        to: user.email,
+        subject: 'Your bet has been successfully cancelled.',
+        text: `Your bet has been successfully cancelled.`,
+        html: simpleresponsive(`
+                    <p>
+                    Your request to cancel the bet has been confirmed.
+                    </p>
+                    <ul>
+                        <li><b>Game</b>: ${bet.isParlay ? 'Parlay Bet' : `${bet.teamA.name} VS ${bet.teamB.name}`}</li>
+                        ${bet.isParlay ? bet.parlayQuery.map((query, index) => (`<li><b>Line ${index + 1}</b>: ${query.teamA.name} VS ${query.teamB.name}</li>`)).join('') : ''}
+                        <li><b>Wager</b>: $${Number(bet.bet).toFixed(2)}</li>
+                        <li><b>Penalty Fee(15%)</b>: $${Number(fee).toFixed(2)}</li>
+                        <li><b>Account Credited</b>: $${Number(credited).toFixed(2)}</li>
+                    </ul>
+                    <p>View Details:</p>
+                `,
+            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
+        ),
+    };
+    sgMail.send(msg).catch(error => {
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Send Grid Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Send Grid Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
+    });
+}
+
+const sendBetCancelOpponentConfirmEmail = async (user, bet, credited) => {
+    const msg = {
+        from: `${fromEmailName} <${fromEmailAddress}>`,
+        to: user.email,
+        subject: 'Your opponent has cancelled the bet.',
+        text: `Your opponent has cancelled the bet.`,
+        html: simpleresponsive(`
+                    <p>
+                    Unfortunately your opponent has cancelled the bet for ${bet.isParlay ? 'Parlay Bet' : `${bet.teamA.name} VS ${bet.teamB.name}`}.
+                    A penalty fee has been deducted from your opponent’s account and we have credited your account ${Number(credited).toFixed(2)} for the inconvenience.
+                    </p>
+                    <ul>
+                        <li><b>Game</b>: ${bet.isParlay ? 'Parlay Bet' : `${bet.teamA.name} VS ${bet.teamB.name}`}</li>
+                        ${bet.isParlay ? bet.parlayQuery.map((query, index) => (`<li><b>Line ${index + 1}</b>: ${query.teamA.name} VS ${query.teamB.name}</li>`)).join('') : ''}
+                    </ul>
+                    <p>View Details:</p>
+                `,
+            { href: 'https://www.payperwin.com/history', name: 'View Settled Bets' }
+        ),
+    };
+    sgMail.send(msg).catch(error => {
+        ErrorLog.findOneAndUpdate(
+            {
+                name: 'Send Grid Error',
+                "error.stack": error.stack
+            },
+            {
+                name: 'Send Grid Error',
+                error: {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                }
+            },
+            { upsert: true }
+        );
+    });
+}
+
 const ResetWinnerFinancialLog = async () => {
     //reseting wininer finacial logs amount and substracting user balance
     const oldfinancialLogs = await FinancialLog.find({ betId: { $in: [...homeBets, ...awayBets] }, method: { $in: ['betwon', 'betfee'] } });
@@ -461,5 +541,7 @@ module.exports = {
     getMaxWithdraw,
     sendBetWinConfirmEmail,
     sendBetLoseConfirmEmail,
+    sendBetCancelConfirmEmail,
+    sendBetCancelOpponentConfirmEmail,
     cancelBetPool
 }

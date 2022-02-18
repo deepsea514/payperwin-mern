@@ -1,12 +1,11 @@
 import React, { Component, createRef } from 'react';
 import Sport from './sport';
-import Others from "./others";
-import { FormattedMessage, injectIntl } from "react-intl";
 import sportNameImage from "../helpers/sportNameImage";
 import { getFeaturedSports } from '../redux/services';
 import { connect } from 'react-redux';
 import * as frontend from "../redux/reducer";
 import { getShortSportName } from '../libs/getSportName';
+import { Link } from 'react-router-dom';
 
 const topLeagues = [
     {
@@ -136,6 +135,14 @@ class Highlights extends Component {
                         <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showViewModeModal')}>
                             <div className='promotion-botton'><span>{pro_mode ? 'Pro' : 'Basic'} View&nbsp;&nbsp;&nbsp;<i className='far fa-chevron-down' /></span></div>
                         </div>
+                    </div>
+                    <div className='p-3 d-flex justify-content-between'>
+                        <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showPrizeModal', true)}>
+                            <div className='promotion-botton'><span>Spin The Prize Wheel</span></div>
+                        </div>
+                        <Link className='promotion-botton-wrap' to="/invite">
+                            <div className='promotion-botton'><span>Refer A Friend & Win</span></div>
+                        </Link>
                     </div>
                 </div>
                 <ul className="nav nav-tabs pt-2" ref={this.listRef} onScroll={this.onScroll}>

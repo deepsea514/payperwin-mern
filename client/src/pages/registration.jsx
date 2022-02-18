@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
-import { Grid, Button, Card, CardContent, CardHeader, Stepper, Step, StepLabel, FormControlLabel, Checkbox } from '@material-ui/core';
+import {
+    Grid, Button, Card, CardContent, CardHeader, Stepper, Step, StepLabel,
+    FormControlLabel, Checkbox, RadioGroup, Radio
+} from '@material-ui/core';
 import { Form, InputGroup } from "react-bootstrap";
-import Recaptcha from 'react-recaptcha';
 import registrationValidation from '../helpers/asyncAwaitRegValidator';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
@@ -134,6 +136,7 @@ const initState = {
     city: '',
     postalcode: '',
     phone: '',
+    pro_mode: 'true',
 
     securityquiz: '',
     securityans: '',
@@ -249,12 +252,12 @@ class Registration extends Component {
             .then((result) => {
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
-                        title, dateofbirth, referral_code, invite } = this.state;
+                        title, dateofbirth, referral_code, invite, pro_mode } = this.state;
 
                     register({
                         email, password, firstname, lastname, region,
                         country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                        referral_code, invite
+                        referral_code, invite, pro_mode
                     })
                         .then((/* { data } */) => {
                             getUser();
@@ -302,7 +305,7 @@ class Registration extends Component {
     getStepContent = (activeStep) => {
         const {
             country, email, password, cPassword, region,
-            firstname, lastname, dateofbirth,
+            firstname, lastname, dateofbirth, pro_mode,
             agreeTerms, agreePrivacy, referral_code,
             errors, showPass, showPassConfirm
         } = this.state;
@@ -435,6 +438,25 @@ class Registration extends Component {
                         {errors.dateofbirth ? <div className="registration-feedback">{errors.dateofbirth}</div> : null}
                     </Form.Group>
                     <Form.Group>
+                        <Form.Label style={{ color: '#FFF' }}>Customized Betting Experience</Form.Label>
+                        <p>
+                            If you are new to betting we will display the site in the BASIC VIEW, this provides a simplified betting experience.
+                            Don't worry you can change your view anytime on the website. <br />
+                            For those experienced with betting we recommend our PRO VIEW, this view has all available odds.
+                        </p>
+                        <RadioGroup row
+                            aria-label="view"
+                            name="pro_mode"
+                            value={pro_mode}
+                            onChange={(evt) => {
+                                console.log(evt.target.value)
+                                this.setState({ pro_mode: evt.target.value })
+                            }}>
+                            <FormControlLabel style={{ color: '#FFF' }} value="true" control={<Radio readOnly />} label="Pro View" />
+                            <FormControlLabel style={{ color: '#FFF' }} value="false" control={<Radio readOnly />} label="Basic View" />
+                        </RadioGroup>
+                    </Form.Group>
+                    <Form.Group>
                         <Form.Label style={{ color: '#FFF' }}>Referral / Promotion Code (optional)</Form.Label>
                         <Form.Control
                             type="text"
@@ -488,15 +510,13 @@ class Registration extends Component {
                             </div>
                         }
                     />
-                    {
-                        window.recaptchaSiteKey ? <Recaptcha
-                            sitekey={window.recaptchaSiteKey}
-                            render="explicit"
-                            verifyCallback={this.recaptchaCallback}
-                            onloadCallback={() => true}
-                        /> : null
-                    }
-                    {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null}
+                    {/* {window.recaptchaSiteKey ? <Recaptcha
+                        sitekey={window.recaptchaSiteKey}
+                        render="explicit"
+                        verifyCallback={this.recaptchaCallback}
+                        onloadCallback={() => true}
+                    /> : null}
+                    {errors.recaptcha ? <div className="form-error">{errors.recaptcha}</div> : null} */}
                 </>;
             case 2:
                 return <>
