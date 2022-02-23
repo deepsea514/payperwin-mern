@@ -11,12 +11,12 @@ class PrizeModal extends Component {
         super(props);
         this.state = {
             pool: [
-                { label: "$5", text: "$5 Credit", Score: 17, id: 1, textColor: '#2df3e9', textColor2: '#73e6f7' },
-                { label: "$25", text: "$25 Credit", Score: 1.49, id: 2, textColor: '#FF14D8', textColor2: '#FF14D8' },
+                { label: "$1", text: "$1 Credit", Score: 17, id: 1, textColor: '#2df3e9', textColor2: '#73e6f7' },
+                { label: "$11", text: "$11 Credit", Score: 1.49, id: 2, textColor: '#FF14D8', textColor2: '#FF14D8' },
                 { label: "+2,000", text: "+2,000 Loyalty Points", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
-                { label: "$10", text: "$10 Credit", Score: 2.5, id: 4, textColor: '#00aaff', textColor2: '#ea636e' },
-                { label: "$5", text: "$5 Credit", Score: 17, id: 5, textColor: '#2df3e9', textColor2: '#73e6f7' },
-                { label: "$100", text: "$100 Credit", Score: 0.01, id: 6, textColor: '#BEF001', textColor2: '#f0c329' },
+                { label: "$8", text: "$8 Credit", Score: 2.5, id: 4, textColor: '#00aaff', textColor2: '#ea636e' },
+                { label: "$3", text: "$3 Credit", Score: 17, id: 5, textColor: '#2df3e9', textColor2: '#73e6f7' },
+                { label: "$88", text: "$88 Credit", Score: 0.01, id: 6, textColor: '#BEF001', textColor2: '#f0c329' },
                 { label: "+5,000", text: "+5,000 Loyalty Points", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
                 { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, textColor: '#FF14D8', textColor2: '#FF14D8' },
                 { label: "$5", text: "$5 Credit", Score: 17, id: 9, textColor: '#2df3e9', textColor2: '#73e6f7' },
