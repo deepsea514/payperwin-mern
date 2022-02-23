@@ -5062,7 +5062,39 @@ expressApp.post(
         try {
             switch (prize) {
                 case 1:     // $5 Credit
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$1 Credit'
+                    });
+                    await user.update({ $inc: { balance: 1 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 1,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 1
+                    });
+                    break;
                 case 5:
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$3 Credit'
+                    });
+                    await user.update({ $inc: { balance: 3 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 3,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 3
+                    });
+                    break;
                 case 9:
                     await PrizeLog.create({
                         user: user._id,
@@ -5081,6 +5113,22 @@ expressApp.post(
                     });
                     break;
                 case 2:
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$11 Credit'
+                    });
+                    await user.update({ $inc: { balance: 11 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 11,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 11
+                    });
+                    break;
                 case 8:     // $25 Credit
                     await PrizeLog.create({
                         user: user._id,
@@ -5099,6 +5147,22 @@ expressApp.post(
                     });
                     break;
                 case 4:     // $10 Credit
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$8 Credit'
+                    });
+                    await user.update({ $inc: { balance: 8 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 8,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 8
+                    });
+                    break;
                 case 10:
                     await PrizeLog.create({
                         user: user._id,
@@ -5117,6 +5181,22 @@ expressApp.post(
                     });
                     break;
                 case 6:     // $100 Credit
+                    await PrizeLog.create({
+                        user: user._id,
+                        type: '$88 Credit'
+                    });
+                    await user.update({ $inc: { balance: 88 } });
+                    await FinancialLog.create({
+                        financialtype: 'prize',
+                        uniqid: `P${ID()}`,
+                        user: user._id,
+                        amount: 88,
+                        method: 'prize',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + 88
+                    });
+                    break;
                 case 12:
                     await PrizeLog.create({
                         user: user._id,
