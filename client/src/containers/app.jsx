@@ -119,6 +119,7 @@ const fullWidthRoutes = [
     '/autobet-dashboard',
     '/invite',
     '/team',
+    '/custom-bets'
 ];
 
 class App extends Component {
