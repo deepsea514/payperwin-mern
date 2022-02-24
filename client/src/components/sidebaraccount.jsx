@@ -26,9 +26,9 @@ class SidebarAccount extends Component {
                     <li>
                         <Link to={{ pathname: '/history' }}><i className="fas fa-history"></i><FormattedMessage id="COMPONENTS.SIDEBAR.BETTING_HISTORY" /></Link>
                     </li>
-                    {/* <li>
+                    <li>
                         <Link to={{ pathname: '/custom-bets' }}><i className="fas fa-user-clock"></i>Custom Bets</Link>
-                    </li> */}
+                    </li>
                 </ul>
 
                 {(!user || !user.autobet) && <>

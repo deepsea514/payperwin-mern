@@ -77,7 +77,7 @@ export default class CustomBets extends Component {
                     <h3>Custom Bets</h3>
                     {user && user.balance > 10 && <button className="form-button"
                         onClick={() => this.setState({ createModal: true })}>
-                        <i className="fas fa-plus-square" /> Create a Bet
+                        <i className="fas fa-plus mr-2" /> Create a Bet
                     </button>}
                 </div>
                 {createModal && <CreateCustomBetModal closeModal={() => this.setState({ createModal: false })} />}
