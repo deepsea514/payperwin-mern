@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import update from 'immutability-helper';
 import Favicon from 'react-favicon';
 import Registration from '../pages/registration';
@@ -40,7 +40,6 @@ import WithdrawETransfer from "../pages/withdrawEtransfer";
 import WithdrawTripleA from "../pages/withdrawTripleA";
 import Dashboard from "../pages/dashboard";
 import Verification from "../pages/verification";
-import VerificationNotify from "../components/verificationNotify";
 import VerificationProof from "../components/verificationProof";
 import ContactUs from "../pages/contactUs";
 import GoToTop from "../components/gotoTop";
@@ -61,7 +60,6 @@ import AboutUs from '../pages/aboutus';
 import Loyalty from '../pages/loyalty';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import { FormattedMessage, injectIntl } from "react-intl";
 import ErrorBoundary from '../libs/ErrorBoundary';
 import Search from '../pages/search';
 import SportsBreadcrumb from '../components/sportsbreadcrumb';
@@ -119,7 +117,7 @@ const fullWidthRoutes = [
     '/autobet-dashboard',
     '/invite',
     '/team',
-    '/custom-bets'
+    // '/custom-bets'
 ];
 
 class App extends Component {
