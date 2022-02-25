@@ -58,12 +58,9 @@ class Events extends React.Component {
         return events.map((event, index) => (
             <tr key={index}>
                 <td>{event.name}</td>
-                <td>{event.creator == 'User' ? (event.user ? event.user.email : '') : 'Admin'}</td>
+                <td>{event.uniqueid}</td>
                 <td>{dateformat(new Date(event.startDate), "default")}</td>
-                <td>
-                    <p>{event.teamA.name}: {event.teamA.currentOdds}</p>
-                    <p>{event.teamB.name}: {event.teamB.currentOdds}</p>
-                </td>
+                <td>{dateformat(new Date(event.endDate), "default")}</td>
                 <td>{this.getVisible(event.public)}</td>
                 <td>{this.getApproved(event.approved)}</td>
                 <td>{this.getStatus(event)}</td>
@@ -73,8 +70,8 @@ class Events extends React.Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
-                        <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item>
-                        <Dropdown.Item as={Link} to={`/settle/${event._id}`}><i className="fas fa-check"></i>&nbsp; Settle </Dropdown.Item>
+                        {/* <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item> */}
+                        {/* <Dropdown.Item as={Link} to={`/settle/${event._id}`}><i className="fas fa-check"></i>&nbsp; Settle </Dropdown.Item> */}
                         <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
                     </Dropdown.Menu>
@@ -98,6 +95,8 @@ class Events extends React.Component {
         if (event.status == EventStatus['canceled'].value)
             return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{EventStatus['canceled'].label}</span>
         if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
+            return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">Not Started</span>
+        if ((new Date(event.endDate)).getTime() > (new Date()).getTime())
             return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">{EventStatus['pending'].label}</span>
         return <span className="label label-lg label-light-warning label-inline font-weight-lighter mr-2">{EventStatus['outdated'].label}</span>
     }
@@ -197,9 +196,9 @@ class Events extends React.Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">Name Of Event</th>
-                                            <th scope="col">Creator</th>
+                                            <th scope="col">Unique Id</th>
                                             <th scope="col">Start Date/Time</th>
-                                            <th scope="col">Bet Options</th>
+                                            <th scope="col">End Date/Time</th>
                                             <th scope="col">Visiblity</th>
                                             <th scope="col">Approved</th>
                                             <th scope="col">Status</th>

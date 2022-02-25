@@ -25,6 +25,7 @@ export default class CustomDatePicker extends React.Component {
 
         return (
             <DatePicker
+                autoComplete="off"
                 renderCustomHeader={({
                     date,
                     changeYear,

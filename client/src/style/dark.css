@@ -4,8 +4,15 @@
 
 /* Content/ */
 
-.main-section.dark, .main-section.dark * {
+/* .main-section.dark, .main-section.dark * {
     transition: all 0.3s ease;
+} */
+.react-datepicker__time-container {
+    width: 84px;
+}
+
+.react-datepicker__time-list-item {
+    color: #000 !important;
 }
 
 .main-section.dark {
@@ -322,6 +329,12 @@
 
 .main-section.dark .form-control:focus {
     outline: none;
+}
+
+.main-section.dark .input-group-text {
+    color: white;
+    background: #121212;
+    border: none;
 }
 
 .main-section.dark .leagues-list li {

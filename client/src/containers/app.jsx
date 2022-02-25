@@ -70,6 +70,7 @@ import ViewModeModal from '../components/viewmode_modal';
 import { ToastContainer } from 'react-toastify';
 import Team from '../pages/team';
 import PrizeModal from '../components/prizeModal';
+import CreateCustomBet from '../pages/createCustombet';
 
 import '../style/all.css';
 import '../style/all.min.css';
@@ -105,6 +106,7 @@ const ShowAccountLinks = [
     '/phone-verification',
     '/cashback',
     '/custom-bets',
+    '/custom-bets/create',
     '/autobet-dashboard',
     '/autobet-settings',
     '/loyalty',
@@ -117,7 +119,6 @@ const fullWidthRoutes = [
     '/autobet-dashboard',
     '/invite',
     '/team',
-    // '/custom-bets'
 ];
 
 class App extends Component {
@@ -540,7 +541,7 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <h1>Custom Event</h1>
+                                                                <h1 className='text-white'>Custom Event</h1>
                                                                 <Others {...props} addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet} id={id}
                                                                 />
@@ -552,7 +553,7 @@ class App extends Component {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
-                                                                <h1>Custom Events</h1>
+                                                                <h1 className='text-white'>Custom Events</h1>
                                                                 <Others {...props} addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet}
                                                                 />
@@ -630,6 +631,9 @@ class App extends Component {
                                                 } />}
                                                 {user && <Route path="/cashback" render={(props) =>
                                                     <ErrorBoundary><Cashback {...props} user={user} /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/custom-bets/create" render={(props) =>
+                                                    <ErrorBoundary><CreateCustomBet {...props} user={user} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/custom-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>

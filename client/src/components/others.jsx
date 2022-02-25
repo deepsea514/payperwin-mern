@@ -3,7 +3,6 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
-import convertOdds from '../helpers/convertOdds';
 import { FormattedMessage } from 'react-intl';
 import { getCustomEvent } from '../redux/services';
 
@@ -37,7 +36,7 @@ class Others extends Component {
     }
 
     render() {
-        const { addBet, betSlip, removeBet, timezone, oddsFormat } = this.props;
+        const { addBet, betSlip, removeBet, timezone } = this.props;
         const { data, error } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -49,90 +48,39 @@ class Others extends Component {
         return (
             <div className="content mt-2 detailed-lines">
                 <div className="tab-content" >
-                    {
-                        data.map((event, index) => {
-                            const { startDate, name, teamA, teamB } = event;
-                            const teamAExist = betSlip.find((b) => b.lineId === event._id && b.pick === 'home' && b.type === 'moneyline');
-                            const teamBExist = betSlip.find((b) => b.lineId === event._id && b.pick === 'away' && b.type === 'moneyline');
+                    {data.map((event, index) => {
+                        const { startDate, name, options } = event;
 
-                            return (
-                                <div key={index} className="mt-2">
-                                    <div className="line-type-header mb-0">{name}</div>
-                                    <div className="d-flex" style={{
-                                        padding: "3px 0 4px 10px",
-                                        background: "#F9F9F9",
-                                        marginBottom: "3px"
-                                    }}>
-                                        <a style={{ fontSize: "12px", color: "#2b2b2c" }}>
-                                            {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
-                                        </a>
-                                    </div>
-                                    <div className="row mx-0 pt-2 bg-white">
-                                        <div className="col-md-6 com-sm-6 col-12">
-                                            <span className={`box-odds line-full ${teamAExist ? 'orange' : null}`}
-                                                onClick={teamAExist ?
-                                                    () => removeBet(event._id, 'moneyline', 'home', null, null) :
-                                                    () => addBet(
-                                                        name,
-                                                        'moneyline',
-                                                        'Other',
-                                                        { home: teamA.currentOdds, away: teamB.currentOdds },
-                                                        'home',
-                                                        teamA.name,
-                                                        teamB.name,
-                                                        "Other",
-                                                        event._id,
-                                                        event.name,
-                                                        teamA.name,
-                                                        null,
-                                                        "other",
-                                                        null
-                                                    )}>
-                                                <div className="vertical-align">
-                                                    <div className="points">{teamA.name}</div>
-                                                    <div className="odds">
-                                                        <div className="new-odds">
-                                                            {convertOdds(teamA.currentOdds, oddsFormat)}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                        </div>
-                                        <div className="col-md-6 com-sm-6 col-12">
-                                            <span className={`box-odds line-full ${teamBExist ? 'orange' : null}`}
-                                                onClick={teamBExist ?
-                                                    () => removeBet(event._id, 'moneyline', 'away', null, null) :
-                                                    () => addBet(
-                                                        name,
-                                                        'moneyline',
-                                                        'Other',
-                                                        { home: teamA.currentOdds, away: teamB.currentOdds },
-                                                        'away',
-                                                        teamA.name,
-                                                        teamB.name,
-                                                        "Other",
-                                                        event._id,
-                                                        event.name,
-                                                        teamB.name,
-                                                        null,
-                                                        "other",
-                                                        null
-                                                    )}>
-                                                <div className="vertical-align">
-                                                    <div className="points">{teamB.name}</div>
-                                                    <div className="odds">
-                                                        <div className="new-odds">
-                                                            {convertOdds(teamB.currentOdds, oddsFormat)}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                        </div>
+                        return (
+                            <div key={index} className="mt-2">
+                                <div className="line-type-header mb-0">{name}</div>
+                                <div className="d-flex" style={{
+                                    padding: "3px 0 4px 10px",
+                                    background: "#171717",
+                                    marginBottom: "3px"
+                                }}>
+                                    <div style={{ fontSize: "11px", color: "#FFF" }}>
+                                        {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                     </div>
                                 </div>
-                            )
-                        })
-                    }
+                                <div>
+                                    {options.map((option, index) => {
+                                        return (
+                                            <div className="row mx-0 pt-2" key={index}>
+                                                <div className="col-12">
+                                                    <span className={`box-odds line-full ${false ? 'orange' : null}`}>
+                                                        <div className="vertical-align">
+                                                            <div className="points">{option}</div>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         );
@@ -141,7 +89,6 @@ class Others extends Component {
 
 const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
-    oddsFormat: state.frontend.oddsFormat,
     search: state.frontend.search,
     timezone: state.frontend.timezone,
 });
