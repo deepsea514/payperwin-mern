@@ -3,8 +3,8 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dayjs from 'dayjs';
 import sportNameImage from "../helpers/sportNameImage";
-import CreateCustomBetModal from '../components/createCustomBetModal';
 import { getBets } from '../redux/services';
+import { Link } from 'react-router-dom';
 
 export default class CustomBets extends Component {
     constructor(props) {
@@ -13,7 +13,6 @@ export default class CustomBets extends Component {
             error: null,
             loading: false,
             bets: [],
-            createModal: false,
         };
     }
 
@@ -68,19 +67,19 @@ export default class CustomBets extends Component {
     }
 
     render() {
-        const { loading, error, bets, createModal } = this.state;
+        const { loading, error, bets } = this.state;
         const { user } = this.props;
 
         return (
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
                     <h3>Custom Bets</h3>
-                    {user && user.balance > 10 && <button className="form-button"
+                    {user && user.balance > 10 && <Link className="form-button"
+                        to="/custom-bets/create"
                         onClick={() => this.setState({ createModal: true })}>
-                        <i className="fas fa-plus mr-2" /> Create a Bet
-                    </button>}
+                        <i className="fas fa-plus-square" /> Create a Bet
+                    </Link>}
                 </div>
-                {createModal && <CreateCustomBetModal closeModal={() => this.setState({ createModal: false })} />}
                 <br />
                 <div>
                     {loading && <center><Preloader use={ThreeDots}

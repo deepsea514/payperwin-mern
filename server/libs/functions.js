@@ -2,7 +2,6 @@ const PromotionLog = require('../models/promotionlog');
 const FinancialLog = require('../models/financiallog');
 const BetPool = require('../models/betpool');
 const Bet = require('../models/bet');
-const EventBetPool = require('../models/eventbetpool');
 const ParlayBetPool = require('../models/parlaybetpool');
 const Preference = require('../models/preference');
 const ErrorLog = require('../models/errorlog');
@@ -113,44 +112,6 @@ const getRandomInt = (min, max) => {
 const get2FACode = () => {
     return '' + Math.random().toString(10).substr(2, 6);
 };
-
-const calculateCustomBetsStatus = async (eventId) => {
-    const betpool = await EventBetPool.findOne({ eventId: eventId });
-    const { homeBets, awayBets, teamA, teamB } = betpool;
-
-    const bets = await Bet.find({ _id: { $in: [...homeBets, ...awayBets] } });
-
-    const payPool = {
-        home: teamB.betTotal,
-        away: teamA.betTotal,
-    }
-
-    for (const bet of bets) {
-        const { _id, toWin, pick, matchingStatus: currentMatchingStatus, payableToWin: currentPayableToWin } = bet;
-        let payableToWin = 0;
-        if (payPool[pick]) {
-            if (payPool[pick] > 0) {
-                payableToWin += toWin;
-                payPool[pick] -= toWin;
-                if (payPool[pick] < 0) payableToWin += payPool[pick];
-            }
-        }
-        let matchingStatus;
-        if (payableToWin === toWin) matchingStatus = 'Matched';
-        else if (payableToWin === 0) matchingStatus = 'Pending';
-        else matchingStatus = 'Partial Match'
-        const betChanges = {
-            $set: {
-                payableToWin,
-                matchingStatus,
-                status: matchingStatus,
-            }
-        };
-        if (payableToWin !== currentPayableToWin || matchingStatus !== currentMatchingStatus) {
-            await Bet.findOneAndUpdate({ _id }, betChanges);
-        }
-    }
-}
 
 const calculateParlayBetsStatus = async (id) => {
     const betpool = await ParlayBetPool.findById(id);
@@ -534,7 +495,6 @@ module.exports = {
     calculateBetsStatus,
     calculateParlayBetsStatus,
     get2FACode,
-    calculateCustomBetsStatus,
     isFreeWithdrawalUsed,
     asyncFilter,
     getLinePoints,
