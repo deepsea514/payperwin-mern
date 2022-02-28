@@ -18,12 +18,12 @@ class Bet extends Component {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
-        const { odds, pick, lineQuery } = bet;
+        const { odds, pick, lineQuery, origin } = bet;
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
             // calc win
-            const americanOdds = odds[pick];
+            const americanOdds = origin == 'other' ? 100 : odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
             const calculateWin = (stake * 1) * decimalOdds;
             const roundToPennies = Number((calculateWin).toFixed(2));
@@ -37,7 +37,7 @@ class Bet extends Component {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
             stateChange[name] = win;
             // calc stake
-            const americanOdds = odds[pick];
+            const americanOdds = origin == 'other' ? 100 : odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : - (100 / americanOdds);
             const calculateStake = (win / 1) / decimalOdds;
             const roundToPennies = Number((calculateStake).toFixed(2));
@@ -57,11 +57,58 @@ class Bet extends Component {
         const { stake, win } = this.state;
         const { bet, removeBet, oddsFormat, maxBetLimitTier, betSlipOdds } = this.props;
         const {
-            name, type, subtype, league,
+            name, type, subtype, league, origin,
             odds, pick, sportName, lineId, pickName, index, sportsbook, originOdds,
         } = bet;
         const majorLeagues = ["NBA", "NFL", "MLB", "NHL"]; //  major leagues will use the existing tier bet limit 
         const maxBetLimit = majorLeagues.includes(league) ? maxBetLimitTier : maxBetLimitTier / 2;
+
+        if (origin == 'other') {
+            console.log('other')
+            return (
+                <div className="bet-container bet-sportsbook">
+                    {win > maxBetLimit && <div className="bet-warn-message">
+                        <div><b><FormattedMessage id="COMPONENTS.BET.ABOVEMAXIMUM" /></b></div>
+                        <FormattedMessage id="COMPONENTS.BET.INPUTNOTEXCEED" values={{ max_win_limit: maxBetLimit }} />
+                    </div>}
+                    <div className={`bet ${win > maxBetLimit ? 'bet-warn' : ''}`}>
+                        <div>
+                            <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
+                            {` ${name}`}
+                            <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
+                        </div>
+                        <div className="bet-type-league">{league}</div>
+                        <div className="d-flex justify-content-between">
+                            <span className="bet-pick">{pickName}</span>
+                            <span className="bet-pick-odds">{oddsFormat == 'decimal' ? '2.00' : '+100'}</span>
+                        </div>
+                        <div>
+                            <input
+                                className="bet-stake"
+                                placeholder="Risk"
+                                name="stake"
+                                type="number"
+                                value={stake === 0 ? '' : stake}
+                                onChange={this.handleChange}
+                                min={0}
+                                step={20}
+                            />
+                            <input
+                                className="bet-win"
+                                placeholder="Win"
+                                name="win"
+                                type="number"
+                                value={win === 0 ? '' : win}
+                                onChange={this.handleChange}
+                                min={0}
+                                step={20}
+                            />
+                        </div>
+                        <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimit } })}>CAD {maxBetLimit}</span></div>
+                    </div>
+                </div>
+            )
+        }
 
         let oddsChanged = null;
         if (betSlipOdds && betSlipOdds.length > 0) {

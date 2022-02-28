@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import { FormattedMessage } from 'react-intl';
 import { getCustomEvent } from '../redux/services';
+import { showErrorToast } from '../libs/toast';
 
 class Others extends Component {
     constructor(props) {
@@ -35,8 +36,16 @@ class Others extends Component {
             });
     }
 
+    addBet = (betObj) => {
+        const { addBet, pro_mode } = this.props;
+        if (pro_mode) {
+            return addBet(betObj);
+        }
+        showErrorToast('Custom Bets are only available on Pro Mode.');
+    }
+
     render() {
-        const { addBet, betSlip, removeBet, timezone } = this.props;
+        const { betSlip, removeBet, timezone } = this.props;
         const { data, error } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -49,7 +58,7 @@ class Others extends Component {
             <div className="content mt-2 detailed-lines">
                 <div className="tab-content" >
                     {data.map((event, index) => {
-                        const { startDate, name, options } = event;
+                        const { startDate, name, options, uniqueid, _id } = event;
 
                         return (
                             <div key={index} className="mt-2">
@@ -64,19 +73,43 @@ class Others extends Component {
                                     </div>
                                 </div>
                                 <div>
-                                    {options.map((option, index) => {
-                                        return (
-                                            <div className="row mx-0 pt-2" key={index}>
-                                                <div className="col-12">
-                                                    <span className={`box-odds line-full ${false ? 'orange' : null}`}>
+                                    <div className="row mx-0 pt-2">
+                                        {options.map((option, index) => {
+                                            const exists = betSlip.find(bet => bet.lineId == uniqueid && bet.origin == 'other' && bet.pick == index);
+                                            return (
+                                                <div className="col-12" key={index}>
+                                                    <span className={`box-odds line-full ${exists ? 'orange' : null}`}
+                                                        onClick={exists ? () => removeBet(uniqueid, 'moneyline', index, null, null) :
+                                                            () => this.addBet({
+                                                                name: name,
+                                                                type: 'moneyline',
+                                                                league: 'Custom Events',
+                                                                pick: index,
+                                                                sportName: 'Other',
+                                                                lineId: uniqueid,
+                                                                lineQuery: {
+                                                                    sportName: 'Other',
+                                                                    leagueId: uniqueid,
+                                                                    eventId: _id,
+                                                                    lineId: uniqueid,
+                                                                    type: 'moneyline',
+                                                                    subtype: null,
+                                                                    index: null,
+                                                                    options: options
+                                                                },
+                                                                pickName: `Pick: ${option}`,
+                                                                index: null,
+                                                                origin: 'other',
+                                                                subtype: null,
+                                                            })}>
                                                         <div className="vertical-align">
                                                             <div className="points">{option}</div>
                                                         </div>
                                                     </span>
                                                 </div>
-                                            </div>
-                                        )
-                                    })}
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -91,6 +124,7 @@ const mapStateToProps = (state) => ({
     lang: state.frontend.lang,
     search: state.frontend.search,
     timezone: state.frontend.timezone,
+    pro_mode: state.frontend.pro_mode,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Others)
