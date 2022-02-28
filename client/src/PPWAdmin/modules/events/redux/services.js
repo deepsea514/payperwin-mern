@@ -6,7 +6,7 @@ export function getEvents(page, filter, perPage = null) {
     const { status } = filter;
     if (status && status != '') params.status = status;
 
-    return AdminAPI.get("/events");
+    return AdminAPI.get("/events", { params });
 }
 
 export function editEvent(id, data) {
