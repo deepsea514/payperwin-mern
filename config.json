@@ -80,8 +80,8 @@
             "label": "Settled",
             "value": 2
         },
-        "canceled": {
-            "label": "Canceled",
+        "cancelled": {
+            "label": "Cancelled",
             "value": 3
         }
     },
