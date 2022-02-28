@@ -35,7 +35,7 @@ function AsideMenuList({
         getVerifications();
         getWithdrawLog();
         getEvents();
-    })
+    }, [getVerifications, getWithdrawLog, getEvents])
 
     const isAvailable = (module) => {
         if (adminUser) {

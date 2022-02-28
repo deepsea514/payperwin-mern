@@ -5166,15 +5166,15 @@ adminRouter.get(
         page--;
 
         if (!status) status = 'all';
-
+        console.log(status)
         try {
             let findObj = {};
             if (EventStatus[status]) {
                 findObj = { ...findObj, status: EventStatus[status].value };
                 if (status == FinancialStatus.pending) {
-                    findObj = { ...findObj, startDate: { $gte: new Date() } };
+                    findObj = { ...findObj, startDate: { $lte: new Date() }, endDate: { $gte: new Date() } };
                 } else if (status == "outdated") {
-                    findObj = { ...findObj, startDate: { $lt: new Date() } };
+                    findObj = { ...findObj, endDate: { $lt: new Date() } };
                 }
             }
             const pending_total = await Event.find({ approved: false }).count();
