@@ -89,6 +89,7 @@ class Others extends Component {
                                                                 lineId: uniqueid,
                                                                 lineQuery: {
                                                                     sportName: 'Other',
+                                                                    eventName: name,
                                                                     leagueId: uniqueid,
                                                                     eventId: _id,
                                                                     lineId: uniqueid,

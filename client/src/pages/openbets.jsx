@@ -447,7 +447,6 @@ class OpenBets extends Component {
                             matchingStatus, lineQuery, origin, sportsbook, isParlay, parlayQuery
                         } = betObj;
                         if (origin == "other") {
-                            const type = "moneyline";
                             const sportName = "Other";
                             return (
                                 <div className="open-bets" key={_id}>
@@ -469,22 +468,13 @@ class OpenBets extends Component {
                                         </div>
                                         <div className="open-bets-col">
                                             <strong><FormattedMessage id="PAGES.OPENBETS.RISK" /></strong>
-                                            <div>
-                                                {bet.toFixed(2)}
-                                            </div>
+                                            <div>{bet.toFixed(2)}</div>
                                         </div>
                                         <div className="open-bets-col">
                                             <strong><FormattedMessage id="PAGES.OPENBETS.TOWIN" /></strong>
-                                            {matchingStatus === 'Partial Match' && <div>
+                                            <div>
                                                 {toWin.toFixed(2)}
-                                                <br />
-                                                {payableToWin.toFixed(2)} Accepted
-                                                <br />
-                                                {(toWin - payableToWin).toFixed(2)} Pending
-                                            </div>}
-                                            {matchingStatus !== 'Partial Match' && <div>
-                                                {toWin.toFixed(2)} {matchingStatus}
-                                            </div>}
+                                            </div>
                                         </div>
                                         <div className="open-bets-col status">
                                             <strong><FormattedMessage id="PAGES.OPENBETS.STATUS" /></strong>
@@ -493,9 +483,9 @@ class OpenBets extends Component {
                                                 placement={'left'}
                                                 overlay={StatusPopOver}
                                             >
-                                                <button className={this.getStatusClass(status) + ' cursor-pointer'}>
+                                                <div className={this.getStatusClass(status) + ' cursor-pointer'}>
                                                     {status ? status : 'Accepted'}
-                                                </button>
+                                                </div>
                                             </OverlayTrigger>
                                         </div>
                                     </div>
@@ -506,7 +496,6 @@ class OpenBets extends Component {
                                             <div>
                                                 <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                             </div>
-                                            <strong className="bg-light-primary px-2 py-1 text-dark"><FormattedMessage id="PAGES.OPENBETS.P2P" /></strong>
                                         </div>
                                         {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                         {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}

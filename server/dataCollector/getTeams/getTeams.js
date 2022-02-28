@@ -62,7 +62,6 @@ const getTeams = async () => {
                 for (const result of results) {
                     await Team.findOneAndUpdate({ id: result.id }, { sport, ...result }, { upsert: true });
                 }
-                console.log(page * per_page, total, sport.name);
                 if (total == 0 || Math.ceil(total / per_page) <= page) break;
                 page++;
             }
