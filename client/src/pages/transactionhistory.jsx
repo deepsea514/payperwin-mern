@@ -91,6 +91,8 @@ class TransactionHistory extends Component {
                 return '+';
             case 'lock_event':
                 return '-';
+            case 'unlock_event':
+                return '+';
             default:
                 return '';
         }
@@ -133,7 +135,9 @@ class TransactionHistory extends Component {
             case 'invitebonus':
                 return 'Invite Bonus';
             case 'lock_event':
-                return 'Lock Bet amount for a custom bet.';
+                return 'Lock bet amount for a custom bet.';
+            case 'unlock_event':
+                return 'Unlock bet amount for a custom bet.';
             default:
                 return '';
         }

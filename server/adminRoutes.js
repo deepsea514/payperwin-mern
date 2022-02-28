@@ -5040,37 +5040,7 @@ adminRouter.put(
 )
 
 adminRouter.post(
-    '/events',
-    authenticateJWT,
-    limitRoles('custom-events'),
-    bruteforce.prevent,
-    async (req, res) => {
-        try {
-            let { name, startDate, teamA, teamB } = req.body;
-            if (!name || !startDate || !teamA || !teamB) {
-                return res.status(400).json({ error: 'Please enter all required fields.' });
-            }
-            teamA = {
-                name: teamA.name,
-                currentOdds: teamA.odds,
-                odds: [teamA.odds]
-            }
-            teamB = {
-                name: teamB.name,
-                currentOdds: teamB.odds,
-                odds: [teamB.odds]
-            }
-            await Event.create({ name, startDate, teamA, teamB });
-            res.json({ success: "Event created." });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ error: 'Can\'t create Event.' });
-        }
-    }
-)
-
-adminRouter.get(
-    '/events/:id',
+    '/events/:id/settle',
     authenticateJWT,
     limitRoles('custom-events'),
     async (req, res) => {
@@ -5080,10 +5050,17 @@ adminRouter.get(
             if (!event) {
                 return res.status(404).json({ error: 'Can\'t find events.' });
             }
-            res.status(200).json(event);
+            if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
+                return res.status(404).json({ error: 'Event is not started yet.' });
+            }
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+                return res.status(404).json({ error: 'Event is already finished.' });
+            }
+
+            res.status(200).json({ success: true });
         } catch (error) {
             console.error(error);
-            res.status(404).json({ error: 'Can\'t find events.' });
+            res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
 );
@@ -5094,31 +5071,11 @@ adminRouter.put(
     limitRoles('custom-events'),
     async (req, res) => {
         let { id } = req.params;
-        const { name, startDate, teamA, teamB, approved } = req.body;
+        const { approved } = req.body;
         try {
             const event = await Event.findById(id);
             if (!event) {
                 return res.status(404).json({ error: 'Can\'t find events.' });
-            }
-            if (name) {
-                event.name = name;
-            }
-            if (startDate) {
-                event.startDate = startDate;
-            }
-            if (teamA) {
-                event.teamA = {
-                    name: teamA.name,
-                    currentOdds: teamA.odds,
-                    odds: [...event.teamA.odds, teamA.odds]
-                }
-            }
-            if (teamB) {
-                event.teamB = {
-                    name: teamB.name,
-                    currentOdds: teamB.odds,
-                    odds: [...event.teamB.odds, teamB.odds]
-                }
             }
             if (approved != null || approved != undefined) {
                 event.approved = approved;
@@ -5132,41 +5089,6 @@ adminRouter.put(
     }
 );
 
-const matchResults = async (eventId, matchResult) => {
-}
-
-adminRouter.post(
-    '/events/:id/settle',
-    authenticateJWT,
-    limitRoles('custom-events'),
-    async (req, res) => {
-        let { id } = req.params;
-        const { teamAScore, teamBScore } = req.body;
-        try {
-            const event = await Event.findById(id);
-            if (!event) {
-                return res.status(404).json({ error: 'Can\'t find events.' });
-            }
-            if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
-                return res.status(404).json({ error: 'Event is not started yet.' });
-            }
-            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
-                return res.status(404).json({ error: 'Event is already finished.' });
-            }
-            event.status = EventStatus.settled.value;
-            event.teamAScore = teamAScore;
-            event.teamBScore = teamBScore;
-            await event.save();
-
-            await matchResults(id, { homeScore: teamAScore, awayScore: teamBScore });
-
-            res.status(200).json({ success: true });
-        } catch (error) {
-            console.error(error);
-            res.status(404).json({ error: 'Can\'t save events.' });
-        }
-    }
-);
 
 adminRouter.post(
     '/events/:id/cancel',
@@ -5185,9 +5107,45 @@ adminRouter.post(
             event.status = EventStatus.canceled.value;
             await event.save();
 
-            await matchResults(id, { homeScore: null, awayScore: null, cancellationReason: true });
+            const bets = await Bet.find({
+                "lineQuery.lineId": event.uniqueid,
+                "lineQuery.sportName": 'Other',
+            });
+            for (const bet of bets) {
+                const user = await User.findById(bet.userId);
+                await bet.update({ status: 'Cancelled' });
+                if (user) {
+                    await FinancialLog.create({
+                        financialtype: 'betcancel',
+                        uniqid: `BC${ID()}`,
+                        user: bet.userId,
+                        betId: bet._id,
+                        amount: bet.bet,
+                        method: 'betcancel',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + bet.bet
+                    });
+                    await user.update({ $inc: { balance: bet.bet } });
+                }
+            }
 
-            res.status(200).json({ success: true });
+            const user = await User.findById(event.user);
+            if (user) {
+                await FinancialLog.create({
+                    financialtype: 'unlock_event',
+                    uniqid: `BC${ID()}`,
+                    user: event.user,
+                    amount: event.maximumRisk,
+                    method: 'unlock_event',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + event.maximumRisk
+                });
+                await user.update({ $inc: { balance: event.maximumRisk } });
+            }
+
+            return res.status(200).json({ success: true });
         } catch (error) {
             console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
