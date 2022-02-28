@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import sportNameImage from "../helpers/sportNameImage";
 import { getBets } from '../redux/services';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 export default class CustomBets extends Component {
     constructor(props) {
@@ -50,9 +51,6 @@ export default class CustomBets extends Component {
 
     getStatusClass = (status, outcome) => {
         switch (status) {
-            // p2p
-            case 'Pending':
-                return 'pending';
             case 'Matched':
                 return 'matched';
             case 'Partial Match':
@@ -63,6 +61,18 @@ export default class CustomBets extends Component {
                 return 'loss';
             case 'Settled - Win':
                 return 'win';
+            case 'Draw':
+                return 'draw'
+            case 'Pending':
+                return 'pending';
+            case 'Accepted':
+                return 'matched';
+            case 'Partial Accepted':
+                return 'partialmatched';
+            case 'Win':
+                return 'win';
+            case 'Lose':
+                return 'loss';
         }
     }
 
@@ -104,60 +114,53 @@ export default class CustomBets extends Component {
                             matchingStatus,
                             lineQuery,
                         } = betObj;
-                        const type = "moneyline";
                         const sportName = "Other";
                         return (
                             <div className="open-bets" key={_id}>
                                 <div className="open-bets-flex">
                                     <div className="open-bets-col">
-                                        <strong>Accepted</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
                                             {dayjs(createdAt).format('YYYY/M/D HH:mm')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Bet Type</strong>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.BETTYPE" /></strong>
                                         <div>
-                                            {this.capitalizeFirstLetter(type)} @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
+                                            Moneyline @ {`${pickOdds > 0 ? '+' : ''}${pickOdds}`}
                                         </div>
                                         <div>
                                             {pickName}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>Risk</strong>
-                                        <div>
-                                            {bet.toFixed(2)}
-                                        </div>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.RISK" /></strong>
+                                        <div>{bet.toFixed(2)}</div>
                                     </div>
                                     <div className="open-bets-col">
-                                        <strong>To win</strong>
-                                        {matchingStatus === 'Partial Match' && <div>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.TOWIN" /></strong>
+                                        <div>
                                             {toWin.toFixed(2)}
-                                            <br />
-                                            {payableToWin.toFixed(2)} Matched
-                                            <br />
-                                            {(toWin - payableToWin).toFixed(2)} Pending
-                                        </div>}
-                                        {matchingStatus !== 'Partial Match' && <div>
-                                            {toWin.toFixed(2)} {matchingStatus}
-                                        </div>}
+                                        </div>
                                     </div>
                                     <div className="open-bets-col status">
-                                        <strong>Status</strong>
-                                        <div className={this.getStatusClass(status)}>
+                                        <strong><FormattedMessage id="PAGES.OPENBETS.STATUS" /></strong>
+                                        <div className={this.getStatusClass(status) + ' cursor-pointer'}>
                                             {status ? status : 'Accepted'}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="open-bets-event">
-                                    <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} />
+                                    <img src={sportNameImage(sportName)} width="14" height="14" style={{ marginRight: '6px' }} className="my-0" />
                                     {lineQuery.eventName}
-                                    <div>
-                                        Event Date: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
-                                        <strong className="float-right bg-primary">Peer To Peer</strong>
+                                    <div className='d-flex justify-content-between'>
+                                        <div>
+                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                        </div>
                                     </div>
-                                    {credited ? (<div><strong>Credited: ${(credited).toFixed(2)}</strong></div>) : null}
+                                    {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
+                                    {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
+                                    {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
                                 </div>
                             </div>
                         );

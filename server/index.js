@@ -2774,7 +2774,7 @@ expressApp.post(
         } else if (settledBets) {
             searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
         } else if (custom) {
-            searchObj.status = { $in: [null, 'Pending', 'Partial Match', 'Matched'] };
+            searchObj.status = 'Accepted';
             searchObj.origin = 'other';
         }
 
