@@ -11,7 +11,7 @@ export default class CustomerModule extends Component {
                 <Switch>
                     <Route exact path="/users" component={Customers} />
                     <Route path="/users/:id/profile" component={CUstomerProfile} />
-                    <Route path="/bet-activities/:id/detail" component={BetDetail} />
+                    {/* <Route path="/bet-activities/:id/detail" component={BetDetail} /> */}
 
                 </Switch>
             </BrowserRouter>

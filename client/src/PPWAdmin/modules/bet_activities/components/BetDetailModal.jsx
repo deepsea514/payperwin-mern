@@ -10,32 +10,6 @@ export default class BetDetailModal extends React.Component {
         return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
     }
 
-    // getBetDogFav = (bet, pick) => {
-    //     const { teamA, teamB, pickName, lineQuery, isParlay } = bet;
-    //     if (!teamA) return;
-    //     const oddsA = Number(teamA.odds);
-    //     const oddsB = Number(teamB.odds);
-
-    //     if (lineQuery.type == 'spread') {
-    //         let spreads = pickName.split(' ');
-    //         spreads = Number(spreads[spreads.length - 1]);
-    //         if (spreads < 0) {
-    //             return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
-    //         }
-    //     } else {
-    //         if (oddsA == oddsB) {
-    //             if (pick == 'away') {
-    //                 return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
-    //             }
-    //         } else {
-    //             if ((oddsA < oddsB) && pick == 'home' || (oddsA > oddsB) && pick == 'away') {
-    //                 return <span className="label label-lg label-outline-success label-inline font-weight-lighter mr-2">Favorite</span>
-    //             }
-    //         }
-    //     }
-    //     return <span className="label label-lg label-outline-warning label-inline font-weight-lighter mr-2">Underdog</span>
-    // }
-
     getBetType = (bet) => {
         if (bet.isParlay) {
             return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">parlay</span>
@@ -150,6 +124,24 @@ export default class BetDetailModal extends React.Component {
                                                     })}
                                                 </td>
                                             </tr>
+                                        }
+                                        if (bet.origin == 'other') {
+                                            return (
+                                                <>
+                                                    <tr>
+                                                        <th>Pick Name</th>
+                                                        <td>{bet.pickName}</td>
+                                                        <th>Sport</th>
+                                                        <td><img src={sportNameImage(bet.lineQuery.sportName)} width="16" height="16" />&nbsp;{bet.lineQuery.sportName}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Match Start Date</th>
+                                                        <td>{this.getDate(bet.matchStartDate)}</td>
+                                                        <th>Event</th>
+                                                        <td>{bet.lineQuery.eventName}</td>
+                                                    </tr>
+                                                </>
+                                            )
                                         }
                                         const { newHome, newAway } = calculateNewOdds(Number(bet.teamA.odds), Number(bet.teamB.odds), bet.lineQuery.type, bet.lineQuery.subtype);
                                         return <>

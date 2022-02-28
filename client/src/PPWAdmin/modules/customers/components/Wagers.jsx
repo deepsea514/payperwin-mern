@@ -15,8 +15,7 @@ class Wagers extends React.Component {
             return (
                 <div className="d-flex mb-5" key={index}>
                     <div className="d-flex flex-column flex-grow-1 font-weight-bold text-left">
-                        <a
-                            onClick={() => history.push(`/bet-activities/${bet._id}/detail`)}
+                        <a onClick={null}
                             className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer">
                             {bet.isParlay ? 'Parlay' :
                                 bet.origin == 'other' ? 'Other - ' : bet.lineQuery.sportName + ' - '}
