@@ -336,8 +336,18 @@ class BetActivities extends React.Component {
     }
 
     getBetMatch = (bet) => {
+        if (bet.origin == 'other') {
+            switch (bet.status) {
+                case "Settled - Lose":
+                case "Settled - Win":
+                    return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Settled</span>
+                case "Accepted":
+                    return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
+                default:
+                    return null;
+            }
+        }
         switch (bet.status) {
-            case "Cancelled":
             case "Settled - Lose":
             case "Settled - Win":
             case "Draw":
@@ -347,8 +357,9 @@ class BetActivities extends React.Component {
             case "Matched":
             case "Accepted":
             case "Partial Accepted":
-            default:
                 return <span className="label label-lg label-info label-inline font-weight-lighter mr-2">Open</span>
+            default:
+                return null;
         }
     }
 
