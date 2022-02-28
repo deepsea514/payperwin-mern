@@ -225,7 +225,11 @@ export function search(param) {
 }
 
 export function cancelBet(id) {
-    return FrontendAPI.post(`bets/${id}/cancel`)
+    return FrontendAPI.post(`/bets/${id}/cancel`)
+}
+
+export function voteEvent(event_id, pick) {
+    return FrontendAPI.post(`/events/${event_id}/vote`, { pick: pick });
 }
 
 // Articles

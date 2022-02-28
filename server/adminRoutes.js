@@ -5166,7 +5166,6 @@ adminRouter.get(
         page--;
 
         if (!status) status = 'all';
-        console.log(status)
         try {
             let findObj = {};
             if (EventStatus[status]) {
