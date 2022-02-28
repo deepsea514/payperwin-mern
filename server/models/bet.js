@@ -51,6 +51,7 @@ const BetSchema = new Schema(
         isParlay: { type: Boolean, default: false },
         parlayQuery: { type: Array, default: null },
         scoreMismatch: { type: Object, default: null },
+        event: { type: Schema.Types.ObjectId, ref: "Event", default: null },
     },
     {
         timestamps: true,
