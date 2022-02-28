@@ -633,7 +633,7 @@ class App extends Component {
                                                     <ErrorBoundary><Cashback {...props} user={user} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/custom-bets/create" render={(props) =>
-                                                    <ErrorBoundary><CreateCustomBet {...props} user={user} /></ErrorBoundary>
+                                                    <ErrorBoundary><CreateCustomBet {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/custom-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>

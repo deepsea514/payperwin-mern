@@ -963,7 +963,7 @@ expressApp.post(
             } = bet;
             if (origin == 'other') {
                 const event = await Event.findOne({ uniqueid: lineId });
-                if(!event) {
+                if (!event) {
                     errors.push(`${pickName} wager could not be placed. Event Not Found.`);
                     continue;
                 }
@@ -4672,6 +4672,9 @@ expressApp.post(
         const { name, startDate, endDate, visibility, maximumRisk, options } = req.body;
         const user = req.user;
         try {
+            if (user.balance < maximumRisk) {
+                return res.json({ success: false, error: 'Insufficent Funds.' });
+            }
             let existing = null;
             let uniqueid = `E${ID()}`;
             do {
@@ -4692,6 +4695,20 @@ expressApp.post(
                 maximumRisk: maximumRisk,
                 options: options
             });
+
+            await FinancialLog.create({
+                financialtype: 'lock_event',
+                uniqid: `LE${ID()}`,
+                user: user._id,
+                amount: maximumRisk,
+                method: 'lock_event',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - maximumRisk
+            });
+
+            await user.update({ $inc: { balance: -maximumRisk } });
+
             return res.json({ success: true });
         } catch (error) {
             return res.status(500).json({ error: "Can't create a bet." });
@@ -5354,7 +5371,7 @@ expressApp.post(
                 return res.json({ success: false, error: 'Cannot cancel a bet. Not found.' });
             }
             const { matchStartDate, isParlay, bet: betAmount, pick, origin } = bet;
-            if(origin == 'other') {
+            if (origin == 'other') {
                 return res.json({ success: false, error: 'Cannot cancel a custom Bet.' });
             }
             if (new Date().getTime() > new Date(matchStartDate).getTime()) {

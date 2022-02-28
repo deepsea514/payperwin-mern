@@ -89,6 +89,8 @@ class TransactionHistory extends Component {
                 return '-';
             case 'invitebonus':
                 return '+';
+            case 'lock_event':
+                return '-';
             default:
                 return '';
         }
@@ -130,6 +132,8 @@ class TransactionHistory extends Component {
                 return 'Transfer in to the credit';
             case 'invitebonus':
                 return 'Invite Bonus';
+            case 'lock_event':
+                return 'Lock Bet amount for a custom bet.';
             default:
                 return '';
         }
