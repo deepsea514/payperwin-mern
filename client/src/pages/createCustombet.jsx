@@ -148,14 +148,20 @@ export default class CreateCustomBet extends Component {
     }
 
     onSubmit = (values, formik) => {
-        const { history } = this.props;
+        const { history, getUser } = this.props;
         createCustomBet(values)
             .then(({ data }) => {
-                showSuccessToast("Successfully created custom bet.");
+                const { success, error } = data;
                 formik.setSubmitting(false);
-                setTimeout(() => {
-                    history.push('/custom-bets')
-                }, 2000);
+                if (success) {
+                    showSuccessToast("Successfully created custom bet.");
+                    getUser();
+                    setTimeout(() => {
+                        history.push('/custom-bets')
+                    }, 2000);
+                } else {
+                    showErrorToast(error);
+                }
             })
             .catch(() => {
                 showErrorToast("Cannot add custom bet. Please try again later.");
