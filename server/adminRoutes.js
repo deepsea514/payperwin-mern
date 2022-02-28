@@ -3067,7 +3067,6 @@ adminRouter.post(
             if (!bet) {
                 return res.status(404).json({ success: false });
             }
-
             if (bet.isParlay) {
                 return res.status(404).json({ success: false });
             }
