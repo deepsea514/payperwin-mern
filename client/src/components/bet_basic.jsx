@@ -124,7 +124,7 @@ class BetBasic extends Component {
                             {awayPickName.slice(5)}
                         </span>
                     </div>
-                    {pick && <>
+                    {pick !== null && <>
                         <div className='mt-3'>STEP 2: ENTER YOUR BET AMOUNT</div>
                         <div>
                             <input
