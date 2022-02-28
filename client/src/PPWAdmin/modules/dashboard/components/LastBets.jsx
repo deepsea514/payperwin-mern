@@ -76,7 +76,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
-                            {bet.bet} {bet.userId ? bet.userId.currency : 'CAD'}
+                            {Number(bet.bet).toFixed(2)} {bet.userId ? bet.userId.currency : 'CAD'}
                         </span>
                     </td>
                     <td className="pl-0">

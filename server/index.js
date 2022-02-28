@@ -1036,7 +1036,8 @@ expressApp.post(
                                     status: 'Accepted',
                                     lineQuery: lineQuery,
                                     lineId: lineId,
-                                    origin: origin
+                                    origin: origin,
+                                    payableToWin: toWin,
                                 });
                                 await LoyaltyLog.create({
                                     user: user._id,
