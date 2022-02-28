@@ -16,6 +16,7 @@ const EventSchema = new Schema(
         endDate: { type: Date, required: true },
         maximumRisk: { type: Number, required: true },
         options: { type: Array, required: true },
+        votes: { type: Array, default: [] },
         approved: { type: Boolean, default: true },
         public: { type: Boolean, default: true },
         status: { type: Number, default: config.EventStatus.pending.value },
