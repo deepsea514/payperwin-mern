@@ -1,9 +1,5 @@
 import AdminAPI from "../../../redux/adminAPI";
 
-export function addEvent(data) {
-    return AdminAPI.post(`/events`, data);
-}
-
 export function getEvents(page, filter, perPage = null) {
     const params = { page };
     if (perPage) params.perPage = perPage;
@@ -11,10 +7,6 @@ export function getEvents(page, filter, perPage = null) {
     if (status && status != '') params.status = status;
 
     return AdminAPI.get("/events");
-}
-
-export function getEvent(id) {
-    return AdminAPI.get(`/events/${id}`);
 }
 
 export function editEvent(id, data) {
