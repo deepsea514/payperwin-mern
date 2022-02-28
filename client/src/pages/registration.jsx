@@ -449,7 +449,6 @@ class Registration extends Component {
                             name="pro_mode"
                             value={pro_mode}
                             onChange={(evt) => {
-                                console.log(evt.target.value)
                                 this.setState({ pro_mode: evt.target.value })
                             }}>
                             <FormControlLabel style={{ color: '#FFF' }} value="true" control={<Radio readOnly />} label="Pro View" />

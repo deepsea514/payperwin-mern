@@ -185,6 +185,25 @@ class TransactionHistory extends Component {
         this.getHistory();
     }
 
+    getTransactionDetail = (transaction) => {
+        if (transaction.betDetails) {
+            if (transaction.betDetails.isParlay) {
+                return (
+                    <div><small>Parlay Bet</small> - <small>{transaction.betDetails.transactionID}</small></div>
+                )
+            }
+            if (transaction.betDetails.origin == 'other') {
+                return (
+                    <div><small>{transaction.betDetails.lineQuery.eventName}</small> - <small>{transaction.betDetails.transactionID}</small></div>
+                )
+            }
+            return (
+                <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small></div>
+            )
+        }
+        return null;
+    }
+
     render() {
         const { transactions, showFilter, filter, daterange, page, loading, noMore } = this.state;
         return (
@@ -277,7 +296,7 @@ class TransactionHistory extends Component {
                             <div className="row amount-col bg-color-box" key={index}>
                                 <div className="col-sm-8">
                                     <span>{this.getDate(transaction.updatedAt)}</span>
-                                    {transaction.betDetails && !transaction.betDetails.isParlay && <div><small>{`${transaction.betDetails?.teamA?.name} vs ${transaction.betDetails?.teamB?.name}`} </small> - <small>{transaction.betDetails?.transactionID}</small> </div>}
+                                    {this.getTransactionDetail(transaction)}
                                     <small>{this.getFormattedString(transaction.financialtype, transaction.method)}</small>
                                 </div>
                                 <div className="col-sm-2 text-right">

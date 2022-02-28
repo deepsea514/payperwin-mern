@@ -64,7 +64,6 @@ class Bet extends Component {
         const maxBetLimit = majorLeagues.includes(league) ? maxBetLimitTier : maxBetLimitTier / 2;
 
         if (origin == 'other') {
-            console.log('other')
             return (
                 <div className="bet-container bet-sportsbook">
                     {win > maxBetLimit && <div className="bet-warn-message">
