@@ -62,7 +62,8 @@ class TransactionHistory extends React.Component {
             case 'betfee':
             case 'bet':
             case 'transfer-in':
-                return '-';
+            case 'lock_event':
+                return '- ';
             default:
                 return '';
         }
