@@ -5053,7 +5053,7 @@ adminRouter.post(
             if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
                 return res.status(404).json({ error: 'Event is not started yet.' });
             }
-            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['cancelled'].value) {
                 return res.status(404).json({ error: 'Event is already finished.' });
             }
 
@@ -5101,10 +5101,10 @@ adminRouter.post(
             if (!event) {
                 return res.status(404).json({ error: 'Can\'t find events.' });
             }
-            if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value) {
+            if (event.status == EventStatus['settled'].value || event.status == EventStatus['cancelled'].value) {
                 return res.status(404).json({ error: 'Event is already finished.' });
             }
-            event.status = EventStatus.canceled.value;
+            event.status = EventStatus.cancelled.value;
             await event.save();
 
             const bets = await Bet.find({

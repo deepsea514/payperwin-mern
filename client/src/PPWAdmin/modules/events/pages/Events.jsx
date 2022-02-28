@@ -84,7 +84,7 @@ class Events extends React.Component {
     isSettleEnabled(event) {
         // if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
         //     return false;
-        if (event.status == EventStatus['settled'].value || event.status == EventStatus['canceled'].value)
+        if (event.status == EventStatus['settled'].value || event.status == EventStatus['cancelled'].value)
             return false;
         return true;
     }
@@ -92,8 +92,8 @@ class Events extends React.Component {
     getStatus = (event) => {
         if (event.status == EventStatus['settled'].value)
             return <span className="label label-lg label-light-success label-inline font-weight-lighter mr-2">{EventStatus['settled'].label}</span>
-        if (event.status == EventStatus['canceled'].value)
-            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{EventStatus['canceled'].label}</span>
+        if (event.status == EventStatus['cancelled'].value)
+            return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{EventStatus['cancelled'].label}</span>
         if ((new Date(event.startDate)).getTime() > (new Date()).getTime())
             return <span className="label label-lg label-light-primary label-inline font-weight-lighter mr-2">Not Started</span>
         if ((new Date(event.endDate)).getTime() > (new Date()).getTime())
@@ -135,7 +135,7 @@ class Events extends React.Component {
         cancelEvent(cancelId)
             .then(() => {
                 getEvents();
-                this.setState({ modal: true, cancelId: null, resMessage: "Successfully canceled!", modalvariant: "success" });
+                this.setState({ modal: true, cancelId: null, resMessage: "Successfully cancelled!", modalvariant: "success" });
             })
             .catch(() => {
                 this.setState({ modal: true, cancelId: null, resMessage: "Cancel Failed!", modalvariant: "danger" });

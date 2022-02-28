@@ -294,12 +294,12 @@ tripleARouter.post('/withdraw',
                 const msg = {
                     from: `${fromEmailName} <${fromEmailAddress}>`,
                     to: user.email,
-                    subject: 'Withdraw is canceled',
-                    text: `Withdraw is canceled`,
+                    subject: 'Withdraw is cancelled',
+                    text: `Withdraw is cancelled`,
                     html: simpleresponsive(
                         `Hi <b>${user.email}</b>.
                         <br><br>
-                        Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.
+                        Just a quick reminder that withdraw from your PayPerWin account was cancelled. You can find out how much is in your PAYPER WIN account by logging in now.
                         <br><br>`),
                 };
                 sgMail.send(msg).catch(error => {
@@ -321,7 +321,7 @@ tripleARouter.post('/withdraw',
                 });
             }
             if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.withdraw_confirmation.sms)) {
-                sendSMS('Just a quick reminder that withdraw from your PayPerWin account was canceled. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
+                sendSMS('Just a quick reminder that withdraw from your PayPerWin account was cancelled. You can find out how much is in your PAYPER WIN account by logging in now.', user.phone);
             }
             return res.json({ success: true });
         } else {

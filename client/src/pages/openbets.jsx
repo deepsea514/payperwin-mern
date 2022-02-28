@@ -268,7 +268,7 @@ class OpenBets extends Component {
                         submitting: false,
                         bets: bets.filter(bet => bet._id != cancelBet._id)
                     });
-                    showSuccessToast('Successfully canceled a bet.');
+                    showSuccessToast('Successfully cancelled a bet.');
                     getUser();
                     return;
                 }
