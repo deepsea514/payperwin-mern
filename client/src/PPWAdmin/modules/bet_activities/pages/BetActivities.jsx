@@ -128,41 +128,50 @@ class BetActivities extends React.Component {
                             <Dropdown.Item onClick={() => this.setState({ detailId: bet })}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
-                            {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
-                                <>
-                                    <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
-                                        <i className="fas fa-trash"></i>&nbsp; Delete
+                            {bet.origin == 'other' && <>
+                                <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
+                                    <i className="fas fa-trash"></i>&nbsp; Delete
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={() => this.setState({ cancelId: bet._id })}>
+                                    <i className="fa fa-times"></i>&nbsp; Cancel
+                                </Dropdown.Item>
+                            </>}
+                            {bet.origin != 'other' && <>
+                                {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
+                                    <>
+                                        <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
+                                            <i className="fas fa-trash"></i>&nbsp; Delete
+                                        </Dropdown.Item>
+                                        {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ cancelId: bet._id })}>
+                                            <i className="fa fa-times"></i>&nbsp; Cancel
+                                        </Dropdown.Item>}
+                                        {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
+                                            <i className="fas fa-check"></i>&nbsp; Settle
+                                        </Dropdown.Item>}
+                                        {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ removeParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                            <i className="fas fa-times"></i>&nbsp; Remove a Game
+                                        </Dropdown.Item>}
+                                        {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                            <i className="fas fa-check"></i>&nbsp; Settle
+                                        </Dropdown.Item>}
+                                    </>}
+
+                                {['Settled - Win', 'Settled - Lose', 'Draw'].includes(bet.status) && !bet.isParlay &&
+                                    <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
+                                        <i className="fas fa-wrench"></i>&nbsp; Fix Bet
                                     </Dropdown.Item>
-                                    {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ cancelId: bet._id })}>
-                                        <i className="fa fa-times"></i>&nbsp; Cancel
+                                }
+                                {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
+                                    <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
+                                        <i className="fas fa-link"></i>&nbsp; Manual Match
                                     </Dropdown.Item>}
-                                    {!bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
-                                        <i className="fas fa-check"></i>&nbsp; Settle
-                                    </Dropdown.Item>}
-                                    {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ removeParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
-                                        <i className="fas fa-times"></i>&nbsp; Remove a Game
-                                    </Dropdown.Item>}
-                                    {bet.isParlay && <Dropdown.Item onClick={() => this.setState({ settleParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
-                                        <i className="fas fa-check"></i>&nbsp; Settle
-                                    </Dropdown.Item>}
-                                </>}
 
-                            {['Settled - Win', 'Settled - Lose', 'Draw'].includes(bet.status) && !bet.isParlay &&
-                                <Dropdown.Item onClick={() => this.setState({ fixBetId: { id: bet._id, teamA: bet.teamA.name, teamB: bet.teamB.name } })}>
-                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
-                                </Dropdown.Item>
-                            }
-                            {['Pending', 'Partial Match', 'Partial Accepted'].includes(bet.status) &&
-                                <Dropdown.Item onClick={() => this.setState({ matchId: bet._id })}>
-                                    <i className="fas fa-link"></i>&nbsp; Manual Match
-                                </Dropdown.Item>}
-
-                            {['Settled - Win', 'Settled - Lose'].includes(bet.status) && bet.isParlay &&
-                                <Dropdown.Item onClick={() => this.setState({ fixParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
-                                    <i className="fas fa-wrench"></i>&nbsp; Fix Bet
-                                </Dropdown.Item>
-                            }
-
+                                {['Settled - Win', 'Settled - Lose'].includes(bet.status) && bet.isParlay &&
+                                    <Dropdown.Item onClick={() => this.setState({ fixParlayId: { id: bet._id, parlayQuery: bet.parlayQuery } })}>
+                                        <i className="fas fa-wrench"></i>&nbsp; Fix Bet
+                                    </Dropdown.Item>
+                                }
+                            </>}
                         </Dropdown.Menu>
                     </Dropdown>
                 </td>

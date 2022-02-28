@@ -5353,7 +5353,10 @@ expressApp.post(
             if (!bet) {
                 return res.json({ success: false, error: 'Cannot cancel a bet. Not found.' });
             }
-            const { matchStartDate, isParlay, bet: betAmount, pick, matchingStatus } = bet;
+            const { matchStartDate, isParlay, bet: betAmount, pick, origin } = bet;
+            if(origin == 'other') {
+                return res.json({ success: false, error: 'Cannot cancel a custom Bet.' });
+            }
             if (new Date().getTime() > new Date(matchStartDate).getTime()) {
                 return res.json({ success: false, error: 'Cannot cancel a bet. Game already started.' });
             }
