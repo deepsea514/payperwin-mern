@@ -1038,6 +1038,7 @@ expressApp.post(
                                     lineId: lineId,
                                     origin: origin,
                                     payableToWin: toWin,
+                                    event: event._id
                                 });
                                 await LoyaltyLog.create({
                                     user: user._id,
@@ -2817,7 +2818,8 @@ expressApp.post(
             .find(searchObj)
             .sort({ createdAt: -1 })
             .skip(page * perPage)
-            .limit(perPage);
+            .limit(perPage)
+            .populate('event');
         res.json(bets);
 
     },

@@ -669,7 +669,7 @@ class App extends Component {
                                                 <Redirect to="/" from="*" />
                                             </Switch>
                                         </div>
-                                        <div className="col-md-3 side-bar">
+                                        <div className="col-lg-3 col-sm-12 mt-lg-0 mt-sm-2 px-lg-2 p-sm-0 side-bar">
                                             <ErrorBoundary>
                                                 {!sidebarShowAccountLinks &&
                                                     <BetSlip
