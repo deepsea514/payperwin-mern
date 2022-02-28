@@ -3,9 +3,10 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dayjs from 'dayjs';
 import sportNameImage from "../helpers/sportNameImage";
-import { getBets } from '../redux/services';
+import { getBets, voteEvent } from '../redux/services';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { showErrorToast, showSuccessToast } from '../libs/toast';
 
 export default class CustomBets extends Component {
     constructor(props) {
@@ -76,6 +77,35 @@ export default class CustomBets extends Component {
         }
     }
 
+    voteEvent = (bet_id, event_id, pick) => {
+        voteEvent(event_id, pick)
+            .then(({ data }) => {
+                const { success, error, votes } = data;
+                if (success) {
+                    const { bets } = this.state;
+                    this.setState({
+                        bets: bets.map(bet => {
+                            if (bet._id == bet_id) {
+                                return {
+                                    ...bet,
+                                    event: {
+                                        ...bet.event,
+                                        votes: votes
+                                    }
+                                }
+                            }
+                            return bet;
+                        })
+                    })
+                } else {
+                    showErrorToast(error);
+                }
+            })
+            .catch(error => {
+                showErrorToast('Cannot vote on this event. Please try again later.');
+            })
+    }
+
     render() {
         const { loading, error, bets } = this.state;
         const { user } = this.props;
@@ -110,11 +140,13 @@ export default class CustomBets extends Component {
                             createdAt,
                             status,
                             credited,
-                            payableToWin,
-                            matchingStatus,
+                            event,
                             lineQuery,
+                            pick,
                         } = betObj;
+                        const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
                         const sportName = "Other";
+                        const gameEnded = new Date(matchStartDate).getTime() <= new Date().getTime()
                         return (
                             <div className="open-bets" key={_id}>
                                 <div className="open-bets-flex">
@@ -158,6 +190,23 @@ export default class CustomBets extends Component {
                                             <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
                                         </div>
                                     </div>
+                                    {event && gameEnded && <div className='d-flex mt-1'>
+                                        {event.options.map((option, index) => ((voted || status != 'Accepted') ?
+                                            (
+                                                <span key={index}
+                                                    className={`label label-lg label-outline-success label-inline ${index && 'ml-2'}`}>
+                                                    {option} ({event.votes && event.votes[index] ? event.votes && event.votes[index].length : 0})
+                                                </span>
+                                            ) :
+                                            (
+                                                <span key={index}
+                                                    onClick={() => this.voteEvent(bet._id, event._id, index)}
+                                                    className={`label label-lg label-info label-inline ${index && 'ml-2'} cursor-pointer`}>
+                                                    {option} ({event.votes && event.votes[index] ? event.votes && event.votes[index].length : 0})
+                                                </span>
+                                            )
+                                        ))}
+                                    </div>}
                                     {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                     {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}

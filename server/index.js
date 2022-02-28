@@ -5659,6 +5659,50 @@ expressApp.post(
     }
 )
 
+expressApp.post(
+    '/events/:event_id/vote',
+    isAuthenticated,
+    async (req, res) => {
+        const { pick } = req.body;
+        const { event_id } = req.params;
+        const user = req.user;
+        try {
+            const bet = await Bet.findOne({
+                event: event_id,
+                userId: user._id
+            });
+            if (!bet) {
+                return res.json({ success: false, error: 'Cannot vote on this event. Bet Not Found.' })
+            }
+            const event = await Event.findById(event_id);
+            if (!event) {
+                return res.json({ success: false, error: 'Cannot vote on this event. Custom Event Not Found.' })
+            }
+
+            // if (new Date(event.endDate).getTime() > new Date().getTime()) {
+            //     return res.json({ success: false, error: 'Cannot vote on this event. You should try after the event ended.' })
+            // }
+
+            let votes = event.votes;
+            if (!votes) votes = [];
+            if (!votes[pick]) votes[pick] = [];
+
+            const exists = votes.find(vote => {
+                return vote && vote.find(voted => voted.toString() == user._id.toString())
+            });
+            if (exists) {
+                return res.json({ success: false, error: 'Cannot vote on this event. Already Voted.' })
+            }
+
+            votes[pick] = [...votes[pick], user._id]
+            await event.update({ votes });
+            return res.json({ success: true, votes: votes })
+        } catch (erorr) {
+            return res.json({ success: false, error: 'Cannot vote on this event. Internal Server Error.' })
+        }
+    }
+)
+
 // Router
 expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
