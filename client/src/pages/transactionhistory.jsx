@@ -93,6 +93,10 @@ class TransactionHistory extends Component {
                 return '-';
             case 'unlock_event':
                 return '+';
+            case 'win_event':
+                return '+';
+            case 'lose_event':
+                return '-';
             default:
                 return '';
         }
@@ -138,6 +142,10 @@ class TransactionHistory extends Component {
                 return 'Lock bet amount for a custom bet.';
             case 'unlock_event':
                 return 'Unlock bet amount for a custom bet.';
+            case 'win_event':
+                return 'Credit win amount in a custom bet.';
+            case 'lose_event':
+                return 'Debit lose amount in a custom bet.';
             default:
                 return '';
         }

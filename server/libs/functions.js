@@ -276,7 +276,7 @@ const getLinePoints = (pickName, pick, lineQuery) => {
 }
 
 const sendBetWinConfirmEmail = async (user, bet) => {
-    const { payableToWin, isParlay, bet: betAmount, pickOdds, teamA, teamB } = bet;
+    const { payableToWin, isParlay, bet: betAmount, pickOdds, teamA, teamB, lineQuery, origin } = bet;
     const numberOdds = Number(Number(pickOdds).toFixed(0));
     const preference = await Preference.findOne({ user: user._id });
     if (!preference || !preference.notification_settings || preference.notification_settings.win_confirmation.email) {
@@ -290,7 +290,7 @@ const sendBetWinConfirmEmail = async (user, bet) => {
                         Congratulations! You won $${Number(payableToWin).toFixed(2)}.
                     </p>
                     <ul>
-                        <li><b>Game:</b> ${isParlay ? 'Parlay Bet' : `${teamA.name} VS ${teamB.name}`}</li>
+                        <li><b>Game:</b> ${origin == 'other' ? lineQuery.eventName : (isParlay ? 'Parlay Bet' : `${teamA.name} VS ${teamB.name}`)}</li>
                         <li><b>Wager:</b> $${Number(betAmount).toFixed(2)}</li>
                         <li><b>Odds:</b> ${numberOdds > 0 ? '+' + numberOdds : numberOdds}</li>
                     </ul>
