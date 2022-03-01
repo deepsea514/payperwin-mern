@@ -5050,14 +5050,107 @@ adminRouter.post(
             if (!event) {
                 return res.status(404).json({ error: 'Can\'t find events.' });
             }
-            if ((new Date(event.startDate)).getTime() > (new Date()).getTime()) {
-                return res.status(404).json({ error: 'Event is not started yet.' });
+            if ((new Date(event.endDate)).getTime() > (new Date()).getTime()) {
+                return res.status(404).json({ error: 'Event is not confirmed yet.' });
             }
             if (event.status == EventStatus['settled'].value || event.status == EventStatus['cancelled'].value) {
                 return res.status(404).json({ error: 'Event is already finished.' });
             }
+            const { winner } = req.body;
+            if (!!!winner) {
+                return res.status(404).json({ error: 'You should choose the winner.' });
+            }
 
-            res.status(200).json({ success: true });
+            const bets = await Bet.find({ event: event._id });
+            let lossAmount = 0, winAmount = 0;
+            for (const bet of bets) {
+                const user = await User.findById(bet.userId);
+                if (bet.pick == Number(winner)) {
+                    lossAmount += bet.bet;
+                    const betFee = bet.bet * BetFee;
+                    await bet.update({
+                        status: 'Settled - Win',
+                        credited: bet.bet * 2,
+                        fee: betFee,
+                    });
+                    if (user) {
+                        await user.update({ $inc: { balance: bet.bet * 2 - betFee } });
+                        const afterBalance = user.balance + bet.bet * 2;
+                        await FinancialLog.create({
+                            financialtype: 'betwon',
+                            uniqid: `BW${ID()}`,
+                            user: bet.userId,
+                            betId: bet._id,
+                            amount: bet.bet * 2,
+                            method: 'betwon',
+                            status: FinancialStatus.success,
+                            beforeBalance: user.balance,
+                            afterBalance: afterBalance
+                        });
+                        await FinancialLog.create({
+                            financialtype: 'betfee',
+                            uniqid: `BF${ID()}`,
+                            user: bet.userId,
+                            betId: bet._id,
+                            amount: betFee,
+                            method: 'betfee',
+                            status: FinancialStatus.success,
+                            beforeBalance: afterBalance,
+                            afterBalance: afterBalance - betFee
+                        });
+                        sendBetWinConfirmEmail(user, bet);
+                    }
+                } else {
+                    await bet.update({ status: 'Settled - Lose' });
+                    winAmount += bet.bet;
+                    if (user) {
+                        sendBetLoseConfirmEmail(user, bet.bet)
+                    }
+                }
+            }
+            const user = await User.findById(event.user);
+            if (user) {
+                await FinancialLog.create({
+                    financialtype: 'unlock_event',
+                    uniqid: `ULE${ID()}`,
+                    user: event.user,
+                    amount: event.maximumRisk,
+                    method: 'unlock_event',
+                    status: FinancialStatus.success,
+                    beforeBalance: user.balance,
+                    afterBalance: user.balance + event.maximumRisk
+                })
+                let beforeBalance = user.balance + event.maximumRisk;
+                if (lossAmount > 0) {
+                    await FinancialLog.create({
+                        financialtype: 'lose_event',
+                        uniqid: `LE${ID()}`,
+                        user: event.user,
+                        amount: lossAmount,
+                        method: 'lose_event',
+                        status: FinancialStatus.success,
+                        beforeBalance: beforeBalance,
+                        afterBalance: beforeBalance - lossAmount
+                    })
+                    beforeBalance -= lossAmount;
+                }
+                if (winAmount > 0) {
+                    await FinancialLog.create({
+                        financialtype: 'win_event',
+                        uniqid: `WE${ID()}`,
+                        user: event.user,
+                        amount: winAmount,
+                        method: 'win_event',
+                        status: FinancialStatus.success,
+                        beforeBalance: beforeBalance,
+                        afterBalance: beforeBalance + winAmount
+                    })
+                    beforeBalance += winAmount;
+                }
+                await user.update({ balance: Number(beforeBalance.toFixed(2)) })
+            }
+            await event.update({ status: EventStatus.settled.value })
+            return res.status(200).json({ success: true });
         } catch (error) {
             console.error(error);
             res.status(404).json({ error: 'Can\'t save events.' });
@@ -5134,7 +5227,7 @@ adminRouter.post(
             if (user) {
                 await FinancialLog.create({
                     financialtype: 'unlock_event',
-                    uniqid: `BC${ID()}`,
+                    uniqid: `ULE${ID()}`,
                     user: event.user,
                     amount: event.maximumRisk,
                     method: 'unlock_event',

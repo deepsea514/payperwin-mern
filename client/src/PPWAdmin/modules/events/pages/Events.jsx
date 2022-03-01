@@ -5,8 +5,9 @@ import { connect } from "react-redux";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import dateformat from "dateformat";
-import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
-import { cancelEvent, editEvent } from "../redux/services";
+import { Dropdown, Button, Modal } from "react-bootstrap";
+import { cancelEvent, editEvent, settleEvent } from "../redux/services";
+import SettleEventModal from '../components/SettleEventModal';
 import config from "../../../../../../config.json";
 const EventStatus = config.EventStatus;
 
@@ -18,6 +19,7 @@ class Events extends React.Component {
             perPage: 25,
             cancelId: null,
             approveId: null,
+            settleId: null,
             modal: false,
             resMessage: '',
             modalvariant: ''
@@ -59,8 +61,9 @@ class Events extends React.Component {
             <tr key={index}>
                 <td>{event.name}</td>
                 <td>{event.uniqueid}</td>
-                <td>{dateformat(new Date(event.startDate), "default")}</td>
-                <td>{dateformat(new Date(event.endDate), "default")}</td>
+                <td>{event.user?.email}</td>
+                <td>{dateformat(new Date(event.startDate), "ddd, mmm dd, yyyy, h:MM TT")}</td>
+                <td>{dateformat(new Date(event.endDate), "ddd, mmm dd, yyyy, h:MM TT")}</td>
                 <td>{this.getVisible(event.public)}</td>
                 <td>{this.getApproved(event.approved)}</td>
                 <td>{this.getStatus(event)}</td>
@@ -71,7 +74,7 @@ class Events extends React.Component {
 
                     <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
                         {/* <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item> */}
-                        {/* <Dropdown.Item as={Link} to={`/settle/${event._id}`}><i className="fas fa-check"></i>&nbsp; Settle </Dropdown.Item> */}
+                        <Dropdown.Item onClick={() => this.setState({ settleId: event })}><i className="fas fa-check"></i>&nbsp; Settle Event</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
                     </Dropdown.Menu>
@@ -155,8 +158,20 @@ class Events extends React.Component {
             })
     }
 
+    onSettleEvent = (values, formik) => {
+        const { settleId } = this.state;
+        settleEvent(settleId._id, values)
+            .then(() => {
+                getEvents();
+                this.setState({ modal: true, settleId: null, resMessage: "Successfully settled!", modalvariant: "success" });
+            })
+            .catch(() => {
+                this.setState({ modal: true, settleId: null, resMessage: "Settle Failed!", modalvariant: "danger" });
+            })
+    }
+
     render() {
-        const { perPage, cancelId, approveId, modal, resMessage, modalvariant } = this.state;
+        const { perPage, cancelId, approveId, modal, resMessage, modalvariant, settleId } = this.state;
         const { total, currentPage, filter } = this.props;
         let totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
@@ -197,6 +212,7 @@ class Events extends React.Component {
                                         <tr>
                                             <th scope="col">Name Of Event</th>
                                             <th scope="col">Unique Id</th>
+                                            <th scope="col">Creator</th>
                                             <th scope="col">Start Date/Time</th>
                                             <th scope="col">End Date/Time</th>
                                             <th scope="col">Visiblity</th>
@@ -254,6 +270,10 @@ class Events extends React.Component {
                                 </Button>
                             </Modal.Footer>
                         </Modal>
+                        {settleId != null && <SettleEventModal event={settleId}
+                            show={settleId != null}
+                            onHide={() => this.setState({ settleId: null })}
+                            onSubmit={this.onSettleEvent} />}
                     </div>
                 </div>
             </div>

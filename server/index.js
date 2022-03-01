@@ -5679,9 +5679,9 @@ expressApp.post(
                 return res.json({ success: false, error: 'Cannot vote on this event. Custom Event Not Found.' })
             }
 
-            // if (new Date(event.endDate).getTime() > new Date().getTime()) {
-            //     return res.json({ success: false, error: 'Cannot vote on this event. You should try after the event ended.' })
-            // }
+            if (new Date(event.endDate).getTime() > new Date().getTime()) {
+                return res.json({ success: false, error: 'Cannot vote on this event. You should try after the event ended.' })
+            }
 
             let votes = event.votes;
             if (!votes) votes = [];
