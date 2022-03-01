@@ -58,7 +58,7 @@ class Others extends Component {
             <div className="content mt-2 detailed-lines">
                 <div className="tab-content" >
                     {data.map((event, index) => {
-                        const { startDate, name, options, uniqueid, _id } = event;
+                        const { endDate, name, options, uniqueid, _id } = event;
 
                         return (
                             <div key={index} className="mt-2">
@@ -69,7 +69,7 @@ class Others extends Component {
                                     marginBottom: "3px"
                                 }}>
                                     <div style={{ fontSize: "11px", color: "#FFF" }}>
-                                        {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
+                                        {timeHelper.convertTimeEventDate(new Date(endDate), timezone)}
                                     </div>
                                 </div>
                                 <div>
