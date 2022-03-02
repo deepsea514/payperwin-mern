@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import convertOdds from '../helpers/convertOdds';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 class BetBasic extends Component {
@@ -93,20 +92,14 @@ class BetBasic extends Component {
                         <i className="fal fa-times" onClick={() => removeBet(lineId, type, pick, index, subtype)} />
                     </div>
                     <div className="bet-type-league">
-                        {lineQuery.type == 'moneyline' &&
-                            'The money line is simply choosing the outright winner, which team will win the the game.'
-                        }
-                        {lineQuery.type == 'spread' &&
-                            'The spread, also referred to as the line, is used to even the odds between two unevenly matched teams.'
-                        }
-                        {lineQuery.type == 'total' &&
-                            'This is a bet on the total number of points scored by both teams.'
-                        }
+                        {lineQuery.type == 'moneyline' && <FormattedMessage id="COMPONENTS.MONEYLINE_EXPLANATION" />}
+                        {lineQuery.type == 'spread' && <FormattedMessage id="COMPONENTS.SPREAD_EXPLANATION_SHORT" />}
+                        {lineQuery.type == 'total' && <FormattedMessage id="COMPONENTS.TOTAL_EXPLANATION" />}
                     </div>
                     <div className='mt-3'>
-                        {lineQuery.type == 'moneyline' && 'STEP 1: GUESS WHO WINS'}
-                        {lineQuery.type == 'spread' && 'STEP 1: CHOOSE THE POINTS'}
-                        {lineQuery.type == 'total' && 'STEP 1: GUESS THE TOTAL SCORE'}
+                        {lineQuery.type == 'moneyline' && <FormattedMessage id="COMPONENTS.BET_STEP1_ML" />}
+                        {lineQuery.type == 'spread' && <FormattedMessage id="COMPONENTS.BET_STEP1_SPREAD" />}
+                        {lineQuery.type == 'total' && <FormattedMessage id="COMPONENTS.BET_STEP1_TOTAL" />}
                     </div>
                     <div className='d-flex justify-content-center'>
                         <span className={`bet-type-pick ${pick == 'home' ? 'selected' : ''}`} onClick={() => updateBet(
@@ -125,7 +118,7 @@ class BetBasic extends Component {
                         </span>
                     </div>
                     {pick !== null && <>
-                        <div className='mt-3'>STEP 2: ENTER YOUR BET AMOUNT</div>
+                        <div className='mt-3'><FormattedMessage id="COMPONENTS.BET_STEP2" /></div>
                         <div>
                             <input
                                 className="bet-stake full-width"

@@ -314,7 +314,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {singleDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Signle Bet is temporary unavailable.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.SINGLE_BET_UNAVAILABLE" /></b></div>
                                     </div>
                                 </div>}
                                 {betSlip.length > 0 ?
@@ -369,7 +369,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {parlayDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Parlay Bet is temporary unavailable.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.PARLAY_BET_UNAVAILABLE" /></b></div>
                                     </div>
                                 </div>}
                                 {sportsBetSlip.length > 1 ?
@@ -403,7 +403,7 @@ class BetSlip extends Component {
                                 </div>}
                                 {teaserDisabled && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '14px' }}>
-                                        <div><b><i className="fas fa-info-circle" /> Teaser Bet is temporary unavailable.</b></div>
+                                        <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.TEASER_BET_UNAVAILABLE" /></b></div>
                                     </div>
                                 </div>}
                                 {teaserBetSlip.betSlip.length > 0 ?
@@ -416,7 +416,7 @@ class BetSlip extends Component {
                                     />
                                     : (
                                         <div className="no-bets teaser">
-                                            <h4>To place a teaser bet, add a minimum of two selections to the bet slip from Football or Basketball matchups.</h4>
+                                            <h4><FormattedMessage id="COMPONENTS.TEASER_MINUMUM" /></h4>
                                             <ul className="teaser-links">
                                                 <li><Link to='/sport/basketball/teaser' onClick={() => toggleField('openBetSlipMenu', false)}><img src='/images/sports/basketball.png' className='teaser-image' /> Basketball Teasers</Link></li>
                                                 <li><Link to="/sport/football/teaser" onClick={() => toggleField('openBetSlipMenu', false)}><img src="/images/sports/football.png" className='teaser-image' /> Football Teasers</Link></li>

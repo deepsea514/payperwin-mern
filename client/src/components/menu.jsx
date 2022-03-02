@@ -148,7 +148,7 @@ class Menu extends Component {
                                 <li className={`nav-item col-6 ${pathname === '/invite' ? 'active' : ''}`}>
                                     <Link to={{ pathname: '/invite' }} className="nav-link" onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-user-friends" />
-                                        <span>Refer A Friend</span>
+                                        <span><FormattedMessage id="COMPONENTS.REFER_FRIEND" /></span>
                                     </Link>
                                 </li>
                                 <li className={`nav-item col-6 ${pathname === '/how-it-works' ? 'active' : ''}`}>
@@ -168,7 +168,7 @@ class Menu extends Component {
                                         className="nav-link"
                                         onClick={() => toggleField('menuOpen')}>
                                         <i className="fas fa-chalkboard-teacher" />
-                                        Our Team
+                                        <FormattedMessage id="COMPONENTS.OUR_TEAM" />
                                     </Link>
                                 </li>
                                 <li className="nav-item col-6">

@@ -98,7 +98,6 @@ class HowTo extends Component {
                                 The odds are even and better than you will find anywhere else online.
                                 The only catch is you need some patience, you will need wait for peer to bet the opposite of you to make the bet complete.
                                 PAYPER WIN will take 5% from only the winner for facilitating the transaction and making sure you get paid.
-
                             </p>
                             <p>
                                 PAYPER WIN gurantees all winning bets will be paid.

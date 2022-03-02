@@ -4,6 +4,7 @@ import dateFormat from 'dateformat';
 import sportNameImage from '../../helpers/sportNameImage';
 import RenderBasicEvent from './renderBasicEvent';
 import RenderProEvent from './renderProEvent';
+import { FormattedMessage } from 'react-intl';
 
 const RenderLeagues = (props) => {
     const {
@@ -118,7 +119,7 @@ const RenderLeagues = (props) => {
             <div className="content">
                 {filteredLeagues.length > 0 ? filteredLeagues :
                     (
-                        <h3 className='no-games'>There are no games for the selected date. Please choose all or select a different league.</h3>
+                        <h3 className='no-games'><FormattedMessage id="COMPONENTS.NO_GAMES_IN_DATE" /></h3>
                     )}
             </div>
         </>

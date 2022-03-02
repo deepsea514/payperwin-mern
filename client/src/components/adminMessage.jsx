@@ -14,7 +14,7 @@ class AdminMessage extends Component {
                         </span>
                     </div>
                     <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark" onClick={() => onDismiss(message.updatedAt)}>
-                        <span>Dismiss</span>
+                        <span><FormattedMessage id="COMPONENTS.DISMISS" /></span>
                     </button>
                 </div>
             </div>
