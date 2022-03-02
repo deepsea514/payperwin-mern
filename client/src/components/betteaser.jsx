@@ -116,7 +116,7 @@ class BetTeaser extends Component {
                         )
                     })}
                     {teaserBetSlip.betSlip.length < 2 && <div className="bet-type-league py-2">
-                        <p>To place a Teasers bet you need a minimum of two bets on your Bet Slip.</p>
+                        <p><FormattedMessage id="COMPONENTS.TEASER_MINUMUM_SHORT" /></p>
                     </div>}
                 </div>
             </>

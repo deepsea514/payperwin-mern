@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as frontend from "../redux/reducer";
 import { getShortSportName } from '../libs/getSportName';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 const topLeagues = [
     {
@@ -127,10 +128,10 @@ class Highlights extends Component {
 
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
-                    <p className='promotion-header'>Peer-to-Peer Betting Exchange.<br /> Risk less Win more!</p>
+                    <p className='promotion-header'><FormattedMessage id="COMPONENTS.HIGHLIGHT_1" /><br /> <FormattedMessage id="COMPONENTS.HIGHLIGHT_2" /></p>
                     <div className='p-3 d-flex justify-content-between'>
                         <div className='promotion-botton-wrap' onClick={() => showPromotionAction(true)}>
-                            <div className='promotion-botton'><span>What's New</span></div>
+                            <div className='promotion-botton'><span><FormattedMessage id="COMPONENTS.WHATSNEW" /></span></div>
                         </div>
                         <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showViewModeModal')}>
                             <div className='promotion-botton'><span>{pro_mode ? 'Pro' : 'Basic'} View&nbsp;&nbsp;&nbsp;<i className='far fa-chevron-down' /></span></div>
@@ -138,10 +139,10 @@ class Highlights extends Component {
                     </div>
                     <div className='p-3 d-flex justify-content-between'>
                         <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showPrizeModal', true)}>
-                            <div className='promotion-botton'><span>Spin The Prize Wheel</span></div>
+                            <div className='promotion-botton'><span><FormattedMessage id="COMPONENTS.SPIN_WHEEL" /></span></div>
                         </div>
                         <Link className='promotion-botton-wrap' to="/invite">
-                            <div className='promotion-botton'><span>Refer A Friend & Win</span></div>
+                            <div className='promotion-botton'><span><FormattedMessage id="COMPONENTS.REFER_FRIEND_WIN" /></span></div>
                         </Link>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from 'react-intl';
 
 export default class BetCancelModal extends React.Component {
     render() {
@@ -9,15 +10,14 @@ export default class BetCancelModal extends React.Component {
                 <div className="col-in">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
-                        <b>Cancel a Bet.</b>
+                        <b><FormattedMessage id="COMPONENTS.CANCEL_BET_TITLE" /></b>
                         <hr />
                         <p>
-                            You can cancel a bet before the game starts with a 15% penalty.
-                            To cancel this bet, a ${(betAmount * 0.15).toFixed(2)} fee will be deducted from your original wager.
+                            <FormattedMessage id="COMPONENTS.CANCEL_BET_DES" values={{ amount: (betAmount * 0.15).toFixed(2) }} />
                         </p>
                         <div className="text-right">
-                            <button className={`form-button ${submitting ? 'is-loading' : ''}`} onClick={onProceed} disabled={submitting}> Proceed </button>
-                            <button className="form-button ml-2" onClick={onClose} disabled={submitting}> Cancel </button>
+                            <button className={`form-button ${submitting ? 'is-loading' : ''}`} onClick={onProceed} disabled={submitting}> <FormattedMessage id="COMPONENTS.PROCEED" /> </button>
+                            <button className="form-button ml-2" onClick={onClose} disabled={submitting}> <FormattedMessage id="PAGES.TRANSACTIONHISTORY.CANCEL" /> </button>
                         </div>
                     </div>
                 </div>

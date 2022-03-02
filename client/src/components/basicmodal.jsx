@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from 'react-intl';
 
 export default class BasicModal extends React.Component {
     getTitle = () => {
@@ -25,14 +26,13 @@ export default class BasicModal extends React.Component {
                         <b>{this.getTitle()}</b>
                         <hr />
                         {showHelp == 'moneyline' && <p>
-                            The money line is simply choosing the outright winner, which team will win the the game.
+                            <FormattedMessage id="COMPONENTS.MONEYLINE_EXPLANATION" />
                         </p>}
                         {showHelp == 'spread' && <p>
-                            The spread, also referred to as the line, is used to even the odds between two unevenly matched teams.
-                            Each team is + plus  or  - minus  points. The winner is based on the score with these points added or taken away, not the actual score.
+                            <FormattedMessage id="COMPONENTS.SPREAD_EXPLANATION" />
                         </p>}
                         {showHelp == 'total' && <p>
-                            This is a bet on the total number of points scored by both teams.
+                            <FormattedMessage id="COMPONENTS.TOTAL_EXPLANATION" />
                         </p>}
                         <div className="text-right">
                             <button className="form-button ml-2" onClick={onClose}> OK </button>

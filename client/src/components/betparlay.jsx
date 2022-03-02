@@ -74,7 +74,7 @@ class BetParlay extends Component {
                 </div>}
 
                 {correlated && <div className="bet-parlay-error-message">
-                    <div><i className="fas fa-info-circle" /> <b>“Correlated bets (bet against the spread and a moneyline bet from the same game) are not permitted for parlays</b></div>
+                    <div><i className="fas fa-info-circle" /> <b><FormattedMessage id="COMPONENTS.COREELATED_BET_MSG" /></b></div>
                 </div>}
 
                 <div className={`bet-parlay-container ${correlated ? 'bet-error' : (win > maxBetLimitTier ? 'bet-warn' : '')}`}>
@@ -105,7 +105,7 @@ class BetParlay extends Component {
                         />
                     </div>
                     <div className="bet-type-league mt-2"><FormattedMessage id="COMPONENTS.BET.MAXWIN" />: <span className="bet-max-win" onClick={() => this.handleChange({ target: { name: 'win', value: maxBetLimitTier } })}>CAD {maxBetLimitTier}</span></div>
-                    <div className="bet-type-league mt-2 text-warning">PAYPER WIN uses HIGH STAKER odds in parlay bets.</div>
+                    <div className="bet-type-league mt-2 text-warning"><FormattedMessage id="COMPONENTS.PPW_USE_HIGHSTAKER" /></div>
                     <div className='bet-divider' />
                     {betSlip.map((bet, betIdx) => {
                         const { name, type, subtype, index, league, sportName, pickName, lineQuery, lineId, originOdds, pick } = bet;
