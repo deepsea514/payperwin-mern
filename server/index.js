@@ -3336,7 +3336,7 @@ expressApp.get(
         try {
             if (id) {
                 const customBet = await Event.findOne({
-                    _id: id,
+                    uniqueid: id,
                     startDate: { $lte: new Date() },
                     endDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
