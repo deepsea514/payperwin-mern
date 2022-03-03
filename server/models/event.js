@@ -37,15 +37,13 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
         const msg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: user.email,
-            subject: 'Your custom bet is approved',
-            text: `Your custom bet is approved`,
+            subject: 'Custom Bet Approved - ' + name,
+            text: 'Custom Bet Approved - ' + name,
             html: simpleresponsive(
                 `Hi <b>${user.email}</b>.
-                        <br><br>
-                        Your custom bet for ${name} has been approved. You can invite your pals to bet with or against you by sharing this link ${betLink}.
-                        <br><br>
-                        Good luck!
-                    `,
+                <br><br>
+                Your customer bet for ${name} has been approved. Please <a target="_blank" href="${betLink}">click here</a> to view your custom bet. 
+                <br><br>`,
                 { href: betLink, name: 'View Custom Bet' }
             ),
         };
