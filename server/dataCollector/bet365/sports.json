@@ -70,5 +70,10 @@
         "id": 9,
         "name": "Boxing/MMA",
         "shortName": "boxing"
+    },
+    {
+        "id": 14,
+        "name": "Snooker",
+        "shortName": "snooker"
     }
 ]
