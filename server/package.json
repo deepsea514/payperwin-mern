@@ -49,6 +49,6 @@
     "server": "node index.js",
     "bet365UpdateLines": "node ./dataCollector/bet365/getAllSportsLines.js",
     "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js",
-    "getteams": "node ./dataCollector/getTeams/getTeams.js"
+    "getteams": "node ./dataCollector/bet365/getTeams.js"
   }
 }
