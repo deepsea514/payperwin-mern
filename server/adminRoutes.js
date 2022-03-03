@@ -3944,6 +3944,10 @@ adminRouter.post(
             if (existingCode) {
                 return res.json({ success: false, message: "Cannot create Autobet. Same Referral code exists." });
             }
+            const existingInvite = await User.findOne({ username: new RegExp(`^${data.referral_code}$`, 'i') });
+            if (existingInvite) {
+                return res.status(404).json({ error: 'Cannot create Autobet. Same Referral code already exists.' });
+            }
             await AutoBet.create(data);
             res.json({ success: true });
         } catch (error) {
@@ -4248,7 +4252,11 @@ adminRouter.patch(
 
             const existingCode = await Promotion.findOne({ name: new RegExp(`^${data.referral_code}$`, 'i') });
             if (existingCode) {
-                return res.status(404).json({ error: 'Same Referralcode already exists.' });
+                return res.status(404).json({ error: 'Same Referral code already exists.' });
+            }
+            const existingInvite = await User.findOne({ username: new RegExp(`^${data.referral_code}$`, 'i') });
+            if (existingInvite) {
+                return res.status(404).json({ error: 'Same Referral code already exists.' });
             }
 
             await autobet.update(data);
