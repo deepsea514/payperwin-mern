@@ -3,7 +3,6 @@ const Sport = require('../../models/sport');
 const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
 const ErrorLog = require("../../models/errorlog");
-const Team = require("../../models/team");
 //local helpers
 const config = require('../../../config.json');
 let sportsData = require('./sports.json')
