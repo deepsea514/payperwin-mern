@@ -13,9 +13,9 @@ const AlertDetails = () => {
             <b>How It Works:</b>
             <ol>
                 <li>Setup the custom bet (bet name, start/end date, maximum risk).</li>
-                <li>Set the wager options. All options payout +100 (or 2.0 in decimal odds) for the winners.</li>
+                <li>Set the bet options. All options payout +100 (or 2.0 in decimal odds) for the winners.</li>
                 <li>After the bet has ended, all bettors can vote for the correct result to determine the winning option.</li>
-                <li>Winners are paid out of the bet creator’s wallet. All wagers on the incorrect result will go to the bet creator.</li>
+                <li>Winners are paid out of the bet creator’s wallet minus the Payper Win fee. All bets with the incorrect result will go to the bet creator. </li>
                 <li>Submit the custom bet for approval by Payper Win.</li>
                 <li>Once your custom bet is approved, you will be notified by email and your bet will be available for betting.</li>
             </ol>
