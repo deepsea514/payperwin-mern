@@ -121,6 +121,13 @@ export default class CustomBets extends Component {
                     </Link>}
                 </div>
                 <br />
+                <p>
+                    Create your own bet and invite your friends to bet against you.
+                    The bet creator is the high stalker of the bet.
+                    You can set the maximum risk you’re willing to put up.
+                    All custom bets are subject to approval by PayPer Win before it’s available to accept the first bet.
+                    Click “Create Bet” to learn more.
+                </p>
                 <div>
                     {loading && <center><Preloader use={ThreeDots}
                         size={100}

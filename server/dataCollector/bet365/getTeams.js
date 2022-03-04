@@ -1,4 +1,4 @@
-const sportsData = require('../bet365/sports.json');
+const sportsData = require('./sports.json');
 const config = require('../../../config.json');
 
 const Team = require('../../models/team');

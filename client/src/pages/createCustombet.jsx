@@ -9,10 +9,17 @@ import { showErrorToast, showSuccessToast } from '../libs/toast';
 
 const AlertDetails = () => {
     return (
-        <p style={{ color: 'white', fontSize: '16px', marginTop: '20px' }}>
-            Create a custom bet to challenge your friends.
-            You create the wager and set the odds.
-            We will help you build a custom bet, just click Next.
+        <p style={{ color: 'white', fontSize: '14px', marginTop: '20px' }}>
+            <b>How It Works:</b>
+            <ol>
+                <li>Setup the custom bet (bet name, start/end date, maximum risk).</li>
+                <li>Set the bet options. All options payout +100 (or 2.0 in decimal odds) for the winners.</li>
+                <li>After the bet has ended, all bettors can vote for the correct result to determine the winning option.</li>
+                <li>Winners are paid out of the bet creator’s wallet minus the Payper Win fee. All bets with the incorrect result will go to the bet creator. </li>
+                <li>Submit the custom bet for approval by Payper Win.</li>
+                <li>Once your custom bet is approved, you will be notified by email and your bet will be available for betting.</li>
+            </ol>
+            Ready to create your own bet? Click NEXT.
         </p>
     )
 }
@@ -178,87 +185,80 @@ export default class CreateCustomBet extends Component {
                 </div>
                 <br />
                 <div>
-                    <div className='row'>
-                        <div className='col-md-6'>
-                            <img src='/images/login-right-panel.jpg' />
-                        </div>
-                        <div className='col-md-6'>
-                            <FormikWizard
-                                initialValues={{
-                                    name: "",
-                                    startDate: "",
-                                    endDate: "",
-                                    visibility: 'public',
-                                    maximumRisk: 0,
-                                    options: ["", ""],
-                                }}
-                                onSubmit={this.onSubmit}
-                                validateOnNext
-                                activeStepIndex={0}
-                                steps={[
-                                    { component: AlertDetails, },
-                                    {
-                                        component: EventDetails,
-                                        validationSchema: Yup.object().shape({
-                                            name: Yup.string()
-                                                .required("Event Name is required.")
-                                                .min(5, "Minumum 5 Symbols."),
-                                            startDate: Yup.string()
-                                                .required("Start Date is required.")
-                                                .nullable(),
-                                            endDate: Yup.string()
-                                                .required("End Date is required.")
-                                                .nullable(),
-                                            visibility: Yup.string(),
-                                            maximumRisk: Yup.number()
-                                                .required("Maximum Risk Amount is Required.")
-                                                .min(200, "Should be at least 200 CAD.")
-                                                .max(user.balance, "Insufficient Funds."),
-                                        })
-                                    },
-                                    {
-                                        component: OptionDetails,
-                                        validationSchema: Yup.object().shape({
-                                            options: Yup.array().of(Yup.string().required("Option Value is required.")),
-                                        })
-                                    }
-                                ]}>
-                                {({
-                                    currentStepIndex,
-                                    renderComponent,
-                                    handlePrev,
-                                    handleNext,
-                                    isNextDisabled,
-                                    isPrevDisabled,
-                                    isSubmitting
-                                }) => {
-                                    return (
-                                        <div>
-                                            {renderComponent()}
-                                            <div className='d-flex justify-content-between mt-3'>
-                                                <button
-                                                    className="loginButton ellipsis mediumButton dead-center"
-                                                    onClick={handlePrev}
-                                                    disabled={isPrevDisabled || isSubmitting}
-                                                    type="button">
-                                                    Back
-                                                </button>
-                                                <button
-                                                    className={`loginButton ellipsis mediumButton dead-center ${isSubmitting ? 'is-loading' : ''}`}
-                                                    disabled={isNextDisabled || isSubmitting}
-                                                    onClick={handleNext}
-                                                    type="button">
-                                                    {currentStepIndex === 2 ? "Finish" : "Next"}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
-                                }}
-                            </FormikWizard>
-                        </div>
-                    </div>
+                    <FormikWizard
+                        initialValues={{
+                            name: "",
+                            startDate: "",
+                            endDate: "",
+                            visibility: 'public',
+                            maximumRisk: 0,
+                            options: ["", ""],
+                        }}
+                        onSubmit={this.onSubmit}
+                        validateOnNext
+                        activeStepIndex={0}
+                        steps={[
+                            { component: AlertDetails, },
+                            {
+                                component: EventDetails,
+                                validationSchema: Yup.object().shape({
+                                    name: Yup.string()
+                                        .required("Event Name is required.")
+                                        .min(5, "Minumum 5 Symbols."),
+                                    startDate: Yup.string()
+                                        .required("Start Date is required.")
+                                        .nullable(),
+                                    endDate: Yup.string()
+                                        .required("End Date is required.")
+                                        .nullable(),
+                                    visibility: Yup.string(),
+                                    maximumRisk: Yup.number()
+                                        .required("Maximum Risk Amount is Required.")
+                                        .min(200, "Should be at least 200 CAD.")
+                                        .max(user.balance, "Insufficient Funds."),
+                                })
+                            },
+                            {
+                                component: OptionDetails,
+                                validationSchema: Yup.object().shape({
+                                    options: Yup.array().of(Yup.string().required("Option Value is required.")),
+                                })
+                            }
+                        ]}>
+                        {({
+                            currentStepIndex,
+                            renderComponent,
+                            handlePrev,
+                            handleNext,
+                            isNextDisabled,
+                            isPrevDisabled,
+                            isSubmitting
+                        }) => {
+                            return (
+                                <div>
+                                    {renderComponent()}
+                                    <div className='d-flex justify-content-between mt-3'>
+                                        <button
+                                            className="loginButton ellipsis mediumButton dead-center"
+                                            onClick={handlePrev}
+                                            disabled={isPrevDisabled || isSubmitting}
+                                            type="button">
+                                            Back
+                                        </button>
+                                        <button
+                                            className={`loginButton ellipsis mediumButton dead-center ${isSubmitting ? 'is-loading' : ''}`}
+                                            disabled={isNextDisabled || isSubmitting}
+                                            onClick={handleNext}
+                                            type="button">
+                                            {currentStepIndex === 2 ? "Finish" : "Next"}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        }}
+                    </FormikWizard>
                 </div>
-            </div >
+            </div>
         );
     }
 }
