@@ -118,64 +118,64 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
-const initState = {
-    country: 'Canada',
-    region: '',
-    email: '',
-    password: '',
-    cPassword: '',
-
-    title: 'Mr',
-    firstname: '',
-    lastname: '',
-    dateofbirth: '',
-
-    currency: 'CAD',
-    address: '',
-    address2: '',
-    city: '',
-    postalcode: '',
-    phone: '',
-    pro_mode: 'true',
-
-    securityquiz: '',
-    securityans: '',
-    referral_code: '',
-    agreeTerms: false,
-    agreePrivacy: false,
-    rcptchVerified: false,
-
-    errors: {},
-    touched: {
-        country: true,
-        region: false,
-        email: false,
-        password: false,
-        cPassword: false,
-
-        title: true,
-        firstname: false,
-        lastname: false,
-        dateofbirth: true,
-
-        currency: true,
-
-        // securityquiz: false,
-        // securityans: false,
-        referral_code: false,
-    },
-    activeStep: 0,
-    steps: ['1', '2'],
-    showPass: false,
-    showPassConfirm: false,
-};
-
 class Registration extends Component {
     constructor(props) {
         super(props);
         const { search } = window.location;
         const params = new URLSearchParams(search);
         const invite = params.get('invite');
+
+        const initState = {
+            country: 'Canada',
+            region: '',
+            email: '',
+            password: '',
+            cPassword: '',
+
+            title: 'Mr',
+            firstname: '',
+            lastname: '',
+            dateofbirth: '',
+
+            currency: 'CAD',
+            address: '',
+            address2: '',
+            city: '',
+            postalcode: '',
+            phone: '',
+            pro_mode: 'true',
+
+            securityquiz: '',
+            securityans: '',
+            referral_code: invite ? invite : '',
+            agreeTerms: false,
+            agreePrivacy: false,
+            rcptchVerified: false,
+
+            errors: {},
+            touched: {
+                country: true,
+                region: false,
+                email: false,
+                password: false,
+                cPassword: false,
+
+                title: true,
+                firstname: false,
+                lastname: false,
+                dateofbirth: true,
+
+                currency: true,
+
+                // securityquiz: false,
+                // securityans: false,
+                referral_code: false,
+            },
+            activeStep: 0,
+            steps: ['1', '2'],
+            showPass: false,
+            showPassConfirm: false,
+        };
         this.state = {
             ...initState,
             invite: invite,

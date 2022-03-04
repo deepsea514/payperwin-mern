@@ -149,6 +149,7 @@ export default class Login extends Component {
                                                 <div className="form-group">
                                                     <input className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(formik, "email")}`}
                                                         {...formik.getFieldProps("email")}
+                                                        autoComplete="off"
                                                         type="text" placeholder="email" name="email" />
                                                     {formik.touched.email && formik.errors.email ? (
                                                         <div className="invalid-feedback">
@@ -218,6 +219,7 @@ export default class Login extends Component {
                                                 <div className="form-group">
                                                     <input className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(formik, "_2fa_code")}`}
                                                         {...formik.getFieldProps("_2fa_code")}
+                                                        autoComplete="off"
                                                         type="text" placeholder="2FA Code" name="_2fa_code" />
                                                     {formik.touched._2fa_code && formik.errors._2fa_code ? (
                                                         <div className="invalid-feedback">

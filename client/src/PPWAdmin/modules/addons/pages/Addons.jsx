@@ -4,6 +4,7 @@ import TripleA from "../components/TripleA";
 import SendGrid from "../components/SendGrid";
 import Twilio from "../components/Twilio";
 import Bet365 from "../components/Bet365";
+import TicketEvolution from '../components/TicketEvolution';
 
 class Addons extends React.Component {
     constructor(props) {
@@ -36,6 +37,8 @@ class Addons extends React.Component {
                                     <PremierPay />
                                     <hr />
                                     <Twilio />
+                                    <hr />
+                                    <TicketEvolution />
                                     <hr />
                                 </div>
                             </div>

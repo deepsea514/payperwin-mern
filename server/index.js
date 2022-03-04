@@ -285,7 +285,7 @@ passport.use('local-signup', new LocalStrategy(
     async (req, email, password, done) => {
         const { username, firstname, lastname,
             country, currency, title, dateofbirth, region,
-            referral_code, invite, pro_mode } = req.body;
+            referral_code, pro_mode } = req.body;
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(async () => {
@@ -304,7 +304,7 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    bet_referral_code: referral_code, invite: invite ? invite : null,
+                    bet_referral_code: referral_code, invite: null,
                     roles: { registered: true },
                 };
 
@@ -364,6 +364,11 @@ passport.use('local-signup', new LocalStrategy(
                                     });
                                 }
                             }
+                        }
+                    } else {
+                        const inviteUser = await User.findOne({ username: new RegExp(`^${referral_code}$`, 'i') });
+                        if (inviteUser) {
+                            newUserObj.invite = referral_code
                         }
                     }
                 }
@@ -3336,7 +3341,7 @@ expressApp.get(
         try {
             if (id) {
                 const customBet = await Event.findOne({
-                    _id: id,
+                    uniqueid: id,
                     startDate: { $lte: new Date() },
                     endDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
@@ -3444,6 +3449,10 @@ expressApp.get('/referralCodeExist', async (req, res) => {
             if (logs.length < promotion.number_of_usage)
                 return res.json({ success: 1 });
             return res.json({ success: 0, message: "Promotion usage reached to limit." });
+        }
+        const existingInvite = await User.findOne({ username: new RegExp(`^${referral_code}$`, 'i') });
+        if (existingInvite) {
+            return res.json({ success: 1 });
         }
         return res.json({ success: 0, message: "Can't find Referral Code." });
     } catch (error) {

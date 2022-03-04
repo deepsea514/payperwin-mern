@@ -16,7 +16,8 @@ const sportImages = {
     'Badminton': '/images/sports/badminton.png',
     'E-sports': '/images/sports/esports.png',
     'Football': '/images/sports/football.png',
-    'Other': '/images/sports/other.png'
+    'Other': '/images/sports/other.png',
+    'Snooker': '/images/sports/snooker.png',
 };
 
 const leagueImages = {
