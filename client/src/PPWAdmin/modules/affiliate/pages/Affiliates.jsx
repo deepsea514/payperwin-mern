@@ -48,7 +48,7 @@ class Affiliates extends React.Component {
             return (
                 <tr>
                     <td colSpan="11" align="center">
-                        <h3>No Wager Feeds</h3>
+                        <h3>No Affiliate Users</h3>
                     </td>
                 </tr>
             );
@@ -74,7 +74,7 @@ class Affiliates extends React.Component {
                     <div className="card card-custom gutter-b">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Wager Feeds</h3>
+                                <h3 className="card-label">Affiliate Users</h3>
                             </div>
                         </div>
                         <div className="card-body">
