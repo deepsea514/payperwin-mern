@@ -6,25 +6,14 @@ export const actionTypes = {
 };
 
 const initialState = {
-    wager_feeds: [],
+    affiliates: [],
     total: 0,
     currentPage: 1,
     loading: false,
-    filter: {
-        // datefrom: '',
-        // dateto: '',
-        // sport: '',
-        // status: '',
-        // minamount: '',
-        // maxamount: '',
-        // house: '',
-        // match: '',
-    },
-    // sports: [],
 };
 
 export const reducer = persistReducer(
-    { storage, key: "wager-feeds", whitelist: ['filter'] },
+    { storage, key: "affiliates", whitelist: ['filter'] },
     (state = initialState, action) => {
         switch (action.type) {
             default:
