@@ -208,7 +208,7 @@ class TransactionHistory extends Component {
                     <div><small>Parlay Bet</small> - <small>{transaction.betDetails.transactionID}</small></div>
                 )
             }
-            if (transaction.betDetails.origin == 'other') {
+            if (transaction.betDetails.origin == 'custom') {
                 return (
                     <div><small>{transaction.betDetails.lineQuery.eventName}</small> - <small>{transaction.betDetails.transactionID}</small></div>
                 )

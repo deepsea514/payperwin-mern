@@ -966,7 +966,7 @@ expressApp.post(
                 sportsbook,
                 live,
             } = bet;
-            if (origin == 'other') {
+            if (origin == 'custom') {
                 const event = await Event.findOne({ uniqueid: lineId });
                 if (!event) {
                     errors.push(`${pickName} wager could not be placed. Event Not Found.`);
@@ -977,7 +977,7 @@ expressApp.post(
                 const existingBet = await Bet.findOne({
                     userId: user._id,
                     "lineQuery.lineId": uniqueid,
-                    "lineQuery.sportName": 'Other',
+                    "lineQuery.sportName": 'Custom Bet',
                 });
                 if (existingBet) {
                     errors.push(`${eventName} wager could not be placed. Already placed a bet on this line.`);
@@ -988,7 +988,7 @@ expressApp.post(
                     let totalBetOnEvent = await Bet.aggregate({
                         $match: {
                             "lineQuery.lineId": uniqueid,
-                            "lineQuery.sportName": 'Other',
+                            "lineQuery.sportName": 'Custom Bet',
                         }
                     }, {
                         $group: {
@@ -1549,7 +1549,7 @@ expressApp.post(
                 errors.push(`${pickName} @${originOdds[pick]} wager could not be placed. Query Incomplete.`);
                 break;
             }
-            if (origin == 'other') {
+            if (origin == 'custom') {
                 errors.push(`Can't place parlay bets on custome events.`);
                 break;
             }
@@ -1866,7 +1866,7 @@ expressApp.post(
                 errors.push(`${pickName} wager could not be placed. Line Mismatch.`);
                 break;
             }
-            if (origin == 'other') {
+            if (origin == 'custom') {
                 errors.push(`Can't place parlay bets on custome events.`);
                 break;
             }
@@ -2781,7 +2781,7 @@ expressApp.post(
             searchObj.status = { $in: ['Settled - Win', 'Settled - Lose', 'Cancelled', 'Draw'] }
         } else if (custom) {
             searchObj.status = 'Accepted';
-            searchObj.origin = 'other';
+            searchObj.origin = 'custom';
         }
 
         if (daterange) {
@@ -3324,8 +3324,8 @@ expressApp.get(
             sports.push({
                 eventCount: customBets,
                 hasOfferings: true,
-                name: "Other",
-                shortName: 'other',
+                name: "Custom Bet",
+                shortName: 'custom-bet',
             });
             res.json(sports);
         } else {
@@ -3335,7 +3335,7 @@ expressApp.get(
 );
 
 expressApp.get(
-    '/others',
+    '/custombets',
     async (req, res) => {
         const { id } = req.query;
         try {
@@ -4751,7 +4751,7 @@ expressApp.get(
             const bets = await Bet.find({
                 userId: user._id,
                 updatedAt: dateObj,
-                orgin: { $ne: 'other' }
+                orgin: { $ne: 'custom' }
             }).sort({ updatedAt: -1 });
 
             let betamount = await Bet.aggregate([
@@ -4759,7 +4759,7 @@ expressApp.get(
                     $match: {
                         userId: user._id,
                         updatedAt: dateObj,
-                        orgin: { $ne: 'other' }
+                        orgin: { $ne: 'custom' }
                     }
                 },
                 {
@@ -4777,7 +4777,7 @@ expressApp.get(
             const wincount = await Bet.find({
                 userId: user._id,
                 updatedAt: dateObj,
-                orgin: { $ne: 'other' },
+                orgin: { $ne: 'custom' },
                 status: 'Settled - Win'
             }).count();
 
@@ -4805,7 +4805,7 @@ expressApp.get(
                     $match: {
                         userId: user._id,
                         updatedAt: dateObj,
-                        orgin: { $ne: 'other' },
+                        orgin: { $ne: 'custom' },
                         status: 'Settled - Win'
                     }
                 },
@@ -4824,7 +4824,7 @@ expressApp.get(
             const losscount = await Bet.find({
                 userId: user._id,
                 updatedAt: dateObj,
-                orgin: { $ne: 'other' },
+                orgin: { $ne: 'custom' },
                 status: 'Settled - Lose'
             }).count();
 
@@ -4833,7 +4833,7 @@ expressApp.get(
                     $match: {
                         userId: user._id,
                         updatedAt: dateObj,
-                        orgin: { $ne: 'other' },
+                        orgin: { $ne: 'custom' },
                         status: 'Settled - Lose'
                     }
                 },
@@ -4851,7 +4851,7 @@ expressApp.get(
             const pendingcount = await Bet.find({
                 userId: user._id,
                 updatedAt: dateObj,
-                orgin: { $ne: 'other' },
+                orgin: { $ne: 'custom' },
                 status: { $in: ['Pending', 'Partial Match', 'Matched'] }
             }).count();
 
@@ -4860,7 +4860,7 @@ expressApp.get(
                     $match: {
                         userId: user._id,
                         updatedAt: dateObj,
-                        orgin: { $ne: 'other' },
+                        orgin: { $ne: 'custom' },
                         status: { $in: ['Pending', 'Partial Match', 'Matched'] }
                     }
                 },
@@ -4880,7 +4880,7 @@ expressApp.get(
                     $match: {
                         userId: user._id,
                         updatedAt: dateObj,
-                        orgin: { $ne: 'other' },
+                        orgin: { $ne: 'custom' },
                     }
                 },
                 {
@@ -5382,7 +5382,7 @@ expressApp.post(
                 return res.json({ success: false, error: 'Cannot cancel a bet. Not found.' });
             }
             const { matchStartDate, isParlay, bet: betAmount, pick, origin } = bet;
-            if (origin == 'other') {
+            if (origin == 'custom') {
                 return res.json({ success: false, error: 'Cannot cancel a custom Bet.' });
             }
             if (new Date().getTime() > new Date(matchStartDate).getTime()) {

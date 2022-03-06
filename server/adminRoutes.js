@@ -2236,7 +2236,7 @@ adminRouter.post(
         try {
             const { id } = req.params;
             const bet = await Bet.findById(id);
-            if (!bet || bet.origin == 'other') {
+            if (!bet || bet.origin == 'custom') {
                 return res.status(404).json({ error: 'Bet not found' });
             }
             if (bet.isParlay) {
@@ -3552,8 +3552,8 @@ adminRouter.get(
                     bet.sportsbook ? 'HIGH STAKER' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
-                    bet.isParlay ? 'Parlay' : bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName,
-                    bet.isParlay ? '' : bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`,
+                    bet.isParlay ? 'Parlay' : bet.origin == 'custom' ? 'Custom Bets' : bet.lineQuery.sportName,
+                    bet.isParlay ? '' : bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`,
                     `$ ${bet.bet}`,
                     Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
                     results,
@@ -5210,7 +5210,7 @@ adminRouter.post(
 
             const bets = await Bet.find({
                 "lineQuery.lineId": event.uniqueid,
-                "lineQuery.sportName": 'Other',
+                "lineQuery.sportName": 'Custom Bet',
             });
             for (const bet of bets) {
                 const user = await User.findById(bet.userId);
@@ -7417,7 +7417,7 @@ adminRouter.post(
         try {
             let { id } = req.params;
             const bet = await Bet.findById(id);
-            if (!bet || bet.origin == 'other') {
+            if (!bet || bet.origin == 'custom') {
                 return res.status(404).json({ error: 'Bet not found' });
             }
 

@@ -18,9 +18,9 @@ class Wagers extends React.Component {
                         <a onClick={null}
                             className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer">
                             {bet.isParlay ? 'Parlay' :
-                                bet.origin == 'other' ? 'Other - ' : bet.lineQuery.sportName + ' - '}
+                                bet.origin == 'custom' ? 'Custom Bet - ' : bet.lineQuery.sportName + ' - '}
                             {bet.isParlay ? '' :
-                                bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                                bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </a>
 
                         <span className="text-muted">{this.getDate(bet.createdAt)}</span>
