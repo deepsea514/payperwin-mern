@@ -446,8 +446,8 @@ class OpenBets extends Component {
                             createdAt, status, credited, homeScore, awayScore, payableToWin,
                             matchingStatus, lineQuery, origin, sportsbook, isParlay, parlayQuery
                         } = betObj;
-                        if (origin == "other") {
-                            const sportName = "Other";
+                        if (origin == "custom") {
+                            const sportName = "Custom Bet";
                             return (
                                 <div className="open-bets" key={_id}>
                                     <div className="open-bets-flex">

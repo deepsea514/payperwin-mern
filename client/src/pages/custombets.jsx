@@ -152,7 +152,7 @@ export default class CustomBets extends Component {
                             pick,
                         } = betObj;
                         const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
-                        const sportName = "Other";
+                        const sportName = "Custom Bet";
                         const gameEnded = new Date(matchStartDate).getTime() <= new Date().getTime()
                         return (
                             <div className="open-bets" key={_id}>

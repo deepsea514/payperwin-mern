@@ -33,7 +33,7 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
         const user = await User.findById(event.user);
         if (!user) return next();
 
-        const betLink = `https://www.payperwin.com/others/${event.uniqueid}`;
+        const betLink = `https://www.payperwin.com/custom-bet/${event.uniqueid}`;
         const msg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: user.email,

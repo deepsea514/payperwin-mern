@@ -69,7 +69,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                 const { pickOdds, lineQuery, bet: betAmount, payableToWin } = bet;
                 if (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.email) {
                     let msg = null;
-                    if (bet.origin == 'other') {
+                    if (bet.origin == 'custom') {
                         msg = {
                             from: `${fromEmailName} <${fromEmailAddress}>`,
                             to: user.email,
@@ -129,7 +129,7 @@ BetSchema.pre('save', async function (next) { // eslint-disable-line func-names
                     });
                 }
                 if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.wager_matched.sms)) {
-                    if (bet.origin == 'other') {
+                    if (bet.origin == 'custom') {
                         sendSMS(`Good news! We found you a match for ${lineQuery.eventName}\n
                             Wager: $${betAmount.toFixed(2)}\n 
                             Odds: ${Number(pickOdds) > 0 ? ('+' + pickOdds) : pickOdds}\n 

@@ -162,7 +162,7 @@ export function getFeaturedSports() {
 }
 
 export function getCustomEvent(id) {
-    return FrontendAPI.get(`/others`, { params: { id } })
+    return FrontendAPI.get(`/custombets`, { params: { id } })
 }
 
 export function getLiveSports(sportName, league) {

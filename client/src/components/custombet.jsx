@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { getCustomEvent } from '../redux/services';
 import { showErrorToast } from '../libs/toast';
 
-class Others extends Component {
+class CustomBet extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -75,7 +75,7 @@ class Others extends Component {
                                 <div>
                                     <div className="row mx-0 pt-2">
                                         {options.map((option, index) => {
-                                            const exists = betSlip.find(bet => bet.lineId == uniqueid && bet.origin == 'other' && bet.pick == index);
+                                            const exists = betSlip.find(bet => bet.lineId == uniqueid && bet.origin == 'custom' && bet.pick == index);
                                             return (
                                                 <div className="col-12" key={index}>
                                                     <span className={`box-odds line-full ${exists ? 'orange' : null}`}
@@ -85,10 +85,10 @@ class Others extends Component {
                                                                 type: 'moneyline',
                                                                 league: 'Custom Events',
                                                                 pick: index,
-                                                                sportName: 'Other',
+                                                                sportName: 'Custom Bet',
                                                                 lineId: uniqueid,
                                                                 lineQuery: {
-                                                                    sportName: 'Other',
+                                                                    sportName: 'Custom Bet',
                                                                     eventName: name,
                                                                     leagueId: uniqueid,
                                                                     eventId: _id,
@@ -100,7 +100,7 @@ class Others extends Component {
                                                                 },
                                                                 pickName: `Pick: ${option}`,
                                                                 index: null,
-                                                                origin: 'other',
+                                                                origin: 'custom',
                                                                 subtype: null,
                                                             })}>
                                                         <div className="vertical-align">
@@ -128,4 +128,4 @@ const mapStateToProps = (state) => ({
     pro_mode: state.frontend.pro_mode,
 });
 
-export default connect(mapStateToProps, frontend.actions)(Others)
+export default connect(mapStateToProps, frontend.actions)(CustomBet)
