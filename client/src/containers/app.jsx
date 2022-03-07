@@ -44,7 +44,7 @@ import VerificationProof from "../components/verificationProof";
 import ContactUs from "../pages/contactUs";
 import GoToTop from "../components/gotoTop";
 import TfaModal from "../components/tfamodal";
-import Others from "../components/others";
+import CustomBet from "../components/custombet";
 import BetStatus from "../components/betStatus";
 import Articles from "../pages/articles";
 import PhoneVerification from "../pages/phoneVerification";
@@ -535,26 +535,26 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/others/:id" exact render={(props) => {
+                                                <Route path="/custom-bet/:id" exact render={(props) => {
                                                     const { match } = props;
                                                     const id = resObjPath(match, 'params.id');
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
                                                                 <h1 className='text-white'>Custom Event</h1>
-                                                                <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                <CustomBet {...props} addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet} id={id}
                                                                 />
                                                             </React.Fragment>
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/others" render={(props) => {
+                                                <Route path="/custom-bet" render={(props) => {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
                                                                 <h1 className='text-white'>Custom Events</h1>
-                                                                <Others {...props} addBet={this.addBet} betSlip={betSlip}
+                                                                <CustomBet {...props} addBet={this.addBet} betSlip={betSlip}
                                                                     removeBet={this.removeBet}
                                                                 />
                                                             </React.Fragment>

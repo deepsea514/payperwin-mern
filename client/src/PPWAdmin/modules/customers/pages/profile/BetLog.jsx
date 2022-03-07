@@ -154,13 +154,13 @@ class BetLog extends React.Component {
                 <td className="pl-0">
                     <span className=" font-weight-500">
                         {bet.isParlay ? 'Parlay' :
-                            bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
+                            bet.origin == 'custom' ? 'Custom Bet' : bet.lineQuery.sportName}
                     </span>
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
                         {bet.isParlay ? '' :
-                            bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                            bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                     </span>
                 </td>
                 <td className="pl-0" style={{ textTransform: "uppercase" }}>

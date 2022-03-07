@@ -14,7 +14,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
         if (bet.isParlay) {
             return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">parlay</span>
         }
-        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
+        const type = bet.origin == 'custom' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
@@ -82,13 +82,13 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     <td className="pl-0">
                         <span className=" font-weight-500">
                             {bet.isParlay ? 'Parlay' :
-                                bet.origin == 'other' ? 'Other' : bet.lineQuery.sportName}
+                                bet.origin == 'custom' ? 'Custom Bets' : bet.lineQuery.sportName}
                         </span>
                     </td>
                     <td className="pl-0">
                         <span className=" font-weight-500">
                             {bet.isParlay ? '' :
-                                bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                                bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </span>
                     </td>
                     <td className="pl-0">

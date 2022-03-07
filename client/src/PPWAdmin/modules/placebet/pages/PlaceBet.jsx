@@ -198,7 +198,7 @@ class PlaceBet extends React.Component {
                 <td scope="col">${numberFormat(bet.bet.toFixed(2))} {bet.userId ? bet.userId.currency : null} (${numberFormat(bet.toWin.toFixed(2))})</td>
                 <td scope="col">{bet.pickName} @ {Number(bet.pickOdds) > 0 ? '+' + bet.pickOdds : bet.pickOdds}</td>
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
-                <td scope="col">{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                <td scope="col">{bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                 <td scope="col">{dateformat(bet.matchStartDate)}</td>
             </tr>
         });

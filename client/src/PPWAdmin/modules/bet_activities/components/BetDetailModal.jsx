@@ -14,7 +14,7 @@ export default class BetDetailModal extends React.Component {
         if (bet.isParlay) {
             return <span className="label label-lg label-light-info label-inline font-weight-lighter mr-2">parlay</span>
         }
-        const type = bet.origin == 'other' ? 'moneyline' : bet.lineQuery.type;
+        const type = bet.origin == 'custom' ? 'moneyline' : bet.lineQuery.type;
         switch (type) {
             case "moneyline":
                 return <span className="label label-lg label-light-danger label-inline font-weight-lighter mr-2">{type}</span>
@@ -125,7 +125,7 @@ export default class BetDetailModal extends React.Component {
                                                 </td>
                                             </tr>
                                         }
-                                        if (bet.origin == 'other') {
+                                        if (bet.origin == 'custom') {
                                             return (
                                                 <>
                                                     <tr>
@@ -155,7 +155,7 @@ export default class BetDetailModal extends React.Component {
                                                 <th>Match Start Date</th>
                                                 <td>{this.getDate(bet.matchStartDate)}</td>
                                                 <th>Event</th>
-                                                <td>{bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
+                                                <td>{bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}</td>
                                             </tr>
                                             <tr>
                                                 <th>Team A</th>

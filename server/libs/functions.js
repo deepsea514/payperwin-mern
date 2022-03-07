@@ -290,7 +290,7 @@ const sendBetWinConfirmEmail = async (user, bet) => {
                         Congratulations! You won $${Number(payableToWin).toFixed(2)}.
                     </p>
                     <ul>
-                        <li><b>Game:</b> ${origin == 'other' ? lineQuery.eventName : (isParlay ? 'Parlay Bet' : `${teamA.name} VS ${teamB.name}`)}</li>
+                        <li><b>Game:</b> ${origin == 'custom' ? lineQuery.eventName : (isParlay ? 'Parlay Bet' : `${teamA.name} VS ${teamB.name}`)}</li>
                         <li><b>Wager:</b> $${Number(betAmount).toFixed(2)}</li>
                         <li><b>Odds:</b> ${numberOdds > 0 ? '+' + numberOdds : numberOdds}</li>
                     </ul>

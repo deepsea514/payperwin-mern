@@ -112,7 +112,7 @@ class BetActivities extends React.Component {
                 <td scope="col">{bet.userId ? bet.userId.email : null}</td>
                 <td scope="col">
                     {bet.isParlay ? '' :
-                        bet.origin == 'other' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
+                        bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                 </td>
                 <td scope="col">{this.getMatchDate(bet)}</td>
                 <td scope="col">{this.getBetStatus(bet.status)}</td>
@@ -128,7 +128,7 @@ class BetActivities extends React.Component {
                             <Dropdown.Item onClick={() => this.setState({ detailId: bet })}>
                                 <i className="far fa-eye"></i>&nbsp; Detail
                             </Dropdown.Item>
-                            {bet.origin == 'other' && <>
+                            {bet.origin == 'custom' && <>
                                 <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
                                     <i className="fas fa-trash"></i>&nbsp; Delete
                                 </Dropdown.Item>
@@ -136,7 +136,7 @@ class BetActivities extends React.Component {
                                     <i className="fa fa-times"></i>&nbsp; Cancel
                                 </Dropdown.Item>
                             </>}
-                            {bet.origin != 'other' && <>
+                            {bet.origin != 'custom' && <>
                                 {['Pending', 'Partial Match', 'Matched', 'Partial Accepted', 'Accepted'].includes(bet.status) &&
                                     <>
                                         <Dropdown.Item onClick={() => this.setState({ deleteId: bet._id })}>
@@ -336,7 +336,7 @@ class BetActivities extends React.Component {
     }
 
     getBetMatch = (bet) => {
-        if (bet.origin == 'other') {
+        if (bet.origin == 'custom') {
             switch (bet.status) {
                 case "Settled - Lose":
                 case "Settled - Win":

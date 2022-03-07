@@ -29,8 +29,8 @@ class BetStatus extends Component {
                             &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.P2P_CONTENT" />
                         </li>
                         <li>
-                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}><FormattedMessage id="COMPONENTS.BETSTATUS.HS" />:</b>
-                            &nbsp;<FormattedMessage id="COMPONENTS.BETSTATUS.HS" />
+                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}>High Staker:</b>
+                            &nbsp;Your bet is accepted on the High Staker marketplace.
                         </li>
                         <li>
                             <b style={{ background: '#EE2465', padding: '2px', color: 'black' }}><FormattedMessage id="COMPONENTS.BETSTATUS.GAME_CANCEL" />:</b>
