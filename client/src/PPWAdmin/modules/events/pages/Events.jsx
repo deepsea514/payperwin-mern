@@ -73,9 +73,9 @@ class Events extends React.Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                        <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
                         {/* <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item> */}
                         <Dropdown.Item onClick={() => this.setState({ settleId: event })}><i className="fas fa-check"></i>&nbsp; Settle Event</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>}
@@ -85,8 +85,8 @@ class Events extends React.Component {
     }
 
     isSettleEnabled(event) {
-        if ((new Date(event.endDate)).getTime() > (new Date()).getTime())
-            return false;
+        // if ((new Date(event.endDate)).getTime() > (new Date()).getTime())
+        //     return false;
         if (event.status == EventStatus['settled'].value || event.status == EventStatus['cancelled'].value)
             return false;
         return true;
@@ -181,11 +181,11 @@ class Events extends React.Component {
                             <div className="card-title">
                                 <h3 className="card-label">Event</h3>
                             </div>
-                            <div className="card-toolbar">
+                            {/* <div className="card-toolbar">
                                 <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
                                     <i className="fas fa-credit-card"></i>&nbsp; Add New Event
                                 </Link>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="card-body">
                             <div className="form-group row">
