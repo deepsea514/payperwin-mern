@@ -955,10 +955,10 @@ a.log-in-btn {
     color: white;
     background: #202020;
     padding-left: 16px;
+    padding-right: 16px;
     font-size: 12px;
     height: 30px;
     line-height: 30px;
-    cursor: pointer;
 }
 
 .line-type-header+li {
