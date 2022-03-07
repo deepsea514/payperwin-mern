@@ -249,7 +249,7 @@ class BetSlip extends Component {
             totalWin = teaserWin ? teaserWin : 0;
             totalStake = teaserStake ? teaserStake : 0;
         }
-        const sportsBetSlip = betSlip.filter(bet => bet.origin != 'other');
+        const sportsBetSlip = betSlip.filter(bet => bet.origin != 'custom');
 
         const singleDisabled = betEnabled && !betEnabled.single;
         const parlayDisabled = betEnabled && !betEnabled.parlay;

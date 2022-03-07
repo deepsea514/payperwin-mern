@@ -23,7 +23,7 @@ class Bet extends Component {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
             // calc win
-            const americanOdds = origin == 'other' ? 100 : odds[pick];
+            const americanOdds = origin == 'custom' ? 100 : odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
             const calculateWin = (stake * 1) * decimalOdds;
             const roundToPennies = Number((calculateWin).toFixed(2));
@@ -37,7 +37,7 @@ class Bet extends Component {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
             stateChange[name] = win;
             // calc stake
-            const americanOdds = origin == 'other' ? 100 : odds[pick];
+            const americanOdds = origin == 'custom' ? 100 : odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : - (100 / americanOdds);
             const calculateStake = (win / 1) / decimalOdds;
             const roundToPennies = Number((calculateStake).toFixed(2));
@@ -63,7 +63,7 @@ class Bet extends Component {
         const majorLeagues = ["NBA", "NFL", "MLB", "NHL"]; //  major leagues will use the existing tier bet limit 
         const maxBetLimit = majorLeagues.includes(league) ? maxBetLimitTier : maxBetLimitTier / 2;
 
-        if (origin == 'other') {
+        if (origin == 'custom') {
             return (
                 <div className="bet-container bet-sportsbook">
                     {win > maxBetLimit && <div className="bet-warn-message">
