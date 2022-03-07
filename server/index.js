@@ -3285,8 +3285,7 @@ expressApp.get(
     async (req, res) => {
         const sportsData = await SportsDir.find({});
         const customBets = await Event.find({
-            startDate: { $lte: new Date() },
-            endDate: { $gte: new Date() },
+            startDate: { $gte: new Date() },
             status: EventStatus.pending.value,
             approved: true,
             public: true,

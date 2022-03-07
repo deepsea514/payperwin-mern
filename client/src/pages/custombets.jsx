@@ -6,7 +6,8 @@ import sportNameImage from "../helpers/sportNameImage";
 import { getBets, voteEvent } from '../redux/services';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { showErrorToast, showSuccessToast } from '../libs/toast';
+import { showErrorToast } from '../libs/toast';
+import QRCode from "react-qr-code";
 
 export default class CustomBets extends Component {
     constructor(props) {
@@ -15,6 +16,9 @@ export default class CustomBets extends Component {
             error: null,
             loading: false,
             bets: [],
+            shareModal: false,
+            lineUrl: '',
+            urlCopied: false,
         };
     }
 
@@ -106,8 +110,14 @@ export default class CustomBets extends Component {
             })
     }
 
+    checkEventStarted = (matchStartDate) => {
+        if ((new Date(matchStartDate)).getTime() < (new Date()).getTime())
+            return true;
+        return false;
+    }
+
     render() {
-        const { loading, error, bets } = this.state;
+        const { loading, error, bets, shareModal, lineUrl, urlCopied } = this.state;
         const { user } = this.props;
 
         return (
@@ -134,6 +144,48 @@ export default class CustomBets extends Component {
                     “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs?”
                 </p>
                 <div>
+                    {shareModal && <div className="modal confirmation">
+                        <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
+                        <div className="col-in">
+                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
+                            <div>
+                                <b>Share Bet</b>
+                                <hr />
+                                <div className="row">
+                                    <div className="col input-group mb-3">
+                                        <input type="text"
+                                            className="form-control"
+                                            placeholder="Line's URL"
+                                            value={lineUrl}
+                                            readOnly
+                                        />
+                                        <div className="input-group-append">
+                                            {!urlCopied && <button
+                                                className="btn btn-outline-secondary"
+                                                type="button"
+                                                onClick={this.copyUrl}
+                                            >
+                                                <i className="fas fa-clipboard" /> Copy
+                                            </button>}
+                                            {urlCopied && <button
+                                                className="btn btn-outline-success"
+                                                type="button">
+                                                <i className="fas fa-clipboard-check" /> Copied
+                                            </button>}
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <div className="mt-2 bg-white py-3">
+                                        <QRCode value={lineUrl} />
+                                    </div>
+                                </center>
+                                <div className="text-right">
+                                    <button className="form-button ml-2" onClick={() => this.setState({ shareModal: false })}> Close </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
                     {loading && <center><Preloader use={ThreeDots}
                         size={100}
                         strokeWidth={10}
@@ -154,11 +206,10 @@ export default class CustomBets extends Component {
                             credited,
                             event,
                             lineQuery,
-                            pick,
                         } = betObj;
                         const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
                         const sportName = "Custom Bet";
-                        const gameEnded = new Date(matchStartDate).getTime() <= new Date().getTime()
+                        const gameEnded = event && new Date(event.endDate).getTime() <= new Date().getTime();
                         return (
                             <div className="open-bets" key={_id}>
                                 <div className="open-bets-flex">
@@ -222,6 +273,12 @@ export default class CustomBets extends Component {
                                     {status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                     {status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
+                                    {event && !this.checkEventStarted(matchStartDate) &&
+                                        <button className="form-button" onClick={() => this.setState({
+                                            lineUrl: window.location.origin + '/custom-bet/' + event.uniqueid,
+                                            urlCopied: false,
+                                            shareModal: true
+                                        })}><i className="fas fa-link" /> Share Bet</button>}
                                 </div>
                             </div>
                         );

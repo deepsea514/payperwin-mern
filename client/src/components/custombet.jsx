@@ -6,6 +6,7 @@ import timeHelper from "../helpers/timehelper";
 import { FormattedMessage } from 'react-intl';
 import { getCustomEvent } from '../redux/services';
 import { showErrorToast } from '../libs/toast';
+import QRCode from "react-qr-code";
 
 class CustomBet extends Component {
     constructor(props) {
@@ -13,6 +14,8 @@ class CustomBet extends Component {
         this.state = {
             data: null,
             error: null,
+            shareModal: false,
+            urlCopied: false,
         };
     }
 
@@ -44,9 +47,16 @@ class CustomBet extends Component {
         showErrorToast('Custom Bets are only available on Pro Mode.');
     }
 
+    copyUrl = () => {
+        const { lineUrl } = this.state;
+        navigator.clipboard.writeText(lineUrl);
+        this.setState({ urlCopied: true });
+    }
+
+
     render() {
         const { betSlip, removeBet, timezone } = this.props;
-        const { data, error } = this.state;
+        const { data, error, shareModal, lineUrl, urlCopied } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
@@ -56,13 +66,65 @@ class CustomBet extends Component {
 
         return (
             <div className="content mt-2 detailed-lines">
+                {shareModal && <div className="modal confirmation">
+                    <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
+                    <div className="col-in">
+                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
+                        <div>
+                            <b>Share Bet</b>
+                            <hr />
+                            <div className="row">
+                                <div className="col input-group mb-3">
+                                    <input type="text"
+                                        className="form-control"
+                                        placeholder="Line's URL"
+                                        value={lineUrl}
+                                        readOnly
+                                    />
+                                    <div className="input-group-append">
+                                        {!urlCopied && <button
+                                            className="btn btn-outline-secondary"
+                                            type="button"
+                                            onClick={this.copyUrl}
+                                        >
+                                            <i className="fas fa-clipboard" /> Copy
+                                        </button>}
+                                        {urlCopied && <button
+                                            className="btn btn-outline-success"
+                                            type="button">
+                                            <i className="fas fa-clipboard-check" /> Copied
+                                        </button>}
+                                    </div>
+                                </div>
+                            </div>
+                            <center>
+                                <div className="mt-2 bg-white py-3">
+                                    <QRCode value={lineUrl} />
+                                </div>
+                            </center>
+                            <div className="text-right">
+                                <button className="form-button ml-2" onClick={() => this.setState({ shareModal: false })}> Close </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
                 <div className="tab-content" >
                     {data.map((event, index) => {
                         const { startDate, name, options, uniqueid, _id } = event;
 
                         return (
                             <div key={index} className="mt-2">
-                                <div className="line-type-header mb-0">{name}</div>
+                                <div className="line-type-header mb-0 d-flex justify-content-between">
+                                    {name}
+                                    <span className='pt-1'>
+                                        <i className='fas fa-link cursor-pointer'
+                                            onClick={() => this.setState({
+                                                shareModal: true,
+                                                lineUrl: window.location.origin + '/custom-bet/' + uniqueid,
+                                                urlCopied: false
+                                            })} />
+                                    </span>
+                                </div>
                                 <div className="d-flex" style={{
                                     padding: "3px 0 4px 10px",
                                     background: "#171717",
