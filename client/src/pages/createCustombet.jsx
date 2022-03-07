@@ -164,7 +164,7 @@ export default class CreateCustomBet extends Component {
                     showSuccessToast("Successfully created custom bet.");
                     getUser();
                     setTimeout(() => {
-                        history.push('/custom-bets')
+                        history.push('/custom-bet')
                     }, 2000);
                 } else {
                     showErrorToast(error);
