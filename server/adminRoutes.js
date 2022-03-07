@@ -5272,7 +5272,7 @@ adminRouter.get(
             if (EventStatus[status]) {
                 findObj = { ...findObj, status: EventStatus[status].value };
                 if (status == FinancialStatus.pending) {
-                    findObj = { ...findObj, startDate: { $lte: new Date() }, endDate: { $gte: new Date() } };
+                    findObj = { ...findObj, startDate: { $gte: new Date() } };
                 } else if (status == "outdated") {
                     findObj = { ...findObj, endDate: { $lt: new Date() } };
                 }
