@@ -41,7 +41,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 {errors.name && <div className="form-error">{errors.name}</div>}
             </div>
             <div className="form-group">
-                <label><span>Start Date of Bet</span></label>
+                <label><span>Start Time/Date of Event</span></label>
                 <CustomDatePicker
                     name="startDate"
                     className={`form-control ${getInputClasses({ touched, errors }, "startDate")}`}
@@ -59,7 +59,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 {errors.startDate && <div className="form-error">{errors.startDate}</div>}
             </div>
             <div className="form-group">
-                <label><span>End Date of Bet</span></label>
+                <label><span>End Time/Date of Event</span></label>
                 <CustomDatePicker
                     name="endDate"
                     className={`form-control ${getInputClasses({ touched, errors }, "endDate")}`}

@@ -29,7 +29,7 @@ class BetStatus extends Component {
                             &nbsp;Your bet is placed on the Peer to Peer marketplace.
                         </li>
                         <li>
-                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}>HIGH STAKER:</b>
+                            <b style={{ background: '#EEE5FF', padding: '2px', color: 'black' }}>High Staker:</b>
                             &nbsp;Your bet is accepted on the HIGH STAKER marketplace.
                         </li>
                         <li>
