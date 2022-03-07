@@ -114,7 +114,7 @@ const checkMatchStatus = async () => {
         await bet.update({ notifySent: new Date() });
         const user = await User.findById(bet.userId);
         let eventName = '';
-        if (bet.origin == 'other') {
+        if (bet.origin == 'custom') {
             eventName = bet.lineQuery.eventName;
         } else {
             eventName = bet.isParlay ? 'Parlay Bet' : `${bet.teamA.name} vs ${bet.teamB.name} (${bet.lineQuery.sportName})`;
