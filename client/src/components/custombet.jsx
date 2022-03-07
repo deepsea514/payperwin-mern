@@ -58,7 +58,7 @@ class CustomBet extends Component {
             <div className="content mt-2 detailed-lines">
                 <div className="tab-content" >
                     {data.map((event, index) => {
-                        const { endDate, name, options, uniqueid, _id } = event;
+                        const { startDate, name, options, uniqueid, _id } = event;
 
                         return (
                             <div key={index} className="mt-2">
@@ -69,7 +69,7 @@ class CustomBet extends Component {
                                     marginBottom: "3px"
                                 }}>
                                     <div style={{ fontSize: "11px", color: "#FFF" }}>
-                                        {timeHelper.convertTimeEventDate(new Date(endDate), timezone)}
+                                        {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                     </div>
                                 </div>
                                 <div>

@@ -1008,12 +1008,8 @@ expressApp.post(
                     continue;
                 }
                 if (status == EventStatus.pending.value) {
-                    if ((new Date(endDate)).getTime() <= (new Date()).getTime()) {
+                    if ((new Date(startDate)).getTime() <= (new Date()).getTime()) {
                         errors.push(`${eventName} wager could not be placed. It is outdated.`);
-                        continue;
-                    }
-                    if ((new Date(startDate)).getTime() >= (new Date()).getTime()) {
-                        errors.push(`${eventName} wager could not be placed. It is not ready to start.`);
                         continue;
                     }
                     if (options[pick]) {
@@ -1037,7 +1033,7 @@ expressApp.post(
                                     bet: toBet,
                                     toWin: toWin,
                                     fee: fee,
-                                    matchStartDate: endDate,
+                                    matchStartDate: startDate,
                                     status: 'Accepted',
                                     lineQuery: lineQuery,
                                     lineId: lineId,
@@ -1063,8 +1059,8 @@ expressApp.post(
                                             <li>Event: ${eventName}</li>
                                             <li>Wager: $${toBet.toFixed(2)}</li>
                                             <li>Pick: ${options[pick]}</li>
-                                            <li>Start Date: ${startDateString}</li>
-                                            <li>End Date: ${endDateString}</li>
+                                            <li>Start Date/Time: ${startDateString}</li>
+                                            <li>End Date/Time: ${endDateString}</li>
                                             <li>Win: $${toWin.toFixed(2)}</li>
                                         </ul>`),
                                 }
@@ -2787,7 +2783,7 @@ expressApp.post(
         if (daterange) {
             try {
                 const { startDate, endDate } = daterange;
-                searchObj.createdAt = {
+                searchObj.updatedAt = {
                     $gte: new Date(startDate),
                     $lte: new Date(endDate),
                 }
@@ -3342,16 +3338,14 @@ expressApp.get(
             if (id) {
                 const customBet = await Event.findOne({
                     uniqueid: id,
-                    startDate: { $lte: new Date() },
-                    endDate: { $gte: new Date() },
+                    startDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
                     approved: true,
                 }).sort({ createdAt: -1 });
                 return res.json([customBet]);
             } else {
                 const customBets = await Event.find({
-                    startDate: { $lte: new Date() },
-                    endDate: { $gte: new Date() },
+                    startDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
                     approved: true,
                     public: true,
