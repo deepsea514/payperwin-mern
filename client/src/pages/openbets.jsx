@@ -10,7 +10,7 @@ import TourModal from '../components/tourModal';
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { FormattedMessage } from 'react-intl';
-import { forwardBet, getBets, getLatestOdds, shareLine, cancelBet as cancelBetAction } from '../redux/services';
+import { forwardBet, getBets, getLatestOdds, shareLine, cancelBet as cancelBetAction, voteEvent } from '../redux/services';
 import { getShortSportName } from '../libs/getSportName';
 import BetCancelModal from '../components/betCancelModal';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
@@ -287,6 +287,35 @@ class OpenBets extends Component {
             })
     }
 
+    voteEvent = (bet_id, event_id, pick) => {
+        voteEvent(event_id, pick)
+            .then(({ data }) => {
+                const { success, error, votes } = data;
+                if (success) {
+                    const { bets } = this.state;
+                    this.setState({
+                        bets: bets.map(bet => {
+                            if (bet._id == bet_id) {
+                                return {
+                                    ...bet,
+                                    event: {
+                                        ...bet.event,
+                                        votes: votes
+                                    }
+                                }
+                            }
+                            return bet;
+                        })
+                    })
+                } else {
+                    showErrorToast(error);
+                }
+            })
+            .catch(error => {
+                showErrorToast('Cannot vote on this event. Please try again later.');
+            })
+    }
+
     render() {
         const {
             bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
@@ -444,10 +473,13 @@ class OpenBets extends Component {
                         const {
                             _id, teamA, teamB, bet, toWin, matchStartDate, pickName, pickOdds,
                             createdAt, status, credited, homeScore, awayScore, payableToWin,
-                            matchingStatus, lineQuery, origin, sportsbook, isParlay, parlayQuery
+                            matchingStatus, lineQuery, origin, sportsbook, isParlay, parlayQuery,
+                            event
                         } = betObj;
-                        if (origin == "other") {
-                            const sportName = "Other";
+                        if (origin == "custom") {
+                            const sportName = "Custom Bet";
+                            const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
+                            const gameEnded = event && new Date(event.endDate).getTime() <= new Date().getTime();
                             return (
                                 <div className="open-bets" key={_id}>
                                     <div className="open-bets-flex">
@@ -500,6 +532,29 @@ class OpenBets extends Component {
                                         {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
                                         {settledBets && status == 'Settled - Lose' && <div><strong><FormattedMessage id="PAGES.OPENBETS.DEBITED" />: ${bet.toFixed(2)}</strong></div>}
                                         {settledBets && ['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
+                                        {event && gameEnded && <div className='d-flex mt-1'>
+                                            {event.options.map((option, index) => ((voted || status != 'Accepted') ?
+                                                (
+                                                    <span key={index}
+                                                        className={`label label-lg label-outline-success label-inline ${index && 'ml-2'}`}>
+                                                        {option} ({event.votes && event.votes[index] ? event.votes && event.votes[index].length : 0})
+                                                    </span>
+                                                ) :
+                                                (
+                                                    <span key={index}
+                                                        onClick={() => this.voteEvent(bet._id, event._id, index)}
+                                                        className={`label label-lg label-info label-inline ${index && 'ml-2'} cursor-pointer`}>
+                                                        {option} ({event.votes && event.votes[index] ? event.votes && event.votes[index].length : 0})
+                                                    </span>
+                                                )
+                                            ))}
+                                        </div>}
+                                        {event && !this.checkEventStarted(matchStartDate) &&
+                                            <button className="form-button" onClick={() => this.setState({
+                                                lineUrl: window.location.origin + '/custom-bet/' + event.uniqueid,
+                                                urlCopied: false,
+                                                shareModal: true
+                                            })}><i className="fas fa-link" /> Share Bet</button>}
                                     </div>
                                 </div>
                             );
@@ -589,7 +644,7 @@ class OpenBets extends Component {
                             </div>
                         }
 
-                        const { type, sportName } = lineQuery;
+                        const { sportName } = lineQuery;
                         return (
                             <div className={`open-bets ${sportsbook ? 'open-bets-sportsbook' : ''}`} key={_id}>
                                 <div className="open-bets-flex">
