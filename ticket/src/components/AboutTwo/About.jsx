@@ -30,14 +30,14 @@ class About extends React.Component {
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
 
                                 <div className="signature">
-                                    <img src={require("../../assets/images/signature.png")} alt="about" />
+                                    <img src="/images/signature.png" alt="about" />
                                 </div>
                             </div>
                         </div>
 
                         <div className="col-lg-6">
                             <div className="about-image">
-                                <img src={require("../../assets/images/about3.jpg")} className="about-img1" alt="about" />
+                                <img src="/images/about3.jpg" className="about-img1" alt="about" />
 
                                 <LaxButton />
                             </div>

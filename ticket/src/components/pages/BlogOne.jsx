@@ -23,7 +23,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Technology</Link>
@@ -42,7 +42,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Agency</Link>
@@ -61,7 +61,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog3.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog3.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">IT</Link>
@@ -80,7 +80,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog4.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog4.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">IT</Link>
@@ -99,7 +99,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog5.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog5.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Technology</Link>
@@ -118,7 +118,7 @@ class BlogOne extends React.Component {
                             <div className="col-lg-4 col-md-6">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog6.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog6.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Agency</Link>

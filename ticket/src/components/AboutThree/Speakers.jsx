@@ -21,7 +21,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers1.jpg")}
+                                        src="/images/speakers1.jpg"
                                         alt="speaker" 
                                     />
                                 </div>
@@ -60,7 +60,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers2.jpg")} 
+                                        src="/images/speakers2.jpg" 
                                         alt="speaker" 
                                     />
                                 </div>
@@ -99,7 +99,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers3.jpg")}
+                                        src="/images/speakers3.jpg"
                                         alt="speaker" 
                                     />
                                 </div>
@@ -138,7 +138,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers4.jpg")}
+                                        src="/images/speakers4.jpg"
                                         alt="speaker" 
                                     />
                                 </div>
@@ -177,7 +177,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers5.jpg")}
+                                        src="/images/speakers5.jpg"
                                         alt="speaker" 
                                     />
                                 </div>
@@ -216,7 +216,7 @@ class Speakers extends React.Component {
                             <div className="single-speakers-box">
                                 <div className="speakers-image">
                                     <img 
-                                        src={require("../../assets/images/speakers6.jpg")} 
+                                        src="/images/speakers6.jpg" 
                                         alt="speaker" 
                                     />
                                 </div>

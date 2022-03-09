@@ -33,7 +33,7 @@ class LatesNews extends React.Component {
                         <div className="col-lg-6 col-md-6">
                             <div className="single-blog-card">
                                 <Link to="#">
-                                    <img src={require("../../assets/images/blog1.jpg")} alt="blog" />
+                                    <img src="/images/blog1.jpg" alt="blog" />
                                 </Link>
 
                                 <div className="post-tag">
@@ -56,7 +56,7 @@ class LatesNews extends React.Component {
                         <div className="col-lg-6 col-md-6">
                             <div className="single-blog-card">
                                 <Link to="#">
-                                    <img src={require("../../assets/images/blog2.jpg")} alt="blog" />
+                                    <img src="/images/blog2.jpg" alt="blog" />
                                 </Link>
 
                                 <div className="post-tag">

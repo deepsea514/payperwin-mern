@@ -23,7 +23,7 @@ class BlogDetails extends React.Component {
                             <div className="col-lg-8">
                                 <div className="blog-details">
                                     <div className="post-image">
-                                        <img src={require("../../assets/images/blog1.jpg")} alt="blog" />
+                                        <img src="/images/blog1.jpg" alt="blog" />
                                     </div>
 
                                     <h3>The Most Popular New top Business Apps</h3>
@@ -81,7 +81,7 @@ class BlogDetails extends React.Component {
                                             <article className="comment-body">
                                                 <footer className="comment-meta">
                                                     <div className="comment-author vcard">
-                                                        <img src={require("../../assets/images/author1.jpg")} className="avatar" alt="blog" />
+                                                        <img src="/images/author1.jpg" className="avatar" alt="blog" />
                                                         <b className="fn">John Smith</b>
                                                         <span className="says">says:</span>
                                                     </div>
@@ -107,7 +107,7 @@ class BlogDetails extends React.Component {
                                                     <article className="comment-body">
                                                         <footer className="comment-meta">
                                                             <div className="comment-author vcard">
-                                                                <img src={require("../../assets/images/author2.jpg")} className="avatar" alt="blog" />
+                                                                <img src="/images/author2.jpg" className="avatar" alt="blog" />
                                                                 <b className="fn">Steven Warner</b>
                                                                 <span className="says">says:</span>
                                                             </div>
@@ -135,7 +135,7 @@ class BlogDetails extends React.Component {
                                             <article className="comment-body">
                                                 <footer className="comment-meta">
                                                     <div className="comment-author vcard">
-                                                        <img src={require("../../assets/images/author3.jpg")} className="avatar" alt="blog" />
+                                                        <img src="/images/author3.jpg" className="avatar" alt="blog" />
                                                         <b className="fn">John Smith</b>
                                                         <span className="says">says:</span>
                                                     </div>
@@ -218,7 +218,7 @@ class BlogDetails extends React.Component {
                                         <ul>
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog1.jpg")} alt="blog" />
+                                                    <img src="/images/blog1.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Most Popular New top Business Apps</Link></h5>
@@ -227,7 +227,7 @@ class BlogDetails extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog2.jpg")} alt="blog" />
+                                                    <img src="/images/blog2.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">3 WooCommerce Plugins to Boost Sales</Link></h5>
@@ -236,7 +236,7 @@ class BlogDetails extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog3.jpg")} alt="blog" />
+                                                    <img src="/images/blog3.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Best Marketing top Management Tools</Link></h5>
@@ -245,7 +245,7 @@ class BlogDetails extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog4.jpg")} alt="blog" />
+                                                    <img src="/images/blog4.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">How to Build Link Business Dashboard</Link></h5>
