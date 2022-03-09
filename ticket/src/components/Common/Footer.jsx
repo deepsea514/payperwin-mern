@@ -56,11 +56,6 @@ class Footer extends React.Component {
 
                         <div className="col-lg-12">
                             <div className="copyright-area">
-                                <div className="logo">
-                                    <Link to="/">
-                                        <img src={require("../../assets/images/logo.png")} alt="logo" />
-                                    </Link>
-                                </div>
                                 <ul>
                                     <li><Link to="/blog-1">Blog</Link></li>
                                     <li><Link to="/contact">Contact</Link></li>

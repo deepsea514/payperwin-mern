@@ -4816,4 +4816,8 @@ Back To Top CSS
 .modal-video {
   position: absolute !important;
 }
+
+.elkevent-nav .navbar-brand img {
+  max-width: 140px;
+}
 /*# sourceMappingURL=style.css.map */
