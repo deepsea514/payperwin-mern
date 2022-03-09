@@ -1,4 +1,21 @@
+@media only screen and (max-width:575px) {
+    .single-box {
+        height: 230px;
+        padding: 30px 15px;
+        border: none;
+        border-right: none !important;
+    }
+
+    .why-choose-us .row div:not(:first-child) .single-box {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+}
+
 @media only screen and (max-width:767px) {
+    .top-places.place-vancouver {
+        height: 200px;
+    }
+
     .top-places .speakers-content {
         bottom: 20px;
         left: 20px;
@@ -319,11 +336,18 @@
     }
 
     .single-box {
-        height: 250px;
-        margin-bottom: 30px;
-        padding-left: 15px;
-        padding-right: 15px;
-        border: none !important
+        height: 230px;
+        padding: 30px 15px;
+        border: none;
+    }
+
+    .why-choose-us .row div:nth-child(3) .single-box,
+    .why-choose-us .row div:nth-child(4) .single-box {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .why-choose-us .row div:nth-child(odd) .single-box {
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .single-box .d-table {
@@ -1086,6 +1110,10 @@
         padding-bottom: 30px !important
     }
 
+    section.top-places-area.ptb-120.pb-0 {
+        padding-bottom: 30px !important
+    }
+
     .slideshow-banner .main-banner-content {
         margin-top: 0
     }
@@ -1303,15 +1331,22 @@
     }
 
     .why-choose-us {
-        padding: 80px 15px 50px
+        padding: 30px 15px 50px
     }
 
     .single-box {
-        height: 100%;
-        margin-bottom: 30px;
-        border: none !important;
-        padding-left: 15px;
-        padding-right: 15px
+        height: 230px;
+        padding: 30px 15px;
+        border: none;
+    }
+
+    .why-choose-us .row div:nth-child(3) .single-box,
+    .why-choose-us .row div:nth-child(4) .single-box {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .why-choose-us .row div:nth-child(odd) .single-box {
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .single-box .d-table {

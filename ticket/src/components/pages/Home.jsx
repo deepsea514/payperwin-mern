@@ -26,9 +26,9 @@ class Home extends React.Component {
                 <MainBanner />
                 <Popular />
                 <TopPlaces />
-                <EventSchedules />
-                <FunFact />
-                <BuyTicket />
+                {/* <EventSchedules /> */}
+                {/* <FunFact /> */}
+                {/* <BuyTicket /> */}
                 <Footer />
                 <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>
