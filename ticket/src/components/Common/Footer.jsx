@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
- 
+
 class Footer extends React.Component {
-    render(){
+    render() {
         return (
             <footer className="footer-area">
                 <div className="container">
@@ -28,7 +28,7 @@ class Footer extends React.Component {
                             <div className="single-footer-widget">
                                 <h3>Social Connection</h3>
                                 <p>Don't miss Link thing! Receive daily news You should connect social area for Any Proper Updates Anytime.</p>
-                                
+
                                 <ul className="social-links">
                                     {/* <li>
                                         <a href="https://www.facebook.com/" className="facebook" target="_blank">
@@ -36,17 +36,17 @@ class Footer extends React.Component {
                                         </a>
                                     </li> */}
                                     <li>
-                                        <a href="https://twitter.com/payperwin" className="twitter" target="_blank">
+                                        <a href="https://twitter.com/payperwin" rel="noopener noreferrer" className="twitter" target="_blank">
                                             <i className="icofont-twitter"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="https://ca.linkedin.com/company/payperwin" className="linkedin" target="_blank">
+                                        <a href="https://ca.linkedin.com/company/payperwin" rel="noopener noreferrer" className="linkedin" target="_blank">
                                             <i className="icofont-linkedin"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="https://www.instagram.com/payperwin/?hl=en" className="instagram" target="_blank">
+                                        <a href="https://www.instagram.com/payperwin/?hl=en" rel="noopener noreferrer" className="instagram" target="_blank">
                                             <i className="icofont-instagram"></i>
                                         </a>
                                     </li>
@@ -57,10 +57,10 @@ class Footer extends React.Component {
                         <div className="col-lg-12">
                             <div className="copyright-area">
                                 <ul>
-                                    <li><a target="_blank" href='https://payperwin.com/contact'>Contact</a></li>
+                                    <li><a target="_blank" href='https://payperwin.com/contact' rel="noopener noreferrer">Contact</a></li>
                                     <li><Link to="#">Ticket</Link></li>
                                     <li><Link to="#">Venue</Link></li>
-                                    <li><a target="_blank" href='https://payperwin.com/terms-and-conditions'>Terms & Conditions</a></li>
+                                    <li><a target="_blank" href='https://payperwin.com/terms-and-conditions' rel="noopener noreferrer">Terms & Conditions</a></li>
                                 </ul>
                                 <p>
                                     Copyright <i className="icofont-copyright"></i> 2021 PAYPER WIN. All rights reserved
@@ -73,5 +73,5 @@ class Footer extends React.Component {
         );
     }
 }
- 
+
 export default Footer;
