@@ -72,7 +72,7 @@ class Navigation extends React.Component {
                                     <li className="nav-item">
                                         <Link
                                             exact="true"
-                                            to="#"
+                                            to="/"
                                             onClick={this.toggleOpen}
                                             className="nav-link"
                                         >
@@ -81,7 +81,7 @@ class Navigation extends React.Component {
                                     </li>
                                     <li className="nav-item">
                                         <Link
-                                            to="#"
+                                            to="/events"
                                             onClick={this.toggleOpen}
                                             className="nav-link"
                                         >

@@ -8,6 +8,9 @@ import './assets/css/responsive.css';
 import React from 'react';
 import AppRouter from './Routes';
 import Preloader from './components/Shared/Preloader';
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "./redux/store";
 
 class App extends React.Component {
     state = {
@@ -24,10 +27,12 @@ class App extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
-                {this.state.loading ? <Preloader /> : ''}
-                <AppRouter />
-            </React.Fragment>
+            <Provider store={store}>
+                <PersistGate persistor={persistor}>
+                    {this.state.loading ? <Preloader /> : ''}
+                    <AppRouter />
+                </PersistGate>
+            </Provider>
         );
     }
 }

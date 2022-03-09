@@ -856,19 +856,20 @@ Main Banner CSS
     border-radius: 50px;
     color: #ffffff;
     height: 55px;
-    padding-left: 20px;
 }
 
 .main-banner-content .search-form .form-control:first-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: none;
+    padding: 0 10px 0 20px;
 }
 
 .main-banner-content .search-form .form-control:not(:first-child) {
     border-radius: 0;
     border-left: none;
     border-right: none;
+    padding: 9px 5px 0 5px;
 }
 
 .main-banner-content .search-form .form-control::-webkit-input-placeholder {
@@ -3465,8 +3466,8 @@ Page Title CSS
     background-size: cover;
     background-repeat: no-repeat;
     text-align: center;
-    padding-top: 250px;
-    padding-bottom: 180px;
+    padding-top: 150px;
+    padding-bottom: 80px;
 }
 
 .page-title-area::before {
@@ -3929,7 +3930,7 @@ Coming Soon CSS
 Pagination CSS
 =================================================*/
 .pagination-area {
-    margin-top: 30px;
+    margin: 30px 0;
 }
 
 .pagination-area ul {
@@ -4864,7 +4865,7 @@ Back To Top CSS
 }
 
 .elkevent-nav .navbar-brand img {
-    max-width: 140px;
+    max-width: 180px;
 }
 
 .top-places {
@@ -4943,43 +4944,6 @@ Back To Top CSS
     display: flex;
 }
 
-.main-banner-content .search-form .form-control {
-    background: #FFF4;
-    border: 1px solid #ffffff;
-    border-radius: 50px;
-    color: #ffffff;
-    height: 55px;
-    padding-left: 20px;
-}
-
-.main-banner-content .search-form .form-control:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: none;
-}
-
-.main-banner-content .search-form .form-control:not(:first-child) {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-}
-
-.main-banner-content .search-form .form-control::-webkit-input-placeholder {
-    color: #c7c3c7;
-}
-
-.main-banner-content .search-form .form-control:-ms-input-placeholder {
-    color: #c7c3c7;
-}
-
-.main-banner-content .search-form .form-control::-ms-input-placeholder {
-    color: #c7c3c7;
-}
-
-.main-banner-content .search-form .form-control::placeholder {
-    color: #c7c3c7;
-}
-
 .main-banner-content .search-form button {
     height: 55px;
     background: #FF2D55;
@@ -4996,4 +4960,8 @@ Back To Top CSS
     transition: 0.5s;
     outline: 0 !important;
     border: none;
+}
+
+.page-item {
+    cursor: pointer;
 }
