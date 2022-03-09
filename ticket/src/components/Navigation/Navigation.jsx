@@ -76,7 +76,7 @@ class Navigation extends React.Component {
                                             onClick={this.toggleOpen}
                                             className="nav-link"
                                         >
-                                            Home
+                                            Sports
                                         </Link>
                                     </li>
                                     <li className="nav-item">
@@ -85,11 +85,38 @@ class Navigation extends React.Component {
                                             onClick={this.toggleOpen}
                                             className="nav-link"
                                         >
-                                            Event
+                                            Concerts
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/events"
+                                            onClick={this.toggleOpen}
+                                            className="nav-link"
+                                        >
+                                            Art & Theatre
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/events"
+                                            onClick={this.toggleOpen}
+                                            className="nav-link"
+                                        >
+                                            More
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link
+                                            to="/events"
+                                            onClick={this.toggleOpen}
+                                            className="nav-link"
+                                        >
+                                            Help
                                         </Link>
                                     </li>
 
-                                    <li className="nav-item">
+                                    {/* <li className="nav-item">
                                         <Link
                                             to="#"
                                             className="nav-link"
@@ -188,7 +215,7 @@ class Navigation extends React.Component {
                                                 </NavLink>
                                             </li>
                                         </ul>
-                                    </li>
+                                    </li> */}
                                 </ul>
 
                                 <div className="others-option">
