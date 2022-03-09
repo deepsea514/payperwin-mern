@@ -79,9 +79,9 @@ class MainBanner extends React.Component {
                     <div className="d-table-cell">
                         <div className="container">
                             <div className="main-banner-content">
-                                <h1>Find Nearby Location</h1>
+                                <h1>Find Tickets Nearby</h1>
                                 <ul>
-                                    <li>Explore top-rated attractions, activities and more!</li>
+                                    <li>Shop millions of live events and discover can't-miss concerts, games, theater and more.</li>
                                 </ul>
 
                                 <div className='search-form'>
