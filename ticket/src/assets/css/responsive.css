@@ -41,7 +41,7 @@
     }
 
     .elkevent-nav .navbar-brand img {
-        max-width: 100px
+        max-width: 140px
     }
 
     .ptb-120 {
@@ -1151,7 +1151,7 @@
     }
 
     .elkevent-nav .navbar-brand img {
-        max-width: 90px
+        max-width: 120px
     }
 
     .countdown1 {
@@ -2036,6 +2036,7 @@
 
     .main-banner-content .search-form .form-control:not(:first-child) {
         border-radius: 50px;
+        padding: 9px 15px 0 15px;
     }
 
     .main-banner-content .search-form button {

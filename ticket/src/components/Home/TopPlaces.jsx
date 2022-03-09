@@ -25,13 +25,13 @@ class TopPlaces extends React.Component {
                         <h2>MOST VISITED PLACES</h2>
                         <div className="bar"></div>
                         <LaxDiv text="POPULAR PLACES" dataPreset="driftRight" />
-                        <Link to="#" className="btn btn-primary">View More Places</Link>
+                        <Link to="/places" className="btn btn-primary">View More Places</Link>
                     </div>
                 </div>
 
                 <div className="row m-0">
                     <div className="col-md-6 px-2 pe-md-1">
-                        <Link className="top-places place-vancouver" href='#'>
+                        <Link className="top-places place-vancouver" to="/places/british-colombia/vancouver">
                             <div className="speakers-content">
                                 <h3>Vancouver</h3>
                             </div>
@@ -39,7 +39,7 @@ class TopPlaces extends React.Component {
                     </div>
                     <div className='col-md-6 row px-2 mt-2 mx-0 mt-md-0 ps-md-1'>
                         <div className="col-12 px-0">
-                            <Link className="top-places place-toronto" href='#'>
+                            <Link className="top-places place-toronto" to="/places/british-colombia/vancouver">
                                 <div className="speakers-content">
                                     <h3>Toronto</h3>
                                 </div>
@@ -48,7 +48,7 @@ class TopPlaces extends React.Component {
 
                         <div className='col-12 row m-0 p-0 mt-2'>
                             <div className="col-sm-6 p-0 pe-sm-1">
-                                <Link className="top-places place-montreal" href='#'>
+                                <Link className="top-places place-montreal" to="/places/british-colombia/vancouver">
                                     <div className="speakers-content">
                                         <h3>Montreal</h3>
                                     </div>
@@ -56,7 +56,7 @@ class TopPlaces extends React.Component {
                             </div>
 
                             <div className="col-sm-6 mt-2 mt-sm-0 p-0 ps-sm-1">
-                                <Link className="top-places place-calgary" href='#'>
+                                <Link className="top-places place-calgary" to="/places/british-colombia/vancouver">
                                     <div className="speakers-content">
                                         <h3>Calgary</h3>
                                     </div>

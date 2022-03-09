@@ -1,7 +1,73 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
+
+const customStyles = {
+    control: (provided, state) => {
+        return {
+            ...provided,
+            background: '#FFF4',
+            height: '38px'
+        }
+    },
+    placeholder: (provided, state) => {
+        return {
+            ...provided,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            color: '#c7c3c7'
+        }
+    },
+    menu: (provided, state) => {
+        return {
+            ...provided,
+            color: 'black',
+            width: window.innerWidth > 990 ? "150%" : '100%'
+        }
+    }
+}
+
+
+const timeOptions = [
+    { value: 'all', label: 'All Time' },
+    { value: 'today', label: 'Today' },
+    { value: 'tomorrow', label: 'Tomorrow' },
+    { value: 'this_week', label: 'This Week' },
+    { value: 'next_week', label: 'Next Week' },
+    { value: 'this_month', label: 'This Month' },
+    { value: 'next_month', label: 'Next Month' },
+    { value: 'this_year', label: 'This Year' },
+]
+
 
 class MainBanner extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            query: '',
+            state: '',
+            city: '',
+            venue: '',
+            time: '',
+            category: '',
+            loadingCity: false,
+            loadingVenue: false,
+        }
+    }
+
+    onSearch = () => {
+        const { history } = this.props;
+        history.push('/events');
+    }
+
+    getCities = (query, cb) => {
+        cb([]);
+    }
+
     render() {
+        const { query, state, city, venue, time, category, loadingCity, loadingVenue } = this.state;
         return (
             <div className="main-banner video-banner">
                 <video loop muted autoPlay poster="#" className="video-background">
@@ -21,23 +87,72 @@ class MainBanner extends React.Component {
                                         type="text"
                                         className="form-control"
                                         placeholder="What are you looking for?"
+                                        value={query}
+                                        onChange={(evt) => this.setState({ query: evt.target.value })}
                                     />
-                                    <select className="form-control">
-                                        <option value="">All States</option>
-                                    </select>
-                                    <select className="form-control">
-                                        <option value="">All Cities</option>
-                                    </select>
-                                    <select className="form-control">
-                                        <option value="">All Venues</option>
-                                    </select>
-                                    <select className="form-control">
-                                        <option value="">All Time</option>
-                                    </select>
-                                    <select className="form-control">
-                                        <option value="">All Categories</option>
-                                    </select>
-                                    <button>Search</button>
+                                    <Select
+                                        className="form-control"
+                                        classNamePrefix="select"
+                                        name="state"
+                                        options={[]}
+                                        placeholder="All States"
+                                        value={state}
+                                        onChange={(state) => this.setState({ state })}
+                                        styles={customStyles}
+                                        maxMenuHeight={200}
+                                    />
+                                    <AsyncSelect
+                                        className="form-control"
+                                        classNamePrefix="select"
+                                        isSearchable={true}
+                                        name="city"
+                                        placeholder="All Cities"
+                                        loadOptions={this.getCities}
+                                        noOptionsMessage={() => "No Cities"}
+                                        value={city}
+                                        isLoading={loadingCity}
+                                        onChange={(city) => this.setState({ city })}
+                                        styles={customStyles}
+                                        maxMenuHeight={200}
+                                    />
+                                    <AsyncSelect
+                                        className="form-control"
+                                        classNamePrefix="select"
+                                        isSearchable={true}
+                                        name="venue"
+                                        placeholder="All Venues"
+                                        loadOptions={this.getCities}
+                                        noOptionsMessage={() => "No Venues"}
+                                        value={venue}
+                                        isLoading={loadingVenue}
+                                        onChange={(venue) => this.setState({ venue })}
+                                        styles={customStyles}
+                                        maxMenuHeight={200}
+                                    />
+                                    <Select
+                                        className="form-control"
+                                        classNamePrefix="select"
+                                        isSearchable={false}
+                                        name="time"
+                                        options={timeOptions}
+                                        value={time}
+                                        placeholder="All Time"
+                                        onChange={(time) => { this.setState({ time }) }}
+                                        styles={customStyles}
+                                        maxMenuHeight={200}
+                                    />
+                                    <Select
+                                        className="form-control"
+                                        classNamePrefix="select"
+                                        name="category"
+                                        options={[]}
+                                        placeholder="All Categories"
+                                        styles={customStyles}
+                                        value={category}
+                                        maxMenuHeight={200}
+                                        onChange={(category) => this.setState({ category })}
+                                    />
+                                    <button onClick={this.onSearch}>Search</button>
                                 </div>
                             </div>
                         </div>
@@ -64,4 +179,4 @@ class MainBanner extends React.Component {
     }
 }
 
-export default MainBanner;
+export default withRouter(MainBanner);

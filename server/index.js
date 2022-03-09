@@ -56,6 +56,7 @@ const {
     sendBetCancelConfirmEmail,
     sendBetCancelOpponentConfirmEmail,
 } = require('./libs/functions');
+const { sortSearchResults } = require('./libs/sortSearchResults');
 const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -96,7 +97,7 @@ const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 const shopRouter = require('./shopRoutes');
-const { sortSearchResults } = require('./libs/sortSearchResults');
+const ticketRouter = require('./ticketRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -5710,6 +5711,7 @@ expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 expressApp.use('/shop', shopRouter);
+expressApp.use('/tickets', ticketRouter);
 expressApp.use('/static', express.static('banners'));
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
