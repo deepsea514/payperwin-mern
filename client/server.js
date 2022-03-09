@@ -3,9 +3,8 @@ const compression = require("compression");
 const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
-const datefomart = require("dateformat");
+const dateformat = require("dateformat");
 const convert = require('xml-js');
-const dateformat = require('dateformat');
 const app = express();
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
@@ -169,7 +168,7 @@ app.get("/*", (req, res) => {
                                             title = `Bet with or against ${firstname}`;
                                             description = `Bet with or against ${firstname} on the ${event.teamA
                                                 } vs ${event.teamB
-                                                } - ${leagueName}(${sportName}) on ${datefomart(
+                                                } - ${leagueName}(${sportName}) on ${dateformat(
                                                     eventDate,
                                                     "default"
                                                 )}`;
