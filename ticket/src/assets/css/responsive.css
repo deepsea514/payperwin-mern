@@ -507,6 +507,11 @@
         display: block
     }
 
+    .tab_content .tabs_item .accordion .accordion-item .accordion-title .btn-buy {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
     .tab_content .tabs_item .accordion .accordion-item .accordion-title .author {
         margin-right: auto;
         margin-bottom: 15px;

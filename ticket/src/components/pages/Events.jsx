@@ -4,6 +4,7 @@ import GoTop from '../Shared/GoTop';
 import Footer from '../Common/Footer';
 import lax from 'lax.js';
 import SearchForm from '../Events/SearchForm';
+import EventList from '../Events/EventList';
 
 class Events extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class Events extends React.Component {
             <React.Fragment>
                 <MainBanner />
                 <SearchForm />
+                <EventList />
                 <Footer />
                 <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>

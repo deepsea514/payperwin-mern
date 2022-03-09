@@ -2200,6 +2200,7 @@ Schedule CSS
     -webkit-box-align: center !important;
     -ms-flex-align: center !important;
     align-items: center !important;
+    justify-content: space-between;
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author {

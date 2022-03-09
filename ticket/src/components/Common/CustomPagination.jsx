@@ -58,7 +58,7 @@ export default class CustomPagination extends Component {
             }
             buttons.push(
                 <li className="page-item" key={i}>
-                    <a className={"page-link" + (isCurrent ? " active" : "")} onClick={btnEvent}>
+                    <a href='#' className={"page-link" + (isCurrent ? " active" : "")} onClick={btnEvent}>
                         {i + 1}
                     </a>
                 </li>
@@ -85,13 +85,13 @@ export default class CustomPagination extends Component {
 
         buttons = [
             <li className="page-item" key="first">
-                <a className={"page-link" + (!isNotFirst ? ' disabled' : '')}
+                <a href='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
                     onClick={firstHandler}>
                     <i className="icofont-curved-double-left"></i>
                 </a>
             </li>,
             <li className="page-item" key="prev">
-                <a className={"page-link" + (!isNotFirst ? ' disabled' : '')}
+                <a href='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
                     onClick={prevHandler}>
                     <i className="icofont-curved-left"></i>
                 </a>
@@ -100,13 +100,13 @@ export default class CustomPagination extends Component {
 
         buttons = buttons.concat([
             <li className="page-item" key="next">
-                <a className={"page-link" + (!isNotLast ? ' disabled' : '')}
+                <a href='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
                     onClick={nextHandler}>
                     <i className="icofont-curved-right"></i>
                 </a>
             </li>,
             <li className="page-item" key="last">
-                <a className={"page-link" + (!isNotLast ? ' disabled' : '')}
+                <a href='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
                     onClick={lastHandler}>
                     <i className="icofont-curved-double-right"></i>
                 </a>

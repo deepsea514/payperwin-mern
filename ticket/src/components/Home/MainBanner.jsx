@@ -8,7 +8,9 @@ const customStyles = {
         return {
             ...provided,
             background: '#FFF4',
-            height: '38px'
+            height: '38px',
+            borderRadius: 'none',
+            border: 'none',
         }
     },
     placeholder: (provided, state) => {
