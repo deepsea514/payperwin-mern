@@ -52,7 +52,7 @@ class LatestNews extends React.Component {
                             <div className="col-lg-12 col-md-12">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Technology</Link>
@@ -71,7 +71,7 @@ class LatestNews extends React.Component {
                             <div className="col-lg-12 col-md-12">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">Agency</Link>
@@ -90,7 +90,7 @@ class LatestNews extends React.Component {
                             <div className="col-lg-12 col-md-12">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog3.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog3.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">IT</Link>
@@ -109,7 +109,7 @@ class LatestNews extends React.Component {
                             <div className="col-lg-12 col-md-12">
                                 <div className="single-blog-post">
                                     <div className="blog-image">
-                                        <Link to="#"><img src={require("../../assets/images/blog4.jpg")} alt="blog" /></Link>
+                                        <Link to="#"><img src="/images/blog4.jpg" alt="blog" /></Link>
 
                                         <div className="post-tag">
                                             <Link to="#">IT</Link>

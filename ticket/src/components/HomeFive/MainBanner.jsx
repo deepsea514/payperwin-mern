@@ -50,7 +50,7 @@ class MainBanner extends React.Component {
 
                 <div className="main-banner video-banner">
                     <video loop muted autoPlay poster="#" className="video-background">
-                        <source src={require("../../assets/video/promo-video.mp4")} type="video/mp4" />
+                        <source src="/video/promo-video.mp4" type="video/mp4" />
                     </video>
 
                     <div className="d-table">
@@ -88,16 +88,16 @@ class MainBanner extends React.Component {
                     </div>
 
                     <div className="shape1">
-                        <img src={require("../../assets/images/shapes/1.png")} alt="shape1" />
+                        <img src="/images/shapes/1.png" alt="shape1" />
                     </div>
                     <div className="shape2 rotateme">
-                        <img src={require("../../assets/images/shapes/2.png")} alt="shape2" />
+                        <img src="/images/shapes/2.png" alt="shape2" />
                     </div>
                     <div className="shape3 rotateme">
-                        <img src={require("../../assets/images/shapes/3.png")} alt="shape3" />
+                        <img src="/images/shapes/3.png" alt="shape3" />
                     </div>
                     <div className="shape4">
-                        <img src={require("../../assets/images/shapes/4.png")} alt="shape4" />
+                        <img src="/images/shapes/4.png" alt="shape4" />
                     </div>
                 </div>
             </React.Fragment>

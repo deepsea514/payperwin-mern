@@ -9,7 +9,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers1.jpg")} 
+                                src="/images/speakers1.jpg" 
                                 alt="speakers" 
                             />
 
@@ -45,7 +45,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers2.jpg")} 
+                                src="/images/speakers2.jpg" 
                                 alt="speakers" 
                             />
 
@@ -81,7 +81,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers3.jpg")} 
+                                src="/images/speakers3.jpg" 
                                 alt="speakers" 
                             />
 
@@ -117,7 +117,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers4.jpg")} 
+                                src="/images/speakers4.jpg" 
                                 alt="speakers" 
                             />
 
@@ -153,7 +153,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers5.jpg")} 
+                                src="/images/speakers5.jpg" 
                                 alt="speakers" 
                             />
 
@@ -189,7 +189,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers6.jpg")} 
+                                src="/images/speakers6.jpg" 
                                 alt="speakers" 
                             />
 
@@ -225,7 +225,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers7.jpg")} 
+                                src="/images/speakers7.jpg" 
                                 alt="speakers" 
                             />
 
@@ -261,7 +261,7 @@ class SpeakersOne extends React.Component {
                     <div className="col-lg-3 col-md-6 p-0">
                         <div className="single-speakers">
                             <img 
-                                src={require("../../assets/images/speakers8.jpg")} 
+                                src="/images/speakers8.jpg" 
                                 alt="speakers" 
                             />
 

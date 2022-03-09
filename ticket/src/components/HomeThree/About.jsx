@@ -23,7 +23,7 @@ class About extends React.Component {
                         <div className="col-lg-6">
                             <div className="about-image">
                                 <img 
-                                    src={require("../../assets/images/about4.jpg")}
+                                    src="/images/about4.jpg"
                                     className="about-img1" 
                                     alt="about" 
                                 />
@@ -59,7 +59,7 @@ class About extends React.Component {
                                 </ul>
 
                                 <div className="signature">
-                                    <img src={require("../../assets/images/signature.png")} alt="about" />
+                                    <img src="/images/signature.png" alt="about" />
                                 </div>
                             </div>
                         </div>

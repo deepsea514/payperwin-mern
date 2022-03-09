@@ -14,7 +14,7 @@ class App extends React.Component {
         loading: true
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.demoAsyncCall().then(() => this.setState({ loading: false }));
     }
 
@@ -22,7 +22,7 @@ class App extends React.Component {
         return new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
 
-    render(){
+    render() {
         return (
             <React.Fragment>
                 {this.state.loading ? <Preloader /> : ''}

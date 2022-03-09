@@ -70,8 +70,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/platinum-partner1.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/platinum-partner1.png")} alt="sponsor" />
+                                            <img src="/images/platinum-partner1.png" alt="sponsor" />
+                                            <img src="/images/platinum-partner1.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -79,8 +79,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/platinum-partner2.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/platinum-partner2.png")} alt="sponsor" />
+                                            <img src="/images/platinum-partner2.png" alt="sponsor" />
+                                            <img src="/images/platinum-partner2.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -88,8 +88,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/platinum-partner3.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/platinum-partner3.png")} alt="sponsor" />
+                                            <img src="/images/platinum-partner3.png" alt="sponsor" />
+                                            <img src="/images/platinum-partner3.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -97,8 +97,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/platinum-partner4.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/platinum-partner4.png")} alt="sponsor" />
+                                            <img src="/images/platinum-partner4.png" alt="sponsor" />
+                                            <img src="/images/platinum-partner4.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -106,8 +106,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/platinum-partner5.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/platinum-partner5.png")} alt="sponsor" />
+                                            <img src="/images/platinum-partner5.png" alt="sponsor" />
+                                            <img src="/images/platinum-partner5.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -130,8 +130,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/gold-partner1.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/gold-partner1.png")} alt="sponsor" />
+                                            <img src="/images/gold-partner1.png" alt="sponsor" />
+                                            <img src="/images/gold-partner1.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -139,8 +139,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/gold-partner2.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/gold-partner2.png")} alt="sponsor" />
+                                            <img src="/images/gold-partner2.png" alt="sponsor" />
+                                            <img src="/images/gold-partner2.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -148,8 +148,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/gold-partner3.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/gold-partner3.png")} alt="sponsor" />
+                                            <img src="/images/gold-partner3.png" alt="sponsor" />
+                                            <img src="/images/gold-partner3.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -157,8 +157,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/gold-partner4.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/gold-partner4.png")} alt="sponsor" />
+                                            <img src="/images/gold-partner4.png" alt="sponsor" />
+                                            <img src="/images/gold-partner4.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>
@@ -166,8 +166,8 @@ class Sponsor extends React.Component {
                                 <div className="col-lg-12 col-md-12">
                                     <div className="partner-item">
                                         <Link to="#">
-                                            <img src={require("../../assets/images/gold-partner5.png")} alt="sponsor" />
-                                            <img src={require("../../assets/images/gold-partner5.png")} alt="sponsor" />
+                                            <img src="/images/gold-partner5.png" alt="sponsor" />
+                                            <img src="/images/gold-partner5.png" alt="sponsor" />
                                         </Link>
                                     </div>
                                 </div>

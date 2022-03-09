@@ -8,7 +8,7 @@ class WhyUs extends React.Component {
                 <div className="row m-0 h-100 align-items-center">
                     <div className="col-lg-4 col-md-6 p-0">
                         <div className="why-choose-img">
-                            <img src={require("../../assets/images/why-choose-img1.jpg")} alt="Why Us" />
+                            <img src="/images/why-choose-img1.jpg" alt="Why Us" />
                         </div>
                     </div>
 
@@ -26,7 +26,7 @@ class WhyUs extends React.Component {
 
                     <div className="col-lg-4 col-md-6 p-0">
                         <div className="why-choose-img">
-                            <img src={require("../../assets/images/why-choose-img2.jpg")} alt="Why Us" />
+                            <img src="/images/why-choose-img2.jpg" alt="Why Us" />
                         </div>
                     </div>
 
@@ -44,7 +44,7 @@ class WhyUs extends React.Component {
 
                     <div className="col-lg-4 col-md-6 p-0">
                         <div className="why-choose-img">
-                            <img src={require("../../assets/images/why-choose-img3.jpg")} alt="Why Us" />
+                            <img src="/images/why-choose-img3.jpg" alt="Why Us" />
                         </div>
                     </div>
 

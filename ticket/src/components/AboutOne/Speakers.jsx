@@ -2,21 +2,21 @@ import React from 'react';
 import lax from 'lax.js';
 import { Link } from 'react-router-dom';
 import LaxDiv from '../Shared/LaxDiv';
- 
+
 class Speakers extends React.Component {
 
     constructor(props) {
         super(props)
         lax.setup()
-    
-        document.addEventListener('scroll', function(x) {
+
+        document.addEventListener('scroll', function (x) {
             lax.update(window.scrollY)
         }, false)
-    
+
         lax.update(window.scrollY)
     }
 
-    render(){
+    render() {
         return (
             <section className="speakers-area ptb-120 pb-0">
                 <div className="container">
@@ -32,7 +32,7 @@ class Speakers extends React.Component {
                 <div className="row m-0">
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers1.jpg")} alt="Speaker" />
+                            <img src="/images/speakers1.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">James Anderson</Link></h3>
@@ -65,7 +65,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers2.jpg")} alt="Speaker" />
+                            <img src="/images/speakers2.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">Steven Smith</Link></h3>
@@ -98,7 +98,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers3.jpg")} alt="Speaker" />
+                            <img src="/images/speakers3.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">Lucy Mandana</Link></h3>
@@ -131,7 +131,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers4.jpg")} alt="Speaker" />
+                            <img src="/images/speakers4.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">David Warner</Link></h3>
@@ -164,7 +164,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers5.jpg")} alt="Speaker" />
+                            <img src="/images/speakers5.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">Alberta Amelia</Link></h3>
@@ -197,7 +197,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers6.jpg")} alt="Speaker" />
+                            <img src="/images/speakers6.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">Abbie Edie</Link></h3>
@@ -230,7 +230,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers7.jpg")} alt="Speaker" />
+                            <img src="/images/speakers7.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">Steven Garrad</Link></h3>
@@ -263,7 +263,7 @@ class Speakers extends React.Component {
 
                     <div className="col-lg-3 col-sm-6 p-0">
                         <div className="single-speakers">
-                            <img src={require("../../assets/images/speakers8.jpg")} alt="Speaker" />
+                            <img src="/images/speakers8.jpg" alt="Speaker" />
 
                             <div className="speakers-content">
                                 <h3><Link to="#">David Wiley</Link></h3>
@@ -298,5 +298,5 @@ class Speakers extends React.Component {
         );
     }
 }
- 
+
 export default Speakers;

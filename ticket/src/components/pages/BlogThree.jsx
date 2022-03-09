@@ -25,7 +25,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">Technology</Link>
@@ -44,7 +44,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">Agency</Link>
@@ -63,7 +63,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog3.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog3.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">IT</Link>
@@ -82,7 +82,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog4.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog4.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">IT</Link>
@@ -101,7 +101,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog5.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog5.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">Technology</Link>
@@ -120,7 +120,7 @@ class BlogThree extends React.Component {
                                     <div className="col-lg-6 col-md-6">
                                         <div className="single-blog-post">
                                             <div className="blog-image">
-                                                <Link to="#"><img src={require("../../assets/images/blog6.jpg")} alt="blog" /></Link>
+                                                <Link to="#"><img src="/images/blog6.jpg" alt="blog" /></Link>
 
                                                 <div className="post-tag">
                                                     <Link to="#">Agency</Link>
@@ -194,7 +194,7 @@ class BlogThree extends React.Component {
                                         <ul>
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog1.jpg")} alt="blog" />
+                                                    <img src="/images/blog1.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Most Popular New top Business Apps</Link></h5>
@@ -203,7 +203,7 @@ class BlogThree extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog2.jpg")} alt="blog" />
+                                                    <img src="/images/blog2.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">3 WooCommerce Plugins to Boost Sales</Link></h5>
@@ -212,7 +212,7 @@ class BlogThree extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog3.jpg")} alt="blog" />
+                                                    <img src="/images/blog3.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Best Marketing top Management Tools</Link></h5>
@@ -221,7 +221,7 @@ class BlogThree extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog4.jpg")} alt="blog" />
+                                                    <img src="/images/blog4.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">How to Build Link Business Dashboard</Link></h5>

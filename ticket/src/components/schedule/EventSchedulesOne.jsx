@@ -64,7 +64,7 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author">
                                                         <img 
-                                                            src={require("../../assets/images/author1.jpg")}
+                                                            src="/images/author1.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Smith" 
@@ -103,28 +103,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author5.jpg")} 
+                                                            src="/images/author5.jpg" 
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author2.jpg")}
+                                                            src="/images/author2.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")}
+                                                            src="/images/author4.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -163,14 +163,14 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author6.jpg")}
+                                                            src="/images/author6.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author7.jpg")}
+                                                            src="/images/author7.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
@@ -209,28 +209,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author8.jpg")}
+                                                            src="/images/author8.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author9.jpg")}
+                                                            src="/images/author9.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author" 
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")}
+                                                            src="/images/author4.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -273,7 +273,7 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author">
                                                         <img 
-                                                            src={require("../../assets/images/author1.jpg")}
+                                                            src="/images/author1.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Smith" 
@@ -312,28 +312,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author5.jpg")}
+                                                            src="/images/author5.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author2.jpg")}
+                                                            src="/images/author2.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")}
+                                                            src="/images/author4.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -372,14 +372,14 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author6.jpg")}
+                                                            src="/images/author6.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author7.jpg")}
+                                                            src="/images/author7.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
@@ -422,7 +422,7 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author">
                                                         <img 
-                                                            src={require("../../assets/images/author1.jpg")}
+                                                            src="/images/author1.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Smith" 
@@ -461,28 +461,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author5.jpg")}
+                                                            src="/images/author5.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author2.jpg")}
+                                                            src="/images/author2.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")} 
+                                                            src="/images/author4.jpg" 
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -521,14 +521,14 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author6.jpg")}
+                                                            src="/images/author6.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author7.jpg")}
+                                                            src="/images/author7.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
@@ -567,28 +567,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author8.jpg")} 
+                                                            src="/images/author8.jpg" 
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author9.jpg")}
+                                                            src="/images/author9.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")}
+                                                            src="/images/author4.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -631,7 +631,7 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author">
                                                         <img 
-                                                            src={require("../../assets/images/author1.jpg")}
+                                                            src="/images/author1.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Smith" 
@@ -670,28 +670,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author5.jpg")}
+                                                            src="/images/author5.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author2.jpg")}
+                                                            src="/images/author2.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")}
+                                                            src="/images/author4.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -730,14 +730,14 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author6.jpg")}
+                                                            src="/images/author6.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author7.jpg")}
+                                                            src="/images/author7.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
@@ -776,28 +776,28 @@ class EventSchedulesOne extends React.Component {
                                                 <Link className="accordion-title" to="#">
                                                     <div className="author author-multi">
                                                         <img 
-                                                            src={require("../../assets/images/author8.jpg")}
+                                                            src="/images/author8.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Steven Lucy" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author9.jpg")}
+                                                            src="/images/author9.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="Jonaton Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author3.jpg")}
+                                                            src="/images/author3.jpg"
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Smith" 
                                                             alt="Author"
                                                         />
                                                         <img 
-                                                            src={require("../../assets/images/author4.jpg")} 
+                                                            src="/images/author4.jpg" 
                                                             data-toggle="tooltip" 
                                                             data-placement="top" 
                                                             title="John Doe" 
@@ -846,10 +846,10 @@ class EventSchedulesOne extends React.Component {
                     </div>
                 </div>
 
-                <div className="shape1"><img src={require("../../assets/images/shapes/1.png")} alt="shape1" /></div>
-                <div className="shape2 rotateme"><img src={require("../../assets/images/shapes/2.png")} alt="shape2" /></div>
-                <div className="shape3 rotateme"><img src={require("../../assets/images/shapes/3.png")} alt="shape3" /></div>
-                <div className="shape4"><img src={require("../../assets/images/shapes/4.png")} alt="shape4" /></div>
+                <div className="shape1"><img src="/images/shapes/1.png" alt="shape1" /></div>
+                <div className="shape2 rotateme"><img src="/images/shapes/2.png" alt="shape2" /></div>
+                <div className="shape3 rotateme"><img src="/images/shapes/3.png" alt="shape3" /></div>
+                <div className="shape4"><img src="/images/shapes/4.png" alt="shape4" /></div>
             </section>
         );
     }

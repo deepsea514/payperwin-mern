@@ -24,7 +24,7 @@ class BlogFour extends React.Component {
                                 <div className="row">
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Technology</Link>
@@ -40,7 +40,7 @@ class BlogFour extends React.Component {
 
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Agency</Link>
@@ -56,7 +56,7 @@ class BlogFour extends React.Component {
                                     
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Technology</Link>
@@ -72,7 +72,7 @@ class BlogFour extends React.Component {
 
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Agency</Link>
@@ -88,7 +88,7 @@ class BlogFour extends React.Component {
                                     
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog1.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog1.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Technology</Link>
@@ -104,7 +104,7 @@ class BlogFour extends React.Component {
 
                                     <div className="col-lg-12 col-md-6">
                                         <div className="single-blog-card">
-                                            <Link to="#"><img src={require("../../assets/images/blog2.jpg")} alt="blog" /></Link>
+                                            <Link to="#"><img src="/images/blog2.jpg" alt="blog" /></Link>
 
                                             <div className="post-tag">
                                                 <Link to="#">Agency</Link>
@@ -176,7 +176,7 @@ class BlogFour extends React.Component {
                                         <ul>
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog1.jpg")} alt="blog" />
+                                                    <img src="/images/blog1.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Most Popular New top Business Apps</Link></h5>
@@ -185,7 +185,7 @@ class BlogFour extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog2.jpg")} alt="blog" />
+                                                    <img src="/images/blog2.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">3 WooCommerce Plugins to Boost Sales</Link></h5>
@@ -194,7 +194,7 @@ class BlogFour extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog3.jpg")} alt="blog" />
+                                                    <img src="/images/blog3.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">The Best Marketing top Management Tools</Link></h5>
@@ -203,7 +203,7 @@ class BlogFour extends React.Component {
 
                                             <li>
                                                 <Link to="#">
-                                                    <img src={require("../../assets/images/blog4.jpg")} alt="blog" />
+                                                    <img src="/images/blog4.jpg" alt="blog" />
                                                 </Link>
 
                                                 <h5><Link to="#">How to Build Link Business Dashboard</Link></h5>

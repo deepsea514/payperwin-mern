@@ -1,47 +1,5 @@
-/*
-@File: Evnia Template Styles
-
-* This file contains the styling for the actual tepmlate, this
-is the file you need to edit to change the look of the
-tepmlate.
-
-This files table contents are outlined below>>>>>
-
-*******************************************
-*******************************************
-
-** - Default CSS
-** - Preloader CSS
-** - Navbar CSS
-** - Main Banner CSS
-** - About CSS
-** - Why Choose Us CSS
-** - CTA CSS
-** - Speakers CSS
-** - Schedule CSS
-** - FunFacts CSS
-** - Pricing CSS
-** - Partner CSS
-** - Blog CSS
-** - Buy Tickets CSS
-** - Subscribe CSS
-** - Page Title CSS
-** - Login CSS
-** - Signup CSS
-** - 404 Error CSS
-** - FAQ CSS
-** - Coming Soon CSS
-** - Pagination CSS
-** - Blog Details CSS
-** - Sidebar CSS
-** - Contact Us CSS
-** - Footer CSS
-** - Back To Top CSS
-*/
-/*================================================
-Default CSS
-=================================================*/
 @import url("https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+
 :root {
   scroll-behavior: initial;
 }
@@ -125,7 +83,7 @@ label {
   font-size: 15px;
   color: #ffffff;
   -webkit-box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
-          box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
+  box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
   border: none;
   padding: 15px 30px;
   border-radius: 0;
@@ -166,7 +124,7 @@ label {
 
 .btn-primary.focus, .btn-primary:focus {
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
   color: #ffffff;
 }
 
@@ -174,12 +132,12 @@ label {
   background: #0d1028;
   color: #ffffff;
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
 }
 
 .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus {
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
 }
 
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
@@ -225,7 +183,7 @@ label {
 
 .btn-secondary.focus, .btn-secondary:focus {
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
   color: #ffffff;
 }
 
@@ -233,12 +191,12 @@ label {
   background: #0d1028;
   color: #ffffff;
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
 }
 
 .btn-secondary:not(:disabled):not(.disabled).active:focus, .btn-secondary:not(:disabled):not(.disabled):active:focus {
   -webkit-box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
-          box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
+  box-shadow: 0 13px 27px 0 rgba(245, 78, 162, 0.25);
 }
 
 .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active {
@@ -329,7 +287,7 @@ label {
 }
 
 /*owl-carousel-btn*/
-.owl-theme .owl-nav.disabled + .owl-dots {
+.owl-theme .owl-nav.disabled+.owl-dots {
   margin-top: 0;
   line-height: .01;
 }
@@ -350,7 +308,7 @@ label {
 .owl-theme .owl-dots .owl-dot:hover, .owl-theme .owl-dots .owl-dot:focus {
   outline: 0;
   -webkit-box-shadow: unset !important;
-          box-shadow: unset !important;
+  box-shadow: unset !important;
 }
 
 .owl-theme .owl-dots .owl-dot:hover span, .owl-theme .owl-dots .owl-dot:focus span {
@@ -377,7 +335,7 @@ label {
 
 .form-control:hover, .form-control:focus, .form-control.active {
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
   border-color: #FF2D55;
 }
 
@@ -407,7 +365,7 @@ Preloader CSS
   border: 7px solid transparent;
   border-top-color: #FF2D55;
   -webkit-animation: spin 1.7s linear infinite;
-          animation: spin 1.7s linear infinite;
+  animation: spin 1.7s linear infinite;
   z-index: 11;
 }
 
@@ -422,7 +380,7 @@ Preloader CSS
   border: 7px solid transparent;
   border-top-color: #efa506;
   -webkit-animation: spin-reverse .6s linear infinite;
-          animation: spin-reverse .6s linear infinite;
+  animation: spin-reverse .6s linear infinite;
 }
 
 .preloader .loader:after {
@@ -436,50 +394,54 @@ Preloader CSS
   border: 7px solid transparent;
   border-top-color: #00acee;
   -webkit-animation: spin 1s linear infinite;
-          animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @-webkit-keyframes spin-reverse {
   0% {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(-360deg);
-            transform: rotate(-360deg);
+    transform: rotate(-360deg);
   }
 }
 
 @keyframes spin-reverse {
   0% {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(-360deg);
-            transform: rotate(-360deg);
+    transform: rotate(-360deg);
   }
 }
 
@@ -539,7 +501,7 @@ Navbar CSS
 
 .elkevent-nav nav .navbar-nav .nav-item .dropdown-menu {
   -webkit-box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
-          box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
   background: #0d1028;
   position: absolute;
   top: 80px;
@@ -621,10 +583,10 @@ Navbar CSS
   padding: 5px 0;
   z-index: 999;
   -webkit-box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
-          box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
   background-color: #0d1028 !important;
   -webkit-animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
-          animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
+  animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
 }
 
 /*================================================
@@ -683,31 +645,31 @@ Main Banner CSS
   opacity: 0;
   z-index: 0;
   -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   -webkit-animation: imageAnimation 24s linear infinite 0s;
-          animation: imageAnimation 24s linear infinite 0s;
+  animation: imageAnimation 24s linear infinite 0s;
 }
 
 .slideshow-banner .slideshow li:nth-child(1) span {
-  background-image: url("../images/slideshow-bg1.jpg");
+  background-image: url("/images/slideshow-bg1.jpg");
 }
 
 .slideshow-banner .slideshow li:nth-child(2) span {
-  background-image: url("../images/slideshow-bg2.jpg");
+  background-image: url("/images/slideshow-bg2.jpg");
   -webkit-animation-delay: 6s;
-          animation-delay: 6s;
+  animation-delay: 6s;
 }
 
 .slideshow-banner .slideshow li:nth-child(3) span {
-  background-image: url("../images/slideshow-bg3.jpg");
+  background-image: url("/images/slideshow-bg3.jpg");
   -webkit-animation-delay: 12s;
-          animation-delay: 12s;
+  animation-delay: 12s;
 }
 
 .slideshow-banner .slideshow li:nth-child(4) span {
-  background-image: url("../images/slideshow-bg4.jpg");
+  background-image: url("/images/slideshow-bg4.jpg");
   -webkit-animation-delay: 18s;
-          animation-delay: 18s;
+  animation-delay: 18s;
 }
 
 .slideshow-banner .event-countdown {
@@ -737,47 +699,29 @@ Main Banner CSS
 }
 
 .item-bg1 {
-  background-image: url("../images/main-bg1.jpg");
+  background-image: url("/images/main-bg1.jpg");
 }
 
 .item-bg2 {
-  background-image: url("../images/main-bg2.jpg");
+  background-image: url("/images/main-bg2.jpg");
 }
 
 .item-bg3 {
-  background-image: url("../images/slider-bg1.jpg");
+  background-image: url("/images/slider-bg1.jpg");
 }
 
 .item-bg4 {
-  background-image: url("../images/slider-bg2.jpg");
+  background-image: url("/images/slider-bg2.jpg");
 }
 
 .item-bg5 {
-  background-image: url("../images/slider-bg3.jpg");
+  background-image: url("/images/slider-bg3.jpg");
 }
 
 .main-banner-content {
-  max-width: 850px;
   position: relative;
   z-index: 1;
-}
-
-.main-banner-content::before {
-  content: '';
-  position: absolute;
-  top: -75px;
-  width: 100%;
-  max-width: 380px;
   text-align: center;
-  height: 500px;
-  left: 18%;
-  margin-left: -190px;
-  z-index: -1;
-  border: 18px solid rgba(104, 89, 222, 0.24);
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  -webkit-box-shadow: 0 60px 40px -40px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 60px 40px -40px rgba(0, 0, 0, 0.3);
 }
 
 .main-banner-content h1 {
@@ -804,7 +748,7 @@ Main Banner CSS
 .main-banner-content h1 b:nth-of-type(3) {
   color: #ffffff;
   -webkit-animation: colorchange 20s;
-          animation: colorchange 20s;
+  animation: colorchange 20s;
 }
 
 .main-banner-content h1 b:nth-of-type(4) {
@@ -879,9 +823,9 @@ Main Banner CSS
   width: 50px;
   height: 50px;
   -webkit-animation: ripple 1.6s ease-out infinite;
-          animation: ripple 1.6s ease-out infinite;
+  animation: ripple 1.6s ease-out infinite;
   -webkit-animation-delay: 3s;
-          animation-delay: 3s;
+  animation-delay: 3s;
   opacity: 0;
   border-radius: 50%;
   background: rgba(51, 102, 204, 0.5);
@@ -899,6 +843,72 @@ Main Banner CSS
 .main-banner-content.banner-content-center {
   margin: 50px auto 0;
   text-align: center;
+}
+
+.main-banner-content .search-form {
+  position: relative;
+  display: flex;
+}
+
+.main-banner-content .search-form .form-control {
+  background: #FFF4;
+  border: 1px solid #ffffff;
+  border-radius: 50px;
+  color: #ffffff;
+  height: 55px;
+  padding-left: 20px;
+}
+
+.main-banner-content .search-form .form-control:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.main-banner-content .search-form .form-control:not(:first-child) {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.main-banner-content .search-form .form-control::-webkit-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control:-ms-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control::-ms-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control::placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form button {
+  /* position: absolute; */
+  /* right: -1px; */
+  height: 55px;
+  background: #FF2D55;
+  top: 0;
+  color: #ffffff;
+  border: none;
+  width: 130px;
+  min-width: 130px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 0 50px 50px 0;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: 0 !important;
+  border: none;
+}
+
+.main-banner-content form button:hover, .coming-soon .main-banner-content form button:focus {
+  background: #00acee;
 }
 
 .countdown-area {
@@ -979,7 +989,7 @@ Main Banner CSS
   top: 50%;
   text-transform: uppercase;
   -webkit-transform: rotate(-90deg);
-          transform: rotate(-90deg);
+  transform: rotate(-90deg);
   margin-top: -10px;
   letter-spacing: 2px;
 }
@@ -997,42 +1007,46 @@ Main Banner CSS
   font-size: 14px;
   position: initial;
   -webkit-transform: rotate(0deg);
-          transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 
 @-webkit-keyframes ripple {
   0%, 35% {
     -webkit-transform: scale(0);
-            transform: scale(0);
+    transform: scale(0);
     opacity: 1;
   }
+
   50% {
     -webkit-transform: scale(1.5);
-            transform: scale(1.5);
+    transform: scale(1.5);
     opacity: 0.8;
   }
+
   100% {
     opacity: 0;
     -webkit-transform: scale(2);
-            transform: scale(2);
+    transform: scale(2);
   }
 }
 
 @keyframes ripple {
   0%, 35% {
     -webkit-transform: scale(0);
-            transform: scale(0);
+    transform: scale(0);
     opacity: 1;
   }
+
   50% {
     -webkit-transform: scale(1.5);
-            transform: scale(1.5);
+    transform: scale(1.5);
     opacity: 0.8;
   }
+
   100% {
     opacity: 0;
     -webkit-transform: scale(2);
-            transform: scale(2);
+    transform: scale(2);
   }
 }
 
@@ -1042,7 +1056,7 @@ Main Banner CSS
   bottom: 70px;
   z-index: -1;
   -webkit-animation: movebounce 5s linear infinite;
-          animation: movebounce 5s linear infinite;
+  animation: movebounce 5s linear infinite;
   opacity: .6;
 }
 
@@ -1069,69 +1083,75 @@ Main Banner CSS
   z-index: -1;
   opacity: .6;
   -webkit-animation: movebounce 5s linear infinite;
-          animation: movebounce 5s linear infinite;
+  animation: movebounce 5s linear infinite;
 }
 
 .rotateme {
   -webkit-animation-name: rotateme;
-          animation-name: rotateme;
+  animation-name: rotateme;
   -webkit-animation-duration: 40s;
-          animation-duration: 40s;
+  animation-duration: 40s;
   -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
+  animation-timing-function: linear;
 }
 
 @-webkit-keyframes rotateme {
   from {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes rotateme {
   from {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @-webkit-keyframes movebounce {
   0% {
     -webkit-transform: translateY(0px);
-            transform: translateY(0px);
+    transform: translateY(0px);
   }
+
   50% {
     -webkit-transform: translateY(20px);
-            transform: translateY(20px);
+    transform: translateY(20px);
   }
+
   100% {
     -webkit-transform: translateY(0px);
-            transform: translateY(0px);
+    transform: translateY(0px);
   }
 }
 
 @keyframes movebounce {
   0% {
     -webkit-transform: translateY(0px);
-            transform: translateY(0px);
+    transform: translateY(0px);
   }
+
   50% {
     -webkit-transform: translateY(20px);
-            transform: translateY(20px);
+    transform: translateY(20px);
   }
+
   100% {
     -webkit-transform: translateY(0px);
-            transform: translateY(0px);
+    transform: translateY(0px);
   }
 }
 
@@ -1139,15 +1159,19 @@ Main Banner CSS
   0% {
     color: #FF2D55;
   }
+
   25% {
     color: #ffffff;
   }
+
   50% {
     color: red;
   }
+
   75% {
     color: #00acee;
   }
+
   0% {
     color: #efa506;
   }
@@ -1157,15 +1181,19 @@ Main Banner CSS
   0% {
     color: #FF2D55;
   }
+
   25% {
     color: #ffffff;
   }
+
   50% {
     color: red;
   }
+
   75% {
     color: #00acee;
   }
+
   0% {
     color: #efa506;
   }
@@ -1205,7 +1233,7 @@ Main Banner CSS
   opacity: 1;
   outline: 0;
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
 }
 
 /*================================================
@@ -1218,7 +1246,7 @@ About CSS
 }
 
 .about-area.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -1275,7 +1303,7 @@ About CSS
   top: -28px;
   left: 48%;
   -webkit-animation: movebounce 5s linear infinite;
-          animation: movebounce 5s linear infinite;
+  animation: movebounce 5s linear infinite;
 }
 
 .about-image .btn {
@@ -1292,7 +1320,7 @@ About CSS
 }
 
 .about-area-two.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -1320,7 +1348,7 @@ About CSS
 }
 
 .about-area-three.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -1417,31 +1445,31 @@ Why Choose Us CSS
   opacity: 0;
   z-index: 0;
   -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   -webkit-animation: imageAnimation 24s linear infinite 0s;
-          animation: imageAnimation 24s linear infinite 0s;
+  animation: imageAnimation 24s linear infinite 0s;
 }
 
 .why-choose-us .slideshow li:nth-child(1) span {
-  background-image: url("../images/slideshow-bg1.jpg");
+  background-image: url("/images/slideshow-bg1.jpg");
 }
 
 .why-choose-us .slideshow li:nth-child(2) span {
-  background-image: url("../images/slideshow-bg2.jpg");
+  background-image: url("/images/slideshow-bg2.jpg");
   -webkit-animation-delay: 6s;
-          animation-delay: 6s;
+  animation-delay: 6s;
 }
 
 .why-choose-us .slideshow li:nth-child(3) span {
-  background-image: url("../images/slideshow-bg3.jpg");
+  background-image: url("/images/slideshow-bg3.jpg");
   -webkit-animation-delay: 12s;
-          animation-delay: 12s;
+  animation-delay: 12s;
 }
 
 .why-choose-us .slideshow li:nth-child(4) span {
-  background-image: url("../images/slideshow-bg4.jpg");
+  background-image: url("/images/slideshow-bg4.jpg");
   -webkit-animation-delay: 18s;
-          animation-delay: 18s;
+  animation-delay: 18s;
 }
 
 .col-lg-3:first-child .single-box {
@@ -1453,7 +1481,7 @@ Why Choose Us CSS
   z-index: 1;
   border-left: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
-  height: 450px;
+  height: 250px;
 }
 
 .single-box .d-table-cell {
@@ -1468,6 +1496,7 @@ Why Choose Us CSS
   left: 0;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  width: 100%;
 }
 
 .single-box .content::before {
@@ -1525,19 +1554,23 @@ Why Choose Us CSS
   0% {
     opacity: 0;
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
+
   12.5% {
     opacity: 1;
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
+
   25% {
     opacity: 1;
   }
+
   37.5% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
@@ -1547,19 +1580,23 @@ Why Choose Us CSS
   0% {
     opacity: 0;
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
+
   12.5% {
     opacity: 1;
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
+
   25% {
     opacity: 1;
   }
+
   37.5% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
@@ -1642,6 +1679,7 @@ Speakers CSS
 .single-speakers {
   overflow: hidden;
   position: relative;
+  min-height: 100%;
 }
 
 .single-speakers::before {
@@ -1862,9 +1900,9 @@ Speakers CSS
 
 .elkevent-single-speakers:hover img, .elkevent-single-speakers:focus img {
   -webkit-transform: scale(1.2);
-          transform: scale(1.2);
+  transform: scale(1.2);
   -webkit-filter: grayscale(100%);
-          filter: grayscale(100%);
+  filter: grayscale(100%);
 }
 
 /*Speakers-style-three*/
@@ -1885,7 +1923,7 @@ Speakers CSS
   -webkit-transition: 0.5s;
   transition: 0.5s;
   -webkit-box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
-          box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
 }
 
 .single-speakers-box .speakers-content {
@@ -1936,7 +1974,7 @@ Speakers CSS
   right: 0;
   margin: 0 auto;
   -webkit-transform: scale(0);
-          transform: scale(0);
+  transform: scale(0);
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
@@ -1965,7 +2003,7 @@ Speakers CSS
   background: #00acee;
   color: #ffffff;
   -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .single-speakers-box .speakers-content .social li a::before {
@@ -1977,7 +2015,7 @@ Speakers CSS
   left: 0;
   background: #ffffff;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
   z-index: -1;
   -webkit-transition: 0.5s;
   transition: 0.5s;
@@ -1985,13 +2023,13 @@ Speakers CSS
 
 .single-speakers-box:hover {
   -webkit-box-shadow: 0 0 28px 0 rgba(6, 74, 255, 0.22);
-          box-shadow: 0 0 28px 0 rgba(6, 74, 255, 0.22);
+  box-shadow: 0 0 28px 0 rgba(6, 74, 255, 0.22);
 }
 
 .single-speakers-box:hover::before, .single-speakers-box:hover::after {
   border-color: #FF2D55;
   -webkit-transform: scale(1);
-          transform: scale(1);
+  transform: scale(1);
 }
 
 .single-speakers-box:hover .speakers-content {
@@ -2004,7 +2042,7 @@ Speakers CSS
 
 .single-speakers-box:hover .speakers-content .social {
   -webkit-transform: scale(1);
-          transform: scale(1);
+  transform: scale(1);
 }
 
 .single-speakers-box:hover .speakers-content h3 a, .single-speakers-box:hover .speakers-content span {
@@ -2020,7 +2058,7 @@ Schedule CSS
 }
 
 .schedule-area.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -2030,7 +2068,7 @@ Schedule CSS
 .tab {
   width: 100%;
   -webkit-box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
-          box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
+  box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
   background-color: #ffffff;
 }
 
@@ -2048,8 +2086,8 @@ Schedule CSS
 .tabs li {
   display: block;
   -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   background-color: #efa506;
   -webkit-transition: 0.5s;
   transition: 0.5s;
@@ -2065,7 +2103,7 @@ Schedule CSS
   background: #FF2D55;
   content: '';
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
   right: 0;
   margin: 0 auto;
   opacity: 0;
@@ -2151,8 +2189,8 @@ Schedule CSS
   display: flex;
   position: relative;
   -webkit-box-align: center !important;
-      -ms-flex-align: center !important;
-          align-items: center !important;
+  -ms-flex-align: center !important;
+  align-items: center !important;
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author {
@@ -2161,22 +2199,22 @@ Schedule CSS
   right: 0;
   top: 50%;
   -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(1) {
   -webkit-clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
-          clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
+  clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(2) {
   -webkit-clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-          clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(3) {
   -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(4) {
@@ -2185,32 +2223,32 @@ Schedule CSS
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(5) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(6) {
   -webkit-clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-          clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(7) {
   -webkit-clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
-          clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+  clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(8) {
   -webkit-clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
-          clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+  clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(9) {
   -webkit-clip-path: circle(50% at 50% 50%);
-          clip-path: circle(50% at 50% 50%);
+  clip-path: circle(50% at 50% 50%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author img:nth-child(10) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .author-multi {
@@ -2334,17 +2372,17 @@ Schedule CSS
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(1) {
   -webkit-clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
-          clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
+  clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(2) {
   -webkit-clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-          clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(3) {
   -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(4) {
@@ -2353,32 +2391,32 @@ Schedule CSS
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(5) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(6) {
   -webkit-clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-          clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(7) {
   -webkit-clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
-          clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+  clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(8) {
   -webkit-clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
-          clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+  clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(9) {
   -webkit-clip-path: circle(50% at 50% 50%);
-          clip-path: circle(50% at 50% 50%);
+  clip-path: circle(50% at 50% 50%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author img:nth-child(10) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .schedule-slides-item .single-schedule .schedule-content .author-multi {
@@ -2483,7 +2521,7 @@ Schedule CSS
   transition: 0.5s;
   outline: 0;
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
 }
 
 .schedule-slides.owl-theme .owl-nav [class*=owl-]:hover, .schedule-slides.owl-theme .owl-nav [class*=owl-]:focus {
@@ -2529,7 +2567,7 @@ Schedule CSS
   margin-bottom: 30px;
   background-color: #ffffff;
   -webkit-box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
-          box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.06);
 }
 
 .single-schedule-item .schedule-date {
@@ -2567,17 +2605,17 @@ Schedule CSS
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(1) {
   -webkit-clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
-          clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
+  clip-path: polygon(50% 0%, 38.11% 6.7%, 24.99% 6.72%, 18.06% 18.44%, 6.7% 25%, 6.56% 38.64%, 0% 50%, 6.7% 61.89%, 6.7% 75%, 18.44% 81.94%, 25% 93.3%, 38.64% 93.44%, 50% 100%, 61.88% 93.3%, 75% 93.3%, 81.94% 81.56%, 93.3% 74.9%, 93.44% 61.36%, 100% 50%, 93.3% 38.11%, 93.3% 25%, 81.56% 18.06%, 74.96% 6.7%, 61.36% 6.56%, 50% 0%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(2) {
   -webkit-clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-          clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(3) {
   -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(4) {
@@ -2586,32 +2624,32 @@ Schedule CSS
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(5) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(6) {
   -webkit-clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-          clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(7) {
   -webkit-clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
-          clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+  clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(8) {
   -webkit-clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
-          clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+  clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(9) {
   -webkit-clip-path: circle(50% at 50% 50%);
-          clip-path: circle(50% at 50% 50%);
+  clip-path: circle(50% at 50% 50%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author img:nth-child(10) {
   -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
 }
 
 .single-schedule-item .schedule-item-wrapper .schedule-content .author-multi {
@@ -2683,7 +2721,7 @@ Schedule CSS
 .schedule-style-four .tab {
   background-color: transparent;
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
 }
 
 .schedule-style-four .tabs {
@@ -2699,7 +2737,7 @@ Schedule CSS
 
 .schedule-style-four .tab_content {
   -webkit-box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
-          box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
+  box-shadow: 0 0 10px 0 rgba(137, 173, 255, 0.35);
 }
 
 /*================================================
@@ -2708,7 +2746,7 @@ FunFacts CSS
 .funfacts-area {
   position: relative;
   z-index: 1;
-  background-image: url("../images/funfacts-bg.jpg");
+  background-image: url("/images/funfacts-bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -2805,7 +2843,7 @@ Pricing CSS
 }
 
 .pricing-area.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -2819,11 +2857,11 @@ Pricing CSS
   z-index: 1;
   position: relative;
   border-radius: 5px;
-  background-image: url("../images/patt.png");
+  background-image: url("/images/patt.png");
   background-position: center center;
   overflow: hidden;
   -webkit-box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
-          box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
+  box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
@@ -2832,7 +2870,7 @@ Pricing CSS
   padding: 30px 15px 10px;
   background: #FF2D55;
   -webkit-clip-path: polygon(50% 100%, 100% 60%, 100% 0, 0 0, 0 60%);
-          clip-path: polygon(50% 100%, 100% 60%, 100% 0, 0 0, 0 60%);
+  clip-path: polygon(50% 100%, 100% 60%, 100% 0, 0 0, 0 60%);
   position: relative;
 }
 
@@ -2895,7 +2933,7 @@ Pricing CSS
 
 .pricing-table-box:hover, .pricing-table-box:focus, .pricing-table-box.active {
   -webkit-transform: translateY(-10px);
-          transform: translateY(-10px);
+  transform: translateY(-10px);
 }
 
 .pricing-table-box:hover .pricingTable-header::before, .pricing-table-box:focus .pricingTable-header::before, .pricing-table-box.active .pricingTable-header::before {
@@ -2906,7 +2944,7 @@ Pricing CSS
 .pricing-plan {
   position: relative;
   -webkit-box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
-          box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
+  box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
   text-align: center;
   padding-bottom: 30px;
   -webkit-transition: 0.5s;
@@ -2933,7 +2971,7 @@ Pricing CSS
   line-height: 155px;
   font-size: 35px;
   -webkit-box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
-          box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
+  box-shadow: 7px 5px 30px 0 rgba(72, 73, 121, 0.15);
   margin: 30px auto -95px;
   border-radius: 50%;
   -webkit-transition: 0.5s;
@@ -2969,7 +3007,7 @@ Pricing CSS
 
 .pricing-plan:hover, .pricing-plan:focus {
   -webkit-transform: translateY(-8px);
-          transform: translateY(-8px);
+  transform: translateY(-8px);
 }
 
 .col-lg-4:nth-child(2) .pricing-table-box .pricingTable-header {
@@ -3031,7 +3069,7 @@ Partner CSS
   color: #FF2D55;
   text-transform: uppercase;
   -webkit-transform: translateX(0) !important;
-          transform: translateX(0) !important;
+  transform: translateX(0) !important;
 }
 
 .partner-area .partner-title.gold-sponsor h3 {
@@ -3084,7 +3122,7 @@ Blog CSS
 }
 
 .blog-area.bg-image {
-  background-image: url("../images/bg.jpg");
+  background-image: url("/images/bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -3095,7 +3133,7 @@ Blog CSS
   margin-bottom: 30px;
   background-color: #ffffff;
   -webkit-box-shadow: 0 15px 15px 0 rgba(0, 0, 0, 0.06);
-          box-shadow: 0 15px 15px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 15px 15px 0 rgba(0, 0, 0, 0.06);
 }
 
 .single-blog-post .blog-image {
@@ -3171,7 +3209,7 @@ Blog CSS
 
 .single-blog-post:hover .blog-image a img, .single-blog-post:focus .blog-image a img {
   -webkit-transform: scale(1.2);
-          transform: scale(1.2);
+  transform: scale(1.2);
 }
 
 .single-blog-post:hover .blog-image .post-tag, .single-blog-post:focus .blog-image .post-tag {
@@ -3183,7 +3221,7 @@ Blog CSS
   color: #ffffff;
 }
 
-.blog-slides.owl-theme .owl-nav.disabled + .owl-dots {
+.blog-slides.owl-theme .owl-nav.disabled+.owl-dots {
   margin-top: 25px;
   line-height: .01;
 }
@@ -3198,11 +3236,11 @@ Blog CSS
   margin-bottom: 30px;
 }
 
-.single-blog-card > a {
+.single-blog-card>a {
   display: block;
 }
 
-.single-blog-card > a img {
+.single-blog-card>a img {
   width: 100%;
 }
 
@@ -3299,7 +3337,7 @@ Buy Tickets CSS
 .buy-tickets-area {
   position: relative;
   z-index: 1;
-  background-image: url("../images/buy-tickets-bg.jpg");
+  background-image: url("/images/buy-tickets-bg.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -3363,8 +3401,8 @@ Subscribe CSS
 .subscribe-area .subscribe-inner {
   padding: 50px;
   -webkit-transform: unset !important;
-          transform: unset !important;
-  background-image: url("../images/color-bg.jpg");
+  transform: unset !important;
+  background-image: url("/images/color-bg.jpg");
   background-repeat: no-repeat;
 }
 
@@ -3394,7 +3432,7 @@ Subscribe CSS
   border: none;
   height: 60px;
   -webkit-box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
-          box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
+  box-shadow: 0 8px 6px -6px rgba(50, 51, 51, 0.4);
 }
 
 .subscribe-area .subscribe-inner .newsletter-form .btn {
@@ -3481,7 +3519,7 @@ Page Title CSS
   background: #efa506;
   margin-top: -9px;
   -webkit-transform: rotate(10deg);
-          transform: rotate(10deg);
+  transform: rotate(10deg);
 }
 
 .page-title-area ul li:first-child {
@@ -3503,7 +3541,7 @@ Login CSS
   height: 100vh;
   position: relative;
   z-index: 100000;
-  background-image: url("../images/main-bg1.jpg");
+  background-image: url("/images/main-bg1.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -3586,7 +3624,7 @@ Signup CSS
   height: 100vh;
   position: relative;
   z-index: 10000;
-  background-image: url("../images/main-bg2.jpg");
+  background-image: url("/images/main-bg2.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -3698,7 +3736,7 @@ FAQ CSS
 =================================================*/
 .faq-accordion {
   -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
-          box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
   padding: 60px;
   background: #ffffff;
   border-radius: 10px;
@@ -3716,7 +3754,7 @@ FAQ CSS
 .faq-accordion .accordion__item .accordion__button {
   background-color: #ffffff;
   -webkit-box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
-          box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
+  box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
   color: #0d1028;
   outline: 0;
   font-weight: 600;
@@ -3727,14 +3765,14 @@ FAQ CSS
   margin-bottom: 0;
 }
 
-.faq-accordion .accordion__item + .accordion__item {
+.faq-accordion .accordion__item+.accordion__item {
   border: none;
 }
 
 .faq-contact {
   margin-top: 45px;
   -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
-          box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.08);
   padding: 60px;
   text-align: center;
   border-radius: 4px;
@@ -3761,7 +3799,7 @@ Coming Soon CSS
   z-index: 1000;
   height: 100vh;
   text-align: center;
-  background-image: url("../images/main-bg3.jpg");
+  background-image: url("/images/main-bg3.jpg");
   background-position: center center;
   background-size: cover;
   background-attachment: fixed;
@@ -3905,7 +3943,7 @@ Pagination CSS
   font-size: 17px;
   font-weight: 500;
   -webkit-box-shadow: 0 2px 10px 0 #d8dde6;
-          box-shadow: 0 2px 10px 0 #d8dde6;
+  box-shadow: 0 2px 10px 0 #d8dde6;
   border: none;
 }
 
@@ -3913,7 +3951,7 @@ Pagination CSS
   background: #FF2D55;
   color: #ffffff;
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
 }
 
 /*================================================
@@ -3959,7 +3997,7 @@ Blog Details CSS
   content: '';
   margin-top: -6px;
   -webkit-transform: rotate(11deg);
-          transform: rotate(11deg);
+  transform: rotate(11deg);
 }
 
 .blog-details .blog-meta ul li a {
@@ -4007,7 +4045,7 @@ Blog Details CSS
   left: 25px;
   top: 50%;
   -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  transform: translateY(-50%);
   font-size: 55px;
   color: #FF2D55;
 }
@@ -4163,7 +4201,7 @@ Blog Details CSS
   background-color: #f5f5f5;
   outline: 0 !important;
   -webkit-box-shadow: unset !important;
-          box-shadow: unset !important;
+  box-shadow: unset !important;
   border: 1px solid #eeeeee;
   padding: 10px 20px;
   border-radius: 6px;
@@ -4200,7 +4238,7 @@ Blog Details CSS
 .comments-area .comment-respond .form-submit input:hover, .comments-area .comment-respond .form-submit input:focus {
   background: #0d1028;
   -webkit-box-shadow: 0 13px 27px 0 rgba(255, 82, 2, 0.11);
-          box-shadow: 0 13px 27px 0 rgba(255, 82, 2, 0.11);
+  box-shadow: 0 13px 27px 0 rgba(255, 82, 2, 0.11);
 }
 
 /*================================================
@@ -4229,20 +4267,20 @@ Sidebar CSS
   height: 17px;
   background: #FF2D55;
   -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-          clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
 
 .sidebar .widget:hover .widget-title::before, .sidebar .widget:focus .widget-title::before {
   -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .sidebar .widget.widget_search {
   background: #ffffff;
   -webkit-box-shadow: 0px 0px 29px 0px rgba(102, 102, 102, 0.1);
-          box-shadow: 0px 0px 29px 0px rgba(102, 102, 102, 0.1);
+  box-shadow: 0px 0px 29px 0px rgba(102, 102, 102, 0.1);
   padding: 15px;
 }
 
@@ -4262,7 +4300,7 @@ Sidebar CSS
   border: none;
   outline: 0;
   -webkit-box-shadow: unset;
-          box-shadow: unset;
+  box-shadow: unset;
   background: transparent;
   color: #FF2D55;
   -webkit-transition: 0.5s;
@@ -4435,7 +4473,7 @@ Contact Us CSS
   -webkit-transition: 0.5s;
   transition: 0.5s;
   -webkit-box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
-          box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
+  box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
 }
 
 .contact-box .icon {
@@ -4477,9 +4515,9 @@ Contact Us CSS
 
 .contact-box:hover, .contact-box:focus {
   -webkit-box-shadow: 0 0 30px 0 rgba(67, 67, 67, 0.15);
-          box-shadow: 0 0 30px 0 rgba(67, 67, 67, 0.15);
+  box-shadow: 0 0 30px 0 rgba(67, 67, 67, 0.15);
   -webkit-transform: translateY(-5px);
-          transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .contact-box:hover .icon, .contact-box:focus .icon {
@@ -4549,7 +4587,7 @@ Contact Us CSS
   background: #ffffff;
   padding: 30px;
   -webkit-box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
-          box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
+  box-shadow: 0 0 1.25rem rgba(108, 118, 134, 0.1);
 }
 
 #contactForm label {
@@ -4802,7 +4840,7 @@ Back To Top CSS
 
 :invalid {
   -webkit-box-shadow: none;
-          box-shadow: none;
+  box-shadow: none;
 }
 
 :-moz-submit-invalid {
@@ -4820,4 +4858,120 @@ Back To Top CSS
 .elkevent-nav .navbar-brand img {
   max-width: 140px;
 }
-/*# sourceMappingURL=style.css.map */
+
+.top-places {
+  overflow: hidden;
+  position: relative;
+  min-height: 100%;
+}
+
+.top-places::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(40%, transparent), color-stop(58%, rgba(0, 0, 0, 0.3)), color-stop(89%, rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.63)));
+  background: linear-gradient(transparent 0%, transparent 40%, rgba(0, 0, 0, 0.3) 58%, rgba(0, 0, 0, 0.8) 89%, rgba(0, 0, 0, 0.63) 100%);
+  width: 100%;
+  height: 100%;
+}
+
+.top-places .speakers-content {
+  position: absolute;
+  bottom: 35px;
+  left: 35px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.top-places .speakers-content h3 {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+.top-places .speakers-content h3 a {
+  color: #FF2D55;
+}
+
+.top-places .speakers-content h3 a:hover, .top-places .speakers-content h3 a:focus {
+  color: #8dc63f;
+}
+
+.top-places .speakers-content span {
+  display: block;
+  margin-top: 6px;
+  color: #ffffff;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.top-places:hover .speakers-content, .top-places:focus .speakers-content {
+  bottom: 45px;
+}
+
+.top-places img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.main-banner-content .search-form {
+  position: relative;
+  display: flex;
+}
+
+.main-banner-content .search-form .form-control {
+  background: #FFF4;
+  border: 1px solid #ffffff;
+  border-radius: 50px;
+  color: #ffffff;
+  height: 55px;
+  padding-left: 20px;
+}
+
+.main-banner-content .search-form .form-control:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.main-banner-content .search-form .form-control:not(:first-child) {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.main-banner-content .search-form .form-control::-webkit-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control:-ms-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control::-ms-input-placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form .form-control::placeholder {
+  color: #c7c3c7;
+}
+
+.main-banner-content .search-form button {
+  height: 55px;
+  background: #FF2D55;
+  top: 0;
+  color: #ffffff;
+  border: none;
+  width: 130px;
+  min-width: 130px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 0 50px 50px 0;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: 0 !important;
+  border: none;
+}
