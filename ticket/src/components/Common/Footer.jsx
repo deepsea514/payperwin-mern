@@ -9,17 +9,17 @@ class Footer extends React.Component {
                     <div className="row">
                         <div className="col-lg-6 col-md-6">
                             <div className="single-footer-widget">
-                                <h3>Venue Location</h3>
-                                <span>
+                                <h3>PAYPER WIN</h3>
+                                {/* <span>
                                     <i className="icofont-calendar"></i> 23-27 January, 2020
-                                </span>
+                                </span> */}
 
                                 <p className="location">
-                                    <i className="icofont-google-map"></i> 241 Yellow Street, San Francisco, United State
+                                    <i className="icofont-google-map"></i> 37459 Kilgard Rd #111, Abbotsford, BC V3G 2H6,
                                 </p>
 
                                 <Link to="/contact" className="contact-authority">
-                                    <i className="icofont-phone"></i> Contact Our Authority
+                                    <i className="icofont-email"></i> hello@payperwin.com
                                 </Link>
                             </div>
                         </div>
@@ -30,25 +30,25 @@ class Footer extends React.Component {
                                 <p>Don't miss Link thing! Receive daily news You should connect social area for Any Proper Updates Anytime.</p>
                                 
                                 <ul className="social-links">
-                                    <li>
-                                        <Link to="https://www.facebook.com/" className="facebook" target="_blank">
+                                    {/* <li>
+                                        <a href="https://www.facebook.com/" className="facebook" target="_blank">
                                             <i className="icofont-facebook"></i>
-                                        </Link>
-                                    </li>
+                                        </a>
+                                    </li> */}
                                     <li>
-                                        <Link to="https://twitter.com/" className="twitter" target="_blank">
+                                        <a href="https://twitter.com/payperwin" className="twitter" target="_blank">
                                             <i className="icofont-twitter"></i>
-                                        </Link>
+                                        </a>
                                     </li>
                                     <li>
-                                        <Link to="https://www.linkedin.com/" className="linkedin" target="_blank">
+                                        <a href="https://ca.linkedin.com/company/payperwin" className="linkedin" target="_blank">
                                             <i className="icofont-linkedin"></i>
-                                        </Link>
+                                        </a>
                                     </li>
                                     <li>
-                                        <Link to="https://www.instagram.com/" className="instagram" target="_blank">
+                                        <a href="https://www.instagram.com/payperwin/?hl=en" className="instagram" target="_blank">
                                             <i className="icofont-instagram"></i>
-                                        </Link>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -57,14 +57,13 @@ class Footer extends React.Component {
                         <div className="col-lg-12">
                             <div className="copyright-area">
                                 <ul>
-                                    <li><Link to="/blog-1">Blog</Link></li>
-                                    <li><Link to="/contact">Contact</Link></li>
+                                    <li><a target="_blank" href='https://payperwin.com/contact'>Contact</a></li>
                                     <li><Link to="#">Ticket</Link></li>
                                     <li><Link to="#">Venue</Link></li>
-                                    <li><Link to="#">Terms & Conditions</Link></li>
+                                    <li><a target="_blank" href='https://payperwin.com/terms-and-conditions'>Terms & Conditions</a></li>
                                 </ul>
                                 <p>
-                                    Copyright <i className="icofont-copyright"></i> 2021 Evnia. All rights reserved
+                                    Copyright <i className="icofont-copyright"></i> 2021 PAYPER WIN. All rights reserved
                                 </p>
                             </div>
                         </div>
