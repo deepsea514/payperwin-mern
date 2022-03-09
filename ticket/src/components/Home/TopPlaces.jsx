@@ -18,7 +18,7 @@ class TopPlaces extends React.Component {
 
     render() {
         return (
-            <section className="speakers-area ptb-120 pb-0">
+            <section className="top-places-area ptb-120 pb-0">
                 <div className="container">
                     <div className="section-title">
                         <span>Browse Popular Location</span>
@@ -30,45 +30,37 @@ class TopPlaces extends React.Component {
                 </div>
 
                 <div className="row m-0">
-                    <div className="col-md-6 pe-0">
-                        <div className="top-places">
-                            <img src="/images/places/vancouver.jpeg" alt="Speaker" />
-
+                    <div className="col-md-6 px-2 pe-md-1">
+                        <Link className="top-places place-vancouver" href='#'>
                             <div className="speakers-content">
-                                <h3><Link to="#">Vancouver</Link></h3>
+                                <h3>Vancouver</h3>
                             </div>
-                        </div>
+                        </Link>
                     </div>
-                    <div className='col-md-6 p-0 m-0 row'>
-                        <div className="col-12">
-                            <div className="top-places">
-                                <img src="/images/places/toronto.jpeg" alt="Speaker" />
-
+                    <div className='col-md-6 row px-2 mt-2 mx-0 mt-md-0 ps-md-1'>
+                        <div className="col-12 px-0">
+                            <Link className="top-places place-toronto" href='#'>
                                 <div className="speakers-content">
-                                    <h3><Link to="#">Toronto</Link></h3>
+                                    <h3>Toronto</h3>
                                 </div>
-                            </div>
+                            </Link>
                         </div>
 
-                        <div className='col-12 row m-0 p-0 mt-3'>
-                            <div className="col-sm-6 pe-2">
-                                <div className="top-places">
-                                    <img src="/images/places/montreal.jpeg" alt="Speaker" />
-
+                        <div className='col-12 row m-0 p-0 mt-2'>
+                            <div className="col-sm-6 p-0 pe-sm-1">
+                                <Link className="top-places place-montreal" href='#'>
                                     <div className="speakers-content">
-                                        <h3><Link to="#">Montreal</Link></h3>
+                                        <h3>Montreal</h3>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
 
-                            <div className="col-sm-6 ps-2">
-                                <div className="top-places">
-                                    <img src="/images/places/calgary.jpeg" alt="Speaker" />
-
+                            <div className="col-sm-6 mt-2 mt-sm-0 p-0 ps-sm-1">
+                                <Link className="top-places place-calgary" href='#'>
                                     <div className="speakers-content">
-                                        <h3><Link to="#">Calgary</Link></h3>
+                                        <h3>Calgary</h3>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
