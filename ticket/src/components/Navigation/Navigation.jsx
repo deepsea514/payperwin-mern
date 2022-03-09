@@ -104,7 +104,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Speakers 1
+                                                    Sports
                                                 </NavLink>
                                             </li>
 
@@ -114,7 +114,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Speakers 2
+                                                    Concerts
                                                 </NavLink>
                                             </li>
 
@@ -124,7 +124,16 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Speakers 3
+                                                    Theatre
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink
+                                                    to="/speakers-3"
+                                                    className="nav-link"
+                                                    onClick={this.toggleNavbar}
+                                                >
+                                                    Special Events
                                                 </NavLink>
                                             </li>
                                         </ul>
@@ -145,7 +154,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Schedule 1
+                                                    Vancouver
                                                 </NavLink>
                                             </li>
 
@@ -155,7 +164,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Schedule 2
+                                                    Toronto
                                                 </NavLink>
                                             </li>
 
@@ -165,7 +174,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Schedule 3
+                                                    Montreal
                                                 </NavLink>
                                             </li>
 
@@ -175,7 +184,7 @@ class Navigation extends React.Component {
                                                     className="nav-link"
                                                     onClick={this.toggleNavbar}
                                                 >
-                                                    Schedule 4
+                                                    Calgary
                                                 </NavLink>
                                             </li>
                                         </ul>
