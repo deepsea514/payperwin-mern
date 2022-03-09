@@ -3,10 +3,7 @@ import MainBanner from '../Home/MainBanner';
 import TopPlaces from '../Home/TopPlaces';
 import GoTop from '../Shared/GoTop';
 import Footer from '../Common/Footer';
-import EventSchedules from '../Home/EventSchedules';
-import FunFact from '../Common/FunFact';
 import lax from 'lax.js';
-import BuyTicket from '../Common/BuyTicket';
 import Popular from '../Home/Popular';
  
 class Home extends React.Component {
