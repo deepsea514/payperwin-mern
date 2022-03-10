@@ -72,7 +72,7 @@ const CustomOption = (props) => {
             {...innerProps}
         >
             {children} <br />
-            {dateformat(value.startTime, 'ddd mmm dd yyyy HH:MM')}
+            {dateformat(value.startDate, 'ddd mmm dd yyyy HH:MM')}
         </div>
     );
 };
@@ -133,6 +133,7 @@ export default class EventSearchModal extends React.Component {
                                     value={sport}
                                     onChange={(sport) => this.setState({ sport })}
                                     styles={customStyles}
+                                    maxMenuHeight={200}
                                 />
                             </div>
                             <div className="col-12 form-group">
@@ -148,6 +149,7 @@ export default class EventSearchModal extends React.Component {
                                     onChange={(event) => this.setState({ event })}
                                     styles={customStyles}
                                     components={{ Option: CustomOption }}
+                                    maxMenuHeight={200}
                                 />
                             </div>
                         </div>
