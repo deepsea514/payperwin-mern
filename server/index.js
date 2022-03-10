@@ -4728,6 +4728,9 @@ expressApp.post(
             if (!event) {
                 return res.json({ success: false, error: 'Custom Bet Not Found.' });
             }
+            if (!event.allowAdditional) {
+                return res.json({ success: false, error: 'Join High Staker is not enabled.' });
+            }
 
             const participants = event.participants;
             for (const participant of participants) {
