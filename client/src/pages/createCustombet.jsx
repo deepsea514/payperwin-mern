@@ -7,6 +7,7 @@ import CustomDatePicker from '../components/customDatePicker';
 import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import EventSearchModal from '../components/EventSearchModal';
+import { FormControlLabel, Checkbox } from '@material-ui/core';
 
 const AlertDetails = () => {
     return (
@@ -141,6 +142,19 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 />
                 {errors.maximumRisk && <div className="form-error">{errors.maximumRisk}</div>}
             </div>
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={values.allowAdditional}
+                        onChange={(e) => setFieldValue('allowAdditional', e.target.checked)}
+                        name="allowAdditional"
+                        color="secondary"
+                    />
+                }
+                margin="normal"
+                labelPlacement="end"
+                label="Allow Additional High Staker"
+            />
         </>
     )
 }
@@ -230,6 +244,7 @@ export default class CreateCustomBet extends Component {
                             endDate: "",
                             visibility: 'public',
                             maximumRisk: 0,
+                            allowAdditional: false,
                             options: ["", ""],
                         }}
                         onSubmit={this.onSubmit}
@@ -255,6 +270,7 @@ export default class CreateCustomBet extends Component {
                                         .required("Maximum Risk Amount is Required.")
                                         .min(200, "Should be at least 200 CAD.")
                                         .max(user.balance, "Insufficient Funds."),
+                                    allowAdditional: Yup.boolean(),
                                 })
                             },
                             {
