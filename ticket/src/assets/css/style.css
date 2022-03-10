@@ -867,7 +867,7 @@ Main Banner CSS
 
 .main-banner-content .search-form .form-control:not(:first-child) {
     border-radius: 0;
-    border-left: none;
+    border-left: 1px solid #FFF4;
     border-right: none;
     padding: 9px 5px 0 5px;
 }
