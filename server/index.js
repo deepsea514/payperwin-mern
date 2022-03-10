@@ -3341,7 +3341,7 @@ expressApp.get(
                     startDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
                     approved: true,
-                }).sort({ createdAt: -1 });
+                }).populate('user', ['email', 'firstname', 'lastname'])
                 return res.json([customBet]);
             } else {
                 const customBets = await Event.find({
@@ -3349,7 +3349,7 @@ expressApp.get(
                     status: EventStatus.pending.value,
                     approved: true,
                     public: true,
-                }).sort({ createdAt: -1 });
+                }).sort({ createdAt: -1 }).populate('user', ['email', 'firstname', 'lastname']);
                 return res.json(customBets);
             }
         } catch (error) {
@@ -4710,6 +4710,60 @@ expressApp.get(
             res.json(null);
         }
 
+    }
+)
+
+expressApp.post(
+    '/customBet/:id/join',
+    isAuthenticated,
+    async (req, res) => {
+        const { amount } = req.body;
+        const { id } = req.params;
+        const user = req.user;
+        try {
+            if (user.balance < amount) {
+                return res.json({ success: false, error: 'Insufficent Funds.' });
+            }
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.json({ success: false, error: 'Custom Bet Not Found.' });
+            }
+
+            const participants = event.participants;
+            for (const participant of participants) {
+                if (participant.user.toString() == user._id.toString()) {
+                    return res.json({ success: false, error: 'You already joined this event.' });
+                }
+            }
+
+            await event.update({
+                $inc: { maximumRisk: amount },
+                $push: {
+                    participants: {
+                        user: user._id,
+                        amount: amount
+                    }
+                }
+            })
+
+            await FinancialLog.create({
+                financialtype: 'lock_event',
+                uniqid: `LE${ID()}`,
+                user: user._id,
+                amount: amount,
+                method: 'lock_event',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - amount
+            });
+
+            await user.update({ $inc: { balance: -amount } });
+
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Can't Join High Staker." });
+        }
     }
 )
 

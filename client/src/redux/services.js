@@ -165,6 +165,10 @@ export function getCustomEvent(id) {
     return FrontendAPI.get(`/custombets`, { params: { id } })
 }
 
+export function joinHighStaker(id, amount) {
+    return FrontendAPI.post(`/customBet/${id}/join`, { amount });
+}
+
 export function getLiveSports(sportName, league) {
     return FrontendAPI.get(`/livesport`, {
         params: league ?
