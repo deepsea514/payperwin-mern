@@ -56,6 +56,7 @@ const {
     sendBetCancelConfirmEmail,
     sendBetCancelOpponentConfirmEmail,
 } = require('./libs/functions');
+const { sortSearchResults } = require('./libs/sortSearchResults');
 const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
 const FinancialStatus = config.FinancialStatus;
@@ -96,7 +97,7 @@ const premierRouter = require('./premierRoutes');
 const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 const shopRouter = require('./shopRoutes');
-const { sortSearchResults } = require('./libs/sortSearchResults');
+const ticketRouter = require('./ticketRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -3340,7 +3341,7 @@ expressApp.get(
                     startDate: { $gte: new Date() },
                     status: EventStatus.pending.value,
                     approved: true,
-                }).sort({ createdAt: -1 });
+                }).populate('user', ['email', 'firstname', 'lastname'])
                 return res.json([customBet]);
             } else {
                 const customBets = await Event.find({
@@ -3348,7 +3349,7 @@ expressApp.get(
                     status: EventStatus.pending.value,
                     approved: true,
                     public: true,
-                }).sort({ createdAt: -1 });
+                }).sort({ createdAt: -1 }).populate('user', ['email', 'firstname', 'lastname']);
                 return res.json(customBets);
             }
         } catch (error) {
@@ -3417,6 +3418,49 @@ expressApp.get(
                 }
             }
             res.json(sortSearchResults(results));
+        } catch (error) {
+            console.error(error);
+            res.json([]);
+        }
+    }
+)
+
+expressApp.get(
+    '/searchevents',
+    async (req, res) => {
+        const { name, sport } = req.query;
+        if (!name) return res.json([]);
+        try {
+            const results = [];
+            const searchSports = await Sport.find({ name: sport });
+            for (const sport of searchSports) {
+                for (const league of sport.leagues) {
+                    for (const event of league.events) {
+                        if (new Date(event.startDate).getTime() > new Date().getTime()) {
+                            if (event.teamA.toLowerCase().includes(name.toLowerCase())) {
+                                results.push({
+                                    label: event.teamA + ' VS ' + event.teamB,
+                                    value: {
+                                        teamA: event.teamA,
+                                        teamB: event.teamB,
+                                        startDate: event.startDate,
+                                    },
+                                });
+                            } else if (event.teamB.toLowerCase().includes(name.toLowerCase())) {
+                                results.push({
+                                    label: event.teamA + ' VS ' + event.teamB,
+                                    value: {
+                                        teamA: event.teamA,
+                                        teamB: event.teamB,
+                                        startDate: event.startDate,
+                                    },
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            res.json(results);
         } catch (error) {
             console.error(error);
             res.json([]);
@@ -4670,16 +4714,76 @@ expressApp.get(
 )
 
 expressApp.post(
+    '/customBet/:id/join',
+    isAuthenticated,
+    async (req, res) => {
+        const { amount } = req.body;
+        const { id } = req.params;
+        const user = req.user;
+        try {
+            if (user.balance < amount) {
+                return res.json({ success: false, error: 'Insufficent Funds.' });
+            }
+            const event = await Event.findById(id);
+            if (!event) {
+                return res.json({ success: false, error: 'Custom Bet Not Found.' });
+            }
+            if (!event.allowAdditional) {
+                return res.json({ success: false, error: 'Join High Staker is not enabled.' });
+            }
+
+            const participants = event.participants;
+            for (const participant of participants) {
+                if (participant.user.toString() == user._id.toString()) {
+                    return res.json({ success: false, error: 'You already joined this event.' });
+                }
+            }
+
+            await event.update({
+                $inc: { maximumRisk: amount },
+                $push: {
+                    participants: {
+                        user: user._id,
+                        amount: amount
+                    }
+                }
+            })
+
+            await FinancialLog.create({
+                financialtype: 'lock_event',
+                uniqid: `LE${ID()}`,
+                user: user._id,
+                amount: amount,
+                method: 'lock_event',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance - amount
+            });
+
+            await user.update({ $inc: { balance: -amount } });
+
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Can't Join High Staker." });
+        }
+    }
+)
+
+expressApp.post(
     '/customBet',
     isAuthenticated,
     async (req, res) => {
-        const { name, startDate, endDate, visibility, maximumRisk, options } = req.body;
+        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional } = req.body;
         const user = req.user;
         try {
             if (user.balance < maximumRisk) {
                 return res.json({ success: false, error: 'Insufficent Funds.' });
             }
-            let existing = null;
+            let existing = await Event.findOne({ name });
+            if (existing) {
+                return res.json({ success: false, error: 'A custom bet with same name exists.' });
+            }
             let uniqueid = `E${ID()}`;
             do {
                 existing = await Event.findOne({ uniqueid: uniqueid });
@@ -4697,7 +4801,12 @@ expressApp.post(
                 creator: 'User',
                 user: user._id,
                 maximumRisk: maximumRisk,
-                options: options
+                options: options,
+                allowAdditional: allowAdditional,
+                participants: [{
+                    user: user._id,
+                    amount: maximumRisk
+                }]
             });
 
             await FinancialLog.create({
@@ -4715,6 +4824,7 @@ expressApp.post(
 
             return res.json({ success: true });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ error: "Can't create a bet." });
         }
     }
@@ -5710,6 +5820,7 @@ expressApp.use('/admin', adminRouter);
 expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 expressApp.use('/shop', shopRouter);
+expressApp.use('/tickets', ticketRouter);
 expressApp.use('/static', express.static('banners'));
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));

@@ -2052,7 +2052,7 @@ sup {
     float: right;
     width: 14px;
     height: 10px;
-    background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+    background: url('/images/chevronup.svg') no-repeat;
     display: none
 }
 
@@ -2060,7 +2060,7 @@ sup {
     float: right;
     width: 14px;
     height: 10px;
-    background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+    background: url('/images/chevrondown.svg') no-repeat
 }
 
 @media only screen and (min-width:1025px) {
@@ -2176,7 +2176,7 @@ sup {
         float: right;
         width: 14px;
         height: 10px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        background: url('/images/chevronup.svg') no-repeat;
         display: none
     }
 
@@ -2184,7 +2184,7 @@ sup {
         float: right;
         width: 14px;
         height: 10px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+        background: url('/images/chevrondown.svg') no-repeat
     }
 
     .content-container .rules ol {
@@ -2291,7 +2291,7 @@ sup {
         float: right;
         width: 14px;
         height: 10px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        background: url('/images/chevronup.svg') no-repeat;
         display: none
     }
 
@@ -2299,7 +2299,7 @@ sup {
         float: right;
         width: 14px;
         height: 10px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+        background: url('/images/chevrondown.svg') no-repeat
     }
 
     .content-container .terms-and-conditions ol {
@@ -2351,7 +2351,7 @@ sup {
         width: 14px;
         height: 10px;
         margin-top: 5px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevronup.svg') no-repeat;
+        background: url('/images/chevronup.svg') no-repeat;
         display: none
     }
 
@@ -2360,7 +2360,7 @@ sup {
         width: 14px;
         height: 10px;
         margin-top: 5px;
-        background: url('https://www.pinnacle.com/Cms_Data/Sites/Guest/Themes/Arcadia/images/chevrondown.svg') no-repeat
+        background: url('/images/chevrondown.svg') no-repeat
     }
 
     .content-container .privacy-policy-container .desktop {

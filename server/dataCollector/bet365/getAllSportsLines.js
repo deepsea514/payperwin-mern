@@ -189,8 +189,10 @@ const getAllSportsLines = async () => {
                     }
 
                     for (let i = 0; i < 10 && results[ei + i]; i++) {
-                        results[ei + i].home.image_id = success ? eventResult[i].home.image_id : null;
-                        results[ei + i].away.image_id = success ? eventResult[i].away.image_id : null;
+                        if (eventResult[i]) {
+                            results[ei + i].home.image_id = success ? eventResult[i].home.image_id : null;
+                            results[ei + i].away.image_id = success ? eventResult[i].away.image_id : null;
+                        }
                     }
                 }
 
