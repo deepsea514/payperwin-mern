@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormikWizard } from "formik-wizard-form";
 import * as Yup from 'yup';
@@ -6,10 +6,11 @@ import { getInputClasses, getInputClassesInObject } from '../helpers/getInputCla
 import CustomDatePicker from '../components/customDatePicker';
 import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
+import EventSearchModal from '../components/EventSearchModal';
 
 const AlertDetails = () => {
     return (
-        <p style={{ color: 'white', fontSize: '14px', marginTop: '20px' }}>
+        <div style={{ color: 'white', fontSize: '14px', marginTop: '20px' }}>
             <b>How It Works:</b>
             <ol>
                 <li>Setup the custom bet (bet name, start/end date, maximum risk).</li>
@@ -20,13 +21,27 @@ const AlertDetails = () => {
                 <li>Once your custom bet is approved, you will be notified by email and your bet will be available for betting.</li>
             </ol>
             Ready to create your own bet? Click NEXT.
-        </p>
+        </div>
     )
 }
 
 const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue, getFieldProps }) => {
+    const [showEventModal, setShowEventModal] = useState(false);
+
     return (
         <>
+            {showEventModal && <EventSearchModal
+                onClose={() => {
+                    setShowEventModal(false);
+                    setFieldValue('type', 'custom')
+                }}
+                onProceed={(event) => {
+                    if (event) {
+                        setFieldValue('name', event.label);
+                        setFieldValue('startDate', new Date(event.value.startDate));
+                        setShowEventModal(false);
+                    }
+                }} />}
             <div className="form-group">
                 <label><span>Bet Type</span></label>
                 <select
@@ -36,7 +51,13 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     placeholder=""
                     className={`form-control ${getInputClasses({ touched, errors }, "type")}`}
                     autoComplete="off"
-                    {...getFieldProps("type")}>
+                    {...getFieldProps("type")}
+                    onChange={evt => {
+                        getFieldProps('type').onChange(evt);
+                        if (evt.target.value == 'upcoming_sport') {
+                            setShowEventModal(true);
+                        }
+                    }}>
                     <option value="">... Choose Bet Type.</option>
                     <option value="upcoming_sport">Custom Sports Bet</option>
                     <option value="custom">Other Custom</option>

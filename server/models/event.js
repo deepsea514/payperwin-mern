@@ -21,6 +21,11 @@ const EventSchema = new Schema(
         public: { type: Boolean, default: true },
         status: { type: Number, default: config.EventStatus.pending.value },
         user: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+        allowAdditional: { type: Boolean, default: false },
+        participants: [{
+            user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+            amount: { type: Number, required: true }
+        }]
     },
     { timestamps: true },
 );
