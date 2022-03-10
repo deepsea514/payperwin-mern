@@ -4,9 +4,10 @@ import * as frontend from "../redux/reducer";
 import { connect } from "react-redux";
 import timeHelper from "../helpers/timehelper";
 import { FormattedMessage } from 'react-intl';
-import { getCustomEvent } from '../redux/services';
-import { showErrorToast } from '../libs/toast';
+import { getCustomEvent, joinHighStaker } from '../redux/services';
+import { showErrorToast, showSuccessToast } from '../libs/toast';
 import QRCode from "react-qr-code";
+import CustomBetJoinModal from './CustomBetJoinModal';
 
 class CustomBet extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class CustomBet extends Component {
             error: null,
             shareModal: false,
             urlCopied: false,
+            addHighStaker: null
         };
     }
 
@@ -53,10 +55,24 @@ class CustomBet extends Component {
         this.setState({ urlCopied: true });
     }
 
+    joinHighStaker = (amount) => {
+        const { addHighStaker } = this.state;
+        joinHighStaker(addHighStaker, amount)
+            .then(({ data }) => {
+                const { success, error } = data;
+                if (success) {
+                    showSuccessToast('Successfully joined custom bet.');
+                } else {
+                    showErrorToast(error);
+                }
+            }).catch(() => {
+                showErrorToast('Cannot join, please try again later.');
+            })
+    }
 
     render() {
         const { betSlip, removeBet, timezone } = this.props;
-        const { data, error, shareModal, lineUrl, urlCopied } = this.state;
+        const { data, error, shareModal, lineUrl, urlCopied, addHighStaker } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
         }
@@ -108,31 +124,37 @@ class CustomBet extends Component {
                         </div>
                     </div>
                 </div>}
+                {addHighStaker && <CustomBetJoinModal
+                    onProceed={this.joinHighStaker}
+                    onClose={() => this.setState({ addHighStaker: null })} />}
                 <div className="tab-content" >
                     {data.map((event, index) => {
-                        const { startDate, name, options, uniqueid, _id } = event;
+                        const { startDate, name, options, uniqueid, _id, user, allowAdditional } = event;
 
                         return (
                             <div key={index} className="mt-2">
                                 <div className="line-type-header mb-0 d-flex justify-content-between">
-                                    {name}
-                                    <span className='pt-1'>
-                                        <i className='fas fa-link cursor-pointer'
-                                            onClick={() => this.setState({
-                                                shareModal: true,
-                                                lineUrl: window.location.origin + '/custom-bet/' + uniqueid,
-                                                urlCopied: false
-                                            })} />
+                                    {name} {user.firstname && 'by ' + user.firstname + ' ' + user.lastname}
+                                    <span className='pt-1 cursor-pointer' onClick={() => this.setState({
+                                        shareModal: true,
+                                        lineUrl: window.location.origin + '/custom-bet/' + uniqueid,
+                                        urlCopied: false
+                                    })}>
+                                        <i className='fas fa-link' /> Share
                                     </span>
                                 </div>
-                                <div className="d-flex" style={{
-                                    padding: "3px 0 4px 10px",
+                                <div className="d-flex justify-content-between align-items-center" style={{
+                                    padding: "3px 0 4px 15px",
                                     background: "#171717",
                                     marginBottom: "3px"
                                 }}>
                                     <div style={{ fontSize: "11px", color: "#FFF" }}>
                                         {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                     </div>
+                                    {allowAdditional ? <span className='pt-1 cursor-pointer text-white pr-4'
+                                        onClick={() => this.setState({ addHighStaker: _id })}>
+                                        <i className='fas fa-plus' /> Join High Staker
+                                    </span> : null}
                                 </div>
                                 <div>
                                     <div className="row mx-0 pt-2">

@@ -5116,52 +5116,58 @@ adminRouter.post(
                     }
                 }
             }
-            const user = await User.findById(event.user);
-            if (user) {
-                await FinancialLog.create({
-                    financialtype: 'unlock_event',
-                    uniqid: `ULE${ID()}`,
-                    user: event.user,
-                    amount: event.maximumRisk,
-                    method: 'unlock_event',
-                    status: FinancialStatus.success,
-                    beforeBalance: user.balance,
-                    afterBalance: user.balance + event.maximumRisk
-                })
-                let beforeBalance = user.balance + event.maximumRisk;
-                if (lossAmount > 0) {
+
+            for (const participant of event.participants) {
+                const user = await User.findById(participant.user);
+                if (user) {
                     await FinancialLog.create({
-                        financialtype: 'lose_event',
-                        uniqid: `LE${ID()}`,
-                        user: event.user,
-                        amount: lossAmount,
-                        method: 'lose_event',
+                        financialtype: 'unlock_event',
+                        uniqid: `ULE${ID()}`,
+                        user: participant.user,
+                        amount: participant.amount,
+                        method: 'unlock_event',
                         status: FinancialStatus.success,
-                        beforeBalance: beforeBalance,
-                        afterBalance: beforeBalance - lossAmount
-                    })
-                    beforeBalance -= lossAmount;
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + participant.amount
+                    });
+
+                    let beforeBalance = user.balance + participant.amount;
+                    if (lossAmount > 0) {
+                        const myLoss = lossAmount * participant.amount / event.maximumRisk;
+                        await FinancialLog.create({
+                            financialtype: 'lose_event',
+                            uniqid: `LE${ID()}`,
+                            user: participant.user,
+                            amount: myLoss,
+                            method: 'lose_event',
+                            status: FinancialStatus.success,
+                            beforeBalance: beforeBalance,
+                            afterBalance: beforeBalance - myLoss
+                        })
+                        beforeBalance -= myLoss;
+                    }
+                    if (winAmount > 0) {
+                        const myWin = winAmount * participant.amount / event.maximumRisk;
+                        await FinancialLog.create({
+                            financialtype: 'win_event',
+                            uniqid: `WE${ID()}`,
+                            user: participant.user,
+                            amount: myWin,
+                            method: 'win_event',
+                            status: FinancialStatus.success,
+                            beforeBalance: beforeBalance,
+                            afterBalance: beforeBalance + myWin
+                        })
+                        beforeBalance += myWin;
+                    }
+                    await user.update({ balance: Number(beforeBalance.toFixed(2)) })
                 }
-                if (winAmount > 0) {
-                    await FinancialLog.create({
-                        financialtype: 'win_event',
-                        uniqid: `WE${ID()}`,
-                        user: event.user,
-                        amount: winAmount,
-                        method: 'win_event',
-                        status: FinancialStatus.success,
-                        beforeBalance: beforeBalance,
-                        afterBalance: beforeBalance + winAmount
-                    })
-                    beforeBalance += winAmount;
-                }
-                await user.update({ balance: Number(beforeBalance.toFixed(2)) })
             }
             await event.update({ status: EventStatus.settled.value })
-            return res.status(200).json({ success: true });
+            return res.json({ success: true });
         } catch (error) {
             console.error(error);
-            res.status(404).json({ error: 'Can\'t save events.' });
+            return res.status(404).json({ error: 'Can\'t save events.' });
         }
     }
 );
@@ -5231,19 +5237,21 @@ adminRouter.post(
                 }
             }
 
-            const user = await User.findById(event.user);
-            if (user) {
-                await FinancialLog.create({
-                    financialtype: 'unlock_event',
-                    uniqid: `ULE${ID()}`,
-                    user: event.user,
-                    amount: event.maximumRisk,
-                    method: 'unlock_event',
-                    status: FinancialStatus.success,
-                    beforeBalance: user.balance,
-                    afterBalance: user.balance + event.maximumRisk
-                });
-                await user.update({ $inc: { balance: event.maximumRisk } });
+            for (const participant of event.participants) {
+                const user = await User.findById(participant.user);
+                if (user) {
+                    await FinancialLog.create({
+                        financialtype: 'unlock_event',
+                        uniqid: `ULE${ID()}`,
+                        user: participant.user,
+                        amount: participant.amount,
+                        method: 'unlock_event',
+                        status: FinancialStatus.success,
+                        beforeBalance: user.balance,
+                        afterBalance: user.balance + participant.amount
+                    });
+                    await user.update({ $inc: { balance: participant.amount } });
+                }
             }
 
             return res.status(200).json({ success: true });

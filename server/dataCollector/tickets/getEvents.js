@@ -17,7 +17,7 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
     try {
         let page = 1;
         do {
-            const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/events?category_id=1&category_tree=true&per_page=100&page=' + page);
+            const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/events?per_page=100&page=' + page);
             if (response.events && response.events.length) {
                 const events_res = response.events;
                 for (const event of events_res) {
