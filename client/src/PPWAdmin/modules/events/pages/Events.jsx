@@ -158,6 +158,7 @@ class Events extends React.Component {
 
     onSettleEvent = (values, formik) => {
         const { settleId } = this.state;
+        const { getEvents } = this.props;
         settleEvent(settleId._id, values)
             .then(() => {
                 getEvents();
