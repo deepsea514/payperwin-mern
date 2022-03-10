@@ -33,7 +33,7 @@ export default class CustomBetJoinModal extends React.Component {
                         <hr />
                         <div className="row">
                             <div className="col-12 form-group">
-                                <label>Sport</label>
+                                <label>Risk Amount (CAD)</label>
                                 <input type="number"
                                     className="form-control"
                                     value={amount}
