@@ -3425,6 +3425,49 @@ expressApp.get(
     }
 )
 
+expressApp.get(
+    '/searchevents',
+    async (req, res) => {
+        const { name, sport } = req.query;
+        if (!name) return res.json([]);
+        try {
+            const results = [];
+            const searchSports = await Sport.find({ name: sport });
+            for (const sport of searchSports) {
+                for (const league of sport.leagues) {
+                    for (const event of league.events) {
+                        if (new Date(event.startDate).getTime() > new Date().getTime()) {
+                            if (event.teamA.toLowerCase().includes(name.toLowerCase())) {
+                                results.push({
+                                    label: event.teamA + ' VS ' + event.teamB,
+                                    value: {
+                                        teamA: event.teamA,
+                                        teamB: event.teamB,
+                                        startDate: event.startDate,
+                                    },
+                                });
+                            } else if (event.teamB.toLowerCase().includes(name.toLowerCase())) {
+                                results.push({
+                                    label: event.teamA + ' VS ' + event.teamB,
+                                    value: {
+                                        teamA: event.teamA,
+                                        teamB: event.teamB,
+                                        startDate: event.startDate,
+                                    },
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            res.json(results);
+        } catch (error) {
+            console.error(error);
+            res.json([]);
+        }
+    }
+)
+
 expressApp.get('/referralCodeExist', async (req, res) => {
     const { referral_code } = req.query;
     if (!referral_code)

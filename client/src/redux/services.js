@@ -204,6 +204,10 @@ export function searchSports(name) {
     return FrontendAPI.get(`/searchsports`, { params: { name } });
 }
 
+export function searchEvent(name, sport) {
+    return FrontendAPI.get(`/searchevents`, { params: { name, sport } });
+}
+
 export function getBets(filter) {
     return FrontendAPI.post(`/bets`, filter)
 }
