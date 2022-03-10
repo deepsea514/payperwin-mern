@@ -1,6 +1,7 @@
 import React from "react";
 import { FormattedMessage } from 'react-intl';
 import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import { searchEvent, searchSports } from "../redux/services";
 import dateformat from 'dateformat';
 
@@ -83,22 +84,16 @@ export default class EventSearchModal extends React.Component {
         this.state = {
             event: null,
             sport: '',
-            loadingSports: false,
+            sportsOptions: [
+                { label: 'Soccer', value: 'Soccer' },
+                { label: 'American Football', value: 'American Football' },
+                { label: 'Baseball', value: 'Baseball' },
+                { label: 'Ice Hockey', value: 'Ice Hockey' },
+                { label: 'Basketball', value: 'Basketball' },
+                { label: 'Tennis', value: 'Tennis' },
+            ],
             loadingEvent: false,
         }
-    }
-
-    getSports = (query, cb) => {
-        this.setState({ loadingSports: true });
-        searchSports(query)
-            .then(({ data }) => {
-                cb(data);
-                this.setState({ loadingSports: false });
-            })
-            .catch(() => {
-                cb([]);
-                this.setState({ loadingSports: false });
-            })
     }
 
     getEvent = (query, cb) => {
@@ -118,7 +113,7 @@ export default class EventSearchModal extends React.Component {
 
     render() {
         const { onClose, onProceed } = this.props;
-        const { event, sport, loadingSports, loadingEvent } = this.state;
+        const { event, sport, loadingEvent, sportsOptions } = this.state;
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
@@ -130,14 +125,12 @@ export default class EventSearchModal extends React.Component {
                         <div className="row">
                             <div className="col-12 form-group">
                                 <label>Sport</label>
-                                <AsyncSelect
+                                <Select
                                     classNamePrefix="select"
-                                    isSearchable={true}
+                                    isSearchable={false}
                                     name="sport"
-                                    loadOptions={this.getSports}
-                                    noOptionsMessage={() => "No Sports"}
+                                    options={sportsOptions}
                                     value={sport}
-                                    isLoading={loadingSports}
                                     onChange={(sport) => this.setState({ sport })}
                                     styles={customStyles}
                                 />
