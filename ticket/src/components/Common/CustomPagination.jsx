@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 // Used to cancel events.
 var preventDefault = e => e.preventDefault();
 
@@ -58,9 +59,9 @@ export default class CustomPagination extends Component {
             }
             buttons.push(
                 <li className="page-item" key={i}>
-                    <a href='#' className={"page-link" + (isCurrent ? " active" : "")} onClick={btnEvent}>
+                    <Link to='#' className={"page-link" + (isCurrent ? " active" : "")} onClick={btnEvent}>
                         {i + 1}
-                    </a>
+                    </Link>
                 </li>
             );
         }
@@ -85,31 +86,31 @@ export default class CustomPagination extends Component {
 
         buttons = [
             <li className="page-item" key="first">
-                <a href='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
+                <Link to='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
                     onClick={firstHandler}>
                     <i className="icofont-curved-double-left"></i>
-                </a>
+                </Link>
             </li>,
             <li className="page-item" key="prev">
-                <a href='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
+                <Link to='#' className={"page-link" + (!isNotFirst ? ' disabled' : '')}
                     onClick={prevHandler}>
                     <i className="icofont-curved-left"></i>
-                </a>
+                </Link>
             </li>,
         ].concat(buttons);
 
         buttons = buttons.concat([
             <li className="page-item" key="next">
-                <a href='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
+                <Link to='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
                     onClick={nextHandler}>
                     <i className="icofont-curved-right"></i>
-                </a>
+                </Link>
             </li>,
             <li className="page-item" key="last">
-                <a href='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
+                <Link to='#' className={"page-link" + (!isNotLast ? ' disabled' : '')}
                     onClick={lastHandler}>
                     <i className="icofont-curved-double-right"></i>
-                </a>
+                </Link>
             </li>,
         ]);
 

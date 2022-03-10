@@ -7,10 +7,17 @@ const customStyles = {
     control: (provided, state) => {
         return {
             ...provided,
-            background: '#FFF4',
+            background: 'transparent',
             height: '38px',
             borderRadius: 'none',
             border: 'none',
+        }
+    },
+    singleValue:(provided, state) => {
+        return {
+            ...provided,
+            color: '#FFF',
+            textAlign: 'left'
         }
     },
     placeholder: (provided, state) => {
@@ -18,18 +25,19 @@ const customStyles = {
             ...provided,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
-            color: '#c7c3c7'
+            color: '#c7c3c7',
+            textAlign: 'left'
         }
     },
     menu: (provided, state) => {
         return {
             ...provided,
             color: 'black',
-            width: window.innerWidth > 990 ? "150%" : '100%'
+            width: window.innerWidth > 990 ? "150%" : '100%',
+            textAlign: 'left'
         }
     }
 }
-
 
 const timeOptions = [
     { value: 'all', label: 'All Time' },
@@ -42,6 +50,21 @@ const timeOptions = [
     { value: 'this_year', label: 'This Year' },
 ]
 
+const stateOptions = [
+    { value: "AB", label: "Alberta" },
+    { value: "BC", label: "British Columbia" },
+    { value: "MB", label: "Manitoba" },
+    { value: "NB", label: "New Brunswick" },
+    { value: "NL", label: "Newfoundland and Labrador" },
+    { value: "NT", label: "Northwest Territories" },
+    { value: "NS", label: "Nova Scotia" },
+    { value: "NU", label: "Nunavut" },
+    { value: "ON", label: "Ontario" },
+    { value: "PE", label: "Prince Edward Island" },
+    { value: "QC", label: "Quebec" },
+    { value: "SK", label: "Saskatchewan" },
+    { value: "YT", label: "Yukon" }
+]
 
 class MainBanner extends React.Component {
     constructor(props) {
@@ -96,7 +119,7 @@ class MainBanner extends React.Component {
                                         className="form-control"
                                         classNamePrefix="select"
                                         name="state"
-                                        options={[]}
+                                        options={stateOptions}
                                         placeholder="All States"
                                         value={state}
                                         onChange={(state) => this.setState({ state })}

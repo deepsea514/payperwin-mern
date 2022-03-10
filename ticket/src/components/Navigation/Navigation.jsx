@@ -44,7 +44,7 @@ class Navigation extends React.Component {
         const { collapsed } = this.state;
         const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
         const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
-        const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
+        // const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
         return (
             <header id="header" className="header-area">
                 <div id="navbar" className="elkevent-nav">
