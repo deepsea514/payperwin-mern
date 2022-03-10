@@ -7,13 +7,14 @@ import * as frontend from "../redux/reducer";
 import { getShortSportName } from '../libs/getSportName';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import CustomBet from "./custombet";
 
 const topLeagues = [
-    {
-        name: 'NFL',
-        sportName: 'American Football',
-        leagueId: '10037219',
-    },
+    // {
+    //     name: 'NFL',
+    //     sportName: 'American Football',
+    //     leagueId: '10037219',
+    // },
     {
         name: 'NBA',
         sportName: 'Basketball',
@@ -192,6 +193,16 @@ class Highlights extends Component {
                             </li>
                         );
                     })}
+                    <li className="nav-item"
+                        onClick={() => this.setState({ sportIndex: 'custom' })}>
+                        <center>
+                            <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
+                                <img src={sportNameImage('Custom Bet')}
+                                    className='sports-league-image' />
+                            </div>
+                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Custom Bet</span>
+                        </center>
+                    </li>
                     {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
                         onClick={this.scrollRight}>
                         <span className='sports-scroller-icon'>
@@ -199,14 +210,21 @@ class Highlights extends Component {
                         </span>
                     </li>}
                 </ul>
-                <Sport
-                    addBet={addBet}
-                    betSlip={betSlip}
-                    removeBet={removeBet}
-                    shortName={shortName}
-                    league={sportIndex == null && leagueIndex != null ? topLeagues[leagueIndex].leagueId : null}
-                    hideBreacrumb={true}
-                />
+                {sportIndex == 'custom' ? (
+                    <CustomBet addBet={addBet}
+                        betSlip={betSlip}
+                        removeBet={removeBet}
+                    />
+                ) : (
+                    <Sport
+                        addBet={addBet}
+                        betSlip={betSlip}
+                        removeBet={removeBet}
+                        shortName={shortName}
+                        league={sportIndex == null && leagueIndex != null ? topLeagues[leagueIndex].leagueId : null}
+                        hideBreacrumb={true}
+                    />
+                )}
             </div>
         );
     }

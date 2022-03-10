@@ -102,9 +102,9 @@ class MainBanner extends React.Component {
                     <div className="d-table-cell">
                         <div className="container">
                             <div className="main-banner-content">
-                                <h1>Find Tickets Nearby</h1>
+                                <h1>Find Tickets</h1>
                                 <ul>
-                                    <li>Shop millions of live events and discover can't-miss concerts, games, theater and more.</li>
+                                    <li>Shop millions of sport games and discover can't-miss concerts, games, theater and more.</li>
                                 </ul>
 
                                 <div className='search-form'>
@@ -115,7 +115,7 @@ class MainBanner extends React.Component {
                                         value={query}
                                         onChange={(evt) => this.setState({ query: evt.target.value })}
                                     />
-                                    <Select
+                                    {/* <Select
                                         className="form-control"
                                         classNamePrefix="select"
                                         name="state"
@@ -125,7 +125,7 @@ class MainBanner extends React.Component {
                                         onChange={(state) => this.setState({ state })}
                                         styles={customStyles}
                                         maxMenuHeight={200}
-                                    />
+                                    /> */}
                                     <AsyncSelect
                                         className="form-control"
                                         classNamePrefix="select"
@@ -140,7 +140,7 @@ class MainBanner extends React.Component {
                                         styles={customStyles}
                                         maxMenuHeight={200}
                                     />
-                                    <AsyncSelect
+                                    {/* <AsyncSelect
                                         className="form-control"
                                         classNamePrefix="select"
                                         isSearchable={true}
@@ -153,7 +153,7 @@ class MainBanner extends React.Component {
                                         onChange={(venue) => this.setState({ venue })}
                                         styles={customStyles}
                                         maxMenuHeight={200}
-                                    />
+                                    /> */}
                                     <Select
                                         className="form-control"
                                         classNamePrefix="select"
