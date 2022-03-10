@@ -9,11 +9,11 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 const topLeagues = [
-    {
-        name: 'NFL',
-        sportName: 'American Football',
-        leagueId: '10037219',
-    },
+    // {
+    //     name: 'NFL',
+    //     sportName: 'American Football',
+    //     leagueId: '10037219',
+    // },
     {
         name: 'NBA',
         sportName: 'Basketball',

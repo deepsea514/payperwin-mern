@@ -143,7 +143,7 @@ class Registration extends Component {
             city: '',
             postalcode: '',
             phone: '',
-            pro_mode: 'true',
+            pro_mode: 'false',
 
             securityquiz: '',
             securityans: '',
@@ -442,7 +442,7 @@ class Registration extends Component {
                         <p>
                             If you are new to betting we will display the site in the BASIC VIEW, this provides a simplified betting experience.
                             Don't worry you can change your view anytime on the website. <br />
-                            For those experienced with betting we recommend our PRO VIEW, this view has all available odds.
+                            For those experienced with betting we recommend our PRO VIEW, this view has a available odds.
                         </p>
                         <RadioGroup row
                             aria-label="view"
