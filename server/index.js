@@ -4717,13 +4717,16 @@ expressApp.post(
     '/customBet',
     isAuthenticated,
     async (req, res) => {
-        const { name, startDate, endDate, visibility, maximumRisk, options } = req.body;
+        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional } = req.body;
         const user = req.user;
         try {
             if (user.balance < maximumRisk) {
                 return res.json({ success: false, error: 'Insufficent Funds.' });
             }
-            let existing = null;
+            let existing = await Event.findOne({ name });
+            if (existing) {
+                return res.json({ success: false, error: 'A custom bet with same name exists.' });
+            }
             let uniqueid = `E${ID()}`;
             do {
                 existing = await Event.findOne({ uniqueid: uniqueid });
@@ -4741,7 +4744,12 @@ expressApp.post(
                 creator: 'User',
                 user: user._id,
                 maximumRisk: maximumRisk,
-                options: options
+                options: options,
+                allowAdditional: allowAdditional,
+                participants: [{
+                    user: user._id,
+                    amount: maximumRisk
+                }]
             });
 
             await FinancialLog.create({
@@ -4759,6 +4767,7 @@ expressApp.post(
 
             return res.json({ success: true });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ error: "Can't create a bet." });
         }
     }
