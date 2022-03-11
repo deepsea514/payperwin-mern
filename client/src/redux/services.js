@@ -210,7 +210,7 @@ export function searchSports(name) {
 }
 
 export function searchEvent(name, sport) {
-    return axios.get('http://app.heatscore.co:8080/events/search', { params: { name, sport } });
+    return axios.get('https://app.heatscore.co/events/search', { params: { name, sport } });
     // return FrontendAPI.get('/searchevents', { params: { name, sport } });
 }
 
