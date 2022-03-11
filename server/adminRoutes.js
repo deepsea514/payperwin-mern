@@ -32,6 +32,7 @@ const ParlayBetPool = require('./models/parlaybetpool');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
 const Member = require('./models/member');
+const Affiliate = require('./models/affiliate');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -8264,6 +8265,90 @@ adminRouter.delete(
         } catch (error) {
             console.error(error);
             return res.json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/affiliates/:id/detail',
+    async (req, res) => {
+        return res.json(null);
+    }
+)
+
+adminRouter.get(
+    '/affiliates/:id',
+    async (req, res) => {
+        return res.json(null);
+    }
+)
+
+adminRouter.put(
+    '/affiliates/:id',
+    async (req, res) => {
+        return res.json(null);
+    }
+)
+
+adminRouter.delete(
+    '/affiliates/:id',
+    async (req, res) => {
+        return res.json(null);
+    }
+)
+
+adminRouter.get(
+    '/affiliates',
+    async (req, res) => {
+        let { perPage, page } = req.query;
+        if (!perPage) perPage = 30;
+        else perPage = parseInt(perPage);
+        if (!page) page = 1;
+        else page = parseInt(page);
+        try {
+            const total = await Affiliate.find().count();
+            const affiliates = await Affiliate.aggregate(
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'unique_id',
+                        foreignField: 'referral_code',
+                        as: 'users'
+                    }
+                },
+                {
+                    $project: {
+                        company: 1,
+                        email: 1,
+                        notes: 1,
+                        status: 1,
+                        unique_id: 1,
+                        click: 1,
+                        conversions: { $size: '$users' }
+                    }
+                },
+                { $skip: (page - 1) * perPage },
+                { $limit: perPage }
+            );
+            return res.json({ affiliates, total: total, page: page });
+        } catch (error) {
+            console.error(error);
+            return res.json({ affiliates: [], total: 0, page: 1 });
+        }
+    }
+)
+
+adminRouter.post(
+    '/affiliates',
+    async (req, res) => {
+        try {
+            const data = req.body;
+            const unique_id = `AFM${ID()}`;
+            await Affiliate.create({ ...data, unique_id });
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot create an affiliate user. Internal Server Error.' });
         }
     }
 )

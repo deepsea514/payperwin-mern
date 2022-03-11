@@ -10,7 +10,7 @@ export default class WithdrawLogModule extends Component {
             <BrowserRouter basename="/RP1021/withdraw-log">
                 <Switch>
                     <Route exact path="/" render={(props) => <WithdrawLog {...props} topHistory={history} />} />
-                    <Route path="/add" component={AddWithdraw} />
+                    <Route path="/create" component={AddWithdraw} />
                 </Switch>
             </BrowserRouter>
         )

@@ -38,6 +38,7 @@ import Prediction from '../modules/prediction/pages';
 import GiftCardsModule from '../modules/giftcard/pages';
 import MismatchScoresModule from '../modules/mismatchscores/pages';
 import TeamModule from "../modules/team/pages";
+import AffiliatesModule from "../modules/affiliate/pages";
 import { getUser } from '../redux/services';
 
 class App extends Component {
@@ -226,6 +227,10 @@ class App extends Component {
                     {/* Team Module */}
                     <Route path="/team" render={(props) =>
                         <ErrorBoundary><TeamModule {...props} /></ErrorBoundary>
+                    } />
+
+                    <Route path="/affiliates" render={(props) =>
+                        <ErrorBoundary><AffiliatesModule {...props} /></ErrorBoundary>
                     } />
 
                     <Redirect exact from="/" to="/dashboard" />
