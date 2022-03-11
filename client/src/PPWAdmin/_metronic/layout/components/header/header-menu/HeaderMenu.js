@@ -227,7 +227,6 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                                                 <SVG src={"/media/svg/icons/Devices/Laptop-macbook.svg"} />
                                             </span>
                                             <span className="menu-text">Place Bet</span>
-                                            {pending_event_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_event_total}&nbsp;</span>}
                                         </Link>
                                     </li>}
 
@@ -238,7 +237,6 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                                                 <SVG src={"/media/svg/icons/Devices/Laptop-macbook.svg"} />
                                             </span>
                                             <span className="menu-text">AutoBet</span>
-                                            {pending_event_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_event_total}&nbsp;</span>}
                                         </Link>
                                     </li>}
 
@@ -249,6 +247,7 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                                                 <SVG src={"/media/svg/icons/General/Thunder-move.svg"} />
                                             </span>
                                             <span className="menu-text">Custom Events</span>
+                                            {pending_event_total != 0 && <span className="badge badge-pill badge-primary">&nbsp;{pending_event_total}&nbsp;</span>}
                                         </Link>
                                     </li>}
 
@@ -272,6 +271,16 @@ function HeaderMenu({ layoutProps, adminUser, kyc_total, pending_withdraw_total,
                                     <SVG src={"/media/svg/icons/Communication/Mail-box.svg"} />
                                 </span>
                                 <span className="menu-text">Messages</span>
+                            </Link>
+                        </li>}
+
+                        {adminUser && <li className={`menu-item ${getMenuItemActive("/affiliates", false)}`}
+                            aria-haspopup="true">
+                            <Link className="menu-link" to="/affiliates/">
+                                <span className="svg-icon menu-icon">
+                                    <SVG src={"/media/svg/icons/General/Clip.svg"} />
+                                </span>
+                                <span className="menu-text">Affiliates</span>
                             </Link>
                         </li>}
 

@@ -10,7 +10,7 @@ export default class DepositLogModule extends Component {
             <BrowserRouter basename="/RP1021/deposit-log">
                 <Switch>
                     <Route exact path="/" render={(props) => <DepositLog {...props} topHistory={history} />} />
-                    <Route path="/add" component={AddDeposit} />
+                    <Route path="/create" component={AddDeposit} />
                 </Switch>
             </BrowserRouter>
         )

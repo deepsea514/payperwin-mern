@@ -305,7 +305,7 @@ passport.use('local-signup', new LocalStrategy(
                 const newUserObj = {
                     username, email, password, firstname, lastname,
                     country, currency, title, dateofbirth, region,
-                    bet_referral_code: referral_code, invite: null,
+                    referral_code: referral_code, invite: null,
                     roles: { registered: true },
                 };
 
@@ -2150,8 +2150,8 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && user.bet_referral_code &&
-                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
+            if (autobet.referral_code && user.referral_code &&
+                autobet.referral_code.toLowerCase() == user.referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -2175,11 +2175,11 @@ const checkAutobetForParlay = async (parlayBet, parlayBetPool, user) => {
 
     if (autobetusers.length == 0) return;
     autobetusers.sort((a, b) => {
-        if (a.referral_code && user.bet_referral_code &&
-            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+        if (a.referral_code && user.referral_code &&
+            a.referral_code.toLowerCase() == user.referral_code.toLowerCase())
             return -1;
-        if (b.referral_code && user.bet_referral_code &&
-            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+        if (b.referral_code && user.referral_code &&
+            b.referral_code.toLowerCase() == user.referral_code.toLowerCase())
             return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });
@@ -2401,9 +2401,9 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
         betType: betType,
     }];
 
-    if (user.bet_referral_code) {
+    if (user.referral_code) {
         orCon.push({
-            referral_code: new RegExp(`^${user.bet_referral_code}$`, 'i')
+            referral_code: new RegExp(`^${user.referral_code}$`, 'i')
         })
     }
 
@@ -2459,8 +2459,8 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
                     budget += logs[0].amount;
             }
             autobet.bettable = budget - bettedamount;
-            if (autobet.referral_code && user.bet_referral_code &&
-                autobet.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase()) {
+            if (autobet.referral_code && user.referral_code &&
+                autobet.referral_code.toLowerCase() == user.referral_code.toLowerCase()) {
                 return (
                     autobet.userId._id.toString() != user._id.toString() &&     //Not same user
                     autobet.status == AutoBetStatus.active &&                   //Check active status
@@ -2486,11 +2486,11 @@ const checkAutoBet = async (bet, betpool, user, sportData, line) => {
     if (autobetusers.length == 0) return;
 
     autobetusers.sort((a, b) => {
-        if (a.referral_code && user.bet_referral_code &&
-            a.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+        if (a.referral_code && user.referral_code &&
+            a.referral_code.toLowerCase() == user.referral_code.toLowerCase())
             return -1;
-        if (b.referral_code && user.bet_referral_code &&
-            b.referral_code.toLowerCase() == user.bet_referral_code.toLowerCase())
+        if (b.referral_code && user.referral_code &&
+            b.referral_code.toLowerCase() == user.referral_code.toLowerCase())
             return 1;
         return (a.priority > b.priority) ? -1 : 1;
     });

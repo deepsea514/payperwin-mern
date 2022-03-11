@@ -196,7 +196,7 @@ class WithdrawLog extends React.Component {
                                     <button className="btn btn-success font-weight-bolder font-size-sm mr-2" onClick={this.downloadCSV}>
                                         <i className="fas fa-download"></i>&nbsp; Download as CSV
                                     </button>
-                                    {report != true && <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
+                                    {report != true && <Link to="/create" className="btn btn-success font-weight-bolder font-size-sm">
                                         <i className="fas fa-credit-card"></i>&nbsp; Manual Withdraw
                                     </Link>}
                                 </div>

@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton, Button, Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Link } from "react-router-dom";
-import * as wager_feeds from "../redux/reducers";
+import * as affiliates from "../redux/reducers";
 import dateformat from "dateformat";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -14,14 +14,13 @@ class Affiliates extends React.Component {
         super(props);
         this.state = {
             perPage: 25,
+            deleteId: null,
         }
     }
 
     componentDidMount() {
-
-    }
-
-    onFilterChange = (filter) => {
+        const { getAffiliatesAction } = this.props;
+        getAffiliatesAction();
     }
 
     getDateFormat = (date) => {
@@ -29,7 +28,7 @@ class Affiliates extends React.Component {
     }
 
     tableBody = () => {
-        const { wager_feeds, loading } = this.props;
+        const { affiliates, loading } = this.props;
 
         if (loading) {
             return (
@@ -44,7 +43,7 @@ class Affiliates extends React.Component {
                 </tr>
             );
         }
-        if (wager_feeds.length == 0) {
+        if (affiliates.length == 0) {
             return (
                 <tr>
                     <td colSpan="11" align="center">
@@ -54,9 +53,36 @@ class Affiliates extends React.Component {
             );
         }
 
-        // return wager_feeds.map((bet, index) => (
-        //     return 
-        // ));
+        return affiliates.map((affiliate, index) => (
+            <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{affiliate.email}</td>
+                <td>{affiliate.company}</td>
+                <td>{affiliate.click}</td>
+                <td>{affiliate.conversions}</td>
+                <td>0</td>
+                <td>0</td>
+                <td>{this.getStatus(affiliate.status)}</td>
+                <td>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            Actions
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
+                            <Dropdown.Item as={Link} to={`/${affiliate._id}/edit`}><i className="fas fa-edit"></i>&nbsp; Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.setState({ deleteId: affiliate._id })}><i className="fas fa-trash"></i>&nbsp; Delete</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </td>
+            </tr>
+        ));
+    }
+
+    getStatus = (status) => {
+        if (status === 'active')
+            return <span className="label label-lg label-success label-inline font-weight-lighter mr-2">Active</span>
+        return <span className="label label-lg label-danger label-inline font-weight-lighter mr-2">Inactive</span>
     }
 
     onPageChange = (page) => {
@@ -76,6 +102,9 @@ class Affiliates extends React.Component {
                             <div className="card-title">
                                 <h3 className="card-label">Affiliate Users</h3>
                             </div>
+                            <div className="card-toolbar">
+                                <Link to="/create" className="btn btn-success">Create A New Affiliate</Link>
+                            </div>
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">
@@ -83,15 +112,14 @@ class Affiliates extends React.Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Wager ID</th>
-                                            <th scope="col">Sport</th>
-                                            <th scope="col">Event Name</th>
-                                            <th scope="col">Odds</th>
-                                            <th scope="col">To Risk</th>
-                                            <th scope="col">To Win</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Company</th>
+                                            <th scope="col">Clicks</th>
+                                            <th scope="col">Conversions</th>
+                                            <th scope="col">Deposits</th>
+                                            <th scope="col">Earned</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Wager Date</th>
-                                            <th scope="col">Details</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -116,11 +144,11 @@ class Affiliates extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-    wager_feeds: state.wager_feeds.wager_feeds,
-    loading: state.wager_feeds.loading,
-    total: state.wager_feeds.total,
-    currentPage: state.wager_feeds.currentPage,
-    filter: state.wager_feeds.filter,
+    affiliates: state.affiliates.affiliates,
+    loading: state.affiliates.loading,
+    total: state.affiliates.total,
+    currentPage: state.affiliates.currentPage,
+    filter: state.affiliates.filter,
 })
 
-export default connect(mapStateToProps, wager_feeds.actions)(Affiliates)
+export default connect(mapStateToProps, affiliates.actions)(Affiliates)

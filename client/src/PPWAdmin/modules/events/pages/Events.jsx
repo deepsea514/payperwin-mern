@@ -182,11 +182,6 @@ class Events extends React.Component {
                             <div className="card-title">
                                 <h3 className="card-label">Event</h3>
                             </div>
-                            {/* <div className="card-toolbar">
-                                <Link to="/add" className="btn btn-success font-weight-bolder font-size-sm">
-                                    <i className="fas fa-credit-card"></i>&nbsp; Add New Event
-                                </Link>
-                            </div> */}
                         </div>
                         <div className="card-body">
                             <div className="form-group row">
