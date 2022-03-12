@@ -23,6 +23,7 @@ const sendSMS = require("./libs/sendSMS");
 const config = require('../config.json');
 const FinancialStatus = config.FinancialStatus;
 const inviteBonus = config.inviteBonus;
+const affiliateCommission = config.affiliateCommission;
 const {
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
@@ -143,7 +144,12 @@ tripleARouter.post('/deposit',
                     if (firstDeposit && receive_amount >= 100) {
                         const affiliate = await Affiliate.findOne({ unique_id: user.invite });
                         if (affiliate) {
-                            // TODO: affiliate commission
+                            await affiliate.update({ $inc: { balance: affiliateCommission } });
+                            await AffiliateCommission.create({
+                                affiliater: affiliate._id,
+                                user: user._id,
+                                amount: affiliateCommission
+                            })
                         } else {
                             const invitor = await User.findOne({ username: user.invite });
                             if (invitor) {

@@ -86,6 +86,7 @@ const getTeaserOdds = require('./libs/getTeaserOdds');
 const BetFee = 0.05;
 const loyaltyPerBet = 25;
 const maximumWin = 2000;
+const affiliateCommission = config.affiliateCommission;
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -1167,7 +1168,12 @@ adminRouter.post(
                         if (firstDeposit && amount >= 100) {
                             const affiliate = await Affiliate.findOne({ unique_id: user.invite });
                             if (affiliate) {
-                                // TODO: affiliate commission
+                                await affiliate.update({ $inc: { balance: affiliateCommission } });
+                                await AffiliateCommission.create({
+                                    affiliater: affiliate._id,
+                                    user: user._id,
+                                    amount: affiliateCommission
+                                })
                             } else {
                                 const invitor = await User.findOne({ username: user.invite });
                                 if (invitor) {
@@ -1422,7 +1428,12 @@ adminRouter.patch(
                         if (firstDeposit && deposit.amount >= 100) {
                             const affiliate = await Affiliate.findOne({ unique_id: user.invite });
                             if (affiliate) {
-                                // TODO: affiliate commission
+                                await affiliate.update({ $inc: { balance: affiliateCommission } });
+                                await AffiliateCommission.create({
+                                    affiliater: affiliate._id,
+                                    user: user._id,
+                                    amount: affiliateCommission
+                                })
                             } else {
                                 const invitor = await User.findOne({ username: user.invite });
                                 if (invitor) {

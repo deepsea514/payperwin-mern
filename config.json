@@ -339,5 +339,6 @@
             "time": "+14:00"
         }
     ],
-    "inviteBonus": 0.1
+    "inviteBonus": 0.1,
+    "affiliateCommission": 25
 }
