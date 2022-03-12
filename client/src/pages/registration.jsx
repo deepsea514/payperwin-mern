@@ -18,7 +18,7 @@ import GoogleLogin from "react-google-login";
 import CustomDatePicker from '../components/customDatePicker';
 import { FormattedMessage } from 'react-intl';
 import config from '../../../config.json';
-import { googleRegister, register } from '../redux/services';
+import { googleRegister, register, visitAffiliate } from '../redux/services';
 const CountryInfo = config.CountryInfo;
 
 const useStyles = (theme) => ({
@@ -124,6 +124,7 @@ class Registration extends Component {
         const { search } = window.location;
         const params = new URLSearchParams(search);
         const invite = params.get('invite');
+        const referrer = params.get('referrer');
 
         const initState = {
             country: 'Canada',
@@ -147,7 +148,7 @@ class Registration extends Component {
 
             securityquiz: '',
             securityans: '',
-            referral_code: invite ? invite : '',
+            referral_code: referrer ? referrer : (invite ? invite : ''),
             agreeTerms: false,
             agreePrivacy: false,
             rcptchVerified: false,
@@ -179,7 +180,12 @@ class Registration extends Component {
         this.state = {
             ...initState,
             invite: invite,
+            referrer: referrer,
         };
+
+        if (referrer) {
+            visitAffiliate(referrer).then(() => { }).catch(() => { })
+        }
     }
 
     componentDidMount() {
@@ -252,12 +258,12 @@ class Registration extends Component {
             .then((result) => {
                 if (result === true) {
                     const { email, password, firstname, lastname, country, currency, region,
-                        title, dateofbirth, referral_code, invite, pro_mode } = this.state;
+                        title, dateofbirth, referral_code, invite, pro_mode, referrer } = this.state;
 
                     register({
                         email, password, firstname, lastname, region,
                         country, currency, title, dateofbirth: dateformat(dateofbirth, "yyyy-mm-dd"),
-                        referral_code, invite, pro_mode
+                        referral_code, invite, pro_mode, referrer
                     })
                         .then((/* { data } */) => {
                             getUser();
@@ -692,9 +698,9 @@ class Registration extends Component {
     }
 
     handleGoogleSignup = (googleData) => {
-        const { errors, invite } = this.state;
+        const { errors, invite, referrer } = this.state;
         const { getUser, history } = this.props;
-        googleRegister(googleData.tokenId, invite)
+        googleRegister(googleData.tokenId, invite, referrer)
             .then(() => {
                 getUser();
                 history.replace({ pathname: '/' });
