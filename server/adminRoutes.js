@@ -33,6 +33,7 @@ const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
 const Member = require('./models/member');
 const Affiliate = require('./models/affiliate');
+const AffiliateCommission = require('./models/affiliate_commission');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -1163,20 +1164,25 @@ adminRouter.post(
                 if (user.invite) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
-                        if (firstDeposit) {
-                            const invitor = await User.findOne({ username: user.invite });
-                            if (invitor) {
-                                await FinancialLog.create({
-                                    financialtype: 'invitebonus',
-                                    uniqid: `IB${ID()}`,
-                                    user: invitor._id,
-                                    amount: inviteBonus * amount,
-                                    method: method,
-                                    status: FinancialStatus.success,
-                                    beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus * amount
-                                });
-                                await invitor.update({ $inc: { balance: inviteBonus * amount } });
+                        if (firstDeposit && amount >= 100) {
+                            const affiliate = await Affiliate.findOne({ unique_id: user.invite });
+                            if (affiliate) {
+                                // TODO: affiliate commission
+                            } else {
+                                const invitor = await User.findOne({ username: user.invite });
+                                if (invitor) {
+                                    await FinancialLog.create({
+                                        financialtype: 'invitebonus',
+                                        uniqid: `IB${ID()}`,
+                                        user: invitor._id,
+                                        amount: inviteBonus * amount,
+                                        method: method,
+                                        status: FinancialStatus.success,
+                                        beforeBalance: invitor.balance,
+                                        afterBalance: invitor.balance + inviteBonus * amount
+                                    });
+                                    await invitor.update({ $inc: { balance: inviteBonus * amount } });
+                                }
                             }
                         }
                     } catch (error) {
@@ -1413,20 +1419,25 @@ adminRouter.patch(
                 if (user.invite) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
-                        if (firstDeposit) {
-                            const invitor = await User.findOne({ username: user.invite });
-                            if (invitor) {
-                                await FinancialLog.create({
-                                    financialtype: 'invitebonus',
-                                    uniqid: `IB${ID()}`,
-                                    user: invitor._id,
-                                    amount: inviteBonus * deposit.amount,
-                                    method: deposit.method,
-                                    status: FinancialStatus.success,
-                                    beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus * deposit.amount
-                                });
-                                await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
+                        if (firstDeposit && deposit.amount >= 100) {
+                            const affiliate = await Affiliate.findOne({ unique_id: user.invite });
+                            if (affiliate) {
+                                // TODO: affiliate commission
+                            } else {
+                                const invitor = await User.findOne({ username: user.invite });
+                                if (invitor) {
+                                    await FinancialLog.create({
+                                        financialtype: 'invitebonus',
+                                        uniqid: `IB${ID()}`,
+                                        user: invitor._id,
+                                        amount: inviteBonus * deposit.amount,
+                                        method: deposit.method,
+                                        status: FinancialStatus.success,
+                                        beforeBalance: invitor.balance,
+                                        afterBalance: invitor.balance + inviteBonus * deposit.amount
+                                    });
+                                    await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
+                                }
                             }
                         }
                     } catch (error) {
@@ -3949,6 +3960,10 @@ adminRouter.post(
             if (existingInvite) {
                 return res.status(404).json({ error: 'Cannot create Autobet. Same Referral code already exists.' });
             }
+            const existingAffiliate = await Affiliate.findOne({ unique_id: new RegExp(`^${data.referral_code}$`, 'i') });
+            if (existingAffiliate) {
+                return res.status(404).json({ error: 'Cannot create Autobet. Same Referral code already exists.' });
+            }
             await AutoBet.create(data);
             res.json({ success: true });
         } catch (error) {
@@ -4258,6 +4273,10 @@ adminRouter.patch(
             const existingInvite = await User.findOne({ username: new RegExp(`^${data.referral_code}$`, 'i') });
             if (existingInvite) {
                 return res.status(404).json({ error: 'Same Referral code already exists.' });
+            }
+            const existingAffiliate = await Affiliate.findOne({ unique_id: new RegExp(`^${data.referral_code}$`, 'i') });
+            if (existingAffiliate) {
+                return res.status(404).json({ error: 'Cannot create Autobet. Same Referral code already exists.' });
             }
 
             await autobet.update(data);

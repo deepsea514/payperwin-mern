@@ -11,6 +11,8 @@ const dateformat = require("dateformat");
 const User = require("./models/user");
 const FinancialLog = require('./models/financiallog');
 const Preference = require('./models/preference');
+const Affiliate = require('./models/affiliate');
+const AffiliateCommission = require('./models/affiliate_commission');
 const ErrorLog = require('./models/errorlog');
 //local helpers
 const { generatePremierNotificationSignature } = require('./libs/generatePremierSignature');
@@ -97,20 +99,25 @@ premierRouter.post('/etransfer-deposit',
                 if (user.invite) {
                     try {
                         const firstDeposit = await checkFirstDeposit(user);
-                        if (firstDeposit) {
-                            const invitor = await User.findOne({ username: user.invite });
-                            if (invitor) {
-                                await FinancialLog.create({
-                                    financialtype: 'invitebonus',
-                                    uniqid: `IB${ID()}`,
-                                    user: invitor._id,
-                                    amount: inviteBonus * deposit.amount,
-                                    method: deposit.method,
-                                    status: FinancialStatus.success,
-                                    beforeBalance: invitor.balance,
-                                    afterBalance: invitor.balance + inviteBonus * deposit.amount
-                                });
-                                await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
+                        if (firstDeposit && deposit.amount >= 100) {
+                            const affiliate = await Affiliate.findOne({ unique_id: user.invite });
+                            if (affiliate) {
+                                // TODO: affiliate commission
+                            } else {
+                                const invitor = await User.findOne({ username: user.invite });
+                                if (invitor) {
+                                    await FinancialLog.create({
+                                        financialtype: 'invitebonus',
+                                        uniqid: `IB${ID()}`,
+                                        user: invitor._id,
+                                        amount: inviteBonus * deposit.amount,
+                                        method: deposit.method,
+                                        status: FinancialStatus.success,
+                                        beforeBalance: invitor.balance,
+                                        afterBalance: invitor.balance + inviteBonus * deposit.amount
+                                    });
+                                    await invitor.update({ $inc: { balance: inviteBonus * deposit.amount } });
+                                }
                             }
                         }
                     } catch (error) {
