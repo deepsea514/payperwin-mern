@@ -8279,14 +8279,29 @@ adminRouter.get(
 adminRouter.get(
     '/affiliates/:id',
     async (req, res) => {
-        return res.json(null);
+        try {
+            const { id } = req.params;
+            const affiliate = await Affiliate.findById(id);
+            return res.json(affiliate);
+        } catch (error) {
+            return res.status(500).json({ success: false })
+        }
     }
 )
 
 adminRouter.put(
     '/affiliates/:id',
     async (req, res) => {
-        return res.json(null);
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            if (!data.password) delete data.password;
+
+            await Affiliate.findOneAndUpdate({ _id: id }, data);
+            return res.json({ success: true });
+        } catch (error) {
+            return res.status(500).json({ success: false })
+        }
     }
 )
 
