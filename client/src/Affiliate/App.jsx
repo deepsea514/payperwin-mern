@@ -40,7 +40,7 @@ class App extends Component {
                     getUser={getUser}
                     showLoginModalAction={() => this.setState({ loginModal: true })}
                     toggleField={this.toggleField} />}
-                <section className='affiliate-section'>
+                <section className='affiliate-section main-section dark'>
                     <div className='container'>
                         {loginModal && <LoginModal closeModal={() => this.setState({ loginModal: false })}
                             getUser={getUser} />}
