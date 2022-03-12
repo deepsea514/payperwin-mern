@@ -98,6 +98,7 @@ const adminRouter = require('./adminRoutes');
 const tripleARouter = require("./tripleARoutes");
 const shopRouter = require('./shopRoutes');
 const ticketRouter = require('./ticketRoutes');
+const affiliateRouter = require('./affiliateRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -5821,6 +5822,7 @@ expressApp.use('/premier', premierRouter);
 expressApp.use('/triplea', tripleARouter);
 expressApp.use('/shop', shopRouter);
 expressApp.use('/tickets', ticketRouter);
+expressApp.use('/affiliate', affiliateRouter);
 expressApp.use('/static', express.static('banners'));
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));

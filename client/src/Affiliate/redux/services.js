@@ -4,6 +4,6 @@ export function getUser() {
     return AffiliateAPI.get('/user');
 }
 
-export function login() {
-    return AffiliateAPI.get('/login');
+export function login(data) {
+    return AffiliateAPI.post('/login', data);
 }

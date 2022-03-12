@@ -5,6 +5,7 @@ import Affiliate from './pages/Affiliate';
 import Dashboard from './pages/Dashboard';
 import { connect } from 'react-redux';
 import LoginModal from './components/loginModal';
+import Menu from './components/menu';
 
 import './style/style.css';
 import './style/responsive.css';
@@ -13,17 +14,32 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loginModal: false
+            loginModal: false,
+            menuOpen: false,
+        }
+    }
+
+    toggleField = (fieldName, forceState) => {
+        if (typeof this.state[fieldName] !== 'undefined') {
+            this.setState({
+                [fieldName]: typeof forceState === 'boolean' ? forceState : !this.state[fieldName]
+            });
         }
     }
 
     render() {
         const { user, getUser } = this.props;
-        const { loginModal } = this.state;
+        const { loginModal, menuOpen } = this.state;
 
         return (
             <div className='affiliate-main'>
-                <Header showLoginModalAction={() => this.setState({ loginModal: true })} />
+                <Header showLoginModalAction={() => this.setState({ loginModal: true })}
+                    user={user}
+                    toggleField={this.toggleField} />
+                {menuOpen && <Menu user={user}
+                    getUser={getUser}
+                    showLoginModalAction={() => this.setState({ loginModal: true })}
+                    toggleField={this.toggleField} />}
                 <section className='affiliate-section'>
                     <div className='container'>
                         {loginModal && <LoginModal closeModal={() => this.setState({ loginModal: false })}
@@ -46,7 +62,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    affiliateUser: state.affiliate.affiliateUser,
+    user: state.affiliate.affiliateUser,
 });
 
 export default connect(mapStateToProps, null)(App);

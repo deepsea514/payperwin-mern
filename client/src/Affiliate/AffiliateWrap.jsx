@@ -20,7 +20,9 @@ class AffiliateWrap extends Component {
         getUser()
             .then(({ data }) => {
                 setAffiliateUserAction(data);
-            }).catch(() => { })
+            }).catch(() => {
+                setAffiliateUserAction(null);
+            })
     }
 
     render() {
