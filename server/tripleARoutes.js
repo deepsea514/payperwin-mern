@@ -12,6 +12,8 @@ const User = require("./models/user");
 const FinancialLog = require('./models/financiallog');
 const Addon = require('./models/addon');
 const Preference = require('./models/preference');
+const Affiliate = require('./models/affiliate');
+const AffiliateCommission = require('./models/affiliate_commission');
 const ErrorLog = require('./models/errorlog');
 //local helpers
 const simpleresponsive = require('./emailtemplates/simpleresponsive');
@@ -138,20 +140,25 @@ tripleARouter.post('/deposit',
             if (user.invite) {
                 try {
                     const firstDeposit = await checkFirstDeposit(user);
-                    if (firstDeposit) {
-                        const invitor = await User.findOne({ username: user.invite });
-                        if (invitor) {
-                            await FinancialLog.create({
-                                financialtype: 'invitebonus',
-                                uniqid: `IB${ID()}`,
-                                user: invitor._id,
-                                amount: inviteBonus * receive_amount,
-                                method: method,
-                                status: FinancialStatus.success,
-                                beforeBalance: invitor.balance,
-                                afterBalance: invitor.balance + inviteBonus * receive_amount
-                            });
-                            await invitor.update({ $inc: { balance: inviteBonus * receive_amount } });
+                    if (firstDeposit && receive_amount >= 100) {
+                        const affiliate = await Affiliate.findOne({ unique_id: user.invite });
+                        if (affiliate) {
+                            // TODO: affiliate commission
+                        } else {
+                            const invitor = await User.findOne({ username: user.invite });
+                            if (invitor) {
+                                await FinancialLog.create({
+                                    financialtype: 'invitebonus',
+                                    uniqid: `IB${ID()}`,
+                                    user: invitor._id,
+                                    amount: inviteBonus * receive_amount,
+                                    method: method,
+                                    status: FinancialStatus.success,
+                                    beforeBalance: invitor.balance,
+                                    afterBalance: invitor.balance + inviteBonus * receive_amount
+                                });
+                                await invitor.update({ $inc: { balance: inviteBonus * receive_amount } });
+                            }
                         }
                     }
                 } catch (error) {

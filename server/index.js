@@ -3499,6 +3499,11 @@ expressApp.get('/referralCodeExist', async (req, res) => {
         if (existingInvite) {
             return res.json({ success: 1 });
         }
+
+        const existingAffiliate = await Affiliate.findOne({ unique_id: new RegExp(`^${referral_code}$`, 'i') });
+        if (existingAffiliate) {
+            return res.json({ success: 1 });
+        }
         return res.json({ success: 0, message: "Can't find Referral Code." });
     } catch (error) {
         console.error(error);
