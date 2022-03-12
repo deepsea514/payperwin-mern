@@ -762,6 +762,12 @@ footer ul li a i {
     font-weight: 300;
 }
 
+.mobile-menu .menu-title-affiliate {
+    color: white;
+    font-size: 1.5rem !important;
+    font-weight: 300;
+}
+
 .mobile-menu-quick-icon-container {
     text-align: center;
 }

@@ -12,6 +12,7 @@ const AffiliateSchema = new Schema(
         status: { type: String, default: 'active' },
         unique_id: { type: String, required: true, index: { unique: true } },
         click: { type: Number, default: 0 },
+        balance: { type: Number, default: 0 },
     },
     { timestamps: true }
 );
