@@ -1,10 +1,12 @@
 .affiliate-main {
-    background-color: #F1F3F7;
+    background-color: #121212;
     min-height: 100%;
 }
 
 .affiliate-section {
-    margin-top: 100px;
+    margin-top: 100px !important;
+    background-color: #121212;
+    padding-top: 0 !important;
 }
 
 .affiliate-header {

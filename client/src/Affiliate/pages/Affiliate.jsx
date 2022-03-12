@@ -9,9 +9,7 @@ class Affiliate extends Component {
                     <p className='affiliate-header-content'>Join our affiliate community and earn money by sharing the best Peer to Peer Betting Exchange.</p>
                 </div>
                 <div className='row'>
-                    <div className='col-md-6'>
-                        
-                    </div>
+
                 </div>
             </div>
         );

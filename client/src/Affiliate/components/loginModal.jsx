@@ -25,12 +25,13 @@ class LoginModal extends React.Component {
     }
 
     handleLogin = (values, formik) => {
-        const { getUser } = this.props;
+        const { getUser, closeModal } = this.props;
         login(values)
             .then(({ data: { success, error, accessToken } }) => {
                 if (success) {
                     localStorage.setItem("affiliate-token", accessToken);
                     getUser();
+                    closeModal();
                 } else {
                     this.setState({ errors: { server: 'Submit Failed.' } })
                 }

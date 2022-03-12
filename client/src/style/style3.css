@@ -2303,6 +2303,15 @@ a.fav-link:hover {
     margin-top: 2rem;
 }
 
+.affiliate-warn {
+    text-align: center;
+    color: #000;
+    font-family: "Roboto", Sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+
 .invite-logo {
     width: 100%;
     height: auto;

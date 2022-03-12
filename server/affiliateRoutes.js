@@ -105,13 +105,30 @@ affiliateRouter.get(
     '/user',
     authenticateJWT,
     async (req, res) => {
-        let affiliate = req.user;
-        res.json({
+        const affiliate = req.user;
+        return res.json({
             _id: affiliate._id,
             email: affiliate.email,
             balance: affiliate.balance,
+            unique_id: affiliate.unique_id,
         });
     },
 );
+
+affiliateRouter.get(
+    '/detail',
+    authenticateJWT,
+    async (req, res) => {
+        const affiliate = req.user;
+        try {
+            const detailedInfo = await Affiliate.aggregate(
+                { $match: { _id: affiliate._id } }
+            );
+            return res.json(detailedInfo[0] ? detailedInfo[0] : null);
+        } catch (error) {
+            return res.status(500).json({ success: false });
+        }
+    }
+)
 
 module.exports = affiliateRouter;

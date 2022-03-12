@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 
 class Menu extends Component {
     constructor(props) {
@@ -27,10 +26,7 @@ class Menu extends Component {
     }
 
     render() {
-        const { location, toggleField, user, showLoginModalAction } = this.props;
-        // const { pathname } = location;
-        console.log(this.props)
-        const pathname = '/affi';
+        const { toggleField, user } = this.props;
         return (
             <>
                 <div className="background-closer bg-modal" onClick={() => toggleField('menuOpen')} />
@@ -43,10 +39,16 @@ class Menu extends Component {
                     </div>
                     <ul className="navbar-nav">
                         <ul className='row mx-0'>
-                            <li className="nav-item col-6">
+                            <li className="nav-item col-12">
+                                <a className="nav-link" onClick={null}>
+                                    <i className="fas fa-key" />
+                                    <span>Change Password</span>
+                                </a>
+                            </li>
+                            <li className="nav-item col-12">
                                 <a className="nav-link" onClick={this.logout}>
                                     <i className="fas fa-sign-out-alt" />
-                                    <span><FormattedMessage id="COMPONENTS.LOGOUT" /></span>
+                                    <span>Logout</span>
                                 </a>
                             </li>
                         </ul>
