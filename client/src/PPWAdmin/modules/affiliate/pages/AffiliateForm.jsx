@@ -2,10 +2,11 @@ import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { ModalProgressBar } from "../../../_metronic/_partials/controls";
-import { createAffiliate, updateAffiliate } from "../redux/services";
+import { createAffiliate, getAffiliate, updateAffiliate } from "../redux/services";
 import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import { Link } from "react-router-dom";
+import { Preloader, ThreeDots } from 'react-preloader-icon';
 
 class AffiliateForm extends React.Component {
     constructor(props) {
@@ -29,7 +30,7 @@ class AffiliateForm extends React.Component {
                     .email("Wrong email format")
                     .required("Email is required"),
                 company: Yup.string().required("Company name is required"),
-                password: Yup.string().required("Password is required"),
+                password: id ? Yup.string() : Yup.string().required("Password is required"),
                 note: Yup.string(),
                 status: Yup.string(),
             })
@@ -40,7 +41,21 @@ class AffiliateForm extends React.Component {
         const { id } = this.state;
         if (id) {
             this.setState({ loading: true });
-
+            getAffiliate(id)
+                .then(({ data }) => {
+                    this.setState({
+                        loading: false,
+                        initialValues: data ? {
+                            email: data.email,
+                            company: data.company,
+                            note: data.note,
+                            status: data.status,
+                        } : null
+                    });
+                })
+                .catch(error => {
+                    this.setState({ loading: false, initialValues: null });
+                })
         }
     }
 
@@ -63,11 +78,21 @@ class AffiliateForm extends React.Component {
     };
 
     render() {
-        const { initialValues, Schema, saving, isError, isSuccess, id } = this.state;
+        const { initialValues, loading, Schema, saving, isError, isSuccess, id } = this.state;
 
         return (
             <div className="container">
-                <Formik initialValues={initialValues}
+                {loading && <center>
+                    <Preloader use={ThreeDots}
+                        size={100}
+                        strokeWidth={10}
+                        strokeColor="#F0AD4E"
+                        duration={800} />
+                </center>}
+                {!loading && !initialValues && <center>
+                    <h3>No Data Available.</h3>
+                </center>}
+                {initialValues && <Formik initialValues={initialValues}
                     validationSchema={Schema}
                     onSubmit={this.onSubmit}>
                     {(formik) => (
@@ -248,7 +273,7 @@ class AffiliateForm extends React.Component {
                             {/* end::Form */}
                         </form >
                     )}
-                </Formik>
+                </Formik>}
             </div>
         )
     }

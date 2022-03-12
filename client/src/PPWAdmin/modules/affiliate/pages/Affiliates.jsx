@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import * as affiliates from "../redux/reducers";
 import dateformat from "dateformat";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import CustomPagination from "../../../components/CustomPagination.jsx";
 
 class Affiliates extends React.Component {
