@@ -32,6 +32,7 @@ const Favorites = require('./models/favorites');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
 const Member = require('./models/member');
+const Affiliate = require('./models/affiliate');
 //local helpers
 const seededRandomString = require('./libs/seededRandomString');
 const getLineFromSportData = require('./libs/getLineFromSportData');
@@ -368,9 +369,14 @@ passport.use('local-signup', new LocalStrategy(
                             }
                         }
                     } else {
-                        const inviteUser = await User.findOne({ username: new RegExp(`^${referral_code}$`, 'i') });
-                        if (inviteUser) {
-                            newUserObj.invite = referral_code
+                        const affiliate = await Affiliate.findOne({ unique_id: referral_code });
+                        if (affiliate) {
+                            newUserObj.invite = referral_code;
+                        } else {
+                            const inviteUser = await User.findOne({ username: new RegExp(`^${referral_code}$`, 'i') });
+                            if (inviteUser) {
+                                newUserObj.invite = referral_code
+                            }
                         }
                     }
                 }
@@ -413,14 +419,14 @@ expressApp.use(expressSession({
     },
 }));
 
-expressApp.use((req, res, next) => {
-    const { hostname, subdomains } = req;
-    if (hostname) {
-        const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-        // req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
-    }
-    next();
-})
+// expressApp.use((req, res, next) => {
+//     const { hostname, subdomains } = req;
+//     if (hostname) {
+//         const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
+//         // req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
+//     }
+//     next();
+// })
 // expressApp.use(session({ secret: 'change this', resave: false, saveUninitialized: false, cookie: { maxAge: 24 * 60 * 60 * 1000 } }));
 expressApp.use(bodyParser.urlencoded({ extended: false }));
 expressApp.use(bodyParser.json({
@@ -550,7 +556,7 @@ expressApp.post('/googleLogin',
 
 expressApp.post('/googleRegister',
     async (req, res, next) => {
-        const { token } = req.body;
+        const { token, invite, referrer } = req.body;
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
             audience: config.googleClientID
@@ -566,6 +572,7 @@ expressApp.post('/googleRegister',
         req.body.currency = 'CAD';
         req.body.title = 'Mr';
         req.body.password = 'password';
+        req.body.referral_code = referrer ? referrer : (invite ? invite : '');
         passport.authenticate('local-signup', (err, user, info) => {
             if (err) {
                 console.error('/register err:', err);
@@ -5813,6 +5820,19 @@ expressApp.post(
         } catch (erorr) {
             return res.json({ success: false, error: 'Cannot vote on this event. Internal Server Error.' })
         }
+    }
+)
+
+expressApp.post(
+    '/visit-affiliate',
+    async (req, res) => {
+        const { referrer } = req.body;
+        if (referrer) {
+            try {
+                await Affiliate.findOneAndUpdate({ unique_id: referrer }, { $inc: { click: 1 } });
+            } catch (error) { }
+        }
+        res.json({});
     }
 )
 

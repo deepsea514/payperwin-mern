@@ -34,6 +34,10 @@ export function verify2FACode(verification_code) {
     return FrontendAPI.post(`/verify-2fa-code`, { verification_code })
 }
 
+export function visitAffiliate(referrer) {
+    return FrontendAPI.post('/visit-affiliate', { referrer });
+}
+
 export function resend2FACode() {
     return FrontendAPI.post(`${serverUrl}/resend-2fa-code`);
 }
@@ -104,8 +108,8 @@ export function register(data) {
     return FrontendAPI.post(`/register`, data)
 }
 
-export function googleRegister(token, invite) {
-    return FrontendAPI.post(`/googleRegister`, { token: token, invite })
+export function googleRegister(token, invite, referrer) {
+    return FrontendAPI.post(`/googleRegister`, { token: token, invite, referrer })
 }
 
 export function enable2FA(value) {
