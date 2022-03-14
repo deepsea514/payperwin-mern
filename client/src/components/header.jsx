@@ -111,11 +111,9 @@ class Header extends Component {
     }
 
     render() {
+        const { oddsDropDownOpen, } = this.state;
         const {
-            oddsDropDownOpen,
-            timeString,
-        } = this.state;
-        const { toggleField,
+            toggleField,
             user,
             acceptCookie,
             acceptCookieAction,
@@ -127,8 +125,6 @@ class Header extends Component {
             adminMessage,
             dismissAdminMessage,
             showPromotionAction,
-            pro_mode,
-            setProMode
         } = this.props;
         const showMessage = this.checkShowMessage();
         return (
@@ -192,68 +188,7 @@ class Header extends Component {
                             <ul className="list-s">
                                 <li className='d-flex align-items-center'>
                                     <span className='pr-2'>View</span>
-                                    <Switch checked={pro_mode}
-                                        onChange={(checked) => setProMode(checked)}
-                                        handleDiameter={20}
-                                        offColor="#FFF"
-                                        onColor="#FFF"
-                                        offHandleColor="#ED254E"
-                                        onHandleColor="#ED254E"
-                                        height={20}
-                                        width={100}
-                                        borderRadius={10}
-                                        activeBoxShadow="none"
-                                        uncheckedIcon={
-                                            <div style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                fontSize: 12,
-                                                color: "#ED254E",
-                                                paddingRight: 1,
-                                                paddingLeft: 1
-                                            }}>Pro</div>
-                                        }
-                                        checkedIcon={
-                                            <div style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                fontSize: 12,
-                                                color: "#ED254E",
-                                                paddingRight: 1,
-                                                paddingLeft: 1
-                                            }}>Basic</div>
-                                        }
-                                        uncheckedHandleIcon={
-                                            <div style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                fontSize: 12,
-                                                color: "#fff",
-                                                paddingRight: 1,
-                                                paddingLeft: 1
-                                            }}>Basic</div>
-                                        }
-                                        checkedHandleIcon={
-                                            <div style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                height: "100%",
-                                                fontSize: 12,
-                                                color: "#fff",
-                                                paddingRight: 1,
-                                                paddingLeft: 1
-                                            }}>Pro</div>
-                                        }
-                                        className="react-switch-viewmode"
-                                        id="small-radius-switch"
-                                    />
+                                    <Switch />
                                 </li>
                                 <li>
                                     <a onClick={() => this.toggleField('oddsDropDownOpen')} style={{ cursor: "pointer" }}>
