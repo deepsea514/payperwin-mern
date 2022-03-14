@@ -8356,9 +8356,45 @@ adminRouter.get(
                 {
                     $lookup: {
                         from: 'users',
-                        localField: 'unique_id',
-                        foreignField: 'referral_code',
-                        as: 'users'
+                        let: { unique_id: '$unique_id' },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ['$invite', '$$unique_id'] } } },
+                            {
+                                $lookup: {
+                                    from: 'financiallogs',
+                                    let: { user_id: '$_id' },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $and: [
+                                                        { $eq: ["$user", "$$user_id"] },
+                                                        { $eq: ["$status", FinancialStatus.success] }
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        { $count: 'count' }
+                                    ],
+                                    as: 'deposits',
+                                }
+                            },
+                            {
+                                $unwind: {
+                                    path: '$deposits',
+                                    preserveNullAndEmptyArrays: true
+                                }
+                            }
+                        ],
+                        as: 'conversions'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'affiliatecommissions',
+                        localField: '_id',
+                        foreignField: 'affiliater',
+                        as: 'commissions'
                     }
                 },
                 {
@@ -8369,7 +8405,9 @@ adminRouter.get(
                         status: 1,
                         unique_id: 1,
                         click: 1,
-                        conversions: { $size: '$users' }
+                        conversions: { $size: '$conversions' },
+                        deposits: { $size: '$conversions.deposits' },
+                        commission: { $sum: "$commissions.amount" },
                     }
                 },
                 { $skip: (page - 1) * perPage },
