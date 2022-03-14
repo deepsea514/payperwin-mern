@@ -163,6 +163,16 @@ class Highlights extends Component {
                             <span className={`nav-link ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>All</span>
                         </center>
                     </li>
+                    <li className="nav-item"
+                        onClick={() => this.setState({ sportIndex: 'custom' })}>
+                        <center>
+                            <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
+                                <img src={sportNameImage('Custom Bet')}
+                                    className='sports-league-image' />
+                            </div>
+                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Custom Bet</span>
+                        </center>
+                    </li>
                     {topLeagues.map((league, i) => {
                         return (
                             <li className="nav-item"
@@ -193,16 +203,6 @@ class Highlights extends Component {
                             </li>
                         );
                     })}
-                    <li className="nav-item"
-                        onClick={() => this.setState({ sportIndex: 'custom' })}>
-                        <center>
-                            <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
-                                <img src={sportNameImage('Custom Bet')}
-                                    className='sports-league-image' />
-                            </div>
-                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Custom Bet</span>
-                        </center>
-                    </li>
                     {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
                         onClick={this.scrollRight}>
                         <span className='sports-scroller-icon'>
