@@ -23,8 +23,6 @@ class CustomBet extends Component {
     }
 
     componentDidMount() {
-        const title = 'Betting on Custom Events';
-        setTitle({ pageTitle: title });
         this.getSport();
     }
 

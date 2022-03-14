@@ -407,7 +407,7 @@ class App extends Component {
                 <section className={`main-section dark`}>
                     {require_2fa && <TfaModal getUser={getUser} />}
                     {showPromotion && <PromotionModal closePromotion={() => showPromotionAction(false)} />}
-                    {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal')} pro_mode={pro_mode} />}
+                    {showViewModeModal && <ViewModeModal onClose={() => this.toggleField('showViewModeModal', false)} pro_mode={pro_mode} />}
                     {showPrizeModal && <PrizeModal onClose={() => this.toggleField('showPrizeModal')}
                         showLoginModalAction={() => showLoginModalAction(true)}
                         user={user} />}
