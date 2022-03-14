@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Preloader, ThreeDots } from 'react-preloader-icon';
+import { getDetail } from '../redux/services';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -8,7 +10,20 @@ class Dashboard extends Component {
         this.state = {
             inviteLink: window.location.origin + '/signup?referrer=' + user.unique_id,
             copied: false,
+            loading: false,
+            dashboardData: null,
         }
+    }
+
+    componentDidMount() {
+        this.setState({ loading: true });
+        getDetail()
+            .then(({ data }) => {
+                this.setState({ loading: false, dashboardData: data });
+            })
+            .catch(() => {
+                this.setState({ loading: false, dashboardData: null });
+            })
     }
 
     copyUrl = (url) => {
@@ -17,7 +32,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { inviteLink, copied } = this.state;
+        const { inviteLink, copied, loading, dashboardData } = this.state;
         return (
             <div className="col-in">
                 <div className='affiliate-header'>
@@ -39,30 +54,38 @@ class Dashboard extends Component {
                             A minimum of $100 deposit by the referral is required for you to qualify.
                         </p>
                     </div>
-                    <div className='col-md-6 mb-5'>
+                    <div className='col-md-6 mb-5 d-flex flex-column align-items-center'>
                         <h4>Affiliate Track</h4>
-                        <div className="table-responsive mt-4">
+                        {loading && <Preloader use={ThreeDots}
+                            className="mt-3"
+                            size={100}
+                            strokeWidth={10}
+                            strokeColor="#F0AD4E"
+                            duration={800} />}
+                        {!loading && !dashboardData && <h4>No Data Available</h4>}
+                        {dashboardData && <div className="table-responsive mt-4">
                             <table className="table text-white">
                                 <tbody>
                                     <tr>
                                         <th># of Clicks</th>
-                                        <td>0</td>
+                                        <td>{dashboardData.click}</td>
                                     </tr>
                                     <tr>
                                         <th># of Conversions</th>
-                                        <td>0</td>
+                                        <td>{dashboardData.conversions}</td>
                                     </tr>
                                     <tr>
                                         <th># of Deposits</th>
-                                        <td>0</td>
+                                        <td>{dashboardData.deposits}</td>
                                     </tr>
                                     <tr>
                                         <th>Commission Earned</th>
-                                        <td>0</td>
+                                        <td>${dashboardData.commission} CAD</td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </div>}
+
                     </div>
                 </div>
             </div>

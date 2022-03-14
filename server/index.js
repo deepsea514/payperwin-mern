@@ -371,11 +371,11 @@ passport.use('local-signup', new LocalStrategy(
                     } else {
                         const affiliate = await Affiliate.findOne({ unique_id: referral_code });
                         if (affiliate) {
-                            newUserObj.invite = referral_code;
+                            await newUser.update({ invite: referral_code });
                         } else {
                             const inviteUser = await User.findOne({ username: new RegExp(`^${referral_code}$`, 'i') });
                             if (inviteUser) {
-                                newUserObj.invite = referral_code
+                                await newUser.update({ invite: referral_code });
                             }
                         }
                     }
