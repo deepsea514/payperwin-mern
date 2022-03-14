@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import logout from '../libs/logout';
 import sportNameImage from '../helpers/sportNameImage';
 import { getSportsDir } from '../redux/services';
+import Switch from './switch';
 
 class Menu extends Component {
     constructor(props) {
@@ -56,7 +57,7 @@ class Menu extends Component {
         const {
             location, toggleField, oddsFormat,
             setOddsFormat, setLanguage, user,
-            intl, showLoginModalAction
+            intl, showLoginModalAction,
         } = this.props;
         const { pathname } = location;
         const { showMenu, sports } = this.state;
@@ -357,7 +358,7 @@ class Menu extends Component {
                     </ul>
                     <ul className="list-fab">
                         <li>
-                            <FormattedMessage id="COMPONENTS.MENU.ODDS" />
+                            <Switch />
                             <select value={oddsFormat} onChange={(evt) => setOddsFormat(evt.target.value)}>
                                 <option value="american">{intl.formatMessage({ id: "COMPONENTS.MENU.ODDS.AMERICAN" })}</option>
                                 <option value="decimal">{intl.formatMessage({ id: "COMPONENTS.MENU.ODDS.DECIMAL" })}</option>
