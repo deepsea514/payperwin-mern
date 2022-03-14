@@ -124,7 +124,7 @@ export default class CustomBets extends Component {
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
                     <h3>Custom Bets</h3>
-                    {user && user.balance > 10 && <Link className="form-button"
+                    {user && <Link className="form-button"
                         to="/custom-bets/create"
                         onClick={() => this.setState({ createModal: true })}>
                         <i className="fas fa-plus-square" /> Create a Bet
