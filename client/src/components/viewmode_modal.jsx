@@ -1,7 +1,25 @@
 import React from "react";
 import Switch from './switch';
+import { connect } from 'react-redux';
 
 class ViewModeModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { actionTaken: false };
+    }
+
+    componentDidMount() {
+        setTimeout(this.closeModal, 5000);
+    }
+
+    closeModal = () => {
+        const { onClose, user } = this.props;
+        const { actionTaken } = this.state;
+        if (!user && !actionTaken) {
+            onClose()
+        }
+    }
+
     render() {
         const { onClose } = this.props;
         return (
@@ -25,7 +43,7 @@ class ViewModeModal extends React.Component {
                         <hr />
 
                         <div className="d-flex justify-content-center">
-                            <Switch />
+                            <Switch takeAction={() => this.setState({ actionTaken: true })} />
                         </div>
                     </div>
                 </div>
@@ -34,4 +52,8 @@ class ViewModeModal extends React.Component {
     }
 }
 
-export default ViewModeModal
+const mapStateToProps = (state) => ({
+    user: state.frontend.user,
+});
+
+export default connect(mapStateToProps, null)(ViewModeModal);

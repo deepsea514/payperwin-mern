@@ -59,6 +59,7 @@ class Highlights extends Component {
     componentDidMount() {
         this._isMounted = true;
         this._isMounted && this.setState({ loading: true });
+        setTimeout(this.autoViewPopup, 3000);
         getFeaturedSports()
             .then(({ data }) => {
                 this._isMounted && this.setState({
@@ -69,6 +70,13 @@ class Highlights extends Component {
             .catch(() => {
                 this._isMounted && this.setState({ loading: false, sports: [] })
             })
+    }
+
+    autoViewPopup = () => {
+        const { user, toggleField } = this.props;
+        if(!user) {
+            toggleField('showViewModeModal')
+        }
     }
 
     getSportName = (sport) => {
@@ -232,6 +240,7 @@ class Highlights extends Component {
 
 const mapStateToProps = (state) => ({
     pro_mode: state.frontend.pro_mode,
+    user: state.frontend.user,
 });
 
 export default connect(mapStateToProps, frontend.actions)(Highlights);
