@@ -60,7 +60,6 @@ class Highlights extends Component {
         this._isMounted = true;
         this._isMounted && this.setState({ loading: true });
         setTimeout(this.autoViewPopup, 3000);
-        console.log('didmount')
         getFeaturedSports()
             .then(({ data }) => {
                 this._isMounted && this.setState({

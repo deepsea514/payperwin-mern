@@ -31,6 +31,7 @@ class Sport extends Component {
             dateSelected: 0,
             selectedLeague: null,
             showHelp: null,
+            dateList: [],
         };
     }
 
@@ -54,10 +55,10 @@ class Sport extends Component {
         const { shortName, league, pro_mode } = this.props;
         const { liveTimer } = this.state;
 
-        const { shortName: prevShortName, league: prevLeague, pro_mode: prevProMode } = prevProps;
+        const { shortName: prevShortName, league: prevLeague } = prevProps;
         const sportChanged = (shortName !== prevShortName || league !== prevLeague);
         if (sportChanged) {
-            await this.setState({ error: null, liveTimer: null, liveData: null, });
+            await this.setState({ error: null, liveTimer: null, liveData: null, dateSelected: 0 });
             this.getSport();
             clearInterval(liveTimer);
             if (pro_mode && shortName) {
@@ -82,8 +83,7 @@ class Sport extends Component {
     }
 
     getSport = (setLoading = true) => {
-        const { shortName, league, setCollapsedLeagues, team } = this.props;
-        const { dateSelected } = this.state;
+        const { shortName, league, team } = this.props;
         if (setLoading) {
             this.setState({ loading: true });
         }
@@ -91,41 +91,39 @@ class Sport extends Component {
             .then(({ data }) => {
                 if (data) {
                     if (data) {
-                        let minDate = null;
-                        let maxDate = null;
-                        switch (dateSelected) {
-                            case null:
-                                break;
-                            default:
-                                const today = new Date();
-                                const year = today.getFullYear();
-                                const month = today.getMonth();
-                                const date = today.getDate();
-                                const newDate = new Date(year, month, date);
-                                minDate = new Date(newDate.addDates(dateSelected));
-                                maxDate = new Date(newDate.addDates(1));
-                        }
                         const { leagues } = data;
                         const selectedLeague = leagues.find(_league => _league.originId == league);
+                        let dateList = [];
 
                         const filteredLeagues = leagues.map(league => {
                             let events = league.events.map((event) => {
                                 const { teamA, teamB, startDate, lines } = event;
-                                if (!lines || !lines.length || new Date().getTime() > new Date(startDate).getTime()) {
+                                const matchDate = new Date(startDate);
+                                if (!lines || !lines.length || new Date().getTime() > matchDate.getTime()) {
                                     return null;
                                 }
-
-                                if (minDate && new Date(startDate).getTime() < minDate.getTime() ||
-                                    maxDate && new Date(startDate).getTime() >= maxDate.getTime()) {
-                                    return null;
-                                }
-
                                 if (team && teamA != team && teamB != team) {
                                     return null;
                                 }
                                 const { moneyline, spreads, totals, originId: lineId } = lines[0];
                                 if (!moneyline && !spreads && !totals) {
                                     return null;
+                                }
+
+                                const year = matchDate.getFullYear();
+                                const month = matchDate.getMonth();
+                                const day = matchDate.getDate();
+                                const newDate = new Date(year, month, day);
+
+                                let today = new Date();
+                                const thisYear = today.getFullYear();
+                                const thisMonth = today.getMonth();
+                                const thisDate = today.getDate();
+                                today = new Date(thisYear, thisMonth, thisDate)
+
+                                if (newDate.getTime() >= today.getTime()) {
+                                    const existing = dateList.find(savedDate => savedDate.getTime() == newDate.getTime())
+                                    !existing && dateList.push(newDate)
                                 }
 
                                 return event;
@@ -136,12 +134,9 @@ class Sport extends Component {
                             return null;
                         }).filter(league => league);
 
-                        if (!shortName) {
-                            const leagueIds = filteredLeagues.slice(8, leagues.length).map(league => league.originId);
-                            setCollapsedLeagues(leagueIds);
-                        } else {
-                            setCollapsedLeagues([]);
-                        }
+                        dateList = dateList.sort((a, b) => a.getTime() - b.getTime()).slice(0, 6);
+                        this.collapseLeague(filteredLeagues, dateList);
+
                         this.setState({
                             selectedLeague: selectedLeague ? {
                                 name: selectedLeague.name,
@@ -149,6 +144,7 @@ class Sport extends Component {
                             } : null,
                             data: { ...data, leagues: filteredLeagues },
                             loading: false,
+                            dateList: dateList
                         });
                     } else {
                         this.setState({ data: null, loading: false });
@@ -159,6 +155,38 @@ class Sport extends Component {
             }).catch((err) => {
                 this.setState({ error: err, loading: false });
             });
+    }
+
+    collapseLeague = (leagues, dateList) => {
+        const { shortName, setCollapsedLeagues } = this.props;
+        const { dateSelected } = this.state;
+        const minDate = dateList.length && dateList[dateSelected] ? dateList[dateSelected].getTime() : 0;
+        const maxDate = dateList.length && dateList[dateSelected] ? minDate + 86400000 : Infinity;
+        if (!shortName) {
+            const leagueIds = leagues
+                .map(league => {
+                    let events = league.events.map((event) => {
+                        const { startDate } = event;
+
+                        const matchDate = new Date(startDate).getTime();
+                        if (matchDate >= maxDate || matchDate < minDate) {
+                            return null;
+                        }
+                        return event;
+                    }).filter(event => event);
+                    if (events.length > 0) {
+                        return { ...league, events }
+                    }
+                    return null;
+                })
+                .filter(league => league)
+                .slice(8)
+                .map(league => league.originId);
+            // console.log(leagueIds)
+            setCollapsedLeagues(leagueIds);
+        } else {
+            setCollapsedLeagues([]);
+        }
     }
 
     addBet = (bet) => {
@@ -177,20 +205,20 @@ class Sport extends Component {
         this.setState({ sportsbookInfo: null });
     }
 
-    onChangeDate = async (date) => {
-        await this.setState({ dateSelected: date });
-        this.getSport();
+    onChangeDate = (date) => {
+        const { data, dateList } = this.state;
+        this.setState({ dateSelected: date }, () => this.collapseLeague(data.leagues, dateList));
     }
 
     render() {
         const {
             betSlip, removeBet, timezone, oddsFormat, team, shortName,
             hideBreacrumb, user, getUser, pro_mode,
-            collapsedLeague, toggleCollapseLeague
+            collapsedLeague, toggleCollapseLeague,
         } = this.props;
         const {
             loading, data, error, sportsbookInfo, liveData, dateSelected,
-            selectedLeague, showHelp,
+            selectedLeague, showHelp, dateList
         } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -232,6 +260,7 @@ class Sport extends Component {
                     timezone={timezone}
                     dateSelected={dateSelected}
                     onChangeDate={this.onChangeDate}
+                    dateList={dateList}
                     oddsFormat={oddsFormat}
                     addBet={this.addBet}
                     removeBet={removeBet}
