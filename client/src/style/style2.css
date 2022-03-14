@@ -517,14 +517,14 @@ footer ul li a i {
     font-size: 11px;
     text-transform: uppercase;
     font-weight: 400;
-    color: #000;
+    color: #DDD;
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-    color: #495057;
+    color: #FFF;
     background-color: transparent;
     border-color: inherit;
-    border-bottom: 3px solid #ED254E;
+    border-bottom: 2px solid #ED254E;
 }
 
 .left-cat li div span {
@@ -4412,4 +4412,23 @@ a:hover {
 
 .betslip-deposit-message, .betslip-deposit-message i {
     color: black !important;
+}
+
+.loyalty-levels {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.loyalty-levels img {
+    width: 30px;
+    height: 30px;
+}
+
+.loyalty-levels img:not(:first-child) {
+    margin-left: 20px;
+}
+
+.loyalty-tabitem {
+    color: #FFF;
 }
