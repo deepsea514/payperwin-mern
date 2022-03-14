@@ -60,6 +60,7 @@ class Highlights extends Component {
         this._isMounted = true;
         this._isMounted && this.setState({ loading: true });
         setTimeout(this.autoViewPopup, 3000);
+        console.log('didmount')
         getFeaturedSports()
             .then(({ data }) => {
                 this._isMounted && this.setState({
@@ -74,7 +75,7 @@ class Highlights extends Component {
 
     autoViewPopup = () => {
         const { user, toggleField } = this.props;
-        if(!user) {
+        if (!user && window.innerWidth < 768) {
             toggleField('showViewModeModal')
         }
     }
@@ -172,7 +173,7 @@ class Highlights extends Component {
                         </center>
                     </li>
                     <li className="nav-item"
-                        onClick={() => this.setState({ sportIndex: 'custom' })}>
+                        onClick={() => this.setState({ sportIndex: 'custom', leagueIndex: null })}>
                         <center>
                             <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
                                 <img src={sportNameImage('Custom Bet')}
