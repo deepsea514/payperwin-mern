@@ -28,7 +28,7 @@ class HowTo extends Component {
                         <FormattedMessage id="PAGES.HOWITWORKS.TITLE" />
                     </h2>
                     <div className="summary">
-                        Payper Win Is a Peer to Peer Betting Exchange offering a platform with better odds than anywhere else online. We are not a Bookie or HIGH STAKER and we are not affiliated with any HIGH STAKER. Place bets on your favorite sporting events worldwide. RISK less and WIN More!
+                    Payper Win is a Peer-to-Peer Betting Exchange, offering better odds than anywhere else online. We are not a Sportsbook or affiliated with any Sportsbook. Place bets on your favorite sporting events and Risk less and Win more!
                     </div>
                     <div className="how-it-works-steps">
                         <div className="how-it-works-info">
