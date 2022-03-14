@@ -5,10 +5,10 @@ import ReactSwitch from './switch';
 
 class Switch extends Component {
     render() {
-        const { pro_mode, setProMode } = this.props;
+        const { pro_mode, setProMode, takeAction } = this.props;
         return (
             <ReactSwitch checked={pro_mode}
-                onChange={(checked) => setProMode(checked)}
+                onChange={(checked) => { setProMode(checked); takeAction && takeAction() }}
                 handleDiameter={20}
                 offColor="#FFF"
                 onColor="#FFF"
