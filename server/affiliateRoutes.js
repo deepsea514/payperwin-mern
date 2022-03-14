@@ -4,6 +4,7 @@ const affiliateRouter = require('express').Router();
 const User = require("./models/user");
 const FinancialLog = require("./models/financiallog");
 const Affiliate = require('./models/affiliate');
+const AffiliateCommission = require('./models/affiliate_commission');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
@@ -11,6 +12,8 @@ const bruteforce = new ExpressBrute(store);
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'PPWAffiliateSecretKey-1234567890~!@#$%^&*()_+';
 //local helpers
+const config = require('../config.json');
+const FinancialStatus = config.FinancialStatus;
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -122,10 +125,63 @@ affiliateRouter.get(
         const affiliate = req.user;
         try {
             const detailedInfo = await Affiliate.aggregate(
-                { $match: { _id: affiliate._id } }
+                { $match: { _id: affiliate._id } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        let: { unique_id: '$unique_id' },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ['$invite', '$$unique_id'] } } },
+                            {
+                                $lookup: {
+                                    from: 'financiallogs',
+                                    let: { user_id: '$_id' },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $and: [
+                                                        { $eq: ["$user", "$$user_id"] },
+                                                        { $eq: ["$status", FinancialStatus.success] }
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        { $count: 'count' }
+                                    ],
+                                    as: 'deposits',
+                                }
+                            },
+                            {
+                                $unwind: {
+                                    path: '$deposits',
+                                    preserveNullAndEmptyArrays: true
+                                }
+                            }
+                        ],
+                        as: 'conversions'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'affiliatecommissions',
+                        localField: '_id',
+                        foreignField: 'affiliater',
+                        as: 'commissions'
+                    }
+                },
+                {
+                    $project: {
+                        click: 1,
+                        conversions: { $size: '$conversions' },
+                        deposits: { $size: '$conversions.deposits' },
+                        commission: { $sum: "$commissions.amount" },
+                    }
+                }
             );
             return res.json(detailedInfo[0] ? detailedInfo[0] : null);
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false });
         }
     }

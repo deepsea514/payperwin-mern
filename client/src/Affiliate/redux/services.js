@@ -7,3 +7,7 @@ export function getUser() {
 export function login(data) {
     return AffiliateAPI.post('/login', data);
 }
+
+export function getDetail() {
+    return AffiliateAPI.get('/detail');
+}
