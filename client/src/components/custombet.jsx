@@ -70,7 +70,7 @@ class CustomBet extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, timezone, user } = this.props;
+        const { betSlip, removeBet, timezone, user, showLoginModalAction } = this.props;
         const { data, error, shareModal, lineUrl, urlCopied, addHighStaker } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -133,6 +133,10 @@ class CustomBet extends Component {
                             onClick={() => this.setState({ createModal: true })}>
                             <i className="fas fa-plus-square" /> Create a Bet
                         </Link>}
+                        {!user && <button className="form-button"
+                            onClick={() => showLoginModalAction(true)}>
+                            <i className="fas fa-plus-square" /> Create a Bet
+                        </button>}
                     </div>
 
                     {data.map((event, index) => {
