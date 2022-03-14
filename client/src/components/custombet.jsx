@@ -8,6 +8,7 @@ import { getCustomEvent, joinHighStaker } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import QRCode from "react-qr-code";
 import CustomBetJoinModal from './CustomBetJoinModal';
+import { Link } from 'react-router-dom';
 
 class CustomBet extends Component {
     constructor(props) {
@@ -71,7 +72,7 @@ class CustomBet extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, timezone } = this.props;
+        const { betSlip, removeBet, timezone, user } = this.props;
         const { data, error, shareModal, lineUrl, urlCopied, addHighStaker } = this.state;
         if (error) {
             return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
@@ -127,7 +128,15 @@ class CustomBet extends Component {
                 {addHighStaker && <CustomBetJoinModal
                     onProceed={this.joinHighStaker}
                     onClose={() => this.setState({ addHighStaker: null })} />}
-                <div className="tab-content" >
+                <div className="tab-content">
+                    <div className='d-flex justify-content-end'>
+                        {user && <Link className="form-button"
+                            to="/custom-bets/create"
+                            onClick={() => this.setState({ createModal: true })}>
+                            <i className="fas fa-plus-square" /> Create a Bet
+                        </Link>}
+                    </div>
+
                     {data.map((event, index) => {
                         const { startDate, name, options, uniqueid, _id, user, allowAdditional } = event;
 
@@ -210,6 +219,7 @@ const mapStateToProps = (state) => ({
     search: state.frontend.search,
     timezone: state.frontend.timezone,
     pro_mode: state.frontend.pro_mode,
+    user: state.frontend.user
 });
 
 export default connect(mapStateToProps, frontend.actions)(CustomBet)
