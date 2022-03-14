@@ -10,18 +10,15 @@ const RenderLeagues = (props) => {
     const {
         leagues, collapsedLeague, toggleCollapseLeague, pro_mode, betSlip,
         timezone, location, dateSelected, onChangeDate, oddsFormat, addBet,
-        showHelpAction, removeBet, origin
+        showHelpAction, removeBet, origin, dateList
     } = props;
     const { pathname } = location;
 
-    const getDateStr = (day) => {
-        switch (day) {
-            case 0:
-                return 'Today';
+    const getDateStr = (date) => {
+        switch (date) {
             case null:
                 return 'All';
             default:
-                const date = new Date().addDates(day);
                 return dateFormat(date, "mmm d");
         }
     }
@@ -31,7 +28,16 @@ const RenderLeagues = (props) => {
         const { name: leagueName, originId: leagueId, sportName, shortName } = league;
         const collapsed = collapsedLeague.find(league => league == leagueId);
 
-        let events = collapsed ? null : league.events.map((event, idx) => {
+        let events = league.events.map((event, idx) => {
+            const { startDate } = event;
+            if (dateList.length > 0 && dateList[dateSelected]) {
+                const matchDate = new Date(startDate).getTime();
+                const minDate = dateList[dateSelected].getTime();
+                const maxDate = minDate + 86400000;
+                if (matchDate >= maxDate || matchDate < minDate) {
+                    return null;
+                }
+            }
             eventIndex++;
             if (pro_mode) {
                 return (
@@ -65,7 +71,13 @@ const RenderLeagues = (props) => {
                     origin={origin}
                     removeBet={removeBet} />
             );
-        });
+        }).filter(event => event);
+
+        if (events.length == 0) {
+            return null;
+        }
+
+        events = collapsed ? null : events
 
         return (
             <div className="tab-content" key={`${sportName} - ${leagueName}`}>
@@ -104,11 +116,11 @@ const RenderLeagues = (props) => {
                                 transitionDuration: '0ms',
                                 transform: 'translate(0px, 0px) translateZ(0px)'
                             }}>
-                                {[0, 1, 2, 3, 4, 5].map((date, index) => {
+                                {dateList.map((date, index) => {
                                     return (
                                         <a key={index}
-                                            className={dateSelected == date ? "dashboard_bottombar_selected" : ''}
-                                            onClick={() => onChangeDate(date)}><span>{getDateStr(date)}</span></a>
+                                            className={dateSelected == index ? "dashboard_bottombar_selected" : ''}
+                                            onClick={() => onChangeDate(index)}><span>{getDateStr(date)}</span></a>
                                     )
                                 })}
                             </div>
