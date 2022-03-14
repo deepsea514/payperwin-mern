@@ -59,8 +59,8 @@ class Affiliates extends React.Component {
                 <td>{affiliate.company}</td>
                 <td>{affiliate.click}</td>
                 <td>{affiliate.conversions}</td>
-                <td>0</td>
-                <td>0</td>
+                <td>{affiliate.deposits}</td>
+                <td>${affiliate.commission} CAD</td>
                 <td>{this.getStatus(affiliate.status)}</td>
                 <td>
                     <Dropdown>

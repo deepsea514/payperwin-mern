@@ -1,10 +1,7 @@
 // Define Router
 const affiliateRouter = require('express').Router();
 // Models
-const User = require("./models/user");
-const FinancialLog = require("./models/financiallog");
 const Affiliate = require('./models/affiliate');
-const AffiliateCommission = require('./models/affiliate_commission');
 //external Libraries
 const ExpressBrute = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
