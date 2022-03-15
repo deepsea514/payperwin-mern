@@ -1,5 +1,7 @@
 const TevoClient = require('ticketevolution-node');
 const TicketCategory = require('../../models/ticket_category');
+const defaultCategories = require('./categories.json');
+const GET_FROM_API = false;
 
 const findCategory = (categories, category) => {
     for (const category_s of categories) {
@@ -34,23 +36,34 @@ const addCategories = (categories, category) => {
 }
 
 const getCategories = async (API_TOKEN, API_SECRET) => {
-    const tevoClient = new TevoClient({
-        apiToken: API_TOKEN,
-        apiSecretKey: API_SECRET,
-    });
-    try {
-        const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/categories');
-        const categories = [];
-        if (response.categories && response.categories.length) {
-            const categories_res = response.categories;
-            categories_res.map(category => addCategories(categories, category));
+    if (GET_FROM_API) {
+        const tevoClient = new TevoClient({
+            apiToken: API_TOKEN,
+            apiSecretKey: API_SECRET,
+        });
+        try {
+            const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/categories');
+            const categories = [];
+            if (response.categories && response.categories.length) {
+                const categories_res = response.categories;
+                categories_res.map(category => addCategories(categories, category));
+            }
+            for (const category of categories) {
+                await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
+            }
+            console.log('Got Categories.');
+        } catch (error) {
+            console.error(error);
         }
-        for (const category of categories) {
-            await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
+    } else {
+        for (const category of defaultCategories) {
+            try {
+                await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
+            } catch (error) {
+                console.error(error);
+            }
         }
         console.log('Got Categories.');
-    } catch (error) {
-        console.error(error);
     }
 }
 

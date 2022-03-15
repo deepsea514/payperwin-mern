@@ -1,0 +1,849 @@
+[
+    {
+        "id": "1",
+        "name": "Sports",
+        "slug": "sports",
+        "slug_url": "/categories/sports",
+        "sub_categories": [
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/minor-league",
+                        "url": "/categories/4",
+                        "slug": "minor-league",
+                        "id": "4",
+                        "name": "Minor League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa",
+                        "url": "/categories/5",
+                        "slug": "ncaa",
+                        "id": "5",
+                        "name": "NCAA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/mlb",
+                        "url": "/categories/3",
+                        "slug": "mlb",
+                        "id": "3",
+                        "name": "MLB"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/mexican-league",
+                        "url": "/categories/121",
+                        "slug": "mexican-league",
+                        "id": "121",
+                        "name": "Mexican League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/world-baseball-classic",
+                        "url": "/categories/6",
+                        "slug": "world-baseball-classic",
+                        "id": "6",
+                        "name": "World Baseball Classic"
+                    }
+                ],
+                "slug_url": "/categories/baseball",
+                "url": "/categories/2",
+                "slug": "baseball",
+                "id": "2",
+                "name": "Baseball"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-men",
+                        "url": "/categories/79",
+                        "slug": "ncaa-men",
+                        "id": "79",
+                        "name": "NCAA Men"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nll",
+                        "url": "/categories/80",
+                        "slug": "nll",
+                        "id": "80",
+                        "name": "NLL"
+                    }
+                ],
+                "slug_url": "/categories/lacrosse",
+                "url": "/categories/78",
+                "slug": "lacrosse",
+                "id": "78",
+                "name": "Lacrosse"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/summer-games",
+                        "url": "/categories/52",
+                        "slug": "summer-games",
+                        "id": "52",
+                        "name": "Summer Games"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/winter-games",
+                        "url": "/categories/53",
+                        "slug": "winter-games",
+                        "id": "53",
+                        "name": "Winter Games"
+                    }
+                ],
+                "slug_url": "/categories/international-games",
+                "url": "/categories/51",
+                "slug": "international-games",
+                "id": "51",
+                "name": "International Games"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nba",
+                        "url": "/categories/8",
+                        "slug": "nba",
+                        "id": "8",
+                        "name": "NBA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/wnba",
+                        "url": "/categories/9",
+                        "slug": "wnba",
+                        "id": "9",
+                        "name": "WNBA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-men--2",
+                        "url": "/categories/10",
+                        "slug": "ncaa-men--2",
+                        "id": "10",
+                        "name": "NCAA Men"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-women",
+                        "url": "/categories/11",
+                        "slug": "ncaa-women",
+                        "id": "11",
+                        "name": "NCAA Women"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/fiba-world-championship",
+                        "url": "/categories/12",
+                        "slug": "fiba-world-championship",
+                        "id": "12",
+                        "name": "FIBA World Championship"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/euroleague-basketball",
+                        "url": "/categories/13",
+                        "slug": "euroleague-basketball",
+                        "id": "13",
+                        "name": "Euroleague Basketball"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nba-d-league",
+                        "url": "/categories/122",
+                        "slug": "nba-d-league",
+                        "id": "122",
+                        "name": "NBA D-League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/high-school",
+                        "url": "/categories/129",
+                        "slug": "high-school",
+                        "id": "129",
+                        "name": "High School"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/international-friendlies",
+                        "url": "/categories/14",
+                        "slug": "international-friendlies",
+                        "id": "14",
+                        "name": "International Friendlies"
+                    }
+                ],
+                "slug_url": "/categories/basketball",
+                "url": "/categories/7",
+                "slug": "basketball",
+                "id": "7",
+                "name": "Basketball"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-men--3",
+                        "url": "/categories/17",
+                        "slug": "ncaa-men--3",
+                        "id": "17",
+                        "name": "NCAA Men"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-women--2",
+                        "url": "/categories/18",
+                        "slug": "ncaa-women--2",
+                        "id": "18",
+                        "name": "NCAA Women"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nhl",
+                        "url": "/categories/16",
+                        "slug": "nhl",
+                        "id": "16",
+                        "name": "NHL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ahl",
+                        "url": "/categories/126",
+                        "slug": "ahl",
+                        "id": "126",
+                        "name": "AHL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/echl",
+                        "url": "/categories/127",
+                        "slug": "echl",
+                        "id": "127",
+                        "name": "ECHL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/junior",
+                        "url": "/categories/136",
+                        "slug": "junior",
+                        "id": "136",
+                        "name": "Junior"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/international",
+                        "url": "/categories/137",
+                        "slug": "international",
+                        "id": "137",
+                        "name": "International"
+                    }
+                ],
+                "slug_url": "/categories/hockey",
+                "url": "/categories/15",
+                "slug": "hockey",
+                "id": "15",
+                "name": "Hockey"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/indycar-series",
+                        "url": "/categories/30",
+                        "slug": "indycar-series",
+                        "id": "30",
+                        "name": "IndyCar Series"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/monster-trucks",
+                        "url": "/categories/31",
+                        "slug": "monster-trucks",
+                        "id": "31",
+                        "name": "Monster Trucks"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nascar",
+                        "url": "/categories/28",
+                        "slug": "nascar",
+                        "id": "28",
+                        "name": "NASCAR"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/supercross",
+                        "url": "/categories/32",
+                        "slug": "supercross",
+                        "id": "32",
+                        "name": "Supercross"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/formula-1",
+                        "url": "/categories/29",
+                        "slug": "formula-1",
+                        "id": "29",
+                        "name": "Formula 1"
+                    }
+                ],
+                "slug_url": "/categories/auto-racing",
+                "url": "/categories/27",
+                "slug": "auto-racing",
+                "id": "27",
+                "name": "Auto Racing"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/boxing",
+                        "url": "/categories/47",
+                        "slug": "boxing",
+                        "id": "47",
+                        "name": "Boxing"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/wrestling",
+                        "url": "/categories/45",
+                        "slug": "wrestling",
+                        "id": "45",
+                        "name": "Wrestling"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/mixed-martial-arts-mma",
+                        "url": "/categories/46",
+                        "slug": "mixed-martial-arts-mma",
+                        "id": "46",
+                        "name": "Mixed Martial Arts (MMA)"
+                    }
+                ],
+                "slug_url": "/categories/fighting",
+                "url": "/categories/44",
+                "slug": "fighting",
+                "id": "44",
+                "name": "Fighting"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/x-games",
+                        "url": "/categories/50",
+                        "slug": "x-games",
+                        "id": "50",
+                        "name": "X-Games"
+                    }
+                ],
+                "slug_url": "/categories/extreme-sports",
+                "url": "/categories/49",
+                "slug": "extreme-sports",
+                "id": "49",
+                "name": "Extreme Sports"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/pga",
+                        "url": "/categories/131",
+                        "slug": "pga",
+                        "id": "131",
+                        "name": "PGA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/champions",
+                        "url": "/categories/132",
+                        "slug": "champions",
+                        "id": "132",
+                        "name": "Champions"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/lpga",
+                        "url": "/categories/133",
+                        "slug": "lpga",
+                        "id": "133",
+                        "name": "LPGA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/european",
+                        "url": "/categories/134",
+                        "slug": "european",
+                        "id": "134",
+                        "name": "European"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/amateur",
+                        "url": "/categories/135",
+                        "slug": "amateur",
+                        "id": "135",
+                        "name": "Amateur"
+                    }
+                ],
+                "slug_url": "/categories/golf",
+                "url": "/categories/24",
+                "slug": "golf",
+                "id": "24",
+                "name": "Golf"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/nfl",
+                        "url": "/categories/20",
+                        "slug": "nfl",
+                        "id": "20",
+                        "name": "NFL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/cfl",
+                        "url": "/categories/22",
+                        "slug": "cfl",
+                        "id": "22",
+                        "name": "CFL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ufl",
+                        "url": "/categories/23",
+                        "slug": "ufl",
+                        "id": "23",
+                        "name": "UFL"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa--2",
+                        "url": "/categories/21",
+                        "slug": "ncaa--2",
+                        "id": "21",
+                        "name": "NCAA"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/lingerie-football-league",
+                        "url": "/categories/123",
+                        "slug": "lingerie-football-league",
+                        "id": "123",
+                        "name": "Lingerie Football League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/afl",
+                        "url": "/categories/81",
+                        "slug": "afl",
+                        "id": "81",
+                        "name": "AFL"
+                    }
+                ],
+                "slug_url": "/categories/football",
+                "url": "/categories/19",
+                "slug": "football",
+                "id": "19",
+                "name": "Football"
+            },
+            {
+                "sub_categories": [
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/mls-major-league-soccer",
+                        "url": "/categories/36",
+                        "slug": "mls-major-league-soccer",
+                        "id": "36",
+                        "name": "MLS (Major League Soccer)"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/english-premiere-league",
+                        "url": "/categories/37",
+                        "slug": "english-premiere-league",
+                        "id": "37",
+                        "name": "English Premiere League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/confederacao-brasileira-de-futebol",
+                        "url": "/categories/39",
+                        "slug": "confederacao-brasileira-de-futebol",
+                        "id": "39",
+                        "name": "Confederação Brasileira de Futebol"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/bundesliga",
+                        "url": "/categories/40",
+                        "slug": "bundesliga",
+                        "id": "40",
+                        "name": "Bundesliga"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/spanish-primera-division",
+                        "url": "/categories/41",
+                        "slug": "spanish-primera-division",
+                        "id": "41",
+                        "name": "Spanish Primera División"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/italian-serie-a",
+                        "url": "/categories/42",
+                        "slug": "italian-serie-a",
+                        "id": "42",
+                        "name": "Italian Serie A"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ligat-haal",
+                        "url": "/categories/43",
+                        "slug": "ligat-haal",
+                        "id": "43",
+                        "name": "Ligat HaAl"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-men--4",
+                        "url": "/categories/88",
+                        "slug": "ncaa-men--4",
+                        "id": "88",
+                        "name": "NCAA Men"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/world-cup",
+                        "url": "/categories/35",
+                        "slug": "world-cup",
+                        "id": "35",
+                        "name": "World Cup"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/scottish-premiere-league",
+                        "url": "/categories/38",
+                        "slug": "scottish-premiere-league",
+                        "id": "38",
+                        "name": "Scottish Premiere League"
+                    },
+                    {
+                        "sub_categories": [],
+                        "slug_url": "/categories/ncaa-women--3",
+                        "url": "/categories/130",
+                        "slug": "ncaa-women--3",
+                        "id": "130",
+                        "name": "NCAA Women"
+                    }
+                ],
+                "slug_url": "/categories/soccer",
+                "url": "/categories/34",
+                "slug": "soccer",
+                "id": "34",
+                "name": "Soccer"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rugby",
+                "url": "/categories/48",
+                "slug": "rugby",
+                "id": "48",
+                "name": "Rugby"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rodeo",
+                "url": "/categories/26",
+                "slug": "rodeo",
+                "id": "26",
+                "name": "Rodeo"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/tennis",
+                "url": "/categories/25",
+                "slug": "tennis",
+                "id": "25",
+                "name": "Tennis"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/cycling",
+                "url": "/categories/125",
+                "slug": "cycling",
+                "id": "125",
+                "name": "Cycling"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/volleyball",
+                "url": "/categories/128",
+                "slug": "volleyball",
+                "id": "128",
+                "name": "Volleyball"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/horse-racing",
+                "url": "/categories/33",
+                "slug": "horse-racing",
+                "id": "33",
+                "name": "Horse Racing"
+            }
+        ],
+        "url": "/categories/1"
+    },
+    {
+        "id": "54",
+        "name": "Concerts",
+        "slug": "concerts",
+        "slug_url": "/categories/concerts",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/comedy",
+                "url": "/categories/55",
+                "slug": "comedy",
+                "id": "55",
+                "name": "Comedy"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/family",
+                "url": "/categories/56",
+                "slug": "family",
+                "id": "56",
+                "name": "Family"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/alternative-indie",
+                "url": "/categories/58",
+                "slug": "alternative-indie",
+                "id": "58",
+                "name": "Alternative & Indie"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/r-b-urban-soul",
+                "url": "/categories/60",
+                "slug": "r-b-urban-soul",
+                "id": "60",
+                "name": "R&B/Urban Soul"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/country-folk",
+                "url": "/categories/61",
+                "slug": "country-folk",
+                "id": "61",
+                "name": "Country & Folk"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/jazz-blues",
+                "url": "/categories/62",
+                "slug": "jazz-blues",
+                "id": "62",
+                "name": "Jazz & Blues"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/festivals",
+                "url": "/categories/63",
+                "slug": "festivals",
+                "id": "63",
+                "name": "Festivals"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/world-music",
+                "url": "/categories/65",
+                "slug": "world-music",
+                "id": "65",
+                "name": "World Music"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/classical",
+                "url": "/categories/67",
+                "slug": "classical",
+                "id": "67",
+                "name": "Classical"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/alternative-rock",
+                "url": "/categories/82",
+                "slug": "alternative-rock",
+                "id": "82",
+                "name": "Alternative Rock"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/cabaret",
+                "url": "/categories/83",
+                "slug": "cabaret",
+                "id": "83",
+                "name": "Cabaret"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/latin",
+                "url": "/categories/85",
+                "slug": "latin",
+                "id": "85",
+                "name": "Latin"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/new-age-spiritual",
+                "url": "/categories/86",
+                "slug": "new-age-spiritual",
+                "id": "86",
+                "name": "New Age & Spiritual"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rap-hip-hop",
+                "url": "/categories/59",
+                "slug": "rap-hip-hop",
+                "id": "59",
+                "name": "Rap & Hip-Hop"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rock-pop",
+                "url": "/categories/57",
+                "slug": "rock-pop",
+                "id": "57",
+                "name": "Rock & Pop"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/miscellaneous",
+                "url": "/categories/87",
+                "slug": "miscellaneous",
+                "id": "87",
+                "name": "Miscellaneous"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/hard-rock-metal",
+                "url": "/categories/64",
+                "slug": "hard-rock-metal",
+                "id": "64",
+                "name": "Hard Rock/Metal"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/dance-electronic",
+                "url": "/categories/84",
+                "slug": "dance-electronic",
+                "id": "84",
+                "name": "Dance/Electronic"
+            }
+        ],
+        "url": "/categories/54"
+    },
+    {
+        "id": "68",
+        "name": "Theatre",
+        "slug": "theatre",
+        "slug_url": "/categories/theatre",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/musicals",
+                "url": "/categories/69",
+                "slug": "musicals",
+                "id": "69",
+                "name": "Musicals"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/plays",
+                "url": "/categories/70",
+                "slug": "plays",
+                "id": "70",
+                "name": "Plays"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/opera",
+                "url": "/categories/71",
+                "slug": "opera",
+                "id": "71",
+                "name": "Opera"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/ballet-dance",
+                "url": "/categories/72",
+                "slug": "ballet-dance",
+                "id": "72",
+                "name": "Ballet & Dance"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/entertainment-shows",
+                "url": "/categories/138",
+                "slug": "entertainment-shows",
+                "id": "138",
+                "name": "Entertainment Shows"
+            }
+        ],
+        "url": "/categories/68"
+    },
+    {
+        "id": "73",
+        "name": "Special Events",
+        "slug": "special-events",
+        "slug_url": "/categories/special-events",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/award-shows",
+                "url": "/categories/74",
+                "slug": "award-shows",
+                "id": "74",
+                "name": "Award Shows"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/tv-shows",
+                "url": "/categories/75",
+                "slug": "tv-shows",
+                "id": "75",
+                "name": "TV Shows"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/fundraisers",
+                "url": "/categories/76",
+                "slug": "fundraisers",
+                "id": "76",
+                "name": "Fundraisers"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/exclusive-parties",
+                "url": "/categories/77",
+                "slug": "exclusive-parties",
+                "id": "77",
+                "name": "Exclusive Parties"
+            }
+        ],
+        "url": "/categories/73"
+    }
+]

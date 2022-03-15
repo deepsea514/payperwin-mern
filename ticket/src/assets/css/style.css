@@ -95,7 +95,7 @@ label {
     color: #ffffff;
     background: #0d1028;
     position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 
 .btn-primary::before, .btn-primary::after {
