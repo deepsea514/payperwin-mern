@@ -1,248 +1,5 @@
 [
     {
-        "id": "54",
-        "name": "Concerts",
-        "slug": "concerts",
-        "slug_url": "/categories/concerts",
-        "sub_categories": [
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/comedy",
-                "url": "/categories/55",
-                "slug": "comedy",
-                "id": "55",
-                "name": "Comedy"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/family",
-                "url": "/categories/56",
-                "slug": "family",
-                "id": "56",
-                "name": "Family"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/alternative-indie",
-                "url": "/categories/58",
-                "slug": "alternative-indie",
-                "id": "58",
-                "name": "Alternative & Indie"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/r-b-urban-soul",
-                "url": "/categories/60",
-                "slug": "r-b-urban-soul",
-                "id": "60",
-                "name": "R&B/Urban Soul"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/country-folk",
-                "url": "/categories/61",
-                "slug": "country-folk",
-                "id": "61",
-                "name": "Country & Folk"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/jazz-blues",
-                "url": "/categories/62",
-                "slug": "jazz-blues",
-                "id": "62",
-                "name": "Jazz & Blues"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/festivals",
-                "url": "/categories/63",
-                "slug": "festivals",
-                "id": "63",
-                "name": "Festivals"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/world-music",
-                "url": "/categories/65",
-                "slug": "world-music",
-                "id": "65",
-                "name": "World Music"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/classical",
-                "url": "/categories/67",
-                "slug": "classical",
-                "id": "67",
-                "name": "Classical"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/alternative-rock",
-                "url": "/categories/82",
-                "slug": "alternative-rock",
-                "id": "82",
-                "name": "Alternative Rock"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/cabaret",
-                "url": "/categories/83",
-                "slug": "cabaret",
-                "id": "83",
-                "name": "Cabaret"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/latin",
-                "url": "/categories/85",
-                "slug": "latin",
-                "id": "85",
-                "name": "Latin"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/new-age-spiritual",
-                "url": "/categories/86",
-                "slug": "new-age-spiritual",
-                "id": "86",
-                "name": "New Age & Spiritual"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/rap-hip-hop",
-                "url": "/categories/59",
-                "slug": "rap-hip-hop",
-                "id": "59",
-                "name": "Rap & Hip-Hop"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/rock-pop",
-                "url": "/categories/57",
-                "slug": "rock-pop",
-                "id": "57",
-                "name": "Rock & Pop"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/miscellaneous",
-                "url": "/categories/87",
-                "slug": "miscellaneous",
-                "id": "87",
-                "name": "Miscellaneous"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/hard-rock-metal",
-                "url": "/categories/64",
-                "slug": "hard-rock-metal",
-                "id": "64",
-                "name": "Hard Rock/Metal"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/dance-electronic",
-                "url": "/categories/84",
-                "slug": "dance-electronic",
-                "id": "84",
-                "name": "Dance/Electronic"
-            }
-        ],
-        "url": "/categories/54"
-    },
-    {
-        "id": "68",
-        "name": "Theatre",
-        "slug": "theatre",
-        "slug_url": "/categories/theatre",
-        "sub_categories": [
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/musicals",
-                "url": "/categories/69",
-                "slug": "musicals",
-                "id": "69",
-                "name": "Musicals"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/plays",
-                "url": "/categories/70",
-                "slug": "plays",
-                "id": "70",
-                "name": "Plays"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/opera",
-                "url": "/categories/71",
-                "slug": "opera",
-                "id": "71",
-                "name": "Opera"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/ballet-dance",
-                "url": "/categories/72",
-                "slug": "ballet-dance",
-                "id": "72",
-                "name": "Ballet & Dance"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/entertainment-shows",
-                "url": "/categories/138",
-                "slug": "entertainment-shows",
-                "id": "138",
-                "name": "Entertainment Shows"
-            }
-        ],
-        "url": "/categories/68"
-    },
-    {
-        "id": "73",
-        "name": "Special Events",
-        "slug": "special-events",
-        "slug_url": "/categories/special-events",
-        "sub_categories": [
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/award-shows",
-                "url": "/categories/74",
-                "slug": "award-shows",
-                "id": "74",
-                "name": "Award Shows"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/tv-shows",
-                "url": "/categories/75",
-                "slug": "tv-shows",
-                "id": "75",
-                "name": "TV Shows"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/fundraisers",
-                "url": "/categories/76",
-                "slug": "fundraisers",
-                "id": "76",
-                "name": "Fundraisers"
-            },
-            {
-                "sub_categories": [],
-                "slug_url": "/categories/exclusive-parties",
-                "url": "/categories/77",
-                "slug": "exclusive-parties",
-                "id": "77",
-                "name": "Exclusive Parties"
-            }
-        ],
-        "url": "/categories/73"
-    },
-    {
         "id": "1",
         "name": "Sports",
         "slug": "sports",
@@ -845,5 +602,248 @@
             }
         ],
         "url": "/categories/1"
+    },
+    {
+        "id": "54",
+        "name": "Concerts",
+        "slug": "concerts",
+        "slug_url": "/categories/concerts",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/comedy",
+                "url": "/categories/55",
+                "slug": "comedy",
+                "id": "55",
+                "name": "Comedy"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/family",
+                "url": "/categories/56",
+                "slug": "family",
+                "id": "56",
+                "name": "Family"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/alternative-indie",
+                "url": "/categories/58",
+                "slug": "alternative-indie",
+                "id": "58",
+                "name": "Alternative & Indie"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/r-b-urban-soul",
+                "url": "/categories/60",
+                "slug": "r-b-urban-soul",
+                "id": "60",
+                "name": "R&B/Urban Soul"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/country-folk",
+                "url": "/categories/61",
+                "slug": "country-folk",
+                "id": "61",
+                "name": "Country & Folk"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/jazz-blues",
+                "url": "/categories/62",
+                "slug": "jazz-blues",
+                "id": "62",
+                "name": "Jazz & Blues"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/festivals",
+                "url": "/categories/63",
+                "slug": "festivals",
+                "id": "63",
+                "name": "Festivals"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/world-music",
+                "url": "/categories/65",
+                "slug": "world-music",
+                "id": "65",
+                "name": "World Music"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/classical",
+                "url": "/categories/67",
+                "slug": "classical",
+                "id": "67",
+                "name": "Classical"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/alternative-rock",
+                "url": "/categories/82",
+                "slug": "alternative-rock",
+                "id": "82",
+                "name": "Alternative Rock"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/cabaret",
+                "url": "/categories/83",
+                "slug": "cabaret",
+                "id": "83",
+                "name": "Cabaret"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/latin",
+                "url": "/categories/85",
+                "slug": "latin",
+                "id": "85",
+                "name": "Latin"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/new-age-spiritual",
+                "url": "/categories/86",
+                "slug": "new-age-spiritual",
+                "id": "86",
+                "name": "New Age & Spiritual"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rap-hip-hop",
+                "url": "/categories/59",
+                "slug": "rap-hip-hop",
+                "id": "59",
+                "name": "Rap & Hip-Hop"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/rock-pop",
+                "url": "/categories/57",
+                "slug": "rock-pop",
+                "id": "57",
+                "name": "Rock & Pop"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/miscellaneous",
+                "url": "/categories/87",
+                "slug": "miscellaneous",
+                "id": "87",
+                "name": "Miscellaneous"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/hard-rock-metal",
+                "url": "/categories/64",
+                "slug": "hard-rock-metal",
+                "id": "64",
+                "name": "Hard Rock/Metal"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/dance-electronic",
+                "url": "/categories/84",
+                "slug": "dance-electronic",
+                "id": "84",
+                "name": "Dance/Electronic"
+            }
+        ],
+        "url": "/categories/54"
+    },
+    {
+        "id": "68",
+        "name": "Theatre",
+        "slug": "theatre",
+        "slug_url": "/categories/theatre",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/musicals",
+                "url": "/categories/69",
+                "slug": "musicals",
+                "id": "69",
+                "name": "Musicals"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/plays",
+                "url": "/categories/70",
+                "slug": "plays",
+                "id": "70",
+                "name": "Plays"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/opera",
+                "url": "/categories/71",
+                "slug": "opera",
+                "id": "71",
+                "name": "Opera"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/ballet-dance",
+                "url": "/categories/72",
+                "slug": "ballet-dance",
+                "id": "72",
+                "name": "Ballet & Dance"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/entertainment-shows",
+                "url": "/categories/138",
+                "slug": "entertainment-shows",
+                "id": "138",
+                "name": "Entertainment Shows"
+            }
+        ],
+        "url": "/categories/68"
+    },
+    {
+        "id": "73",
+        "name": "Special Events",
+        "slug": "special-events",
+        "slug_url": "/categories/special-events",
+        "sub_categories": [
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/award-shows",
+                "url": "/categories/74",
+                "slug": "award-shows",
+                "id": "74",
+                "name": "Award Shows"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/tv-shows",
+                "url": "/categories/75",
+                "slug": "tv-shows",
+                "id": "75",
+                "name": "TV Shows"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/fundraisers",
+                "url": "/categories/76",
+                "slug": "fundraisers",
+                "id": "76",
+                "name": "Fundraisers"
+            },
+            {
+                "sub_categories": [],
+                "slug_url": "/categories/exclusive-parties",
+                "url": "/categories/77",
+                "slug": "exclusive-parties",
+                "id": "77",
+                "name": "Exclusive Parties"
+            }
+        ],
+        "url": "/categories/73"
     }
 ]

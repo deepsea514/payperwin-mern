@@ -11,9 +11,9 @@ class GoTop extends React.Component {
         this._isMounted = true;
         document.addEventListener("scroll", () => {
             if (window.scrollY > 170) {
-                this.setState({ thePosition: true })
+                this._isMounted && this.setState({ thePosition: true })
             } else {
-                this.setState({ thePosition: false })
+                this._isMounted && this.setState({ thePosition: false })
             }
         });
         window.scrollTo(0, 0);
@@ -32,7 +32,7 @@ class GoTop extends React.Component {
 
     scrollToTop = () => {
         let intervalId = setInterval(this.onScrollStep, this.props.delayInMs);
-        this.setState({ intervalId: intervalId });
+        this._isMounted && this.setState({ intervalId: intervalId });
     }
 
     renderGoTopIcon = () => {
