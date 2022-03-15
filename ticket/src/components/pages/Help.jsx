@@ -10,7 +10,7 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 import Footer from '../Common/Footer';
  
-class Faq extends React.Component {
+class Help extends React.Component {
     submitHandler = (e) => {
         e.preventDefault();
     }
@@ -19,11 +19,10 @@ class Faq extends React.Component {
             <React.Fragment>
                 <div className="page-title-area item-bg2">
                     <div className="container">
-                        <h1>FAQ</h1>
-                        <span>Frequently asked Questions</span>
+                        <h1>Help</h1>
                         <ul>
                             <li><Link to="/">Home</Link></li>
-                            <li>FAQ</li>
+                            <li>HELP</li>
                         </ul>
                     </div>
                 </div>
@@ -187,4 +186,4 @@ class Faq extends React.Component {
     }
 }
  
-export default Faq;
+export default Help;

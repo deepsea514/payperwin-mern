@@ -5,31 +5,30 @@ import Navigation from "./components/Navigation/Navigation";
 import Login from "./components/pages/Login";
 import NotFound from "./components/pages/NotFound";
 import Events from "./components/pages/Events";
+import Help from "./components/pages/Help";
 import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
 
-// Conditionally render Navigation
 const renderNavigation = () => {
     if (!(window.location.pathname === '/login' ||
-        window.location.pathname === '/signup' ||
-        window.location.pathname === '/coming-soon' ||
         window.location.pathname === '/error-404')) {
         return <Navigation />;
     }
 }
 
-const AppRouter = ({ getUserAction, getCategoriesAction }) => {
+const AppRouter = ({ getUserAction }) => {
     useEffect(() => {
         getUserAction();
-        getCategoriesAction();
-    }, [getUserAction, getCategoriesAction]);
+    }, [getUserAction]);
 
     return (
         <Router>
             {renderNavigation()}
             <Switch>
                 <Route path="/" exact component={Home} />
-                <Route path="/events" exact component={Events} />
+                <Route path="/search" exact component={Events} />
+                <Route path="/categories/:category_slug" exact component={Events} />
+                <Route path="/help" exact component={Help} />
                 <Route path="/login" exact component={Login} />
                 <Route path="/error-404" exact component={NotFound} />
                 <Route component={NotFound} />
