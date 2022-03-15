@@ -28,6 +28,8 @@ const AppRouter = ({ getUserAction }) => {
                 <Route path="/" exact component={Home} />
                 <Route path="/search" exact component={Events} />
                 <Route path="/categories/:category_slug" exact component={Events} />
+                <Route path="/places/:region/:locality" exact component={Events} />
+                <Route path="/places/:region" exact component={Events} />
                 <Route path="/help" exact component={Help} />
                 <Route path="/login" exact component={Login} />
                 <Route path="/error-404" exact component={NotFound} />

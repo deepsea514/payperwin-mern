@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 
 const customStyles = {
-    control: (provided, state) => {
+    control: (provided) => {
         return {
             ...provided,
             background: 'transparent',
@@ -13,14 +13,14 @@ const customStyles = {
             border: 'none',
         }
     },
-    singleValue: (provided, state) => {
+    singleValue: (provided) => {
         return {
             ...provided,
             color: '#FFF',
             textAlign: 'left'
         }
     },
-    placeholder: (provided, state) => {
+    placeholder: (provided) => {
         return {
             ...provided,
             overflow: 'hidden',
@@ -29,7 +29,7 @@ const customStyles = {
             textAlign: 'left'
         }
     },
-    menu: (provided, state) => {
+    menu: (provided) => {
         return {
             ...provided,
             color: 'black',
@@ -50,29 +50,29 @@ class MainBanner extends React.Component {
         super(props);
         const { localities_ca, categories } = this.props;
         const category_options = categories.map(category => ({ label: category.name, value: category.slug }));
-        let city_options = [];
+        let locality_options = [];
         for (const key of Object.keys(localities_ca)) {
-            city_options = [...city_options, ...localities_ca[key].map(locality => ({
+            locality_options = [...locality_options, ...localities_ca[key].map(locality => ({
                 value: locality + ', ' + key,
                 label: locality + ', ' + key,
             }))];
         }
         this.state = {
             query: '',
-            city: null,
+            locality: null,
             time: null,
             category: null,
-            city_options: city_options,
+            locality_options: locality_options,
             category_options: category_options,
         }
     }
 
     onSearch = () => {
         const { history } = this.props;
-        const { query, city, time, category } = this.state;
+        const { query, locality, time, category } = this.state;
         const searchObj = {};
         query && (searchObj.query = query);
-        city && (searchObj.city = city.value);
+        locality && (searchObj.locality = locality.value);
         time && (searchObj.time = time.value);
         category && (searchObj.category = category.value);
 
@@ -87,7 +87,7 @@ class MainBanner extends React.Component {
     }
 
     render() {
-        const { query, city, time, category, category_options, city_options } = this.state;
+        const { query, locality, time, category, category_options, locality_options } = this.state;
         const { time_options } = this.props;
 
         return (
@@ -116,12 +116,12 @@ class MainBanner extends React.Component {
                                         className="form-control"
                                         classNamePrefix="select"
                                         isSearchable={true}
-                                        name="city"
-                                        options={city_options}
+                                        name="locality"
+                                        options={locality_options}
                                         placeholder="All Cities"
                                         noOptionsMessage={() => "No Cities"}
-                                        value={city}
-                                        onChange={(city) => this.setState({ city })}
+                                        value={locality}
+                                        onChange={(locality) => this.setState({ locality })}
                                         styles={customStyles}
                                         maxMenuHeight={200}
                                     />

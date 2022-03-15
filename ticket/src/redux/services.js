@@ -4,12 +4,12 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
-export const getVenues = (state, city, query, page) => {
-    return FrontendAPI.get('/tickets/venues', { params: { state, city, query, page } });
+export const getVenues = (region, locality, query, page) => {
+    return FrontendAPI.get('/tickets/venues', { params: { region, locality, query, page } });
 }
 
-export const getEvents = (state, city, venue, time, category) => {
+export const getEvents = (region, locality, venue, time, category) => {
     return FrontendAPI.get('/tickets/events', {
-        params: { state, city, venue, time, category }
+        params: { region, locality, venue, time, category }
     })
 }
