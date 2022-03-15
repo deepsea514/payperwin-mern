@@ -9,7 +9,7 @@ const TicketVenue = require('./models/ticket_venue');
 ticketRouter.get('/venues',
     async (req, res) => {
         try {
-            let { state, city, query, page } = req.query;
+            let { region, locality, query, page } = req.query;
             if (!page) page = 1;
             page = parseInt(page);
             const perPage = 20;
@@ -17,8 +17,8 @@ ticketRouter.get('/venues',
                 "address.country_code": "CA",
                 name: { "$regex": query, "$options": "i" }
             }
-            state && (searchObj["address.region"] = state);
-            city && (searchObj["address.locality"] = city);
+            region && (searchObj["address.region"] = region);
+            locality && (searchObj["address.locality"] = locality);
             const venues = await TicketVenue
                 .find(searchObj)
                 .skip((page - 1) * perPage)
