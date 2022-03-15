@@ -4,53 +4,15 @@ const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
 const ErrorLog = require("../../models/errorlog");
 //local helpers
-const config = require('../../../config.json');
 let sportsData = require('./sports.json')
 const formatFixturesOdds = require('./formatFixturesOdds');
-const matchResults = require('./matchResults');
-const getLiveSportsLines = require('./getLiveSportsLines');
 //external libraries
-const mongoose = require('mongoose');
 const axios = require('axios');
-const sgMail = require('@sendgrid/mail');
-const fs = require('fs');
+// const fs = require('fs');
 const arrangeLeagues = require('./arrangeLeagues');
 require('dotenv').config();
 
 const per_page = 100;
-
-// Database
-mongoose.Promise = global.Promise;
-// const databaseName = 'PayPerWinDev'
-const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
-mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
-    authSource: "admin",
-    user: config.mongo.username,
-    pass: config.mongo.password,
-    useMongoClient: true,
-}).then(async () => {
-    console.info('Using database:', databaseName);
-
-    const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
-    if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
-        console.warn('Send Grid Key is not set');
-        return;
-    }
-    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
-
-    const lineInterval = 1000 * 60 * 10;
-    getAllSportsLines();
-    setInterval(getAllSportsLines, lineInterval);
-
-    const liveInterval = 10 * 1000;
-    getLiveSportsLines();
-    setInterval(getLiveSportsLines, liveInterval);
-
-    const resultInterval = 10 * 60 * 1000;
-    matchResults();
-    setInterval(matchResults, resultInterval);
-});
-
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
@@ -243,4 +205,8 @@ const getAllSportsLines = async () => {
         }
 
     }
+}
+
+module.exports = {
+    getAllSportsLines
 }
