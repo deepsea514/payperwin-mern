@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
-import AsyncSelect from 'react-select/async';
+import { connect } from 'react-redux';
 
 const customStyles = {
     control: (provided, state) => {
@@ -13,7 +13,7 @@ const customStyles = {
             border: 'none',
         }
     },
-    singleValue:(provided, state) => {
+    singleValue: (provided, state) => {
         return {
             ...provided,
             color: '#FFF',
@@ -36,55 +36,50 @@ const customStyles = {
             width: window.innerWidth > 990 ? "150%" : '100%',
             textAlign: 'left'
         }
+    },
+    input: (provided) => {
+        return {
+            ...provided,
+            color: 'white'
+        }
     }
 }
-
-const timeOptions = [
-    { value: 'all', label: 'All Time' },
-    { value: 'today', label: 'Today' },
-    { value: 'tomorrow', label: 'Tomorrow' },
-    { value: 'this_week', label: 'This Week' },
-    { value: 'next_week', label: 'Next Week' },
-    { value: 'this_month', label: 'This Month' },
-    { value: 'next_month', label: 'Next Month' },
-    { value: 'this_year', label: 'This Year' },
-]
-
-const stateOptions = [
-    { value: "AB", label: "Alberta" },
-    { value: "BC", label: "British Columbia" },
-    { value: "MB", label: "Manitoba" },
-    { value: "NB", label: "New Brunswick" },
-    { value: "NL", label: "Newfoundland and Labrador" },
-    { value: "NT", label: "Northwest Territories" },
-    { value: "NS", label: "Nova Scotia" },
-    { value: "NU", label: "Nunavut" },
-    { value: "ON", label: "Ontario" },
-    { value: "PE", label: "Prince Edward Island" },
-    { value: "QC", label: "Quebec" },
-    { value: "SK", label: "Saskatchewan" },
-    { value: "YT", label: "Yukon" }
-]
 
 class MainBanner extends React.Component {
     constructor(props) {
         super(props);
-
+        const { localities_ca, categories } = this.props;
+        const category_options = categories.map(category => ({ label: category.name, value: category.slug }));
+        let city_options = [];
+        for (const key of Object.keys(localities_ca)) {
+            city_options = [...city_options, ...localities_ca[key].map(locality => ({
+                value: locality + ', ' + key,
+                label: locality + ', ' + key,
+            }))];
+        }
         this.state = {
             query: '',
-            state: '',
-            city: '',
-            venue: '',
-            time: '',
-            category: '',
-            loadingCity: false,
-            loadingVenue: false,
+            city: null,
+            time: null,
+            category: null,
+            city_options: city_options,
+            category_options: category_options,
         }
     }
 
     onSearch = () => {
         const { history } = this.props;
-        history.push('/search');
+        const { query, city, time, category } = this.state;
+        const searchObj = {};
+        query && (searchObj.query = query);
+        city && (searchObj.city = city.value);
+        time && (searchObj.time = time.value);
+        category && (searchObj.category = category.value);
+
+        history.push({
+            pathname: '/search',
+            search: "?" + new URLSearchParams(searchObj).toString()
+        });
     }
 
     getCities = (query, cb) => {
@@ -92,7 +87,9 @@ class MainBanner extends React.Component {
     }
 
     render() {
-        const { query, state, city, venue, time, category, loadingCity, loadingVenue } = this.state;
+        const { query, city, time, category, category_options, city_options } = this.state;
+        const { time_options } = this.props;
+
         return (
             <div className="main-banner video-banner">
                 <video loop muted autoPlay poster="#" className="video-background">
@@ -115,51 +112,25 @@ class MainBanner extends React.Component {
                                         value={query}
                                         onChange={(evt) => this.setState({ query: evt.target.value })}
                                     />
-                                    {/* <Select
-                                        className="form-control"
-                                        classNamePrefix="select"
-                                        name="state"
-                                        options={stateOptions}
-                                        placeholder="All States"
-                                        value={state}
-                                        onChange={(state) => this.setState({ state })}
-                                        styles={customStyles}
-                                        maxMenuHeight={200}
-                                    /> */}
-                                    <AsyncSelect
+                                    <Select
                                         className="form-control"
                                         classNamePrefix="select"
                                         isSearchable={true}
                                         name="city"
+                                        options={city_options}
                                         placeholder="All Cities"
-                                        loadOptions={this.getCities}
                                         noOptionsMessage={() => "No Cities"}
                                         value={city}
-                                        isLoading={loadingCity}
                                         onChange={(city) => this.setState({ city })}
                                         styles={customStyles}
                                         maxMenuHeight={200}
                                     />
-                                    {/* <AsyncSelect
-                                        className="form-control"
-                                        classNamePrefix="select"
-                                        isSearchable={true}
-                                        name="venue"
-                                        placeholder="All Venues"
-                                        loadOptions={this.getCities}
-                                        noOptionsMessage={() => "No Venues"}
-                                        value={venue}
-                                        isLoading={loadingVenue}
-                                        onChange={(venue) => this.setState({ venue })}
-                                        styles={customStyles}
-                                        maxMenuHeight={200}
-                                    /> */}
                                     <Select
                                         className="form-control"
                                         classNamePrefix="select"
                                         isSearchable={false}
                                         name="time"
-                                        options={timeOptions}
+                                        options={time_options}
                                         value={time}
                                         placeholder="All Time"
                                         onChange={(time) => { this.setState({ time }) }}
@@ -170,7 +141,7 @@ class MainBanner extends React.Component {
                                         className="form-control"
                                         classNamePrefix="select"
                                         name="category"
-                                        options={[]}
+                                        options={category_options}
                                         placeholder="All Categories"
                                         styles={customStyles}
                                         value={category}
@@ -184,7 +155,7 @@ class MainBanner extends React.Component {
                     </div>
                 </div>
 
-                {/* <div className="shape1">
+                <div className="shape1">
                     <img src="/images/shapes/1.png" alt="shape1" />
                 </div>
 
@@ -198,10 +169,16 @@ class MainBanner extends React.Component {
 
                 <div className="shape4">
                     <img src="/images/shapes/4.png" alt="shape4" />
-                </div> */}
+                </div>
             </div>
         );
     }
 }
 
-export default withRouter(MainBanner);
+const mapStateToProps = (state) => ({
+    categories: state.categories,
+    localities_ca: state.localities_ca,
+    time_options: state.time_options,
+});
+
+export default connect(mapStateToProps, null)(withRouter(MainBanner));
