@@ -84,7 +84,7 @@ class MainBanner extends React.Component {
 
     onSearch = () => {
         const { history } = this.props;
-        history.push('/events');
+        history.push('/search');
     }
 
     getCities = (query, cb) => {

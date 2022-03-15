@@ -1,23 +1,28 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest } from "redux-saga/effects";
-import { getCategories, getUser } from "./services";
+import { getUser } from "./services";
+import categories from "../data/categories.json";
+import regeions from "../data/regions.json";
+import localities_ca from "../data/localities_ca.json";
+import localities_us from "../data/localities_us.json";
 
 export const actionTypes = {
     getUserAction: "Get User Action",
     setUserAction: "Set User Action",
-    getCategoriesAction: "Get Categories Action",
-    setCategoriesAction: "Set Categories Action",
 
 };
 
 const initialState = {
     user: null,
-    categories: [],
+    categories: categories,
+    regeions: regeions.CA,
+    localities_ca: localities_ca,
+    localities_us: localities_us
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-ticket", whitelist: ['filter'] },
+    { storage, key: "ppw-ticket", whitelist: [] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setUserAction:
@@ -41,8 +46,6 @@ export const reducer = persistReducer(
 export const actions = {
     getUserAction: () => ({ type: actionTypes.getUserAction }),
     setUserAction: (payload = null) => ({ type: actionTypes.setUserAction, payload }),
-    getCategoriesAction: () => ({ type: actionTypes.getCategoriesAction }),
-    setCategoriesAction: (categories) => ({ type: actionTypes.setCategoriesAction, payload: categories }),
 };
 
 export function* saga() {
@@ -52,19 +55,6 @@ export function* saga() {
             yield put(actions.setUserAction(user))
         } catch (error) {
             yield put(actions.setUserAction(null));
-        }
-    });
-
-    yield takeLatest(actionTypes.getCategoriesAction, function* getCategoriesAction() {
-        try {
-            const { data: { success, categories } } = yield getCategories();
-            if (success) {
-                yield put(actions.setCategoriesAction(categories))
-            } else {
-                yield put(actions.setCategoriesAction([]));
-            }
-        } catch (error) {
-            yield put(actions.setCategoriesAction([]));
         }
     });
 }

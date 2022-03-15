@@ -4,10 +4,6 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
-export const getCategories = () => {
-    return FrontendAPI.get('/tickets/categories');
-}
-
 export const getCities = (state, query) => {
     return FrontendAPI.get('/tickets/cities', { params: { state, query } });
 }
