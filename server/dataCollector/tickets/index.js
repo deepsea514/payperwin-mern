@@ -1,6 +1,4 @@
 //Models
-const Sport = require('../../models/sport');
-const SportsDir = require('../../models/sportsDir');
 const Addon = require("../../models/addon");
 //local helpers
 const config = require('../../../config.json');
@@ -34,7 +32,7 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 
     // await getCategories(API_TOKEN, API_SECRET);
     // await getPerformers(API_TOKEN, API_SECRET);
-    // await getVenues(API_TOKEN, API_SECRET);
+    await getVenues(API_TOKEN, API_SECRET);
 
     getEvents(API_TOKEN, API_SECRET);
     const EVENT_INTERVAL = 3 * 60 * 60 * 1000;
