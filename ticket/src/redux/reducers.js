@@ -28,7 +28,6 @@ const initialState = {
         { value: 'next_month', label: 'Next Month' },
         { value: 'this_year', label: 'This Year' },
     ]
-
 };
 
 export const reducer = persistReducer(

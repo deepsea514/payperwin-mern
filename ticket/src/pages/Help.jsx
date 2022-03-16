@@ -8,13 +8,13 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 import 'react-accessible-accordion/dist/fancy-example.css';
-import Footer from '../Common/Footer';
- 
+import Footer from "../components/Common/Footer";
+
 class Help extends React.Component {
     submitHandler = (e) => {
         e.preventDefault();
     }
-    render(){
+    render() {
         return (
             <React.Fragment>
                 <div className="page-title-area item-bg2">
@@ -129,46 +129,46 @@ class Help extends React.Component {
                                 <div className="row">
                                     <div className="col-lg-6 col-md-6">
                                         <div className="form-group">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Name" 
-                                                className="form-control" 
+                                            <input
+                                                type="text"
+                                                placeholder="Name"
+                                                className="form-control"
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-lg-6 col-md-6">
                                         <div className="form-group">
-                                            <input 
-                                                type="email" 
-                                                placeholder="Email" 
-                                                className="form-control" 
+                                            <input
+                                                type="email"
+                                                placeholder="Email"
+                                                className="form-control"
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-lg-12 col-md-12">
                                         <div className="form-group">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Subject" 
-                                                className="form-control" 
+                                            <input
+                                                type="text"
+                                                placeholder="Subject"
+                                                className="form-control"
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-lg-12 col-md-12">
                                         <div className="form-group">
-                                            <textarea 
-                                                name="message" 
-                                                cols="30" 
-                                                rows="6" 
-                                                placeholder="Message" 
-                                                className="form-control" 
+                                            <textarea
+                                                name="message"
+                                                cols="30"
+                                                rows="6"
+                                                placeholder="Message"
+                                                className="form-control"
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-lg-12 col-md-12">
                                         <button className="btn btn-primary" type="submit">
                                             Submit Now!
@@ -179,11 +179,10 @@ class Help extends React.Component {
                         </div>
                     </div>
                 </section>
-
                 <Footer />
             </React.Fragment>
         );
     }
 }
- 
+
 export default Help;

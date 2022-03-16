@@ -29,13 +29,6 @@ class Navigation extends React.Component {
 
     toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
-    componentDidUpdate(nextProps) {
-        if (this.props.match.path !== nextProps.match.path) {
-            // this.onRouteChanged();
-            console.log('OK')
-        }
-    }
-
     onRouteChanged = () => {
         this.setState({ isOpen: !this.state.isOpen });
     }
