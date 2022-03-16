@@ -12,7 +12,8 @@ const TicketPerformerSchema = new Schema(
         keywords: { type: String },
         popularity_score: { type: String },
         upcoming_events: Object,
-        meta: Object
+        meta: Object,
+        gotFullData: { type: Boolean, default: false },
     },
     { timestamps: true, },
 );
