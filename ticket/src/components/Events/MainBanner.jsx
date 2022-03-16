@@ -29,6 +29,22 @@ class MainBanner extends React.Component {
         }
     }
 
+    getCategoryTree = (categories, category, category_tree) => {
+        for (const category_ of categories) {
+            if (category_.slug === category.value) {
+                category_tree.push({ label: category_.name });
+                return true;
+            }
+            if (category_.sub_categories &&
+                category_.sub_categories.length &&
+                this.getCategoryTree(category_.sub_categories, category, category_tree)
+            ) {
+                category_tree.push({ path: '/categories/' + category_.slug, label: category_.name })
+                return true;
+            }
+        }
+    }
+
     getInitialValues = () => {
         const { location, localities_ca, regions, categories, history } = this.props;
         const { pathname } = location;
@@ -47,10 +63,13 @@ class MainBanner extends React.Component {
                 history.push("/error-404");
                 return;
             }
+            const category_tree = [];
+            this.getCategoryTree(categories, category, category_tree);
+            category_tree.reverse();
             title = category.label;
             breadcrumbs = [
                 { path: '/', label: 'Home' },
-                { label: category.label },
+                ...category_tree
             ]
         }
 
