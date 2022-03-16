@@ -12,13 +12,13 @@
         "Montreal",
         "Outremont",
         "Quebec",
-        "Saint Jean Sur Richelieu",
-        "Saint Tite",
         "Sainte-Adèle",
         "Sainte-Julie",
         "Shawinigan",
         "Sherbrooke",
         "Sillery",
+        "St Jean Sur Richelieu",
+        "St Tite",
         "Wakefield"
     ],
     "NB": [
@@ -89,7 +89,6 @@
         "St Catharines",
         "St Jacobs",
         "St Thomas",
-        "St. Catharines",
         "Stratford",
         "Sudbury",
         "Thunder Bay",
@@ -165,6 +164,6 @@
     "NL": [
         "Corner Brook",
         "Mount Pearl",
-        "St. Johns"
+        "St John's"
     ]
 }
