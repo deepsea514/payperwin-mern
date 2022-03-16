@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 // Used to cancel events.
 var preventDefault = e => e.preventDefault();
-
 export default class CustomPagination extends Component {
     static defaultProps = {
         showPages: 5,
+        perPage: 20,
     };
 
     static propTypes = {
         onChangePage: PropTypes.func.isRequired,
-        totalPages: PropTypes.number.isRequired,
         currentPage: PropTypes.number.isRequired,
         showPages: PropTypes.number,
+        perPage: PropTypes.number,
     };
 
     shouldComponentUpdate(nextProps) {
@@ -28,11 +28,12 @@ export default class CustomPagination extends Component {
 
     onChangePage(pageNumber, event) {
         event.preventDefault();
-        this.props.onChangePage(pageNumber);
+        this.props.onChangePage(pageNumber + 1);
     }
 
     render() {
-        var { totalPages, showPages, currentPage } = this.props;
+        const { total, showPages, currentPage, perPage } = this.props;
+        const totalPages = total ? (Math.floor((total - 1) / perPage) + 1) : 1;
 
         if (totalPages === 0) {
             return null;
