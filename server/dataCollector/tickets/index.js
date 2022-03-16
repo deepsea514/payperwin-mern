@@ -5,7 +5,7 @@ const config = require('../../../config.json');
 //external libraries
 const mongoose = require('mongoose');
 const { getCategories } = require('./getCategories');
-// const { getPerformers } = require('./getPerformers');
+const { getPerformers } = require('./getPerformers');
 const { getVenues } = require('./getVenues');
 const { getEvents } = require('./getEvents');
 require('dotenv').config();
@@ -50,14 +50,14 @@ const getTicketsInformation = async () => {
         const API_TOKEN = ticketAddon.value.api_token;
         const API_SECRET = ticketAddon.value.api_secret;
 
-        await getCategories(API_TOKEN, API_SECRET);
-        // await getPerformers(API_TOKEN, API_SECRET);
-        await getVenues(API_TOKEN, API_SECRET);
+        // await getCategories(API_TOKEN, API_SECRET);
+        await getPerformers(API_TOKEN, API_SECRET);
+        // await getVenues(API_TOKEN, API_SECRET);
 
         getEvents(API_TOKEN, API_SECRET);
         const EVENT_INTERVAL = 3 * 60 * 60 * 1000;
         setInterval(() => getEvents(API_TOKEN, API_SECRET), EVENT_INTERVAL);
-    } catch (error) { }
+    } catch (error) { console.error(error) }
 }
 
 module.exports = {

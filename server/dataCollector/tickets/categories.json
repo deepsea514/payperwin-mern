@@ -273,22 +273,6 @@
                         "slug": "mlb",
                         "id": "3",
                         "name": "MLB"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/mexican-league",
-                        "url": "/categories/121",
-                        "slug": "mexican-league",
-                        "id": "121",
-                        "name": "Mexican League"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/world-baseball-classic",
-                        "url": "/categories/6",
-                        "slug": "world-baseball-classic",
-                        "id": "6",
-                        "name": "World Baseball Classic"
                     }
                 ],
                 "slug_url": "/categories/baseball",
@@ -326,31 +310,6 @@
                 "sub_categories": [
                     {
                         "sub_categories": [],
-                        "slug_url": "/categories/summer-games",
-                        "url": "/categories/52",
-                        "slug": "summer-games",
-                        "id": "52",
-                        "name": "Summer Games"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/winter-games",
-                        "url": "/categories/53",
-                        "slug": "winter-games",
-                        "id": "53",
-                        "name": "Winter Games"
-                    }
-                ],
-                "slug_url": "/categories/international-games",
-                "url": "/categories/51",
-                "slug": "international-games",
-                "id": "51",
-                "name": "International Games"
-            },
-            {
-                "sub_categories": [
-                    {
-                        "sub_categories": [],
                         "slug_url": "/categories/nba",
                         "url": "/categories/8",
                         "slug": "nba",
@@ -383,22 +342,6 @@
                     },
                     {
                         "sub_categories": [],
-                        "slug_url": "/categories/fiba-world-championship",
-                        "url": "/categories/12",
-                        "slug": "fiba-world-championship",
-                        "id": "12",
-                        "name": "FIBA World Championship"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/euroleague-basketball",
-                        "url": "/categories/13",
-                        "slug": "euroleague-basketball",
-                        "id": "13",
-                        "name": "Euroleague Basketball"
-                    },
-                    {
-                        "sub_categories": [],
                         "slug_url": "/categories/nba-d-league",
                         "url": "/categories/122",
                         "slug": "nba-d-league",
@@ -412,14 +355,6 @@
                         "slug": "high-school",
                         "id": "129",
                         "name": "High School"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/international-friendlies",
-                        "url": "/categories/14",
-                        "slug": "international-friendlies",
-                        "id": "14",
-                        "name": "International Friendlies"
                     }
                 ],
                 "slug_url": "/categories/basketball",
@@ -477,14 +412,6 @@
                         "slug": "junior",
                         "id": "136",
                         "name": "Junior"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/international",
-                        "url": "/categories/137",
-                        "slug": "international",
-                        "id": "137",
-                        "name": "International"
                     }
                 ],
                 "slug_url": "/categories/hockey",
@@ -620,14 +547,6 @@
                     },
                     {
                         "sub_categories": [],
-                        "slug_url": "/categories/european",
-                        "url": "/categories/134",
-                        "slug": "european",
-                        "id": "134",
-                        "name": "European"
-                    },
-                    {
-                        "sub_categories": [],
                         "slug_url": "/categories/amateur",
                         "url": "/categories/135",
                         "slug": "amateur",
@@ -682,14 +601,6 @@
                         "slug": "lingerie-football-league",
                         "id": "123",
                         "name": "Lingerie Football League"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/afl",
-                        "url": "/categories/81",
-                        "slug": "afl",
-                        "id": "81",
-                        "name": "AFL"
                     }
                 ],
                 "slug_url": "/categories/football",
@@ -710,75 +621,11 @@
                     },
                     {
                         "sub_categories": [],
-                        "slug_url": "/categories/english-premiere-league",
-                        "url": "/categories/37",
-                        "slug": "english-premiere-league",
-                        "id": "37",
-                        "name": "English Premiere League"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/confederacao-brasileira-de-futebol",
-                        "url": "/categories/39",
-                        "slug": "confederacao-brasileira-de-futebol",
-                        "id": "39",
-                        "name": "Confederação Brasileira de Futebol"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/bundesliga",
-                        "url": "/categories/40",
-                        "slug": "bundesliga",
-                        "id": "40",
-                        "name": "Bundesliga"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/spanish-primera-division",
-                        "url": "/categories/41",
-                        "slug": "spanish-primera-division",
-                        "id": "41",
-                        "name": "Spanish Primera División"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/italian-serie-a",
-                        "url": "/categories/42",
-                        "slug": "italian-serie-a",
-                        "id": "42",
-                        "name": "Italian Serie A"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/ligat-haal",
-                        "url": "/categories/43",
-                        "slug": "ligat-haal",
-                        "id": "43",
-                        "name": "Ligat HaAl"
-                    },
-                    {
-                        "sub_categories": [],
                         "slug_url": "/categories/ncaa-men--4",
                         "url": "/categories/88",
                         "slug": "ncaa-men--4",
                         "id": "88",
                         "name": "NCAA Men"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/world-cup",
-                        "url": "/categories/35",
-                        "slug": "world-cup",
-                        "id": "35",
-                        "name": "World Cup"
-                    },
-                    {
-                        "sub_categories": [],
-                        "slug_url": "/categories/scottish-premiere-league",
-                        "url": "/categories/38",
-                        "slug": "scottish-premiere-league",
-                        "id": "38",
-                        "name": "Scottish Premiere League"
                     },
                     {
                         "sub_categories": [],

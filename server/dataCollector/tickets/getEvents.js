@@ -1,6 +1,7 @@
 const TevoClient = require('ticketevolution-node');
 const TicketEvent = require('../../models/ticket_event');
 const TicketVenue = require('../../models/ticket_venue');
+const TicketPerformer = require('../../models/ticket_performer');
 
 const arrangeCategories = (categories, category) => {
     if (category.parent) {
@@ -53,6 +54,15 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
                         }
                         arrangeCategories(event_.categories, event.category);
                         await TicketEvent.findOneAndUpdate({ id: event.id }, event_, { upsert: true });
+                        if (event.performances && event.performances.length) {
+                            for (const performer of event.performances) {
+                                await TicketPerformer.findOneAndUpdate(
+                                    { id: performer.performer.id },
+                                    performer.performer,
+                                    { upsert: true }
+                                );
+                            }
+                        }
                     }
                 }
             } else {
