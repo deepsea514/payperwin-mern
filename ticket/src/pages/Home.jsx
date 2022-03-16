@@ -1,12 +1,12 @@
 import React from 'react';
-import MainBanner from '../Events/MainBanner';
-import GoTop from '../Shared/GoTop';
-import Footer from '../Common/Footer';
 import lax from 'lax.js';
-import SearchForm from '../Events/SearchForm';
-import EventList from '../Events/EventList';
+import MainBanner from '../components/Home/MainBanner';
+import TopPlaces from '../components/Home/TopPlaces';
+import GoTop from '../components/Shared/GoTop';
+import Popular from '../components/Home/Popular';
+import Footer from "../components/Common/Footer";
 
-class Events extends React.Component {
+class Home extends React.Component {
     constructor(props) {
         super(props)
         lax.setup()
@@ -21,8 +21,8 @@ class Events extends React.Component {
         return (
             <React.Fragment>
                 <MainBanner />
-                <SearchForm />
-                <EventList />
+                <Popular />
+                <TopPlaces />
                 <Footer />
                 <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>
@@ -30,4 +30,4 @@ class Events extends React.Component {
     }
 }
 
-export default Events;
+export default Home;

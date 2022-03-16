@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Home from "./components/pages/Home";
+import { BrowserRouter as Router, Route, Switch, withRouter } from "react-router-dom";
+import Home from "./pages/Home";
 import Navigation from "./components/Navigation/Navigation";
-import Login from "./components/pages/Login";
-import NotFound from "./components/pages/NotFound";
-import Events from "./components/pages/Events";
-import Help from "./components/pages/Help";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import Events from "./pages/Events";
+import Help from "./pages/Help";
 import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
 
