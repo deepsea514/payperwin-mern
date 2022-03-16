@@ -139,7 +139,20 @@ class SearchForm extends React.Component {
             category_disabled: category_disabled,
             region_disabled: region_disabled,
             locality_disabled: locality_disabled,
-        })
+        }, this.initializeFilter)
+    }
+
+    initializeFilter = () => {
+        const { initializeFilter } = this.props;
+        const { query, region, locality, venue, time, category } = this.state;
+        initializeFilter({
+            query: query,
+            region: region ? region.value : '',
+            locality: locality ? locality.value : '',
+            venue: venue ? venue.value : '',
+            time: time ? time.value : '',
+            category: category ? category.value : '',
+        }, 1);
     }
 
     componentDidMount() {
@@ -275,7 +288,9 @@ class SearchForm extends React.Component {
                         />
                     </div>
                     <div className='col-12 col-sm-12 col-md-12 col-lg-6 mt-2'>
-                        <button className='btn btn-primary' style={{ width: '100%' }}>Search</button>
+                        <button className='btn btn-primary'
+                            style={{ width: '100%' }}
+                            onClick={this.initializeFilter}>Search</button>
                     </div>
                 </div>
             </div>

@@ -2,46 +2,81 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import dateformat from 'dateformat';
 import CustomPagination from '../Common/CustomPagination';
+import Loader from '../Common/Loader';
 
 class EventList extends React.Component {
     render() {
+        const { loading, page, total, events, loadEvents } = this.props;
+
+        if (loading) {
+            return (
+                <div className="container mb-5 mt-3">
+                    <Loader />
+                </div>
+            )
+        }
+        if (!events || events.length === 0) {
+            return (
+                <div className="container my-5">
+                    <h3 className='text-center'>There is No Events. Please try again with other search terms.</h3>
+                </div>
+            )
+        }
+
         return (
             <div className="container mb-5">
                 <div className='tab_content'>
                     <div className="tabs_item">
                         <ul className="accordion">
-                            {Array(16).fill(1).map((item, index) => (
+                            {events.map((event, index) => (
                                 <li className="accordion-item" key={index}>
                                     <div className="accordion-title">
                                         <div className="schedule-info">
-                                            <h3>San Jose Sharks at Chicago Blackhawks</h3>
+                                            <h3>{event.name}</h3>
 
                                             <ul>
-                                                <li><i className="icofont-location-pin"></i> At <span>Max Bell Arena</span> in Calgary, AB</li>
-                                                <li><i className="icofont-wall-clock"></i> {dateformat('2022-04-12T19:30:00.000+00:00', 'ddd mmm dd yyyy HH:MM')}</li>
+                                                <li><i className="icofont-location-pin"></i> At <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link> in {event.venue.location}</li>
+                                                <li><i className="icofont-wall-clock"></i> {dateformat(event.occurs_at, 'ddd mmm dd yyyy HH:MM')}</li>
                                             </ul>
+                                            {event.performances && event.performances.length && <ul>
+                                                <li>
+                                                    <i className="icofont-users-alt-4"></i>&nbsp;
+                                                    {event.performances.map((performer, index) => (
+                                                        <>
+                                                            <Link to={"/performers/" + performer.performer.slug}>{performer.performer.name}</Link>{(index === event.performances.length - 1) ? '' : ', '}
+                                                        </>
+                                                    ))}
+                                                </li>
+                                            </ul>}
                                             <ul className='mt-2'>
-                                                <li><i className="icofont-tags" /> <Link to="#">SPORTS</Link>, <Link to="#">ICE HOCKEY</Link>, <Link to="#">NHL</Link></li>
+                                                <li>
+                                                    <i className="icofont-tags" />&nbsp;
+                                                    {event.categories.map((category, index) => (
+                                                        <>
+                                                            <Link to={"/categories/" + category.slug}>{category.name}</Link>{(index === event.categories.length - 1) ? '' : ', '}
+                                                        </>
+                                                    ))}
+                                                </li>
                                             </ul>
                                         </div>
-                                        <button className='btn btn-secondary btn-buy'>Buy Ticket</button>
+                                        <Link to={"/event/" + event.id} className='btn btn-secondary btn-buy'>Buy Ticket</Link>
                                     </div>
                                 </li>
                             ))}
                         </ul>
                     </div>
                 </div>
-                <CustomPagination onChangePage={(page) => { }}
-                    totalPages={10}
-                    currentPage={2} />
+                <CustomPagination onChangePage={loadEvents}
+                    total={total}
+                    currentPage={page - 1} />
 
-                <div className='row'>
+                {/* <div className='row'>
                     <div className="col-lg-12">
                         <div className="btn-box">
                             <Link to="#" className="btn btn-primary">Download List (PDF)</Link>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="shape1">
                     <img src="/images/shapes/1.png" alt="shape1" />
