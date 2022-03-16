@@ -4000,15 +4000,6 @@ input.special {
     font-weight: 700;
 }
 
-.wheel_container {
-    background-image: url('/images/wheel_back.png');
-    background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y: top;
-    background-size: contain;
-    padding-top: 10px;
-}
-
 a:hover {
     text-decoration: none;
 }
