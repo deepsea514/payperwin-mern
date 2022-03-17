@@ -42,7 +42,7 @@ class EventDetail extends React.Component {
                                         <article className="comment-body">
                                             <footer className="comment-meta">
                                                 <div className="comment-author vcard">
-                                                    <img src="/images/author1.jpg" className="avatar" alt="blog" />
+                                                    <img src="/images/author9.jpg" className="avatar" alt="blog" />
                                                     <b className="fn">John Smith</b>
                                                     <span className="says">says:</span>
                                                 </div>
