@@ -718,6 +718,10 @@ Main Banner CSS
     background-image: url("/images/slider-bg3.jpg");
 }
 
+.event-bg {
+    background-image: url("/images/event-bg.png");
+}
+
 .main-banner-content {
     position: relative;
     z-index: 1;
@@ -4081,7 +4085,7 @@ Blog Details CSS
 }
 
 .post-tag-media ul.social-share {
-    text-align: right;
+    text-align: left;
 }
 
 .post-tag-media ul.social-share li {
@@ -4211,7 +4215,7 @@ Blog Details CSS
     margin: 0 !important;
 }
 
-.comments-area .comment-respond .form-submit input {
+.comments-area .comment-respond .form-submit button {
     display: inline-block;
     background: #FF2D55;
     border: none;
@@ -4225,7 +4229,7 @@ Blog Details CSS
     transition: 0.5s;
 }
 
-.comments-area .comment-respond .form-submit input:hover, .comments-area .comment-respond .form-submit input:focus {
+.comments-area .comment-respond .form-submit button:hover, .comments-area .comment-respond .form-submit button:focus {
     background: #0d1028;
     -webkit-box-shadow: 0 13px 27px 0 rgba(255, 82, 2, 0.11);
     box-shadow: 0 13px 27px 0 rgba(255, 82, 2, 0.11);
@@ -4945,4 +4949,29 @@ Back To Top CSS
 
 .page-item {
     cursor: pointer;
+}
+
+ul.event-info {
+    padding: 0;
+    list-style-type: none;
+    margin: 0;
+}
+
+ul.event-info li {
+    color: #707070;
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+ul.event-info li:last-child {
+    margin-right: 0;
+}
+
+ul.event-info li i {
+    margin-right: 5px;
+    color: #FF2D55;
+}
+
+ul.event-info li span {
+    color: #00acee;
 }

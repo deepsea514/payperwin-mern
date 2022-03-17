@@ -32,6 +32,19 @@ ticketRouter.get(
 );
 
 ticketRouter.get(
+    '/events/:event_id',
+    async (req, res) => {
+        try {
+            let { event_id } = req.params;
+            const event = await TicketEvent.findOne({ id: event_id })
+            return res.json({ success: true, event: event });
+        } catch (error) {
+            return res.json({ success: false, error: 'Internal Server Error.' });
+        }
+    }
+);
+
+ticketRouter.get(
     '/events',
     async (req, res) => {
         try {

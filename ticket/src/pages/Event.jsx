@@ -1,22 +1,52 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Footer from "../components/Common/Footer";
+import Loader from '../components/Common/Loader';
+import EventDetail from '../components/Event/EventDetail';
+import MainBanner from '../components/Event/MainBanner';
+import NotFound from '../components/Event/NotFound';
+import { getEventDetail } from '../redux/services';
 
 class Event extends React.Component {
+    constructor(props) {
+        super(props);
+        const { match: { params: { event_id } } } = this.props;
+        this.state = {
+            event_id: event_id,
+            loading: false,
+            event: null,
+        }
+    }
+
+    componentDidMount() {
+        const { event_id } = this.state;
+        this.setState({ loading: true });
+        getEventDetail(event_id)
+            .then(({ data }) => {
+                const { success, event } = data;
+                if (success) {
+                    this.setState({ event: event, loading: false });
+                } else {
+                    this.setState({ event: null, loading: false });
+                }
+            })
+            .catch(() => {
+                this.setState({ event: null, loading: false });
+            })
+    }
+
     render() {
+        const { event, loading } = this.state;
+
         return (
             <React.Fragment>
-                <div className="page-title-area item-bg2">
-                    <div className="container">
-                        <h1>Event Name</h1>
-                        <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li><Link to="/search">Events</Link></li>
-                            <li>Event Name</li>
-                        </ul>
-                    </div>
-                </div>
-
+                <MainBanner title={loading ? 'Loading ...' : (
+                    event ? event.name : 'Event Not Found'
+                )} />
+                {loading && <div className="container my-5 py-5">
+                    <Loader />
+                </div>}
+                {!loading && !event && <NotFound />}
+                {event && <EventDetail event={event} />}
                 <Footer />
             </React.Fragment>
         );

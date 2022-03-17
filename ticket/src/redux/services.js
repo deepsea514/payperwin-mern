@@ -13,3 +13,7 @@ export const getEvents = (filter, page) => {
         params: { ...filter, page }
     })
 }
+
+export const getEventDetail = (event_id) => {
+    return FrontendAPI.get(`/tickets/events/${event_id}`);
+}
