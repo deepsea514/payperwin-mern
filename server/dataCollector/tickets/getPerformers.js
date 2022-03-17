@@ -15,35 +15,25 @@ const getPerformers = async (API_TOKEN, API_SECRET) => {
         apiSecretKey: API_SECRET,
     });
     try {
-        let page = 1;
-        do {
-            const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/performers?category_id=1&category_tree=true&per_page=1000&page=' + page);
-            if (response.performers && response.performers.length) {
-                const performers_res = response.performers;
-                for (const performer of performers_res) {
-                    const performer_ = {
-                        id: performer.id,
-                        name: performer.name,
-                        keywords: performer.keywords,
-                        popularity_score: performer.popularity_score,
-                        url: performer.url,
-                        slug_url: performer.slug_url,
-                        upcoming_events: performer.upcoming_events,
-                        meta: performer.meta,
-                        slug: performer.slug,
-                        categories: []
-                    }
-                    arrangeCategories(performer_.categories, performer.category)
-                    await TicketPerformer.findOneAndUpdate({ id: performer_.id }, performer_, { upsert: true });
-                }
-            } else {
-                break;
+        const performersToUpdate = await TicketPerformer.find({ gotFullData: { $ne: true } });
+        for (const performerToUpdate of performersToUpdate) {
+            const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/performers/' + performerToUpdate.id);
+            const performer = {
+                id: response.id,
+                name: response.name,
+                keywords: response.keywords,
+                popularity_score: response.popularity_score,
+                url: response.url,
+                slug_url: response.slug_url,
+                upcoming_events: response.upcoming_events,
+                meta: response.meta,
+                slug: response.slug,
+                categories: [],
+                gotFullData: true
             }
-            console.log('Got Performers, Page => ', page, response.total_entries);
-            page++;
-            if (response.total_entries && response.total_entries < response.current_page * response.per_page)
-                break;
-        } while (true);
+            arrangeCategories(performer.categories, response.category);
+            await performerToUpdate.update(performer);
+        }
         console.log('Got Performers.');
     } catch (error) {
         console.error(error);
