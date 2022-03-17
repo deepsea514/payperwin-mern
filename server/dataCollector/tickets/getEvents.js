@@ -2,6 +2,7 @@ const TevoClient = require('ticketevolution-node');
 const TicketEvent = require('../../models/ticket_event');
 const TicketVenue = require('../../models/ticket_venue');
 const TicketPerformer = require('../../models/ticket_performer');
+const { getPerformers } = require('./getPerformers');
 
 const arrangeCategories = (categories, category) => {
     if (category.parent) {
@@ -74,6 +75,8 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
                 break;
         } while (true);
         console.log('Got Events.');
+
+        await getPerformers(API_TOKEN, API_SECRET);
     } catch (error) {
         console.error(error);
     }
