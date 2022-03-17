@@ -46,7 +46,10 @@ class MainBanner extends React.Component {
     }
 
     getInitialValues = () => {
-        const { location, localities_ca, regions, categories, history } = this.props;
+        const {
+            location, localities_ca, localities_us, regions_ca, regions_us,
+            categories, history
+        } = this.props;
         const { pathname } = location;
         const category_options = [];
         getCategoryOptions(categories, category_options);
@@ -75,27 +78,39 @@ class MainBanner extends React.Component {
 
         if (pathname.startsWith("/places")) {
             breadcrumbs = [{ path: '/', label: 'Home' }];
-            const { match: { params: { region, locality } } } = this.props;
-            const region_name = regions[region];
-            if (!region_name) {
+            const { match: { params: { country, region, locality } } } = this.props;
+            if (!country || !['ca', 'us'].includes(country)) {
                 history.push("/error-404");
                 return;
             }
-            if (locality) {
-                breadcrumbs.push({ path: '/places/' + region, label: region_name });
-                if (localities_ca[region]) {
-                    const existing = localities_ca[region].find(locality_ => locality_ === locality);
-                    if (!existing) {
-                        history.push("/error-404");
-                        return;
-                    }
-                    breadcrumbs.push({ label: locality });
-                } else {
+            const countryName = country === 'ca' ? 'Canada' : 'United States';
+            if (region) {
+                breadcrumbs.push({ path: '/places/' + country, label: countryName });
+                const regions = country === 'ca' ? regions_ca : regions_us;
+                const region_key = Object.keys(regions).find(key => regions[key].slug === region);
+                if (!region_key) {
                     history.push("/error-404");
                     return;
                 }
+                if (locality) {
+                    breadcrumbs.push({ path: '/places/' + country + '/' + region, label: regions[region_key].name });
+                    const localities = country === 'ca' ? localities_ca : localities_us;
+                    if (localities[region_key]) {
+                        const existing = localities[region_key].find(locality_ => locality_.slug === locality);
+                        if (!existing) {
+                            history.push("/error-404");
+                            return;
+                        }
+                        breadcrumbs.push({ label: locality });
+                    } else {
+                        history.push("/error-404");
+                        return;
+                    }
+                } else {
+                    breadcrumbs.push({ label: regions[region_key].name });
+                }
             } else {
-                breadcrumbs.push({ label: region_name });
+                breadcrumbs.push({ label: countryName });
             }
         }
 
@@ -108,7 +123,6 @@ class MainBanner extends React.Component {
             <div className="page-title-area item-bg1">
                 <div className="container">
                     <h1>{title}</h1>
-                    {/* <span>Listen to the Event Speakers</span> */}
                     <ul>
                         {breadcrumbs.map((breadcrumb, index) => (
                             breadcrumb.path ?
@@ -124,8 +138,10 @@ class MainBanner extends React.Component {
 
 const mapStateToProps = (state) => ({
     categories: state.categories,
-    regions: state.regions,
+    regions_ca: state.regions_ca,
+    regions_us: state.regions_us,
     localities_ca: state.localities_ca,
+    localities_us: state.localities_us,
 });
 
 export default connect(mapStateToProps, null)(withRouter(MainBanner));

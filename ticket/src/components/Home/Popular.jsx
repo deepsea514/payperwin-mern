@@ -20,64 +20,48 @@ class Popular extends React.Component {
                     <div className="row m-0">
                         <div className="col-lg-3 col-sm-6 p-0">
                             <div className="single-box">
-                                {/* <div className="d-table"> */}
-                                {/* <div className="d-table-cell"> */}
                                 <div className="content">
                                     <div className="icon">
                                         <i className="icofont-football-american"></i>
                                     </div>
                                     <h3>Sports</h3>
-                                    <Link to="#" className="btn btn-primary">Explore</Link>
+                                    <Link to="/categories/sports" className="btn btn-primary">Explore</Link>
                                 </div>
-                                {/* </div> */}
-                                {/* </div> */}
                             </div>
                         </div>
                         <div className="col-lg-3 col-sm-6 p-0">
                             <div className="single-box">
-                                {/* <div className="d-table"> */}
-                                    {/* <div className="d-table-cell"> */}
-                                        <div className="content">
-                                            <div className="icon">
-                                                <i className="icofont-ui-music"></i>
-                                            </div>
-                                            <h3>Concerts</h3>
-                                            <Link to="#" className="btn btn-primary">Explore</Link>
-                                        </div>
-                                    {/* </div> */}
-                                {/* </div> */}
+                                <div className="content">
+                                    <div className="icon">
+                                        <i className="icofont-ui-music"></i>
+                                    </div>
+                                    <h3>Concerts</h3>
+                                    <Link to="/categories/concerts" className="btn btn-primary">Explore</Link>
+                                </div>
                             </div>
                         </div>
 
                         <div className="col-lg-3 col-sm-6 p-0">
                             <div className="single-box">
-                                {/* <div className="d-table"> */}
-                                    {/* <div className="d-table-cell"> */}
-                                        <div className="content">
-                                            <div className="icon">
-                                                <i className="icofont-music-notes"></i>
-                                            </div>
-                                            <h3>Theatre</h3>
-                                            <Link to="#" className="btn btn-primary">Explore</Link>
-                                        </div>
-                                    {/* </div> */}
-                                {/* </div> */}
+                                <div className="content">
+                                    <div className="icon">
+                                        <i className="icofont-music-notes"></i>
+                                    </div>
+                                    <h3>Theatre</h3>
+                                    <Link to="/categories/theatre" className="btn btn-primary">Explore</Link>
+                                </div>
                             </div>
                         </div>
 
                         <div className="col-lg-3 col-sm-6 p-0">
                             <div className="single-box">
-                                {/* <div className="d-table"> */}
-                                    {/* <div className="d-table-cell"> */}
-                                        <div className="content">
-                                            <div className="icon">
-                                                <i className="icofont-thunder-light"></i>
-                                            </div>
-                                            <h3>Special Events</h3>
-                                            <Link to="#" className="btn btn-primary">Explore</Link>
-                                        </div>
-                                    {/* </div> */}
-                                {/* </div> */}
+                                <div className="content">
+                                    <div className="icon">
+                                        <i className="icofont-thunder-light"></i>
+                                    </div>
+                                    <h3>Special Events</h3>
+                                    <Link to="/categories/special-events" className="btn btn-primary">Explore</Link>
+                                </div>
                             </div>
                         </div>
                     </div>

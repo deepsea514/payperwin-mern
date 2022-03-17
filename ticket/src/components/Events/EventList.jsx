@@ -42,22 +42,23 @@ class EventList extends React.Component {
                                                 <li>
                                                     <i className="icofont-users-alt-4"></i>&nbsp;
                                                     {event.performances.map((performer, index) => (
-                                                        <>
+                                                        <React.Fragment key={index}>
                                                             <Link to={"/performers/" + performer.performer.slug}>{performer.performer.name}</Link>{(index === event.performances.length - 1) ? '' : ', '}
-                                                        </>
+                                                        </React.Fragment>
                                                     ))}
                                                 </li>
                                             </ul>}
-                                            <ul className='mt-2'>
-                                                <li>
-                                                    <i className="icofont-tags" />&nbsp;
+                                            <div className='mt-2 tagcloud'>
+                                                {/* <li> */}
+                                                    {/* <i className="icofont-tags" />&nbsp; */}
                                                     {event.categories.map((category, index) => (
-                                                        <>
-                                                            <Link to={"/categories/" + category.slug}>{category.name}</Link>{(index === event.categories.length - 1) ? '' : ', '}
-                                                        </>
+                                                        // <React.Fragment key={index}>
+                                                        //     <Link to={"/categories/" + category.slug}>{category.name}</Link>{(index === event.categories.length - 1) ? '' : ', '}
+                                                        // </React.Fragment>
+                                                        <Link key={index} to={"/categories/" + category.slug}>{category.name}</Link>
                                                     ))}
-                                                </li>
-                                            </ul>
+                                                {/* </li> */}
+                                            </div>
                                         </div>
                                         <Link to={"/event/" + event.id} className='btn btn-secondary btn-buy'>Buy Ticket</Link>
                                     </div>

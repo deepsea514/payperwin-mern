@@ -31,7 +31,7 @@ class TopPlaces extends React.Component {
 
                 <div className="row m-0">
                     <div className="col-md-6 px-2 pe-md-1">
-                        <Link className="top-places place-vancouver" to="/places/BC/Vancouver">
+                        <Link className="top-places place-vancouver" to="/places/ca/british-columbia/vancouver">
                             <div className="speakers-content">
                                 <h3>Vancouver</h3>
                             </div>
@@ -39,7 +39,7 @@ class TopPlaces extends React.Component {
                     </div>
                     <div className='col-md-6 row px-2 mt-2 mx-0 mt-md-0 ps-md-1'>
                         <div className="col-12 px-0">
-                            <Link className="top-places place-toronto" to="/places/ON/Toronto">
+                            <Link className="top-places place-toronto" to="/places/ca/ontario/toronto">
                                 <div className="speakers-content">
                                     <h3>Toronto</h3>
                                 </div>
@@ -48,7 +48,7 @@ class TopPlaces extends React.Component {
 
                         <div className='col-12 row m-0 p-0 mt-2'>
                             <div className="col-sm-6 p-0 pe-sm-1">
-                                <Link className="top-places place-montreal" to="/places/QC/Montreal">
+                                <Link className="top-places place-montreal" to="/places/ca/quebec/montreal">
                                     <div className="speakers-content">
                                         <h3>Montreal</h3>
                                     </div>
@@ -56,7 +56,7 @@ class TopPlaces extends React.Component {
                             </div>
 
                             <div className="col-sm-6 mt-2 mt-sm-0 p-0 ps-sm-1">
-                                <Link className="top-places place-calgary" to="/places/AB/Calgary">
+                                <Link className="top-places place-calgary" to="/places/ca/alberta/calgary">
                                     <div className="speakers-content">
                                         <h3>Calgary</h3>
                                     </div>
