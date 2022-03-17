@@ -6,7 +6,7 @@ class Venues extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div className="page-title-area item-bg2">
+                <div className="page-title-area venue-bg">
                     <div className="container">
                         <h1>Venues</h1>
                         <ul>
