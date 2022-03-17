@@ -11,6 +11,7 @@ import Venues from "./pages/Venues";
 import Event from "./pages/Event";
 import Performer from "./pages/Performer";
 import Venue from "./pages/Venue";
+import GoToTop from "./pages/GoToTop";
 import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
 
@@ -31,7 +32,7 @@ const AppRouter = ({ getUserAction }) => {
             {renderNavigation()}
             <Switch>
                 <Route path="/" exact component={Home} />
-                <Route path="/event/:id" exact component={Event} />
+                <Route path="/event/:event_id" exact component={Event} />
                 <Route path="/search" exact component={Events} />
                 <Route path="/categories/:category_slug" exact component={Events} />
                 <Route path="/places/:country/:region/:locality" exact component={Events} />
@@ -46,6 +47,7 @@ const AppRouter = ({ getUserAction }) => {
                 <Route path="/error-404" exact component={NotFound} />
                 <Route component={NotFound} />
             </Switch>
+            <GoToTop />
         </Router>
     );
 };
