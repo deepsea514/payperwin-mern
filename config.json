@@ -9,7 +9,7 @@
         "http://68.183.203.13",
         "http://localhost:8081",
         "http://localhost:3000",
-        "http://dev.payperwin.com:8000",
+        "http://dev.payperwin.com:5000",
         "https://tickets.payperwin.com"
     ],
     "googleClientID": "966462220712-bhv2rjfkcsquif5lgd3n4aeaqua5q5ov.apps.googleusercontent.com",
