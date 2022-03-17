@@ -49,8 +49,8 @@ const getTicketsInformation = async () => {
         const API_TOKEN = ticketAddon.value.api_token;
         const API_SECRET = ticketAddon.value.api_secret;
 
-        // await getCategories(API_TOKEN, API_SECRET);
-        // await getVenues(API_TOKEN, API_SECRET);
+        await getCategories(API_TOKEN, API_SECRET);
+        await getVenues(API_TOKEN, API_SECRET);
 
         getEvents(API_TOKEN, API_SECRET);
         const EVENT_INTERVAL = 3 * 60 * 60 * 1000;
