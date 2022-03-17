@@ -35,15 +35,14 @@ const customStyles = {
 class SearchForm extends React.Component {
     constructor(props) {
         super(props);
-        const { categories, regions } = props;
+        const { categories } = props;
         // Get Categories
         const category_options = [];
         getCategoryOptions(categories, category_options);
-        // Get Region and Locality
-        const region_options = Object.keys(regions).map(key => ({ value: key, label: regions[key] }));
 
         this.state = {
             query: '',
+            country: null,
             region: null,
             locality: null,
             venue: null,
@@ -51,46 +50,91 @@ class SearchForm extends React.Component {
             category: null,
             loadingVenue: false,
             category_options: category_options,
-            region_options: region_options,
+            country_options: [
+                {
+                    value: 'ca',
+                    label: 'Canada'
+                },
+                {
+                    value: 'us',
+                    label: 'United States'
+                }
+            ],
+            region_options: [],
             locality_options: [],
-            category_disabled: false,
+            country_disabled: false,
             region_disabled: false,
             locality_disabled: false,
+            category_disabled: false,
         }
     }
 
+    getRegionOptions = (country) => {
+        const { regions_ca, regions_us } = this.props;
+        if (country) {
+            const regions = country.value === 'ca' ? regions_ca : regions_us;
+            return Object.keys(regions).map(key => ({ value: { value: key, slug: regions[key].slug }, label: regions[key].name }))
+        }
+        return [];
+    }
+
+    getLocalityOptions = (country, region) => {
+        const { localities_ca, localities_us } = this.props;
+        if (country) {
+            const localities = country.value === 'ca' ? localities_ca : localities_us;
+            if (region && localities[region.value.value]) {
+                return localities[region.value.value].map(locality => ({ value: { value: locality.name, slug: locality.slug }, label: locality.name }));
+            }
+        }
+        return [];
+    }
+
     getInitialValues = () => {
-        const { location, localities_ca, time_options } = this.props;
+        const { location, time_options } = this.props;
         const { pathname, search } = location;
-        const { category_options, region_options } = this.state;
+        const { category_options, country_options } = this.state;
 
         // Get Default params
         let query = '',
+            country = '',
             locality = '',
             region = '',
             time = '',
             category = '';
-        let category_disabled = false, region_disabled = false, locality_disabled = false;
+        let category_disabled = false, country_disabled = false, region_disabled = false, locality_disabled = false;
+        let region_options = [], locality_options = [];
         // Search URL
         if (pathname === '/search') {
             const params = new URLSearchParams(search);
             query = params.get('query');
+            country = params.get('country');
+            region = params.get('region');
             locality = params.get('locality');
-            if (locality) {
-                locality = locality.split(', ');
-                region = locality[1];
-                locality = locality[0];
+            if (country) {
+                country = country_options.find(country_ => country_.value === country);
+                if (!country) return;
+
+                region_options = this.getRegionOptions(country);
+                if (region) {
+                    region = region_options.find(region_ => region_.value.slug === region);
+                    if (!region) return;
+
+                    locality_options = this.getLocalityOptions(country, region);
+                    if (locality) {
+                        locality = locality_options.find(locality_ => locality_.value.slug === locality);
+                        if (!locality) return;
+                    }
+                }
             }
             time = params.get('time');
             if (time) {
                 time = time_options.find(time_ => time_.value === time);
             }
+            // Get Categories
             category = params.get('category');
-        }
-
-        // Get Categories
-        if (category) {
-            category = category_options.find(category_ => category_.value === category);
+            if (category) {
+                category = category_options.find(category_ => category_.value === category);
+            }
         }
 
         // Category URL
@@ -103,40 +147,42 @@ class SearchForm extends React.Component {
 
         // Places URL
         if (pathname.startsWith("/places")) {
-            const { match: { params: { region: region_param, locality: locality_param } } } = this.props;
-            const region_ = region_options.find(region_ => region_.value === region_param);
-            if (!region_) return;
-            if (locality_param) {
-                if (!localities_ca[region_param]) return;
-                const existing = localities_ca[region_param].find(locality_ => locality_ === locality_param);
-                if (!existing) return;
-                locality = locality_param;
-                locality_disabled = true;
-            }
-            region = region_param;
-            region_disabled = true;
-        }
+            const { match: { params: { country: country_param, region: region_param, locality: locality_param } } } = this.props;
+            // Country Option
+            if (country_param) {
+                country = country_options.find(country_ => country_.value === country_param);
+                if (!country) return;
+                country_disabled = true;
 
-        // Get Region and Locality
-        let locality_options = [];
-        if (region) {
-            region = region_options.find(region_ => region_.value === region);
-            if (region && localities_ca[region.value]) {
-                locality_options = localities_ca[region.value].map(locality => ({ value: locality, label: locality }));
-                locality = locality_options.find(locality_ => locality_.value === locality);
+                region_options = this.getRegionOptions(country);
+                if (region_param) {
+                    region = region_options.find(region_ => region_.value.slug === region_param);
+                    if (!region) return;
+                    region_disabled = true;
+
+                    locality_options = this.getLocalityOptions(country, region);
+                    if (locality_param) {
+                        locality = locality_options.find(locality_ => locality_.value.slug === locality_param);
+                        if (!locality) return;
+                        locality_disabled = true;
+                    }
+                }
             }
         }
 
         this.setState({
             query: query ? query : '',
+            country: country ? country : null,
             region: region ? region : null,
             locality: locality ? locality : null,
             venue: null,
             time: time ? time : null,
             category: category ? category : null,
             loadingVenue: false,
+            region_options: region_options,
             locality_options: locality_options,
             category_disabled: category_disabled,
+            country_disabled: country_disabled,
             region_disabled: region_disabled,
             locality_disabled: locality_disabled,
         }, this.initializeFilter)
@@ -144,11 +190,12 @@ class SearchForm extends React.Component {
 
     initializeFilter = () => {
         const { initializeFilter } = this.props;
-        const { query, region, locality, venue, time, category } = this.state;
+        const { query, region, locality, venue, time, category, country } = this.state;
         initializeFilter({
             query: query,
-            region: region ? region.value : '',
-            locality: locality ? locality.value : '',
+            country: country ? country.value : '',
+            region: region ? region.value.value : '',
+            locality: locality ? locality.value.value : '',
             venue: venue ? venue.value : '',
             time: time ? time.value : '',
             category: category ? category.value : '',
@@ -168,22 +215,29 @@ class SearchForm extends React.Component {
     }
 
     setRegionOption = (region) => {
-        const { localities_ca } = this.props;
-        let locality_options = [];
-        if (region && localities_ca[region.value]) {
-            locality_options = localities_ca[region.value].map(locality => ({ value: locality, label: locality }));
-            this.setState({
-                region: region,
-                locality: null,
-                locality_options
-            });
-        }
+        const { country } = this.state;
+        const locality_options = this.getLocalityOptions(country, region)
+        this.setState({
+            region: region,
+            locality: null,
+            locality_options
+        });
+    }
+
+    setCountryOption = (country) => {
+        this.setState({
+            country: country,
+            region: null,
+            locality: null,
+            locality_options: [],
+            region_options: this.getRegionOptions(country)
+        });
     }
 
     getVenues = (query, cb) => {
         const { region, locality } = this.state;
         this.setState({ loadingVenue: true });
-        getVenues(region ? region.value : '', locality ? locality.value : '', query)
+        getVenues(region ? region.value.value : '', locality ? locality.value.value : '', query)
             .then(({ data }) => {
                 const { success, venues } = data;
                 this.setState({ loadingVenue: false });
@@ -198,9 +252,10 @@ class SearchForm extends React.Component {
     }
 
     render() {
-        const { query, region, locality, venue, time, category, loadingVenue,
+        const {
+            query, country, region, locality, venue, time, category, loadingVenue,
             category_options, locality_options, region_options, category_disabled,
-            region_disabled, locality_disabled
+            region_disabled, locality_disabled, country_disabled, country_options
         } = this.state;
         const { time_options } = this.props;
 
@@ -217,6 +272,21 @@ class SearchForm extends React.Component {
                         <Select
                             className="form-control p-0"
                             classNamePrefix="select"
+                            name="countries"
+                            options={country_options}
+                            placeholder="All Countries"
+                            value={country}
+                            onChange={this.setCountryOption}
+                            styles={customStyles}
+                            maxMenuHeight={200}
+                            isDisabled={country_disabled}
+                            isClearable
+                        />
+                    </div>
+                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-sm-0'>
+                        <Select
+                            className="form-control p-0"
+                            classNamePrefix="select"
                             name="region"
                             options={region_options}
                             placeholder="All States"
@@ -225,6 +295,7 @@ class SearchForm extends React.Component {
                             styles={customStyles}
                             maxMenuHeight={200}
                             isDisabled={region_disabled}
+                            isClearable
                         />
                     </div>
                     <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-md-0'>
@@ -241,8 +312,10 @@ class SearchForm extends React.Component {
                             styles={customStyles}
                             isDisabled={locality_disabled}
                             maxMenuHeight={200}
-                        /></div>
-                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-lg-0'>
+                            isClearable
+                        />
+                    </div>
+                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2'>
                         <AsyncSelect
                             className="form-control p-0"
                             classNamePrefix="select"
@@ -257,6 +330,7 @@ class SearchForm extends React.Component {
                             styles={customStyles}
                             defaultOptions
                             maxMenuHeight={200}
+                            isClearable
                         />
                     </div>
                     <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2'>
@@ -271,6 +345,7 @@ class SearchForm extends React.Component {
                             onChange={(time) => { this.setState({ time }) }}
                             styles={customStyles}
                             maxMenuHeight={200}
+                            isClearable
                         />
                     </div>
                     <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2'>
@@ -285,9 +360,10 @@ class SearchForm extends React.Component {
                             maxMenuHeight={200}
                             onChange={(category) => this.setState({ category })}
                             isDisabled={category_disabled}
+                            isClearable
                         />
                     </div>
-                    <div className='col-12 col-sm-12 col-md-12 col-lg-6 mt-2'>
+                    <div className='col-12 col-sm-6 col-md-8 col-lg-3 mt-2'>
                         <button className='btn btn-primary'
                             style={{ width: '100%' }}
                             onClick={this.initializeFilter}>Search</button>
@@ -300,8 +376,10 @@ class SearchForm extends React.Component {
 
 const mapStateToProps = (state) => ({
     categories: state.categories,
-    regions: state.regions,
+    regions_ca: state.regions_ca,
+    regions_us: state.regions_us,
     localities_ca: state.localities_ca,
+    localities_us: state.localities_us,
     time_options: state.time_options,
 });
 

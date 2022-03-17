@@ -34,8 +34,9 @@ const AppRouter = ({ getUserAction }) => {
                 <Route path="/event/:id" exact component={Event} />
                 <Route path="/search" exact component={Events} />
                 <Route path="/categories/:category_slug" exact component={Events} />
-                <Route path="/places/:region/:locality" exact component={Events} />
-                <Route path="/places/:region" exact component={Events} />
+                <Route path="/places/:country/:region/:locality" exact component={Events} />
+                <Route path="/places/:country/:region" exact component={Events} />
+                <Route path="/places/:country" exact component={Events} />
                 <Route path="/venues/:venue_slug" exact component={Venue} />
                 <Route path="/venues" exact component={Venues} />
                 <Route path="/performers/:performer_slug" exact component={Performer} />

@@ -888,26 +888,6 @@ Main Banner CSS
     color: #c7c3c7;
 }
 
-.main-banner-content .search-form button {
-    /* position: absolute; */
-    /* right: -1px; */
-    height: 55px;
-    background: #FF2D55;
-    top: 0;
-    color: #ffffff;
-    border: none;
-    width: 130px;
-    min-width: 130px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: 500;
-    border-radius: 0 50px 50px 0;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    outline: 0 !important;
-    border: none;
-}
-
 .main-banner-content form button:hover, .coming-soon .main-banner-content form button:focus {
     background: #00acee;
 }
@@ -4409,7 +4389,7 @@ Sidebar CSS
     margin-bottom: 0;
 }
 
-.sidebar .widget.widget_tag_cloud .tagcloud a {
+.tagcloud a {
     font-size: 14px !important;
     border: 1px dashed #eeeeee;
     padding: 6px 20px;
@@ -4422,7 +4402,7 @@ Sidebar CSS
     margin-bottom: 5px;
 }
 
-.sidebar .widget.widget_tag_cloud .tagcloud a:hover {
+.tagcloud a:hover {
     background: #FF2D55;
     color: #ffffff;
     border-color: #FF2D55;
@@ -4946,7 +4926,7 @@ Back To Top CSS
 }
 
 .main-banner-content .search-form button {
-    height: 55px;
+    height: 56px;
     background: #FF2D55;
     top: 0;
     color: #ffffff;

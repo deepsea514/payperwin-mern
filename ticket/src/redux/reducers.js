@@ -15,7 +15,8 @@ export const actionTypes = {
 const initialState = {
     user: null,
     categories: categories,
-    regions: regions.CA,
+    regions_ca: regions.CA,
+    regions_us: regions.US,
     localities_ca: localities_ca,
     localities_us: localities_us,
     time_options: [

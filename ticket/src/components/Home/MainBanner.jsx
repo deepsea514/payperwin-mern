@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 import { connect } from 'react-redux';
 
 const customStyles = {
@@ -48,31 +49,72 @@ const customStyles = {
 class MainBanner extends React.Component {
     constructor(props) {
         super(props);
-        const { localities_ca, categories } = this.props;
+        const { categories } = this.props;
         const category_options = categories.map(category => ({ label: category.name, value: category.slug }));
-        let locality_options = [];
-        for (const key of Object.keys(localities_ca)) {
-            locality_options = [...locality_options, ...localities_ca[key].map(locality => ({
-                value: locality + ', ' + key,
-                label: locality + ', ' + key,
-            }))];
-        }
         this.state = {
             query: '',
+            country: null,
             locality: null,
             time: null,
             category: null,
-            locality_options: locality_options,
             category_options: category_options,
+            country_options: [
+                {
+                    value: 'ca',
+                    label: 'Canada'
+                },
+                {
+                    value: 'us',
+                    label: 'United States'
+                }
+            ]
         }
+    }
+
+    getCities = (inputValue, callback) => {
+        const { country } = this.state;
+        if (!country) {
+            callback([]);
+            return;
+        }
+        const { localities_ca, localities_us, regions_ca, regions_us } = this.props;
+        let locality_options = [];
+        if (country.value === 'us') {
+            for (const key of Object.keys(localities_us)) {
+                locality_options = [...locality_options, ...localities_us[key].map(locality => {
+                    const region = regions_us[key];
+                    if (region)
+                        return {
+                            value: { region: region.slug, locality: locality.slug },
+                            label: locality.name + ', ' + region.name,
+                        }
+                    return { value: 'undefiend', label: 'undefined' };
+                })];
+            }
+        } else if (country.value === 'ca') {
+            for (const key of Object.keys(localities_ca)) {
+                locality_options = [...locality_options, ...localities_ca[key].map(locality => {
+                    const region = regions_ca[key];
+                    if (region)
+                        return {
+                            value: { region: region.slug, locality: locality.slug },
+                            label: locality.name + ', ' + region.name,
+                        }
+                    return null;
+                })];
+            }
+        }
+        callback(locality_options.filter(x => x.label.toLowerCase().includes(inputValue.toLowerCase())).slice(0, 20))
     }
 
     onSearch = () => {
         const { history } = this.props;
-        const { query, locality, time, category } = this.state;
+        const { query, country, locality, time, category } = this.state;
         const searchObj = {};
         query && (searchObj.query = query);
-        locality && (searchObj.locality = locality.value);
+        country && (searchObj.country = country.value);
+        locality && (searchObj.region = locality.value.region);
+        locality && (searchObj.locality = locality.value.locality);
         time && (searchObj.time = time.value);
         category && (searchObj.category = category.value);
 
@@ -82,12 +124,11 @@ class MainBanner extends React.Component {
         });
     }
 
-    getCities = (query, cb) => {
-        cb([]);
-    }
-
     render() {
-        const { query, locality, time, category, category_options, locality_options } = this.state;
+        const {
+            query, locality, time, category, category_options,
+            country, country_options
+        } = this.state;
         const { time_options } = this.props;
 
         return (
@@ -115,15 +156,30 @@ class MainBanner extends React.Component {
                                     <Select
                                         className="form-control"
                                         classNamePrefix="select"
+                                        isSearchable={false}
+                                        name="country"
+                                        options={country_options}
+                                        placeholder="All Countries"
+                                        value={country}
+                                        onChange={(country) => this.setState({ country, region: null, locality: null })}
+                                        styles={customStyles}
+                                        maxMenuHeight={200}
+                                        isClearable
+                                    />
+                                    <AsyncSelect
+                                        className="form-control"
+                                        classNamePrefix="select"
                                         isSearchable={true}
                                         name="locality"
-                                        options={locality_options}
                                         placeholder="All Cities"
+                                        loadOptions={this.getCities}
                                         noOptionsMessage={() => "No Cities"}
                                         value={locality}
                                         onChange={(locality) => this.setState({ locality })}
+                                        defaultOptions={true}
                                         styles={customStyles}
                                         maxMenuHeight={200}
+                                        isClearable
                                     />
                                     <Select
                                         className="form-control"
@@ -136,6 +192,7 @@ class MainBanner extends React.Component {
                                         onChange={(time) => { this.setState({ time }) }}
                                         styles={customStyles}
                                         maxMenuHeight={200}
+                                        isClearable
                                     />
                                     <Select
                                         className="form-control"
@@ -147,6 +204,7 @@ class MainBanner extends React.Component {
                                         value={category}
                                         maxMenuHeight={200}
                                         onChange={(category) => this.setState({ category })}
+                                        isClearable
                                     />
                                     <button onClick={this.onSearch}>Search</button>
                                 </div>
@@ -178,7 +236,10 @@ class MainBanner extends React.Component {
 const mapStateToProps = (state) => ({
     categories: state.categories,
     localities_ca: state.localities_ca,
+    localities_us: state.localities_us,
     time_options: state.time_options,
+    regions_ca: state.regions_ca,
+    regions_us: state.regions_us,
 });
 
 export default connect(mapStateToProps, null)(withRouter(MainBanner));

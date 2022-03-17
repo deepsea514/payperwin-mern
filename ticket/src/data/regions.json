@@ -1,78 +1,294 @@
 {
     "US": {
-        "AL": "Alabama",
-        "AK": "Alaska",
-        "AS": "American Samoa",
-        "AZ": "Arizona",
-        "AR": "Arkansas",
-        "CA": "California",
-        "CO": "Colorado",
-        "CT": "Connecticut",
-        "DE": "Delaware",
-        "DC": "District of Columbia",
-        "FM": "Micronesia",
-        "FL": "Florida",
-        "GA": "Georgia",
-        "GU": "Guam",
-        "HI": "Hawaii",
-        "ID": "Idaho",
-        "IL": "Illinois",
-        "IN": "Indiana",
-        "IA": "Iowa",
-        "KS": "Kansas",
-        "KY": "Kentucky",
-        "LA": "Louisiana",
-        "ME": "Maine",
-        "MH": "Marshall Islands",
-        "MD": "Maryland",
-        "MA": "Massachusetts",
-        "MI": "Michigan",
-        "MN": "Minnesota",
-        "MS": "Mississippi",
-        "MO": "Missouri",
-        "MT": "Montana",
-        "NE": "Nebraska",
-        "NV": "Nevada",
-        "NH": "New Hampshire",
-        "NJ": "New Jersey",
-        "NM": "New Mexico",
-        "NY": "New York",
-        "NC": "North Carolina",
-        "ND": "North Dakota",
-        "MP": "Northern Mariana Islands",
-        "OH": "Ohio",
-        "OK": "Oklahoma",
-        "OR": "Oregon",
-        "PW": "Palau",
-        "PA": "Pennsylvania",
-        "PR": "Puerto Rico",
-        "RI": "Rhode Island",
-        "SC": "South Carolina",
-        "SD": "South Dakota",
-        "TN": "Tennessee",
-        "TX": "Texas",
-        "UT": "Utah",
-        "VT": "Vermont",
-        "VI": "Virgin Islands",
-        "VA": "Virginia",
-        "WA": "Washington",
-        "WV": "West Virginia",
-        "WI": "Wisconsin",
-        "WY": "Wyoming"
+        "AL": {
+            "name": "Alabama",
+            "slug": "alabama"
+        },
+        "AK": {
+            "name": "Alaska",
+            "slug": "alaska"
+        },
+        "AS": {
+            "name": "American Samoa",
+            "slug": "american-samoa"
+        },
+        "AZ": {
+            "name": "Arizona",
+            "slug": "arizona"
+        },
+        "AR": {
+            "name": "Arkansas",
+            "slug": "arkansas"
+        },
+        "CA": {
+            "name": "California",
+            "slug": "california"
+        },
+        "CO": {
+            "name": "Colorado",
+            "slug": "colorado"
+        },
+        "CT": {
+            "name": "Connecticut",
+            "slug": "connecticut"
+        },
+        "DE": {
+            "name": "Delaware",
+            "slug": "delaware"
+        },
+        "DC": {
+            "name": "District of Columbia",
+            "slug": "district-of-olumbia"
+        },
+        "FM": {
+            "name": "Micronesia",
+            "slug": "micronesia"
+        },
+        "FL": {
+            "name": "Florida",
+            "slug": "florida"
+        },
+        "GA": {
+            "name": "Georgia",
+            "slug": "georgia"
+        },
+        "GU": {
+            "name": "Guam",
+            "slug": "guam"
+        },
+        "HI": {
+            "name": "Hawaii",
+            "slug": "hawaii"
+        },
+        "ID": {
+            "name": "Idaho",
+            "slug": "idaho"
+        },
+        "IL": {
+            "name": "Illinois",
+            "slug": "illinois"
+        },
+        "IN": {
+            "name": "Indiana",
+            "slug": "indiana"
+        },
+        "IA": {
+            "name": "Iowa",
+            "slug": "iowa"
+        },
+        "KS": {
+            "name": "Kansas",
+            "slug": "kansas"
+        },
+        "KY": {
+            "name": "Kentucky",
+            "slug": "kentucky"
+        },
+        "LA": {
+            "name": "Louisiana",
+            "slug": "louisiana"
+        },
+        "ME": {
+            "name": "Maine",
+            "slug": "maine"
+        },
+        "MH": {
+            "name": "Marshall Islands",
+            "slug": "marshall-islands"
+        },
+        "MD": {
+            "name": "Maryland",
+            "slug": "maryland"
+        },
+        "MA": {
+            "name": "Massachusetts",
+            "slug": "massachusetts"
+        },
+        "MI": {
+            "name": "Michigan",
+            "slug": "michigan"
+        },
+        "MN": {
+            "name": "Minnesota",
+            "slug": "minnesota"
+        },
+        "MS": {
+            "name": "Mississippi",
+            "slug": "mississippi"
+        },
+        "MO": {
+            "name": "Missouri",
+            "slug": "missouri"
+        },
+        "MT": {
+            "name": "Montana",
+            "slug": "montana"
+        },
+        "NE": {
+            "name": "Nebraska",
+            "slug": "nebraska"
+        },
+        "NV": {
+            "name": "Nevada",
+            "slug": "nevada"
+        },
+        "NH": {
+            "name": "New Hampshire",
+            "slug": "new-hampshire"
+        },
+        "NJ": {
+            "name": "New Jersey",
+            "slug": "new-jersey"
+        },
+        "NM": {
+            "name": "New Mexico",
+            "slug": "new-mexico"
+        },
+        "NY": {
+            "name": "New York",
+            "slug": "new-york"
+        },
+        "NC": {
+            "name": "North Carolina",
+            "slug": "north carolina"
+        },
+        "ND": {
+            "name": "North Dakota",
+            "slug": "north-dakota"
+        },
+        "MP": {
+            "name": "Northern Mariana Islands",
+            "slug": "northern-mariana-islands"
+        },
+        "OH": {
+            "name": "Ohio",
+            "slug": "ohio"
+        },
+        "OK": {
+            "name": "Oklahoma",
+            "slug": "oklahoma"
+        },
+        "OR": {
+            "name": "Oregon",
+            "slug": "oregon"
+        },
+        "PW": {
+            "name": "Palau",
+            "slug": "palau"
+        },
+        "PA": {
+            "name": "Pennsylvania",
+            "slug": "pennsylvania"
+        },
+        "PR": {
+            "name": "Puerto Rico",
+            "slug": "puerto-rico"
+        },
+        "RI": {
+            "name": "Rhode Island",
+            "slug": "rhode-ssland"
+        },
+        "SC": {
+            "name": "South Carolina",
+            "slug": "south-carolina"
+        },
+        "SD": {
+            "name": "South Dakota",
+            "slug": "south-dakota"
+        },
+        "TN": {
+            "name": "Tennessee",
+            "slug": "tennessee"
+        },
+        "TX": {
+            "name": "Texas",
+            "slug": "texas"
+        },
+        "UT": {
+            "name": "Utah",
+            "slug": "utah"
+        },
+        "VT": {
+            "name": "Vermont",
+            "slug": "vermont"
+        },
+        "VI": {
+            "name": "Virgin Islands",
+            "slug": "virgin-islands"
+        },
+        "VA": {
+            "name": "Virginia",
+            "slug": "virginia"
+        },
+        "WA": {
+            "name": "Washington",
+            "slug": "washington"
+        },
+        "WV": {
+            "name": "West Virginia",
+            "slug": "west-virginia"
+        },
+        "WI": {
+            "name": "Wisconsin",
+            "slug": "wisconsin"
+        },
+        "WY": {
+            "name": "Wyoming",
+            "slug": "wyoming"
+        }
     },
     "CA": {
-        "AB": "Alberta",
-        "BC": "British Columbia",
-        "MB": "Manitoba",
-        "NB": "New Brunswick",
-        "NL": "Newfoundland and Labrador",
-        "NT": "Northwest Territories",
-        "NS": "Nova Scotia",
-        "NU": "Nunavut",
-        "ON": "Ontario",
-        "PE": "Prince Edward Island",
-        "QC": "Quebec",
-        "SK": "Saskatchewan",
-        "YT": "Yukon"
+        "AB": {
+            "name": "Alberta",
+            "slug": "alberta"
+        },
+        "BC": {
+            "name": "British Columbia",
+            "slug": "british-columbia"
+        },
+        "MB": {
+            "name": "Manitoba",
+            "slug": "manitoba"
+        },
+        "NB": {
+            "name": "New Brunswick",
+            "slug": "new-brunswick"
+        },
+        "NL": {
+            "name": "Newfoundland and Labrador",
+            "slug": "newfoundland-and-labrador"
+        },
+        "NT": {
+            "name": "Northwest Territories",
+            "slug": "northwest-territories"
+        },
+        "NS": {
+            "name": "Nova Scotia",
+            "slug": "nova-scotia"
+        },
+        "NU": {
+            "name": "Nunavut",
+            "slug": "nunavut"
+        },
+        "ON": {
+            "name": "Ontario",
+            "slug": "ontario"
+        },
+        "PE": {
+            "name": "Prince Edward Island",
+            "slug": "prince-edward-island"
+        },
+        "QC": {
+            "name": "Quebec",
+            "slug": "quebec"
+        },
+        "SK": {
+            "name": "Saskatchewan",
+            "slug": "saskatchewan"
+        },
+        "YT": {
+            "name": "Yukon",
+            "slug": "yukon"
+        }
     }
 }

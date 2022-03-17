@@ -1,169 +1,610 @@
 {
-    "QC": [
-        "Brossard",
-        "Chicoutimi",
-        "Deux-montagnes",
-        "Dorval",
-        "Gatineau",
-        "Hull",
-        "Kahnawake",
-        "L'Île Bizard",
-        "Laval",
-        "Montreal",
-        "Outremont",
-        "Quebec",
-        "Sainte-Adèle",
-        "Sainte-Julie",
-        "Shawinigan",
-        "Sherbrooke",
-        "Sillery",
-        "St Jean Sur Richelieu",
-        "St Tite",
-        "Wakefield"
-    ],
-    "NB": [
-        "Fredericton",
-        "Moncton",
-        "St John"
-    ],
-    "PE": [
-        "Charlottetown",
-        "Hunter River",
-        "Summerside"
-    ],
-    "SK": [
-        "Craven",
-        "Estevan",
-        "Lloydminster",
-        "Melfort",
-        "Moose Jaw",
-        "Prince Albert",
-        "Regina",
-        "Saskatoon",
-        "Weyburn"
-    ],
-    "ON": [
-        "Bala",
-        "Barrie",
-        "Belleville",
-        "Bobcaygeon",
-        "Bowmanville",
-        "Bracebridge",
-        "Brampton",
-        "Brantford",
-        "Brockville",
-        "Cambridge",
-        "Chatham",
-        "Cornwall",
-        "Drayton",
-        "Etobicoke",
-        "Grand Bend",
-        "Guelph",
-        "Hamilton",
-        "Harriston",
-        "Huntsville",
-        "Kanata",
-        "King City",
-        "Kingston",
-        "Kitchener",
-        "Lindsay",
-        "London",
-        "Markham",
-        "Mississauga",
-        "Nepean",
-        "Niagara Falls",
-        "Niagara On The Lake",
-        "North Bay",
-        "North York",
-        "Orillia",
-        "Oro",
-        "Oshawa",
-        "Ottawa",
-        "Perth",
-        "Peterborough",
-        "Rama",
-        "Richmond Hill",
-        "Sarnia",
-        "Sault Ste. Marie",
-        "Simcoe",
-        "St Catharines",
-        "St Jacobs",
-        "St Thomas",
-        "Stratford",
-        "Sudbury",
-        "Thunder Bay",
-        "Toronto",
-        "Waterloo",
-        "Wellington North",
-        "Whitby",
-        "Windsor"
-    ],
     "AB": [
-        "Banff",
-        "Calgary",
-        "Camrose",
-        "Cochrane",
-        "Edmonton",
-        "Enoch",
-        "Fort McMurray",
-        "Fort Saskatchewan",
-        "Gibbons",
-        "Grande Prairie",
-        "Lethbridge",
-        "Medicine Hat",
-        "Monton",
-        "Priddis",
-        "Red Deer",
-        "Rocky View",
-        "Sherwood Park",
-        "Spruce Grove",
-        "St Albert",
-        "Strathcona County",
-        "Westlock"
+        {
+            "name": "Banff",
+            "slug": "banff"
+        },
+        {
+            "name": "Calgary",
+            "slug": "calgary"
+        },
+        {
+            "name": "Camrose",
+            "slug": "camrose"
+        },
+        {
+            "name": "Cochrane",
+            "slug": "cochrane"
+        },
+        {
+            "name": "Edmonton",
+            "slug": "edmonton"
+        },
+        {
+            "name": "Enoch",
+            "slug": "enoch"
+        },
+        {
+            "name": "Fort McMurray",
+            "slug": "fort-mcmurray"
+        },
+        {
+            "name": "Fort Saskatchewan",
+            "slug": "fort-saskatchewan"
+        },
+        {
+            "name": "Gibbons",
+            "slug": "gibbons"
+        },
+        {
+            "name": "Grande Prairie",
+            "slug": "grande-prairie"
+        },
+        {
+            "name": "Lethbridge",
+            "slug": "lethbridge"
+        },
+        {
+            "name": "Medicine Hat",
+            "slug": "medicine-hat"
+        },
+        {
+            "name": "Monton",
+            "slug": "monton"
+        },
+        {
+            "name": "Priddis",
+            "slug": "priddis"
+        },
+        {
+            "name": "Red Deer",
+            "slug": "red-deer"
+        },
+        {
+            "name": "Rocky View",
+            "slug": "rocky-view"
+        },
+        {
+            "name": "Sherwood Park",
+            "slug": "sherwood-park"
+        },
+        {
+            "name": "Spruce Grove",
+            "slug": "spruce-grove"
+        },
+        {
+            "name": "St Albert",
+            "slug": "st-albert"
+        },
+        {
+            "name": "Strathcona County",
+            "slug": "strathcona-county"
+        },
+        {
+            "name": "Westlock",
+            "slug": "westlock"
+        }
     ],
     "BC": [
-        "Abbotsford",
-        "Burnaby",
-        "Coquitlam",
-        "Courtenay",
-        "Cranbrook",
-        "Dawson Creek",
-        "Duncan",
-        "Esquimalt",
-        "Greater Vancouver A",
-        "Kamloops",
-        "Kelowna",
-        "Langley",
-        "Merritt",
-        "Mission",
-        "New Westminster",
-        "North Vancouver",
-        "Pemberton",
-        "Penticton",
-        "Prince George",
-        "Richmond",
-        "Squamish",
-        "Surrey",
-        "Vancouver",
-        "Vernon",
-        "Victoria",
-        "West Vancouver",
-        "Whistler",
-        "Winnipeg"
+        {
+            "name": "Abbotsford",
+            "slug": "abbotsford"
+        },
+        {
+            "name": "Burnaby",
+            "slug": "burnaby"
+        },
+        {
+            "name": "Coquitlam",
+            "slug": "coquitlam"
+        },
+        {
+            "name": "Courtenay",
+            "slug": "courtenay"
+        },
+        {
+            "name": "Cranbrook",
+            "slug": "cranbrook"
+        },
+        {
+            "name": "Dawson Creek",
+            "slug": "dawson-creek"
+        },
+        {
+            "name": "Duncan",
+            "slug": "duncan"
+        },
+        {
+            "name": "Esquimalt",
+            "slug": "esquimalt"
+        },
+        {
+            "name": "Greater Vancouver A",
+            "slug": "greater-vancouver-a"
+        },
+        {
+            "name": "Kamloops",
+            "slug": "kamloops"
+        },
+        {
+            "name": "Kelowna",
+            "slug": "kelowna"
+        },
+        {
+            "name": "Langley",
+            "slug": "langley"
+        },
+        {
+            "name": "Merritt",
+            "slug": "merritt"
+        },
+        {
+            "name": "Mission",
+            "slug": "mission"
+        },
+        {
+            "name": "New Westminster",
+            "slug": "new-westminster"
+        },
+        {
+            "name": "North Vancouver",
+            "slug": "north-vancouver"
+        },
+        {
+            "name": "Pemberton",
+            "slug": "pemberton"
+        },
+        {
+            "name": "Penticton",
+            "slug": "penticton"
+        },
+        {
+            "name": "Prince George",
+            "slug": "prince-george"
+        },
+        {
+            "name": "Richmond",
+            "slug": "richmond"
+        },
+        {
+            "name": "Squamish",
+            "slug": "squamish"
+        },
+        {
+            "name": "Surrey",
+            "slug": "surrey"
+        },
+        {
+            "name": "Vancouver",
+            "slug": "vancouver"
+        },
+        {
+            "name": "Vernon",
+            "slug": "vernon"
+        },
+        {
+            "name": "Victoria",
+            "slug": "victoria"
+        },
+        {
+            "name": "West Vancouver",
+            "slug": "west-vancouver"
+        },
+        {
+            "name": "Whistler",
+            "slug": "whistler"
+        },
+        {
+            "name": "Winnipeg",
+            "slug": "winnipeg"
+        }
     ],
     "MB": [
-        "Brandon",
-        "Dauphin",
-        "Winnipeg"
+        {
+            "name": "Brandon",
+            "slug": "brandon"
+        },
+        {
+            "name": "Dauphin",
+            "slug": "dauphin"
+        },
+        {
+            "name": "Winnipeg",
+            "slug": "winnipeg"
+        }
     ],
-    "NS": [
-        "Antigonish",
-        "Dartmouth",
-        "Halifax"
+    "NB": [
+        {
+            "name": "Fredericton",
+            "slug": "fredericton"
+        },
+        {
+            "name": "Moncton",
+            "slug": "moncton"
+        },
+        {
+            "name": "St John",
+            "slug": "st-john"
+        }
     ],
     "NL": [
-        "Corner Brook",
-        "Mount Pearl",
-        "St John's"
+        {
+            "name": "Corner Brook",
+            "slug": "corner-brook"
+        },
+        {
+            "name": "Mount Pearl",
+            "slug": "mount-pearl"
+        },
+        {
+            "name": "St John's",
+            "slug": "st-johns"
+        }
+    ],
+    "NS": [
+        {
+            "name": "Antigonish",
+            "slug": "antigonish"
+        },
+        {
+            "name": "Dartmouth",
+            "slug": "dartmouth"
+        },
+        {
+            "name": "Halifax",
+            "slug": "halifax"
+        }
+    ],
+    "ON": [
+        {
+            "name": "Bala",
+            "slug": "bala"
+        },
+        {
+            "name": "Barrie",
+            "slug": "barrie"
+        },
+        {
+            "name": "Belleville",
+            "slug": "belleville"
+        },
+        {
+            "name": "Bobcaygeon",
+            "slug": "bobcaygeon"
+        },
+        {
+            "name": "Bowmanville",
+            "slug": "bowmanville"
+        },
+        {
+            "name": "Bracebridge",
+            "slug": "bracebridge"
+        },
+        {
+            "name": "Brampton",
+            "slug": "brampton"
+        },
+        {
+            "name": "Brantford",
+            "slug": "brantford"
+        },
+        {
+            "name": "Brockville",
+            "slug": "brockville"
+        },
+        {
+            "name": "Cambridge",
+            "slug": "cambridge"
+        },
+        {
+            "name": "Chatham",
+            "slug": "chatham"
+        },
+        {
+            "name": "Cornwall",
+            "slug": "cornwall"
+        },
+        {
+            "name": "Drayton",
+            "slug": "drayton"
+        },
+        {
+            "name": "Etobicoke",
+            "slug": "etobicoke"
+        },
+        {
+            "name": "Grand Bend",
+            "slug": "grand-bend"
+        },
+        {
+            "name": "Guelph",
+            "slug": "guelph"
+        },
+        {
+            "name": "Hamilton",
+            "slug": "hamilton"
+        },
+        {
+            "name": "Harriston",
+            "slug": "harriston"
+        },
+        {
+            "name": "Huntsville",
+            "slug": "huntsville"
+        },
+        {
+            "name": "Kanata",
+            "slug": "kanata"
+        },
+        {
+            "name": "King City",
+            "slug": "king-city"
+        },
+        {
+            "name": "Kingston",
+            "slug": "kingston"
+        },
+        {
+            "name": "Kitchener",
+            "slug": "kitchener"
+        },
+        {
+            "name": "Lindsay",
+            "slug": "lindsay"
+        },
+        {
+            "name": "London",
+            "slug": "london"
+        },
+        {
+            "name": "Markham",
+            "slug": "markham"
+        },
+        {
+            "name": "Mississauga",
+            "slug": "mississauga"
+        },
+        {
+            "name": "Nepean",
+            "slug": "nepean"
+        },
+        {
+            "name": "Niagara Falls",
+            "slug": "niagara-falls"
+        },
+        {
+            "name": "Niagara On The Lake",
+            "slug": "niagara-on-the-lake"
+        },
+        {
+            "name": "North Bay",
+            "slug": "north-bay"
+        },
+        {
+            "name": "North York",
+            "slug": "north-york"
+        },
+        {
+            "name": "Orillia",
+            "slug": "orillia"
+        },
+        {
+            "name": "Oro",
+            "slug": "oro"
+        },
+        {
+            "name": "Oshawa",
+            "slug": "oshawa"
+        },
+        {
+            "name": "Ottawa",
+            "slug": "ottawa"
+        },
+        {
+            "name": "Perth",
+            "slug": "perth"
+        },
+        {
+            "name": "Peterborough",
+            "slug": "peterborough"
+        },
+        {
+            "name": "Rama",
+            "slug": "rama"
+        },
+        {
+            "name": "Richmond Hill",
+            "slug": "richmond-hill"
+        },
+        {
+            "name": "Sarnia",
+            "slug": "sarnia"
+        },
+        {
+            "name": "Sault Ste. Marie",
+            "slug": "sault-ste-marie"
+        },
+        {
+            "name": "Simcoe",
+            "slug": "simcoe"
+        },
+        {
+            "name": "St Catharines",
+            "slug": "st-catharines"
+        },
+        {
+            "name": "St Jacobs",
+            "slug": "st-jacobs"
+        },
+        {
+            "name": "St Thomas",
+            "slug": "st-thomas"
+        },
+        {
+            "name": "Stratford",
+            "slug": "stratford"
+        },
+        {
+            "name": "Sudbury",
+            "slug": "sudbury"
+        },
+        {
+            "name": "Thunder Bay",
+            "slug": "thunder-bay"
+        },
+        {
+            "name": "Toronto",
+            "slug": "toronto"
+        },
+        {
+            "name": "Waterloo",
+            "slug": "waterloo"
+        },
+        {
+            "name": "Wellington North",
+            "slug": "wellington-north"
+        },
+        {
+            "name": "Whitby",
+            "slug": "whitby"
+        },
+        {
+            "name": "Windsor",
+            "slug": "windsor"
+        }
+    ],
+    "PE": [
+        {
+            "name": "Charlottetown",
+            "slug": "charlottetown"
+        },
+        {
+            "name": "Hunter River",
+            "slug": "hunter-river"
+        },
+        {
+            "name": "Summerside",
+            "slug": "summerside"
+        }
+    ],
+    "QC": [
+        {
+            "name": "Brossard",
+            "slug": "brossard"
+        },
+        {
+            "name": "Chicoutimi",
+            "slug": "chicoutimi"
+        },
+        {
+            "name": "Deux-montagnes",
+            "slug": "deux-montagnes"
+        },
+        {
+            "name": "Dorval",
+            "slug": "dorval"
+        },
+        {
+            "name": "Gatineau",
+            "slug": "gatineau"
+        },
+        {
+            "name": "Hull",
+            "slug": "hull"
+        },
+        {
+            "name": "Kahnawake",
+            "slug": "kahnawake"
+        },
+        {
+            "name": "L'Île Bizard",
+            "slug": "lîle-bizard"
+        },
+        {
+            "name": "Laval",
+            "slug": "laval"
+        },
+        {
+            "name": "Montreal",
+            "slug": "montreal"
+        },
+        {
+            "name": "Outremont",
+            "slug": "outremont"
+        },
+        {
+            "name": "Quebec",
+            "slug": "quebec"
+        },
+        {
+            "name": "Sainte-Adèle",
+            "slug": "sainte-adèle"
+        },
+        {
+            "name": "Sainte-Julie",
+            "slug": "sainte-julie"
+        },
+        {
+            "name": "Shawinigan",
+            "slug": "shawinigan"
+        },
+        {
+            "name": "Sherbrooke",
+            "slug": "sherbrooke"
+        },
+        {
+            "name": "Sillery",
+            "slug": "sillery"
+        },
+        {
+            "name": "St Jean Sur Richelieu",
+            "slug": "st-jean-sur-richelieu"
+        },
+        {
+            "name": "St Tite",
+            "slug": "st-tite"
+        },
+        {
+            "name": "Wakefield",
+            "slug": "wakefield"
+        }
+    ],
+    "SK": [
+        {
+            "name": "Craven",
+            "slug": "craven"
+        },
+        {
+            "name": "Estevan",
+            "slug": "estevan"
+        },
+        {
+            "name": "Lloydminster",
+            "slug": "lloydminster"
+        },
+        {
+            "name": "Melfort",
+            "slug": "melfort"
+        },
+        {
+            "name": "Moose Jaw",
+            "slug": "moose-jaw"
+        },
+        {
+            "name": "Prince Albert",
+            "slug": "prince-albert"
+        },
+        {
+            "name": "Regina",
+            "slug": "regina"
+        },
+        {
+            "name": "Saskatoon",
+            "slug": "saskatoon"
+        },
+        {
+            "name": "Weyburn",
+            "slug": "weyburn"
+        }
     ]
 }
