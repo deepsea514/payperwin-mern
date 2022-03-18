@@ -26,6 +26,13 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
                 for (const event of events_res) {
                     const venue = await TicketVenue.findOne({ id: event.venue.id });
                     if (venue) {
+                        let listings = null;
+                        try {
+                            listings = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/listings?event_id=' + event.id);
+                        } catch (error) {
+                            console.error(error);
+                        }
+
                         const event_ = {
                             name: event.name,
                             id: event.id,
@@ -53,6 +60,7 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
                             occurs_at: event.occurs_at,
                             performances: event.performances,
                             categories: [],
+                            listings: listings
                         }
                         arrangeCategories(event_.categories, event.category);
                         await TicketEvent.findOneAndUpdate({ id: event.id }, event_, { upsert: true });
