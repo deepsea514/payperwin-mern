@@ -17,7 +17,8 @@ const TicketEventSchema = new Schema(
         url: { type: String },
         notes: { type: String },
         occurs_at: { type: Date },
-        performances: { type: Array, default: [] }
+        performances: { type: Array, default: [] },
+        listings: { type: Object, default: null }
     },
     { timestamps: true, },
 );
