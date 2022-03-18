@@ -18,9 +18,14 @@ class EventDetail extends React.Component {
                                     <li><i className="icofont-location-pin"></i> At <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link> in {event.venue.location}</li>
                                     <li><i className="icofont-wall-clock"></i> {dateformat(event.occurs_at, 'ddd mmm dd yyyy HH:MM')}</li>
                                 </ul>
+
+                                {event.configuration && event.configuration.seating_chart && event.configuration.seating_chart.large && event.configuration.seating_chart.large !== 'null' &&
+                                    < div class="post-image mt-3">
+                                        <img src={event.configuration.seating_chart.large} alt="Configuration" />
+                                    </div>}
                             </div>
 
-                            <div className="post-tag-media">
+                            {/* <div className="post-tag-media">
                                 <div className="row h-100 align-items-center">
                                     <div className="col-lg-6">
                                         <ul className="social-share">
@@ -32,9 +37,9 @@ class EventDetail extends React.Component {
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div id="comments" className="comments-area mt-4">
+                            {/* <div id="comments" className="comments-area mt-4">
                                 <h2 className="comments-title">3 Comments</h2>
 
                                 <ol className="comment-list">
@@ -81,7 +86,7 @@ class EventDetail extends React.Component {
                                         </p>
                                     </form>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="col-lg-4">
@@ -123,7 +128,7 @@ class EventDetail extends React.Component {
                                         </tbody>
                                     </table>
                                 </div>}
-                                <div className="widget widget_categories">
+                                {/* <div className="widget widget_categories">
                                     <h3 className="widget-title">
                                         Categories
                                     </h3>
@@ -133,9 +138,9 @@ class EventDetail extends React.Component {
                                             <li key={index}><Link to={category.slug_url}>{category.name}</Link></li>
                                         ))}
                                     </ul>
-                                </div>
+                                </div> */}
 
-                                <div className="widget widget_categories">
+                                {/* <div className="widget widget_categories">
                                     <h3 className="widget-title">
                                         Performers
                                     </h3>
@@ -145,7 +150,7 @@ class EventDetail extends React.Component {
                                             <li key={index}><Link to={performer.performer.slug_url}>{performer.performer.name}</Link></li>
                                         ))}
                                     </ul>
-                                </div>
+                                </div> */}
 
                                 {/* <div className="widget widget_tag_cloud">
                                     <h3 className="widget-title">
@@ -188,7 +193,7 @@ class EventDetail extends React.Component {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
         );
     }
 }

@@ -142,7 +142,7 @@ class MainBanner extends React.Component {
                             <div className="main-banner-content">
                                 <h1>Find Tickets</h1>
                                 <ul>
-                                    <li>Shop millions of sport games and discover can't-miss concerts, games, theater and more.</li>
+                                    <li>Shop millions of shop missions of tickets and discover can't-miss concerts, games, theater and more.</li>
                                 </ul>
 
                                 <div className='search-form'>
