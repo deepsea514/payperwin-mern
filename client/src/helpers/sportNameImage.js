@@ -16,7 +16,7 @@ const sportImages = {
     'Badminton': '/images/sports/badminton.png',
     'E-sports': '/images/sports/esports.png',
     'Football': '/images/sports/football.png',
-    'Custom Bet': '/images/sports/custom.png',
+    'Prop Bet': '/images/sports/custom.png',
     'Snooker': '/images/sports/snooker.png',
 };
 
