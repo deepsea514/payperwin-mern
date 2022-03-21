@@ -284,7 +284,6 @@ export function placeTeaserBets(teaserBetSlip, totalStake, totalWin) {
     return FrontendAPI.post(`/placeTeaserBets`, { teaserBetSlip, totalStake, totalWin })
 }
 
-// Custom Bet
 export function createCustomBet(data) {
     return FrontendAPI.post(`/customBet`, data)
 }
