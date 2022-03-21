@@ -8,6 +8,29 @@ const Frontend = require('./models/frontend');
 const perPage = 20;
 
 ticketRouter.get(
+    '/venues/:venue_slug',
+    async (req, res) => {
+        try {
+            const { venue_slug } = req.params;
+            const venue = await TicketVenue.aggregate(
+                {
+                    $match: {
+                        $expr: { $eq: ['$slug', venue_slug] }
+                    }
+                }
+            )
+            if (venue.length == 0) {
+                return res.json({ success: false, error: 'Venue Not Found.' });
+            }
+            return res.json({ success: true, venue: venue[0] });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot get Venue Detail. Internal Server Error.' });
+        }
+    }
+)
+
+ticketRouter.get(
     '/venues',
     async (req, res) => {
         try {

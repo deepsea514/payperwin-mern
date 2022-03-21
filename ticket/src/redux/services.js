@@ -8,6 +8,10 @@ export const getVenues = (filter, page) => {
     return FrontendAPI.get('/tickets/venues', { params: { ...filter, page } });
 }
 
+export const getVenueDetail = (venue_slug) => {
+    return FrontendAPI.get(`/tickets/venues/${venue_slug}`,);
+}
+
 export const getEvents = (filter, page) => {
     return FrontendAPI.get('/tickets/events', {
         params: { ...filter, page }
