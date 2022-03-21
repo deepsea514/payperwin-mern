@@ -178,6 +178,11 @@ class EventDetail extends React.Component {
         this.setState({ filter_type }, this.updateTicketGroups);
     }
 
+    formatSectionName = (section_name) => {
+        const words = section_name.split(' ');
+        return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+
     render() {
         const { event } = this.props;
         const {
@@ -286,7 +291,7 @@ class EventDetail extends React.Component {
                                             onMouseLeave={() => this.unHighlightTicketGroup(ticket_group.tevo_section_name)}>
                                             <div>
                                                 <i className={ticket_group.type === 'parking' ? 'icofont-car-alt-4' : 'icofont-chair'} />&nbsp;
-                                                {ticket_group.tevo_section_name}
+                                                {this.formatSectionName(ticket_group.tevo_section_name)}
                                             </div>
                                             <div className='d-flex justify-content-between'>
                                                 <div>
