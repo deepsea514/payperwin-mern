@@ -10,7 +10,7 @@ const getCurrencyRate = async (API_KEY) => {
                 symbols: ['USD', 'CAD', 'EUR', 'GBP', 'AUD', 'JPY'].join(',')
             }
         });
-        await Frontend.findOneAndUpdate({ name: 'currency_rate', value: rates });
+        await Frontend.findOneAndUpdate({ name: 'currency_rate' }, { value: rates });
         console.log('Got Currency Rate.');
 
     } catch (error) {
