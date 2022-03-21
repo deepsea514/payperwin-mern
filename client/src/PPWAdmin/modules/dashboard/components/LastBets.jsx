@@ -82,7 +82,7 @@ export function LastBets({ className, loadingbets, lastbets, roothistory, lastsp
                     <td className="pl-0">
                         <span className=" font-weight-500">
                             {bet.isParlay ? 'Parlay' :
-                                bet.origin == 'custom' ? 'Custom Bets' : bet.lineQuery.sportName}
+                                bet.origin == 'custom' ? 'Prop Bets' : bet.lineQuery.sportName}
                         </span>
                     </td>
                     <td className="pl-0">
