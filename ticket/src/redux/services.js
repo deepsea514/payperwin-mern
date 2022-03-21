@@ -17,3 +17,7 @@ export const getEvents = (filter, page) => {
 export const getEventDetail = (event_id) => {
     return FrontendAPI.get(`/tickets/events/${event_id}`);
 }
+
+export const getCADRate = () => {
+    return FrontendAPI.get('/tickets/cad_rate');
+}

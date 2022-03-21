@@ -22,10 +22,11 @@ const renderNavigation = () => {
     }
 }
 
-const AppRouter = ({ getUserAction }) => {
+const AppRouter = ({ getUserAction, getCADRateAction }) => {
     useEffect(() => {
         getUserAction();
-    }, [getUserAction]);
+        getCADRateAction();
+    }, [getUserAction, getCADRateAction]);
 
     return (
         <Router>

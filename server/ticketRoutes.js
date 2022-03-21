@@ -1,9 +1,9 @@
 //define router
 const ticketRouter = require('express').Router();
 //Models
-const TicketCategory = require('./models/ticket_category');
 const TicketEvent = require('./models/ticket_event');
 const TicketVenue = require('./models/ticket_venue');
+const Frontend = require('./models/frontend');
 //local helpers
 const perPage = 20;
 
@@ -74,5 +74,23 @@ ticketRouter.get(
         }
     }
 );
+
+ticketRouter.get(
+    '/cad_rate',
+    async (req, res) => {
+        const defaultRate = 1.2601734;
+        try {
+            const setting = await Frontend.findOne({ name: 'currency_rate' });
+            if (setting) {
+                const rate = setting.value.CAD / setting.value.USD;
+                return res.json({ rate: rate });
+            }
+            return res.json({ rate: defaultRate });
+        } catch (error) {
+            console.error(error);
+            return res.json({ rate: defaultRate });
+        }
+    }
+)
 
 module.exports = ticketRouter;
