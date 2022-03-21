@@ -6,17 +6,15 @@ import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
-export default class Twilio extends React.Component {
+export default class ExchangeRatesApi extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
             initialValues: null,
-            twilioSchema: Yup.object().shape({
-                accountSid: Yup.string()
-                    .required("ACCOUNT SID is required"),
-                authToken: Yup.string()
-                    .required("AUTH TOKEN is required"),
+            ticektSchema: Yup.object().shape({
+                api_key: Yup.string()
+                    .required("Api Key is required"),
             }),
             isError: false,
             isSuccess: false,
@@ -25,15 +23,14 @@ export default class Twilio extends React.Component {
 
     componentDidMount() {
         this.setState({ loading: false });
-        getAddon('twilio')
+        getAddon('exchangeratesapi')
             .then(({ data }) => {
                 if (data) {
                     this.setState({ initialValues: data.value, loading: false });
                 } else {
                     this.setState({
                         initialValues: {
-                            accountSid: "",
-                            authToken: "",
+                            api_key: "",
                         }, loading: false
                     });
                 }
@@ -45,7 +42,7 @@ export default class Twilio extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ isError: false, isError: false, });
-        setAddon('twilio', values)
+        setAddon('exchangeratesapi', values)
             .then(() => {
                 this.setState({ isSuccess: true })
                 formik.setSubmitting(false);
@@ -57,12 +54,12 @@ export default class Twilio extends React.Component {
     }
 
     render() {
-        const { loading, initialValues, twilioSchema, isError, isSuccess } = this.state;
+        const { loading, initialValues, ticektSchema, isError, isSuccess } = this.state;
         return (
             <div className="mt-3">
                 <div className="d-flex justify-content-between">
-                    <h3>Twilio</h3>
-                    <img src="/images/third-party/twilio.png" style={{ display: 'block', height: '40px', width: 'auto' }} />
+                    <h3>Exchange Rates API</h3>
+                    <img src="/images/third-party/exchangeratesapi.svg" style={{ display: 'block', height: '40px', width: 'auto' }} />
                 </div>
                 {loading && <center className="mt-5"><Preloader use={ThreeDots}
                     size={100}
@@ -71,7 +68,7 @@ export default class Twilio extends React.Component {
                     duration={800} /></center>}
                 {!loading && initialValues == null && <h1>No data available</h1>}
                 {!loading && initialValues && <Formik
-                    validationSchema={twilioSchema}
+                    validationSchema={ticektSchema}
                     initialValues={initialValues}
                     onSubmit={this.onSubmit}
                 >
@@ -137,28 +134,16 @@ export default class Twilio extends React.Component {
                             )}
 
                             <div className="form-group">
-                                <label>ACCOUNT SID<span className="text-danger">*</span></label>
-                                <input type="text" name="accountSid" className={`form-control ${getInputClasses(formik, "accountSid")}`}
-                                    {...formik.getFieldProps("accountSid")}
-                                    placeholder="ACCOUNT SID" />
-                                {formik.touched.accountSid && formik.errors.accountSid ? (
+                                <label>Api Key<span className="text-danger">*</span></label>
+                                <input type="text" name="api_key" className={`form-control ${getInputClasses(formik, "api_key")}`}
+                                    {...formik.getFieldProps("api_key")}
+                                    placeholder="Bet364 Api Key" />
+                                {formik.touched.api_key && formik.errors.api_key ? (
                                     <div className="invalid-feedback">
-                                        {formik.errors.accountSid}
+                                        {formik.errors.api_key}
                                     </div>
                                 ) : null}
                             </div>
-                            <div className="form-group">
-                                <label>AUTH TOKEN<span className="text-danger">*</span></label>
-                                <input type="text" name="authToken" className={`form-control ${getInputClasses(formik, "authToken")}`}
-                                    {...formik.getFieldProps("authToken")}
-                                    placeholder="AUTH TOKEN" />
-                                {formik.touched.authToken && formik.errors.authToken ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.authToken}
-                                    </div>
-                                ) : null}
-                            </div>
-
                             <div className="form-row">
                                 <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Submit</button>
                             </div>
