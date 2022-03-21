@@ -68,7 +68,7 @@ export default class PremierPay extends React.Component {
             <div className="mt-3">
                 <div className="d-flex justify-content-between">
                     <h3>PremierPay</h3>
-                    <img src="/images/premier.png" style={{ display: 'block', height: '40px', width: 'auto' }} />
+                    <img src="/images/third-party/premier.png" style={{ display: 'block', height: '40px', width: 'auto' }} />
                 </div>
                 {loading && <center className="mt-5"><Preloader use={ThreeDots}
                     size={100}

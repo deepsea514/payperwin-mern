@@ -5,6 +5,7 @@ import SendGrid from "../components/SendGrid";
 import Twilio from "../components/Twilio";
 import Bet365 from "../components/Bet365";
 import TicketEvolution from '../components/TicketEvolution';
+import ExchangeRatesApi from "../components/ExchangeRatesApi";
 
 class Addons extends React.Component {
     constructor(props) {
@@ -29,6 +30,8 @@ class Addons extends React.Component {
                                     <SendGrid />
                                     <hr />
                                     <TripleA />
+                                    <hr />
+                                    <ExchangeRatesApi />
                                     <hr />
                                 </div>
                                 <div className="col-md-6 col-12">
