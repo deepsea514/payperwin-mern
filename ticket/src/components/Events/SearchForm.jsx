@@ -66,6 +66,7 @@ class SearchForm extends React.Component {
             region_disabled: false,
             locality_disabled: false,
             category_disabled: false,
+            defaultVenueOptions: [],
         }
     }
 
@@ -200,6 +201,7 @@ class SearchForm extends React.Component {
             time: time ? time.value : '',
             category: category ? category.value : '',
         }, 1);
+        this.getDefaultVenueOptions();
     }
 
     componentDidMount() {
@@ -221,7 +223,7 @@ class SearchForm extends React.Component {
             region: region,
             locality: null,
             locality_options
-        });
+        }, this.getDefaultVenueOptions);
     }
 
     setCountryOption = (country) => {
@@ -231,13 +233,42 @@ class SearchForm extends React.Component {
             locality: null,
             locality_options: [],
             region_options: this.getRegionOptions(country)
-        });
+        }, this.getDefaultVenueOptions);
+    }
+
+    setLocalityOption = (locality) => {
+        this.setState({ locality: locality }, this.getDefaultVenueOptions)
+    }
+
+    getDefaultVenueOptions = () => {
+        const { region, locality, country } = this.state;
+        getVenues({
+            country: country ? country.value : '',
+            region: region ? region.value.value : '',
+            locality: locality ? locality.value.value : '',
+        })
+            .then(({ data }) => {
+                const { success, venues } = data;
+                if (success) {
+                    this.setState({ defaultVenueOptions: venues.map(venue => ({ label: venue.name, value: venue.slug })) });
+                } else {
+                    this.setState({ defaultVenueOptions: [] });
+                }
+            })
+            .catch(error => {
+                this.setState({ defaultVenueOptions: [] });
+            })
     }
 
     getVenues = (query, cb) => {
-        const { region, locality } = this.state;
+        const { region, locality, country } = this.state;
         this.setState({ loadingVenue: true });
-        getVenues(region ? region.value.value : '', locality ? locality.value.value : '', query)
+        getVenues({
+            country: country ? country.value : '',
+            region: region ? region.value.value : '',
+            locality: locality ? locality.value.value : '',
+            query
+        })
             .then(({ data }) => {
                 const { success, venues } = data;
                 this.setState({ loadingVenue: false });
@@ -255,7 +286,8 @@ class SearchForm extends React.Component {
         const {
             query, country, region, locality, venue, time, category, loadingVenue,
             category_options, locality_options, region_options, category_disabled,
-            region_disabled, locality_disabled, country_disabled, country_options
+            region_disabled, locality_disabled, country_disabled, country_options,
+            defaultVenueOptions
         } = this.state;
         const { time_options } = this.props;
 
@@ -283,7 +315,7 @@ class SearchForm extends React.Component {
                             isClearable
                         />
                     </div>
-                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-sm-0'>
+                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-md-0'>
                         <Select
                             className="form-control p-0"
                             classNamePrefix="select"
@@ -298,7 +330,7 @@ class SearchForm extends React.Component {
                             isClearable
                         />
                     </div>
-                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-md-0'>
+                    <div className='col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-lg-0'>
                         <Select
                             className="form-control p-0"
                             classNamePrefix="select"
@@ -308,7 +340,7 @@ class SearchForm extends React.Component {
                             options={locality_options}
                             noOptionsMessage={() => "No Cities"}
                             value={locality}
-                            onChange={(locality) => this.setState({ locality })}
+                            onChange={this.setLocalityOption}
                             styles={customStyles}
                             isDisabled={locality_disabled}
                             maxMenuHeight={200}
@@ -328,7 +360,7 @@ class SearchForm extends React.Component {
                             isLoading={loadingVenue}
                             onChange={(venue) => this.setState({ venue })}
                             styles={customStyles}
-                            defaultOptions
+                            defaultOptions={defaultVenueOptions}
                             maxMenuHeight={200}
                             isClearable
                         />
