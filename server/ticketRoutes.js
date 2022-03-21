@@ -11,12 +11,11 @@ ticketRouter.get(
     '/venues',
     async (req, res) => {
         try {
-            let { region, locality, query, page } = req.query;
+            let { country, region, locality, query, page } = req.query;
             if (!page) page = 1;
             page = parseInt(page);
-            const searchObj = {
-                "address.country_code": "CA",
-            }
+            const searchObj = {};
+            country && (searchObj["address.country_code"] = country.toUpperCase());
             query && (searchObj['name'] = { "$regex": query, "$options": "i" });
             region && (searchObj["address.region"] = region);
             locality && (searchObj["address.locality"] = locality);

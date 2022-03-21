@@ -4,8 +4,8 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
-export const getVenues = (region, locality, query, page) => {
-    return FrontendAPI.get('/tickets/venues', { params: { region, locality, query, page } });
+export const getVenues = (filter) => {
+    return FrontendAPI.get('/tickets/venues', { params: filter });
 }
 
 export const getEvents = (filter, page) => {
