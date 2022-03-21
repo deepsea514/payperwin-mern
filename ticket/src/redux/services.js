@@ -4,8 +4,8 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
-export const getVenues = (filter) => {
-    return FrontendAPI.get('/tickets/venues', { params: filter });
+export const getVenues = (filter, page) => {
+    return FrontendAPI.get('/tickets/venues', { params: { ...filter, page } });
 }
 
 export const getEvents = (filter, page) => {

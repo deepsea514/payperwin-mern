@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import dateformat from 'dateformat';
 import CustomPagination from '../Common/CustomPagination';
 import Loader from '../Common/Loader';
 
-class EventList extends React.Component {
+class VenueList extends React.Component {
     render() {
-        const { loading, page, total, events, loadEvents } = this.props;
+        const { loading, page, total, venues, loadVenues } = this.props;
 
         if (loading) {
             return (
@@ -15,10 +14,10 @@ class EventList extends React.Component {
                 </div>
             )
         }
-        if (!events || events.length === 0) {
+        if (!venues || venues.length === 0) {
             return (
                 <div className="container my-5">
-                    <h3 className='text-center'>There is No Events. Please try again with other search terms.</h3>
+                    <h3 className='text-center'>There is No Venues. Please try again with other search terms.</h3>
                 </div>
             )
         }
@@ -28,40 +27,40 @@ class EventList extends React.Component {
                 <div className='tab_content'>
                     <div className="tabs_item">
                         <ul className="accordion">
-                            {events.map((event, index) => (
+                            {venues.map((venue, index) => (
                                 <li className="accordion-item" key={index}>
                                     <div className="accordion-title">
                                         <div className="schedule-info">
-                                            <h3>{event.name}</h3>
+                                            <h3>{venue.name}</h3>
 
                                             <ul>
-                                                <li><i className="icofont-location-pin"></i> At <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link> in {event.venue.location}</li>
-                                                <li><i className="icofont-wall-clock"></i> {dateformat(event.occurs_at, 'ddd mmm dd yyyy HH:MM')}</li>
+                                                <li><i className="icofont-location-pin"></i> <span>{venue.address.street_address}, {venue.address.locality}, {venue.address.region}, {venue.address.country_code === 'CA' ? 'Canada' : 'United States'}</span></li>
+                                                <li><i className="icofont-chart-growth"></i> Popularity Score: {venue.popularity_score}</li>
                                             </ul>
-                                            {event.performances && event.performances.length && <ul>
+                                            {/* {venue.performances && venue.performances.length && <ul>
                                                 <li>
                                                     <i className="icofont-users-alt-4"></i>&nbsp;
-                                                    {event.performances.map((performer, index) => (
+                                                    {venue.performances.map((performer, index) => (
                                                         <React.Fragment key={index}>
-                                                            <Link to={"/performers/" + performer.performer.slug}>{performer.performer.name}</Link>{(index === event.performances.length - 1) ? '' : ', '}
+                                                            <Link to={"/performers/" + performer.performer.slug}>{performer.performer.name}</Link>{(index === venue.performances.length - 1) ? '' : ', '}
                                                         </React.Fragment>
                                                     ))}
                                                 </li>
-                                            </ul>}
-                                            <div className='mt-2 tagcloud'>
-                                                {event.categories.map((category, index) => (
+                                            </ul>} */}
+                                            {/* <div className='mt-2 tagcloud'>
+                                                {venue.categories.map((category, index) => (
                                                     <Link key={index} to={"/categories/" + category.slug}>{category.name}</Link>
                                                 ))}
-                                            </div>
+                                            </div> */}
                                         </div>
-                                        <Link to={"/event/" + event.id} className='btn btn-secondary btn-buy'>Buy Ticket</Link>
+                                        <Link to={venue.slug_url} className='btn btn-secondary btn-buy'>See Detail</Link>
                                     </div>
                                 </li>
                             ))}
                         </ul>
                     </div>
                 </div>
-                <CustomPagination onChangePage={loadEvents}
+                <CustomPagination onChangePage={loadVenues}
                     total={total}
                     currentPage={page - 1} />
 
@@ -82,4 +81,4 @@ class EventList extends React.Component {
     }
 }
 
-export default EventList;
+export default VenueList;

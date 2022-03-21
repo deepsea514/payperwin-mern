@@ -2277,7 +2277,7 @@ Schedule CSS
 }
 
 .tab_content .tabs_item .accordion .accordion-item .accordion-title .schedule-info ul li {
-    display: inline-block;
+    /* display: inline-block; */
     color: #707070;
     margin-right: 20px;
     font-size: 14px;
