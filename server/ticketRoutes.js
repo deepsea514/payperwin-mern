@@ -12,17 +12,11 @@ ticketRouter.get(
     async (req, res) => {
         try {
             const { venue_slug } = req.params;
-            const venue = await TicketVenue.aggregate(
-                {
-                    $match: {
-                        $expr: { $eq: ['$slug', venue_slug] }
-                    }
-                }
-            )
-            if (venue.length == 0) {
+            const venue = await TicketVenue.findOne({ slug: venue_slug });
+            if (!venue) {
                 return res.json({ success: false, error: 'Venue Not Found.' });
             }
-            return res.json({ success: true, venue: venue[0] });
+            return res.json({ success: true, venue: venue });
         } catch (error) {
             console.error(error);
             return res.json({ success: false, error: 'Cannot get Venue Detail. Internal Server Error.' });
