@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getCountryName } from '../../lib/getCountryName';
 import CustomPagination from '../Common/CustomPagination';
 import Loader from '../Common/Loader';
 
@@ -34,7 +35,7 @@ class VenueList extends React.Component {
                                             <h3>{venue.name}</h3>
 
                                             <ul>
-                                                <li><i className="icofont-location-pin"></i> <span>{venue.address.street_address}, {venue.address.locality}, {venue.address.region}, {venue.address.country_code === 'CA' ? 'Canada' : 'United States'}</span></li>
+                                                <li><i className="icofont-location-pin"></i> <span>{venue.address.street_address}, {venue.address.locality}, {venue.address.region}, {getCountryName(venue.address.country_code)}</span></li>
                                                 <li><i className="icofont-chart-growth"></i> Popularity Score: {venue.popularity_score}</li>
                                             </ul>
                                             {/* {venue.performances && venue.performances.length && <ul>

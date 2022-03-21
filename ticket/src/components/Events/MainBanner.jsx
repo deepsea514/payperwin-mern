@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getCategoryOptions } from '../../lib/getCategoryOptions';
+import { getCountryName } from '../../lib/getCountryName';
 
 class MainBanner extends React.Component {
     constructor(props) {
@@ -83,7 +84,7 @@ class MainBanner extends React.Component {
                 history.push("/error-404");
                 return;
             }
-            const countryName = country === 'ca' ? 'Canada' : 'United States';
+            const countryName = getCountryName(country);
             if (region) {
                 breadcrumbs.push({ path: '/places/' + country, label: countryName });
                 const regions = country === 'ca' ? regions_ca : regions_us;
