@@ -6,6 +6,7 @@ import Tevomaps from '@ticketevolution/seatmaps-client';
 import Modal from 'react-awesome-modal';
 import Slider from 'rc-slider';
 import Select from 'react-select';
+import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 
 const customStyles = {
@@ -183,6 +184,11 @@ class EventDetail extends React.Component {
         return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
 
+    changeRate = (usd_price) => {
+        const { cad_rate } = this.props;
+        return Math.ceil(usd_price * cad_rate * 100) / 100
+    }
+
     render() {
         const { event } = this.props;
         const {
@@ -231,8 +237,8 @@ class EventDetail extends React.Component {
                                             onChange={this.onChangeQuantiry} />
                                     </div>
                                     <div className='form-group'>
-                                        <label>Min Price ${min_price}</label><br />
-                                        <label>Max Price ${max_price}</label>
+                                        <label>Min Price: CAD ${this.changeRate(min_price)}</label><br />
+                                        <label>Max Price: CAD ${this.changeRate(max_price)}</label>
                                         <Slider range
                                             min={min_price}
                                             max={max_price}
@@ -297,7 +303,7 @@ class EventDetail extends React.Component {
                                                 <div>
                                                     <b>Sec {ticket_group.section}, Row {ticket_group.row}</b>
                                                 </div>
-                                                <div>{ticket_group.retail_price}</div>
+                                                <div>CAD ${this.changeRate(ticket_group.retail_price)}</div>
                                             </div>
                                             Quantity: {ticket_group.quantity}
                                         </div>
@@ -321,4 +327,7 @@ class EventDetail extends React.Component {
     }
 }
 
-export default EventDetail;
+const mapStateToProps = (state) => ({
+    cad_rate: state.cad_rate,
+});
+export default connect(mapStateToProps, null)(EventDetail);

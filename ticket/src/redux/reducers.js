@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest } from "redux-saga/effects";
-import { getUser } from "./services";
+import { getCADRate, getUser } from "./services";
 import categories from "../data/categories.json";
 import regions from "../data/regions.json";
 import localities_ca from "../data/localities_ca.json";
@@ -10,6 +10,8 @@ import localities_us from "../data/localities_us.json";
 export const actionTypes = {
     getUserAction: "Get User Action",
     setUserAction: "Set User Action",
+    getCADRateAction: "Get CAD Rate Action",
+    setCADRateAction: "Set CAD Rate Action",
 };
 
 const initialState = {
@@ -28,7 +30,8 @@ const initialState = {
         { value: 'this_month', label: 'This Month' },
         { value: 'next_month', label: 'Next Month' },
         { value: 'this_year', label: 'This Year' },
-    ]
+    ],
+    cad_rate: 1.2601734, // Default CAD Rate
 };
 
 export const reducer = persistReducer(
@@ -47,6 +50,12 @@ export const reducer = persistReducer(
                     categories: action.payload
                 }
 
+            case actionTypes.setCADRateAction:
+                return {
+                    ...state,
+                    rate: action.rate
+                }
+
             default:
                 return state;
         }
@@ -56,6 +65,8 @@ export const reducer = persistReducer(
 export const actions = {
     getUserAction: () => ({ type: actionTypes.getUserAction }),
     setUserAction: (payload = null) => ({ type: actionTypes.setUserAction, payload }),
+    getCADRateAction: () => ({ type: actionTypes.getCADRateAction }),
+    setCADRateAction: (rate) => ({ type: actionTypes.setCADRateAction, rate }),
 };
 
 export function* saga() {
@@ -67,4 +78,11 @@ export function* saga() {
             yield put(actions.setUserAction(null));
         }
     });
+
+    yield takeLatest(actionTypes.getCADRateAction, function* getCADRateAction() {
+        try {
+            const { data: { rate } } = yield getCADRate();
+            yield put(actions.setCADRateAction(rate));
+        } catch (error) { }
+    })
 }
