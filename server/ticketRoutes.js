@@ -19,11 +19,12 @@ ticketRouter.get(
             query && (searchObj['name'] = { "$regex": query, "$options": "i" });
             region && (searchObj["address.region"] = region);
             locality && (searchObj["address.locality"] = locality);
+            const total = await TicketVenue.find(searchObj).count();
             const venues = await TicketVenue
                 .find(searchObj)
                 .skip((page - 1) * perPage)
                 .limit(perPage);
-            return res.json({ success: true, venues: venues });
+            return res.json({ success: true, venues: venues, page: page, total: total });
         } catch (error) {
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
