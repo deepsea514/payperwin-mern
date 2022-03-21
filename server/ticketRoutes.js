@@ -64,6 +64,7 @@ ticketRouter.get(
             const total = await TicketEvent.find(searchObj).count();
             const events = await TicketEvent
                 .find(searchObj)
+                .select(['id', 'categories', 'configuration', 'name', 'occurs_at', 'performances', 'venue'])
                 .skip((page - 1) * perPage)
                 .limit(perPage);
 

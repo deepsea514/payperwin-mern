@@ -1487,6 +1487,7 @@ Why Choose Us CSS
     transition: 0.5s;
     width: 100%;
 }
+
 /* 
 .single-box .content::before {
     content: '';
@@ -4282,31 +4283,43 @@ Sidebar CSS
     padding: 15px;
 }
 
-.sidebar .widget.widget_search form {
+.sidebar .widget.widget_search {
     position: relative;
+    margin-bottom: 10px;
 }
 
-.sidebar .widget.widget_search form .form-control {
+.sidebar .widget.widget_search .form-control {
     background: transparent;
+    height: 40px;
 }
 
-.sidebar .widget.widget_search form button {
-    position: absolute;
-    right: 5px;
-    top: 0;
-    height: 100%;
-    border: none;
-    outline: 0;
-    -webkit-box-shadow: unset;
-    box-shadow: unset;
-    background: transparent;
-    color: #FF2D55;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
+.sidebar .widget.widget_search .form-control-custom {
+    height: auto;
+    min-height: 40px;
 }
 
-.sidebar .widget.widget_search form button:hover, .sidebar .widget.widget_search form button:focus {
-    color: #00acee;
+.sidebar .widget.widget_search .form-group {
+    margin-bottom: 15px;
+}
+
+.sidebar .widget.widget_ticket_group {
+    background-color: #FFF;
+    -webkit-box-shadow: 0px 0px 29px 0px rgba(102, 102, 102, 0.1);
+    box-shadow: 0px 0px 29px 0px rgba(102, 102, 102, 0.1);
+    padding: 15px;
+}
+
+.sidebar .widget.widget_ticket_group .ticket_row {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border-radius: 2px;
+    border: 1px solid #CCC;
+    cursor: pointer;
+}
+
+.sidebar .widget.widget_ticket_group .ticket_row:hover {
+    border: 1px solid #FF2D55;
 }
 
 .sidebar .widget.widget_categories ul {
@@ -4978,4 +4991,8 @@ ul.event-info li i {
 
 ul.event-info li span {
     color: #00acee;
+}
+
+.event-seatmap {
+    height: 90vh;
 }
