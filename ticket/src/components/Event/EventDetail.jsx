@@ -8,6 +8,7 @@ import Slider from 'rc-slider';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
+import { getCountryName } from '../../lib/getCountryName';
 
 const customStyles = {
     control: (provided) => {
@@ -209,7 +210,7 @@ class EventDetail extends React.Component {
                                         <i className="icofont-location-pin"></i>&nbsp;
                                         {event.venue.address.street_address},&nbsp;
                                         {event.venue.location},&nbsp;
-                                        {event.venue.country_code === 'ca' ? 'Canada' : 'United States'}&nbsp;
+                                        {getCountryName(event.venue.country_code)}&nbsp;
                                         {event.venue &&
                                             event.venue.address.longitude &&
                                             event.venue.address.latitude &&
