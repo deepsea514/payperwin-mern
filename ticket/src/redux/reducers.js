@@ -17,6 +17,16 @@ export const actionTypes = {
 const initialState = {
     user: null,
     categories: categories,
+    country_options: [
+        {
+            value: 'ca',
+            label: 'Canada'
+        },
+        {
+            value: 'us',
+            label: 'United States'
+        }
+    ],
     regions_ca: regions.CA,
     regions_us: regions.US,
     localities_ca: localities_ca,

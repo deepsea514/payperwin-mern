@@ -58,16 +58,6 @@ class MainBanner extends React.Component {
             time: null,
             category: null,
             category_options: category_options,
-            country_options: [
-                {
-                    value: 'ca',
-                    label: 'Canada'
-                },
-                {
-                    value: 'us',
-                    label: 'United States'
-                }
-            ]
         }
     }
 
@@ -126,10 +116,9 @@ class MainBanner extends React.Component {
 
     render() {
         const {
-            query, locality, time, category, category_options,
-            country, country_options
+            query, locality, time, category, category_options, country
         } = this.state;
-        const { time_options } = this.props;
+        const { time_options, country_options } = this.props;
 
         return (
             <div className="main-banner video-banner">
@@ -235,6 +224,7 @@ class MainBanner extends React.Component {
 
 const mapStateToProps = (state) => ({
     categories: state.categories,
+    country_options: state.country_options,
     localities_ca: state.localities_ca,
     localities_us: state.localities_us,
     time_options: state.time_options,
