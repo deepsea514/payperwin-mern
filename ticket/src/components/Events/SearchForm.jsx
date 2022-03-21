@@ -50,16 +50,6 @@ class SearchForm extends React.Component {
             category: null,
             loadingVenue: false,
             category_options: category_options,
-            country_options: [
-                {
-                    value: 'ca',
-                    label: 'Canada'
-                },
-                {
-                    value: 'us',
-                    label: 'United States'
-                }
-            ],
             region_options: [],
             locality_options: [],
             country_disabled: false,
@@ -91,9 +81,9 @@ class SearchForm extends React.Component {
     }
 
     getInitialValues = () => {
-        const { location, time_options } = this.props;
+        const { location, time_options, country_options } = this.props;
         const { pathname, search } = location;
-        const { category_options, country_options } = this.state;
+        const { category_options } = this.state;
 
         // Get Default params
         let query = '',
@@ -286,10 +276,10 @@ class SearchForm extends React.Component {
         const {
             query, country, region, locality, venue, time, category, loadingVenue,
             category_options, locality_options, region_options, category_disabled,
-            region_disabled, locality_disabled, country_disabled, country_options,
+            region_disabled, locality_disabled, country_disabled,
             defaultVenueOptions
         } = this.state;
-        const { time_options } = this.props;
+        const { time_options, country_options } = this.props;
 
         return (
             <div className='container py-5'>
@@ -408,6 +398,7 @@ class SearchForm extends React.Component {
 
 const mapStateToProps = (state) => ({
     categories: state.categories,
+    country_options: state.country_options,
     regions_ca: state.regions_ca,
     regions_us: state.regions_us,
     localities_ca: state.localities_ca,

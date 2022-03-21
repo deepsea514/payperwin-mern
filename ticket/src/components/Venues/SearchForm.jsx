@@ -38,16 +38,6 @@ class SearchForm extends React.Component {
             country: null,
             region: null,
             locality: null,
-            country_options: [
-                {
-                    value: 'ca',
-                    label: 'Canada'
-                },
-                {
-                    value: 'us',
-                    label: 'United States'
-                }
-            ],
             region_options: [],
             locality_options: [],
         }
@@ -110,9 +100,9 @@ class SearchForm extends React.Component {
 
     render() {
         const {
-            query, country, region, locality,
-            locality_options, region_options, country_options
+            query, country, region, locality, locality_options, region_options,
         } = this.state;
+        const { country_options } = this.props;
 
         return (
             <div className='container py-5'>
@@ -180,6 +170,7 @@ class SearchForm extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+    country_options: state.country_options,
     regions_ca: state.regions_ca,
     regions_us: state.regions_us,
     localities_ca: state.localities_ca,
