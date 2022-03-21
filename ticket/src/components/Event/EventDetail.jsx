@@ -2,10 +2,175 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import dateformat from 'dateformat';
 import CustomGoogleMap from '../Common/CustomGoogleMap';
+import Tevomaps from '@ticketevolution/seatmaps-client';
+import Modal from 'react-awesome-modal';
+import Slider from 'rc-slider';
+import Select from 'react-select';
+import 'rc-slider/assets/index.css';
+
+const customStyles = {
+    control: (provided) => {
+        return {
+            ...provided,
+            background: '#FFF4',
+            height: '100%',
+            borderRadius: 'none',
+            border: 'none',
+        }
+    },
+    placeholder: (provided) => {
+        return {
+            ...provided,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            color: '#c7c3c7'
+        }
+    },
+    menu: (provided) => {
+        return {
+            ...provided,
+            color: 'black',
+        }
+    }
+}
 
 class EventDetail extends React.Component {
+    constructor(props) {
+        super(props);
+        const { event } = props;
+        let initial_ticket_groups = [];
+        let min_price = Infinity, max_price = 0;
+        if (event.listings && event.listings.ticket_groups && event.listings.ticket_groups.length) {
+            initial_ticket_groups = event.listings.ticket_groups;
+            initial_ticket_groups.forEach(ticket_group => {
+                if (ticket_group.retail_price > max_price) max_price = ticket_group.retail_price;
+                if (ticket_group.retail_price < min_price) min_price = ticket_group.retail_price;
+            })
+        } else {
+            min_price = 0;
+        }
+
+        let venue_id = null;
+        if (event.venue) venue_id = event.venue.id;
+
+        let configuration_id = null;
+        if (event.configuration) configuration_id = event.configuration.id;
+
+        const sort_options = [
+            { value: 1, label: 'Lowest First' },
+            { value: -1, label: 'Highest First' },
+        ];
+        this.state = {
+            seatmapApi: null,
+            initial_ticket_groups: initial_ticket_groups,
+            ticket_groups: [],
+            venue_id: venue_id,
+            configuration_id: configuration_id,
+            showMapModal: false,
+            min_price: min_price,
+            max_price: max_price,
+            type_options: [
+                { value: 'Physical', label: 'Physical' },
+                { value: 'Eticket', label: 'Eticket' },
+                { value: 'TM_mobile', label: 'Mobile Entry' },
+                { value: 'Flash_seats', label: 'Flash Seats' },
+                { value: 'Paperless', label: 'Paperless' },
+                { value: 'Guest_list', label: 'Guest List' },
+            ],
+            sort_options: sort_options,
+            filter_quantity: '',
+            filter_price: [min_price, max_price],
+            filter_type: [],
+            filter_sort: sort_options[0],
+            selectedSections: [],
+        };
+    }
+
+    componentDidMount() {
+        const { venue_id, configuration_id } = this.state;
+
+        const seatmap = new Tevomaps({
+            venueId: venue_id,
+            configurationId: configuration_id,
+            ticketGroups: [],
+            onSelection: (selectedSections) => this.setState({ selectedSections }, this.updateTicketGroups)
+        });
+
+        const seatmapApi = seatmap.build('event-seatmap');
+        this.setState({ seatmapApi }, this.updateTicketGroups);
+    }
+
+    updateTicketGroups = () => {
+        const {
+            initial_ticket_groups, seatmapApi, selectedSections,
+            filter_quantity, filter_price, filter_sort, filter_type
+        } = this.state;
+        if (!seatmapApi) return;
+
+        let ticket_groups = initial_ticket_groups.filter(ticket_group => {
+            if (selectedSections.length) {
+                if (selectedSections.includes(ticket_group.tevo_section_name)) return true;
+                return false;
+            }
+            if (filter_quantity && ticket_group.quantity < filter_quantity) {
+                return false;
+            }
+            if (ticket_group.retail_price < filter_price[0] || ticket_group.retail_price > filter_price[1]) {
+                return false;
+            }
+            if (filter_type.length && !filter_type.map(type => type.value).includes(ticket_group.format)) {
+                return false;
+            }
+            return true;
+        });
+        ticket_groups.sort((ticket_group1, ticket_group2) => {
+            if (Number(ticket_group1.retail_price) < Number(ticket_group2.retail_price)) {
+                return -1 * filter_sort.value;
+            }
+            if (Number(ticket_group1.retail_price) > Number(ticket_group2.retail_price)) {
+                return 1 * filter_sort.value;
+            }
+            return 0;
+        });
+
+        this.setState({ ticket_groups: [...ticket_groups] });
+        seatmapApi.updateTicketGroups(selectedSections.length ? initial_ticket_groups : ticket_groups);
+    }
+
+    highlightTicketGroup = (ticket_group_name) => {
+        const { seatmapApi } = this.state;
+        if (!seatmapApi) return;
+        seatmapApi.highlightSection(ticket_group_name);
+    }
+
+    unHighlightTicketGroup = (ticket_group_name) => {
+        const { seatmapApi } = this.state;
+        if (!seatmapApi) return;
+        seatmapApi.unhighlightSection(ticket_group_name);
+    }
+
+    onChangeQuantiry = (evt) => {
+        this.setState({ filter_quantity: evt.target.value }, this.updateTicketGroups);
+    }
+
+    onChangePriceFilter = (filter_price) => {
+        this.setState({ filter_price }, this.updateTicketGroups);
+    }
+
+    onChangeSort = (filter_sort) => {
+        this.setState({ filter_sort }, this.updateTicketGroups);
+    }
+
+    onChangeType = (filter_type) => {
+        this.setState({ filter_type }, this.updateTicketGroups);
+    }
+
     render() {
         const { event } = this.props;
+        const {
+            showMapModal, min_price, max_price, type_options, sort_options, ticket_groups,
+            filter_price, filter_type, filter_quantity, filter_sort
+        } = this.state;
 
         return (
             <section className="blog-details-area ptb-120">
@@ -15,184 +180,102 @@ class EventDetail extends React.Component {
                             <div className="blog-details">
                                 <h2>{event.name}</h2>
                                 <ul className='event-info mt-3'>
-                                    <li><i className="icofont-location-pin"></i> At <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link> in {event.venue.location}</li>
+                                    <li><i className="icofont-field"></i> <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link></li>
+                                    <li>
+                                        <i className="icofont-location-pin"></i>&nbsp;
+                                        {event.venue.address.street_address},&nbsp;
+                                        {event.venue.location},&nbsp;
+                                        {event.venue.country_code === 'ca' ? 'Canada' : 'United States'}&nbsp;
+                                        {event.venue &&
+                                            event.venue.address.longitude &&
+                                            event.venue.address.latitude &&
+                                            <span role="button"
+                                                onClick={() => this.setState({ showMapModal: true })}>(View Map)</span>}
+                                    </li>
                                     <li><i className="icofont-wall-clock"></i> {dateformat(event.occurs_at, 'ddd mmm dd yyyy HH:MM')}</li>
                                 </ul>
-
-                                {event.configuration && event.configuration.seating_chart && event.configuration.seating_chart.large && event.configuration.seating_chart.large !== 'null' &&
-                                    < div class="post-image mt-3">
-                                        <img src={event.configuration.seating_chart.large} alt="Configuration" />
-                                    </div>}
                             </div>
 
-                            {/* <div className="post-tag-media">
-                                <div className="row h-100 align-items-center">
-                                    <div className="col-lg-6">
-                                        <ul className="social-share">
-                                            <li><span>Share on:</span></li>
-                                            <li><Link to="#"><i className="icofont-facebook"></i></Link></li>
-                                            <li><Link to="#"><i className="icofont-twitter"></i></Link></li>
-                                            <li><Link to="#"><i className="icofont-instagram"></i></Link></li>
-                                            <li><Link to="#"><i className="icofont-linkedin"></i></Link></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div> */}
-
-                            {/* <div id="comments" className="comments-area mt-4">
-                                <h2 className="comments-title">3 Comments</h2>
-
-                                <ol className="comment-list">
-                                    <li className="comment mt-2">
-                                        <article className="comment-body">
-                                            <footer className="comment-meta">
-                                                <div className="comment-author vcard">
-                                                    <img src="/images/author9.jpg" className="avatar" alt="blog" />
-                                                    <b className="fn">John Smith</b>
-                                                    <span className="says">says:</span>
-                                                </div>
-
-                                                <div className="comment-metadata">
-                                                    March 28, 2020 at 7:16 am
-                                                </div>
-                                            </footer>
-
-                                            <div className="comment-content">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat Link ante. It is Link long established fact that Link reader will be distracted by the readable content of Link page when looking at its layout.</p>
-                                            </div>
-                                        </article>
-                                    </li>
-                                </ol>
-
-                                <div id="respond" className="comment-respond">
-                                    <h3 className="comment-reply-title">Leave A Comment</h3>
-
-                                    <form id="commentform" className="comment-form">
-                                        <p className="comment-notes">Your email address will not be published.</p>
-
-                                        <p className="comment-form-comment">
-                                            <textarea id="comment" placeholder="Comment" cols="45" rows="4" />
-                                        </p>
-                                        <p className="comment-form-author">
-                                            <input id="author" placeholder="Name" type="text" />
-                                        </p>
-                                        <p className="comment-form-email">
-                                            <input id="email" placeholder="Email" type="text" />
-                                        </p>
-                                        <p className="form-submit">
-                                            <button type="submit" id="submit" className="submit">
-                                                Post A Comment
-                                            </button>
-                                        </p>
-                                    </form>
-                                </div>
-                            </div> */}
+                            <div className='event-seatmap mt-4' id='event-seatmap'></div>
                         </div>
 
                         <div className="col-lg-4">
                             <div className="sidebar">
-                                {event.venue && event.venue.address.longitude && event.venue.address.latitude &&
-                                    <div className="widget widget_categories">
-                                        <CustomGoogleMap
-                                            longitude={event.venue.address.longitude}
-                                            latitude={event.venue.address.latitude}
-                                        />
-                                    </div>}
-                                {event.venue && <div className="widget widget_categories">
-                                    <h3 className="widget-title">
-                                        Venue
-                                    </h3>
-
-                                    <table className='table'>
-                                        <tbody>
-                                            <tr>
-                                                <th>Name:</th>
-                                                <td className='text-right'>{event.venue.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Country:</th>
-                                                <td className='text-right'>{event.venue.country_code === 'ca' ? 'Canada' : 'United States'}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Location:</th>
-                                                <td className='text-right'>{event.venue.location}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Street:</th>
-                                                <td className='text-right'>{event.venue.address.street_address}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Postal Code:</th>
-                                                <td className='text-right'>{event.venue.address.postal_code}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>}
-                                {/* <div className="widget widget_categories">
-                                    <h3 className="widget-title">
-                                        Categories
-                                    </h3>
-
-                                    <ul>
-                                        {event.categories.map((category, index) => (
-                                            <li key={index}><Link to={category.slug_url}>{category.name}</Link></li>
-                                        ))}
-                                    </ul>
-                                </div> */}
-
-                                {/* <div className="widget widget_categories">
-                                    <h3 className="widget-title">
-                                        Performers
-                                    </h3>
-
-                                    <ul>
-                                        {event.performances.map((performer, index) => (
-                                            <li key={index}><Link to={performer.performer.slug_url}>{performer.performer.name}</Link></li>
-                                        ))}
-                                    </ul>
-                                </div> */}
-
-                                {/* <div className="widget widget_tag_cloud">
-                                    <h3 className="widget-title">
-                                        Tags
-                                    </h3>
-
-                                    <div className="tagcloud">
-                                        <Link to="#">Error</Link>
-                                        <Link to="#">Cake Bake</Link>
-                                        <Link to="#">Dromzone</Link>
-                                        <Link to="#">File</Link>
-                                        <Link to="#">Yii</Link>
-                                        <Link to="#">Yii2</Link>
-                                        <Link to="#">UUID</Link>
-                                        <Link to="#">Setup</Link>
-                                        <Link to="#">Error</Link>
-                                        <Link to="#">Cake Bake</Link>
-                                        <Link to="#">Dromzone</Link>
-                                        <Link to="#">File</Link>
-                                        <Link to="#">Yii</Link>
-                                        <Link to="#">Yii2</Link>
-                                        <Link to="#">UUID</Link>
-                                        <Link to="#">Setup</Link>
+                                <div className='widget widget_search'>
+                                    <div className='form-group'>
+                                        <label>Quantity</label>
+                                        <input type="number"
+                                            className="form-control"
+                                            placeholder="Minumum Quantity..."
+                                            value={filter_quantity}
+                                            min={0}
+                                            step={1}
+                                            onChange={this.onChangeQuantiry} />
                                     </div>
-                                </div> */}
+                                    <div className='form-group'>
+                                        <label>Min Price ${min_price}</label><br />
+                                        <label>Max Price ${max_price}</label>
+                                        <Slider range
+                                            min={min_price}
+                                            max={max_price}
+                                            value={filter_price}
+                                            allowCross
+                                            onChange={this.onChangePriceFilter} />
+                                    </div>
+                                    <div className='form-group'>
+                                        <label>Sort By Price</label>
+                                        <Select
+                                            isSearchable={false}
+                                            className="form-control p-0"
+                                            classNamePrefix="select"
+                                            options={sort_options}
+                                            placeholder="All Types"
+                                            value={filter_sort}
+                                            onChange={this.onChangeSort}
+                                            styles={customStyles}
+                                        />
+                                    </div>
+                                    <div className='form-group'>
+                                        <label>Type</label>
+                                        <Select
+                                            isMulti
+                                            className="form-control p-0 form-control-custom"
+                                            classNamePrefix="select"
+                                            options={type_options}
+                                            placeholder="All Types"
+                                            value={filter_type}
+                                            onChange={this.onChangeType}
+                                            styles={customStyles}
+                                            isClearable
+                                        />
+                                    </div>
+                                </div>
 
-                                {/* <div className="widget widget_archive">
-                                    <h3 className="widget-title">
-                                        Archives
-                                    </h3>
-
-                                    <ul>
-                                        <li><Link to="#">December 2018</Link></li>
-                                        <li><Link to="#">January 2020</Link></li>
-                                        <li><Link to="#">February 2020</Link></li>
-                                        <li><Link to="#">March 2020</Link></li>
-                                    </ul>
-                                </div> */}
+                                <div className='widget widget_ticket_group'>
+                                    {ticket_groups.length === 0 && <p>No Tickets available.</p>}
+                                    {ticket_groups.length > 0 && ticket_groups.map((ticket_group, index) => (
+                                        <div key={index} className='ticket_row'
+                                            onMouseEnter={() => this.highlightTicketGroup(ticket_group.tevo_section_name)}
+                                            onMouseLeave={() => this.unHighlightTicketGroup(ticket_group.tevo_section_name)}>
+                                            {ticket_group.retail_price}
+                                            Sec {ticket_group.section}, Row {ticket_group.row}
+                                            Quantity: {ticket_group.quantity}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <Modal visible={showMapModal} width="90%" effect="fadeInUp" onClickAway={() => this.setState({ showMapModal: false })}>
+                    <div className="widget">
+                        <CustomGoogleMap
+                            longitude={event.venue.address.longitude}
+                            latitude={event.venue.address.latitude}
+                        />
+                    </div>
+                </Modal>
             </section >
         );
     }

@@ -12,6 +12,10 @@
 }
 
 @media only screen and (max-width:767px) {
+    .event-seatmap {
+        height: 50vh;
+    }
+
     .top-places.place-vancouver {
         height: 200px;
     }
