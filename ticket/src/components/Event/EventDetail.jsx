@@ -70,6 +70,10 @@ class EventDetail extends React.Component {
             min_price: min_price,
             max_price: max_price,
             type_options: [
+                { value: 'event', label: 'Event' },
+                { value: 'parking', label: 'Parking' },
+            ],
+            format_options: [
                 { value: 'Physical', label: 'Physical' },
                 { value: 'Eticket', label: 'Eticket' },
                 { value: 'TM_mobile', label: 'Mobile Entry' },
@@ -81,6 +85,7 @@ class EventDetail extends React.Component {
             filter_quantity: '',
             filter_price: [min_price, max_price],
             filter_type: [],
+            filter_format: [],
             filter_sort: sort_options[0],
             selectedSections: [],
         };
@@ -103,7 +108,7 @@ class EventDetail extends React.Component {
     updateTicketGroups = () => {
         const {
             initial_ticket_groups, seatmapApi, selectedSections,
-            filter_quantity, filter_price, filter_sort, filter_type
+            filter_quantity, filter_price, filter_sort, filter_format, filter_type
         } = this.state;
         if (!seatmapApi) return;
 
@@ -118,9 +123,13 @@ class EventDetail extends React.Component {
             if (ticket_group.retail_price < filter_price[0] || ticket_group.retail_price > filter_price[1]) {
                 return false;
             }
-            if (filter_type.length && !filter_type.map(type => type.value).includes(ticket_group.format)) {
+            if (filter_format.length && !filter_format.map(format => format.value).includes(ticket_group.format)) {
                 return false;
             }
+            if (filter_type.length && !filter_type.map(type => type.value).includes(ticket_group.type)) {
+                return false;
+            }
+
             return true;
         });
         ticket_groups.sort((ticket_group1, ticket_group2) => {
@@ -161,6 +170,10 @@ class EventDetail extends React.Component {
         this.setState({ filter_sort }, this.updateTicketGroups);
     }
 
+    onChangeFormat = (filter_format) => {
+        this.setState({ filter_format }, this.updateTicketGroups);
+    }
+
     onChangeType = (filter_type) => {
         this.setState({ filter_type }, this.updateTicketGroups);
     }
@@ -168,8 +181,8 @@ class EventDetail extends React.Component {
     render() {
         const { event } = this.props;
         const {
-            showMapModal, min_price, max_price, type_options, sort_options, ticket_groups,
-            filter_price, filter_type, filter_quantity, filter_sort
+            showMapModal, min_price, max_price, type_options, format_options, sort_options, ticket_groups,
+            filter_price, filter_format, filter_quantity, filter_sort, filter_type
         } = this.state;
 
         return (
@@ -249,6 +262,20 @@ class EventDetail extends React.Component {
                                             isClearable
                                         />
                                     </div>
+                                    <div className='form-group'>
+                                        <label>Format</label>
+                                        <Select
+                                            isMulti
+                                            className="form-control p-0 form-control-custom"
+                                            classNamePrefix="select"
+                                            options={format_options}
+                                            placeholder="All Formats"
+                                            value={filter_format}
+                                            onChange={this.onChangeFormat}
+                                            styles={customStyles}
+                                            isClearable
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className='widget widget_ticket_group'>
@@ -257,8 +284,16 @@ class EventDetail extends React.Component {
                                         <div key={index} className='ticket_row'
                                             onMouseEnter={() => this.highlightTicketGroup(ticket_group.tevo_section_name)}
                                             onMouseLeave={() => this.unHighlightTicketGroup(ticket_group.tevo_section_name)}>
-                                            {ticket_group.retail_price}
-                                            Sec {ticket_group.section}, Row {ticket_group.row}
+                                            <div>
+                                                <i className={ticket_group.type === 'parking' ? 'icofont-car-alt-4' : 'icofont-chair'} />&nbsp;
+                                                {ticket_group.tevo_section_name}
+                                            </div>
+                                            <div className='d-flex justify-content-between'>
+                                                <div>
+                                                    <b>Sec {ticket_group.section}, Row {ticket_group.row}</b>
+                                                </div>
+                                                <div>{ticket_group.retail_price}</div>
+                                            </div>
                                             Quantity: {ticket_group.quantity}
                                         </div>
                                     ))}
