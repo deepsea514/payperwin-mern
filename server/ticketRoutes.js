@@ -33,7 +33,7 @@ ticketRouter.get(
             if (!page) page = 1;
             page = parseInt(page);
             const searchObj = {};
-            category && (searchObj["categories.slug"] = country.toUpperCase());
+            category && (searchObj["categories.slug"] = category);
             query && (searchObj['name'] = { "$regex": query, "$options": "i" });
             const total = await TicketPerformer.find(searchObj).count();
             const performers = await TicketPerformer
@@ -42,6 +42,7 @@ ticketRouter.get(
                 .limit(perPage);
             return res.json({ success: true, performers: performers, page: page, total: total });
         } catch (error) {
+            console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
@@ -83,6 +84,7 @@ ticketRouter.get(
                 .limit(perPage);
             return res.json({ success: true, venues: venues, page: page, total: total });
         } catch (error) {
+            console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
@@ -96,6 +98,7 @@ ticketRouter.get(
             const event = await TicketEvent.findOne({ id: event_id })
             return res.json({ success: true, event: event });
         } catch (error) {
+            console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
@@ -123,10 +126,12 @@ ticketRouter.get(
                 .find(searchObj)
                 .select(['id', 'categories', 'configuration', 'name', 'occurs_at', 'performances', 'venue'])
                 .skip((page - 1) * perPage)
+                .sort({ occurs_at: 1 })
                 .limit(perPage);
 
             return res.json({ success: true, events: events, page: page, total: total });
         } catch (error) {
+            console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
