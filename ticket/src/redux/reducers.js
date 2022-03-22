@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest } from "redux-saga/effects";
-import { getCADRate, getUser } from "./services";
+import { getCADRate, getUser, getHomeData } from "./services";
 import categories from "../data/categories.json";
 import regions from "../data/regions.json";
 import localities_ca from "../data/localities_ca.json";
@@ -12,6 +12,8 @@ export const actionTypes = {
     setUserAction: "Set User Action",
     getCADRateAction: "Get CAD Rate Action",
     setCADRateAction: "Set CAD Rate Action",
+    getHomeDataAction: "Get Home Data Action",
+    setHomeDataAction: "Set Home Data Action",
 };
 
 const initialState = {
@@ -42,6 +44,9 @@ const initialState = {
         { value: 'this_year', label: 'This Year' },
     ],
     cad_rate: 1.2601734, // Default CAD Rate
+    total_events: 0,
+    total_venues: 0,
+    total_performers: 0,
 };
 
 export const reducer = persistReducer(
@@ -66,6 +71,12 @@ export const reducer = persistReducer(
                     rate: action.rate
                 }
 
+            case actionTypes.setHomeDataAction:
+                return {
+                    ...state,
+                    ...action.payload
+                }
+
             default:
                 return state;
         }
@@ -77,6 +88,8 @@ export const actions = {
     setUserAction: (payload = null) => ({ type: actionTypes.setUserAction, payload }),
     getCADRateAction: () => ({ type: actionTypes.getCADRateAction }),
     setCADRateAction: (rate) => ({ type: actionTypes.setCADRateAction, rate }),
+    getHomeDataAction: () => ({ type: actionTypes.getHomeDataAction }),
+    setHomeDataAction: (payload) => ({ type: actionTypes.setHomeDataAction, payload }),
 };
 
 export function* saga() {
@@ -93,6 +106,15 @@ export function* saga() {
         try {
             const { data: { rate } } = yield getCADRate();
             yield put(actions.setCADRateAction(rate));
+        } catch (error) { }
+    });
+
+    yield takeLatest(actionTypes.getHomeDataAction, function* getHomeDataAction() {
+        try {
+            const { data: { success, total_events, total_performers, total_venues } } = yield getHomeData();
+            if (success) {
+                yield put(actions.setHomeDataAction({ total_events, total_performers, total_venues }));
+            }
         } catch (error) { }
     })
 }
