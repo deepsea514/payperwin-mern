@@ -144,7 +144,7 @@ ticketRouter.get(
         try {
             const setting = await Frontend.findOne({ name: 'currency_rate' });
             if (setting) {
-                const rate = setting.value.CAD / setting.value.USD;
+                const rate = Number(setting.value.CAD.rate) + 0.01;
                 return res.json({ rate: rate });
             }
             return res.json({ rate: defaultRate });

@@ -24,11 +24,11 @@ const getTicketsInformation = async () => {
             setInterval(() => getEvents(API_TOKEN, API_SECRET), EVENT_INTERVAL);
         }
 
-        const rateAddon = await Addon.findOne({ name: 'exchangeratesapi' });
+        const rateAddon = await Addon.findOne({ name: 'currency_getgeoapi' });
         if (!rateAddon || !rateAddon.value || !rateAddon.value.api_key) {
             console.warn('Exchange rates Api Key is not set');
         } else {
-            const RATE_INTERVAL = 24 * 60 * 60 * 1000;
+            const RATE_INTERVAL = 1 * 60 * 60 * 1000;
             getCurrencyRate(rateAddon.value.api_key);
             setInterval(() => getCurrencyRate(rateAddon.value.api_key), RATE_INTERVAL);
         }
