@@ -116,7 +116,7 @@ ticketRouter.get(
             locality && (searchObj["venue.locality"] = locality);
             venue && (searchObj["venue.slug"] = venue);
             category && (searchObj["categories.slug"] = category);
-            performer && (searchObj["performances.performer.slug"] = category);
+            performer && (searchObj["performances.performer.slug"] = performer);
 
             const total = await TicketEvent.find(searchObj).count();
             const events = await TicketEvent

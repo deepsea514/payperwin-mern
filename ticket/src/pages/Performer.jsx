@@ -1,22 +1,51 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Footer from "../components/Common/Footer";
+import Loader from '../components/Common/Loader';
+import MainBanner from '../components/Performer/MainBanner';
+import NotFound from '../components/Performer/NotFound';
+import PerformerDetail from '../components/Performer/PerformerDetail';
+import { getPerformerDetail } from '../redux/services';
 
 class Performer extends React.Component {
+    constructor(props) {
+        super(props);
+        const { match: { params: { performer_slug } } } = this.props;
+        this.state = {
+            performer_slug: performer_slug,
+            loading: false,
+            performer: null,
+        }
+    }
+
+    componentDidMount() {
+        const { performer_slug } = this.state;
+        this.setState({ loading: true });
+        getPerformerDetail(performer_slug)
+            .then(({ data }) => {
+                const { success, performer } = data;
+                if (success) {
+                    this.setState({ performer, loading: false });
+                } else {
+                    this.setState({ performer: null, loading: false });
+                }
+            })
+            .catch(() => {
+                this.setState({ performer: null, loading: false });
+            })
+    }
+
     render() {
+        const { performer, loading } = this.state;
         return (
             <React.Fragment>
-                <div className="page-title-area item-bg2">
-                    <div className="container">
-                        <h1>Performer Name</h1>
-                        <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li><Link to="/performers">Performers</Link></li>
-                            <li>Performer Name</li>
-                        </ul>
-                    </div>
-                </div>
-
+                <MainBanner title={loading ? 'Loading ...' : (
+                    performer ? performer.name : 'Performer Not Found'
+                )} />
+                {loading && <div className="container my-5 py-5">
+                    <Loader />
+                </div>}
+                {!loading && !performer && <NotFound />}
+                {performer && <PerformerDetail performer={performer} />}
                 <Footer />
             </React.Fragment>
         );
