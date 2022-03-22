@@ -29,3 +29,11 @@ export const getEventDetail = (event_id) => {
 export const getCADRate = () => {
     return FrontendAPI.get('/tickets/cad_rate');
 }
+
+export const getPerformers = (filter, page) => {
+    return FrontendAPI.get('/tickets/performers', { params: { ...filter, page } });
+}
+
+export const getPerformerDetail = (performer_slug) => {
+    return FrontendAPI.get(`/tickets/performers/${performer_slug}`,);
+}
