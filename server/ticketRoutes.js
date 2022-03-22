@@ -9,6 +9,45 @@ const Frontend = require('./models/frontend');
 const perPage = 20;
 
 ticketRouter.get(
+    '/performers/:performer_slug',
+    async (req, res) => {
+        try {
+            const { performer_slug } = req.params;
+            const performer = await TicketPerformer.findOne({ slug: performer_slug });
+            if (!performer) {
+                return res.json({ success: false, error: 'Performer Not Found.' });
+            }
+            return res.json({ success: true, performer: performer });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot get Performer Detail. Internal Server Error.' });
+        }
+    }
+)
+
+ticketRouter.get(
+    '/performers',
+    async (req, res) => {
+        try {
+            let { category, query, page } = req.query;
+            if (!page) page = 1;
+            page = parseInt(page);
+            const searchObj = {};
+            category && (searchObj["categories.slug"] = country.toUpperCase());
+            query && (searchObj['name'] = { "$regex": query, "$options": "i" });
+            const total = await TicketPerformer.find(searchObj).count();
+            const performers = await TicketPerformer
+                .find(searchObj)
+                .skip((page - 1) * perPage)
+                .limit(perPage);
+            return res.json({ success: true, performers: performers, page: page, total: total });
+        } catch (error) {
+            return res.json({ success: false, error: 'Internal Server Error.' });
+        }
+    }
+);
+
+ticketRouter.get(
     '/venues/:venue_slug',
     async (req, res) => {
         try {
@@ -66,11 +105,10 @@ ticketRouter.get(
     '/events',
     async (req, res) => {
         try {
-            let { region, locality, query, page, venue, category } = req.query;
+            let { region, locality, query, page, venue, category, performer } = req.query;
             if (!page) page = 1;
             page = parseInt(page);
             const searchObj = {
-                // "venue.country_code": "CA",
                 occurs_at: { $gte: new Date() }
             }
             query && (searchObj['name'] = { "$regex": query, "$options": "i" });
@@ -78,6 +116,7 @@ ticketRouter.get(
             locality && (searchObj["venue.locality"] = locality);
             venue && (searchObj["venue.slug"] = venue);
             category && (searchObj["categories.slug"] = category);
+            performer && (searchObj["performances.performer.slug"] = category);
 
             const total = await TicketEvent.find(searchObj).count();
             const events = await TicketEvent
