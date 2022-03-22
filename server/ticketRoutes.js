@@ -3,6 +3,7 @@ const ticketRouter = require('express').Router();
 //Models
 const TicketEvent = require('./models/ticket_event');
 const TicketVenue = require('./models/ticket_venue');
+const TicketPerformer = require('./models/ticket_performer');
 const Frontend = require('./models/frontend');
 //local helpers
 const perPage = 20;
@@ -106,6 +107,26 @@ ticketRouter.get(
         } catch (error) {
             console.error(error);
             return res.json({ rate: defaultRate });
+        }
+    }
+)
+
+ticketRouter.get(
+    '/homedata',
+    async (req, res) => {
+        try {
+            const total_events = await TicketEvent.find().count();
+            const total_venues = await TicketVenue.find().count();
+            const total_performers = await TicketPerformer.find().count();
+            return res.json({
+                success: true,
+                total_events: total_events,
+                total_venues: total_venues,
+                total_performers: total_performers,
+            })
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
 )

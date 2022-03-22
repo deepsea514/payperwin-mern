@@ -4,6 +4,10 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
+export const getHomeData = () => {
+    return FrontendAPI.get('/tickets/homedata');
+}
+
 export const getVenues = (filter, page) => {
     return FrontendAPI.get('/tickets/venues', { params: { ...filter, page } });
 }
