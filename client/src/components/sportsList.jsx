@@ -89,11 +89,11 @@ class SportsList extends Component {
                     const { name, eventCount, shortName } = sport;
                     const hasEvents = eventCount > 0;
                     return (hasEvents || showNoEvents) && (
-                        name == "Prop Bet" ?
+                        name == "Side Bet" ?
                             (
                                 <li className="sport-list-item sport-sublist-item sport-hide-league" key={name}>
                                     <Link
-                                        to={{ pathname: `/prop-bet` }}
+                                        to={{ pathname: `/side-bet` }}
                                         className="sport-list-compact"
                                         style={!hasEvents ? { opacity: 0.5, pointerEvents: 'none' } : null}
                                     >

@@ -45,7 +45,7 @@ class CustomBet extends Component {
         if (pro_mode) {
             return addBet(betObj);
         }
-        showErrorToast('Prop Bets are only available on Pro Mode.');
+        showErrorToast('Side Bets are only available on Pro Mode.');
     }
 
     copyUrl = () => {
@@ -60,7 +60,7 @@ class CustomBet extends Component {
             .then(({ data }) => {
                 const { success, error } = data;
                 if (success) {
-                    showSuccessToast('Successfully joined Prop bet.');
+                    showSuccessToast('Successfully joined Side bet.');
                 } else {
                     showErrorToast(error);
                 }
@@ -129,7 +129,7 @@ class CustomBet extends Component {
                 <div className="tab-content">
                     <div className='d-flex justify-content-end'>
                         {user && <Link className="form-button"
-                            to="/prop-bets/create"
+                            to="/side-bets/create"
                             onClick={() => this.setState({ createModal: true })}>
                             <i className="fas fa-plus-square" /> Create a Bet
                         </Link>}
@@ -148,7 +148,7 @@ class CustomBet extends Component {
                                     {name} {user.firstname && 'by ' + user.firstname + ' ' + user.lastname}
                                     <span className='pt-1 cursor-pointer' onClick={() => this.setState({
                                         shareModal: true,
-                                        lineUrl: window.location.origin + '/prop-bet/' + uniqueid,
+                                        lineUrl: window.location.origin + '/side-bet/' + uniqueid,
                                         urlCopied: false
                                     })}>
                                         <i className='fas fa-link' /> Share
@@ -178,12 +178,12 @@ class CustomBet extends Component {
                                                             () => this.addBet({
                                                                 name: name,
                                                                 type: 'moneyline',
-                                                                league: 'Prop Bet',
+                                                                league: 'Side Bet',
                                                                 pick: index,
-                                                                sportName: 'Prop Bet',
+                                                                sportName: 'Side Bet',
                                                                 lineId: uniqueid,
                                                                 lineQuery: {
-                                                                    sportName: 'Prop Bet',
+                                                                    sportName: 'Side Bet',
                                                                     eventName: name,
                                                                     leagueId: uniqueid,
                                                                     eventId: _id,

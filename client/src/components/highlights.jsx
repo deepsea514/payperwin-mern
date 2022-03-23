@@ -175,10 +175,10 @@ class Highlights extends Component {
                         onClick={() => this.setState({ sportIndex: 'custom', leagueIndex: null })}>
                         <center>
                             <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
-                                <img src={sportNameImage('Prop Bet')}
+                                <img src={sportNameImage('Side Bet')}
                                     className='sports-league-image' />
                             </div>
-                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Prop Bet</span>
+                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Side Bet</span>
                         </center>
                     </li>
                     {topLeagues.map((league, i) => {

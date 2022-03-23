@@ -81,7 +81,7 @@
     },
     {
         "title": "Betting on Custom Events",
-        "path": "/prop-bet"
+        "path": "/side-bet"
     },
     {
         "title": "Preferences",
@@ -148,8 +148,8 @@
         "path": "/cashback"
     },
     {
-        "title": "Prop Bets",
-        "path": "/prop-bets"
+        "title": "Side Bets",
+        "path": "/side-bets"
     },
     {
         "title": "Autobet Dashboard",
