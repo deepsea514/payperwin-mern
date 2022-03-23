@@ -18,7 +18,7 @@ class Wagers extends React.Component {
                         <a onClick={null}
                             className="text-dark text-hover-primary mb-1 font-size-lg cursor-pointer">
                             {bet.isParlay ? 'Parlay' :
-                                bet.origin == 'custom' ? 'Prop Bet - ' : bet.lineQuery.sportName + ' - '}
+                                bet.origin == 'custom' ? 'Side Bet - ' : bet.lineQuery.sportName + ' - '}
                             {bet.isParlay ? '' :
                                 bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`}
                         </a>

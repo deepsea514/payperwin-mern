@@ -14,12 +14,12 @@ const AlertDetails = () => {
         <div style={{ color: 'white', fontSize: '14px', marginTop: '20px' }}>
             <b>How It Works:</b>
             <ol>
-                <li>Setup the prop bet (bet name, start/end date, maximum risk).</li>
+                <li>Setup the side bet (bet name, start/end date, maximum risk).</li>
                 <li>Set the bet options. All options payout +100 (or 2.0 in decimal odds) for the winners.</li>
                 <li>After the bet has ended, all bettors can vote for the correct result to determine the winning option.</li>
                 <li>Winners are paid out of the bet creator’s wallet minus the Payper Win fee. All bets with the incorrect result will go to the bet creator. </li>
-                <li>Submit the prop bet for approval by Payper Win.</li>
-                <li>Once your prop bet is approved, you will be notified by email and your bet will be available for betting.</li>
+                <li>Submit the side bet for approval by Payper Win.</li>
+                <li>Once your side bet is approved, you will be notified by email and your bet will be available for betting.</li>
             </ol>
             Ready to create your own bet? Click NEXT.
         </div>
@@ -201,7 +201,7 @@ const OptionDetails = ({ touched, errors, values, setFieldTouched, setFieldValue
 
 export default class CreateCustomBet extends Component {
     componentDidMount() {
-        const title = 'Create a Prop Bet';
+        const title = 'Create a Side Bet';
         setTitle({ pageTitle: title });
     }
 
@@ -212,17 +212,17 @@ export default class CreateCustomBet extends Component {
                 const { success, error } = data;
                 formik.setSubmitting(false);
                 if (success) {
-                    showSuccessToast("Successfully created prop bet.");
+                    showSuccessToast("Successfully created side bet.");
                     getUser();
                     setTimeout(() => {
-                        history.push('/prop-bet')
+                        history.push('/side-bet')
                     }, 2000);
                 } else {
                     showErrorToast(error);
                 }
             })
             .catch(() => {
-                showErrorToast("Cannot add prop bet. Please try again later.");
+                showErrorToast("Cannot add side bet. Please try again later.");
                 formik.setSubmitting(false);
             })
     }
@@ -232,7 +232,7 @@ export default class CreateCustomBet extends Component {
         return (
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
-                    <h3>Create a Prop Bet</h3>
+                    <h3>Create a Side Bet</h3>
                 </div>
                 <br />
                 <div>
