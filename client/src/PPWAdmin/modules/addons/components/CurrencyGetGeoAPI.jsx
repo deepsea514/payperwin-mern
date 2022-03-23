@@ -6,7 +6,7 @@ import { getAddon, setAddon } from "../redux/services";
 import SVG from "react-inlinesvg";
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 
-export default class ExchangeRatesApi extends React.Component {
+export default class CurrencyGetGeoAPI extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +23,7 @@ export default class ExchangeRatesApi extends React.Component {
 
     componentDidMount() {
         this.setState({ loading: false });
-        getAddon('exchangeratesapi')
+        getAddon('currency_getgeoapi')
             .then(({ data }) => {
                 if (data) {
                     this.setState({ initialValues: data.value, loading: false });
@@ -42,7 +42,7 @@ export default class ExchangeRatesApi extends React.Component {
 
     onSubmit = (values, formik) => {
         this.setState({ isError: false, isError: false, });
-        setAddon('exchangeratesapi', values)
+        setAddon('currency_getgeoapi', values)
             .then(() => {
                 this.setState({ isSuccess: true })
                 formik.setSubmitting(false);
@@ -58,8 +58,7 @@ export default class ExchangeRatesApi extends React.Component {
         return (
             <div className="mt-3">
                 <div className="d-flex justify-content-between">
-                    <h3>Exchange Rates API</h3>
-                    <img src="/images/third-party/exchangeratesapi.svg" style={{ display: 'block', height: '40px', width: 'auto' }} />
+                    <h3>Currency GetGeo API</h3>
                 </div>
                 {loading && <center className="mt-5"><Preloader use={ThreeDots}
                     size={100}
