@@ -5,7 +5,7 @@ const getCurrencyRate = async (API_KEY) => {
     try {
         const { data: { rates } } = await axios.get('https://api.getgeoapi.com/v2/currency/convert', {
             params: {
-                api_key: API_KEY,//'82ed1714be13a2497b86a9905c77f5bdf4e766b7',
+                api_key: API_KEY,
                 from: 'USD',
                 to: 'CAD',
                 format: 'json',
