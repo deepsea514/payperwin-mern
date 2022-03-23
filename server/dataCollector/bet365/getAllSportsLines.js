@@ -25,10 +25,11 @@ const getAllSportsLines = async () => {
         return;
     }
     const { bet365ApiKey } = bet365Addon.value;
-    let sportsDir = await SportsDir.findOne({ origin: "bet365" });
-    if (!sportsDir) {
-        sportsDir = await SportsDir.create({ origin: "bet365", sports: sportsData });
-    }
+    await SportsDir.findOneAndUpdate(
+        { origin: "bet365" },
+        { origin: "bet365", sports: sportsData },
+        { upsert: true }
+    );
 
     for (const sport of sportsData) {
         try {
@@ -53,7 +54,6 @@ const getAllSportsLines = async () => {
                                 token: bet365ApiKey,
                                 page: page,
                                 per_page: per_page,
-                                // day: dateformat(date, "yyyymmdd"),
                             }
                         });
                     success = success_result;
@@ -189,16 +189,14 @@ const getAllSportsLines = async () => {
 
             // fs.writeFileSync(`${sport.name}_odds.json`, JSON.stringify(sportEvents));
 
-            const savedSport = await Sport.findOne({ originSportId: sportEvents.originSportId, origin: 'bet365' });
-            if (savedSport) {
-                await savedSport.update(
-                    sportEvents,
-                    { upsert: true },
-                );
-            }
-            else {
-                await Sport.create(sportEvents);
-            }
+            await Sport.findOneAndUpdate(
+                {
+                    originSportId: sportEvents.originSportId,
+                    origin: 'bet365'
+                },
+                sportEvents,
+                { upsert: true }
+            );
             console.log(`${sport.name} Got Odds`)
         } catch (error) {
             console.error(error);
