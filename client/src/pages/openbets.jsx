@@ -477,7 +477,7 @@ class OpenBets extends Component {
                             event
                         } = betObj;
                         if (origin == "custom") {
-                            const sportName = "Prop Bet";
+                            const sportName = "Side Bet";
                             const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
                             const gameEnded = event && new Date(event.endDate).getTime() <= new Date().getTime();
                             return (
@@ -551,7 +551,7 @@ class OpenBets extends Component {
                                         </div>}
                                         {event && !this.checkEventStarted(matchStartDate) &&
                                             <button className="form-button" onClick={() => this.setState({
-                                                lineUrl: window.location.origin + '/prop-bet/' + event.uniqueid,
+                                                lineUrl: window.location.origin + '/side-bet/' + event.uniqueid,
                                                 urlCopied: false,
                                                 shareModal: true
                                             })}><i className="fas fa-link" /> Share Bet</button>}

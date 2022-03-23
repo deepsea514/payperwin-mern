@@ -139,13 +139,13 @@ class TransactionHistory extends Component {
             case 'invitebonus':
                 return 'Invite Bonus';
             case 'lock_event':
-                return 'Lock bet amount for a prop bet.';
+                return 'Lock bet amount for a side bet.';
             case 'unlock_event':
-                return 'Unlock bet amount for a prop bet.';
+                return 'Unlock bet amount for a side bet.';
             case 'win_event':
-                return 'Credit win amount in a prop bet.';
+                return 'Credit win amount in a side bet.';
             case 'lose_event':
-                return 'Debit lose amount in a prop bet.';
+                return 'Debit lose amount in a side bet.';
             default:
                 return '';
         }

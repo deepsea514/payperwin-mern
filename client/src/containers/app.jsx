@@ -105,8 +105,8 @@ const ShowAccountLinks = [
     '/verification',
     '/phone-verification',
     '/cashback',
-    '/prop-bets',
-    '/prop-bets/create',
+    '/side-bets',
+    '/side-bets/create',
     '/autobet-dashboard',
     '/autobet-settings',
     '/loyalty',
@@ -535,7 +535,7 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/prop-bet/:id" exact render={(props) => {
+                                                <Route path="/side-bet/:id" exact render={(props) => {
                                                     const { match } = props;
                                                     const id = resObjPath(match, 'params.id');
                                                     return (
@@ -549,7 +549,7 @@ class App extends Component {
                                                         </ErrorBoundary>
                                                     );
                                                 }} />
-                                                <Route path="/prop-bet" render={(props) => {
+                                                <Route path="/side-bet" render={(props) => {
                                                     return (
                                                         <ErrorBoundary>
                                                             <React.Fragment>
@@ -632,10 +632,10 @@ class App extends Component {
                                                 {user && <Route path="/cashback" render={(props) =>
                                                     <ErrorBoundary><Cashback {...props} user={user} /></ErrorBoundary>
                                                 } />}
-                                                {user && <Route path="/prop-bets/create" render={(props) =>
+                                                {user && <Route path="/side-bets/create" render={(props) =>
                                                     <ErrorBoundary><CreateCustomBet {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}
-                                                {user && <Route path="/prop-bets" render={(props) =>
+                                                {user && <Route path="/side-bets" render={(props) =>
                                                     <ErrorBoundary><CustomBets {...props} user={user} /></ErrorBoundary>
                                                 } />}
                                                 <Route path="/support" render={(props) =>
