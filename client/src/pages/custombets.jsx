@@ -23,7 +23,7 @@ export default class CustomBets extends Component {
     }
 
     componentDidMount() {
-        const title = 'Prop Bets';
+        const title = 'Side Bets';
         setTitle({ pageTitle: title });
         this.getCustomBetsHistory();
     }
@@ -123,9 +123,9 @@ export default class CustomBets extends Component {
         return (
             <div className="col-in px-3">
                 <div className="d-flex justify-content-between">
-                    <h3>Prop Bets</h3>
+                    <h3>Side Bets</h3>
                     {user && <Link className="form-button"
-                        to="/prop-bet/create"
+                        to="/side-bet/create"
                         onClick={() => this.setState({ createModal: true })}>
                         <i className="fas fa-plus-square" /> Create a Bet
                     </Link>}
@@ -135,11 +135,11 @@ export default class CustomBets extends Component {
                     Create your own bet and invite your friends to bet with or against you.
                     The bet creator is the High Staker of the bet.
                     You can set the maximum risk amount you’re willing to payout.
-                    All prop bets are subject to approval by PayPer Win before it becomes available to accept it’s first bet.
+                    All side bets are subject to approval by PayPer Win before it becomes available to accept it’s first bet.
                     Click “Create Bet” to learn more.
                     <br />
                     <br />
-                    Prop bet examples.
+                    Side bet examples.
                     <br />
                     “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs?”
                 </p>
@@ -208,7 +208,7 @@ export default class CustomBets extends Component {
                             lineQuery,
                         } = betObj;
                         const voted = event && event.votes && event.votes.find(vote => vote && vote.find(voted => voted == user.userId));
-                        const sportName = "Prop Bet";
+                        const sportName = "Side Bet";
                         const gameEnded = event && new Date(event.endDate).getTime() <= new Date().getTime();
                         return (
                             <div className="open-bets" key={_id}>
@@ -275,7 +275,7 @@ export default class CustomBets extends Component {
                                     {['Draw', 'Cancelled'].includes(status) && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${bet.toFixed(2)}</strong></div>}
                                     {event && !this.checkEventStarted(matchStartDate) &&
                                         <button className="form-button" onClick={() => this.setState({
-                                            lineUrl: window.location.origin + '/prop-bet/' + event.uniqueid,
+                                            lineUrl: window.location.origin + '/side-bet/' + event.uniqueid,
                                             urlCopied: false,
                                             shareModal: true
                                         })}><i className="fas fa-link" /> Share Bet</button>}
