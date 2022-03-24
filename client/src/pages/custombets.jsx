@@ -125,7 +125,7 @@ export default class CustomBets extends Component {
                 <div className="d-flex justify-content-between">
                     <h3>Side Bets</h3>
                     {user && <Link className="form-button"
-                        to="/side-bet/create"
+                        to="/side-bets/create"
                         onClick={() => this.setState({ createModal: true })}>
                         <i className="fas fa-plus-square" /> Create a Bet
                     </Link>}
