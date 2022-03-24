@@ -123,7 +123,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 {errors.endDate && <div className="form-error">{errors.endDate}</div>}
             </div>
             <div className="form-group">
-                <label><span>Visibility</span></label>
+                <label><span>Public bets will be displayed on the website and anyone can place a bet. Only people with a link can place a bet on Private bets</span></label>
                 <select
                     maxLength="200"
                     type="text"
@@ -138,7 +138,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 {errors.visibility && <div className="form-error">{errors.visibility}</div>}
             </div>
             <div className="form-group">
-                <label><span>Maximum Risk</span></label>
+                <label><span>The maximum amount of money you can win/lose</span></label>
                 <input
                     maxLength="200"
                     type="text"
@@ -181,6 +181,7 @@ const OptionDetails = ({ touched, errors, values, setFieldTouched, setFieldValue
 
     return (
         <>
+            <p>Enter the bet options. Example, the names of the bridesmaids</p>
             {values.options.map((option, index) => (
                 <div className="form-group" key={index}>
                     <label><span>Option {index + 1}</span></label>
