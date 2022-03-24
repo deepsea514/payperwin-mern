@@ -8,6 +8,10 @@ import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import EventSearchModal from '../components/EventSearchModal';
 import { FormControlLabel, Checkbox } from '@material-ui/core';
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
+}
 
 const AlertDetails = () => {
     return (
@@ -60,8 +64,8 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                             setShowEventModal(true);
                         }
                     }}>
-                    <option value="">... Choose Bet Type.</option>
-                    <option value="upcoming_sport">Custom Sports Bet</option>
+                    <option value="">... Select Bet Type.</option>
+                    <option value="upcoming_sport">Major League Side Bet</option>
                     <option value="custom">Other Custom</option>
                 </select>
                 {errors.type && <div className="form-error">{errors.type}</div>}
@@ -90,6 +94,9 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     onChange={(val) => {
                         setFieldTouched("startDate", true);
                         setFieldValue("startDate", val);
+                        const endDate = new Date(val);
+                        setFieldTouched("endDate", true);
+                        setFieldValue("endDate", endDate.addHours(5));
                     }}
                     placeholder="Enter Start Date"
                     dateFormat="MMM d, yyyy hh:mm aa"
@@ -256,7 +263,7 @@ export default class CreateCustomBet extends Component {
                             {
                                 component: EventDetails,
                                 validationSchema: Yup.object().shape({
-                                    type: Yup.string().required("Please choose Bet Type"),
+                                    type: Yup.string().required("Please select Bet Type"),
                                     name: Yup.string()
                                         .required("Event Name is required.")
                                         .min(5, "Minumum 5 Symbols."),
