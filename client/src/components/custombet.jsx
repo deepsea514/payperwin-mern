@@ -27,11 +27,15 @@ class CustomBet extends Component {
     }
 
     getSport() {
-        const { id } = this.props;
+        const { id, history } = this.props;
 
         getCustomEvent(id)
             .then(({ data }) => {
                 if (data) {
+                    if (id && !(data && data[0])) {
+                        history.push('/side-bet');
+                        return;
+                    }
                     this.setState({ data })
                 }
             })
@@ -148,6 +152,7 @@ class CustomBet extends Component {
                     {error && <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>}
                     {!data && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                     {data && data.map((event, index) => {
+                        if (!event) return null;
                         const { startDate, name, options, uniqueid, _id, user, allowAdditional } = event;
 
                         return (
