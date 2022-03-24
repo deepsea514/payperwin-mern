@@ -3575,7 +3575,7 @@ adminRouter.get(
                     bet.sportsbook ? 'HIGH STAKER' : 'P2P',
                     bet.userId.username,
                     bet.userId.email,
-                    bet.isParlay ? 'Parlay' : bet.origin == 'custom' ? 'Custom Bets' : bet.lineQuery.sportName,
+                    bet.isParlay ? 'Parlay' : bet.origin == 'custom' ? 'Side Bets' : bet.lineQuery.sportName,
                     bet.isParlay ? '' : bet.origin == 'custom' ? bet.lineQuery.eventName : `${bet.teamA.name} vs ${bet.teamB.name}`,
                     `$ ${bet.bet}`,
                     Number(bet.pickOdds) > 0 ? `+${Number(bet.pickOdds).toFixed(2)}` : `${Number(bet.pickOdds).toFixed(2)}`,
@@ -5247,7 +5247,7 @@ adminRouter.post(
 
             const bets = await Bet.find({
                 "lineQuery.lineId": event.uniqueid,
-                "lineQuery.sportName": 'Custom Bet',
+                "lineQuery.sportName": 'Side Bet',
             });
             for (const bet of bets) {
                 const user = await User.findById(bet.userId);
