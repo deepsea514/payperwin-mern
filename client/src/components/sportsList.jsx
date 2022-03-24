@@ -37,7 +37,7 @@ class SportsList extends Component {
                     if (topSports) {
                         const sports = defaultTopSports.map((sport) => {
                             const sportData = data.find(data => data.name == sport);
-                            return sportData ? sportData : null;
+                            return sportData //? sportData : null;
                         }).filter(sport => sport);
                         this._isMounted && this.setState({ sports: sports })
                     } else {
@@ -78,13 +78,22 @@ class SportsList extends Component {
     }
 
     render() {
-        const { showNoEvents, history } = this.props;
+        const { showNoEvents, topSports, history } = this.props;
         const { sports, leaguesData } = this.state;
         if (!sports) {
             return null;
         }
         return (
             <ul className="sport-list sport-desktop-list sport-list-compact">
+                {topSports && <li className="sport-list-item sport-sublist-item sport-hide-league">
+                    <Link
+                        to={{ pathname: `/side-bet` }}
+                        className="sport-list-compact"
+                    >
+                        <img src={sportNameImage('Side Bet')} style={{ marginRight: '6px' }} />
+                        <label><span><span>Side Bet</span></span></label>
+                    </Link>
+                </li>}
                 {sports.sort((a, b) => b.eventCount - a.eventCount).map(sport => {
                     const { name, eventCount, shortName } = sport;
                     const hasEvents = eventCount > 0;
@@ -99,7 +108,6 @@ class SportsList extends Component {
                                     >
                                         <img src={sportNameImage(name)} style={{ marginRight: '6px' }} />
                                         <label><span><span>{name}</span></span></label>
-                                        {/* <span className="sport-list-count">{eventCount}</span> */}
                                     </Link>
                                 </li>
                             )
