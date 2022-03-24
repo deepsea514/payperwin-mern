@@ -986,7 +986,7 @@ expressApp.post(
                 const existingBet = await Bet.findOne({
                     userId: user._id,
                     "lineQuery.lineId": uniqueid,
-                    "lineQuery.sportName": 'Custom Bet',
+                    "lineQuery.sportName": 'Side Bet',
                 });
                 if (existingBet) {
                     errors.push(`${eventName} wager could not be placed. Already placed a bet on this line.`);
@@ -997,7 +997,7 @@ expressApp.post(
                     let totalBetOnEvent = await Bet.aggregate({
                         $match: {
                             "lineQuery.lineId": uniqueid,
-                            "lineQuery.sportName": 'Custom Bet',
+                            "lineQuery.sportName": 'Side Bet',
                         }
                     }, {
                         $group: {
@@ -3328,8 +3328,8 @@ expressApp.get(
             sports.push({
                 eventCount: customBets,
                 hasOfferings: true,
-                name: "Custom Bet",
-                shortName: 'custom-bet',
+                name: "Side Bet",
+                shortName: 'side-bet',
             });
             res.json(sports);
         } else {
@@ -4739,7 +4739,7 @@ expressApp.post(
             }
             const event = await Event.findById(id);
             if (!event) {
-                return res.json({ success: false, error: 'Custom Bet Not Found.' });
+                return res.json({ success: false, error: 'Side Bet Not Found.' });
             }
             if (!event.allowAdditional) {
                 return res.json({ success: false, error: 'Join High Staker is not enabled.' });
@@ -4795,7 +4795,7 @@ expressApp.post(
             }
             let existing = await Event.findOne({ name });
             if (existing) {
-                return res.json({ success: false, error: 'A custom bet with same name exists.' });
+                return res.json({ success: false, error: 'A side bet with same name exists.' });
             }
             let uniqueid = `E${ID()}`;
             do {
@@ -5499,7 +5499,7 @@ expressApp.post(
             }
             const { matchStartDate, isParlay, bet: betAmount, pick, origin } = bet;
             if (origin == 'custom') {
-                return res.json({ success: false, error: 'Cannot cancel a custom Bet.' });
+                return res.json({ success: false, error: 'Cannot cancel a Side Bet.' });
             }
             if (new Date().getTime() > new Date(matchStartDate).getTime()) {
                 return res.json({ success: false, error: 'Cannot cancel a bet. Game already started.' });

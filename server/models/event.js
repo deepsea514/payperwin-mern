@@ -38,18 +38,18 @@ EventSchema.pre('save', async function (next) { // eslint-disable-line func-name
         const user = await User.findById(event.user);
         if (!user) return next();
 
-        const betLink = `https://www.payperwin.com/custom-bet/${event.uniqueid}`;
+        const betLink = `https://www.payperwin.com/side-bet/${event.uniqueid}`;
         const msg = {
             from: `${fromEmailName} <${fromEmailAddress}>`,
             to: user.email,
-            subject: 'Custom Bet Approved - ' + name,
-            text: 'Custom Bet Approved - ' + name,
+            subject: 'Side Bet Approved - ' + name,
+            text: 'Side Bet Approved - ' + name,
             html: simpleresponsive(
                 `Hi <b>${user.email}</b>.
                 <br><br>
-                Your customer bet for ${name} has been approved. Please <a target="_blank" href="${betLink}">click here</a> to view your custom bet. 
+                Your customer bet for ${name} has been approved. Please <a target="_blank" href="${betLink}">click here</a> to view your Side bet. 
                 <br><br>`,
-                { href: betLink, name: 'View Custom Bet' }
+                { href: betLink, name: 'View Side Bet' }
             ),
         };
         sgMail.send(msg).catch(error => {
