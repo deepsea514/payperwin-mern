@@ -2436,9 +2436,13 @@ body:not(.aside-enabled) .header-menu-wrapper .header-logo {
 }
 
 .verification-proof-container ul {
-    padding-left: 16px;
+    /* padding-left: 16px; */
     font-size: 12px;
-    list-style-type: initial;
+    list-style-type: none;
+}
+
+.verification-proof-container ul li {
+    margin-top: 8px;
 }
 
 @media (max-width: 767px) {
