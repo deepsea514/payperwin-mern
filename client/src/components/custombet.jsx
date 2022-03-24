@@ -72,12 +72,6 @@ class CustomBet extends Component {
     render() {
         const { betSlip, removeBet, timezone, user, showLoginModalAction } = this.props;
         const { data, error, shareModal, lineUrl, urlCopied, addHighStaker } = this.state;
-        if (error) {
-            return <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>;
-        }
-        if (!data) {
-            return <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>;
-        }
 
         return (
             <div className="content mt-2 detailed-lines">
@@ -138,8 +132,22 @@ class CustomBet extends Component {
                             <i className="fas fa-plus-square" /> Create a Bet
                         </button>}
                     </div>
+                    <p className='mt-3'>
+                        Create and Invite friends to bet with or against you.
+                        The bet creator is the High Staker of the bet.
+                        You can set the maximum risk amount you’re willing to payout.
+                        All custom bets are subject to approval by Payper Win prior to acceptance.
+                        Click “Create Bet” to learn more.
+                        <br />
+                        <br />
+                        Side bet examples.
+                        <br />
+                        “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”
+                    </p>
 
-                    {data.map((event, index) => {
+                    {error && <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>}
+                    {!data && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
+                    {data && data.map((event, index) => {
                         const { startDate, name, options, uniqueid, _id, user, allowAdditional } = event;
 
                         return (
