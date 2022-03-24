@@ -132,16 +132,16 @@ export default class CustomBets extends Component {
                 </div>
                 <br />
                 <p>
-                    Create your own bet and invite your friends to bet with or against you.
+                    Create and Invite friends to bet with or against you.
                     The bet creator is the High Staker of the bet.
                     You can set the maximum risk amount you’re willing to payout.
-                    All side bets are subject to approval by PayPer Win before it becomes available to accept it’s first bet.
+                    All custom bets are subject to approval by Payper Win prior to acceptance.
                     Click “Create Bet” to learn more.
                     <br />
                     <br />
                     Side bet examples.
                     <br />
-                    “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs?”
+                    “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”
                 </p>
                 <div>
                     {shareModal && <div className="modal confirmation">
