@@ -141,12 +141,16 @@ class CustomBet extends Component {
                         The bet creator is the High Staker of the bet.
                         You can set the maximum risk amount you’re willing to payout.
                         All custom bets are subject to approval by Payper Win prior to acceptance.
-                        Click “Create Bet” to learn more.
+                        Click “Create A Bet” to learn more.
                         <br />
                         <br />
-                        Side bet examples.
+                        Custom bet examples.
                         <br />
-                        “Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”
+                        <ul style={{listStyle: 'inside'}}>
+                            <li>“Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”</li>
+                            <li>“Which of the bridesmaid will catch the bouquet?”</li>
+                            <li>“How many minutes is the Super Bowl half time show?”</li>
+                        </ul>
                     </p>
 
                     {error && <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>}
