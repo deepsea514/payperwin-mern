@@ -21,6 +21,11 @@ const topLeagues = [
         leagueId: '10041830',
     },
     {
+        name: 'NCAAB',
+        sportName: 'Basketball',
+        leagueId: '10042997',
+    },
+    {
         name: 'MLB',
         sportName: 'Baseball',
         leagueId: '10037485',
@@ -34,7 +39,7 @@ const topLeagues = [
         name: 'UFC',
         sportName: 'Boxing/MMA',
         leagueId: '10036983',
-    }
+    },
 ]
 
 class Highlights extends Component {
