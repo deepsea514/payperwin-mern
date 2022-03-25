@@ -8,9 +8,14 @@ import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import EventSearchModal from '../components/EventSearchModal';
 import { FormControlLabel, Checkbox } from '@material-ui/core';
+import dateformat from 'dateformat';
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
+}
+
+const getDate = (date) => {
+    return dateformat(new Date(date), "ddd mmm dd yyyy HH:MM");
 }
 
 const AlertDetails = () => {
@@ -167,7 +172,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
     )
 }
 
-const OptionDetails = ({ touched, errors, values, setFieldTouched, setFieldValue, getFieldProps }) => {
+const OptionDetails = ({ touched, errors, values, setFieldValue, getFieldProps }) => {
     const deleteOption = (index) => {
         if (values.options.length <= 2) return;
         values.options.splice(index, 1);
@@ -205,6 +210,51 @@ const OptionDetails = ({ touched, errors, values, setFieldTouched, setFieldValue
             ))
             }
         </>
+    )
+}
+
+const reviewEvent = ({ values }) => {
+    return (
+        <div className='table-responsive'>
+            <table className='table table-striped text-white'>
+                <tbody>
+                    <tr>
+                        <td>Side Bet Name</td>
+                        <td>{values.name}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date</td>
+                        <td>{getDate(values.startDate)}</td>
+                    </tr>
+                    <tr>
+                        <td>End Date</td>
+                        <td>{getDate(values.endDate)}</td>
+                    </tr>
+                    <tr>
+                        <td>Visiblity</td>
+                        <td>{values.visibility}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Risk</td>
+                        <td>${values.maximumRisk} CAD</td>
+                    </tr>
+                    <tr>
+                        <td>Allow Additional High Staker</td>
+                        <td>{values.allowAdditional ? 'Yes' : "No"}</td>
+                    </tr>
+                    <tr>
+                        <td>Options</td>
+                        <td>
+                            <ul style={{ listStyle: 'initial' }}>
+                                {values.options.map((option, index) => (
+                                    <li key={index}>{option}</li>
+                                ))}
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     )
 }
 
@@ -287,7 +337,8 @@ export default class CreateCustomBet extends Component {
                                 validationSchema: Yup.object().shape({
                                     options: Yup.array().of(Yup.string().required("Option Value is required.")),
                                 })
-                            }
+                            },
+                            { component: reviewEvent, }
                         ]}>
                         {({
                             currentStepIndex,

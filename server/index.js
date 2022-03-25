@@ -4840,7 +4840,6 @@ expressApp.post(
                 from: `${fromEmailName} <${fromEmailAddress}>`,
                 subject: 'A new Side Bet is submitted.',
                 text: `A new Side Bet is submitted.`,
-                attachments,
                 html: simpleresponsive(
                     `<h4>Hi <b>PayperWin Admin</b>.</h4>
                     <h5>A new Side Bet is submitted.</h5>
