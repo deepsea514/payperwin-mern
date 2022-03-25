@@ -39,7 +39,7 @@ const AlertDetails = () => {
 }
 
 const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue, getFieldProps }) => {
-    const [showEventModal, setShowEventModal] = useState(true);
+    const [showEventModal, setShowEventModal] = useState(false);
 
     return (
         <>
@@ -309,7 +309,7 @@ export default class CreateCustomBet extends Component {
                         }}
                         onSubmit={this.onSubmit}
                         validateOnNext
-                        activeStepIndex={1}
+                        activeStepIndex={0}
                         steps={[
                             { component: AlertDetails, },
                             {
