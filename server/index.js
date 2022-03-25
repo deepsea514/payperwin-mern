@@ -4835,6 +4835,39 @@ expressApp.post(
 
             await user.update({ $inc: { balance: -maximumRisk } });
 
+            const msg = {
+                to: adminEmailAddress,
+                from: `${fromEmailName} <${fromEmailAddress}>`,
+                subject: 'A new Side Bet is submitted.',
+                text: `A new Side Bet is submitted.`,
+                attachments,
+                html: simpleresponsive(
+                    `<h4>Hi <b>PayperWin Admin</b>.</h4>
+                    <h5>A new Side Bet is submitted.</h5>
+                    <br>
+                    <p>Email : ${user.email}</p>
+                    <p>Name: ${name}</p>
+                    `,
+                ),
+            };
+            sgMail.send(msg).catch(error => {
+                ErrorLog.findOneAndUpdate(
+                    {
+                        name: 'Send Grid Error',
+                        "error.stack": error.stack
+                    },
+                    {
+                        name: 'Send Grid Error',
+                        error: {
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack
+                        }
+                    },
+                    { upsert: true }
+                );
+            });
+
             return res.json({ success: true });
         } catch (error) {
             console.error(error);
