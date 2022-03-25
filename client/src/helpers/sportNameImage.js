@@ -26,8 +26,8 @@ const leagueImages = {
     'MLB': '/images/sports/mlb.png',
     'NHL': '/images/sports/nhl.png',
     'UFC': '/images/sports/ufc.png',
-    'Boxing/MMA': 'images/sports/mma.png',
-    'NCAAB': 'images/sports/ncaab.png',
+    'Boxing/MMA': '/images/sports/mma.png',
+    'NCAAB': '/images/sports/ncaab.png',
 }
 
 function sportNameImage(sportName, leagueName) {
