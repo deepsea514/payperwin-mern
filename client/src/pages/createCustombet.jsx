@@ -9,6 +9,8 @@ import { showErrorToast, showSuccessToast } from '../libs/toast';
 import EventSearchModal from '../components/EventSearchModal';
 import { FormControlLabel, Checkbox } from '@material-ui/core';
 import dateformat from 'dateformat';
+import { Link } from 'react-router-dom';
+
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
@@ -327,7 +329,7 @@ export default class CreateCustomBet extends Component {
                                     maximumRisk: Yup.number()
                                         .required("Maximum Risk Amount is Required.")
                                         .min(200, "Should be at least 200 CAD.")
-                                        .max(user.balance, "Insufficient Funds."),
+                                        .max(user.balance, <>The maximum risk entered exceed your account balance. <Link to='/deposit' target='_blank'>Make a deposit</Link>.</>),
                                     allowAdditional: Yup.boolean(),
                                 })
                             },
