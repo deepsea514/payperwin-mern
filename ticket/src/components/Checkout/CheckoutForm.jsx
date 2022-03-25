@@ -5,7 +5,7 @@ import CreditCardInput from 'react-credit-card-input';
 class CheckoutForm extends React.Component {
     render() {
         return (
-            <div className="blog-details-area ptb-60">
+            <div className="mb-5">
                 <div className="container">
                     <form onSubmit={(evt) => evt.preventDefault()}>
                         <div className='row'>
@@ -59,8 +59,9 @@ class CheckoutForm extends React.Component {
                                     <input className='form-control cart-form-control'
                                         placeholder='Phone' />
                                 </div>
-
-                                <div className='form-group cart-form-group mt-5'>
+                            </div>
+                            <div className='col-md-6'>
+                                <div className='form-group cart-form-group'>
                                     <label>Payment Information</label>
                                     <input className='form-control cart-form-control'
                                         placeholder='Cardholder Name' />
@@ -70,11 +71,26 @@ class CheckoutForm extends React.Component {
                                         // cardNumberInputProps={{ value: cardNumber, onChange: this.handleCardNumberChange }}
                                         // cardExpiryInputProps={{ value: expiry, onChange: this.handleCardExpiryChange }}
                                         // cardCVCInputProps={{ value: cvc, onChange: this.handleCardCVCChange }}
-                                        fieldClassName="form-control cart-form-control"
+                                        fieldClassName=""
+                                        containerClassName="cart-form-control p-0"
+                                        inputClassName="mt-3"
                                     />
                                 </div>
+
+                                <table className='table mt-5'>
+                                    <tr>
+                                        <th>Shipping</th>
+                                        <td>--</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total</th>
+                                        <td>CAD $111.42</td>
+                                    </tr>
+                                </table>
+                                <button type="submit"
+                                    style={{ width: '100%' }}
+                                    className="btn btn-primary full-width">Complete Order</button>
                             </div>
-                            <div className='col-md-6'></div>
                         </div>
                     </form>
                 </div>
