@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import dateformat from 'dateformat';
 import CustomGoogleMap from '../Common/CustomGoogleMap';
 import Tevomaps from '@ticketevolution/seatmaps-client';
@@ -9,6 +9,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import { getCountryName } from '../../lib/getCountryName';
+import { actions } from '../../redux/reducers';
 
 const customStyles = {
     control: (provided) => {
@@ -190,6 +191,12 @@ class EventDetail extends React.Component {
         return Math.ceil(usd_price * cad_rate * 100) / 100
     }
 
+    onAddTicketGroup = (ticket_group) => {
+        const { addToCartAction, history } = this.props;
+        addToCartAction(ticket_group);
+        history.push('/checkout')
+    }
+
     render() {
         const { event } = this.props;
         const {
@@ -295,7 +302,8 @@ class EventDetail extends React.Component {
                                     {ticket_groups.length > 0 && ticket_groups.map((ticket_group, index) => (
                                         <div key={index} className='ticket_row'
                                             onMouseEnter={() => this.highlightTicketGroup(ticket_group.tevo_section_name)}
-                                            onMouseLeave={() => this.unHighlightTicketGroup(ticket_group.tevo_section_name)}>
+                                            onMouseLeave={() => this.unHighlightTicketGroup(ticket_group.tevo_section_name)}
+                                            onClick={() => this.onAddTicketGroup(ticket_group)}>
                                             <div>
                                                 <i className={ticket_group.type === 'parking' ? 'icofont-car-alt-4' : 'icofont-chair'} />&nbsp;
                                                 {this.formatSectionName(ticket_group.tevo_section_name)}
@@ -331,4 +339,4 @@ class EventDetail extends React.Component {
 const mapStateToProps = (state) => ({
     cad_rate: state.cad_rate,
 });
-export default connect(mapStateToProps, null)(EventDetail);
+export default connect(mapStateToProps, actions)(withRouter(EventDetail));
