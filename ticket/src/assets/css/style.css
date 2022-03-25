@@ -36,6 +36,11 @@ a:hover, a:focus {
     padding-bottom: 120px;
 }
 
+.ptb-60 {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
 img {
     max-width: 100%;
 }
@@ -3698,10 +3703,10 @@ Signup CSS
 =================================================*/
 .error-area {
     background-color: #f1f1f1;
-    padding: 30px 15px;
-    height: 100vh;
+    padding: 100px 15px;
+    /* height: 100vh; */
     text-align: center;
-    z-index: 10000;
+    /* z-index: 10000; */
     position: relative;
 }
 
@@ -4995,4 +5000,26 @@ ul.event-info li span {
 
 .event-seatmap {
     height: 90vh;
+}
+
+.cart-form-control {
+    height: 40px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    transition: 0.5s;
+    display: block;
+    width: 100%;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.cart-form-group {
+    margin-bottom: 10px;
 }

@@ -53,6 +53,11 @@
         padding-bottom: 60px
     }
 
+    .ptb-60 {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
     .section-title {
         margin-bottom: 30px
     }
@@ -1174,6 +1179,11 @@
     .ptb-120 {
         padding-top: 80px;
         padding-bottom: 80px
+    }
+
+    .ptb-60 {
+        padding-top: 40px;
+        padding-bottom: 40px;
     }
 
     .event-countdown {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import Home from "./pages/Home";
 import Navigation from "./components/Navigation/Navigation";
 import Login from "./pages/Login";
@@ -12,6 +12,7 @@ import Event from "./pages/Event";
 import Performer from "./pages/Performer";
 import Venue from "./pages/Venue";
 import GoToTop from "./pages/GoToTop";
+import Checkout from "./pages/Checkout";
 import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
 
@@ -46,8 +47,9 @@ const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction }) => {
                 <Route path="/performers" exact component={Performers} />
                 <Route path="/help" exact component={Help} />
                 <Route path="/login" exact component={Login} />
+                <Route path="/checkout" extact component={Checkout} />
                 <Route path="/error-404" exact component={NotFound} />
-                <Route component={NotFound} />
+                <Redirect from="*" to="/" />
             </Switch>
             <GoToTop />
         </Router>
