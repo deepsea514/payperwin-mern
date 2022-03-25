@@ -158,7 +158,7 @@ class CustomBet extends Component {
                         return (
                             <div key={index} className="mt-2">
                                 <div className="line-type-header mb-0 d-flex justify-content-between">
-                                    {name} {user.firstname && 'by ' + user.firstname + ' ' + user.lastname}
+                                    {name}
                                     <span className='pt-1 cursor-pointer' onClick={() => this.setState({
                                         shareModal: true,
                                         lineUrl: window.location.origin + '/side-bet/' + uniqueid,
@@ -175,10 +175,10 @@ class CustomBet extends Component {
                                     <div style={{ fontSize: "11px", color: "#FFF" }}>
                                         {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                     </div>
-                                    {allowAdditional ? <span className='pt-1 cursor-pointer text-white pr-4'
+                                    {allowAdditional ? <button className='mt-1 form-button'
                                         onClick={() => this.setState({ addHighStaker: _id })}>
                                         <i className='fas fa-plus' /> Join High Staker
-                                    </span> : null}
+                                    </button> : null}
                                 </div>
                                 <div>
                                     <div className="row mx-0 pt-2">
