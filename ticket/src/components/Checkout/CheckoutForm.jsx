@@ -5,7 +5,7 @@ import CreditCardInput from 'react-credit-card-input';
 class CheckoutForm extends React.Component {
     render() {
         const { cart } = this.props;
-        if (cart.length == 0) return null;
+        if (cart.length === 0) return null;
         return (
             <div className="mb-5">
                 <div className="container">
