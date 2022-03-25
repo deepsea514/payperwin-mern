@@ -1,9 +1,9 @@
-import React from "react";
+import React, { createRef } from "react";
 import { FormattedMessage } from 'react-intl';
 import AsyncSelect from 'react-select/async';
-import Select from 'react-select';
-import { searchEvent, searchSports } from "../redux/services";
+import { searchEvent } from "../redux/services";
 import dateformat from 'dateformat';
+import sportNameImage from "../helpers/sportNameImage";
 
 const customStyles = {
     control: (provided, state) => {
@@ -83,24 +83,97 @@ export default class EventSearchModal extends React.Component {
 
         this.state = {
             event: null,
-            sport: '',
+            sportIndex: null,
+            leagueIndex: null,
             sportsOptions: [
-                { label: 'Soccer', value: 'Soccer' },
-                { label: 'American Football', value: 'American Football' },
-                { label: 'Baseball', value: 'Baseball' },
-                { label: 'Ice Hockey', value: 'Ice Hockey' },
-                { label: 'Basketball', value: 'Basketball' },
-                { label: 'Tennis', value: 'Tennis' },
+                'Soccer',
+                'American Football',
+                'Baseball',
+                'Ice Hockey',
+                'Basketball',
+                'Tennis',
+                'Boxing',
+            ],
+            leagueOptions: [
+                {
+                    "id": "459",
+                    "name": "NFL",
+                    "sport": "American Football"
+                },
+                {
+                    "id": "225",
+                    "name": "MLB",
+                    "sport": "Baseball"
+                },
+                {
+                    "id": "2274",
+                    "name": "NBA",
+                    "sport": "Basketball"
+                },
+                {
+                    "id": "2638",
+                    "name": "NCAAB",
+                    "sport": "Basketball"
+                },
+                {
+                    "id": "13920",
+                    "name": "UFC",
+                    "sport": "Boxing"
+                },
+                {
+                    "id": "1926",
+                    "name": "NHL",
+                    "sport": "Ice Hockey"
+                },
             ],
             loadingEvent: false,
+            showLeft: false,
+            showRight: true,
         }
+        this.listRef = createRef();
+    }
+
+    onScroll = () => {
+        const position = this.listRef.current?.scrollLeft;
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        this.setState({
+            showRight: position < scrollWidth - offsetWidth,
+            showLeft: position != 0
+        })
+    }
+
+    scrollLeft = () => {
+        const position = this.listRef.current?.scrollLeft - 200;
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        const newPos = position > 0 ? position : 0;
+        this.listRef.current?.scrollTo({ left: newPos, behavior: 'smooth' })
+        this.setState({
+            showRight: offsetWidth < scrollWidth,
+            showLeft: newPos != 0
+        })
+    }
+
+    scrollRight = () => {
+        const position = this.listRef.current?.scrollLeft + 200;
+        const offsetWidth = this.listRef.current?.offsetWidth;
+        const scrollWidth = this.listRef.current?.scrollWidth;
+        const scrollLimit = scrollWidth - offsetWidth;
+        const newPos = position > scrollLimit ? scrollLimit : position;
+
+        this.listRef.current?.scrollTo({ left: position, behavior: 'smooth' })
+        this.setState({
+            showLeft: newPos != 0,
+            showRight: newPos < scrollLimit
+        });
     }
 
     getEvent = (query, cb) => {
-        const { sport } = this.state;
-        if (!sport) cb([]);
+        const { sportIndex, leagueIndex } = this.state;
+        if (!sportIndex) cb([]);
         this.setState({ loadingEvent: true });
-        searchEvent(query, sport.value)
+        searchEvent({ name: query, sport: sportIndex, league: leagueIndex })
             .then(({ data }) => {
                 cb(data);
                 this.setState({ loadingEvent: false });
@@ -111,31 +184,79 @@ export default class EventSearchModal extends React.Component {
             })
     }
 
+    getSportName = (sport) => {
+        switch (sport) {
+            case 'American Football':
+                return 'Football';
+            case 'Ice Hockey':
+                return 'Hockey';
+            default:
+                return sport;
+        }
+    }
+
     render() {
         const { onClose, onProceed } = this.props;
-        const { event, sport, loadingEvent, sportsOptions } = this.state;
+        const { event, showLeft, showRight, loadingEvent, sportsOptions, leagueOptions, sportIndex, leagueIndex } = this.state;
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
                 <div className="col-in">
-                    <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
-                    <div>
+                    <div className="highlights" style={{ position: 'relative' }}>
+                        <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                         <b>Search a Sports Event</b>
                         <hr />
+                        <ul className="nav nav-tabs pt-2"
+                            ref={this.listRef}
+                            onScroll={this.onScroll}
+                            style={{
+                                flexWrap: 'nowrap',
+                                background: '#1d1d1d'
+                            }}>
+                            {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
+                                onClick={this.scrollLeft}>
+                                <span className='sports-scroller-icon'>
+                                    <i className='fas fa-arrow-left' />
+                                </span>
+                            </li>}
+                            {leagueOptions.map((league) => {
+                                return (
+                                    <li className="nav-item"
+                                        onClick={() => this.setState({ leagueIndex: league.id, sportIndex: league.sport })}
+                                        key={league.id}>
+                                        <center>
+                                            <div className={`sports-league-image-container ${leagueIndex == league.id ? 'active' : ''}`}>
+                                                <img src={sportNameImage(league.sport, league.name)}
+                                                    className='sports-league-image' />
+                                            </div>
+                                            <span className={`nav-link ${leagueIndex == league.id ? 'active' : ''}`}>{league.name}</span>
+                                        </center>
+                                    </li>
+                                )
+                            })}
+                            {sportsOptions.map((sport) => {
+                                return (
+                                    <li className="nav-item cursor-pointer"
+                                        onClick={() => this.setState({ sportIndex: sport, league: null })}
+                                        key={sport}>
+                                        <center>
+                                            <div className={`sports-league-image-container ${sportIndex == sport ? 'active' : ''}`}>
+                                                <img src={sportNameImage(sport)}
+                                                    className='sports-league-image' />
+                                            </div>
+                                            <span className={`nav-link ${sportIndex == sport ? 'active' : ''}`}>{this.getSportName(sport)}</span>
+                                        </center>
+                                    </li>
+                                );
+                            })}
+                            {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
+                                onClick={this.scrollRight}>
+                                <span className='sports-scroller-icon'>
+                                    <i className='fas fa-arrow-right' />
+                                </span>
+                            </li>}
+                        </ul>
                         <div className="row">
-                            <div className="col-12 form-group">
-                                <label>Sport</label>
-                                <Select
-                                    classNamePrefix="select"
-                                    isSearchable={false}
-                                    name="sport"
-                                    options={sportsOptions}
-                                    value={sport}
-                                    onChange={(sport) => this.setState({ sport })}
-                                    styles={customStyles}
-                                    maxMenuHeight={200}
-                                />
-                            </div>
                             <div className="col-12 form-group">
                                 <label>Event</label>
                                 <AsyncSelect
