@@ -179,8 +179,8 @@ const OptionDetails = ({ touched, errors, values, setFieldValue, getFieldProps }
         setFieldValue('options', values.options);
     }
 
-    const insertOption = (index) => {
-        values.options.splice(index + 1, 0, "");
+    const insertOption = () => {
+        values.options.push("");
         setFieldValue('options', values.options);
     }
 
@@ -202,13 +202,12 @@ const OptionDetails = ({ touched, errors, values, setFieldValue, getFieldProps }
                         />
                         <div className="input-group-append">
                             <span className="input-group-text cursor-pointer" onClick={() => deleteOption(index)}><i className='fas fa-minus' /></span>
-                            <span className="input-group-text cursor-pointer" onClick={() => insertOption(index)}><i className='fas fa-plus' /></span>
                         </div>
                     </div>
                     {errors.options && errors.options[index] && <div className="form-error">{errors.options[index]}</div>}
-                </div >
-            ))
-            }
+                </div>
+            ))}
+            <button className='form-button' onClick={insertOption}>Add another bet option</button>
         </>
     )
 }
