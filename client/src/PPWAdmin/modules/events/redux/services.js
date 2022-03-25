@@ -9,6 +9,10 @@ export function getEvents(page, filter, perPage = null) {
     return AdminAPI.get("/events", { params });
 }
 
+export function getEventDetail(id) {
+    return AdminAPI.get(`/events/${id}`);
+}
+
 export function editEvent(id, data) {
     return AdminAPI.put(`/events/${id}`, data);
 }

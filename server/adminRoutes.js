@@ -5294,6 +5294,25 @@ adminRouter.post(
 );
 
 adminRouter.get(
+    '/events/:id',
+    authenticateJWT,
+    limitRoles('custom-events'),
+    async (req, res) => {
+        let { id } = req.params;
+
+        try {
+            const event = await Event.findOne({ _id: id })
+                .populate('user');
+
+            return res.json(event);
+        } catch (error) {
+            console.error(error);
+            res.status(404).json({ error: 'Can\'t find event.' });
+        }
+    }
+);
+
+adminRouter.get(
     '/events',
     authenticateJWT,
     limitRoles('custom-events'),

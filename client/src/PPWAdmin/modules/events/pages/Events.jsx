@@ -67,18 +67,18 @@ class Events extends React.Component {
                 <td>{this.getVisible(event.public)}</td>
                 <td>{this.getApproved(event.approved)}</td>
                 <td>{this.getStatus(event)}</td>
-                <td>{this.isSettleEnabled(event) && <Dropdown>
+                <td><Dropdown>
                     <Dropdown.Toggle variant="primary" id="dropdown-basic">
                         Actions
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu popperConfig={{ strategy: "fixed" }}>
-                        <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>
-                        {/* <Dropdown.Item as={Link} to={`/edit/${event._id}`}><i className="far fa-edit"></i>&nbsp; Edit </Dropdown.Item> */}
-                        <Dropdown.Item onClick={() => this.setState({ settleId: event })}><i className="fas fa-check"></i>&nbsp; Settle Event</Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/detail/${event._id}`}><i className="fas fa-eye"></i>&nbsp; View Detail</Dropdown.Item>
+                        {this.isSettleEnabled(event) && <Dropdown.Item onClick={() => this.setState({ approveId: event._id })}><i className="fas fa-angle-double-right"></i>&nbsp; Approve Event</Dropdown.Item>}
+                        {this.isSettleEnabled(event) && <Dropdown.Item onClick={() => this.setState({ settleId: event })}><i className="fas fa-check"></i>&nbsp; Settle Event</Dropdown.Item>}
+                        {this.isSettleEnabled(event) && <Dropdown.Item onClick={() => this.setState({ cancelId: event._id })}><i className="fas fa-trash"></i>&nbsp; Cancel Event</Dropdown.Item>}
                     </Dropdown.Menu>
-                </Dropdown>}
+                </Dropdown>
                 </td>
             </tr>
         ));
