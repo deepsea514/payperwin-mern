@@ -1,6 +1,7 @@
 const TevoClient = require('ticketevolution-node');
 const TicketCategory = require('../../models/ticket_category');
 const defaultCategories = require('./categories.json');
+const fs = require('fs');
 const GET_FROM_API = false;
 
 const findCategory = (categories, category) => {
@@ -48,9 +49,10 @@ const getCategories = async (API_TOKEN, API_SECRET) => {
                 const categories_res = response.categories;
                 categories_res.map(category => addCategories(categories, category));
             }
-            for (const category of categories) {
-                await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
-            }
+            // for (const category of categories) {
+            //     await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
+            // }
+            fs.writeFileSync("categories.json", JSON.stringify(categories));
             console.log('Got Categories.');
         } catch (error) {
             console.error(error);
