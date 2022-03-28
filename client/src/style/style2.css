@@ -4427,3 +4427,9 @@ a:hover {
 .loyalty-tabitem {
     color: #FFF;
 }
+
+.prop-bet-container {
+    width: 100%;
+    background: linear-gradient(90deg, #f0b631, #FF00FE);
+    padding-bottom: 2px;
+}
