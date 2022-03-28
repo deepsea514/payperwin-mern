@@ -131,7 +131,7 @@ export default class CustomBets extends Component {
                     </Link>}
                 </div>
                 <br />
-                <p>
+                <div className='text-white'>
                     Create and Invite friends to bet with or against you.
                     The bet creator is the High Staker of the bet.
                     You can set the maximum risk amount you’re willing to payout.
@@ -146,7 +146,7 @@ export default class CustomBets extends Component {
                         <li>“Which of the bridesmaid will catch the bouquet?”</li>
                         <li>“How many minutes is the Super Bowl half time show?”</li>
                     </ul>
-                </p>
+                </div>
                 <div>
                     {shareModal && <div className="modal confirmation">
                         <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
