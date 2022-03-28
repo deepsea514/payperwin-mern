@@ -3343,24 +3343,61 @@ expressApp.get(
     async (req, res) => {
         const { id } = req.query;
         try {
+            // if (id) {
+            //     const customBet = await Event.findOne({
+            //         uniqueid: id,
+            //         startDate: { $gte: new Date() },
+            //         status: EventStatus.pending.value,
+            //         approved: true,
+            //     }).populate('user', ['email', 'firstname', 'lastname'])
+            //     return res.json([customBet]);
+            // } else {
+            //     const customBets = await Event.find({
+            //         startDate: { $gte: new Date() },
+            //         status: EventStatus.pending.value,
+            //         approved: true,
+            //         public: true,
+            //     }).sort({ createdAt: -1 }).populate('user', ['email', 'firstname', 'lastname']);
+            //     return res.json(customBets);
+            // }
+            const searchObj = {
+                startDate: { $gte: new Date() },
+                status: EventStatus.pending.value,
+                approved: true,
+            };
             if (id) {
-                const customBet = await Event.findOne({
-                    uniqueid: id,
-                    startDate: { $gte: new Date() },
-                    status: EventStatus.pending.value,
-                    approved: true,
-                }).populate('user', ['email', 'firstname', 'lastname'])
-                return res.json([customBet]);
+                searchObj.uniqueid = id;
             } else {
-                const customBets = await Event.find({
-                    startDate: { $gte: new Date() },
-                    status: EventStatus.pending.value,
-                    approved: true,
-                    public: true,
-                }).sort({ createdAt: -1 }).populate('user', ['email', 'firstname', 'lastname']);
-                return res.json(customBets);
+                searchObj.public = true;
             }
+            const customBets = await Event.aggregate(
+                { $match: searchObj },
+                {
+                    $lookup: {
+                        from: 'bets',
+                        localField: '_id',
+                        foreignField: 'event',
+                        as: 'bets'
+                    }
+                },
+                {
+                    $project: {
+                        startDate: 1,
+                        name: 1,
+                        options: 1,
+                        uniqueid: 1,
+                        _id: 1,
+                        allowAdditional: 1,
+                        maximumRisk: 1,
+                        betAmount: { $sum: '$bets.bet' }
+                    }
+                },
+                { $sort: { createdAt: -1 } }
+            );
+            return res.json(customBets);
+
         } catch (error) {
+            console.error(error);
             return res.json([]);
         }
     },
