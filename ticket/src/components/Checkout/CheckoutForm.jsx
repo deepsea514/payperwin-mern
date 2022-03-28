@@ -1,11 +1,40 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import CreditCardInput from 'react-credit-card-input';
+import PhoneInput from 'react-phone-input-2'
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 class CheckoutForm extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            email: '',
+            firstname: '',
+            lastname: '',
+            address: '',
+            address2: '',
+            city: '',
+            country: 'CA',
+            region: '',
+            zipcode: '',
+            phone: '',
+        }
+    }
+
+    changeRate = (usd_price) => {
+        const { cad_rate } = this.props;
+        return Math.ceil(usd_price * cad_rate * 100) / 100
+    }
+
     render() {
         const { cart } = this.props;
         if (cart.length === 0) return null;
+        let total = 0;
+        cart.forEach(({ ticket_group, count }) => {
+            total += this.changeRate(ticket_group.retail_price) * parseInt(count)
+        })
+
         return (
             <div className="mb-5">
                 <div className="container">
@@ -41,16 +70,13 @@ class CheckoutForm extends React.Component {
                                 </div>
                                 <div className='row'>
                                     <div className='form-group cart-form-group col-md-4'>
-                                        <select className='form-control cart-form-control'>
-                                            <option>Select Country</option>
-                                            <option>Canada</option>
-                                            <option>United States</option>
-                                        </select>
+                                        <CountryDropdown classes='form-control cart-form-control'
+                                            whitelist={['CA']} />
                                     </div>
                                     <div className='form-group cart-form-group col-md-4'>
-                                        <select className='form-control cart-form-control'>
-                                            <option>Select State</option>
-                                        </select>
+                                        <RegionDropdown classes='form-control cart-form-control'
+                                            blankOptionLabel='Select Region'
+                                            defaultOptionLabel='Select Region' />
                                     </div>
                                     <div className='form-group cart-form-group col-md-4'>
                                         <input className='form-control cart-form-control'
@@ -58,8 +84,10 @@ class CheckoutForm extends React.Component {
                                     </div>
                                 </div>
                                 <div className='form-group cart-form-group'>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='Phone' />
+                                    <PhoneInput country={'ca'}
+                                        onlyCountries={['ca']}
+                                        containerClass='input-group'
+                                        inputClass='form-control cart-form-control' />
                                 </div>
                             </div>
                             <div className='col-md-6'>
@@ -80,14 +108,16 @@ class CheckoutForm extends React.Component {
                                 </div>
 
                                 <table className='table mt-5'>
-                                    <tr>
-                                        <th>Shipping</th>
-                                        <td>--</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total</th>
-                                        <td>CAD $111.42</td>
-                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <th>Shipping</th>
+                                            <td>--</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total</th>
+                                            <td>CAD ${total}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                                 <button type="submit"
                                     style={{ width: '100%' }}
@@ -104,5 +134,6 @@ class CheckoutForm extends React.Component {
 const mapStateToProps = (state) => ({
     cart: state.cart,
     cad_rate: state.cad_rate,
+    user: state.user,
 });
 export default connect(mapStateToProps)(CheckoutForm);

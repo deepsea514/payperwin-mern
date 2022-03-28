@@ -68,7 +68,7 @@ class CartDetail extends React.Component {
                                                 </select>
                                             </td>
                                             <td className='text-right pt-3'>
-                                                CAD&nbsp;${this.changeRate(ticket_group.retail_price * parseInt(count))}
+                                                CAD&nbsp;${this.changeRate(ticket_group.retail_price) * parseInt(count)}
                                             </td>
                                             <td>
                                                 <button className='btn btn-secondary'

@@ -4,6 +4,10 @@ export const getUser = () => {
     return FrontendAPI.get('/user');
 }
 
+export const login = (values) => {
+    return FrontendAPI.post('/login', values);
+}
+
 export const getHomeData = () => {
     return FrontendAPI.get('/tickets/homedata');
 }

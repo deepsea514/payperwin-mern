@@ -327,7 +327,9 @@ label {
 }
 
 /*form-control*/
-.form-control {
+.form-control,
+.form-control.is-valid,
+.form-control.is-invalid {
     height: 50px;
     padding: 15px;
     font-size: 14px;
@@ -338,7 +340,13 @@ label {
     transition: 0.5s;
 }
 
-.form-control:hover, .form-control:focus, .form-control.active {
+.form-control.is-invalid {
+    border-color: #FF2D55;
+}
+
+.form-control:hover, .form-control:focus, .form-control.active,
+.form-control.is-valid:hover, .form-control.is-valid:focus, .form-control.is-valid.active,
+.form-control.is-invalid:hover, .form-control.is-invalid:focus, .form-control.is-invalid.active {
     -webkit-box-shadow: unset;
     box-shadow: unset;
     border-color: #FF2D55;
@@ -5022,4 +5030,8 @@ ul.event-info li span {
 
 .cart-form-group {
     margin-bottom: 10px;
+}
+
+.cart-form-control:focus {
+    z-index: inherit !important;
 }
