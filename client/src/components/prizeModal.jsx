@@ -13,15 +13,15 @@ class PrizeModal extends Component {
             pool: [
                 { label: "$1", text: "$1 Credit", Score: 17, id: 1, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$11", text: "$11 Credit", Score: 1.49, id: 2, textColor: '#FF14D8', textColor2: '#FF14D8' },
-                { label: "+2,000", text: "+2,000 Loyalty Points", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
+                { label: "+2,000", text: "+2,000 Reward Points", Score: 28, id: 3, textColor: '#FFF', textColor2: '#888' },
                 { label: "$8", text: "$8 Credit", Score: 2.5, id: 4, textColor: '#00aaff', textColor2: '#ea636e' },
                 { label: "$3", text: "$3 Credit", Score: 17, id: 5, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$88", text: "$88 Credit", Score: 0.01, id: 6, textColor: '#BEF001', textColor2: '#f0c329' },
-                { label: "+5,000", text: "+5,000 Loyalty Points", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
+                { label: "+5,000", text: "+5,000 Reward Points", Score: 8, id: 7, textColor: '#FFF', textColor2: '#888' },
                 { label: "$25", text: "$25 Credit", Score: 1.49, id: 8, textColor: '#FF14D8', textColor2: '#FF14D8' },
                 { label: "$5", text: "$5 Credit", Score: 17, id: 9, textColor: '#2df3e9', textColor2: '#73e6f7' },
                 { label: "$10", text: "$10 Credit", Score: 2.5, id: 10, textColor: '#00aaff', textColor2: '#ea636e' },
-                { label: "+8,000", text: "+8,000 Loyalty Points", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
+                { label: "+8,000", text: "+8,000 Reward Points", Score: 5, id: 11, textColor: '#FFF', textColor2: '#888' },
                 { label: "$100", text: "$100 Credit", Score: 0.01, id: 12, textColor: '#BEF001', textColor2: '#f0c329' },
             ],
             used: false,
@@ -84,7 +84,7 @@ class PrizeModal extends Component {
         const { pool } = this.state;
         this.remainingTimeHandler();
         const remainingTimer = setInterval(this.remainingTimeHandler, 1000);
-        this.setState({ used: true, remainingTimer, winMessage: 'Congratulations! You have won ' + pool[selectedItem].text });
+        this.setState({ used: true, remainingTimer, winMessage: 'You have won ' + pool[selectedItem].text });
         postPrize(pool[selectedItem].id)
     }
 
@@ -95,7 +95,7 @@ class PrizeModal extends Component {
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
-                <div className="col-in prize">
+                <div className={`col-in prize${used ? '-used' : ''}`}>
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div>
                         <br />
@@ -125,7 +125,7 @@ class PrizeModal extends Component {
 
                     <div className={winMessage ? 'd-block' : 'd-none'}>
                         <Confetti style={{ marginTop: '-10vh' }} />
-                        <img src='/images/prize.png' style={{ width: '100%', height: 'auto' }} />
+                        <p style={{ fontSize: '28px' }} className='text-center'>Congratulations!</p>
                         <p style={{ fontSize: '20px' }} className='text-center'>{winMessage}</p>
                         <div className="text-right">
                             <button className="form-button ml-2" onClick={onClose}> DISMISS </button>
