@@ -9,6 +9,7 @@ import { showErrorToast, showSuccessToast } from '../libs/toast';
 import QRCode from "react-qr-code";
 import CustomBetJoinModal from './CustomBetJoinModal';
 import { Link } from 'react-router-dom';
+import sportNameImage from '../helpers/sportNameImage';
 
 class CustomBet extends Component {
     constructor(props) {
@@ -136,7 +137,7 @@ class CustomBet extends Component {
                             <i className="fas fa-plus-square" /> Create a Bet
                         </button>}
                     </div>
-                    <div className='mt-3 text-white'>
+                    <div className='my-5 text-white'>
                         Create and Invite friends to bet with or against you.
                         The bet creator is the High Staker of the bet.
                         You can set the maximum risk amount you’re willing to payout.
@@ -161,15 +162,22 @@ class CustomBet extends Component {
 
                         return (
                             <div key={index} className="mt-2">
-                                <div className="line-type-header mb-0 d-flex justify-content-between">
-                                    {name}
-                                    <span className='pt-1 cursor-pointer' onClick={() => this.setState({
-                                        shareModal: true,
-                                        lineUrl: window.location.origin + '/side-bet/' + uniqueid,
-                                        urlCopied: false
-                                    })}>
-                                        <i className='fas fa-link' /> Share
-                                    </span>
+                                <div className='prop-bet-container'>
+                                    <div className="line-type-header d-flex justify-content-between">
+                                        <span>
+                                            <img src={sportNameImage('Side Bet')}
+                                                style={{ marginRight: '6px', width: '14px', height: '14px' }} />
+                                            Side Bets -&nbsp;
+                                            {name}
+                                        </span>
+                                        <span className='pt-1 cursor-pointer' onClick={() => this.setState({
+                                            shareModal: true,
+                                            lineUrl: window.location.origin + '/side-bet/' + uniqueid,
+                                            urlCopied: false
+                                        })}>
+                                            <i className='fas fa-link' /> Share
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center" style={{
                                     padding: "3px 0 4px 15px",
