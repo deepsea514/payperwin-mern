@@ -48,8 +48,7 @@
   "scripts": {
     "start": "node index.js",
     "server": "node index.js",
-    "updatefeed": "node ./dataCollector/bet365/index.js",
-    "betNotify": "node ./dataCollector/checkMatchStatus/checkMatchStatus.js",
+    "updatefeed": "node ./dataCollector/index.js",
     "getteams": "node ./dataCollector/bet365/getTeams.js"
   }
 }
