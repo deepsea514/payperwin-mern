@@ -23,9 +23,6 @@ const fromEmailName = 'PAYPER WIN';
 const fromEmailAddress = 'donotreply@payperwin.com';
 const FinancialStatus = config.FinancialStatus;
 //external libraries
-const mongoose = require('mongoose');
-const sgMail = require('@sendgrid/mail');
-require('dotenv').config();
 const axios = require('axios');
 
 Date.prototype.addHours = function (h) {
@@ -37,34 +34,6 @@ Date.prototype.addMins = function (m) {
     this.setTime(this.getTime() + (m * 60 * 1000));
     return this;
 }
-
-// Database
-mongoose.Promise = global.Promise;
-// const databaseName = 'PayPerWinDev';
-const databaseName = process.env.NODE_ENV === 'development' ? 'PayPerWinDev' : 'PayPerWin';
-mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
-    authSource: "admin",
-    user: config.mongo.username,
-    pass: config.mongo.password,
-    useMongoClient: true,
-}).then(async () => {
-    console.info('Using database:', databaseName);
-
-    const lineInterval1 = 1000 * 60 * 60;
-    checkTimerOne();
-    setInterval(checkTimerOne, lineInterval1);
-
-    const lineInterval2 = 1000 * 60 * 20;
-    checkTimerTwo();
-    setInterval(checkTimerTwo, lineInterval2);
-
-    const sendGridAddon = await Addon.findOne({ name: 'sendgrid' });
-    if (!sendGridAddon || !sendGridAddon.value || !sendGridAddon.value.sendgridApiKey) {
-        console.warn('Send Grid Key is not set');
-        return;
-    }
-    sgMail.setApiKey(sendGridAddon.value.sendgridApiKey);
-});
 
 const checkTimerOne = async () => {
     try {
@@ -100,7 +69,7 @@ const checkTimerTwo = async () => {
     }
 }
 
-const checkMatchStatus = async () => {
+const checkBetMatchStatus = async () => {
     // Check Match Status
     const bets = await Bet.find(
         {
@@ -402,3 +371,15 @@ const checkSettledScore = async () => {
     }
     console.log('All done');
 }
+
+const checkMatchStatus = () => {
+    const lineInterval1 = 1000 * 60 * 60;
+    checkTimerOne();
+    setInterval(checkTimerOne, lineInterval1);
+
+    const lineInterval2 = 1000 * 60 * 20;
+    checkTimerTwo();
+    setInterval(checkTimerTwo, lineInterval2);
+}
+
+module.exports = { checkMatchStatus };
