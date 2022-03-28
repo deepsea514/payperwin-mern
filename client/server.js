@@ -6,6 +6,7 @@ const axios = require("axios");
 const dateformat = require("dateformat");
 const convert = require('xml-js');
 const app = express();
+const basicAuth = require('express-basic-auth');
 
 const pagesData = require("./src/PPWAdmin/modules/meta-tags/redux/pages.json");
 const _env = require("./src/env.json");
@@ -28,6 +29,12 @@ app.use((req, res, next) => {
 });
 
 app.use(compression());
+if (serverUrl != 'https://api.payperwin.com') {
+    app.use(basicAuth({
+        users: { 'payperwin': 'lkakJgaddf41%@J2h27#' },
+        challenge: true,
+    }))
+}
 
 const pathToIndex = path.join(__dirname, "serve/index.html");
 
