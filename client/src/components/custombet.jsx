@@ -9,6 +9,7 @@ import { showErrorToast, showSuccessToast } from '../libs/toast';
 import QRCode from "react-qr-code";
 import CustomBetJoinModal from './CustomBetJoinModal';
 import { Link } from 'react-router-dom';
+import sportNameImage from '../helpers/sportNameImage';
 
 class CustomBet extends Component {
     constructor(props) {
@@ -136,7 +137,7 @@ class CustomBet extends Component {
                             <i className="fas fa-plus-square" /> Create a Bet
                         </button>}
                     </div>
-                    <p className='mt-3'>
+                    <div className='my-5 text-white'>
                         Create and Invite friends to bet with or against you.
                         The bet creator is the High Staker of the bet.
                         You can set the maximum risk amount you’re willing to payout.
@@ -146,30 +147,37 @@ class CustomBet extends Component {
                         <br />
                         Custom bet examples.
                         <br />
-                        <ul style={{listStyle: 'inside'}}>
+                        <ul style={{ listStyle: 'inside' }}>
                             <li>“Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”</li>
                             <li>“Which of the bridesmaid will catch the bouquet?”</li>
                             <li>“How many minutes is the Super Bowl half time show?”</li>
                         </ul>
-                    </p>
+                    </div>
 
                     {error && <div><FormattedMessage id="PAGES.LINE.ERROR" /></div>}
                     {!data && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                     {data && data.map((event, index) => {
                         if (!event) return null;
-                        const { startDate, name, options, uniqueid, _id, user, allowAdditional } = event;
+                        const { startDate, name, options, uniqueid, _id, allowAdditional, maximumRisk, betAmount } = event;
 
                         return (
                             <div key={index} className="mt-2">
-                                <div className="line-type-header mb-0 d-flex justify-content-between">
-                                    {name}
-                                    <span className='pt-1 cursor-pointer' onClick={() => this.setState({
-                                        shareModal: true,
-                                        lineUrl: window.location.origin + '/side-bet/' + uniqueid,
-                                        urlCopied: false
-                                    })}>
-                                        <i className='fas fa-link' /> Share
-                                    </span>
+                                <div className='prop-bet-container'>
+                                    <div className="line-type-header d-flex justify-content-between">
+                                        <span>
+                                            <img src={sportNameImage('Side Bet')}
+                                                style={{ marginRight: '6px', width: '14px', height: '14px' }} />
+                                            Side Bets -&nbsp;
+                                            {name}
+                                        </span>
+                                        <span className='pt-1 cursor-pointer' onClick={() => this.setState({
+                                            shareModal: true,
+                                            lineUrl: window.location.origin + '/side-bet/' + uniqueid,
+                                            urlCopied: false
+                                        })}>
+                                            <i className='fas fa-link' /> Share
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center" style={{
                                     padding: "3px 0 4px 15px",
@@ -179,10 +187,14 @@ class CustomBet extends Component {
                                     <div style={{ fontSize: "11px", color: "#FFF" }}>
                                         {timeHelper.convertTimeEventDate(new Date(startDate), timezone)}
                                     </div>
-                                    {allowAdditional ? <button className='mt-1 form-button'
-                                        onClick={() => this.setState({ addHighStaker: _id })}>
-                                        <i className='fas fa-plus' /> Join High Staker
-                                    </button> : null}
+                                    {allowAdditional ?
+                                        <span>
+                                            <span className='text-white mr-2'>Max Bet: ${(maximumRisk - betAmount).toFixed(2)}</span>
+                                            <button className='mt-1 join-highstaker-button'
+                                                onClick={() => this.setState({ addHighStaker: _id })}>
+                                                <i className='fas fa-plus' /> Back Bet
+                                            </button>
+                                        </span> : null}
                                 </div>
                                 <div>
                                     <div className="row mx-0 pt-2">

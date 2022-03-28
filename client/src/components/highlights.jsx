@@ -143,7 +143,7 @@ class Highlights extends Component {
                 {/* <div className="bet-slip-header"><FormattedMessage id="COMPONENTS.SPORT.SBETTING" /></div> */}
                 <div className='mobile p-3'>
                     <p className='promotion-header'><FormattedMessage id="COMPONENTS.HIGHLIGHT_1" /><br /> <FormattedMessage id="COMPONENTS.HIGHLIGHT_2" /></p>
-                    <div className='p-3 d-flex justify-content-between'>
+                    <div className='p-2 d-flex justify-content-between'>
                         <div className='promotion-botton-wrap' onClick={() => showPromotionAction(true)}>
                             <div className='promotion-botton'><span><FormattedMessage id="COMPONENTS.WHATSNEW" /></span></div>
                         </div>
@@ -151,7 +151,7 @@ class Highlights extends Component {
                             <div className='promotion-botton'><span>{pro_mode ? 'Pro' : 'Basic'} View&nbsp;&nbsp;&nbsp;<i className='far fa-chevron-down' /></span></div>
                         </div>
                     </div>
-                    <div className='p-3 d-flex justify-content-between'>
+                    <div className='p-2 d-flex justify-content-between'>
                         <div className='promotion-botton-wrap view-wrapper' onClick={() => toggleField('showPrizeModal', true)}>
                             <div className='promotion-botton'><span><FormattedMessage id="COMPONENTS.SPIN_WHEEL" /></span></div>
                         </div>
