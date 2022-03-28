@@ -2332,3 +2332,7 @@ a.fav-link:hover {
     background: #3b1b57 !important;
     overflow: hidden;
 }
+
+.col-in.prize-used {
+    background-color: #C43AD2 !important;
+}
