@@ -182,4 +182,4 @@ const getLiveSportsLines = async () => {
     }
 }
 
-module.exports = getLiveSportsLines;
+module.exports = { getLiveSportsLines };
