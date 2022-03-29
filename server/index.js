@@ -3592,7 +3592,7 @@ const depositTripleA = async (req, res, data) => {
         "order_currency": "CAD",
         "order_amount": amount,
         "notify_email": email,
-        "success_url": "https://api.payperwin.com/triplea/deposit",
+        "notify_url": "https://api.payperwin.com/triplea/deposit",
         "notify_secret": notify_secret,
         "payer_id": user._id,
         "payer_name": user.username,
