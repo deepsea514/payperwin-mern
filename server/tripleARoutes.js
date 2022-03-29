@@ -69,6 +69,7 @@ const signatureCheck = async (req, res, next) => {
         }
     }
     else {
+        console.log('Triple A signature mismatch.', req.rawBody);
         return res.json({
             error: "Signature mismatch"
         });
