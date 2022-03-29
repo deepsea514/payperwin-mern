@@ -33,6 +33,7 @@ const signatureCheck = async (req, res, next) => {
     if (req.body) {
         try {
             const sig = req.headers['triplea-signature'];
+            console.log('triple a signature=>', sig);
             let timestamp, signature;
             for (let sig_part of sig.split(',')) {
                 let [key, value] = sig_part.split('=');
