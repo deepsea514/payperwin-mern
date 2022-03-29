@@ -31,41 +31,46 @@ const {
 
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
-        const sig = req.headers['triplea-signature'];
-        let timestamp, signature;
-        for (let sig_part of sig.split(',')) {
-            let [key, value] = sig_part.split('=');
+        try {
+            const sig = req.headers['triplea-signature'];
+            let timestamp, signature;
+            for (let sig_part of sig.split(',')) {
+                let [key, value] = sig_part.split('=');
 
-            switch (key) {
-                case 't':
-                    timestamp = value;
-                    break;
-                case 'v1':
-                    signature = value;
-                    break;
+                switch (key) {
+                    case 't':
+                        timestamp = value;
+                        break;
+                    case 'v1':
+                        signature = value;
+                        break;
+                }
             }
-        }
 
-        const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
-        if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
-            console.warn("TripleA Api is not set");
-            return false;
-        }
-        const { notify_secret } = tripleAAddon.value;
+            const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
+            if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
+                console.warn("TripleA Api is not set");
+                return false;
+            }
+            const { notify_secret } = tripleAAddon.value;
 
-        let check_signature = crypto.createHmac('sha256', notify_secret)
-            .update(`${timestamp}.${req.rawBody}`)
-            .digest('hex');
+            let check_signature = crypto.createHmac('sha256', notify_secret)
+                .update(`${timestamp}.${req.rawBody}`)
+                .digest('hex');
 
-        let curr_timestamp = Math.round((new Date()).getTime() / 1000);
+            let curr_timestamp = Math.round((new Date()).getTime() / 1000);
 
-        if (signature === check_signature && Math.abs(curr_timestamp - timestamp) <= 300) {
-            return next();
-        } else {
-            console.log('Triple A signature mismatch.', sig, req.rawBody, `${timestamp}.${req.rawBody}`);
-            return res.json({
-                error: "Signature mismatch"
-            });
+            if (signature === check_signature && Math.abs(curr_timestamp - timestamp) <= 300) {
+                return next();
+            } else {
+                console.log('Triple A signature mismatch.', sig, req.rawBody, `${timestamp}.${req.rawBody}`);
+                return res.json({
+                    error: "Signature mismatch"
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Internal Server Error.' });
         }
     }
     else {
