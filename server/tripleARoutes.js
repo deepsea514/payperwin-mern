@@ -89,7 +89,7 @@ tripleARouter.post('/deposit',
             req.rawBody = buf;
         }
     }),
-    signatureCheck,
+    // signatureCheck,
     async (req, res) => {
         console.log('triple A deposit => ', JSON.stringify(req.body))
         try {
