@@ -8,6 +8,10 @@ export const login = (values) => {
     return FrontendAPI.post('/login', values);
 }
 
+export const logout = () => {
+    return FrontendAPI.get('/logout');
+}
+
 export const getHomeData = () => {
     return FrontendAPI.get('/tickets/homedata');
 }

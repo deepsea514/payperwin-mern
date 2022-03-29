@@ -3,6 +3,8 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { getInputClasses } from '../lib/getInputClasses';
 import { login } from '../redux/services';
+import { connect } from 'react-redux';
+import { actions } from '../redux/reducers';
 
 class Login extends React.Component {
     state = {
@@ -20,12 +22,19 @@ class Login extends React.Component {
         error: '',
     };
 
+    componentDidMount() {
+        const { user, history } = this.props;
+        if (user) {
+            history.push('/');
+        }
+    }
+
     onSubmit = (values, formik) => {
-        const { history } = this.props;
+        const { history, getUserAction } = this.props;
         this.setState({ error: '' });
         login(values).then(() => {
             formik.setSubmitting(false);
-            history.push('/');
+            getUserAction(() => history.push('/'));
         }).catch(() => {
             this.setState({ error: 'Email and password are not matching.' });
             formik.setSubmitting(false);
@@ -92,4 +101,7 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+    user: state.user,
+});
+export default connect(mapStateToProps, actions)(Login);

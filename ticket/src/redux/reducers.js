@@ -54,7 +54,7 @@ const initialState = {
 };
 
 export const reducer = persistReducer(
-    { storage, key: "ppw-ticket", whitelist: ['cart'] },
+    { storage, key: "ppw-ticket", whitelist: ['cart', 'user'] },
     (state = initialState, action) => {
         switch (action.type) {
             case actionTypes.setUserAction:
@@ -113,7 +113,7 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-    getUserAction: () => ({ type: actionTypes.getUserAction }),
+    getUserAction: (callback = null) => ({ type: actionTypes.getUserAction, callback: callback }),
     setUserAction: (payload = null) => ({ type: actionTypes.setUserAction, payload }),
     getCADRateAction: () => ({ type: actionTypes.getCADRateAction }),
     setCADRateAction: (rate) => ({ type: actionTypes.setCADRateAction, rate }),
@@ -125,10 +125,13 @@ export const actions = {
 };
 
 export function* saga() {
-    yield takeLatest(actionTypes.getUserAction, function* getUserAction() {
+    yield takeLatest(actionTypes.getUserAction, function* getUserAction(action) {
         try {
             const { data: user } = yield getUser();
-            yield put(actions.setUserAction(user))
+            yield put(actions.setUserAction(user));
+            if (action.callback) {
+                action.callback();
+            }
         } catch (error) {
             yield put(actions.setUserAction(null));
         }
