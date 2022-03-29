@@ -28,7 +28,6 @@ const {
     checkFirstDeposit
 } = require('./libs/functions');
 
-
 const signatureCheck = async (req, res, next) => {
     if (req.body) {
         try {
@@ -89,9 +88,8 @@ tripleARouter.post('/deposit',
             req.rawBody = buf;
         }
     }),
-    // signatureCheck,
+    signatureCheck,
     async (req, res) => {
-        console.log('triple A deposit => ', JSON.stringify(req.body))
         try {
             let { receive_amount, payment_tier, webhook_data, crypto_currency } = req.body;
             if (webhook_data && (payment_tier == 'good' || payment_tier == 'short')) {
