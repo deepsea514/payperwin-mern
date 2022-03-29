@@ -51,9 +51,7 @@ const signatureCheck = async (req, res, next) => {
             console.warn("TripleA Api is not set");
             return false;
         }
-        const {
-            notify_secret,
-        } = tripleAAddon.value;
+        const { notify_secret } = tripleAAddon.value;
 
         let check_signature = crypto.createHmac('sha256', notify_secret)
             .update(`${timestamp}.${req.rawBody}`)
@@ -64,6 +62,7 @@ const signatureCheck = async (req, res, next) => {
         if (signature === check_signature && Math.abs(curr_timestamp - timestamp) <= 300) {
             return next();
         } else {
+            console.log('Triple A signature mismatch.', sig, req.rawBody, `${timestamp}.${req.rawBody}`);
             return res.json({
                 error: "Signature mismatch"
             });
@@ -85,6 +84,7 @@ tripleARouter.post('/deposit',
     }),
     signatureCheck,
     async (req, res) => {
+        console.log('triple A deposit => ', JSON.stringify(req.body))
         let { receive_amount, payment_tier, webhook_data, crypto_currency } = req.body;
         if (webhook_data && (payment_tier == 'good' || payment_tier == 'short')) {
             const uniqid = `D${ID()}`;
