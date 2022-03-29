@@ -45,3 +45,7 @@ export const getPerformers = (filter, page) => {
 export const getPerformerDetail = (performer_slug) => {
     return FrontendAPI.get(`/tickets/performers/${performer_slug}`,);
 }
+
+export const checkoutSubmit = (values) => {
+    return FrontendAPI.post('/tickets/checkout', values);
+}
