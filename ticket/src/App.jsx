@@ -12,6 +12,7 @@ import Preloader from './components/Shared/Preloader';
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./redux/store";
+import { ToastContainer } from 'react-toastify';
 
 class App extends React.Component {
     state = {
@@ -32,6 +33,7 @@ class App extends React.Component {
                 <PersistGate persistor={persistor}>
                     {this.state.loading ? <Preloader /> : ''}
                     <AppRouter />
+                    <ToastContainer />
                 </PersistGate>
             </Provider>
         );

@@ -6,6 +6,8 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { getInputClasses } from '../../lib/getInputClasses';
+import { withRouter } from 'react-router-dom';
+import { checkoutSubmit } from '../../redux/services';
 
 class CheckoutForm extends React.Component {
     constructor(props) {
@@ -67,7 +69,19 @@ class CheckoutForm extends React.Component {
     }
 
     onSubmit = (values, formik) => {
+        const { user, history } = this.props;
+        if (!user) {
+            history.push('/login');
+            return;
+        }
+        checkoutSubmit(values).then(({ data }) => {
+            const { success, error } = data;
+            if (success) {
+                return;
+            }
+        }).catch(() => {
 
+        })
     }
 
     render() {
@@ -286,4 +300,4 @@ const mapStateToProps = (state) => ({
     cad_rate: state.cad_rate,
     user: state.user,
 });
-export default connect(mapStateToProps)(CheckoutForm);
+export default connect(mapStateToProps)(withRouter(CheckoutForm));
