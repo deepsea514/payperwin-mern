@@ -2,9 +2,6 @@
 const tripleARouter = require('express').Router();
 //external libraries
 const crypto = require('crypto');
-const ExpressBrute = require('express-brute');
-const store = new ExpressBrute.MemoryStore(); // TODO: stores state locally, don't use this in production
-const bruteforce = new ExpressBrute(store);
 const sgMail = require('@sendgrid/mail');
 const bodyParser = require('body-parser');
 //Models
@@ -25,6 +22,7 @@ const FinancialStatus = config.FinancialStatus;
 const inviteBonus = config.inviteBonus;
 const affiliateCommission = config.affiliateCommission;
 const {
+    ID,
     checkSignupBonusPromotionEnabled,
     isSignupBonusUsed,
     checkFirstDeposit
@@ -79,7 +77,6 @@ const signatureCheck = async (req, res, next) => {
 }
 
 tripleARouter.post('/deposit',
-    bruteforce.prevent,
     bodyParser.json({
         limit: '100mb',
         verify: (req, res, buf) => {
@@ -221,7 +218,6 @@ tripleARouter.post('/deposit',
 );
 
 tripleARouter.post('/withdraw',
-    bruteforce.prevent,
     bodyParser.json({
         limit: '100mb',
         verify: (req, res, buf) => {
