@@ -29,6 +29,7 @@ const {
 } = require('./libs/functions');
 
 const signatureCheck = async (req, res, next) => {
+    console.log('Signature Check', req.headers['triplea-signature']);
     if (req.body) {
         try {
             const sig = req.headers['triplea-signature'];
@@ -50,7 +51,9 @@ const signatureCheck = async (req, res, next) => {
             const tripleAAddon = await Addon.findOne({ name: 'tripleA' });
             if (!tripleAAddon || !tripleAAddon.value || !tripleAAddon.value.merchant_key) {
                 console.warn("TripleA Api is not set");
-                return false;
+                return res.json({
+                    error: "Cannot verify signature"
+                });;
             }
             const { notify_secret } = tripleAAddon.value;
 
@@ -72,8 +75,7 @@ const signatureCheck = async (req, res, next) => {
             console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
-    }
-    else {
+    } else {
         console.log('Triple A signature mismatch.', req.rawBody);
         return res.json({
             error: "Signature mismatch"
