@@ -16,4 +16,4 @@ const matchResults = async () => {
     matchResultsParlay(bet365ApiKey);
 }
 
-module.exports = matchResults;
+module.exports = { matchResults };
