@@ -3,28 +3,71 @@ import { connect } from 'react-redux';
 import CreditCardInput from 'react-credit-card-input';
 import PhoneInput from 'react-phone-input-2'
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { getInputClasses } from '../../lib/getInputClasses';
 
 class CheckoutForm extends React.Component {
     constructor(props) {
         super(props);
-
+        const { user } = props;
         this.state = {
-            email: '',
-            firstname: '',
-            lastname: '',
-            address: '',
-            address2: '',
-            city: '',
-            country: 'CA',
-            region: '',
-            zipcode: '',
-            phone: '',
+            initialValues: {
+                email: user ? user.email : '',
+                firstname: user ? user.firstname : '',
+                lastname: user ? user.lastname : '',
+                address: user ? user.address : '',
+                address2: user ? user.address2 : '',
+                city: user ? user.city : '',
+                country: 'Canada',
+                region: user ? user.region : '',
+                zipcode: user ? user.zipcode : '',
+                phone: user ? user.phone : '',
+                card_holder: '',
+                card_number: '',
+                card_expiry: '',
+                card_cvc: '',
+            },
+            checkoutSchema: Yup.object().shape({
+                email: Yup.string()
+                    .required('Email Address is required.')
+                    .email('Please input correct email format.'),
+                firstname: Yup.string()
+                    .required('First Name is required.'),
+                lastname: Yup.string()
+                    .required('Last Name is required.'),
+                address: Yup.string()
+                    .required('Address is required.'),
+                address2: Yup.string(),
+                city: Yup.string()
+                    .required('City is required.'),
+                country: Yup.string()
+                    .required('Please select the country.'),
+                region: Yup.string()
+                    .required('Please Select region'),
+                zipcode: Yup.string()
+                    .required('Zip Code is required.'),
+                phone: Yup.string()
+                    .required('Phone Number is required.'),
+                card_holder: Yup.string()
+                    .required('Card Holder is required.'),
+                card_number: Yup.string()
+                    .required('Card Number is required.'),
+                card_expiry: Yup.string()
+                    .required('Card Expiry is required.'),
+                card_cvc: Yup.string()
+                    .required('Card CVC is required.'),
+            })
         }
     }
 
     changeRate = (usd_price) => {
         const { cad_rate } = this.props;
         return Math.ceil(usd_price * cad_rate * 100) / 100
+    }
+
+    onSubmit = (values, formik) => {
+
     }
 
     render() {
@@ -34,97 +77,204 @@ class CheckoutForm extends React.Component {
         cart.forEach(({ ticket_group, count }) => {
             total += this.changeRate(ticket_group.retail_price) * parseInt(count)
         })
+        const { initialValues, checkoutSchema } = this.state;
 
         return (
             <div className="mb-5">
                 <div className="container">
-                    <form onSubmit={(evt) => evt.preventDefault()}>
-                        <div className='row'>
-                            <div className='col-md-6'>
-                                <div className='form-group cart-form-group'>
-                                    <label>Contact Information</label>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='Email' />
-                                </div>
-                                <div className='row'>
-                                    <div className='form-group cart-form-group col-md-6'>
-                                        <input className='form-control cart-form-control'
-                                            placeholder='First Name' />
-                                    </div>
-                                    <div className='form-group cart-form-group col-md-6'>
-                                        <input className='form-control cart-form-control'
-                                            placeholder='Last Name' />
-                                    </div>
-                                </div>
-                                <div className='form-group cart-form-group'>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='Address' />
-                                </div>
-                                <div className='form-group cart-form-group'>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='Address 2 (Optional)' />
-                                </div>
-                                <div className='form-group cart-form-group'>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='City' />
-                                </div>
-                                <div className='row'>
-                                    <div className='form-group cart-form-group col-md-4'>
-                                        <CountryDropdown classes='form-control cart-form-control'
-                                            whitelist={['CA']} />
-                                    </div>
-                                    <div className='form-group cart-form-group col-md-4'>
-                                        <RegionDropdown classes='form-control cart-form-control'
-                                            blankOptionLabel='Select Region'
-                                            defaultOptionLabel='Select Region' />
-                                    </div>
-                                    <div className='form-group cart-form-group col-md-4'>
-                                        <input className='form-control cart-form-control'
-                                            placeholder='Zip Code' />
-                                    </div>
-                                </div>
-                                <div className='form-group cart-form-group'>
-                                    <PhoneInput country={'ca'}
-                                        onlyCountries={['ca']}
-                                        containerClass='input-group'
-                                        inputClass='form-control cart-form-control' />
-                                </div>
-                            </div>
-                            <div className='col-md-6'>
-                                <div className='form-group cart-form-group'>
-                                    <label>Payment Information</label>
-                                    <input className='form-control cart-form-control'
-                                        placeholder='Cardholder Name' />
-                                </div>
-                                <div className='form-group cart-form-group'>
-                                    <CreditCardInput
-                                        // cardNumberInputProps={{ value: cardNumber, onChange: this.handleCardNumberChange }}
-                                        // cardExpiryInputProps={{ value: expiry, onChange: this.handleCardExpiryChange }}
-                                        // cardCVCInputProps={{ value: cvc, onChange: this.handleCardCVCChange }}
-                                        fieldClassName=""
-                                        containerClassName="cart-form-control p-0"
-                                        inputClassName="mt-3"
-                                    />
-                                </div>
+                    <Formik onSubmit={this.onSubmit}
+                        initialValues={initialValues}
+                        validationSchema={checkoutSchema}>
+                        {(formik) => {
+                            const {
+                                values, touched, errors,
+                                getFieldProps, handleChange, handleBlur, handleSubmit, setFieldError, setFieldValue, setFieldTouched
+                            } = formik;
+                            return (
+                                <form onSubmit={handleSubmit}>
+                                    <div className='row'>
+                                        <div className='col-md-6'>
+                                            <div className='form-group cart-form-group'>
+                                                <label>Contact Information</label>
+                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'email')}`}
+                                                    type='email'
+                                                    placeholder='Email'
+                                                    {...getFieldProps('email')} />
+                                                {touched.email && errors.email ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.email}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className='row'>
+                                                <div className='form-group cart-form-group col-md-6'>
+                                                    <input className={`form-control cart-form-control ${getInputClasses(formik, 'firstname')}`}
+                                                        placeholder='First Name'
+                                                        {...getFieldProps('firstname')} />
+                                                    {touched.firstname && errors.firstname ? (
+                                                        <div className="invalid-feedback">
+                                                            {errors.firstname}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                                <div className='form-group cart-form-group col-md-6'>
+                                                    <input className={`form-control cart-form-control ${getInputClasses(formik, 'lastname')}`}
+                                                        placeholder='Last Name'
+                                                        {...getFieldProps('lastname')} />
+                                                    {touched.lastname && errors.lastname ? (
+                                                        <div className="invalid-feedback">
+                                                            {errors.lastname}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div className='form-group cart-form-group'>
+                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'address')}`}
+                                                    placeholder='Address'
+                                                    {...getFieldProps('address')} />
+                                                {touched.address && errors.address ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.address}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className='form-group cart-form-group'>
+                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'address2')}`}
+                                                    placeholder='Address 2 (Optional)'
+                                                    {...getFieldProps('address2')} />
+                                                {touched.address2 && errors.address2 ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.address2}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className='form-group cart-form-group'>
+                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'city')}`}
+                                                    placeholder='City'
+                                                    {...getFieldProps('city')} />
+                                                {touched.city && errors.city ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.city}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className='row'>
+                                                <div className='form-group cart-form-group col-md-4'>
+                                                    <CountryDropdown classes={`form-control cart-form-control ${getInputClasses(formik, 'country')}`}
+                                                        whitelist={['CA']}
+                                                        {...getFieldProps('country')}
+                                                        onChange={(val, evt) => handleChange(evt)} />
+                                                    {touched.country && errors.country ? (
+                                                        <div className="invalid-feedback">
+                                                            {errors.country}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                                <div className='form-group cart-form-group col-md-4'>
+                                                    <RegionDropdown classes={`form-control cart-form-control ${getInputClasses(formik, 'region')}`}
+                                                        blankOptionLabel='Select Region'
+                                                        defaultOptionLabel='Select Region'
+                                                        country={values.country}
+                                                        {...getFieldProps('region')}
+                                                        onChange={(val, evt) => handleChange(evt)} />
+                                                    {touched.region && errors.region ? (
+                                                        <div className="invalid-feedback">
+                                                            {errors.region}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                                <div className='form-group cart-form-group col-md-4'>
+                                                    <input className={`form-control cart-form-control ${getInputClasses(formik, 'zipcode')}`}
+                                                        placeholder='Zip Code'
+                                                        {...getFieldProps('zipcode')} />
+                                                    {touched.zipcode && errors.zipcode ? (
+                                                        <div className="invalid-feedback">
+                                                            {errors.zipcode}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div className='form-group cart-form-group'>
+                                                <PhoneInput country={'ca'}
+                                                    onlyCountries={['ca']}
+                                                    containerClass='input-group'
+                                                    inputClass={`form-control cart-form-control ${getInputClasses(formik, 'phone')}`}
+                                                    inputProps={{ name: 'phone' }}
+                                                    onChange={value => {
+                                                        setFieldValue('phone', value);
+                                                        setFieldTouched('phone', true);
+                                                    }}
+                                                    onBlur={handleBlur}
+                                                    buttonStyle={{ zIndex: 3 }} />
+                                                {touched.phone && errors.phone ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.phone}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                        <div className='col-md-6'>
+                                            <div className='form-group cart-form-group'>
+                                                <label>Payment Information</label>
+                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'card_holder')}`}
+                                                    placeholder='Cardholder Name'
+                                                    {...getFieldProps('card_holder')} />
+                                                {touched.card_holder && errors.card_holder ? (
+                                                    <div className="invalid-feedback">
+                                                        {errors.card_holder}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className='form-group cart-form-group'>
+                                                <CreditCardInput
+                                                    cardCVCInputProps={{
+                                                        name: 'card_cvc',
+                                                        onBlur: handleBlur,
+                                                        onChange: handleChange,
+                                                        onError: (err) => setFieldError('card_cvc', err)
+                                                    }}
+                                                    cardExpiryInputProps={{
+                                                        name: 'card_expiry',
+                                                        onBlur: handleBlur,
+                                                        onChange: handleChange,
+                                                        onError: (err) => setFieldError('card_expiry', err)
+                                                    }}
+                                                    cardNumberInputProps={{
+                                                        name: 'card_number',
+                                                        onBlur: handleBlur,
+                                                        onChange: handleChange,
+                                                        onError: (err) => setFieldError('card_number', err)
+                                                    }}
+                                                    fieldClassName=""
+                                                    containerClassName="cart-form-control p-0"
+                                                    inputClassName="mt-3"
+                                                    containerStyle={errors.card_number || errors.card_cvc || errors.card_expiry ? {
+                                                        border: '1px solid #FF2D55'
+                                                    } : null}
+                                                />
+                                            </div>
 
-                                <table className='table mt-5'>
-                                    <tbody>
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td>--</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td>CAD ${total}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button type="submit"
-                                    style={{ width: '100%' }}
-                                    className="btn btn-primary full-width">Complete Order</button>
-                            </div>
-                        </div>
-                    </form>
+                                            <table className='table mt-5'>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Shipping</th>
+                                                        <td>--</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        <td>CAD ${total}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <button type="submit"
+                                                style={{ width: '100%' }}
+                                                className="btn btn-primary full-width">Complete Order</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            )
+                        }}
+                    </Formik>
                 </div>
             </div>
         );

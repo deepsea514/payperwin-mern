@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link, withRouter, NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { actions } from '../../redux/reducers';
+import { logout } from '../../redux/services';
 
 class Navigation extends React.Component {
 
@@ -11,6 +14,7 @@ class Navigation extends React.Component {
     toggleNavbar = () => {
         this.setState({
             collapsed: !this.state.collapsed,
+            isOpen: false,
         });
     }
 
@@ -27,17 +31,27 @@ class Navigation extends React.Component {
         window.scrollTo(0, 0);
     }
 
-    toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
+    toggleOpen = (forceValue) => this.setState({ isOpen: forceValue === undefined ? !this.state.isOpen : forceValue });
 
     onRouteChanged = () => {
         this.setState({ isOpen: !this.state.isOpen });
+    }
+
+    logout = () => {
+        const { setUserAction } = this.props;
+        this.toggleNavbar();
+        logout().then(() => {
+            setUserAction();
+        }).catch(() => { });
     }
 
     render() {
         const { collapsed } = this.state;
         const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
         const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
-        // const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
+        const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
+        const { user } = this.props;
+
         return (
             <header id="header" className="header-area">
                 <div id="navbar" className="elkevent-nav">
@@ -55,174 +69,88 @@ class Navigation extends React.Component {
                                 data-target="#navbarSupportedContent"
                                 aria-controls="navbarSupportedContent"
                                 aria-expanded="false"
-                                aria-label="Toggle navigation"
-                            >
+                                aria-label="Toggle navigation">
                                 <span className="navbar-toggler-icon"></span>
                             </button>
 
                             <div className={classOne} id="navbarSupportedContent">
                                 <ul className="navbar-nav ms-auto">
                                     <li className="nav-item">
-                                        <Link exact="true"
-                                            to="/categories/sports"
-                                            onClick={this.toggleOpen}
-                                            className="nav-link"
-                                        >
+                                        <Link to="/categories/sports"
+                                            onClick={() => this.toggleOpen(false)}
+                                            className="nav-link">
                                             Sports
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link
-                                            to="/categories/concerts"
-                                            onClick={this.toggleOpen}
-                                            className="nav-link"
-                                        >
+                                        <Link to="/categories/concerts"
+                                            onClick={() => this.toggleOpen(false)}
+                                            className="nav-link">
                                             Concerts
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link
-                                            to="/categories/theatre"
-                                            onClick={this.toggleOpen}
-                                            className="nav-link"
-                                        >
+                                        <Link to="/categories/theatre"
+                                            onClick={() => this.toggleOpen(false)}
+                                            className="nav-link">
                                             Art & Theatre
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link
-                                            to="/search"
-                                            onClick={this.toggleOpen}
-                                            className="nav-link"
-                                        >
+                                        <Link to="/search"
+                                            onClick={() => this.toggleOpen(false)}
+                                            className="nav-link">
                                             More
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link
-                                            to="/help"
-                                            onClick={this.toggleOpen}
-                                            className="nav-link"
-                                        >
+                                        <Link to="/help"
+                                            onClick={() => this.toggleOpen(false)}
+                                            className="nav-link">
                                             Help
                                         </Link>
                                     </li>
+                                    {!user && <li>
+                                        <NavLink to="/login"
+                                            className="btn btn-primary"
+                                            onClick={this.toggleNavbar}>
+                                            <i className='icofont-unlock' />
+                                        </NavLink>
+                                    </li>}
 
-                                    {/* <li className="nav-item">
-                                        <Link
-                                            to="#"
+                                    {user && <li className="nav-item">
+                                        <Link to="#"
                                             className="nav-link"
-                                            onClick={this.toggleOpen}
-                                        >
-                                            Categories
+                                            onClick={this.toggleOpen}>
+                                            Account
                                         </Link>
                                         <ul className={menuClass}>
                                             <li className="nav-item">
-                                                <NavLink
-                                                    to="/speakers-1"
+                                                <NavLink to="/checkout"
                                                     className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Sports
+                                                    onClick={this.toggleNavbar}>
+                                                    Checkout
                                                 </NavLink>
                                             </li>
 
                                             <li className="nav-item">
-                                                <NavLink
-                                                    to="/speakers-2"
+                                                <NavLink to="/orders"
                                                     className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Concerts
+                                                    onClick={this.toggleNavbar}>
+                                                    My Orders
                                                 </NavLink>
                                             </li>
 
                                             <li className="nav-item">
-                                                <NavLink
-                                                    to="/speakers-3"
+                                                <NavLink to="/logout"
                                                     className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Theatre
-                                                </NavLink>
-                                            </li>
-                                            <li className="nav-item">
-                                                <NavLink
-                                                    to="/speakers-3"
-                                                    className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Special Events
+                                                    onClick={this.logout}>
+                                                    Logout
                                                 </NavLink>
                                             </li>
                                         </ul>
-                                    </li>
-
-                                    <li className="nav-item">
-                                        <Link
-                                            to="/schedule-1"
-                                            className="nav-link"
-                                            onClick={this.toggleOpen}
-                                        >
-                                            Locations
-                                        </Link>
-                                        <ul className={menuClass}>
-                                            <li className="nav-item">
-                                                <NavLink
-                                                    to="/schedule-1"
-                                                    className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Vancouver
-                                                </NavLink>
-                                            </li>
-
-                                            <li className="nav-item">
-                                                <NavLink
-                                                    to="/schedule-2"
-                                                    className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Toronto
-                                                </NavLink>
-                                            </li>
-
-                                            <li className="nav-item">
-                                                <NavLink
-                                                    to="/schedule-3"
-                                                    className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Montreal
-                                                </NavLink>
-                                            </li>
-
-                                            <li className="nav-item">
-                                                <NavLink
-                                                    to="/schedule-4"
-                                                    className="nav-link"
-                                                    onClick={this.toggleNavbar}
-                                                >
-                                                    Calgary
-                                                </NavLink>
-                                            </li>
-                                        </ul>
-                                    </li> */}
+                                    </li>}
                                 </ul>
-
-                                <div className="others-option">
-                                    <ul>
-                                        <li>
-                                            <NavLink
-                                                to="/login"
-                                                className="btn btn-primary"
-                                                onClick={this.toggleNavbar}
-                                            >
-                                                <i className='icofont-unlock' />
-                                            </NavLink>
-                                        </li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </nav>
@@ -232,4 +160,7 @@ class Navigation extends React.Component {
     }
 }
 
-export default withRouter(Navigation);
+const mapStateToProps = (state) => ({
+    user: state.user,
+});
+export default connect(mapStateToProps, actions)(withRouter(Navigation));
