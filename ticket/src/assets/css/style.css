@@ -5028,6 +5028,12 @@ ul.event-info li span {
     appearance: none;
 }
 
+.cart-form-control.is-valid,
+.cart-form-control.is-invalid {
+    height: 40px;
+    padding: 10px;
+}
+
 .cart-form-group {
     margin-bottom: 10px;
 }

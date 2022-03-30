@@ -6,25 +6,28 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { getInputClasses } from '../../lib/getInputClasses';
+import { getRandomID } from '../../lib/getRandomID';
 import { withRouter } from 'react-router-dom';
 import { checkoutSubmit } from '../../redux/services';
+import { errorMessage, successMessage } from '../../lib/showMessage';
 
 class CheckoutForm extends React.Component {
     constructor(props) {
         super(props);
         const { user } = props;
+        const session_id = `PPW_TICKET${getRandomID()}`;
         this.state = {
             initialValues: {
-                email: user ? user.email : '',
-                firstname: user ? user.firstname : '',
-                lastname: user ? user.lastname : '',
-                address: user ? user.address : '',
-                address2: user ? user.address2 : '',
-                city: user ? user.city : '',
+                email: user && user.email ? user.email : '',
+                firstname: user && user.firstname ? user.firstname : '',
+                lastname: user && user.lastname ? user.lastname : '',
+                address: user && user.address ? user.address : '',
+                address2: user && user.address2 ? user.address2 : '',
+                city: user && user.city ? user.city : '',
                 country: 'Canada',
-                region: user ? user.region : '',
-                zipcode: user ? user.zipcode : '',
-                phone: user ? user.phone : '',
+                region: user && user.region ? user.region : '',
+                zipcode: user && user.zipcode ? user.zipcode : '',
+                phone: user && user.phone ? user.phone : '',
                 card_holder: '',
                 card_number: '',
                 card_expiry: '',
@@ -59,8 +62,28 @@ class CheckoutForm extends React.Component {
                     .required('Card Expiry is required.'),
                 card_cvc: Yup.string()
                     .required('Card CVC is required.'),
-            })
+            }),
+            session_id: session_id,
         }
+    }
+
+    componentDidMount() {
+        const { session_id } = this.state;
+        const store_domain = 'ticketevolution.com';
+        const url = ('https:' === document.location.protocol ? 'https://' : 'http://') + "beacon.riskified.com?shop=" + store_domain + "&sid=" + session_id;
+        const script_obj = document.createElement('script');
+        script_obj.type = 'text/javascript';
+        script_obj.async = true;
+        script_obj.src = url;
+        script_obj.id = 'riskified_script';
+
+        const target_node = document.getElementsByTagName('script')[0];
+        target_node.parentNode.insertBefore(script_obj, target_node);
+    }
+
+    componentWillUnmount() {
+        const script_obj = document.getElementById('riskified_script');
+        script_obj.parentNode.removeChild(script_obj);
     }
 
     changeRate = (usd_price) => {
@@ -70,17 +93,20 @@ class CheckoutForm extends React.Component {
 
     onSubmit = (values, formik) => {
         const { user, history } = this.props;
+        const { session_id } = this.state;
         if (!user) {
             history.push('/login');
             return;
         }
-        checkoutSubmit(values).then(({ data }) => {
+        checkoutSubmit({ ...values, session_id, }).then(({ data }) => {
             const { success, error } = data;
             if (success) {
+                successMessage('Ticket Purchased Successfully.');
                 return;
             }
+            errorMessage(error);
         }).catch(() => {
-
+            errorMessage('Cannot Purchase Ticket. Please try again later.');
         })
     }
 
