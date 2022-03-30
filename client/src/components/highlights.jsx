@@ -160,69 +160,71 @@ class Highlights extends Component {
                         </Link>
                     </div>
                 </div>
-                <ul className="nav nav-tabs pt-2" ref={this.listRef} onScroll={this.onScroll}>
-                    {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
-                        onClick={this.scrollLeft}>
-                        <span className='sports-scroller-icon'>
-                            <i className='fas fa-arrow-left' />
-                        </span>
-                    </li>}
-                    <li className="nav-item"
-                        onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
-                        <center>
-                            <div className={`sports-league-image-container ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>
-                                <img src='/images/sports/all.png' className='sports-league-image' />
-                            </div>
-                            <span className={`nav-link ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>All</span>
-                        </center>
-                    </li>
-                    <li className="nav-item"
-                        onClick={() => this.setState({ sportIndex: 'custom', leagueIndex: null })}>
-                        <center>
-                            <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
-                                <img src={sportNameImage('Side Bet')}
-                                    className='sports-league-image' />
-                            </div>
-                            <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Side Bet</span>
-                        </center>
-                    </li>
-                    {topLeagues.map((league, i) => {
-                        return (
-                            <li className="nav-item"
-                                onClick={() => this.setState({ leagueIndex: i, sportIndex: null })}
-                                key={league.leagueId}>
-                                <center>
-                                    <div className={`sports-league-image-container ${leagueIndex == i ? 'active' : ''}`}>
-                                        <img src={sportNameImage(league.sportName, league.name)}
-                                            className='sports-league-image' />
-                                    </div>
-                                    <span className={`nav-link ${leagueIndex == i ? 'active' : ''}`}>{league.name}</span>
-                                </center>
-                            </li>
-                        )
-                    })}
-                    {sports.map((sport, i) => {
-                        return (
-                            <li className="nav-item"
-                                onClick={() => this.setState({ sportIndex: i, leagueIndex: null })}
-                                key={sport}>
-                                <center>
-                                    <div className={`sports-league-image-container ${sportIndex == i ? 'active' : ''}`}>
-                                        <img src={sportNameImage(sport)}
-                                            className='sports-league-image' />
-                                    </div>
-                                    <span className={`nav-link ${sportIndex == i ? 'active' : ''}`}>{this.getSportName(sport)}</span>
-                                </center>
-                            </li>
-                        );
-                    })}
-                    {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
-                        onClick={this.scrollRight}>
-                        <span className='sports-scroller-icon'>
-                            <i className='fas fa-arrow-right' />
-                        </span>
-                    </li>}
-                </ul>
+                <div className='sportslist-container'>
+                    <ul className="nav nav-tabs pt-2" ref={this.listRef} onScroll={this.onScroll}>
+                        {showLeft && <li className="d-flex align-items-center sports-scroller sports-scroller-left"
+                            onClick={this.scrollLeft}>
+                            <span className='sports-scroller-icon'>
+                                <i className='fas fa-arrow-left' />
+                            </span>
+                        </li>}
+                        <li className="nav-item"
+                            onClick={() => this.setState({ leagueIndex: null, sportIndex: null })}>
+                            <center>
+                                <div className={`sports-league-image-container ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>
+                                    <img src='/images/sports/all.png' className='sports-league-image' />
+                                </div>
+                                <span className={`nav-link ${leagueIndex == null && sportIndex == null ? 'active' : ''}`}>All</span>
+                            </center>
+                        </li>
+                        <li className="nav-item"
+                            onClick={() => this.setState({ sportIndex: 'custom', leagueIndex: null })}>
+                            <center>
+                                <div className={`sports-league-image-container ${sportIndex == 'custom' ? 'active' : ''}`}>
+                                    <img src={sportNameImage('Side Bet')}
+                                        className='sports-league-image' />
+                                </div>
+                                <span className={`nav-link ${sportIndex == 'custom' ? 'active' : ''}`}>Side Bet</span>
+                            </center>
+                        </li>
+                        {topLeagues.map((league, i) => {
+                            return (
+                                <li className="nav-item"
+                                    onClick={() => this.setState({ leagueIndex: i, sportIndex: null })}
+                                    key={league.leagueId}>
+                                    <center>
+                                        <div className={`sports-league-image-container ${leagueIndex == i ? 'active' : ''}`}>
+                                            <img src={sportNameImage(league.sportName, league.name)}
+                                                className='sports-league-image' />
+                                        </div>
+                                        <span className={`nav-link ${leagueIndex == i ? 'active' : ''}`}>{league.name}</span>
+                                    </center>
+                                </li>
+                            )
+                        })}
+                        {sports.map((sport, i) => {
+                            return (
+                                <li className="nav-item"
+                                    onClick={() => this.setState({ sportIndex: i, leagueIndex: null })}
+                                    key={sport}>
+                                    <center>
+                                        <div className={`sports-league-image-container ${sportIndex == i ? 'active' : ''}`}>
+                                            <img src={sportNameImage(sport)}
+                                                className='sports-league-image' />
+                                        </div>
+                                        <span className={`nav-link ${sportIndex == i ? 'active' : ''}`}>{this.getSportName(sport)}</span>
+                                    </center>
+                                </li>
+                            );
+                        })}
+                        {showRight && <li className="d-flex align-items-center sports-scroller sports-scroller-right"
+                            onClick={this.scrollRight}>
+                            <span className='sports-scroller-icon'>
+                                <i className='fas fa-arrow-right' />
+                            </span>
+                        </li>}
+                    </ul>
+                </div>
                 {sportIndex == 'custom' ? (
                     <CustomBet addBet={addBet}
                         betSlip={betSlip}
