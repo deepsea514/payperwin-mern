@@ -9,3 +9,4 @@ npm-debug.log
 /.idea
 sendgrid.env
 .env
+yarn.lock
