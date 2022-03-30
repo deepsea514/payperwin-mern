@@ -167,7 +167,7 @@
         background: #121212;
     }
 
-    .highlights .nav-tabs {
+    .highlights .sportslist-container {
         background-color: #f1f3f7;
         position: -webkit-sticky;
         position: sticky;
@@ -178,7 +178,7 @@
     .date_bottombar_container_dashboard {
         position: -webkit-sticky;
         position: sticky;
-        top: 88px;
+        top: 87px;
         z-index: 1;
     }
 
@@ -214,7 +214,7 @@
     }
 
     .sports-scroller {
-        display: none !important;
+        /* display: none !important; */
     }
 
     .promotion-botton {
