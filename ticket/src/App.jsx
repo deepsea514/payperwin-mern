@@ -5,6 +5,7 @@ import 'react-modal-video/css/modal-video.min.css'
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import 'react-phone-input-2/lib/style.css'
+import 'react-toastify/dist/ReactToastify.css';
 
 import React from 'react';
 import AppRouter from './Routes';
