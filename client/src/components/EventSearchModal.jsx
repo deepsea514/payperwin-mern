@@ -1,6 +1,6 @@
 import React, { createRef } from "react";
 import { FormattedMessage } from 'react-intl';
-import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import { searchEvent } from "../redux/services";
 import dateformat from 'dateformat';
 import sportNameImage from "../helpers/sportNameImage";
@@ -83,6 +83,7 @@ export default class EventSearchModal extends React.Component {
 
         this.state = {
             event: null,
+            eventOptions: [],
             sportIndex: null,
             leagueIndex: null,
             sportsOptions: [
@@ -169,19 +170,24 @@ export default class EventSearchModal extends React.Component {
         });
     }
 
-    getEvent = (query, cb) => {
-        const { sportIndex, leagueIndex } = this.state;
-        if (!sportIndex) cb([]);
-        this.setState({ loadingEvent: true });
-        searchEvent({ name: query, sport: sportIndex, league: leagueIndex })
-            .then(({ data }) => {
-                cb(data);
-                this.setState({ loadingEvent: false });
-            })
-            .catch(() => {
-                cb([]);
-                this.setState({ loadingEvent: false });
-            })
+    setSportLeague = (sportIndex, leagueIndex) => {
+        if (!sportIndex) {
+            return this.setState({
+                eventOptions: [],
+                sportIndex,
+                leagueIndex
+            });
+        }
+        this.setState({
+            eventOptions: [],
+            sportIndex,
+            leagueIndex
+        });
+        searchEvent({ sport: sportIndex, league: leagueIndex }).then(({ data }) => {
+            this.setState({ eventOptions: data });
+        }).catch(() => {
+            this.setState({ eventOptions: [] });
+        })
     }
 
     getSportName = (sport) => {
@@ -197,7 +203,7 @@ export default class EventSearchModal extends React.Component {
 
     render() {
         const { onClose, onProceed } = this.props;
-        const { event, showLeft, showRight, loadingEvent, sportsOptions, leagueOptions, sportIndex, leagueIndex } = this.state;
+        const { event, showLeft, showRight, eventOptions, sportsOptions, leagueOptions, sportIndex, leagueIndex } = this.state;
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
@@ -222,7 +228,7 @@ export default class EventSearchModal extends React.Component {
                             {leagueOptions.map((league) => {
                                 return (
                                     <li className="nav-item"
-                                        onClick={() => this.setState({ leagueIndex: league.id, sportIndex: league.sport })}
+                                        onClick={() => this.setSportLeague(league.sport, league.id)}
                                         key={league.id}>
                                         <center>
                                             <div className={`sports-league-image-container ${leagueIndex == league.id ? 'active' : ''}`}>
@@ -237,7 +243,7 @@ export default class EventSearchModal extends React.Component {
                             {sportsOptions.map((sport) => {
                                 return (
                                     <li className="nav-item cursor-pointer"
-                                        onClick={() => this.setState({ sportIndex: sport, league: null })}
+                                        onClick={() => this.setSportLeague(sport, null)}
                                         key={sport}>
                                         <center>
                                             <div className={`sports-league-image-container ${sportIndex == sport ? 'active' : ''}`}>
@@ -258,15 +264,18 @@ export default class EventSearchModal extends React.Component {
                         </ul>
                         <div className="row">
                             <div className="col-12 form-group">
-                                <label>Event</label>
-                                <AsyncSelect
+                                <label>Select An Event</label>
+                                <div className='d-flex align-items-center'>
+                                    <strong>Score Powered By </strong>&nbsp;
+                                    <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>
+                                </div>
+                                <Select
                                     classNamePrefix="select"
                                     isSearchable={true}
                                     name="event"
-                                    loadOptions={this.getEvent}
+                                    options={eventOptions}
                                     noOptionsMessage={() => "No Event"}
                                     value={event}
-                                    isLoading={loadingEvent}
                                     onChange={(event) => this.setState({ event })}
                                     styles={customStyles}
                                     components={{ Option: CustomOption }}
