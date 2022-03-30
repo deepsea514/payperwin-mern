@@ -1,6 +1,6 @@
 const TevoClient = require('ticketevolution-node');
 const fs = require('fs');
-const TicketVenue = require('../../models/ticket_venue');
+const TevoVenue = require('../../models/tevo_venue');
 const caVenues = require('./venues_ca.json');
 const usVenues = require('./venues_us.json');
 const GET_FROM_API = false;
@@ -35,7 +35,7 @@ const getVenues = async (API_TOKEN, API_SECRET) => {
     } else {
         for (const venue of [...caVenues, ...usVenues]) {
             try {
-                await TicketVenue.findOneAndUpdate({ id: venue.id }, venue, { upsert: true });
+                await TevoVenue.findOneAndUpdate({ id: venue.id }, venue, { upsert: true });
             } catch (error) {
                 console.error(error);
             }

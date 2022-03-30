@@ -1,5 +1,5 @@
 const TevoClient = require('ticketevolution-node');
-const TicketPerformer = require('../../models/ticket_performer');
+const TevoPerformer = require('../../models/tevo_performer');
 
 const arrangeCategories = (categories, category) => {
     if (category.parent) {
@@ -15,7 +15,7 @@ const getPerformers = async (API_TOKEN, API_SECRET) => {
         apiSecretKey: API_SECRET,
     });
     try {
-        const performersToUpdate = await TicketPerformer.find({ gotFullData: { $ne: true } });
+        const performersToUpdate = await TevoPerformer.find({ gotFullData: { $ne: true } });
         for (const performerToUpdate of performersToUpdate) {
             const response = await tevoClient.getJSON('http://api.sandbox.ticketevolution.com/v9/performers/' + performerToUpdate.id);
             const performer = {
