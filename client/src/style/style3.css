@@ -198,6 +198,14 @@ a.log-in-btn {
     max-height: 350px;
 }
 
+.bet-slip-list.empty {
+    min-height: 120px;
+}
+
+.bet-slip-list.basic-mode.empty {
+    min-height: 120px;
+}
+
 .bet-slip-list.basic-mode {
     min-height: 450px;
 }
