@@ -1,12 +1,29 @@
 //define router
 const ticketRouter = require('express').Router();
+const TevoClientAPI = require('ticketevolution-node');
 //Models
 const TevoEvent = require('./models/tevo_event');
 const TevoVenue = require('./models/tevo_venue');
 const TevoPerformer = require('./models/tevo_performer');
+const TevoClient = require('./models/tevo_client');
 const Frontend = require('./models/frontend');
+const Addon = require('./models/addon');
 //local helpers
 const perPage = 20;
+
+const isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        const { user, session } = req;
+        if (user.roles.enable_2fa) {
+            //TODO check 2fa
+            if (session._2fa_code) {
+                return res.status(403).send('2 Factor Authentication Required.');
+            }
+        }
+        return next();
+    }
+    res.status(403).send('Authentication Required.');
+}
 
 ticketRouter.get(
     '/performers/:performer_slug',
@@ -171,6 +188,69 @@ ticketRouter.get(
         } catch (error) {
             console.error(error);
             return res.json({ success: false, error: 'Internal Server Error.' });
+        }
+    }
+)
+
+ticketRouter.post(
+    '/checkout',
+    isAuthenticated,
+    async (req, res) => {
+        const {
+            email, firstname, lastname, address, address2, city, country, region, zipcode, phone,
+            card_holder, card_number, card_expiry, card_cvc,
+            cart, session_id
+        } = req.body;
+        try {
+            const ticketAddon = await Addon.findOne({ name: 'ticketevolution' });
+            if (!ticketAddon || !ticketAddon.value || !ticketAddon.value.api_token) {
+                return res.json({ success: false, error: 'Cannot create an order. Ticket Integration is not set.' })
+            }
+            const API_TOKEN = ticketAddon.value.api_token;
+            const API_SECRET = ticketAddon.value.api_secret;
+            const office_id = ticketAddon.value.office_id;
+
+            const tevoClientAPI = new TevoClientAPI({
+                apiToken: API_TOKEN,
+                apiSecretKey: API_SECRET,
+            });
+
+            let tevo_client = await TevoClient.findOne({ user_id: req.user._id });
+            if (!tevo_client) {
+                const newClient = [{
+                    name: firstname + ' ' + lastname,
+                    office_id: office_id,
+                    addresses: [{
+                        street_address: address,
+                        extended_address: address2,
+                        locality: city,
+                        region: region,
+                        postal_code: zipcode,
+                        country_code: 'CA',
+                        primary: true,
+                        is_primary_shipping: true,
+                        is_primary_billing: true,
+                    }],
+                    phone_numbers: [{
+                        number: phone
+                    }],
+                    email_addresses: [{
+                        address: email
+                    }]
+                }]
+
+                try {
+                    const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/clients', newClient)
+                    console.log(response)
+                    tevo_client = await TevoClient.create(response);
+                } catch (error) {
+                    return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
+                }
+            }
+            return res.json({ success: false, error: 'Final Step' });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Cannot create an order. Internal Server Error.' })
         }
     }
 )

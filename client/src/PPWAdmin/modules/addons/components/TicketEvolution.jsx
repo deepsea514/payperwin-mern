@@ -17,6 +17,10 @@ export default class TicketEvolution extends React.Component {
                     .required("Api Token is required"),
                 api_secret: Yup.string()
                     .required("Api Secret is required"),
+                brokerage_id: Yup.string()
+                    .required("Brokerage Id is required"),
+                office_id: Yup.string()
+                    .required("Office Id is required")
             }),
             isError: false,
             isSuccess: false,
@@ -33,7 +37,9 @@ export default class TicketEvolution extends React.Component {
                     this.setState({
                         initialValues: {
                             api_token: "",
-                            api_secret: ""
+                            api_secret: "",
+                            brokerage_id: brokerage_id,
+                            office_id: ""
                         }, loading: false
                     });
                 }
@@ -140,7 +146,7 @@ export default class TicketEvolution extends React.Component {
                                 <label>Api Token<span className="text-danger">*</span></label>
                                 <input type="text" name="api_token" className={`form-control ${getInputClasses(formik, "api_token")}`}
                                     {...formik.getFieldProps("api_token")}
-                                    placeholder="Bet364 Api Key" />
+                                    placeholder="Ticket Evo Api Token" />
                                 {formik.touched.api_token && formik.errors.api_token ? (
                                     <div className="invalid-feedback">
                                         {formik.errors.api_token}
@@ -151,10 +157,32 @@ export default class TicketEvolution extends React.Component {
                                 <label>Api Secret<span className="text-danger">*</span></label>
                                 <input type="text" name="api_secret" className={`form-control ${getInputClasses(formik, "api_secret")}`}
                                     {...formik.getFieldProps("api_secret")}
-                                    placeholder="Bet364 Api Key" />
+                                    placeholder="Ticket Evo Api Secret" />
                                 {formik.touched.api_secret && formik.errors.api_secret ? (
                                     <div className="invalid-feedback">
                                         {formik.errors.api_secret}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>Brokerage Id<span className="text-danger">*</span></label>
+                                <input type="text" name="brokerage_id" className={`form-control ${getInputClasses(formik, "brokerage_id")}`}
+                                    {...formik.getFieldProps("brokerage_id")}
+                                    placeholder="Brokerage Id" />
+                                {formik.touched.brokerage_id && formik.errors.brokerage_id ? (
+                                    <div className="invalid-feedback">
+                                        {formik.errors.brokerage_id}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>Office Id<span className="text-danger">*</span></label>
+                                <input type="text" name="office_id" className={`form-control ${getInputClasses(formik, "office_id")}`}
+                                    {...formik.getFieldProps("office_id")}
+                                    placeholder="Office Id" />
+                                {formik.touched.office_id && formik.errors.office_id ? (
+                                    <div className="invalid-feedback">
+                                        {formik.errors.office_id}
                                     </div>
                                 ) : null}
                             </div>

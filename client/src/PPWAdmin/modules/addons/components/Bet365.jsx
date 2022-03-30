@@ -137,7 +137,7 @@ export default class Bet365 extends React.Component {
                                 <label>Bet365 Api Key<span className="text-danger">*</span></label>
                                 <input type="text" name="bet365ApiKey" className={`form-control ${getInputClasses(formik, "bet365ApiKey")}`}
                                     {...formik.getFieldProps("bet365ApiKey")}
-                                    placeholder="Bet364 Api Key" />
+                                    placeholder="Bet365 Api Key" />
                                 {formik.touched.bet365ApiKey && formik.errors.bet365ApiKey ? (
                                     <div className="invalid-feedback">
                                         {formik.errors.bet365ApiKey}
