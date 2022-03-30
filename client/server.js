@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 app.use(compression());
 if (serverUrl != 'https://api.payperwin.com') {
     app.use(basicAuth({
-        users: { 'payperwin': 'lkakJgaddf41%@J2h27#' },
+        users: { 'ppwdev': 'justin' },
         challenge: true,
     }))
 }
