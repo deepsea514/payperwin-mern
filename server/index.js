@@ -419,26 +419,18 @@ expressApp.use(expressSession({
     },
 }));
 
-// expressApp.use((req, res, next) => {
-//     const { hostname, subdomains } = req;
-//     if (hostname) {
-//         const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-//         // req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
-//     }
-//     next();
-// })
-// expressApp.use(session({ secret: 'change this', resave: false, saveUninitialized: false, cookie: { maxAge: 24 * 60 * 60 * 1000 } }));
 expressApp.use(bodyParser.urlencoded({ extended: false }));
 expressApp.use(bodyParser.json({
     limit: '50mb',
-    verify: (req, res, buf) => {
-        // req.rawBody = buf;
+    verify: function (req, res, buf, encoding) {
+        if (req.url.search("/triplea") >= 0) {
+            req.rawBody = buf;
+        }
     }
 }));
 
 expressApp.use(passport.initialize());
 expressApp.use(passport.session());
-// expressApp.use(flash());
 
 expressApp.post(
     '/register',
@@ -3560,7 +3552,6 @@ const depositTripleA = async (req, res, data) => {
     const {
         tokenurl,
         paymenturl,
-        payouturl,
         client_id,
         client_secret,
         notify_secret,
@@ -3592,7 +3583,7 @@ const depositTripleA = async (req, res, data) => {
         "order_currency": "CAD",
         "order_amount": amount,
         "notify_email": email,
-        "notify_url": "https://api.payperwin.com/triplea/deposit",
+        "notify_url": "http://dev.payperwin.com:8080/triplea/deposit",
         "notify_secret": notify_secret,
         "payer_id": user._id,
         "payer_name": user.username,
@@ -3617,15 +3608,14 @@ const depositTripleA = async (req, res, data) => {
     }
     api_id = testMode ? test_btc_api_id : api_id;
 
+    console.log('request body => ', JSON.stringify(body));
     try {
         const { data } = await axios.post(
             `${paymenturl}/${api_id}`,
             body,
-            {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
-                }
-            });
+            { headers: { 'Authorization': `Bearer ${access_token}` } }
+        );
+        console.log('response => ', JSON.stringify(data));
         hosted_url = data.hosted_url;
     } catch (error) {
         ErrorLog.findOneAndUpdate(

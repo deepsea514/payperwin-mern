@@ -83,13 +83,8 @@ const signatureCheck = async (req, res, next) => {
     }
 }
 
-tripleARouter.post('/deposit',
-    bodyParser.json({
-        limit: '100mb',
-        verify: (req, res, buf) => {
-            req.rawBody = buf;
-        }
-    }),
+tripleARouter.post(
+    '/deposit',
     signatureCheck,
     async (req, res) => {
         try {
@@ -233,12 +228,6 @@ tripleARouter.post('/deposit',
 );
 
 tripleARouter.post('/withdraw',
-    bodyParser.json({
-        limit: '100mb',
-        verify: (req, res, buf) => {
-            req.rawBody = buf;
-        }
-    }),
     signatureCheck,
     async (req, res) => {
         try {
