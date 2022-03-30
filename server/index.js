@@ -419,26 +419,18 @@ expressApp.use(expressSession({
     },
 }));
 
-// expressApp.use((req, res, next) => {
-//     const { hostname, subdomains } = req;
-//     if (hostname) {
-//         const mainHostname = hostname.replace(subdomains.map(sd => `${sd}.`), '');
-//         // req.sessionOptions.domain = mainHostname || req.sessionOptions.domain;
-//     }
-//     next();
-// })
-// expressApp.use(session({ secret: 'change this', resave: false, saveUninitialized: false, cookie: { maxAge: 24 * 60 * 60 * 1000 } }));
 expressApp.use(bodyParser.urlencoded({ extended: false }));
 expressApp.use(bodyParser.json({
     limit: '50mb',
-    verify: (req, res, buf) => {
-        // req.rawBody = buf;
+    verify: function (req, res, buf, encoding) {
+        if (req.url.search("/triplea") >= 0) {
+            req.rawBody = buf;
+        }
     }
 }));
 
 expressApp.use(passport.initialize());
 expressApp.use(passport.session());
-// expressApp.use(flash());
 
 expressApp.post(
     '/register',
@@ -3554,7 +3546,6 @@ const depositTripleA = async (req, res, data) => {
     const {
         tokenurl,
         paymenturl,
-        payouturl,
         client_id,
         client_secret,
         notify_secret,
@@ -3615,11 +3606,8 @@ const depositTripleA = async (req, res, data) => {
         const { data } = await axios.post(
             `${paymenturl}/${api_id}`,
             body,
-            {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
-                }
-            });
+            { headers: { 'Authorization': `Bearer ${access_token}` } }
+        );
         hosted_url = data.hosted_url;
     } catch (error) {
         ErrorLog.findOneAndUpdate(
