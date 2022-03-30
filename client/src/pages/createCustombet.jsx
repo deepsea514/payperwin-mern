@@ -7,7 +7,7 @@ import CustomDatePicker from '../components/customDatePicker';
 import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import EventSearchModal from '../components/EventSearchModal';
-import { FormControlLabel, Checkbox } from '@material-ui/core';
+import { FormControlLabel, Checkbox, Tooltip } from '@material-ui/core';
 import dateformat from 'dateformat';
 import { Link } from 'react-router-dom';
 
@@ -73,7 +73,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     }}>
                     <option value="">Select Bet Type.</option>
                     <option value="upcoming_sport">Major League Side Bet</option>
-                    <option value="custom">Other Custom</option>
+                    <option value="custom">Custom Sports Bet</option>
                 </select>
                 {errors.type && <div className="form-error">{errors.type}</div>}
             </div>
@@ -157,19 +157,23 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 />
                 {errors.maximumRisk && <div className="form-error">{errors.maximumRisk}</div>}
             </div>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={values.allowAdditional}
-                        onChange={(e) => setFieldValue('allowAdditional', e.target.checked)}
-                        name="allowAdditional"
-                        color="secondary"
-                    />
-                }
-                margin="normal"
-                labelPlacement="end"
-                label="Allow Additional High Staker"
-            />
+            <Tooltip
+                arrow
+                title={<p className='text-white mb-0 p-1'>Allows other to join your bet to share the risk</p>}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={values.allowAdditional}
+                            onChange={(e) => setFieldValue('allowAdditional', e.target.checked)}
+                            name="allowAdditional"
+                            color="secondary"
+                        />
+                    }
+                    margin="normal"
+                    labelPlacement="end"
+                    label="Allow Additional High Staker"
+                />
+            </Tooltip>
         </>
     )
 }

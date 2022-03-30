@@ -297,7 +297,7 @@ class BetSlip extends Component {
                                     Teaser
                                 </div>
                             </div>}
-                            {betSlipType == 'single' && <div className={`bet-slip-list ${pro_mode ? '' : 'basic-mode'}`}>
+                            {betSlipType == 'single' && <div className={`bet-slip-list ${pro_mode ? '' : 'basic-mode'} ${betSlip.length > 0 ? '' : 'empty'}`}>
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
@@ -352,7 +352,7 @@ class BetSlip extends Component {
                                     )}
                             </div>}
                             {!pro_mode && <div className="bet-type-league help"><a href='https://wa.me/message/TICMRPXRFQRCN1' target="_blank" className="bet-max-win"><i className='fab fa-whatsapp' /> Need Help?</a></div>}
-                            {betSlipType == 'parlay' && <div className="bet-slip-list">
+                            {betSlipType == 'parlay' && <div className={"bet-slip-list" + (betSlip.length > 0 ? '' : ' empty')}>
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
@@ -386,7 +386,7 @@ class BetSlip extends Component {
                                         </div>
                                     )}
                             </div>}
-                            {betSlipType == 'teaser' && <div className="bet-slip-list">
+                            {betSlipType == 'teaser' && <div className={"bet-slip-list" + (betSlip.length > 0 ? '' : ' empty')}>
                                 {user && user.balance < totalStake && <div className="bet p-0 m-1">
                                     <div className="p-1 bg-light-danger betslip-deposit-message" style={{ fontSize: '10px' }}>
                                         <div><b><i className="fas fa-info-circle" /> <FormattedMessage id="COMPONENTS.BETSLIP.INSUFFICENTFUNDS" /></b></div>
@@ -424,7 +424,7 @@ class BetSlip extends Component {
                                         </div>
                                     )}
                             </div>}
-                            {pro_mode && <div className="total-content">
+                            {pro_mode && betSlip.length > 0 && <div className="total-content">
                                 <div className="total-stack d-flex">
                                     <div className="total-st-left">
                                         <FormattedMessage id="COMPONENTS.TOTAL.RISK" />
