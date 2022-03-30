@@ -79,7 +79,7 @@ class Highlights extends Component {
 
     autoViewPopup = () => {
         const { user, toggleField } = this.props;
-        if (!user && window.innerWidth < 768) {
+        if (!user) {
             toggleField('showViewModeModal')
         }
     }
