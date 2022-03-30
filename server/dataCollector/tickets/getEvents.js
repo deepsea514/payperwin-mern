@@ -1,7 +1,7 @@
 const TevoClient = require('ticketevolution-node');
-const TicketEvent = require('../../models/ticket_event');
-const TicketVenue = require('../../models/ticket_venue');
-const TicketPerformer = require('../../models/ticket_performer');
+const TevoEvent = require('../../models/tevo_event');
+const TevoVenue = require('../../models/tevo_venue');
+const TevoPerformer = require('../../models/tevo_performer');
 const { getPerformers } = require('./getPerformers');
 
 const arrangeCategories = (categories, category) => {
@@ -24,7 +24,7 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
             if (response.events && response.events.length) {
                 const events_res = response.events;
                 for (const event of events_res) {
-                    const venue = await TicketVenue.findOne({ id: event.venue.id });
+                    const venue = await TevoVenue.findOne({ id: event.venue.id });
                     if (venue) {
                         let listings = null;
                         try {
@@ -63,10 +63,10 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
                             listings: listings
                         }
                         arrangeCategories(event_.categories, event.category);
-                        await TicketEvent.findOneAndUpdate({ id: event.id }, event_, { upsert: true });
+                        await TevoEvent.findOneAndUpdate({ id: event.id }, event_, { upsert: true });
                         if (event.performances && event.performances.length) {
                             for (const performer of event.performances) {
-                                await TicketPerformer.findOneAndUpdate(
+                                await TevoPerformer.findOneAndUpdate(
                                     { id: performer.performer.id },
                                     performer.performer,
                                     { upsert: true }

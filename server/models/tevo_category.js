@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const TicketCategorySchema = new Schema(
+const TevoCategorySchema = new Schema(
     {
         name: { type: String, required: true },
         id: { type: String, required: true, index: { unique: true } },
@@ -13,6 +13,6 @@ const TicketCategorySchema = new Schema(
     { timestamps: true, },
 );
 
-const TicketCategory = mongoose.model('TicketCategory', TicketCategorySchema);
+const TevoCategory = mongoose.model('TevoCategory', TevoCategorySchema);
 
-module.exports = TicketCategory;
+module.exports = TevoCategory;
