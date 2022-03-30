@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import CreditCardInput from 'react-credit-card-input';
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput, { } from 'react-phone-input-2'
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -10,6 +10,7 @@ import { getRandomID } from '../../lib/getRandomID';
 import { withRouter } from 'react-router-dom';
 import { checkoutSubmit } from '../../redux/services';
 import { errorMessage, successMessage } from '../../lib/showMessage';
+import { actions } from '../../redux/reducers';
 
 class CheckoutForm extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class CheckoutForm extends React.Component {
                 city: user && user.city ? user.city : '',
                 country: 'Canada',
                 region: user && user.region ? user.region : '',
-                zipcode: user && user.zipcode ? user.zipcode : '',
+                zipcode: user && user.postalcode ? user.postalcode : '',
                 phone: user && user.phone ? user.phone : '',
                 card_holder: '',
                 card_number: '',
@@ -92,21 +93,26 @@ class CheckoutForm extends React.Component {
     }
 
     onSubmit = (values, formik) => {
-        const { user, history } = this.props;
+        const { user, history, cart, clearFromCartAction } = this.props;
         const { session_id } = this.state;
         if (!user) {
             history.push('/login');
             return;
         }
-        checkoutSubmit({ ...values, session_id, }).then(({ data }) => {
+        checkoutSubmit({ ...values, session_id, cart }).then(({ data }) => {
             const { success, error } = data;
+            console.log(data)
             if (success) {
                 successMessage('Ticket Purchased Successfully.');
+                clearFromCartAction();
+                formik.setSubmitting(false);
                 return;
             }
             errorMessage(error);
+            formik.setSubmitting(false);
         }).catch(() => {
             errorMessage('Cannot Purchase Ticket. Please try again later.');
+            formik.setSubmitting(false);
         })
     }
 
@@ -127,7 +133,7 @@ class CheckoutForm extends React.Component {
                         validationSchema={checkoutSchema}>
                         {(formik) => {
                             const {
-                                values, touched, errors,
+                                values, touched, errors, isSubmitting,
                                 getFieldProps, handleChange, handleBlur, handleSubmit, setFieldError, setFieldValue, setFieldTouched
                             } = formik;
                             return (
@@ -237,11 +243,12 @@ class CheckoutForm extends React.Component {
                                             <div className='form-group cart-form-group'>
                                                 <PhoneInput country={'ca'}
                                                     onlyCountries={['ca']}
-                                                    containerClass='input-group'
-                                                    inputClass={`form-control cart-form-control ${getInputClasses(formik, 'phone')}`}
+                                                    placeholder='+1 (702) 123-4567'
+                                                    containerClass={'input-group ' + getInputClasses(formik, 'phone')}
+                                                    inputClass={`form-control cart-form-control `}
                                                     inputProps={{ name: 'phone' }}
-                                                    onChange={value => {
-                                                        setFieldValue('phone', value);
+                                                    onChange={(value, data, evt, formatedvalue) => {
+                                                        setFieldValue('phone', '+' + data.format + ' ' + formatedvalue);
                                                         setFieldTouched('phone', true);
                                                     }}
                                                     onBlur={handleBlur}
@@ -307,6 +314,7 @@ class CheckoutForm extends React.Component {
                                                 </tbody>
                                             </table>
                                             <button type="submit"
+                                                disabled={isSubmitting}
                                                 style={{ width: '100%' }}
                                                 className="btn btn-primary full-width">Complete Order</button>
                                         </div>
@@ -326,4 +334,4 @@ const mapStateToProps = (state) => ({
     cad_rate: state.cad_rate,
     user: state.user,
 });
-export default connect(mapStateToProps)(withRouter(CheckoutForm));
+export default connect(mapStateToProps, actions)(withRouter(CheckoutForm));

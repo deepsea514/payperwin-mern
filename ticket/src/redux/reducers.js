@@ -17,6 +17,7 @@ export const actionTypes = {
     addToCartAction: "Add To Cart Action",
     updateInCartAction: "Update In Cart Action",
     removeFromCartAction: "Remove From Cart Action",
+    clearFromCartAction: "Clear From Cart Action",
 };
 
 const initialState = {
@@ -106,6 +107,12 @@ export const reducer = persistReducer(
                     cart: state.cart.filter(({ ticket_group }) => ticket_group.id !== action.payload)
                 }
 
+            case actionTypes.clearFromCartAction:
+                return {
+                    ...state,
+                    cart: []
+                }
+
             default:
                 return state;
         }
@@ -121,7 +128,8 @@ export const actions = {
     setHomeDataAction: (payload) => ({ type: actionTypes.setHomeDataAction, payload }),
     addToCartAction: (ticket_group) => ({ type: actionTypes.addToCartAction, payload: ticket_group }),
     updateInCartAction: (ticket_group_id, count) => ({ type: actionTypes.updateInCartAction, payload: { ticket_group_id, count } }),
-    removeFromCartAction: (ticket_group_id) => ({ type: actionTypes.removeFromCartAction, payload: ticket_group_id })
+    removeFromCartAction: (ticket_group_id) => ({ type: actionTypes.removeFromCartAction, payload: ticket_group_id }),
+    clearFromCartAction: () => ({ type: actionTypes.clearFromCartAction }),
 };
 
 export function* saga() {
