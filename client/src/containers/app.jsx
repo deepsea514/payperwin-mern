@@ -15,6 +15,7 @@ import Deposit from '../pages/deposit';
 import Withdrawal from '../pages/withdrawal';
 import HowTo from '../pages/howto';
 import BetSlip from '../components/betSlip';
+import Banner from '../components/banner';
 import resObjPath from '../libs/resObjPath';
 import { setTitle } from '../libs/documentTitleBuilder';
 import Profile from "../pages/profile";
@@ -687,10 +688,14 @@ class App extends Component {
                                                         history={history}
                                                         betSlipOdds={betSlipOdds}
                                                     />}
+                                                    
                                                 {!verified && pathname.indexOf('/withdraw') == 0 && <Redirect to="/verification" from="*" />}
                                                 {!verified && pathname == '/verification' && <VerificationProof />}
                                                 {['/bets', '/history'].includes(pathname) && <BetStatus />}
                                                 {pathname == '/cashback' && <CashbackNames />}
+                                            </ErrorBoundary>
+                                            <ErrorBoundary>
+                                                <Banner/>
                                             </ErrorBoundary>
                                         </div>
                                     </div>
