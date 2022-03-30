@@ -3608,14 +3608,12 @@ const depositTripleA = async (req, res, data) => {
     }
     api_id = testMode ? test_btc_api_id : api_id;
 
-    console.log('request body => ', JSON.stringify(body));
     try {
         const { data } = await axios.post(
             `${paymenturl}/${api_id}`,
             body,
             { headers: { 'Authorization': `Bearer ${access_token}` } }
         );
-        console.log('response => ', JSON.stringify(data));
         hosted_url = data.hosted_url;
     } catch (error) {
         ErrorLog.findOneAndUpdate(
