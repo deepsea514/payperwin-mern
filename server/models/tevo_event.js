@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const TicketEventSchema = new Schema(
+const TevoEventSchema = new Schema(
     {
         name: { type: String, required: true },
         id: { type: Number, required: true, index: { unique: true } },
@@ -23,6 +23,6 @@ const TicketEventSchema = new Schema(
     { timestamps: true, },
 );
 
-const TicketEvent = mongoose.model('TicketEvent', TicketEventSchema);
+const TevoEvent = mongoose.model('TevoEvent', TevoEventSchema);
 
-module.exports = TicketEvent;
+module.exports = TevoEvent;

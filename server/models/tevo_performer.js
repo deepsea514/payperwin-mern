@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const TicketVenueSchema = new Schema(
+const TevoPerformerSchema = new Schema(
     {
         name: { type: String, required: true },
         id: { type: Number, required: true, index: { unique: true } },
-        location: String,
+        slug: { type: String, required: true },
         url: { type: String, required: true },
         slug_url: { type: String, required: true },
-        slug: { type: String, required: true },
-        country_code: String,
+        categories: { type: Array, default: [] },
         keywords: { type: String },
         popularity_score: { type: String },
         upcoming_events: Object,
-        address: Object,
+        meta: Object,
+        gotFullData: { type: Boolean, default: false },
     },
     { timestamps: true, },
 );
 
-const TicketVenue = mongoose.model('TicketVenue', TicketVenueSchema);
+const TevoPerformer = mongoose.model('TevoPerformer', TevoPerformerSchema);
 
-module.exports = TicketVenue;
+module.exports = TevoPerformer;
