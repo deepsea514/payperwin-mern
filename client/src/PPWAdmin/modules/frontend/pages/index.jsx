@@ -4,6 +4,7 @@ import Maintenance from "../components/Maintenance";
 import TopSports from "../components/TopSports";
 import ToggleBet from "../components/ToggleBet";
 import Message from '../components/Message';
+import Banner from '../components/Banner';
 
 export default class FrontendManageModule extends Component {
     render() {
@@ -36,6 +37,10 @@ export default class FrontendManageModule extends Component {
                                 </div>
                                 <div className="col-md-6">
                                     <Message />
+                                    <hr />
+                                </div>
+                                <div className="col-md-6">
+                                    <Banner />
                                     <hr />
                                 </div>
                             </div>
