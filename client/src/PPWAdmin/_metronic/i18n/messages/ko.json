@@ -621,6 +621,7 @@
     "PAGES.DEPOSIT.WITHETRANSFER": "eTransfer로 입금",
     "PAGES.DEPOSIT.INTERAC.ETRANSFER.DEPOSIT": "Interac e-Transfer 보증금",
     "PAGES.DEPOSIT.CONFIRMINFORMATION": "아래 정보가 맞는지 확인해 주세요.",
+    "PAGES.DEPOSIT.CONFIRMINFORMATION_BTC": "아래 정보가 정확한지 확인해주세요. 결제를 완료할 수 있는 보안 링크가 포함된 이메일을 결제 프로세서로부터 받게 됩니다. 지불 네트워크는 지불이 전송된 네트워크에 따라 지불을 확인하는 데 몇 분에서 몇 시간이 소요됩니다.",
     "PAGES.DEPOSIT.ERRORMSG": "입금할 수 없습니다. 나중에 다시 시도하십시오",
     "PAGES.DEPOSIT.AMOUNT": "입금 금액",
     "PAGES.DEPOSIT.ENTERAMOUNT": "입금 금액 입력",

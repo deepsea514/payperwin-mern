@@ -73,7 +73,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     }}>
                     <option value="">Select Bet Type.</option>
                     <option value="upcoming_sport">Major League Side Bet</option>
-                    <option value="custom">Custom Sports Bet</option>
+                    <option value="custom">Custom Side Bet</option>
                 </select>
                 {errors.type && <div className="form-error">{errors.type}</div>}
             </div>

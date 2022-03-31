@@ -621,6 +621,7 @@
     "PAGES.DEPOSIT.WITHETRANSFER": "Gửi tiền chuyển khoản trực tuyến",
     "PAGES.DEPOSIT.INTERAC.ETRANSFER.DEPOSIT": "Gửi tiền chuyển khoản trực tuyến",
     "PAGES.DEPOSIT.CONFIRMINFORMATION": "Vui lòng xác nhận thông tin bên dưới là chính xác.",
+    "PAGES.DEPOSIT.CONFIRMINFORMATION_BTC": "Vui lòng xác nhận thông tin dưới đây là chính xác. Bạn sẽ nhận được email từ bộ xử lý thanh toán của chúng tôi với một liên kết bảo mật để hoàn tất thanh toán. Xin lưu ý rằng mạng thanh toán sẽ mất vài phút đến vài giờ để xác nhận thanh toán tùy thuộc vào mạng mà thanh toán đã được gửi.",
     "PAGES.DEPOSIT.ERRORMSG": "Không thể gửi tiền. Vui lòng thử lại sau",
     "PAGES.DEPOSIT.AMOUNT": "Số tiền gửi",
     "PAGES.DEPOSIT.ENTERAMOUNT": "Nhập số tiền gửi",
