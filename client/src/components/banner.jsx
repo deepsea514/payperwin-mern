@@ -6,19 +6,36 @@ import * as frontend from "../redux/reducer";
 import BetParlay from './betparlay';
 import BetTeaser from './betteaser';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { placeBets, placeParlayBets, placeTeaserBets } from '../redux/services';
+import { getAdminBanner } from '../redux/services';
 import BetBasic from './bet_basic';
+import _env from '../env.json';
+const serverUrl = _env.appUrl;
 
 class Banner extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            path: '',
+            link_url: '',
+            show: false,
         };
         this._Mounted = false;
     }
 
     componentDidMount() {
         this._Mounted = true;
+        getAdminBanner('banner')
+            .then(({ data }) => {
+                if (data)
+                    this.setState({
+                        path: data.value.path,
+                        link_url: data.value.link_url,
+                        show: data.value.show,
+                    });
+            })
+            .catch(() => {
+                this.setState({ loading: false, initialValues: null });
+            })
     }
 
     componentWillUnmount() {
@@ -27,15 +44,12 @@ class Banner extends Component {
 
 
     render() {
-        const {
-        } = this.state;
-        const {
-        } = this.props;
+        const { path, link_url, show, } = this.state;
 
         return (
-            <div className='mt-3'>
-                <a href="#" target="_blank">
-                    <img src="/images/PPW Meta.png" />
+            show == 'true' && <div className='mt-3'>
+                <a href={link_url} target="_blank">
+                    <img src={`${serverUrl}/static/${path}`} />
                 </a>
             </div>
         );

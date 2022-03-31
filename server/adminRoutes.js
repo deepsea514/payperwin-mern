@@ -6117,9 +6117,26 @@ adminRouter.put(
     '/frontend/:name',
     authenticateJWT,
     limitRoles('frontend'),
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 },
+        files: 1,
+        abortOnLimit: true,
+        limitHandler: (req, res, next) => {
+            return res.status(400).json({ error: true, message: "Request Entity Too Large" })
+        },
+    }),
     async (req, res) => {
         const { name } = req.params;
         const value = req.body;
+        if (name == 'banner') {
+            const { files } = req;
+            if (files && files.file) {
+                const ext = files.file.name.split('.').pop();
+                const filename = 'frontend_banner_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
+                files.file.mv('./banners/' + filename);
+                value.path = filename;
+            }
+        }
         try {
             const frontend = await Frontend.findOne({ name: name });
             if (!frontend) {
@@ -6130,6 +6147,49 @@ adminRouter.put(
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ success: false })
+        }
+    }
+)
+
+adminRouter.post(
+    '/frontend/banner',
+    authenticateJWT,
+    limitRoles('frontend'),
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 },
+        files: 1,
+        abortOnLimit: true,
+        limitHandler: (req, res, next) => {
+            return res.status(400).json({ error: true, message: "Request Entity Too Large" })
+        },
+    }),
+    async (req, res) => {
+        try {
+            const { files } = req;
+            const { show } = req.body;
+            const ext = files.file.name.split('.').pop();
+            const filename = 'frontend_banner_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
+            files.file.mv('./banners/' + filename);
+            await FrontendBanner.create({ path: filename, show: show });
+            return res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false });
+        }
+    }
+)
+
+adminRouter.get(
+    '/frontend/banner',
+    authenticateJWT,
+    limitRoles('frontend'),
+    async (req, res) => {
+        try {
+            const banner = await FrontendBanner.find();
+            return res.json(banner);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(null);
         }
     }
 )
