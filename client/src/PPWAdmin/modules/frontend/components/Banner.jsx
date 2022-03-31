@@ -36,13 +36,13 @@ export default class Banner extends Component {
                 this.setState({
                     loading: false,
                     initialValues: data ?
-                        { path: data.value.path, link_url: data.value.link_url, show: data.value.show } :
+                        { path: data.value.path, link_url: data.value.link_url, show: data.value.show, clicked: data.value.clicked } :
                         { path: '', link_url: '', show: false },
                     image_url: data.value.path ? `${serverUrl}/static/${data.value.path}` : null,
                 });
             })
             .catch(() => {
-                this.setState({ loading: false, initialValues: { file: null, link_url: '', show: true } });
+                this.setState({ loading: false, initialValues: { file: null, link_url: '', show: true, clicked: 0 } });
             })
     }
 
@@ -53,6 +53,7 @@ export default class Banner extends Component {
         data.append('path', values.path);
         data.append('link_url', values.link_url);
         data.append('show', values.show);
+        data.append('clicked', values.clicked);
         saveFrontendInfo('banner', data)
             .then(() => {
                 formik.setSubmitting(false);
