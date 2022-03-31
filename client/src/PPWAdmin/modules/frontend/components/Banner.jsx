@@ -3,37 +3,42 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import SVG from "react-inlinesvg";
-import { getFrontendInfo, saveFrontendInfo, searchSports } from '../redux/services';
+import { getFrontendInfo, saveFrontendInfo } from '../redux/services';
 import { getInputClasses } from "../../../../helpers/getInputClasses";
 import { Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import { Form } from 'react-bootstrap';
+import _env from '../../../../env.json';
+const serverUrl = _env.appUrl;
 
-export default class Message extends Component {
+export default class Banner extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            initialValues: null,
+            initialValues: { file: null, link_url: '', show: true },
             loading: false,
-            messageSchema: Yup.object().shape({
-                message: Yup.string(),
-                show: Yup.boolean(),
+            bannerSchema: Yup.object().shape({
+                file: Yup.mixed(),
+                link_url: Yup.mixed().required(),
+                show: Yup.mixed(),
             }),
             isError: false,
             isSuccess: false,
+            image_url: null,
         }
     }
 
     componentDidMount() {
-        this.setState({ loading: false });
+        this.setState({ loading: true });
 
-        getFrontendInfo('message')
+        getFrontendInfo('banner')
             .then(({ data }) => {
                 this.setState({
                     loading: false,
                     initialValues: data ?
-                        { message: data.value.message, show: data.value.show } :
-                        { message: '', show: false }
+                        { path: data.value.path, link_url: data.value.link_url, show: data.value.show } :
+                        { path: '', link_url: '', show: false },
+                    image_url: data.value.path ? `${serverUrl}/static/${data.value.path}` : null,
                 });
             })
             .catch(() => {
@@ -43,7 +48,12 @@ export default class Message extends Component {
 
     onSubmit = (values, formik) => {
         this.setState({ isSuccess: false, isError: false });
-        saveFrontendInfo('message', values)
+        let data = new FormData();
+        values.file && data.append('file', values.file, values.file.name);
+        data.append('path', values.path);
+        data.append('link_url', values.link_url);
+        data.append('show', values.show);
+        saveFrontendInfo('banner', data)
             .then(() => {
                 formik.setSubmitting(false);
                 this.setState({ isSuccess: true });
@@ -54,11 +64,20 @@ export default class Message extends Component {
             })
     }
 
+    readImageFile = (file) => {
+        var reader = new FileReader();
+        const _this = this;
+        reader.onload = function (e) {
+            _this.setState({ image_url: e.target.result })
+        }
+        reader.readAsDataURL(file);
+    }
+
     render() {
-        const { initialValues, messageSchema, loading, isError, isSuccess, isSubmitting } = this.state;
+        const { initialValues, bannerSchema, loading, isError, isSuccess, image_url } = this.state;
         return (
             <>
-                <h3>Message.</h3>
+                <h3>Banner.</h3>
                 {loading && <center>
                     <Preloader use={ThreeDots}
                         size={100}
@@ -70,7 +89,7 @@ export default class Message extends Component {
                     <h4>No available Data.</h4>
                 </center>}
                 {!loading && initialValues && <Formik
-                    validationSchema={messageSchema}
+                    validationSchema={bannerSchema}
                     initialValues={initialValues}
                     onSubmit={this.onSubmit}>
                     {(formik) => {
@@ -121,35 +140,62 @@ export default class Message extends Component {
                                     </div>
                                 </div>
                             )}
-
-                            <div className="form-group">
-                                <label>Message<span className="text-danger">*</span></label>
-                                <textarea type="text" name="message"
-                                    className={`form-control ${getInputClasses(formik, "message")}`}
-                                    {...formik.getFieldProps("message")}
-                                    placeholder="Please input message"
-                                    rows={3} />
-                                {formik.touched.message && formik.errors.message ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.message}
+                            <div className='row'>
+                                <div className="col-5">
+                                    <div className="form-group">
+                                        <label>Banner<span className="text-danger">*</span></label>
+                                        <input
+                                            type="file"
+                                            name="file"
+                                            className={`form-control ${getInputClasses(formik, "file")}`}
+                                            onChange={(evt) => {
+                                                formik.setFieldTouched('file', true);
+                                                formik.setFieldValue('file', evt.target.files[0]);
+                                                this.readImageFile(evt.target.files[0]);
+                                            }}
+                                            accept="image/x-png,image/gif,image/jpeg"
+                                        />
+                                        {formik.touched.file && formik.errors.file ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.file}
+                                            </div>
+                                        ) : null}
                                     </div>
-                                ) : null}
-                            </div>
-                            <div className="form-group">
-                                <FormControlLabel control={<Switch
-                                    checked={formik.values.show ? formik.values.show : false}
-                                    onChange={(evt) => {
-                                        formik.setFieldTouched('show', true);
-                                        formik.setFieldValue('show', evt.target.checked)
-                                    }}
-                                    value="show"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                    disabled={formik.isSubmitting}
-                                    name="show"
-                                />} label="Show Message" />
-                            </div>
-                            <div className="form-row">
-                                <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Save</button>
+                                    <div className="form-group">
+                                        <label>Link URL<span className="text-danger">*</span></label>
+                                        <input
+                                            type="text"
+                                            name="link_url"
+                                            className={`form-control ${getInputClasses(formik, "link_url")}`}
+                                            {...formik.getFieldProps('link_url')}
+                                        />
+                                        {formik.touched.link_url && formik.errors.link_url ? (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.link_url}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="form-group">
+                                        <FormControlLabel control={<Switch
+                                            checked={formik.values.show == "true"}
+                                            onChange={(evt) => {
+                                                formik.setFieldTouched('show', true);
+                                                formik.setFieldValue('show', evt.target.checked ? "true" : "false")
+                                            }}
+                                            value="show"
+                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            disabled={formik.isSubmitting}
+                                            name="show"
+                                        />} label="Show Banner" />
+                                    </div>
+                                    <div className="form-row">
+                                        <button type="submit" className="btn btn-primary mr-2" disabled={formik.isSubmitting}>Save</button>
+                                    </div>
+                                </div>
+                                <div className='col-7'>
+                                    <img src={image_url}
+                                        style={{ width: 'auto', height: 'auto', display: 'block' }} />
+                                </div>
                             </div>
                         </form>
                     }}

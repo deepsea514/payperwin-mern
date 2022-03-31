@@ -14,6 +14,10 @@ export function getAdminMessage() {
     return FrontendAPI.get(`/frontend/message`);
 }
 
+export function getAdminBanner() {
+    return FrontendAPI.get(`/frontend/banner`);
+}
+
 export function toggleFavorites(data) {
     return FrontendAPI.post(`/favorites/toggle`, data)
 }
