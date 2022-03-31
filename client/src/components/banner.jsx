@@ -48,7 +48,7 @@ class Banner extends Component {
 
         return (
             show == 'true' && <div className='mt-3'>
-                <a href={link_url} target="_blank">
+                <a href={serverUrl+"/frontend_banner_clicked"} target="_blank">
                     <img src={`${serverUrl}/static/${path}`} />
                 </a>
             </div>
