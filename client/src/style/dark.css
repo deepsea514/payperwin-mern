@@ -358,6 +358,10 @@
     border: 2px solid white;
 }
 
+.main-section.dark .dashboard_bottombar_scroller.date_bottombar a.modal-date {
+    background-color: #1D1D1D !important;
+}
+
 .main-section.dark .dashboard_bottombar_scroller.date_bottombar a {
     background-color: rgba(0, 0, 0, .5) !important;
     color: rgba(255, 255, 255, 0.7) !important;
