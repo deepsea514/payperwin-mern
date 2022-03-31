@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import dateFormat from 'dateformat';
+import dateformat from 'dateformat';
 import sportNameImage from '../../helpers/sportNameImage';
 import RenderBasicEvent from './renderBasicEvent';
 import RenderProEvent from './renderProEvent';
@@ -19,7 +19,7 @@ const RenderLeagues = (props) => {
             case null:
                 return 'All';
             default:
-                return dateFormat(date, "mmm d");
+                return dateformat(date, "mmm d");
         }
     }
 
