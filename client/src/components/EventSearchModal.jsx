@@ -88,7 +88,6 @@ export default class EventSearchModal extends React.Component {
             leagueIndex: null,
             sportsOptions: [
                 'Soccer',
-                'American Football',
                 'Baseball',
                 'Ice Hockey',
                 'Basketball',
@@ -96,11 +95,6 @@ export default class EventSearchModal extends React.Component {
                 'Boxing',
             ],
             leagueOptions: [
-                {
-                    "id": "459",
-                    "name": "NFL",
-                    "sport": "American Football"
-                },
                 {
                     "id": "225",
                     "name": "MLB",
@@ -266,7 +260,7 @@ export default class EventSearchModal extends React.Component {
                             <div className="col-12 form-group">
                                 <label>Select An Event</label>
                                 <div className='d-flex align-items-center'>
-                                    <strong>Score Powered By </strong>&nbsp;
+                                    <strong>Powered By </strong>&nbsp;
                                     <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>
                                 </div>
                                 <Select

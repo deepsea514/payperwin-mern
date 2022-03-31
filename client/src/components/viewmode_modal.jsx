@@ -28,7 +28,7 @@ class ViewModeModal extends React.Component {
                 <div className="col-in">
                     <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={onClose} />
                     <div className="">
-                        <b>Select Mode</b>
+                        <b>Choose your view</b>
                         <hr />
                         <div className="d-flex justify-content-center mb-4">
                             <img src="/images/pro-basic.png" />
