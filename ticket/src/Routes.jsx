@@ -15,6 +15,7 @@ import GoToTop from "./pages/GoToTop";
 import Checkout from "./pages/Checkout";
 import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
+import MyOrders from "./pages/MyOrders";
 
 const renderNavigation = () => {
     if (!(window.location.pathname === '/login' ||
@@ -23,7 +24,7 @@ const renderNavigation = () => {
     }
 }
 
-const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction }) => {
+const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction, user }) => {
     useEffect(() => {
         getUserAction();
         getCADRateAction();
@@ -47,7 +48,8 @@ const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction }) => {
                 <Route path="/performers" exact component={Performers} />
                 <Route path="/help" exact component={Help} />
                 <Route path="/login" exact component={Login} />
-                <Route path="/checkout" extact component={Checkout} />
+                {user && <Route path="/checkout" extact component={Checkout} />}
+                {user && <Route path="/orders" exact component={MyOrders} />}
                 <Route path="/error-404" exact component={NotFound} />
                 <Redirect from="*" to="/" />
             </Switch>
@@ -56,4 +58,7 @@ const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction }) => {
     );
 };
 
-export default connect(null, actions)(AppRouter);
+const mapStateToProps = (state) => ({
+    user: state.user,
+});
+export default connect(mapStateToProps, actions)(AppRouter);

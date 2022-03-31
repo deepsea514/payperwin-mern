@@ -84,7 +84,7 @@ class DepositTripleA extends Component {
                 <div className="main-cnt">
                     <div className="deposit-in bg-color-box pad10">
                         {!depositSuccess && <div className={classes.formContent}>
-                            <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.CONFIRMINFORMATION" /></p>
+                            <p className="dpsit"><FormattedMessage id="PAGES.DEPOSIT.CONFIRMINFORMATION_BTC" /></p>
                             {depositError && <p className="text-danger"><FormattedMessage id="PAGES.DEPOSIT.ERRORMSG" /></p>}
                             {user && <Formik
                                 initialValues={initialValues}

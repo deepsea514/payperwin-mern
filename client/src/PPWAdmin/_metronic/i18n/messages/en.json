@@ -621,6 +621,7 @@
     "PAGES.DEPOSIT.WITHETRANSFER": "Deposit with eTransfer",
     "PAGES.DEPOSIT.INTERAC.ETRANSFER.DEPOSIT": "Interac e-Transfer Deposit",
     "PAGES.DEPOSIT.CONFIRMINFORMATION": "Please confirm the information below is correct.",
+    "PAGES.DEPOSIT.CONFIRMINFORMATION_BTC": "Please confirm the information below is correct. You will receive an email from our payment processor with a secured link to complete the payment. Please note the payment network will take several minutes to several hours to confirm the payment depending on the network the payment was sent.",
     "PAGES.DEPOSIT.ERRORMSG": "Can't make deposit. Please try again later",
     "PAGES.DEPOSIT.AMOUNT": "Deposit Amount",
     "PAGES.DEPOSIT.ENTERAMOUNT": "Enter Deposit Amount",
