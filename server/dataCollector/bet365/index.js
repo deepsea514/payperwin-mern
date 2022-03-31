@@ -13,7 +13,7 @@ const getSportsLine = () => {
 
     const resultInterval = 1000 * 60 * 10;
     matchResults();
-    setInterval(getLiveSportsLines, resultInterval);
+    setInterval(matchResults, resultInterval);
 }
 
 module.exports = { getSportsLine };

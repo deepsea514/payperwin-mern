@@ -80,15 +80,17 @@ const CustomOption = (props) => {
 export default class EventSearchModal extends React.Component {
     constructor(props) {
         super(props);
+        const today = new Date();
+        const today_s = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
         this.state = {
             event: null,
             eventOptions: [],
-            sportIndex: null,
-            leagueIndex: null,
+            sportIndex: 'Baseball',
+            leagueIndex: '225',
+            dateIndex: 0,
             sportsOptions: [
                 'Soccer',
-                'American Football',
                 'Baseball',
                 'Ice Hockey',
                 'Basketball',
@@ -96,11 +98,6 @@ export default class EventSearchModal extends React.Component {
                 'Boxing',
             ],
             leagueOptions: [
-                {
-                    "id": "459",
-                    "name": "NFL",
-                    "sport": "American Football"
-                },
                 {
                     "id": "225",
                     "name": "MLB",
@@ -127,11 +124,28 @@ export default class EventSearchModal extends React.Component {
                     "sport": "Ice Hockey"
                 },
             ],
+            dateOptions: [
+                new Date(today_s),
+                new Date(today_s).addDates(1),
+                new Date(today_s).addDates(2),
+                new Date(today_s).addDates(3),
+                new Date(today_s).addDates(4),
+                new Date(today_s).addDates(5),
+                new Date(today_s).addDates(6),
+                new Date(today_s).addDates(7),
+                new Date(today_s).addDates(8),
+                new Date(today_s).addDates(9),
+            ],
             loadingEvent: false,
             showLeft: false,
             showRight: true,
         }
         this.listRef = createRef();
+    }
+
+    componentDidMount() {
+        const { sportIndex, leagueIndex } = this.state;
+        this.setSportLeague(sportIndex, leagueIndex);
     }
 
     onScroll = () => {
@@ -170,6 +184,13 @@ export default class EventSearchModal extends React.Component {
         });
     }
 
+    onChangeDate = (dateIndex) => {
+        this.setState({ dateIndex }, () => {
+            const { sportIndex, leagueIndex } = this.state;
+            this.setSportLeague(sportIndex, leagueIndex);
+        })
+    }
+
     setSportLeague = (sportIndex, leagueIndex) => {
         if (!sportIndex) {
             return this.setState({
@@ -183,11 +204,21 @@ export default class EventSearchModal extends React.Component {
             sportIndex,
             leagueIndex
         });
-        searchEvent({ sport: sportIndex, league: leagueIndex }).then(({ data }) => {
+        const { dateIndex, dateOptions } = this.state;
+        searchEvent({ sport: sportIndex, league: leagueIndex, date: dateOptions[dateIndex] }).then(({ data }) => {
             this.setState({ eventOptions: data });
         }).catch(() => {
             this.setState({ eventOptions: [] });
         })
+    }
+
+    getDateStr = (date) => {
+        switch (date) {
+            case null:
+                return 'All';
+            default:
+                return dateformat(date, "mmm d");
+        }
     }
 
     getSportName = (sport) => {
@@ -203,7 +234,11 @@ export default class EventSearchModal extends React.Component {
 
     render() {
         const { onClose, onProceed } = this.props;
-        const { event, showLeft, showRight, eventOptions, sportsOptions, leagueOptions, sportIndex, leagueIndex } = this.state;
+        const {
+            event, showLeft, showRight,
+            eventOptions, sportsOptions, leagueOptions, dateOptions,
+            sportIndex, leagueIndex, dateIndex,
+        } = this.state;
         return (
             <div className="modal confirmation">
                 <div className="background-closer bg-modal" onClick={onClose} />
@@ -230,7 +265,7 @@ export default class EventSearchModal extends React.Component {
                                     <li className="nav-item"
                                         onClick={() => this.setSportLeague(league.sport, league.id)}
                                         key={league.id}>
-                                        <center>
+                                        <center className='p-0'>
                                             <div className={`sports-league-image-container ${leagueIndex == league.id ? 'active' : ''}`}>
                                                 <img src={sportNameImage(league.sport, league.name)}
                                                     className='sports-league-image' />
@@ -245,7 +280,7 @@ export default class EventSearchModal extends React.Component {
                                     <li className="nav-item cursor-pointer"
                                         onClick={() => this.setSportLeague(sport, null)}
                                         key={sport}>
-                                        <center>
+                                        <center className='p-0'>
                                             <div className={`sports-league-image-container ${sportIndex == sport ? 'active' : ''}`}>
                                                 <img src={sportNameImage(sport)}
                                                     className='sports-league-image' />
@@ -262,11 +297,32 @@ export default class EventSearchModal extends React.Component {
                                 </span>
                             </li>}
                         </ul>
+                        <div className='dashboard_bottombar date_bottombar_container mt-3 mb-5'>
+                            <div className="dashboard_bottombar_container date_bottombar">
+                                <div className="dashboard_bottombar_wrapper" style={{ minWidth: '100%' }}>
+                                    <div className='dashboard_bottombar_scroller_container'>
+                                        <div className="dashboard_bottombar_scroller date_bottombar" style={{
+                                            transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)',
+                                            transitionDuration: '0ms',
+                                            transform: 'translate(0px, 0px) translateZ(0px)'
+                                        }}>
+                                            {dateOptions.map((date, index) => {
+                                                return (
+                                                    <a key={index}
+                                                        className={dateIndex == index ? "dashboard_bottombar_selected modal-date" : 'modal-date'}
+                                                        onClick={() => this.onChangeDate(index)}><span>{this.getDateStr(date)}</span></a>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="row">
                             <div className="col-12 form-group">
                                 <label>Select An Event</label>
                                 <div className='d-flex align-items-center'>
-                                    <strong>Score Powered By </strong>&nbsp;
+                                    <strong>Powered By </strong>&nbsp;
                                     <a href="https://heatscore.co" target="_blank"><img src='/images/heatscore-thumb.png' style={{ height: '20px', display: 'block', margin: 0 }} /></a>
                                 </div>
                                 <Select
