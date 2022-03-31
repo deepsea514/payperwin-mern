@@ -238,11 +238,13 @@ ticketRouter.post(
                         address: email
                     }]
                 }]
-
                 try {
                     const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/clients', newClient)
-                    console.log(response)
-                    tevo_client = await TevoClient.create(response);
+                    if (response && response.clients && response.clients.length) {
+                        tevo_client = await TevoClient.create(response.clients[0]);
+                    } else {
+                        return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
+                    }
                 } catch (error) {
                     return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
                 }
