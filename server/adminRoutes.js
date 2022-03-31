@@ -6135,6 +6135,7 @@ adminRouter.put(
                 const filename = 'frontend_banner_' + dateformat(new Date(), "yyyy_mm_dd_HH_MM_ss.") + ext;
                 files.file.mv('./banners/' + filename);
                 value.path = filename;
+                value.clicked = 0;
             }
         }
         try {

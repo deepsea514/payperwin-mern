@@ -4573,6 +4573,21 @@ expressApp.get(
     }
 )
 
+expressApp.get(
+    '/frontend_banner_clicked',
+    async (req, res) => {
+        const frontend = await Frontend.findOne({ name: 'banner' });
+        const value = {
+            path: frontend.value.path,
+            link_url: frontend.value.link_url,
+            show: frontend.value.show,
+            clicked: parseInt(frontend.value.clicked) + 1,
+        }
+        await frontend.update({ value: value });
+        res.redirect(frontend.value.link_url);
+    }
+)
+
 expressApp.post(
     '/phone-verify',
     isAuthenticated,
