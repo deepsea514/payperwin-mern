@@ -39,17 +39,15 @@ class EventList extends React.Component {
                                             <ul>
                                                 <li><i className="icofont-field"></i> At <Link to={"/venues/" + event.venue.slug}><span>{event.venue.name}</span></Link> in {event.venue.location}</li>
                                                 <li><i className="icofont-wall-clock"></i> {dateformat(event.occurs_at, 'ddd mmm dd yyyy HH:MM')}</li>
-                                            </ul>
-                                            {event.performances && event.performances.length && <ul>
-                                                <li>
+                                                {event.performances && event.performances.length && <li>
                                                     <i className="icofont-users-alt-4"></i>&nbsp;
                                                     {event.performances.map((performer, index) => (
                                                         <React.Fragment key={index}>
                                                             <Link to={"/performers/" + performer.performer.slug}>{performer.performer.name}</Link>{(index === event.performances.length - 1) ? '' : ', '}
                                                         </React.Fragment>
                                                     ))}
-                                                </li>
-                                            </ul>}
+                                                </li>}
+                                            </ul>
                                             <div className='mt-2 tagcloud'>
                                                 {event.categories.map((category, index) => (
                                                     <Link key={index} to={"/categories/" + category.slug}>{category.name}</Link>
