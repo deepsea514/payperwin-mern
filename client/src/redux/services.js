@@ -217,9 +217,8 @@ export function searchSports(name) {
     return FrontendAPI.get(`/searchsports`, { params: { name } });
 }
 
-export function searchEvent({ name, sport, league }) {
-    return axios.get('https://app.heatscore.co/events/search', { params: { name, sport, league } });
-    // return FrontendAPI.get('/searchevents', { params: { name, sport } });
+export function searchEvent(filter) {
+    return axios.get('https://app.heatscore.co/events/search', { params: filter });
 }
 
 export function getBets(filter) {
