@@ -621,6 +621,7 @@
     "PAGES.DEPOSIT.WITHETRANSFER": "Depositar con eTransfer",
     "PAGES.DEPOSIT.INTERAC.ETRANSFER.DEPOSIT": "Depositar con eTransfer",
     "PAGES.DEPOSIT.CONFIRMINFORMATION": "Por favor confirme que la siguiente información es correcta",
+    "PAGES.DEPOSIT.CONFIRMINFORMATION_BTC": "Confirme que la información a continuación es correcta. Recibirá un correo electrónico de nuestro procesador de pagos con un enlace seguro para completar el pago. Tenga en cuenta que la red de pago tardará entre varios minutos y varias horas en confirmar el pago, según la red en la que se envió el pago.",
     "PAGES.DEPOSIT.ERRORMSG": "No se puede depositar. Por favor intente más tarde",
     "PAGES.DEPOSIT.AMOUNT": "Cantidad a depositar",
     "PAGES.DEPOSIT.ENTERAMOUNT": "Ingrese la cantidad a depositar",
