@@ -15,7 +15,7 @@ export default class Banner extends Component {
         super(props);
 
         this.state = {
-            initialValues: { file: null, link_url: '', show: true },
+            initialValues: null,
             loading: false,
             bannerSchema: Yup.object().shape({
                 file: Yup.mixed(),
@@ -42,7 +42,7 @@ export default class Banner extends Component {
                 });
             })
             .catch(() => {
-                this.setState({ loading: false, initialValues: null });
+                this.setState({ loading: false, initialValues: { file: null, link_url: '', show: true } });
             })
     }
 
@@ -84,9 +84,6 @@ export default class Banner extends Component {
                         strokeWidth={10}
                         strokeColor="#F0AD4E"
                         duration={800} />
-                </center>}
-                {!loading && !initialValues && <center>
-                    <h4>No available Data.</h4>
                 </center>}
                 {!loading && initialValues && <Formik
                     validationSchema={bannerSchema}
