@@ -71,7 +71,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                             setShowEventModal(true);
                         }
                     }}>
-                    <option value="">Select Bet Type.</option>
+                    <option value="">Select Bet Type</option>
                     <option value="upcoming_sport">Major League Side Bet</option>
                     <option value="custom">Custom Side Bet</option>
                 </select>

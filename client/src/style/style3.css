@@ -1054,6 +1054,10 @@ a.log-in-btn {
     top: 8rem;
 }
 
+.bet-slip-contain.hide-mobile {
+    margin-top: 120px;
+}
+
 .show-mobile {
     display: none !important;
 }

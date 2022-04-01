@@ -132,11 +132,16 @@ export default class CustomBets extends Component {
                 </div>
                 <br />
                 <div className='text-white'>
-                    Create and Invite friends to bet with or against you.
-                    The bet creator is the High Staker of the bet.
-                    You can set the maximum risk amount you’re willing to payout.
-                    All custom bets are subject to approval by Payper Win prior to acceptance.
-                    Click “Create A Bet” to learn more.
+                    Create and Share with friends to bet with or against you publicly or privately.
+                    The Bet Creator <Tooltip arrow
+                        title={<p className='text-white mb-0 p-1'>The user that creates the bet</p>}>
+                        <i className='fas fa-question-circle' />
+                    </Tooltip> is the High Staker. <Tooltip arrow
+                        title={<p className='text-white mb-0 p-1'>Players put up a stake and are betting against the High Staker. When the players lose, the High Staker takes their stake.</p>}>
+                        <i className='fas fa-question-circle' />
+                    </Tooltip>&nbsp;
+                    Set the maximum risk amount you're willing to payout if you lose.
+                    All Side Bets are subject to approval by Payper Win.
                     <br />
                     <br />
                     Custom bet examples.
@@ -144,7 +149,7 @@ export default class CustomBets extends Component {
                     <ul style={{ listStyle: 'inside' }}>
                         <li>“Will there be a fight within the first 10 minutes of the Montreal Canadiens vs Toronto Maple Leafs Hockey game?”</li>
                         <li>“Which of the bridesmaid will catch the bouquet?”</li>
-                        <li>“How many minutes is the Super Bowl half time show?”</li>
+                        <li>“Will bitcoin pump or dump tomorrow?”</li>
                     </ul>
                 </div>
                 <div>
