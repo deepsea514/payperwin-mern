@@ -117,7 +117,7 @@ class CheckoutForm extends React.Component {
     }
 
     render() {
-        const { cart } = this.props;
+        const { cart, user } = this.props;
         if (cart.length === 0) return null;
         let total = 0;
         cart.forEach(({ ticket_group, count }) => {
@@ -145,6 +145,7 @@ class CheckoutForm extends React.Component {
                                                 <input className={`form-control cart-form-control ${getInputClasses(formik, 'email')}`}
                                                     type='email'
                                                     placeholder='Email'
+                                                    readOnly={user !== null}
                                                     {...getFieldProps('email')} />
                                                 {touched.email && errors.email ? (
                                                     <div className="invalid-feedback">
