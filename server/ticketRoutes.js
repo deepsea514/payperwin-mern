@@ -239,7 +239,7 @@ ticketRouter.post(
                     }]
                 }]
                 try {
-                    const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/clients', newClient)
+                    const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/clients', { clients: newClient })
                     if (response && response.clients && response.clients.length) {
                         tevo_client = await TevoClient.create(response.clients[0]);
                     } else {
