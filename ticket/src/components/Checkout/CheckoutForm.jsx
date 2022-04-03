@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import CreditCardInput from 'react-credit-card-input';
 import PhoneInput, { } from 'react-phone-input-2'
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import * as Yup from "yup";
@@ -11,6 +10,7 @@ import { withRouter } from 'react-router-dom';
 import { checkoutSubmit } from '../../redux/services';
 import { errorMessage, successMessage } from '../../lib/showMessage';
 import { actions } from '../../redux/reducers';
+import { CardElement } from "@stripe/react-stripe-js";
 
 class CheckoutForm extends React.Component {
     constructor(props) {
@@ -22,17 +22,13 @@ class CheckoutForm extends React.Component {
                 email: user && user.email ? user.email : '',
                 firstname: user && user.firstname ? user.firstname : '',
                 lastname: user && user.lastname ? user.lastname : '',
-                address: user && user.address ? user.address : '',
-                address2: user && user.address2 ? user.address2 : '',
-                city: user && user.city ? user.city : '',
+                address: '1029 Brodie Dr',
+                address2: '',
+                city: 'Orillia',
                 country: 'Canada',
-                region: user && user.region ? user.region : '',
-                zipcode: user && user.postalcode ? user.postalcode : '',
-                phone: user && user.phone ? user.phone : '',
-                card_holder: '',
-                card_number: '',
-                card_expiry: '',
-                card_cvc: '',
+                region: 'Ontario',
+                zipcode: 'L3V 6H4',
+                phone: '+1 (705) 327-6580',
             },
             checkoutSchema: Yup.object().shape({
                 email: Yup.string()
@@ -55,14 +51,6 @@ class CheckoutForm extends React.Component {
                     .required('Zip Code is required.'),
                 phone: Yup.string()
                     .required('Phone Number is required.'),
-                card_holder: Yup.string()
-                    .required('Card Holder is required.'),
-                card_number: Yup.string()
-                    .required('Card Number is required.'),
-                card_expiry: Yup.string()
-                    .required('Card Expiry is required.'),
-                card_cvc: Yup.string()
-                    .required('Card CVC is required.'),
             }),
             session_id: session_id,
         }
@@ -92,37 +80,66 @@ class CheckoutForm extends React.Component {
         return Math.ceil(usd_price * cad_rate * 100) / 100
     }
 
-    onSubmit = (values, formik) => {
+    onSubmit = async (values, formik) => {
         const { user, history, cart, clearFromCartAction } = this.props;
         const { session_id } = this.state;
         if (!user) {
             history.push('/login');
             return;
         }
-        checkoutSubmit({ ...values, session_id, cart }).then(({ data }) => {
-            const { success, error } = data;
-            console.log(data)
-            if (success) {
-                successMessage('Ticket Purchased Successfully.');
-                clearFromCartAction();
-                formik.setSubmitting(false);
-                return;
+
+        const { elements, stripe } = this.props;
+        const cardElement = elements.getElement(CardElement);
+
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+                address: {
+                    country: 'CA',
+                    city: values.city,
+                    line1: values.address,
+                    line2: values.address2,
+                    postal_code: values.zipcode,
+                    state: values.region
+                },
+                email: values.email,
+                name: values.firstname + ' ' + values.lastname,
+                phone: values.phone
             }
-            errorMessage(error);
+        }).then(({ error, paymentMethod }) => {
+            if (error) {
+                formik.setSubmitting(false);
+                errorMessage('Cannot Purchase Ticket. Please try again later.');
+            } else {
+                console.log(paymentMethod)
+                const { id } = paymentMethod;
+                checkoutSubmit({ ...values, session_id, cart, token: id }).then(({ data }) => {
+                    const { success, error } = data;
+                    if (success) {
+                        successMessage('Ticket Purchased Successfully.');
+                        clearFromCartAction();
+                        formik.setSubmitting(false);
+                        return;
+                    }
+                    errorMessage(error);
+                    formik.setSubmitting(false);
+                }).catch(() => {
+                    errorMessage('Cannot Purchase Ticket. Please try again later.');
+                    formik.setSubmitting(false);
+                })
+            }
+        }).catch(error => {
+            console.log(error)
             formik.setSubmitting(false);
-        }).catch(() => {
             errorMessage('Cannot Purchase Ticket. Please try again later.');
-            formik.setSubmitting(false);
         })
     }
 
     render() {
         const { cart, user } = this.props;
-        if (cart.length === 0) return null;
-        let total = 0;
-        cart.forEach(({ ticket_group, count }) => {
-            total += this.changeRate(ticket_group.retail_price) * parseInt(count)
-        })
+        if (cart.ticket_group === 0) return null;
+        const total = this.changeRate(cart.ticket_group.retail_price) * parseInt(cart.count);
         const { initialValues, checkoutSchema } = this.state;
 
         return (
@@ -134,7 +151,7 @@ class CheckoutForm extends React.Component {
                         {(formik) => {
                             const {
                                 values, touched, errors, isSubmitting,
-                                getFieldProps, handleChange, handleBlur, handleSubmit, setFieldError, setFieldValue, setFieldTouched
+                                getFieldProps, handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched
                             } = formik;
                             return (
                                 <form onSubmit={handleSubmit}>
@@ -245,11 +262,12 @@ class CheckoutForm extends React.Component {
                                                 <PhoneInput country={'ca'}
                                                     onlyCountries={['ca']}
                                                     placeholder='+1 (702) 123-4567'
+                                                    value={values.phone}
                                                     containerClass={'input-group ' + getInputClasses(formik, 'phone')}
                                                     inputClass={`form-control cart-form-control `}
                                                     inputProps={{ name: 'phone' }}
                                                     onChange={(value, data, evt, formatedvalue) => {
-                                                        setFieldValue('phone', '+' + data.format + ' ' + formatedvalue);
+                                                        setFieldValue('phone', formatedvalue);
                                                         setFieldTouched('phone', true);
                                                     }}
                                                     onBlur={handleBlur}
@@ -264,43 +282,16 @@ class CheckoutForm extends React.Component {
                                         <div className='col-md-6'>
                                             <div className='form-group cart-form-group'>
                                                 <label>Payment Information</label>
-                                                <input className={`form-control cart-form-control ${getInputClasses(formik, 'card_holder')}`}
+                                                {/* <input className={`form-control cart-form-control ${getInputClasses(formik, 'card_holder')}`}
                                                     placeholder='Cardholder Name'
                                                     {...getFieldProps('card_holder')} />
                                                 {touched.card_holder && errors.card_holder ? (
                                                     <div className="invalid-feedback">
                                                         {errors.card_holder}
                                                     </div>
-                                                ) : null}
+                                                ) : null} */}
                                             </div>
-                                            <div className='form-group cart-form-group'>
-                                                <CreditCardInput
-                                                    cardCVCInputProps={{
-                                                        name: 'card_cvc',
-                                                        onBlur: handleBlur,
-                                                        onChange: handleChange,
-                                                        onError: (err) => setFieldError('card_cvc', err)
-                                                    }}
-                                                    cardExpiryInputProps={{
-                                                        name: 'card_expiry',
-                                                        onBlur: handleBlur,
-                                                        onChange: handleChange,
-                                                        onError: (err) => setFieldError('card_expiry', err)
-                                                    }}
-                                                    cardNumberInputProps={{
-                                                        name: 'card_number',
-                                                        onBlur: handleBlur,
-                                                        onChange: handleChange,
-                                                        onError: (err) => setFieldError('card_number', err)
-                                                    }}
-                                                    fieldClassName=""
-                                                    containerClassName="cart-form-control p-0"
-                                                    inputClassName="mt-3"
-                                                    containerStyle={errors.card_number || errors.card_cvc || errors.card_expiry ? {
-                                                        border: '1px solid #FF2D55'
-                                                    } : null}
-                                                />
-                                            </div>
+                                            <CardElement />
 
                                             <table className='table mt-5'>
                                                 <tbody>

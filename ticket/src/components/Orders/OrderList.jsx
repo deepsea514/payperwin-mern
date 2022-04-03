@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import dateformat from 'dateformat';
+// import dateformat from 'dateformat';
 import CustomPagination from '../Common/CustomPagination';
 import Loader from '../Common/Loader';
 

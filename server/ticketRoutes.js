@@ -1,6 +1,7 @@
 //define router
 const ticketRouter = require('express').Router();
 const TevoClientAPI = require('ticketevolution-node');
+const axios = require('axios');
 //Models
 const TevoEvent = require('./models/tevo_event');
 const TevoVenue = require('./models/tevo_venue');
@@ -198,8 +199,7 @@ ticketRouter.post(
     async (req, res) => {
         const {
             email, firstname, lastname, address, address2, city, country, region, zipcode, phone,
-            card_holder, card_number, card_expiry, card_cvc,
-            cart, session_id
+            token, cart, session_id
         } = req.body;
         try {
             const ticketAddon = await Addon.findOne({ name: 'ticketevolution' });
@@ -208,7 +208,7 @@ ticketRouter.post(
             }
             const API_TOKEN = ticketAddon.value.api_token;
             const API_SECRET = ticketAddon.value.api_secret;
-            const office_id = ticketAddon.value.office_id;
+            // const office_id = ticketAddon.value.office_id;
 
             const tevoClientAPI = new TevoClientAPI({
                 apiToken: API_TOKEN,
@@ -219,7 +219,7 @@ ticketRouter.post(
             if (!tevo_client) {
                 const newClient = [{
                     name: firstname + ' ' + lastname,
-                    office_id: office_id,
+                    // office_id: office_id,
                     addresses: [{
                         street_address: address,
                         extended_address: address2,
@@ -241,14 +241,128 @@ ticketRouter.post(
                 try {
                     const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/clients', { clients: newClient })
                     if (response && response.clients && response.clients.length) {
-                        tevo_client = await TevoClient.create(response.clients[0]);
+                        const client = response.clients[0];
+                        if (client.errors && client.errors.length) {
+                            return res.json({ success: false, error: client.errors.join(' ') });
+                        }
+                        tevo_client = await TevoClient.create({ user_id: req.user._id, ...response.clients[0] });
                     } else {
+                        console.error(response);
                         return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
                     }
                 } catch (error) {
+                    console.error(error);
                     return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
                 }
             }
+
+            const orderObject = {
+                client_id: parseInt(tevo_client.id),
+                session_id: session_id,
+                ticket_group: {
+                    id: cart.ticket_group.id,
+                    price: cart.ticket_group.retail_price,
+                    quantity: cart.count
+                },
+                payments: [{
+                    type: 'credit_card',
+                    token: token,
+                    address_attributes: {
+                        street_address: address,
+                        extended_address: address2,
+                        locality: city,
+                        region: region,
+                        postal_code: zipcode,
+                        country_code: 'CA',
+                    }
+                }],
+                delivery: null,
+            };
+
+            let delivery_option = null;
+            try {
+                const body = {
+                    ticket_group_id: parseInt(cart.ticket_group.id),
+                    address_attributes: {
+                        street_address: address,
+                        extended_address: address2,
+                        locality: city,
+                        region: region,
+                        postal_code: zipcode,
+                        country_code: 'CA',
+                    }
+                };
+                const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v9/shipments/suggestion', body)
+                if (response && !response.error && !response.errors) {
+                    delivery_option = response;
+                } else {
+                    return res.json({ success: false, error: 'Cannot create an order. Cannot get shipment information' });
+                }
+            } catch (error) {
+                console.error(error);
+                return res.json({ success: false, error: 'Cannot create an order. Cannot get shipment information' });
+            }
+            if (!delivery_option || !delivery_option.name) {
+                return res.json({ success: false, error: 'Cannot create an order. Cannot get shipment information' });
+            }
+
+            switch (delivery_option.provider) {
+                case 'FedEx':
+                    orderObject.delivery = {
+                        type: delivery_option.provider,
+                        cost: delivery_option.cost,
+                        address_attributes: {
+                            street_address: address,
+                            extended_address: address2,
+                            locality: city,
+                            region: region,
+                            postal_code: zipcode,
+                            country_code: 'CA',
+                        },
+                        phone_number_id: tevo_client.primary_phone_number.id,
+                        service_type: "STANDARD_OVERNIGHT",
+                        ship_to_company_name: null,
+                        ship_to_name: tevo_client.name,
+                        signature_type: "INDIRECT",
+                    }
+                    break;
+                case 'WillCall':
+                    orderObject.delivery = {
+                        type: delivery_option.provider,
+                        cost: delivery_option.cost,
+                        ship_to_name: tevo_client.name,
+                        address_attributes: {
+                            street_address: address,
+                            extended_address: address2,
+                            locality: city,
+                            region: region,
+                            postal_code: zipcode,
+                            country_code: 'CA',
+                        },
+                        phone_number_id: tevo_client.primary_phone_number.id,
+                    }
+                    break;
+                default:
+                    orderObject.delivery = {
+                        type: delivery_option.provider,
+                        email_address_id: tevo_client.primary_email_address.id,
+                        cost: delivery_option.cost
+                    }
+                    break;
+
+            }
+
+            console.log(JSON.stringify(orderObject))
+
+            try {
+                const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v10/orders', { order: orderObject })
+                // if(response && !response.error && !response.errors) {
+                // }
+                console.log('response => ', JSON.stringify(response));
+            } catch (error) {
+                return res.json({ success: false, error: 'Cannot create an order. Cannot Make an order.' });
+            }
+
             return res.json({ success: false, error: 'Final Step' });
         } catch (error) {
             console.error(error);
