@@ -107,7 +107,7 @@ const RenderLeagues = (props) => {
 
     return (
         <>
-            <div className={`dashboard_bottombar date_bottombar_container${pathname == '/' ? '_dashboard' : ''}`}>
+            {dateList.length > 0 && <div className={`dashboard_bottombar date_bottombar_container${pathname == '/' ? '_dashboard' : ''}`}>
                 <div className="dashboard_bottombar_container date_bottombar">
                     <div className="dashboard_bottombar_wrapper" style={{ minWidth: '100%' }}>
                         <div className='dashboard_bottombar_scroller_container'>
@@ -127,7 +127,7 @@ const RenderLeagues = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>}
             <div className="content">
                 {filteredLeagues.length > 0 ? filteredLeagues :
                     (
