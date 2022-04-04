@@ -277,6 +277,10 @@ ticketRouter.post(
                     }
                 }],
                 delivery: null,
+                service_fee: 0,
+                additional_expense: 0,
+                tax: 0,
+                discount: 0,
             };
 
             let delivery_option = null;
