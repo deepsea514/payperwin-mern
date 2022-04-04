@@ -138,7 +138,7 @@ class CheckoutForm extends React.Component {
 
     render() {
         const { cart, user } = this.props;
-        if (cart.ticket_group === 0) return null;
+        if (cart.ticket_group === null) return null;
         const total = this.changeRate(cart.ticket_group.retail_price) * parseInt(cart.count);
         const { initialValues, checkoutSchema } = this.state;
 
