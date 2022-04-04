@@ -4,11 +4,11 @@ header {
     width: 100%;
 }
 
-.msg-both + .main-section {
+.msg-both+.main-section {
     padding-top: 236px;
 }
 
-.msg-one + .main-section {
+.msg-one+.main-section {
     padding-top: 188px;
 }
 
@@ -2366,4 +2366,33 @@ a.fav-link:hover {
 
 .col-in.prize-used {
     background-color: #C43AD2 !important;
+}
+
+.events-group {
+    padding: 0 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-item {
+    cursor: pointer;
+    border-bottom: 1px solid #888;
+    padding: 6px 0;
+}
+
+.event-item.selected {
+    border-color: #ED254E;
+    opacity: 0.9;
+}
+
+.event-item:hover {
+    opacity: 0.8;
+}
+
+.event-item img {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
 }

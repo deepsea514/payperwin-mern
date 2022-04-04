@@ -50,8 +50,8 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                 }}
                 onProceed={(event) => {
                     if (event) {
-                        setFieldValue('name', event.label);
-                        setFieldValue('startDate', new Date(event.value.startDate));
+                        setFieldValue('name', event.home.name + ' VS ' + event.away.name);
+                        setFieldValue('startDate', new Date(event.startDate));
                         setShowEventModal(false);
                     }
                 }} />}
