@@ -31,7 +31,7 @@ class ViewModeModal extends React.Component {
                         <b>Choose your view</b>
                         <hr />
                         <div className="d-flex justify-content-center mb-4">
-                            <img src="/images/pro-basic.png" />
+                            <img src="/images/pro-basic.gif" />
                         </div>
                         <p>
                             The <strong>PRO</strong> view offers an advance interface that is familiar to experienced bettors.
