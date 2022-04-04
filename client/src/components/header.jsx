@@ -127,8 +127,9 @@ class Header extends Component {
             showPromotionAction,
         } = this.props;
         const showMessage = this.checkShowMessage();
+        const headerClass = !acceptCookie && showMessage ? 'msg-both' : (!acceptCookie || showMessage ? 'msg-one' : '');
         return (
-            <header className="header">
+            <header className={"header" + (headerClass ? ' ' + headerClass : '')}>
                 {!acceptCookie && <CookieAccept acceptCookieAction={acceptCookieAction} />}
                 {showMessage && <AdminMessage onDismiss={dismissAdminMessage} message={adminMessage} />}
                 <div className="header-top">

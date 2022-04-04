@@ -4,6 +4,14 @@ header {
     width: 100%;
 }
 
+.msg-both + .main-section {
+    padding-top: 236px;
+}
+
+.msg-one + .main-section {
+    padding-top: 188px;
+}
+
 .main-section {
     padding-top: 140px;
 }
