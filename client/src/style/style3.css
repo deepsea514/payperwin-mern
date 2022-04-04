@@ -1059,7 +1059,7 @@ a.log-in-btn {
 .bet-slip-contain {
     position: -webkit-sticky;
     position: sticky;
-    top: 8rem;
+    top: 140px;
 }
 
 .bet-slip-contain.hide-mobile {
