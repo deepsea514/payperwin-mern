@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import timeHelper from "../../helpers/timehelper";
 import calculateNewOdds from '../../helpers/calculateNewOdds';
-import convertOdds from '../../helpers/convertOdds';
+import { convertOddsFromAmerican } from '../../helpers/convertOdds';
 import checkOddsAvailable from '../../helpers/checkOddsAvailable';
 import { FormattedMessage } from 'react-intl';
-import dateFormat from 'dateformat';
-import sportNameImage from '../../helpers/sportNameImage';
 import getLineCount from '../../helpers/getLineCount';
 
 const emptyBoxLine = (
@@ -86,14 +84,14 @@ const RenderProEvent = (props) => {
                                 <div className="vertical-align">
                                     {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(moneyline.home, oddsFormat)}
+                                            {convertOddsFromAmerican(moneyline.home, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newHome, oddsFormat)}
+                                            {convertOddsFromAmerican(newHome, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'home', 'moneyline', null) && <div className="origin-odds">
-                                        {convertOdds(moneyline.home, oddsFormat)}
+                                        {convertOddsFromAmerican(moneyline.home, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>
@@ -120,14 +118,14 @@ const RenderProEvent = (props) => {
                                 <div className="vertical-align">
                                     {checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(moneyline.away, oddsFormat)}
+                                            {convertOddsFromAmerican(moneyline.away, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newAway, oddsFormat)}
+                                            {convertOddsFromAmerican(newAway, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable(moneyline, { home: newHome, away: newAway }, 'away', 'moneyline', null) && <div className="origin-odds">
-                                        {convertOdds(moneyline.away, oddsFormat)}
+                                        {convertOddsFromAmerican(moneyline.away, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>
@@ -176,14 +174,14 @@ const RenderProEvent = (props) => {
                                     <div className="points">{`${spreads[0].hdp > 0 ? '+' : ''}${spreads[0].hdp}`}</div>
                                     {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(spreads[0].home, oddsFormat)}
+                                            {convertOddsFromAmerican(spreads[0].home, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newHome, oddsFormat)}
+                                            {convertOddsFromAmerican(newHome, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'home', 'spread', null) && <div className="origin-odds">
-                                        {convertOdds(spreads[0].home, oddsFormat)}
+                                        {convertOddsFromAmerican(spreads[0].home, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>
@@ -212,14 +210,14 @@ const RenderProEvent = (props) => {
                                     <div className="points">{`${(-1 * spreads[0].hdp) > 0 ? '+' : ''}${-1 * spreads[0].hdp}`}</div>
                                     {checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(spreads[0].away, oddsFormat)}
+                                            {convertOddsFromAmerican(spreads[0].away, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newAway, oddsFormat)}
+                                            {convertOddsFromAmerican(newAway, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable(spreads[0], { home: newHome, away: newAway }, 'away', 'spread', null) && <div className="origin-odds">
-                                        {convertOdds(spreads[0].away, oddsFormat)}
+                                        {convertOddsFromAmerican(spreads[0].away, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>
@@ -269,14 +267,14 @@ const RenderProEvent = (props) => {
                                     <div className="points">O {`${totals[0].points}`}</div>
                                     {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(totals[0].over, oddsFormat)}
+                                            {convertOddsFromAmerican(totals[0].over, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newHome, oddsFormat)}
+                                            {convertOddsFromAmerican(newHome, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'home', 'total', null) && <div className="origin-odds">
-                                        {convertOdds(totals[0].over, oddsFormat)}
+                                        {convertOddsFromAmerican(totals[0].over, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>
@@ -305,14 +303,14 @@ const RenderProEvent = (props) => {
                                     <div className="points">U {`${totals[0].points}`}</div>
                                     {checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <>
                                         <div className="old-odds">
-                                            {convertOdds(totals[0].under, oddsFormat)}
+                                            {convertOddsFromAmerican(totals[0].under, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newAway, oddsFormat)}
+                                            {convertOddsFromAmerican(newAway, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable({ home: totals[0].over, away: totals[0].under }, { home: newHome, away: newAway }, 'away', 'total', null) && <div className="origin-odds">
-                                        {convertOdds(totals[0].under, oddsFormat)}
+                                        {convertOddsFromAmerican(totals[0].under, oddsFormat)}
                                     </div>}
                                 </div>
                             </span>

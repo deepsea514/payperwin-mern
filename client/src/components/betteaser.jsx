@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import convertOdds from '../helpers/convertOdds';
+import { convertOddsFromAmerican } from '../helpers/convertOdds';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import getTeaserOdds from '../helpers/getTeaserOdds';
 
@@ -70,7 +70,7 @@ class BetTeaser extends Component {
                 <div className={`bet-parlay-container ${win > maxBetLimitTier ? 'bet-warn' : ''}`}>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">{teaserBetSlip.type.sportName} {teaserBetSlip.type.teaserPoint} Points Teaser</span>
-                        {valid && <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>}
+                        {valid && <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOddsFromAmerican(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>}
                     </div>
                     {valid && <>
                         <div>

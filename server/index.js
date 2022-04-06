@@ -4821,7 +4821,7 @@ expressApp.post(
     '/customBet',
     isAuthenticated,
     async (req, res) => {
-        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional } = req.body;
+        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional, odds_type } = req.body;
         const user = req.user;
         try {
             if (user.balance < maximumRisk) {
@@ -4853,7 +4853,8 @@ expressApp.post(
                 participants: [{
                     user: user._id,
                     amount: maximumRisk
-                }]
+                }],
+                odds_type:odds_type
             });
 
             await FinancialLog.create({

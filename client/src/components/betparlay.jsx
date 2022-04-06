@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import convertOdds from '../helpers/convertOdds';
+import { convertOddsFromAmerican } from '../helpers/convertOdds';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 class BetParlay extends Component {
@@ -15,7 +15,7 @@ class BetParlay extends Component {
         let parlayDdds = 1;
         for (const bet of betSlip) {
             const { originOdds, pick } = bet;
-            parlayDdds *= Number(convertOdds(originOdds[pick], 'decimal'));
+            parlayDdds *= Number(convertOddsFromAmerican(originOdds[pick], 'decimal'));
         }
         if (parlayDdds >= 2) {
             parlayDdds = parseInt((parlayDdds - 1) * 100);
@@ -80,7 +80,7 @@ class BetParlay extends Component {
                 <div className={`bet-parlay-container ${correlated ? 'bet-error' : (win > maxBetLimitTier ? 'bet-warn' : '')}`}>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">1's x {betSlip.length}</span>
-                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
+                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOddsFromAmerican(odds, oddsFormat) : ((odds > 0 ? '+' : '') + odds)}</span>
                     </div>
                     <div>
                         <input
