@@ -344,3 +344,8 @@ export function deleteInbox(id) {
 export function getTeamMembers() {
     return FrontendAPI.get('/members');
 }
+
+// Loyalty
+export function getLoyaltyPoints(user_id) {
+    return FrontendAPI.get(`/loyalty/${user_id}`);
+}
