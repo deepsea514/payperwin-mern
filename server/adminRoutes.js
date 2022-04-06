@@ -5105,22 +5105,22 @@ adminRouter.post(
             for (const bet of bets) {
                 const user = await User.findById(bet.userId);
                 if (bet.pick == Number(winner)) {
-                    lossAmount += bet.bet;
-                    const betFee = bet.bet * BetFee;
+                    lossAmount += bet.toWin;
+                    const betFee = bet.toWin * BetFee;
                     await bet.update({
                         status: 'Settled - Win',
-                        credited: bet.bet * 2,
+                        credited: bet.bet + bet.toWin,
                         fee: betFee,
                     });
                     if (user) {
-                        await user.update({ $inc: { balance: bet.bet * 2 - betFee } });
-                        const afterBalance = user.balance + bet.bet * 2;
+                        await user.update({ $inc: { balance: bet.bet + bet.toWin - betFee } });
+                        const afterBalance = user.balance + bet.bet + bet.toWin;
                         await FinancialLog.create({
                             financialtype: 'betwon',
                             uniqid: `BW${ID()}`,
                             user: bet.userId,
                             betId: bet._id,
-                            amount: bet.bet * 2,
+                            amount: bet.bet + bet.toWin,
                             method: 'betwon',
                             status: FinancialStatus.success,
                             beforeBalance: user.balance,
