@@ -45,7 +45,7 @@ export default class Loyalty extends Component {
         const { user } = this.props;
         this.setState({ loading: true });
         this.setState({ loading: false, data: { loyalty: 1000 } });
-        getLoyaltyPoints(user.userId)
+        getLoyaltyPoints()
             .then(({ data }) => {
                 this.setState({ loyalty: data.loyalty });
                 this.setLevel(data.loyalty)
