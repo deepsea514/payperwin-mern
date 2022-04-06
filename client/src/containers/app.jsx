@@ -694,9 +694,9 @@ class App extends Component {
                                                 {['/bets', '/history'].includes(pathname) && <BetStatus />}
                                                 {pathname == '/cashback' && <CashbackNames />}
                                             </ErrorBoundary>
-                                            <ErrorBoundary>
+                                            {!sidebarShowAccountLinks && <ErrorBoundary>
                                                 <Banner/>
-                                            </ErrorBoundary>
+                                            </ErrorBoundary>}
                                         </div>
                                     </div>
                                 }}
