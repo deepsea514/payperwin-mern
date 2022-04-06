@@ -346,6 +346,6 @@ export function getTeamMembers() {
 }
 
 // Loyalty
-export function getLoyaltyPoints(user_id) {
-    return FrontendAPI.get(`/loyalty/${user_id}`);
+export function getLoyaltyPoints() {
+    return FrontendAPI.get(`/loyalty`);
 }

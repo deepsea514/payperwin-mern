@@ -5538,17 +5538,27 @@ expressApp.get(
 )
 
 expressApp.get(
-    '/loyalty/:user_id',
+    '/loyalty',
+    isAuthenticated,
     async (req, res) => {
+        const user = req.user;
+        let timezoneOffset = -8;
+        if (isDstObserved) timezoneOffset = -7;
+        const today = new Date().addHours(timezoneOffset);
+        const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         try {
-            const loyalties = await LoyaltyLog.find({ user: req.params.user_id });
-            let points = 0;
-            if(loyalties && loyalties.length){
-                for(let i = 0; i < loyalties.length; i++){
-                    points += loyalties[i].point
+            let totalLoyalty = await LoyaltyLog.aggregate({
+                $match: {
+                    "user": user._id,
+                    createdAt: { $gte: fromTime },
                 }
-            }
-            return res.json({loyalty: points});
+            }, {
+                $group: {
+                    _id: null,
+                    loyalty: { $sum: "$point" }
+                }
+            });
+            return res.json({ loyalty: totalLoyalty[0].loyalty });
         } catch (error) {
             console.error(error);
             return res.json([]);
