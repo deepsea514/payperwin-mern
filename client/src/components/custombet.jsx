@@ -10,6 +10,7 @@ import CustomBetJoinModal from './CustomBetJoinModal';
 import { Link } from 'react-router-dom';
 import sportNameImage from '../helpers/sportNameImage';
 import { Tooltip } from '@material-ui/core';
+import { convertOddsFromAmerican, convertOddsToAmerican } from '../helpers/convertOdds';
 
 class CustomBet extends Component {
     constructor(props) {
@@ -75,7 +76,7 @@ class CustomBet extends Component {
     }
 
     render() {
-        const { betSlip, removeBet, timezone, user, showLoginModalAction } = this.props;
+        const { betSlip, removeBet, timezone, user, showLoginModalAction, oddsFormat } = this.props;
         const { data, error, shareModal, lineUrl, urlCopied, addHighStaker } = this.state;
 
         return (
@@ -163,7 +164,7 @@ class CustomBet extends Component {
                     {!data && <div><FormattedMessage id="PAGES.LINE.LOADING" /></div>}
                     {data && data.map((event, index) => {
                         if (!event) return null;
-                        const { startDate, name, options, uniqueid, _id, allowAdditional, maximumRisk, betAmount } = event;
+                        const { startDate, name, options, uniqueid, _id, allowAdditional, maximumRisk, betAmount, odds_type } = event;
 
                         return (
                             <div key={index} className="mt-2">
@@ -214,6 +215,7 @@ class CustomBet extends Component {
                                                                 type: 'moneyline',
                                                                 league: 'Side Bet',
                                                                 pick: index,
+                                                                odds: options.map(option => convertOddsToAmerican(option.odds, odds_type)),
                                                                 sportName: 'Side Bet',
                                                                 lineId: uniqueid,
                                                                 lineQuery: {
@@ -227,13 +229,18 @@ class CustomBet extends Component {
                                                                     index: null,
                                                                     options: options
                                                                 },
-                                                                pickName: `Pick: ${option}`,
+                                                                pickName: `Pick: ${option.value}`,
                                                                 index: null,
                                                                 origin: 'custom',
                                                                 subtype: null,
                                                             })}>
                                                         <div className="vertical-align">
-                                                            <div className="points">{option}</div>
+                                                            <div className="points">{option.value}</div>
+                                                            <div className="odds">
+                                                                <div className="new-odds">
+                                                                    {convertOddsFromAmerican(convertOddsToAmerican(option.odds, odds_type), oddsFormat)}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </span>
                                                 </div>
@@ -255,7 +262,8 @@ const mapStateToProps = (state) => ({
     search: state.frontend.search,
     timezone: state.frontend.timezone,
     pro_mode: state.frontend.pro_mode,
-    user: state.frontend.user
+    user: state.frontend.user,
+    oddsFormat: state.frontend.oddsFormat,
 });
 
 export default connect(mapStateToProps, frontend.actions)(CustomBet)
