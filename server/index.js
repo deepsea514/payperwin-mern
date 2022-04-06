@@ -5537,6 +5537,25 @@ expressApp.get(
     }
 )
 
+expressApp.get(
+    '/loyalty/:user_id',
+    async (req, res) => {
+        try {
+            const loyalties = await LoyaltyLog.find({ user: req.params.user_id });
+            let points = 0;
+            if(loyalties && loyalties.length){
+                for(let i = 0; i < loyalties.length; i++){
+                    points += loyalties[i].point
+                }
+            }
+            return res.json({loyalty: points});
+        } catch (error) {
+            console.error(error);
+            return res.json([]);
+        }
+    }
+)
+
 expressApp.post(
     '/bets/:id/cancel',
     isAuthenticated,

@@ -4418,6 +4418,8 @@ a:hover {
 .loyalty-levels img {
     width: 30px;
     height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .loyalty-levels img:not(:first-child) {
