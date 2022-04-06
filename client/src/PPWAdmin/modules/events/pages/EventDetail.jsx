@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import dateformat from "dateformat";
 import { getEventDetail } from "../redux/services";
 import config from "../../../../../../config.json";
+import { convertOddsToAmerican } from "../../../../helpers/convertOdds";
 const EventStatus = config.EventStatus;
 
 class EventDetail extends React.Component {
@@ -106,7 +107,7 @@ class EventDetail extends React.Component {
                                             <td>
                                                 <ul style={{ listStyle: 'initial' }}>
                                                     {event.options.map((option, index) => (
-                                                        <li key={index}>{option}</li>
+                                                        <li key={index}>{option.value}@ {convertOddsToAmerican(option.odds, event.odds_type)}</li>
                                                     ))}
                                                 </ul>
                                             </td>

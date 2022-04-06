@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import calculateNewOdds from '../helpers/calculateNewOdds';
 import checkOddsAvailable from '../helpers/checkOddsAvailable';
-import convertOdds from '../helpers/convertOdds';
+import { convertOddsFromAmerican } from '../helpers/convertOdds';
 
 export default class LineDetail extends Component {
 
@@ -125,15 +125,15 @@ export default class LineDetail extends Component {
                                     {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type, lineQuery.subtype) &&
                                         <>
                                             <div className="old-odds">
-                                                {convertOdds(home, oddsFormat)}
+                                                {convertOddsFromAmerican(home, oddsFormat)}
                                             </div>
                                             <div className="new-odds">
-                                                {convertOdds(newHome, oddsFormat)}
+                                                {convertOddsFromAmerican(newHome, oddsFormat)}
                                             </div>
                                         </>}
                                     {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'home', lineQuery.type, lineQuery.subtype) &&
                                         <div className="origin-odds">
-                                            {convertOdds(home, oddsFormat)}
+                                            {convertOddsFromAmerican(home, oddsFormat)}
                                         </div>}
                                 </div>}
                                 {started && <div className="odds">
@@ -170,7 +170,7 @@ export default class LineDetail extends Component {
                                     <div className="points"> Draw </div>
                                     {!started && <div className="odds">
                                         <div className="origin-odds">
-                                            {convertOdds(originOdds.draw, oddsFormat)}
+                                            {convertOddsFromAmerican(originOdds.draw, oddsFormat)}
                                         </div>
                                     </div>}
                                     {started && <div className="odds">
@@ -209,15 +209,15 @@ export default class LineDetail extends Component {
                                 {!started && <div className="odds">
                                     {checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type, lineQuery.subtype) && <>
                                         <div className="old-odds">
-                                            {convertOdds(originOdds.away, oddsFormat)}
+                                            {convertOddsFromAmerican(originOdds.away, oddsFormat)}
                                         </div>
                                         <div className="new-odds">
-                                            {convertOdds(newAway, oddsFormat)}
+                                            {convertOddsFromAmerican(newAway, oddsFormat)}
                                         </div>
                                     </>}
                                     {!checkOddsAvailable(originOdds, { home: newHome, away: newAway }, 'away', lineQuery.type, lineQuery.subtype) &&
                                         <div className="origin-odds">
-                                            {convertOdds(originOdds.away, oddsFormat)}
+                                            {convertOddsFromAmerican(originOdds.away, oddsFormat)}
                                         </div>}
                                 </div>}
                                 {started && <div className="odds">

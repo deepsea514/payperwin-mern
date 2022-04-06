@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import sportNameImage from "../helpers/sportNameImage";
 import { connect } from "react-redux";
 import * as frontend from "../redux/reducer";
-import convertOdds from '../helpers/convertOdds';
+import { convertOddsFromAmerican } from '../helpers/convertOdds';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 class Bet extends Component {
@@ -139,7 +139,7 @@ class Bet extends Component {
                     <div className="bet-type-league">{type} - {league}</div>
                     <div className="d-flex justify-content-between">
                         <span className="bet-pick">{pickName}</span>
-                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOdds(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
+                        <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOddsFromAmerican(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
                     </div>
                     {oddsChanged && <div className='text-danger'>Odds changed to {oddsChanged[pick]}</div>}
                     <div>
