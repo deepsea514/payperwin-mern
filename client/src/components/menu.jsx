@@ -333,6 +333,14 @@ class Menu extends Component {
                                         <FormattedMessage id="COMPONENTS.SIDEBAR.WITHDRAW" />
                                     </Link>
                                 </li>
+                                <li className={`nav-item ${pathname === '/loyalty' ? 'active' : ''}`}>
+                                    <Link to="/loyalty"
+                                        className="nav-link"
+                                        onClick={() => toggleField('menuOpen')}>
+                                        <i className="fas fa-money-check-alt" />
+                                        <FormattedMessage id="COMPONENTS.SIDEBAR.LOYALTY" />
+                                    </Link>
+                                </li>
                             </ul>
                         </>}
                         <li className="nav-item">
