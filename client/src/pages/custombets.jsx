@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { showErrorToast } from '../libs/toast';
 import QRCode from "react-qr-code";
+import { Tooltip } from '@material-ui/core';
 
 export default class CustomBets extends Component {
     constructor(props) {

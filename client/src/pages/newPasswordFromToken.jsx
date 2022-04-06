@@ -36,7 +36,7 @@ const Form = ({
                         onChange={handleChange}
                         onBlur={handleDirty}
                         error={errors.password !== undefined}
-                        helperText={errors.password}
+                        helperText={<span className='text-danger'>{errors.password}</span>}
                         margin="normal"
                         type="password"
                         fullWidth
@@ -50,7 +50,7 @@ const Form = ({
                         onChange={handleChange}
                         onBlur={handleDirty}
                         error={errors.cPassword !== undefined}
-                        helperText={errors.cPassword}
+                        helperText={<span className='text-danger'>{errors.cPassword}</span>}
                         margin="normal"
                         type="password"
                         fullWidth
