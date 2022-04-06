@@ -182,7 +182,6 @@ class Sport extends Component {
                 .filter(league => league)
                 .slice(8)
                 .map(league => league.originId);
-            // console.log(leagueIds)
             setCollapsedLeagues(leagueIds);
         } else {
             setCollapsedLeagues([]);

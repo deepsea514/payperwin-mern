@@ -1,7 +1,7 @@
 import React from "react";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
-import { getInputClassesInObject } from "../../../../helpers/getInputClasses";
+import { getInputClasses2 } from "../../../../helpers/getInputClasses";
 import { Modal } from "react-bootstrap";
 
 export default class SettleParlayBetModal extends React.Component {
@@ -86,7 +86,7 @@ export default class SettleParlayBetModal extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>{teamA} Score <span className="text-danger">*</span></label>
                                                 <input name="teamAScore" placeholder="Team A Score"
-                                                    className={`form-control ${getInputClassesInObject(formik, index, "teamAScore")}`}
+                                                    className={`form-control ${getInputClasses2(formik, index, "teamAScore")}`}
                                                     {...getFieldProps(index + ".teamAScore")}
                                                 />
                                                 {errors &&
@@ -103,7 +103,7 @@ export default class SettleParlayBetModal extends React.Component {
                                             <div className="form-group col-md-6">
                                                 <label>{teamB} Score <span className="text-danger">*</span></label>
                                                 <input name="teamBScore" placeholder="Team B Score"
-                                                    className={`form-control ${getInputClassesInObject(formik, index, "teamBScore")}`}
+                                                    className={`form-control ${getInputClasses2(formik, index, "teamBScore")}`}
                                                     {...getFieldProps(index + ".teamBScore")}
                                                 />
                                                 {errors &&

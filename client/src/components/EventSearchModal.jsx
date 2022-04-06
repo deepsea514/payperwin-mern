@@ -138,7 +138,6 @@ export default class EventSearchModal extends React.Component {
         });
         const { dateIndex, dateOptions } = this.state;
         searchEvent({ sport: sportIndex, league: leagueIndex, date: dateOptions[dateIndex] }).then(({ data }) => {
-            console.log(data)
             this.setState({ eventOptions: data, loadingEvent: false });
         }).catch(() => {
             this.setState({ eventOptions: [], loadingEvent: false });
