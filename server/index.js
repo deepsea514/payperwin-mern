@@ -1014,7 +1014,7 @@ expressApp.post(
                         continue;
                     }
                     if (options[pick]) {
-                        const toWin = calculateToWinFromBet(toBet, 100);
+                        const toWin = calculateToWinFromBet(toBet, odds[pick]);
                         if (toWin > maximumWin) {
                             errors.push(`${eventName} wager could not be placed. Exceed maximum win amount.`);
                             continue;
@@ -1028,7 +1028,7 @@ expressApp.post(
                                     userId: user._id,
                                     transactionID: `B${ID()}`,
                                     pick: pick,
-                                    pickOdds: 100,
+                                    pickOdds: odds[pick],
                                     oldOdds: null,
                                     pickName: pickName,
                                     bet: toBet,
@@ -1059,7 +1059,7 @@ expressApp.post(
                                             <li>Customer: ${user.email} (${user.firstname} ${user.lastname})</li>
                                             <li>Event: ${eventName}</li>
                                             <li>Wager: $${toBet.toFixed(2)}</li>
-                                            <li>Pick: ${options[pick]}</li>
+                                            <li>Pick: ${options[pick].value}</li>
                                             <li>Start Date/Time: ${startDateString}</li>
                                             <li>End Date/Time: ${endDateString}</li>
                                             <li>Win: $${toWin.toFixed(2)}</li>
@@ -3329,23 +3329,6 @@ expressApp.get(
     async (req, res) => {
         const { id } = req.query;
         try {
-            // if (id) {
-            //     const customBet = await Event.findOne({
-            //         uniqueid: id,
-            //         startDate: { $gte: new Date() },
-            //         status: EventStatus.pending.value,
-            //         approved: true,
-            //     }).populate('user', ['email', 'firstname', 'lastname'])
-            //     return res.json([customBet]);
-            // } else {
-            //     const customBets = await Event.find({
-            //         startDate: { $gte: new Date() },
-            //         status: EventStatus.pending.value,
-            //         approved: true,
-            //         public: true,
-            //     }).sort({ createdAt: -1 }).populate('user', ['email', 'firstname', 'lastname']);
-            //     return res.json(customBets);
-            // }
             const searchObj = {
                 startDate: { $gte: new Date() },
                 status: EventStatus.pending.value,
@@ -3375,7 +3358,8 @@ expressApp.get(
                         _id: 1,
                         allowAdditional: 1,
                         maximumRisk: 1,
-                        betAmount: { $sum: '$bets.bet' }
+                        betAmount: { $sum: '$bets.bet' },
+                        odds_type: 1,
                     }
                 },
                 { $sort: { createdAt: -1 } }
@@ -4854,7 +4838,7 @@ expressApp.post(
                     user: user._id,
                     amount: maximumRisk
                 }],
-                odds_type:odds_type
+                odds_type: odds_type
             });
 
             await FinancialLog.create({

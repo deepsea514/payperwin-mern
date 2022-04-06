@@ -18,12 +18,12 @@ class Bet extends Component {
         const { target: { name, value } } = e
         const stateChange = {};
         const { bet, updateBet } = this.props
-        const { odds, pick, lineQuery, origin } = bet;
+        const { odds, pick, lineQuery } = bet;
         if (name === 'stake') {
             const stake = Math.abs(Number(Number(value).toFixed(2)));
             stateChange[name] = stake;
             // calc win
-            const americanOdds = origin == 'custom' ? 100 : odds[pick];
+            const americanOdds = odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : -(100 / americanOdds);
             const calculateWin = (stake * 1) * decimalOdds;
             const roundToPennies = Number((calculateWin).toFixed(2));
@@ -37,7 +37,7 @@ class Bet extends Component {
             const win = Math.abs(Number(Number(value).toFixed(2)), 20);
             stateChange[name] = win;
             // calc stake
-            const americanOdds = origin == 'custom' ? 100 : odds[pick];
+            const americanOdds = odds[pick];
             const decimalOdds = americanOdds > 0 ? (americanOdds / 100) : - (100 / americanOdds);
             const calculateStake = (win / 1) / decimalOdds;
             const roundToPennies = Number((calculateStake).toFixed(2));
@@ -79,7 +79,7 @@ class Bet extends Component {
                         <div className="bet-type-league">{league}</div>
                         <div className="d-flex justify-content-between">
                             <span className="bet-pick">{pickName}</span>
-                            <span className="bet-pick-odds">{oddsFormat == 'decimal' ? '2.00' : '+100'}</span>
+                            <span className="bet-pick-odds">{oddsFormat == 'decimal' ? convertOddsFromAmerican(odds[pick], oddsFormat) : ((odds[pick] > 0 ? '+' : '') + odds[pick])}</span>
                         </div>
                         <div>
                             <input
