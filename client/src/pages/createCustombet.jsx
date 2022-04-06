@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { FormikWizard } from "formik-wizard-form";
 import * as Yup from 'yup';
-import { getInputClasses, getInputClassesInObject } from '../helpers/getInputClasses';
+import { getInputClasses, getInputClasses3 } from '../helpers/getInputClasses';
 import CustomDatePicker from '../components/customDatePicker';
 import { createCustomBet } from '../redux/services';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
@@ -46,7 +46,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
             {showEventModal && <EventSearchModal
                 onClose={() => {
                     setShowEventModal(false);
-                    setFieldValue('type', 'custom')
+                    setFieldValue('type', 'custom');
                 }}
                 onProceed={(event) => {
                     if (event) {
@@ -102,9 +102,8 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     onChange={(val) => {
                         setFieldTouched("startDate", true);
                         setFieldValue("startDate", val);
-                        const endDate = new Date(val);
                         setFieldTouched("endDate", true);
-                        setFieldValue("endDate", endDate.addHours(5));
+                        setFieldValue("endDate", new Date(val).addHours(5));
                     }}
                     placeholder="Enter Start Date"
                     dateFormat="MMM d, yyyy hh:mm aa"
@@ -179,7 +178,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
     )
 }
 
-const OptionDetails = ({ touched, errors, values, setFieldValue, getFieldProps }) => {
+const OptionDetails = ({ touched, errors, values, setFieldValue, setFieldTouched, setFieldError, getFieldProps }) => {
     const deleteOption = (index) => {
         if (values.options.length <= 2) return;
         values.options.splice(index, 1);
@@ -187,32 +186,124 @@ const OptionDetails = ({ touched, errors, values, setFieldValue, getFieldProps }
     }
 
     const insertOption = () => {
-        values.options.push("");
+        values.options.push({ value: "", odds: 100 });
         setFieldValue('options', values.options);
+    }
+
+    const onOddsChange = (evt, index) => {
+        const value = Number(evt.target.value);
+        setFieldTouched(`options.${index}.odds`, true, false);
+        setFieldValue(`options.${index}.odds`, value, false);
+        if (isNaN(value)) {
+            setFieldError(`options.${index}.odds`, 'Please input valid odds.');
+            return;
+        }
+        if (values.odds_type == 'american') {
+            if (value < 100 && value > -100) {
+                setFieldError(`options.${index}.odds`, 'Invalid Odds. American Odds can have only -Infinity to -100 or +100 to Infinity.');
+                return;
+            }
+        } else {
+            if (value <= 1) {
+                setFieldError(`options.${index}.odds`, 'Invalid Odds. Decimal Odds should be greater than 1.0.');
+                return;
+            }
+        }
+        setFieldError(`options.${index}.odds`, null);
+    }
+
+    const changeOdds = (odds_type) => {
+        if (values.odds_type == odds_type) return;
+
+        setFieldValue('odds_type', odds_type);
+        const options = values.options.map((option, index) => {
+            // Decimal to American
+            if (odds_type == 'american') {
+                if (errors.options && errors.options[index] && errors.options[index].odds) {
+                    setFieldError(`options.${index}.odds`, null);
+                    return {
+                        value: option.value,
+                        odds: 100
+                    }
+                }
+                if (option.odds >= 2) {
+                    return {
+                        value: option.value,
+                        odds: parseInt((option.odds - 1) * 100)
+                    }
+                }
+                return {
+                    value: option.value,
+                    odds: parseInt(-100 / (option.odds - 1))
+                }
+            }
+            // American to Deciman
+            if (errors.options && errors.options[index] && errors.options[index].odds) {
+                setFieldError(`options.${index}.odds`, null);
+                return {
+                    value: option.value,
+                    odds: 2.0
+                }
+            }
+            if (option.odds > 0) {
+                return {
+                    value: option.value,
+                    odds: Number((1 + (option.odds / 100)).toFixed(2))
+                }
+            }
+            return {
+                value: option.value,
+                odds: Number((1 + (100 / (-option.odds))).toFixed(2))
+            }
+        });
+        setFieldValue('options', options);
     }
 
     return (
         <>
             <p>Enter the bet options. Example, the names of the bridesmaids</p>
             {values.options.map((option, index) => (
-                <div className="form-group" key={index}>
-                    <label><span>Option {index + 1}</span></label>
-                    <div className='input-group'>
-                        <input
-                            maxLength="200"
-                            type="text"
-                            name={`options.${index}`}
-                            placeholder=""
-                            className={`form-control ${getInputClassesInObject({ touched, errors }, "options", index)}`}
-                            autoComplete="off"
-                            {...getFieldProps(`options.${index}`)}
-                        />
-                        <div className="input-group-append">
-                            <span className="input-group-text cursor-pointer" onClick={() => deleteOption(index)}><i className='fas fa-minus' /></span>
+                <React.Fragment key={index}>
+                    <div className="form-group mb-0 mt-4">
+                        <label className='mb-1'><span>Option {index + 1}</span></label>
+                        <div className='input-group'>
+                            <input
+                                maxLength="200"
+                                type="text"
+                                name={`options.${index}.value`}
+                                placeholder=""
+                                className={`form-control ${getInputClasses3({ touched, errors }, "options", index, 'value')}`}
+                                autoComplete="off"
+                                {...getFieldProps(`options.${index}.value`)}
+                            />
+                            <div className="input-group-append">
+                                <span className="input-group-text cursor-pointer" onClick={() => deleteOption(index)}><i className='fas fa-minus' /></span>
+                            </div>
                         </div>
+                        {errors.options && errors.options[index] && errors.options[index].value && <div className="form-error">{errors.options[index].value}</div>}
                     </div>
-                    {errors.options && errors.options[index] && <div className="form-error">{errors.options[index]}</div>}
-                </div>
+                    <div className="form-group mb-0">
+                        <label className='my-1'><span>Odds</span></label>
+                        <div className='input-group'>
+                            <input
+                                name={`options.${index}.odds`}
+                                placeholder=""
+                                type='number'
+                                className={`form-control ${getInputClasses3({ touched, errors }, "options", index, 'odds')}`}
+                                autoComplete="off"
+                                {...getFieldProps(`options.${index}.odds`)}
+                                onChange={(evt) => onOddsChange(evt, index)}
+                            />
+                            <div className="input-group-append">
+                                <span className={"input-group-text cursor-pointer" + (values.odds_type == 'american' ? ' text-danger' : '')}
+                                    onClick={() => changeOdds('american')}>American</span>
+                                <span className={"input-group-text cursor-pointer" + (values.odds_type != 'american' ? ' text-danger' : '')}
+                                    onClick={() => changeOdds('decimal')}>Decimal</span>
+                            </div>
+                        </div>
+                        {errors.options && errors.options[index] && errors.options[index].odds && <div className="form-error">{errors.options[index].odds}</div>}
+                    </div>
+                </React.Fragment>
             ))}
             <button className='form-button' onClick={insertOption}>Add another bet option</button>
         </>
@@ -253,7 +344,7 @@ const reviewEvent = ({ values }) => {
                         <td>
                             <ul style={{ listStyle: 'initial' }}>
                                 {values.options.map((option, index) => (
-                                    <li key={index}>{option}</li>
+                                    <li key={index}>{option.value}@ {option.odds}</li>
                                 ))}
                             </ul>
                         </td>
@@ -310,7 +401,11 @@ export default class CreateCustomBet extends Component {
                             visibility: 'public',
                             maximumRisk: 0,
                             allowAdditional: true,
-                            options: ["", ""],
+                            options: [
+                                { value: "", odds: 100 },
+                                { value: "", odds: 100 }
+                            ],
+                            odds_type: 'american'
                         }}
                         onSubmit={this.onSubmit}
                         validateOnNext
@@ -341,7 +436,13 @@ export default class CreateCustomBet extends Component {
                             {
                                 component: OptionDetails,
                                 validationSchema: Yup.object().shape({
-                                    options: Yup.array().of(Yup.string().required("Option Value is required.")),
+                                    options: Yup.array().of(
+                                        Yup.object().shape({
+                                            value: Yup.string().required("Option Value is required."),
+                                            odds: Yup.number().required("Odds is required.")
+                                        })
+                                    ),
+                                    odds_type: Yup.string()
                                 })
                             },
                             { component: reviewEvent, }
@@ -371,7 +472,7 @@ export default class CreateCustomBet extends Component {
                                             disabled={isNextDisabled || isSubmitting}
                                             onClick={handleNext}
                                             type="button">
-                                            {currentStepIndex === 2 ? "Finish" : "Next"}
+                                            {currentStepIndex === 3 ? "Finish" : "Next"}
                                         </button>
                                     </div>
                                 </div>

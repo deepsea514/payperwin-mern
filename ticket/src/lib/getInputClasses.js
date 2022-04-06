@@ -8,7 +8,7 @@ export const getInputClasses = (formik, fieldname) => {
     return "";
 };
 
-export const getInputClassesInObject = (formik, fieldname, childfieldname) => {
+export const getInputClasses2 = (formik, fieldname, childfieldname) => {
     if (!formik.touched[fieldname] ||
         !formik.errors[fieldname]) {
         return "";
