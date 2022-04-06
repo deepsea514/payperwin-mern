@@ -90,30 +90,55 @@ class CheckoutForm extends React.Component {
 
         const { elements, stripe } = this.props;
         const cardElement = elements.getElement(CardElement);
+        // stripe.createPaymentMethod({
+        //     type: 'card',
+        //     card: cardElement,
+        //     billing_details: {
+        //         address: {
+        //             country: 'CA',
+        //             city: values.city,
+        //             line1: values.address,
+        //             line2: values.address2,
+        //             postal_code: values.zipcode,
+        //             state: values.region
+        //         },
+        //         email: values.email,
+        //         name: values.firstname + ' ' + values.lastname,
+        //         phone: values.phone
+        //     }
+        // }).then(({ error, paymentMethod }) => {
+        //     if (error) {
+        //         formik.setSubmitting(false);
+        //         errorMessage('Cannot Purchase Ticket. Please try again later.');
+        //     } else {
+        //         const { id } = paymentMethod;
+        //         checkoutSubmit({ ...values, session_id, cart, token: id }).then(({ data }) => {
+        //             const { success, error } = data;
+        //             if (success) {
+        //                 successMessage('Ticket Purchased Successfully.');
+        //                 clearFromCartAction();
+        //                 formik.setSubmitting(false);
+        //                 return;
+        //             }
+        //             errorMessage(error);
+        //             formik.setSubmitting(false);
+        //         }).catch(() => {
+        //             errorMessage('Cannot Purchase Ticket. Please try again later.');
+        //             formik.setSubmitting(false);
+        //         })
+        //     }
+        // }).catch(error => {
+        //     console.log(error)
+        //     formik.setSubmitting(false);
+        //     errorMessage('Cannot Purchase Ticket. Please try again later.');
+        // })
 
-        stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-            billing_details: {
-                address: {
-                    country: 'CA',
-                    city: values.city,
-                    line1: values.address,
-                    line2: values.address2,
-                    postal_code: values.zipcode,
-                    state: values.region
-                },
-                email: values.email,
-                name: values.firstname + ' ' + values.lastname,
-                phone: values.phone
-            }
-        }).then(({ error, paymentMethod }) => {
+        stripe.createToken(cardElement).then(({ error, token }) => {
             if (error) {
                 formik.setSubmitting(false);
                 errorMessage('Cannot Purchase Ticket. Please try again later.');
             } else {
-                console.log(paymentMethod)
-                const { id } = paymentMethod;
+                const { id } = token;
                 checkoutSubmit({ ...values, session_id, cart, token: id }).then(({ data }) => {
                     const { success, error } = data;
                     if (success) {

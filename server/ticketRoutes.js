@@ -357,7 +357,6 @@ ticketRouter.post(
             }
 
             console.log(JSON.stringify(orderObject))
-
             try {
                 const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v10/orders', { order: orderObject })
                 // if(response && !response.error && !response.errors) {
