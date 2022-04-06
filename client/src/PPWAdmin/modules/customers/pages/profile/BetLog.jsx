@@ -5,7 +5,7 @@ import { getCustomerBets } from "../../redux/services";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import CustomPagination from "../../../../components/CustomPagination.jsx";
 import { Tabs, Tab } from "react-bootstrap";
-import convertOdds from '../../../../../helpers/convertOdds.js';
+import { convertOddsFromAmerican } from '../../../../../helpers/convertOdds.js';
 import { Dropdown } from "react-bootstrap";
 import { DropdownMenuCustomer } from "./DropdownMenuCustomer";
 
@@ -149,7 +149,7 @@ class BetLog extends React.Component {
                     </span>
                 </td>
                 <td className="pl-0">
-                    {bet.pickName} @ {convertOdds(bet.pickOdds, 'american')}
+                    {bet.pickName} @ {convertOddsFromAmerican(bet.pickOdds, 'american')}
                 </td>
                 <td className="pl-0">
                     <span className=" font-weight-500">
