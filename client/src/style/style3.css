@@ -2373,7 +2373,7 @@ a.fav-link:hover {
 }
 
 .events-group {
-    padding: 0 20px;
+    padding: 0 6px;
     max-height: 200px;
     overflow-y: auto;
     display: flex;
@@ -2383,11 +2383,11 @@ a.fav-link:hover {
 .event-item {
     cursor: pointer;
     border-bottom: 1px solid #888;
-    padding: 6px 0;
+    padding: 6px 10px;
 }
 
 .event-item.selected {
-    border-color: #ED254E;
+    border: 1px solid #ED254E;
     opacity: 0.9;
 }
 

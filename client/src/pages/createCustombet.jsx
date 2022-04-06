@@ -52,6 +52,7 @@ const EventDetails = ({ touched, errors, values, setFieldTouched, setFieldValue,
                     if (event) {
                         setFieldValue('name', event.home.name + ' VS ' + event.away.name);
                         setFieldValue('startDate', new Date(event.startDate));
+                        setFieldValue('endDate', new Date(event.startDate).addHours(5));
                         setShowEventModal(false);
                     }
                 }} />}
@@ -333,7 +334,7 @@ export default class CreateCustomBet extends Component {
                                     maximumRisk: Yup.number()
                                         .required("Maximum Risk Amount is Required.")
                                         .min(200, "Should be at least 200 CAD.")
-                                        .max(user.balance, <>The maximum risk entered exceed your account balance. <Link to='/deposit' target='_blank'>Make a deposit</Link>.</>),
+                                        .max(user.balance, <>The maximum risk entered exceed your account balance. <Link to='/deposit' target='_blank'><b>Make a deposit</b></Link>.</>),
                                     allowAdditional: Yup.boolean(),
                                 })
                             },
