@@ -4,66 +4,9 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import ReactApexChart from "react-apexcharts";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
-import { getLoyaltyPoints, claimReward } from '../redux/services';
+import { getLoyaltyPoints, claimReward, getClaims } from '../redux/services';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
-const LEVELS = [
-    {
-        title: 'Junior',
-        level: 'Junior',
-        image: '/images/loyalty/level1_junior.png',
-        milestones: [
-            { points: 1500 },
-            { points: 3000 },
-            { points: 4500 },
-            { points: 6000 }
-        ],
-    },
-    {
-        title: 'Agent',
-        level: 'Agent',
-        image: '/images/loyalty/level2_agent.png',
-        milestones: [
-            { points: 7500 },
-            { points: 9000 },
-            { points: 10500 },
-            { points: 13000 }
-        ],
-    },
-    {
-        title: 'Rookie',
-        level: 'Rookie',
-        image: '/images/loyalty/level3_rookie.png',
-        milestones: [
-            { points: 15000 },
-            { points: 18000 },
-            { points: 21000 },
-            { points: 26000 }
-        ],
-    },
-    {
-        title: 'Pro',
-        level: 'Pro',
-        image: '/images/loyalty/level4_pro.png',
-        milestones: [
-            { points: 30000 },
-            { points: 35000 },
-            { points: 45000 },
-            { points: 52000 }
-        ],
-    },
-    {
-        title: 'All Star',
-        level: 'AllStar',
-        image: '/images/loyalty/level5_allstar.png',
-        milestones: [
-            { points: 60000 },
-            { points: 70000 },
-            { points: 90000 },
-            { points: 150000 }
-        ],
-    },
-];
 
 export default class Loyalty extends Component {
     constructor(props) {
@@ -71,11 +14,67 @@ export default class Loyalty extends Component {
         this.state = {
             error: null,
             loading: false,
-            data: null,
-            selectedLevel: LEVELS[0].level,
-            levelRuleString: `0 - ${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points)}`,
+            LEVELS: [
+                {
+                    title: 'Junior',
+                    level: 'Junior',
+                    image: '/images/loyalty/level1_junior.png',
+                    milestones: [
+                        { points: 1500, isClaimed: false, credit: '+$0.50' },
+                        { points: 3000, isClaimed: false, credit: '+$1.00' },
+                        { points: 4500, isClaimed: false, credit: '+$1.50' },
+                        { points: 6000, isClaimed: false, credit: '+$2.00' }
+                    ],
+                },
+                {
+                    title: 'Agent',
+                    level: 'Agent',
+                    image: '/images/loyalty/level2_agent.png',
+                    milestones: [
+                        { points: 7500, isClaimed: false, credit: '+$2.50' },
+                        { points: 9000, isClaimed: false, credit: '+$3.00' },
+                        { points: 10500, isClaimed: false, credit: '+$3.50' },
+                        { points: 13000, isClaimed: false, credit: '+$4.00' }
+                    ],
+                },
+                {
+                    title: 'Rookie',
+                    level: 'Rookie',
+                    image: '/images/loyalty/level3_rookie.png',
+                    milestones: [
+                        { points: 15000, isClaimed: false, credit: '+$4.50' },
+                        { points: 18000, isClaimed: false, credit: '+$5.00' },
+                        { points: 21000, isClaimed: false, credit: '+$5.50' },
+                        { points: 26000, isClaimed: false, credit: '+$6.00' }
+                    ],
+                },
+                {
+                    title: 'Pro',
+                    level: 'Pro',
+                    image: '/images/loyalty/level4_pro.png',
+                    milestones: [
+                        { points: 30000, isClaimed: false, credit: '+$6.50' },
+                        { points: 35000, isClaimed: false, credit: '+$7.00' },
+                        { points: 45000, isClaimed: false, credit: '+$7.50' },
+                        { points: 52000, isClaimed: false, credit: '+$8.00' }
+                    ],
+                },
+                {
+                    title: 'All Star',
+                    level: 'AllStar',
+                    image: '/images/loyalty/level5_allstar.png',
+                    milestones: [
+                        { points: 60000, isClaimed: false, credit: '+$8.50' },
+                        { points: 70000, isClaimed: false, credit: '+$9.00' },
+                        { points: 90000, isClaimed: false, credit: '+$9.50' },
+                        { points: 150000, isClaimed: false, credit: '+$10.00' }
+                    ],
+                },
+            ],
+            selectedLevel: 'Junior',
+            levelRuleString: `0 - 6,000`,
             loyalty: 0,
-            level: LEVELS[0].level
+            level: 'Junior',
         };
     }
 
@@ -94,26 +93,51 @@ export default class Loyalty extends Component {
 
         if (!prevUser && user) {
             this.setState({ error: null });
-            this.getLoyaltyPoints();
         }
     }
 
     getLoyaltyPoints = () => {
         this.setState({ loading: true });
-        this.setState({ loading: false, data: { loyalty: 1000 } });
         getLoyaltyPoints()
             .then(({ data }) => {
                 this.setState({ loyalty: data.loyalty });
                 this.setLevel(data.loyalty)
+                getClaims()
+                    .then(({ data }) => {
+                        const claims = data;
+                        const { LEVELS } = this.state;
+                        this.setState({ loading: false });
+                        if (claims.length) {
+                            this.setState({
+                                LEVELS: LEVELS.map((level) => {
+                                    return {
+                                        ...level,
+                                        milestones: level.milestones.map(milestone => {
+                                            const claimIndex = claims.findIndex(claim => claim.points == milestone.points);
+                                            if (claimIndex == -1) {
+                                                return milestone;
+                                            }
+                                            return {
+                                                ...milestone,
+                                                isClaimed: true
+                                            }
+                                        })
+                                    }
+                                })
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        this.setState({ loading: false });
+                    })
             })
-            .catch(() => { })
-    }
-
-    capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+            .catch(() => {
+                this.setState({ loading: false });
+            })
     }
 
     setLevel = (loyalty) => {
+        const { LEVELS } = this.state;
         if (loyalty <= LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points) {
             this.setState({ level: LEVELS[0].level, selectedLevel: LEVELS[0].level, levelRuleString: `0 - ${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points)}` });
             return;
@@ -138,19 +162,38 @@ export default class Loyalty extends Component {
     }
 
     claim = (points) => {
+        const { LEVELS } = this.state;
+
         claimReward(points)
-        .then(({data}) => {
-            if(data.success)
-                console.log("Claimed successfully.");
-            else
-                console.error(data.error);
-        }).catch(() => {
-            console.error("Internal Error.");
-        })
+            .then(({ data }) => {
+                if (data.success) {
+                    this.setState({
+                        LEVELS: LEVELS.map((level) => {
+                            return {
+                                ...level,
+                                milestones: level.milestones.map(milestone => {
+                                    if (milestone.points != points) {
+                                        return milestone;
+                                    }
+                                    return {
+                                        ...milestone,
+                                        isClaimed: true
+                                    }
+                                })
+                            }
+                        })
+                    });
+                }
+                else {
+                    console.error(data.error);
+                }
+            }).catch((error) => {
+                console.error(error);
+            })
     }
 
     renderMilestones = () => {
-        const { loyalty } = this.state;
+        const { loyalty, LEVELS } = this.state;
         return <div className="pt-2">
             {LEVELS.map((level, pros_index) =>
                 <React.Fragment key={pros_index}>
@@ -172,7 +215,8 @@ export default class Loyalty extends Component {
                         </div>
                     </div>
                     {level.milestones.map((milestone, index) =>
-                        <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
+
+                        !milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
                             <div className="p-2 align-self-center">
                                 <div className="symbol symbol-30 mr-1 align-self-start">
                                     <div className="symbol-label m-1 bg-dark"
@@ -190,7 +234,7 @@ export default class Loyalty extends Component {
                                 <ProgressBar now={100 / milestone.points * loyalty} visuallyhidden="true" style={{ height: '5px' }} />
                                 {milestone.points > loyalty && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points - loyalty)} points needed</div>}
                             </div>
-                            <div className="align-self-center mr-2">
+                            {!milestone.isClaimed && <div className="align-self-center mr-2">
                                 {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark" style={{ borderColor: '#ED254E' }}
                                     onClick={() => this.claim(milestone.points)}>
                                     <div style={{ color: '#ED254E' }}>Claim</div>
@@ -198,7 +242,7 @@ export default class Loyalty extends Component {
                                 {milestone.points > loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-dark" disabled style={{ cursor: 'not-allowed' }}>
                                     <div className="text-secondary">Claim</div>
                                 </button>}
-                            </div>
+                            </div>}
                         </div>
                     )}
                 </React.Fragment>
@@ -207,7 +251,7 @@ export default class Loyalty extends Component {
     }
 
     getCurrentLevelStateString = () => {
-        const { loyalty, selectedLevel } = this.state;
+        const { loyalty, selectedLevel, LEVELS } = this.state;
         let curLevel = LEVELS.filter(lv => lv.level == selectedLevel);
         let preIndex = curLevel[0].milestones.findIndex(mile => mile.points > loyalty).toString();
         if (preIndex < 0) preIndex = curLevel[0].milestones.length;
@@ -215,9 +259,61 @@ export default class Loyalty extends Component {
 
     }
 
+    renderClaims = () => {
+        const { LEVELS } = this.state;
+        return <div className="pt-2">
+            {LEVELS.map((level, pros_index) =>
+                <React.Fragment key={pros_index}>
+                    <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
+                        <div className="p-2 align-self-center">
+                            <div className="symbol symbol-30 mr-1 align-self-start">
+                                <div className="symbol-label m-1 "
+                                    style={{
+                                        backgroundImage: `url(${level.image})`,
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                        <div className="align-self-center">
+                            <div className="font-weight-bolder font-size-md">{level.title}</div>
+                        </div>
+                        <div className="pl-3 align-self-center w-50">
+                            <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(level.milestones[level.milestones.length - 1].points)} points</div>
+                        </div>
+                    </div>
+                    {level.milestones.map((milestone, index) =>
+
+                        milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
+                            <div className="p-2 align-self-center">
+                                <div className="symbol symbol-30 mr-1 align-self-start">
+                                    <div className="symbol-label m-1 bg-dark"
+                                        style={{
+                                            backgroundImage: `url(/images/loyalty/milestone_flag.png)`,
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+                            <div className="align-self-center">
+                                <div className="font-weight-bolder font-size-md">Milestone {pros_index * level.milestones.length + index + 1}</div>
+                            </div>
+                            <div className="pl-3 align-self-center w-50">
+                                <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
+                                <div className="font-weight-bolder font-size-lg text-success">{milestone.credit}</div>
+                            </div>
+                            <div className="align-self-center mr-2">
+                                <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-success" disabled style={{ cursor: 'not-allowed' }}>
+                                    <div className="text-success">Claimed</div>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </React.Fragment>
+            )}
+        </div>
+    }
 
     render() {
-        const { loading, error, data, selectedLevel, levelRuleString, loyalty, level } = this.state;
+        const { loading, error, selectedLevel, levelRuleString, loyalty, level, LEVELS } = this.state;
 
         return (
             <div className="col-in px-3">
@@ -229,7 +325,7 @@ export default class Loyalty extends Component {
                     duration={800} />
                 </center>}
                 {error && <p>Error...</p>}
-                {data && <div className="row">
+                <div className="row">
                     <div className="col-md-5">
                         <div className="shadow p-2">
                             <div className="d-flex align-items-center justify-content-center bg-dark p-2 rounded">
@@ -294,15 +390,13 @@ export default class Loyalty extends Component {
                                         {this.renderMilestones()}
                                     </Tab>
                                     <Tab eventKey="claimed" tabClassName='loyalty-tabitem' title="Claimed Milestones" className="border-0">
-                                        <div className="pt-2">
-
-                                        </div>
+                                        {this.renderClaims()}
                                     </Tab>
                                 </Tabs>
                             </div>
                         </div>
                     </div>
-                </div>}
+                </div>
             </div>
         );
     }
