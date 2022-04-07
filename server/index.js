@@ -27,6 +27,7 @@ const Service = require('./models/service');
 const SharedLine = require('./models/sharedline');
 const PrizeLog = require('./models/prizelog');
 const LoyaltyLog = require('./models/loyaltylog');
+const ClaimLog = require('./models/ClaimLog');
 const ErrorLog = require('./models/errorlog');
 const Favorites = require('./models/favorites');
 const GiftCard = require('./models/giftcard');
@@ -5562,6 +5563,31 @@ expressApp.get(
         } catch (error) {
             console.error(error);
             return res.json([]);
+        }
+    }
+)
+
+expressApp.post(
+    '/claim',
+    isAuthenticated,
+    async (req, res) => {
+        const user = req.user;
+        const { points } = req.body;
+        try {
+            let claim = await ClaimLog.findOne({
+                user: user._id,
+                points: points
+            });
+            if (claim != null)
+                return res.json({ success: false, error: 'Duplicated claim.' });
+
+            await ClaimLog.create({
+                user: user._id,
+                points: points
+            });
+            return res.json({ success: true });
+        } catch (error) {
+            return res.json({ success: false, error: 'Cannot claim.' });
         }
     }
 )

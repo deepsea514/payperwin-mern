@@ -349,3 +349,7 @@ export function getTeamMembers() {
 export function getLoyaltyPoints() {
     return FrontendAPI.get(`/loyalty`);
 }
+
+export function claimReward(points) {
+    return FrontendAPI.post(`/claim`, {points});
+}
