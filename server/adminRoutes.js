@@ -28,7 +28,6 @@ const FAQItem = require('./models/faq_item');
 const BetPool = require('./models/betpool');
 const ErrorLog = require('./models/errorlog');
 const LoyaltyLog = require('./models/loyaltylog');
-const ClaimLog = require('./models/ClaimLog');
 const ParlayBetPool = require('./models/parlaybetpool');
 const GiftCard = require('./models/giftcard');
 const PromotionBanner = require('./models/promotion_banner');
