@@ -7,6 +7,63 @@ import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
 import { getLoyaltyPoints } from '../redux/services';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
+const LEVELS = [
+    {
+        title: 'Junior',
+        level: 'Junior',
+        image: '/images/loyalty/level1_junior.png',
+        milestones: [
+            { points: 1500 },
+            { points: 3000 },
+            { points: 4500 },
+            { points: 6000 }
+        ],
+    },
+    {
+        title: 'Agent',
+        level: 'Agent',
+        image: '/images/loyalty/level2_agent.png',
+        milestones: [
+            { points: 7500 },
+            { points: 9000 },
+            { points: 10500 },
+            { points: 13000 }
+        ],
+    },
+    {
+        title: 'Rookie',
+        level: 'Rookie',
+        image: '/images/loyalty/level3_rookie.png',
+        milestones: [
+            { points: 15000 },
+            { points: 18000 },
+            { points: 21000 },
+            { points: 26000 }
+        ],
+    },
+    {
+        title: 'Pro',
+        level: 'Pro',
+        image: '/images/loyalty/level4_pro.png',
+        milestones: [
+            { points: 30000 },
+            { points: 35000 },
+            { points: 45000 },
+            { points: 52000 }
+        ],
+    },
+    {
+        title: 'All Star',
+        level: 'AllStar',
+        image: '/images/loyalty/level5_allstar.png',
+        milestones: [
+            { points: 60000 },
+            { points: 70000 },
+            { points: 90000 },
+            { points: 150000 }
+        ],
+    },
+];
 
 export default class Loyalty extends Component {
     constructor(props) {
@@ -15,10 +72,10 @@ export default class Loyalty extends Component {
             error: null,
             loading: false,
             data: null,
-            selectedLevel: 'Junior',
-            selectedLevelSpending: 3000,
+            selectedLevel: LEVELS[0].level,
+            levelRuleString: `0 - ${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points)}`,
             loyalty: 0,
-            level: 'Junior'
+            level: LEVELS[0].level
         };
     }
 
@@ -42,7 +99,6 @@ export default class Loyalty extends Component {
     }
 
     getLoyaltyPoints = () => {
-        const { user } = this.props;
         this.setState({ loading: true });
         this.setState({ loading: false, data: { loyalty: 1000 } });
         getLoyaltyPoints()
@@ -58,27 +114,96 @@ export default class Loyalty extends Component {
     }
 
     setLevel = (loyalty) => {
-        if (loyalty <= 3000) {
-            this.setState({ level: 'Junior', selectedLevel: 'Junior', selectedLevelSpending: 3000});
+        if (loyalty <= LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points) {
+            this.setState({ level: LEVELS[0].level, selectedLevel: LEVELS[0].level, levelRuleString: `0 - ${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points)}` });
             return;
         }
-        if (loyalty <= 12500) {
-            this.setState({ level: 'Agent', selectedLevel: 'Agent', selectedLevelSpending: 12500});
+        if (loyalty <= LEVELS[1].milestones[LEVELS[1].milestones.length - 1].points) {
+            this.setState({ level: LEVELS[1].level, selectedLevel: LEVELS[1].level, levelRuleString: `${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[1].milestones[LEVELS[0].milestones.length - 1].points)}` });
             return;
         }
-        if (loyalty <= 25000) {
-            this.setState({ level: 'Rookie', selectedLevel: 'Rookie', selectedLevelSpending: 25000});
+        if (loyalty <= LEVELS[2].milestones[LEVELS[2].milestones.length - 1].points) {
+            this.setState({ level: LEVELS[2].level, selectedLevel: LEVELS[2].level, levelRuleString: `${this.numberWithCommas(LEVELS[1].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[2].milestones[LEVELS[0].milestones.length - 1].points)}` });
             return;
         }
-        if (loyalty <= 62500) {
-            this.setState({ level: 'Pro', selectedLevel: 'Pro', selectedLevelSpending: 62500});
+        if (loyalty <= LEVELS[3].milestones[LEVELS[3].milestones.length - 1].points) {
+            this.setState({ level: LEVELS[3].level, selectedLevel: LEVELS[3].level, levelRuleString: `${this.numberWithCommas(LEVELS[2].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[3].milestones[LEVELS[0].milestones.length - 1].points)}` });
             return;
         }
-        this.setState({ level: 'AllStar', selectedLevel: 'AllStar', selectedLevelSpending: 125000});
+        this.setState({ level: LEVELS[4].level, selectedLevel: LEVELS[4].level, levelRuleString: `+${this.numberWithCommas(LEVELS[3].milestones[LEVELS[0].milestones.length - 1].points + 1)}` });
     }
 
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    renderMilestones = () => {
+        const { loyalty } = this.state;
+        return <div className="pt-2">
+            {LEVELS.map((level, pros_index) =>
+                <React.Fragment key={pros_index}>
+                    <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
+                        <div className="p-2 align-self-center">
+                            <div className="symbol symbol-30 mr-1 align-self-start">
+                                <div className="symbol-label m-1 "
+                                    style={{
+                                        backgroundImage: `url(${level.image})`,
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                        <div className="align-self-center">
+                            <div className="font-weight-bolder font-size-md">{level.title}</div>
+                        </div>
+                        <div className="pl-3 align-self-center w-50">
+                            <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(level.milestones[level.milestones.length - 1].points)} points</div>
+                        </div>
+                    </div>
+                    {level.milestones.map((milestone, index) =>
+                        <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
+                            <div className="p-2 align-self-center">
+                                <div className="symbol symbol-30 mr-1 align-self-start">
+                                    <div className="symbol-label m-1 bg-dark"
+                                        style={{
+                                            backgroundImage: `url(/images/loyalty/milestone_flag.png)`,
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+                            <div className="align-self-center">
+                                <div className="font-weight-bolder font-size-md">Milestone {pros_index * level.milestones.length + index + 1}</div>
+                            </div>
+                            <div className="pl-3 align-self-center w-50">
+                                <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
+                                <ProgressBar now={100 / milestone.points * loyalty} visuallyhidden="true" style={{ height: '5px' }} />
+                                {milestone.points > loyalty && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points - loyalty)} points needed</div>}
+                            </div>
+                            <div className="align-self-center mr-2">
+                                {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark" style={{ borderColor: '#ED254E' }}
+                                    onClick={() => this.claim(milestone.points)}>
+                                    <div style={{ color: '#ED254E' }}>Claim</div>
+                                </button>}
+                                {milestone.points > loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-dark" disabled style={{ cursor: 'not-allowed' }}>
+                                    <div className="text-secondary">Claim</div>
+                                </button>}
+                            </div>
+                        </div>
+                    )}
+                </React.Fragment>
+            )}
+        </div>
+    }
+
+    getCurrentLevelStateString = () => {
+        const { loyalty, selectedLevel } = this.state;
+        let curLevel = LEVELS.filter(lv => lv.level == selectedLevel);
+        let preIndex = curLevel[0].milestones.findIndex(mile => mile.points > loyalty).toString();
+        if (preIndex < 0) preIndex = curLevel[0].milestones.length;
+        return preIndex + ' / ' + curLevel[0].milestones.length;
+
+    }
     render() {
-        const { loading, error, data, selectedLevel, selectedLevelSpending, loyalty, level } = this.state;
+        const { loading, error, data, selectedLevel, levelRuleString, loyalty, level } = this.state;
 
         return (
             <div className="col-in px-3">
@@ -95,11 +220,11 @@ export default class Loyalty extends Component {
                         <div className="shadow p-2">
                             <div className="d-flex align-items-center justify-content-center bg-dark p-2 rounded">
                                 <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                    {level == 'Junior' && <div className="symbol-label bg-dark" style={{ backgroundImage: `url(/images/loyalty/level1_junior.png)`, }}/>}
-                                    {level == 'Agent' && <div className="symbol-label bg-dark" style={{ backgroundImage: `url(/images/loyalty/level2_agent.png)`, }}/>}
-                                    {level == 'Rookie' && <div className="symbol-label bg-dark" style={{ backgroundImage: `url(/images/loyalty/level3_rookie.png)`, }}/>}
-                                    {level == 'Pro' && <div className="symbol-label bg-dark" style={{ backgroundImage: `url(/images/loyalty/level4_pro.png)`, }}/>}
-                                    {level == 'AllStar' && <div className="symbol-label bg-dark" style={{ backgroundImage: `url(/images/loyalty/level5_allstar.png)`, }}/>}
+                                    {level == LEVELS[0].level && <div className="symbol-label bg-dark" style={{ backgroundImage: LEVELS[0].image, }} />}
+                                    {level == LEVELS[1].level && <div className="symbol-label bg-dark" style={{ backgroundImage: LEVELS[1].image, }} />}
+                                    {level == LEVELS[2].level && <div className="symbol-label bg-dark" style={{ backgroundImage: LEVELS[2].image, }} />}
+                                    {level == LEVELS[3].level && <div className="symbol-label bg-dark" style={{ backgroundImage: LEVELS[3].image, }} />}
+                                    {level == LEVELS[4].level && <div className="symbol-label bg-dark" style={{ backgroundImage: LEVELS[4].image, }} />}
                                 </div>
                                 <div>
                                     <div className="d-flex align-items-center justify-content-center">
@@ -112,37 +237,37 @@ export default class Loyalty extends Component {
                                 </div>
                             </div>
                             <div className="loyalty-levels mt-3">
-                                <div onClick={() => this.setState({ selectedLevel: 'Junior', selectedLevelSpending: 3000 })}>
-                                    <img className="shadow-sm cursor-pointer" title="Junior" alt="Junior" src="/images/loyalty/level1_junior.png" />
+                                <div onClick={() => this.setState({ selectedLevel: LEVELS[0].level, levelRuleString: `0 - ${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points)}` })}>
+                                    <img className="shadow-sm cursor-pointer opacity-90" title={LEVELS[0].title} alt={LEVELS[0].title} src={LEVELS[0].image} />
                                 </div>
-                                <div onClick={() => this.setState({ selectedLevel: 'Agent', selectedLevelSpending: 12500 })}>
-                                    <img className="shadow-sm cursor-pointer opacity-90" title="Agent" alt="Agent" src="/images/loyalty/level2_agent.png" />
+                                <div onClick={() => this.setState({ selectedLevel: LEVELS[1].level, levelRuleString: `${this.numberWithCommas(LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[1].milestones[LEVELS[0].milestones.length - 1].points)}` })}>
+                                    <img className="shadow-sm cursor-pointer opacity-90" title={LEVELS[1].title} alt={LEVELS[1].title} src={LEVELS[1].image} />
                                 </div>
-                                <div onClick={() => this.setState({ selectedLevel: 'Rookie', selectedLevelSpending: 25000 })}>
-                                    <img className="shadow-sm cursor-pointer opacity-90" title="Rookie" alt="Rookie" src="/images/loyalty/level3_rookie.png" />
+                                <div onClick={() => this.setState({ selectedLevel: LEVELS[2].level, levelRuleString: `${this.numberWithCommas(LEVELS[1].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[2].milestones[LEVELS[0].milestones.length - 1].points)}` })}>
+                                    <img className="shadow-sm cursor-pointer opacity-90" title={LEVELS[2].title} alt={LEVELS[2].title} src={LEVELS[2].image} />
                                 </div>
-                                <div onClick={() => this.setState({ selectedLevel: 'Pro', selectedLevelSpending: 62500 })}>
-                                    <img className="shadow-sm cursor-pointer opacity-90" title="Pro" alt="Pro" src="/images/loyalty/level4_pro.png" />
+                                <div onClick={() => this.setState({ selectedLevel: LEVELS[3].level, levelRuleString: `${this.numberWithCommas(LEVELS[2].milestones[LEVELS[0].milestones.length - 1].points + 1)} - ${this.numberWithCommas(LEVELS[3].milestones[LEVELS[0].milestones.length - 1].points)}` })}>
+                                    <img className="shadow-sm cursor-pointer opacity-90" title={LEVELS[3].title} alt={LEVELS[3].title} src={LEVELS[3].image} />
                                 </div>
-                                <div onClick={() => this.setState({ selectedLevel: 'AllStar', selectedLevelSpending: 125000 })}>
-                                    <img className="shadow-sm cursor-pointer opacity-90" title="All Star" alt="All Star" src="/images/loyalty/level5_allstar.png" />
+                                <div onClick={() => this.setState({ selectedLevel: LEVELS[4].level, levelRuleString: `+${this.numberWithCommas(LEVELS[3].milestones[LEVELS[0].milestones.length - 1].points + 1)}` })}>
+                                    <img className="shadow-sm cursor-pointer opacity-90" title={LEVELS[4].title} alt={LEVELS[4].title} src={LEVELS[4].image} />
                                 </div>
                             </div>
 
-                            {selectedLevel == 'Junior' && <img src="/images/loyalty/level1_junior.png" className="rounded mx-auto d-block" />}
-                            {selectedLevel == 'Agent' && <img src="/images/loyalty/level2_agent.png" className="rounded mx-auto d-block" />}
-                            {selectedLevel == 'Rookie' && <img src="/images/loyalty/level3_rookie.png" className="rounded mx-auto d-block" />}
-                            {selectedLevel == 'Pro' && <img src="/images/loyalty/level4_pro.png" className="rounded mx-auto d-block" />}
-                            {selectedLevel == 'AllStar' && <img src="/images/loyalty/level5_allstar.png" className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[0].level && <img src={LEVELS[0].image} className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[1].level && <img src={LEVELS[1].image} className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[2].level && <img src={LEVELS[2].image} className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[3].level && <img src={LEVELS[3].image} className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[4].level && <img src={LEVELS[4].image} className="rounded mx-auto d-block" />}
 
                             <div className="d-flex justify-content-center p-2">
                                 <div className="border-right border-dark pr-2 text-right">
-                                    <div className="font-weight-bolder font-size-h5 text-white-75">0 / 5</div>
+                                    <div className="font-weight-bolder font-size-h5 text-white-75">{this.getCurrentLevelStateString()}</div>
                                     <div className="text-muted font-size-sm">Loyalty Points</div>
                                 </div>
                                 <div className="pl-2">
                                     <div className="font-weight-bolder font-size-h5 text-white-75">{selectedLevel}</div>
-                                    <div className="text-muted font-size-sm">{selectedLevelSpending}</div>
+                                    <div className="text-muted font-size-sm">{levelRuleString}</div>
                                 </div>
                             </div>
                         </div>
@@ -152,189 +277,7 @@ export default class Loyalty extends Component {
                             <div className="loyalty-tabs">
                                 <Tabs defaultActiveKey="progress">
                                     <Tab eventKey="progress" tabClassName='loyalty-tabitem' title="Milestone Progress" className="border-0">
-                                        <div className="pt-2">
-                                            <div className="d-flex align-items-center p-2">
-                                                <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-3 align-self-start align-self-xxl-center"
-                                                    style={{ backgroundColor: "#563d7c" }}>
-                                                    <div className="symbol-label m-1"
-                                                        style={{
-                                                            backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            backgroundColor: "#563d7c",
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-weight-bolder font-size-h5" style={{ color: "#ED254E" }}>Junior</div>
-                                                    <div className="text-gray font-size-sm">Earn 5 points</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-row bg-dark">
-                                                <div className="p-2 align-self-center">
-                                                    <div className="symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                                        <div className="symbol-label m-1 bg-dark"
-                                                            style={{
-                                                                backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <div className="p-2 align-self-center">
-                                                    <div className="font-weight-bolder font-size-md">Milestone 1</div>
-                                                </div>
-                                                <div className="p-2 align-self-center w-50">
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>Locked</div>
-                                                    <ProgressBar now={60} visuallyHidden style={{ height: '5px' }} />
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>2,000 points needed</div>
-                                                </div>
-                                                <div className="align-self-center mr-2">
-                                                    <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-danger"
-                                                        onClick={() => this.claim(1)}>
-                                                        <div className="text-danger">Claim</div>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="d-flex align-items-center p-2">
-                                                <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-3 align-self-start align-self-xxl-center"
-                                                    style={{ backgroundColor: "#563d7c" }}>
-                                                    <div className="symbol-label m-1"
-                                                        style={{
-                                                            backgroundImage: `url(/images/loyalty/level2_agent.png)`,
-                                                            backgroundColor: "#563d7c",
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-weight-bolder font-size-h5" style={{ color: "#ED254E" }}>Agent</div>
-                                                    <div className="text-gray font-size-sm">Earn 5 points</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-row bg-dark">
-                                                <div className="p-2 align-self-center">
-                                                    <div className="symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                                        <div className="symbol-label m-1 bg-dark"
-                                                            style={{
-                                                                backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <div className="p-2 align-self-center">
-                                                    <div className="font-weight-bolder font-size-md">Milestone 1</div>
-                                                </div>
-                                                <div className="p-2 align-self-center w-50">
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>Locked</div>
-                                                    <ProgressBar now={60} visuallyHidden style={{ height: '5px' }} />
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>2,000 points needed</div>
-                                                </div>
-                                            </div>
-
-                                            <div className="d-flex align-items-center p-2">
-                                                <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-3 align-self-start align-self-xxl-center"
-                                                    style={{ backgroundColor: "#563d7c" }}>
-                                                    <div className="symbol-label m-1"
-                                                        style={{
-                                                            backgroundImage: `url(/images/loyalty/level3_rookie.png)`,
-                                                            backgroundColor: "#563d7c",
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-weight-bolder font-size-h5" style={{ color: "#ED254E" }}>Rookie</div>
-                                                    <div className="text-gray font-size-sm">Earn 5 points</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-row bg-dark">
-                                                <div className="p-2 align-self-center">
-                                                    <div className="symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                                        <div className="symbol-label m-1 bg-dark"
-                                                            style={{
-                                                                backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <div className="p-2 align-self-center">
-                                                    <div className="font-weight-bolder font-size-md">Milestone 1</div>
-                                                </div>
-                                                <div className="p-2 align-self-center w-50">
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>Locked</div>
-                                                    <ProgressBar now={60} visuallyHidden style={{ height: '5px' }} />
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>2,000 points needed</div>
-                                                </div>
-                                            </div>
-
-                                            <div className="d-flex align-items-center p-2">
-                                                <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-3 align-self-start align-self-xxl-center"
-                                                    style={{ backgroundColor: "#563d7c" }}>
-                                                    <div className="symbol-label m-1"
-                                                        style={{
-                                                            backgroundImage: `url(/images/loyalty/level4_pro.png)`,
-                                                            backgroundColor: "#563d7c",
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-weight-bolder font-size-h5" style={{ color: "#ED254E" }}>Pro</div>
-                                                    <div className="text-gray font-size-sm">Earn 5 points</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-row bg-dark">
-                                                <div className="p-2 align-self-center">
-                                                    <div className="symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                                        <div className="symbol-label m-1 bg-dark"
-                                                            style={{
-                                                                backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <div className="p-2 align-self-center">
-                                                    <div className="font-weight-bolder font-size-md">Milestone 1</div>
-                                                </div>
-                                                <div className="p-2 align-self-center w-50">
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>Locked</div>
-                                                    <ProgressBar now={60} visuallyHidden style={{ height: '5px' }} />
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>2,000 points needed</div>
-                                                </div>
-                                            </div>
-
-                                            <div className="d-flex align-items-center p-2">
-                                                <div className="align-self-center symbol symbol-40 symbol-xxl-60 mr-3 align-self-start align-self-xxl-center"
-                                                    style={{ backgroundColor: "#563d7c" }}>
-                                                    <div className="symbol-label m-1"
-                                                        style={{
-                                                            backgroundImage: `url(/images/loyalty/level5_allstar.png)`,
-                                                            backgroundColor: "#563d7c",
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-weight-bolder font-size-h5" style={{ color: "#ED254E" }}>All Star</div>
-                                                    <div className="text-gray font-size-sm">Earn 5 points</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-row bg-dark">
-                                                <div className="p-2 align-self-center">
-                                                    <div className="symbol symbol-40 symbol-xxl-60 mr-1 align-self-start align-self-xxl-center">
-                                                        <div className="symbol-label m-1 bg-dark"
-                                                            style={{
-                                                                backgroundImage: `url(/images/loyalty/level1_junior.png)`,
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                <div className="p-2 align-self-center">
-                                                    <div className="font-weight-bolder font-size-md">Milestone 1</div>
-                                                </div>
-                                                <div className="p-2 align-self-center w-50">
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>Locked</div>
-                                                    <ProgressBar now={60} visuallyHidden style={{ height: '5px' }} />
-                                                    <div className="text-gray" style={{ fontSize: '12px' }}>2,000 points needed</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
+                                        {this.renderMilestones()}
                                     </Tab>
                                     <Tab eventKey="claimed" tabClassName='loyalty-tabitem' title="Claimed Milestones" className="border-0">
                                         <div className="pt-2">
