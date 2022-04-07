@@ -649,7 +649,7 @@ class App extends Component {
                                                     <ErrorBoundary><AutobetSettings {...props} user={user} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/loyalty" render={(props) =>
-                                                    <ErrorBoundary><Loyalty {...props} user={user} /></ErrorBoundary>
+                                                    <ErrorBoundary><Loyalty {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/invite" render={(props) => (
                                                     <ErrorBoundary><Invite {...props} user={user} /></ErrorBoundary>

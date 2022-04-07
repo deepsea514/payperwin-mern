@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
-import { getLoyaltyPoints, claimReward, getClaims } from '../redux/services';
+import { getLoyaltyPoints, claimReward, getClaims, } from '../redux/services';
 import { showSuccessToast, showErrorToast } from '../libs/toast';
 
 export default class Loyalty extends Component {
@@ -17,10 +17,10 @@ export default class Loyalty extends Component {
                     level: 'Junior',
                     image: '/images/loyalty/level1_junior.png',
                     milestones: [
-                        { points: 1500, isClaimed: false, credit: '+$0.50' },
-                        { points: 3000, isClaimed: false, credit: '+$1.00' },
-                        { points: 4500, isClaimed: false, credit: '+$1.50' },
-                        { points: 6000, isClaimed: false, credit: '+$2.00' }
+                        { points: 1500, isClaimed: false, credit: 5.30 },
+                        { points: 3000, isClaimed: false, credit: 0.45 },
+                        { points: 4500, isClaimed: false, credit: 0.75 },
+                        { points: 6000, isClaimed: false, credit: 1.00 }
                     ],
                 },
                 {
@@ -28,10 +28,10 @@ export default class Loyalty extends Component {
                     level: 'Agent',
                     image: '/images/loyalty/level2_agent.png',
                     milestones: [
-                        { points: 7500, isClaimed: false, credit: '+$2.50' },
-                        { points: 9000, isClaimed: false, credit: '+$3.00' },
-                        { points: 10500, isClaimed: false, credit: '+$3.50' },
-                        { points: 13000, isClaimed: false, credit: '+$4.00' }
+                        { points: 7500, isClaimed: false, credit: 1.50 },
+                        { points: 9000, isClaimed: false, credit: 1.75 },
+                        { points: 10500, isClaimed: false, credit: 2.00 },
+                        { points: 13000, isClaimed: false, credit: 2.25 }
                     ],
                 },
                 {
@@ -39,10 +39,10 @@ export default class Loyalty extends Component {
                     level: 'Rookie',
                     image: '/images/loyalty/level3_rookie.png',
                     milestones: [
-                        { points: 15000, isClaimed: false, credit: '+$4.50' },
-                        { points: 18000, isClaimed: false, credit: '+$5.00' },
-                        { points: 21000, isClaimed: false, credit: '+$5.50' },
-                        { points: 26000, isClaimed: false, credit: '+$6.00' }
+                        { points: 15000, isClaimed: false, credit: 2.75 },
+                        { points: 18000, isClaimed: false, credit: 2.85 },
+                        { points: 21000, isClaimed: false, credit: 2.95 },
+                        { points: 26000, isClaimed: false, credit: 3.00 }
                     ],
                 },
                 {
@@ -50,10 +50,10 @@ export default class Loyalty extends Component {
                     level: 'Pro',
                     image: '/images/loyalty/level4_pro.png',
                     milestones: [
-                        { points: 30000, isClaimed: false, credit: '+$6.50' },
-                        { points: 35000, isClaimed: false, credit: '+$7.00' },
-                        { points: 45000, isClaimed: false, credit: '+$7.50' },
-                        { points: 52000, isClaimed: false, credit: '+$8.00' }
+                        { points: 30000, isClaimed: false, credit: 3.00 },
+                        { points: 35000, isClaimed: false, credit: 3.25 },
+                        { points: 45000, isClaimed: false, credit: 3.75 },
+                        { points: 52000, isClaimed: false, credit: 3.95 }
                     ],
                 },
                 {
@@ -61,10 +61,10 @@ export default class Loyalty extends Component {
                     level: 'AllStar',
                     image: '/images/loyalty/level5_allstar.png',
                     milestones: [
-                        { points: 60000, isClaimed: false, credit: '+$8.50' },
-                        { points: 70000, isClaimed: false, credit: '+$9.00' },
-                        { points: 90000, isClaimed: false, credit: '+$9.50' },
-                        { points: 150000, isClaimed: false, credit: '+$10.00' }
+                        { points: 60000, isClaimed: false, credit: 10.00 },
+                        { points: 70000, isClaimed: false, credit: 4.00 },
+                        { points: 90000, isClaimed: false, credit: 4.50 },
+                        { points: 150000, isClaimed: false, credit: 10.00 }
                     ],
                 },
             ],
@@ -103,7 +103,7 @@ export default class Loyalty extends Component {
                     .then(({ data }) => {
                         const claims = data;
                         const { LEVELS } = this.state;
-                        this.setState({ loading: false });
+
                         if (claims.length) {
                             this.setState({
                                 LEVELS: LEVELS.map((level) => {
@@ -123,6 +123,7 @@ export default class Loyalty extends Component {
                                 })
                             });
                         }
+                        this.setState({ loading: false });
                     })
                     .catch(() => {
                         this.setState({ loading: false });
@@ -158,7 +159,7 @@ export default class Loyalty extends Component {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    claim = (points) => {
+    claim = ({ points }) => {
         const { LEVELS } = this.state;
 
         claimReward(points)
@@ -181,6 +182,7 @@ export default class Loyalty extends Component {
                             }
                         })
                     });
+                    this.props.getUser();
                 }
                 else {
                     showErrorToast(data.error);
@@ -234,7 +236,7 @@ export default class Loyalty extends Component {
                             </div>
                             {!milestone.isClaimed && <div className="align-self-center mr-2">
                                 {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark" style={{ borderColor: '#ED254E' }}
-                                    onClick={() => this.claim(milestone.points)}>
+                                    onClick={() => this.claim(milestone)}>
                                     <div style={{ color: '#ED254E' }}>Claim</div>
                                 </button>}
                                 {milestone.points > loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-dark" disabled style={{ cursor: 'not-allowed' }}>
@@ -300,7 +302,7 @@ export default class Loyalty extends Component {
                             </div>
                             <div className="pl-3 align-self-center w-50">
                                 <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
-                                <div className="font-weight-bolder font-size-lg text-success">{milestone.credit}</div>
+                                <div className="font-weight-bolder font-size-lg text-success">+${milestone.credit.toFixed(2)}</div>
                             </div>
                             <div className="align-self-center mr-2">
                                 <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-success" disabled style={{ cursor: 'not-allowed' }}>
@@ -327,7 +329,7 @@ export default class Loyalty extends Component {
                     duration={800} />
                 </center>}
                 {error && <p>Error...</p>}
-                <div className="row">
+                {!loading && <div className="row">
                     <div className="col-md-5">
                         <div className="shadow p-2">
                             <div className="d-flex align-items-center justify-content-center bg-dark p-2 rounded">
@@ -398,7 +400,7 @@ export default class Loyalty extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
             </div>
         );
     }
