@@ -17,17 +17,16 @@ class CartDetail extends React.Component {
     }
 
     render() {
-        const { cart, updateInCartAction, removeFromCartAction } = this.props;
+        const { cart, updateInCartAction, clearFromCartAction } = this.props;
         return (
             <>
-                {cart.length === 0 && <EmptyCart />}
-                {cart.length > 0 && <section className="blog-details-area ptb-60">
+                {cart.ticket_group === null && <EmptyCart />}
+                {cart.ticket_group !== null && <section className="blog-details-area ptb-60">
                     <div className="container">
                         <div className='table-responsive'>
                             <table className='table'>
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Ticket Detail</th>
                                         <th className='text-right'>Price</th>
                                         <th>Count</th>
@@ -36,48 +35,45 @@ class CartDetail extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {cart.map(({ count, ticket_group }, index) => (
-                                        <tr key={ticket_group.id}>
-                                            <td>{index + 1}</td>
-                                            <td style={{ minWidth: '200px' }}>
-                                                <i className={ticket_group.type === 'parking' ? 'icofont-car-alt-4' : 'icofont-chair'} />&nbsp;
-                                                <span>{this.formatSectionName(ticket_group.tevo_section_name)}</span>
-                                                <br />
-                                                <span><b>Sec {ticket_group.section}, Row {ticket_group.row}</b></span>
-                                                <br />
-                                                <span>
-                                                    <i className='icofont-thunder-light' />&nbsp;
-                                                    {ticket_group.event.name}
-                                                </span>
-                                                <br />
-                                                <span>
-                                                    <i className="icofont-wall-clock"></i>&nbsp;
-                                                    {dateformat(ticket_group.event.occurs_at, 'ddd mmm dd yyyy HH:MM')}
-                                                </span>
-                                            </td>
-                                            <td className='text-right pt-3'>
-                                                CAD&nbsp;${this.changeRate(ticket_group.retail_price)}
-                                            </td>
-                                            <td style={{ minWidth: '100px' }}>
-                                                <select className='form-control cart-form-control'
-                                                    value={count}
-                                                    onChange={(evt) => updateInCartAction(ticket_group.id, evt.target.value)}>
-                                                    {ticket_group.splits.map(count => (
-                                                        <option value={count} key={count}>{count}</option>
-                                                    ))}
-                                                </select>
-                                            </td>
-                                            <td className='text-right pt-3'>
-                                                CAD&nbsp;${this.changeRate(ticket_group.retail_price) * parseInt(count)}
-                                            </td>
-                                            <td>
-                                                <button className='btn btn-secondary'
-                                                    onClick={() => removeFromCartAction(ticket_group.id)}>
-                                                    <i className='icofont-close' />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    <tr>
+                                        <td style={{ minWidth: '200px' }}>
+                                            <i className={cart.ticket_group.type === 'parking' ? 'icofont-car-alt-4' : 'icofont-chair'} />&nbsp;
+                                            <span>{this.formatSectionName(cart.ticket_group.tevo_section_name)}</span>
+                                            <br />
+                                            <span><b>Sec {cart.ticket_group.section}, Row {cart.ticket_group.row}</b></span>
+                                            <br />
+                                            <span>
+                                                <i className='icofont-thunder-light' />&nbsp;
+                                                {cart.ticket_group.event.name}
+                                            </span>
+                                            <br />
+                                            <span>
+                                                <i className="icofont-wall-clock"></i>&nbsp;
+                                                {dateformat(cart.ticket_group.event.occurs_at, 'ddd mmm dd yyyy HH:MM')}
+                                            </span>
+                                        </td>
+                                        <td className='text-right pt-3'>
+                                            CAD&nbsp;${this.changeRate(cart.ticket_group.retail_price)}
+                                        </td>
+                                        <td style={{ minWidth: '100px' }}>
+                                            <select className='form-control cart-form-control'
+                                                value={cart.count}
+                                                onChange={(evt) => updateInCartAction(cart.ticket_group.id, evt.target.value)}>
+                                                {cart.ticket_group.splits.map(count => (
+                                                    <option value={count} key={count}>{count}</option>
+                                                ))}
+                                            </select>
+                                        </td>
+                                        <td className='text-right pt-3'>
+                                            CAD&nbsp;${this.changeRate(cart.ticket_group.retail_price) * parseInt(cart.count)}
+                                        </td>
+                                        <td>
+                                            <button className='btn btn-secondary'
+                                                onClick={() => clearFromCartAction()}>
+                                                <i className='icofont-close' />
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

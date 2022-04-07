@@ -54,7 +54,7 @@ class EventList extends React.Component {
                                                 ))}
                                             </div>
                                         </div>
-                                        <Link to={"/event/" + event.id} className='btn btn-secondary btn-buy'>Buy Ticket</Link>
+                                        <Link to={"/event/" + event.id} className='btn btn-secondary btn-buy'>Buy&nbsp;Ticket</Link>
                                     </div>
                                 </li>
                             ))}

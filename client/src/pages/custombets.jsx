@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import { Preloader, ThreeDots } from 'react-preloader-icon';
-import dayjs from 'dayjs';
+import dateformat from 'dateformat';
 import sportNameImage from "../helpers/sportNameImage";
 import { getBets, voteEvent } from '../redux/services';
 import { Link } from 'react-router-dom';
@@ -226,7 +226,7 @@ export default class CustomBets extends Component {
                                     <div className="open-bets-col">
                                         <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
-                                            {dayjs(createdAt).format('YYYY/M/D HH:mm')}
+                                            {dateformat(createdAt, 'ddd, mmm dd, yyyy, HH:MM')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
@@ -260,7 +260,7 @@ export default class CustomBets extends Component {
                                     {lineQuery.eventName}
                                     <div className='d-flex justify-content-between'>
                                         <div>
-                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dateformat(matchStartDate, 'ddd, mmm dd, yyyy, HH:MM')}
                                         </div>
                                     </div>
                                     {event && gameEnded && <div className='d-flex mt-1'>

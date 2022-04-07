@@ -2400,3 +2400,35 @@ a.fav-link:hover {
     height: 16px;
     margin-right: 10px;
 }
+
+.text-gradient {
+    font-size: 22px;
+    background: -webkit-linear-gradient(0deg, #f0b631, #FF00FE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 10px 0;
+}
+
+.share-modal-info {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.share-modal-info strong {
+    font-size: 16px;
+    color: white;
+}
+
+.share-modal-info div {
+    font-size: 14px;
+    color: #ABABAB;
+}
+
+.share-odds-info {
+    font-size: 16px;
+}
+
+.share-odds-info .risk-less-win-more {
+    color: #ED254E;
+}

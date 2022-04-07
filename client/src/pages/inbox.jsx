@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-import dayjs from 'dayjs';
 import { Link, Switch, Route, BrowserRouter } from "react-router-dom";
 import InboxDetail from "./inboxDetail";
 import { FormattedMessage } from 'react-intl';
 import { getInbox } from '../redux/services';
+import dateformat from 'dateformat';
 
 class Inbox extends Component {
     constructor(props) {
@@ -51,7 +51,7 @@ class Inbox extends Component {
                                     </div>}
                                     {!error && messages.length != 0 && messages.map(message => (
                                         <div className="in-text" key={message._id}>
-                                            <Link to={`/${message._id}`}> {dayjs(message.published_at).format('ddd, MMM DD, YYYY, HH:mm')} </Link>
+                                            <Link to={`/${message._id}`}> {dateformat(message.published_at, 'ddd, mmm dd, yyyy, HH:MM')} </Link>
                                             <Link to={`/${message._id}`}>{message.title}</Link>
                                         </div>
                                     ))}
