@@ -5538,28 +5538,37 @@ expressApp.get(
     }
 )
 
+async function getLoyalty(user) {
+    let timezoneOffset = -8;
+    if (isDstObserved) timezoneOffset = -7;
+    const today = new Date().addHours(timezoneOffset);
+    const fromTime = new Date(today.getFullYear(), today.getMonth(), 1);    // From this month
+    try {
+        let totalLoyalty = await LoyaltyLog.aggregate({
+            $match: {
+                "user": user._id,
+                createdAt: { $gte: fromTime },
+            }
+        }, {
+            $group: {
+                _id: null,
+                loyalty: { $sum: "$point" }
+            }
+        });
+        return totalLoyalty.length ? totalLoyalty[0].loyalty : 0;
+    } catch (error) {
+        console.error(error);
+        return 0;
+    }
+}
+
 expressApp.get(
     '/loyalty',
     isAuthenticated,
     async (req, res) => {
         const user = req.user;
-        let timezoneOffset = -8;
-        if (isDstObserved) timezoneOffset = -7;
-        const today = new Date().addHours(timezoneOffset);
-        const fromTime = new Date(today.getFullYear(), today.getMonth(), 1);    // From this month
         try {
-            let totalLoyalty = await LoyaltyLog.aggregate({
-                $match: {
-                    "user": user._id,
-                    createdAt: { $gte: fromTime },
-                }
-            }, {
-                $group: {
-                    _id: null,
-                    loyalty: { $sum: "$point" }
-                }
-            });
-            return res.json({ loyalty: totalLoyalty.length ? totalLoyalty[0].loyalty : 0 });
+            return res.json({ loyalty: await getLoyalty(user) });
         } catch (error) {
             console.error(error);
             return res.json([]);
@@ -5567,12 +5576,64 @@ expressApp.get(
     }
 )
 
+function calcCredit(points) {
+    switch (points) {
+        case 1500:
+            return 5.30;
+        case 3000:
+            return 0.45;
+        case 4500:
+            return 0.75;
+        case 6000:
+            return 1.00;
+        case 7500:
+            return 1.50;
+        case 9000:
+            return 1.75;
+        case 10500:
+            return 2.00;
+        case 13000:
+            return 2.25;
+        case 15000:
+            return 2.75;
+        case 18000:
+            return 2.85;
+        case 21000:
+            return 2.95;
+        case 26000:
+            return 3.00;
+        case 30000:
+            return 3.00;
+        case 35000:
+            return 3.25;
+        case 45000:
+            return 3.75;
+        case 52000:
+            return 3.95;
+        case 60000:
+            return 10.00;
+        case 70000:
+            return 4.00;
+        case 90000:
+            return 4.50;
+        case 150000:
+            return 10.00;
+
+        default:
+            return 0.0;
+    }
+}
+
 expressApp.post(
     '/claims',
     isAuthenticated,
     async (req, res) => {
         const user = req.user;
         const { points } = req.body;
+        const loyalty = await getLoyalty(user);
+        if (points > loyalty) return res.json({ success: false, error: 'Invalid points.' });
+
+        const credit = calcCredit(points);
         try {
             let claim = await ClaimLog.findOne({
                 user: user._id,
@@ -5584,6 +5645,19 @@ expressApp.post(
             await ClaimLog.create({
                 user: user._id,
                 points: points
+            });
+            await FinancialLog.create({
+                financialtype: 'claim_reward',
+                uniqid: `C${ID()}`,
+                user: user._id,
+                amount: credit,
+                method: 'claim_reward',
+                status: FinancialStatus.success,
+                beforeBalance: user.balance,
+                afterBalance: user.balance + credit
+            });
+            await user.update({
+                balance: user.balance + credit
             });
             return res.json({ success: true });
         } catch (error) {

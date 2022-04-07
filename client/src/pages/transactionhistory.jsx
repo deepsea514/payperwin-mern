@@ -97,6 +97,8 @@ class TransactionHistory extends Component {
                 return '+';
             case 'lose_event':
                 return '-';
+            case 'claim_reward':
+                return '+';
             default:
                 return '';
         }
@@ -146,6 +148,8 @@ class TransactionHistory extends Component {
                 return 'Credit win amount in a side bet.';
             case 'lose_event':
                 return 'Debit lose amount in a side bet.';
+            case 'claim_reward':
+                return 'Claim loyalty reward.';
             default:
                 return '';
         }
