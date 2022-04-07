@@ -348,24 +348,29 @@ const checkSettledScore = async () => {
             }
         } else {
             const lineQuery = bet.lineQuery;
-            const { data: { success, results } } = await axios
-                .get(`https://api.b365api.com/v1/bet365/result`, {
-                    params: {
-                        token: bet365ApiKey,
-                        event_id: lineQuery.eventId,
-                    }
-                });
-            if (!success) {
+            try {
+                const { data: { success, results } } = await axios
+                    .get(`https://api.b365api.com/v1/bet365/result`, {
+                        params: {
+                            token: bet365ApiKey,
+                            event_id: lineQuery.eventId,
+                        }
+                    });
+                if (!success) {
+                    continue;
+                }
+                const { ss, scores, time_status, timer } = results[0];
+                if (time_status != "3") {
+                    continue;
+                }
+                const result = getMatchScores(lineQuery.sportName, lineQuery.type, lineQuery.subtype, ss, scores, timer, time_status);
+                const { homeScore, awayScore } = result;
+                if (bet.homeScore != homeScore || bet.awayScore != awayScore) {
+                    await bet.update({ scoreMismatch: { homeScore, awayScore } });
+                }
+            } catch (error) {
+                console.error(error);
                 continue;
-            }
-            const { ss, scores, time_status, timer } = results[0];
-            if (time_status != "3") {
-                continue;
-            }
-            const result = getMatchScores(lineQuery.sportName, lineQuery.type, lineQuery.subtype, ss, scores, timer, time_status);
-            const { homeScore, awayScore } = result;
-            if (bet.homeScore != homeScore || bet.awayScore != awayScore) {
-                await bet.update({ scoreMismatch: { homeScore, awayScore } });
             }
         }
     }
