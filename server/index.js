@@ -5545,7 +5545,7 @@ expressApp.get(
         let timezoneOffset = -8;
         if (isDstObserved) timezoneOffset = -7;
         const today = new Date().addHours(timezoneOffset);
-        const fromTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const fromTime = new Date(today.getFullYear(), today.getMonth(), 1);    // From this month
         try {
             let totalLoyalty = await LoyaltyLog.aggregate({
                 $match: {
@@ -5558,7 +5558,7 @@ expressApp.get(
                     loyalty: { $sum: "$point" }
                 }
             });
-            return res.json({ loyalty: totalLoyalty[0].loyalty });
+            return res.json({ loyalty: totalLoyalty.length ? totalLoyalty[0].loyalty : 0 });
         } catch (error) {
             console.error(error);
             return res.json([]);
