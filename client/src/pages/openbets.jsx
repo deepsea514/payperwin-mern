@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
-import dayjs from 'dayjs';
 import { Popover, OverlayTrigger } from "react-bootstrap";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { connect } from "react-redux";
@@ -14,6 +13,7 @@ import { getShortSportName } from '../libs/getSportName';
 import BetCancelModal from '../components/betCancelModal';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
 import BetShareModal from '../components/BetShareModal';
+import dateformat from 'dateformat';
 
 const StatusPopOver = (
     <Popover>
@@ -434,7 +434,7 @@ class OpenBets extends Component {
                                         <div className="open-bets-col">
                                             <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                             <div>
-                                                {dayjs(createdAt).format('YYYY/M/D HH:mm')}
+                                                {dateformat(createdAt, 'ddd, mmm dd, yyyy, HH:MM')}
                                             </div>
                                         </div>
                                         <div className="open-bets-col">
@@ -474,7 +474,7 @@ class OpenBets extends Component {
                                         {lineQuery.eventName}
                                         <div className='d-flex justify-content-between'>
                                             <div>
-                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dateformat(matchStartDate, 'ddd, mmm dd, yyyy, HH:MM')}
                                             </div>
                                         </div>
                                         {settledBets && status == 'Settled - Win' && <div><strong><FormattedMessage id="PAGES.OPENBETS.CREDITED" />: ${credited.toFixed(2)}</strong></div>}
@@ -516,7 +516,7 @@ class OpenBets extends Component {
                                     <div className="open-bets-col">
                                         <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
-                                            {dayjs(createdAt).format('YYYY/M/D HH:mm')}
+                                            {dateformat(createdAt, 'ddd, mmm dd, yyyy, HH:MM')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
@@ -572,7 +572,7 @@ class OpenBets extends Component {
                                             </div>
                                             <div>{pickName}</div>
                                             <div>
-                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                                <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dateformat(matchStartDate, 'ddd, mmm dd, yyyy, HH:MM')}
                                             </div>
                                             {settledBets && status != 'Cancelled' && <div><strong><FormattedMessage id="PAGES.FINALSCORE" />: {homeScore} - {awayScore}</strong></div>}
                                         </div>
@@ -601,7 +601,7 @@ class OpenBets extends Component {
                                     <div className="open-bets-col">
                                         <strong><FormattedMessage id="PAGES.OPENBETS.BET" /></strong>
                                         <div>
-                                            {dayjs(createdAt).format('YYYY/M/D HH:mm')}
+                                            {dateformat(createdAt, 'ddd, mmm dd, yyyy, HH:MM')}
                                         </div>
                                     </div>
                                     <div className="open-bets-col">
@@ -651,7 +651,7 @@ class OpenBets extends Component {
                                     {`${teamA.name} vs ${teamB.name}`}
                                     <div className='d-flex justify-content-between'>
                                         <div>
-                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dayjs(matchStartDate).format('ddd, MMM DD, YYYY, HH:mm')}
+                                            <FormattedMessage id="PAGES.OPENBETS.EVENT_DATE" />: {dateformat(matchStartDate, 'ddd, mmm dd, yyyy, HH:MM')}
                                         </div>
                                         {sportsbook && <strong className="bg-light-info px-2 py-1 text-dark">HIGH STAKER</strong>}
                                         {!sportsbook && <strong className="bg-light-danger px-2 py-1 text-dark">Peer To Peer</strong>}
