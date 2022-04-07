@@ -351,5 +351,9 @@ export function getLoyaltyPoints() {
 }
 
 export function claimReward(points) {
-    return FrontendAPI.post(`/claim`, {points});
+    return FrontendAPI.post(`/claims`, {points});
+}
+
+export function getClaims() {
+    return FrontendAPI.get(`/claims`);
 }

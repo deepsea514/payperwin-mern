@@ -5568,7 +5568,7 @@ expressApp.get(
 )
 
 expressApp.post(
-    '/claim',
+    '/claims',
     isAuthenticated,
     async (req, res) => {
         const user = req.user;
@@ -5588,6 +5588,23 @@ expressApp.post(
             return res.json({ success: true });
         } catch (error) {
             return res.json({ success: false, error: 'Cannot claim.' });
+        }
+    }
+)
+
+expressApp.get(
+    '/claims',
+    isAuthenticated,
+    async (req, res) => {
+        const user = req.user;
+        try {
+            const claims = await ClaimLog.find({
+                user: user._id
+            });
+            return res.json(claims);
+        } catch (error) {
+            console.error(error);
+            return res.json([]);
         }
     }
 )
