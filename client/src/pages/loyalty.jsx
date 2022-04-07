@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { setTitle } from '../libs/documentTitleBuilder';
-import ReactApexChart from "react-apexcharts";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
 import { getLoyaltyPoints, claimReward, getClaims } from '../redux/services';
-import dateformat from "dateformat";
-import SVG from "react-inlinesvg";
+import { showSuccessToast, showErrorToast } from '../libs/toast';
 
 export default class Loyalty extends Component {
     constructor(props) {
@@ -167,6 +164,7 @@ export default class Loyalty extends Component {
         claimReward(points)
             .then(({ data }) => {
                 if (data.success) {
+                    showSuccessToast('Claimed successfully.');
                     this.setState({
                         LEVELS: LEVELS.map((level) => {
                             return {
@@ -185,10 +183,10 @@ export default class Loyalty extends Component {
                     });
                 }
                 else {
-                    console.error(data.error);
+                    showErrorToast(data.error);
                 }
             }).catch((error) => {
-                console.error(error);
+                showErrorToast('Server Error.');
             })
     }
 
@@ -197,7 +195,7 @@ export default class Loyalty extends Component {
         return <div className="pt-2">
             {LEVELS.map((level, pros_index) =>
                 <React.Fragment key={pros_index}>
-                    <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
+                    {this.isRenderLevelTitle(level, 'milestone') && <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
                         <div className="p-2 align-self-center">
                             <div className="symbol symbol-30 mr-1 align-self-start">
                                 <div className="symbol-label m-1 "
@@ -213,7 +211,7 @@ export default class Loyalty extends Component {
                         <div className="pl-3 align-self-center w-50">
                             <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(level.milestones[level.milestones.length - 1].points)} points</div>
                         </div>
-                    </div>
+                    </div>}
                     {level.milestones.map((milestone, index) =>
 
                         !milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
@@ -259,12 +257,16 @@ export default class Loyalty extends Component {
 
     }
 
+    isRenderLevelTitle = (level, type) => {
+        return level.milestones.filter(mile => type == 'claimed' ? mile.isClaimed : !mile.isClaimed).length > 0;
+    }
+
     renderClaims = () => {
         const { LEVELS } = this.state;
         return <div className="pt-2">
             {LEVELS.map((level, pros_index) =>
                 <React.Fragment key={pros_index}>
-                    <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
+                    {this.isRenderLevelTitle(level, 'claimed') && <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
                         <div className="p-2 align-self-center">
                             <div className="symbol symbol-30 mr-1 align-self-start">
                                 <div className="symbol-label m-1 "
@@ -280,7 +282,7 @@ export default class Loyalty extends Component {
                         <div className="pl-3 align-self-center w-50">
                             <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(level.milestones[level.milestones.length - 1].points)} points</div>
                         </div>
-                    </div>
+                    </div>}
                     {level.milestones.map((milestone, index) =>
 
                         milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
