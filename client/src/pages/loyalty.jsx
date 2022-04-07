@@ -4,7 +4,7 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import ReactApexChart from "react-apexcharts";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { Tabs, Tab, ProgressBar } from 'react-bootstrap';
-import { getLoyaltyPoints } from '../redux/services';
+import { getLoyaltyPoints, claimReward } from '../redux/services';
 import dateformat from "dateformat";
 import SVG from "react-inlinesvg";
 const LEVELS = [
@@ -137,6 +137,18 @@ export default class Loyalty extends Component {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    claim = (points) => {
+        claimReward(points)
+        .then(({data}) => {
+            if(data.success)
+                console.log("Claimed successfully.");
+            else
+                console.error(data.error);
+        }).catch(() => {
+            console.error("Internal Error.");
+        })
+    }
+
     renderMilestones = () => {
         const { loyalty } = this.state;
         return <div className="pt-2">
@@ -202,6 +214,8 @@ export default class Loyalty extends Component {
         return preIndex + ' / ' + curLevel[0].milestones.length;
 
     }
+
+
     render() {
         const { loading, error, data, selectedLevel, levelRuleString, loyalty, level } = this.state;
 
