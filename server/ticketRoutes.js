@@ -314,7 +314,7 @@ ticketRouter.post(
                 case 'FedEx':
                     orderObject.delivery = {
                         type: delivery_option.provider,
-                        cost: delivery_option.cost,
+                        cost: delivery_option.price,
                         address_attributes: {
                             street_address: address,
                             extended_address: address2,
@@ -325,7 +325,7 @@ ticketRouter.post(
                         },
                         phone_number_id: tevo_client.primary_phone_number.id,
                         service_type: "STANDARD_OVERNIGHT",
-                        ship_to_company_name: null,
+                        ship_to_company_name: "",
                         ship_to_name: tevo_client.name,
                         signature_type: "INDIRECT",
                     }
@@ -333,7 +333,7 @@ ticketRouter.post(
                 case 'WillCall':
                     orderObject.delivery = {
                         type: delivery_option.provider,
-                        cost: delivery_option.cost,
+                        cost: delivery_option.price,
                         ship_to_name: tevo_client.name,
                         address_attributes: {
                             street_address: address,
@@ -350,13 +350,12 @@ ticketRouter.post(
                     orderObject.delivery = {
                         type: delivery_option.provider,
                         email_address_id: tevo_client.primary_email_address.id,
-                        cost: delivery_option.cost
+                        cost: delivery_option.price
                     }
                     break;
-
             }
 
-            console.log(JSON.stringify(orderObject))
+            console.log(JSON.stringify({ order: orderObject }))
             try {
                 const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v10/orders', { order: orderObject })
                 // if(response && !response.error && !response.errors) {
