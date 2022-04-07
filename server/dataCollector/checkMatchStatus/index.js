@@ -246,6 +246,7 @@ const checkSettledScore = async () => {
         status: { $in: ['Settled - Win', 'Settled - Lose'] },
         updatedAt: { $gte: new Date().addHours(-1) },
         scoreMismatch: null,
+        origin: 'bet365'
     });
     console.log('%d of just settled bets.', bets.length);
     for (const bet of bets) {
