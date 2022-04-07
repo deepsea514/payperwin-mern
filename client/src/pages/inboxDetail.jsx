@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { setTitle } from '../libs/documentTitleBuilder';
-import dayjs from 'dayjs';
 import { Link } from "react-router-dom";
 import { FormattedMessage } from 'react-intl';
 import { deleteInbox, getInboxDetail } from '../redux/services';
+import dateformat from 'dateformat';
 
 class InboxDetail extends Component {
     constructor(props) {
@@ -53,7 +53,7 @@ class InboxDetail extends Component {
                         {!error && message && <div>
                             <span className="card-name">
                                 <h3>{message.title}</h3>
-                                <p>{dayjs(message.published_at).format('ddd, MMM DD, YYYY, HH:mm')}</p>
+                                <p>{dateformat(message.published_at, 'ddd, mmm dd, yyyy, HH:MM')}</p>
                             </span>
                             <span className="right-image" style={{ cursor: 'pointer' }} onClick={this.deleteMessage}><i className="fa fa-trash" /> Delete</span>
                             <hr />

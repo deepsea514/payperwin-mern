@@ -16,7 +16,6 @@ export const actionTypes = {
     setHomeDataAction: "Set Home Data Action",
     addToCartAction: "Add To Cart Action",
     updateInCartAction: "Update In Cart Action",
-    removeFromCartAction: "Remove From Cart Action",
     clearFromCartAction: "Clear From Cart Action",
 };
 
@@ -51,7 +50,10 @@ const initialState = {
     total_events: 0,
     total_venues: 0,
     total_performers: 0,
-    cart: [],
+    cart: {
+        count: 1,
+        ticket_group: null,
+    },
 };
 
 export const reducer = persistReducer(
@@ -85,32 +87,22 @@ export const reducer = persistReducer(
             case actionTypes.addToCartAction:
                 return {
                     ...state,
-                    cart: [
-                        ...state.cart.filter(({ ticket_group }) => ticket_group.id !== action.payload.id),
-                        { count: action.payload.splits[0], ticket_group: action.payload }
-                    ]
+                    cart: { count: action.payload.splits[0], ticket_group: action.payload }
                 }
 
             case actionTypes.updateInCartAction:
                 return {
                     ...state,
-                    cart: state.cart.map(({ ticket_group, count }) => {
-                        if (ticket_group.id === action.payload.ticket_group_id)
-                            return { ticket_group, count: action.payload.count };
-                        return { ticket_group, count };
-                    })
-                }
-
-            case actionTypes.removeFromCartAction:
-                return {
-                    ...state,
-                    cart: state.cart.filter(({ ticket_group }) => ticket_group.id !== action.payload)
+                    cart: {
+                        ticket_group: state.cart.ticket_group,
+                        count: action.payload.count
+                    }
                 }
 
             case actionTypes.clearFromCartAction:
                 return {
                     ...state,
-                    cart: []
+                    cart: { count: 0, ticket_group: null }
                 }
 
             default:
@@ -127,8 +119,7 @@ export const actions = {
     getHomeDataAction: () => ({ type: actionTypes.getHomeDataAction }),
     setHomeDataAction: (payload) => ({ type: actionTypes.setHomeDataAction, payload }),
     addToCartAction: (ticket_group) => ({ type: actionTypes.addToCartAction, payload: ticket_group }),
-    updateInCartAction: (ticket_group_id, count) => ({ type: actionTypes.updateInCartAction, payload: { ticket_group_id, count } }),
-    removeFromCartAction: (ticket_group_id) => ({ type: actionTypes.removeFromCartAction, payload: ticket_group_id }),
+    updateInCartAction: (count) => ({ type: actionTypes.updateInCartAction, payload: { count } }),
     clearFromCartAction: () => ({ type: actionTypes.clearFromCartAction }),
 };
 
