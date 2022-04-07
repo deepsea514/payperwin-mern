@@ -3,7 +3,6 @@ import { setTitle } from '../libs/documentTitleBuilder';
 import sportNameImage from "../helpers/sportNameImage";
 import dayjs from 'dayjs';
 import { Popover, OverlayTrigger } from "react-bootstrap";
-import QRCode from "react-qr-code";
 import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { connect } from "react-redux";
 import TourModal from '../components/tourModal';
@@ -14,6 +13,7 @@ import { forwardBet, getBets, getLatestOdds, shareLine, cancelBet as cancelBetAc
 import { getShortSportName } from '../libs/getSportName';
 import BetCancelModal from '../components/betCancelModal';
 import { showErrorToast, showSuccessToast } from '../libs/toast';
+import BetShareModal from '../components/BetShareModal';
 
 const StatusPopOver = (
     <Popover>
@@ -65,6 +65,7 @@ class OpenBets extends Component {
             loadingOdds: false,
             cancelBet: null,
             submitting: false,
+            sharedBet: null
         };
     }
 
@@ -126,12 +127,12 @@ class OpenBets extends Component {
         return false;
     }
 
-    shareLink = (lineQuery, matchStartDate) => () => {
+    shareLink = (lineQuery, matchStartDate, betObj) => () => {
         const { type, sportName, leagueId, eventId, index, subtype } = lineQuery;
         const shortName = getShortSportName(sportName)
         if (!shortName) return;
         const generatedLineUrl = `${window.location.origin}/sport/${shortName}/league/${leagueId}/event/${eventId}`;
-        this.setState({ shareModal: true, urlCopied: false, loadingUrl: true });
+        this.setState({ shareModal: true, urlCopied: false, loadingUrl: true, sharedBet: betObj });
         shareLine({ url: generatedLineUrl, eventDate: matchStartDate, type, index, subtype })
             .then(({ data }) => {
                 const { url, index, type, uniqueId, subtype } = data;
@@ -140,12 +141,6 @@ class OpenBets extends Component {
             .catch(() => {
                 this.setState({ loadingUrl: false, lineUrl: '' });
             })
-    }
-
-    copyUrl = () => {
-        const { lineUrl } = this.state;
-        navigator.clipboard.writeText(lineUrl);
-        this.setState({ urlCopied: true });
     }
 
     getStatusClass = (status) => {
@@ -320,7 +315,7 @@ class OpenBets extends Component {
         const {
             bets, shareModal, lineUrl, urlCopied, loadingUrl, loading,
             daterange, showFilter, filter, page, noMore, forwardBet, forwardResult,
-            forwardLatestOdd, loadingOdds, cancelBet, submitting,
+            forwardLatestOdd, loadingOdds, cancelBet, submitting, sharedBet,
         } = this.state;
         const { openBets, settledBets, showedTourTimes, showTour } = this.props;
         return (
@@ -332,58 +327,11 @@ class OpenBets extends Component {
                         submitting={submitting}
                         onClose={() => this.setState({ cancelBet: null })}
                         onProceed={this.onCancelProceed} />}
-                    {shareModal && <div className="modal confirmation">
-                        <div className="background-closer" onClick={() => this.setState({ shareModal: false })} />
-                        <div className="col-in">
-                            <i className="fal fa-times" style={{ cursor: 'pointer' }} onClick={() => this.setState({ shareModal: false })} />
-                            <div>
-                                <b>Share Bet</b>
-                                <hr />
-                                {loadingUrl && <center>
-                                    <Preloader use={ThreeDots}
-                                        size={100}
-                                        strokeWidth={10}
-                                        strokeColor="#F0AD4E"
-                                        duration={800} />
-                                </center>}
-                                {!loadingUrl && !lineUrl && <h4><FormattedMessage id="PAGES.OPENBETS.CANNOT_GENERATE_URL" /> </h4>}
-                                {!loadingUrl && lineUrl && <>
-                                    <div className="row">
-                                        <div className="col input-group mb-3">
-                                            <input type="text"
-                                                className="form-control"
-                                                placeholder="Line's URL"
-                                                value={lineUrl}
-                                                readOnly
-                                            />
-                                            <div className="input-group-append">
-                                                {!urlCopied && <button
-                                                    className="btn btn-outline-secondary"
-                                                    type="button"
-                                                    onClick={this.copyUrl}
-                                                >
-                                                    <i className="fas fa-clipboard" /> Copy
-                                                </button>}
-                                                {urlCopied && <button
-                                                    className="btn btn-outline-success"
-                                                    type="button">
-                                                    <i className="fas fa-clipboard-check" /> Copied
-                                                </button>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <center>
-                                        <div className="mt-2 bg-white py-3">
-                                            <QRCode value={lineUrl} />
-                                        </div>
-                                    </center>
-                                </>}
-                                <div className="text-right">
-                                    <button className="form-button ml-2" onClick={() => this.setState({ shareModal: false })}> Close </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>}
+                    {shareModal && <BetShareModal onClose={() => this.setState({ shareModal: false })}
+                        bet={sharedBet}
+                        lineUrl={lineUrl}
+                        loadingUrl={loadingUrl} />}
+
                     {forwardBet != null && <div className="modal confirmation">
                         <div className="background-closer" onClick={() => this.setState({ forwardBet: null, forwardLatestOdd: null })} />
                         <div className="col-in">
@@ -549,12 +497,14 @@ class OpenBets extends Component {
                                                 )
                                             ))}
                                         </div>}
-                                        {event && !this.checkEventStarted(matchStartDate) &&
+                                        {event && !this.checkEventStarted(matchStartDate) && <div className='d-flex justify-content-end'>
                                             <button className="form-button" onClick={() => this.setState({
                                                 lineUrl: window.location.origin + '/side-bet/' + event.uniqueid,
                                                 urlCopied: false,
-                                                shareModal: true
-                                            })}><i className="fas fa-link" /> Share Bet</button>}
+                                                shareModal: true,
+                                                sharedBet: betObj
+                                            })}><i className="fas fa-link" /> Share Bet</button>
+                                        </div>}
                                     </div>
                                 </div>
                             );
@@ -713,7 +663,7 @@ class OpenBets extends Component {
                                     {openBets && <div className='d-flex justify-content-end'>
                                         <div>
                                             {!this.checkEventStarted(matchStartDate) &&
-                                                <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate)}><i className="fas fa-link" /> Share Bet</button>}
+                                                <button className="form-button" onClick={this.shareLink(lineQuery, matchStartDate, betObj)}><i className="fas fa-link" /> Share Bet</button>}
                                             {!this.checkEventStarted(matchStartDate) && status == 'Pending' && !sportsbook &&
                                                 <button className={'form-button ml-2' + (loadingOdds ? ' is-loading' : '')}
                                                     disabled={loadingOdds}
