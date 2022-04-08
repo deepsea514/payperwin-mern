@@ -382,7 +382,7 @@ ticketRouter.post(
 )
 
 ticketRouter.get(
-    '/events',
+    '/orders',
     async (req, res) => {
         try {
             let { page, date_from, date_to, status } = req.query;
