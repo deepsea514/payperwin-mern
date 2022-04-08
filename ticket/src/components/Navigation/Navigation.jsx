@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import { actions } from '../../redux/reducers';
 import { logout } from '../../redux/services';
 
+const hideNavigationLinks = [
+    '/error-404',
+    '/login'
+]
 class Navigation extends React.Component {
 
     state = {
@@ -50,7 +54,10 @@ class Navigation extends React.Component {
         const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
         const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
         const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
-        const { user } = this.props;
+        const { user, location } = this.props;
+        const { pathname } = location;
+        if (hideNavigationLinks.includes(pathname))
+            return null;
 
         return (
             <header id="header" className="header-area">

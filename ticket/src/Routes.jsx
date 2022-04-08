@@ -17,13 +17,6 @@ import { connect } from 'react-redux';
 import { actions } from "./redux/reducers";
 import MyOrders from "./pages/MyOrders";
 
-const renderNavigation = () => {
-    if (!(window.location.pathname === '/login' ||
-        window.location.pathname === '/error-404')) {
-        return <Navigation />;
-    }
-}
-
 const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction, user }) => {
     useEffect(() => {
         getUserAction();
@@ -33,7 +26,7 @@ const AppRouter = ({ getUserAction, getCADRateAction, getHomeDataAction, user })
 
     return (
         <Router>
-            {renderNavigation()}
+            <Navigation />
             <Switch>
                 <Route path="/" exact component={Home} />
                 <Route path="/event/:event_id" exact component={Event} />
