@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-// import dateformat from 'dateformat';
+import { getOrders } from '../../redux/services';
+import { connect } from 'react-redux';
+import dateformat from 'dateformat';
 import CustomPagination from '../Common/CustomPagination';
 import Loader from '../Common/Loader';
 
 class OrderList extends React.Component {
     state = {
         loading: false,
-        orders: [1, 2],
+        orders: [],
         total: 0,
         page: 1,
     }
@@ -17,7 +18,37 @@ class OrderList extends React.Component {
     }
 
     loadOrders = (page = 1) => {
+        this.setState({ loading: false });
+        getOrders({ page }).then(({ data }) => {
+            const { success, orders, page, total } = data;
+            if (success) {
+                this.setState({
+                    loading: false,
+                    page: page,
+                    total: total,
+                    orders: orders
+                });
+            } else {
+                this.setState({
+                    loading: false,
+                    page: 1,
+                    total: 0,
+                    orders: []
+                });
+            }
+        }).catch(() => {
+            this.setState({
+                loading: false,
+                page: 1,
+                total: 0,
+                orders: []
+            });
+        })
+    }
 
+    changeRate = (usd_price) => {
+        const { cad_rate } = this.props;
+        return Math.ceil(usd_price * cad_rate * 100) / 100
     }
 
     render() {
@@ -44,40 +75,36 @@ class OrderList extends React.Component {
                     <div className='tab_content'>
                         <div className="tabs_item">
                             <ul className="accordion">
-                                {orders.map((order, index) => (
-                                    <li className="accordion-item" key={index}>
-                                        <div className="accordion-title">
-                                            <div className="schedule-info">
-                                                <h3>San Jose Sharks at Chicago Blackhawks</h3>
-                                                <h6>Sec 5, Row 10</h6>
-                                                <h6>Total Price: CAD $310.4 ($310.4 * 1)</h6>
+                                {orders.map((order, index) => {
+                                    const { items: [item], total, state, created_at } = order;
+                                    return (
+                                        <li className="accordion-item" key={index}>
+                                            <div className="accordion-title">
+                                                <div className="schedule-info">
+                                                    <h3>{item.ticket_group.event.name}</h3>
+                                                    <h6>Sec {item.ticket_group.section}, Row {item.ticket_group.row}</h6>
+                                                    <h6>Total Price: CAD ${this.changeRate(total)}</h6>
+                                                    <h6>Purchased in: {dateformat(created_at, "ddd mmm dd yyyy HH:MM")}</h6>
+                                                    <h6>Status: {state}</h6>
 
-                                                <ul>
-                                                    <li>
-                                                        <i className="icofont-field" />&nbsp;
-                                                        At <Link to="/venues/united-center"><span>United Center</span></Link>&nbsp;
-                                                        in Chicago, IL
-                                                    </li>
-                                                    <li>
-                                                        <i className="icofont-wall-clock" />&nbsp;
-                                                        Wed Apr 13 2022 04:30
-                                                    </li>
-                                                    <li>
-                                                        <i className="icofont-users-alt-4" />&nbsp;
-                                                        <Link to="/performers/san-jose-sharks">San Jose Sharks</Link>
-                                                    </li>
-                                                </ul>
+                                                    <ul>
+                                                        <li>
+                                                            <i className="icofont-field" />&nbsp;
+                                                            At <span>{item.ticket_group.event.venue.name}</span>&nbsp;
+                                                            in {item.ticket_group.event.venue.address.locality}, {item.ticket_group.event.venue.address.region}
+                                                        </li>
+                                                        <li>
+                                                            <i className="icofont-wall-clock" />&nbsp;
+                                                            {dateformat(item.ticket_group.event.occurs_at, "ddd mmm dd yyyy HH:MM")}
+                                                        </li>
 
-                                                <div className="mt-2 tagcloud">
-                                                    <Link to="/categories/sports">Sports</Link>
-                                                    <Link to="/categories/hockey">Hockey</Link>
-                                                    <Link to="/categories/nhl">NHL</Link>
+                                                    </ul>
                                                 </div>
+                                                <button className='btn btn-primary btn-buy'>Download</button>
                                             </div>
-                                            <button to={"/event/" + order.id} className='btn btn-primary btn-buy'>Download</button>
-                                        </div>
-                                    </li>
-                                ))}
+                                        </li>
+                                    )
+                                })}
                             </ul>
                         </div>
                     </div>
@@ -103,5 +130,8 @@ class OrderList extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => ({
+    cad_rate: state.cad_rate,
+});
 
-export default OrderList;
+export default connect(mapStateToProps, null)(OrderList);

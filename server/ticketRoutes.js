@@ -383,12 +383,16 @@ ticketRouter.post(
 
 ticketRouter.get(
     '/orders',
+    isAuthenticated,
     async (req, res) => {
         try {
             let { page, date_from, date_to, status } = req.query;
+            const user = req.user;
             if (!page) page = 1;
             page = parseInt(page);
-            const searchObj = {};
+            const searchObj = {
+                user_id: user._id
+            };
             status && (searchObj['state'] = status);
             if (date_from || date_to) {
                 searchObj.created_at = {};
