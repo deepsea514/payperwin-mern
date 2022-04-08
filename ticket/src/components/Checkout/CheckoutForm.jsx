@@ -22,13 +22,13 @@ class CheckoutForm extends React.Component {
                 email: user && user.email ? user.email : '',
                 firstname: user && user.firstname ? user.firstname : '',
                 lastname: user && user.lastname ? user.lastname : '',
-                address: '1029 Brodie Dr',
+                address: '',
                 address2: '',
-                city: 'Orillia',
+                city: '',
                 country: 'Canada',
-                region: 'Ontario',
-                zipcode: 'L3V 6H4',
-                phone: '+1 (705) 327-6580',
+                region: '',
+                zipcode: '',
+                phone: '',
             },
             checkoutSchema: Yup.object().shape({
                 email: Yup.string()
@@ -80,7 +80,7 @@ class CheckoutForm extends React.Component {
         return Math.ceil(usd_price * cad_rate * 100) / 100
     }
 
-    onSubmit = async (values, formik) => {
+    onSubmit = (values, formik) => {
         const { user, history, cart, clearFromCartAction } = this.props;
         const { session_id } = this.state;
         if (!user) {
@@ -121,7 +121,7 @@ class CheckoutForm extends React.Component {
                 })
             }
         }).catch(error => {
-            console.log(error)
+            console.error(error)
             formik.setSubmitting(false);
             errorMessage('Cannot Purchase Ticket. Please try again later.');
         })
