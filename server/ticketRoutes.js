@@ -3,6 +3,7 @@ const ticketRouter = require('express').Router();
 const TevoClientAPI = require('ticketevolution-node');
 const axios = require('axios');
 //Models
+const TevoOrder = require('./models/tevo_order');
 const TevoEvent = require('./models/tevo_event');
 const TevoVenue = require('./models/tevo_venue');
 const TevoPerformer = require('./models/tevo_performer');
@@ -201,6 +202,7 @@ ticketRouter.post(
             email, firstname, lastname, address, address2, city, country, region, zipcode, phone,
             token, cart, session_id
         } = req.body;
+        const user = req.user;
         try {
             const ticketAddon = await Addon.findOne({ name: 'ticketevolution' });
             if (!ticketAddon || !ticketAddon.value || !ticketAddon.value.api_token) {
@@ -245,7 +247,7 @@ ticketRouter.post(
                         if (client.errors && client.errors.length) {
                             return res.json({ success: false, error: client.errors.join(' ') });
                         }
-                        tevo_client = await TevoClient.create({ user_id: req.user._id, ...response.clients[0] });
+                        tevo_client = await TevoClient.create({ user_id: user._id, ...response.clients[0] });
                     } else {
                         console.error(response);
                         return res.json({ success: false, error: 'Cannot create an order. Creating Client failed.' })
@@ -355,17 +357,23 @@ ticketRouter.post(
                     break;
             }
 
-            console.log(JSON.stringify({ order: orderObject }))
             try {
                 const response = await tevoClientAPI.postJSON('http://api.sandbox.ticketevolution.com/v10/orders', { order: orderObject })
-                // if(response && !response.error && !response.errors) {
-                // }
-                console.log('response => ', JSON.stringify(response));
+                if (response && !response.error && !response.errors) {
+                    await TevoOrder.create({ user_id: user._id, ...response });
+                    return res.json({ success: true });
+                }
+                if (response.error) {
+                    return res.json({ success: false, error: response.error });
+                }
+                if (response.errors) {
+                    return res.json({ success: false, error: response.errors.join(' ') });
+                }
             } catch (error) {
-                return res.json({ success: false, error: 'Cannot create an order. Cannot Make an order.' });
+                return res.json({ success: false, error: 'Cannot create an order. Cannot purchase Item.' });
             }
 
-            return res.json({ success: false, error: 'Final Step' });
+            return res.json({ success: false, error: 'Cannot create an order. Cannot purchase Item.' });
         } catch (error) {
             console.error(error);
             return res.json({ success: false, error: 'Cannot create an order. Internal Server Error.' })
