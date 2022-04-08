@@ -300,6 +300,9 @@ const checkSettledScore = async () => {
                 const query2 = parlayQuery[nI];
                 if (!query2.status) break;
                 const { lineQuery, result } = query;
+                if (!result) {
+                    continue;
+                }
                 const { ss, scores, time_status, timer } = result;
                 let matchResult = {
                     homeScore: 0,
