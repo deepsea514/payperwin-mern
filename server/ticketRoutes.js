@@ -381,4 +381,34 @@ ticketRouter.post(
     }
 )
 
+ticketRouter.get(
+    '/events',
+    async (req, res) => {
+        try {
+            let { page, date_from, date_to, status } = req.query;
+            if (!page) page = 1;
+            page = parseInt(page);
+            const searchObj = {};
+            status && (searchObj['state'] = status);
+            if (date_from || date_to) {
+                searchObj.created_at = {};
+                if (date_from) searchObj.created_at.$gte = new Date(date_from);
+                if (date_to) searchObj.created_at.$lte = new Date(date_to);
+            }
+
+            const total = await TevoOrder.find(searchObj).count();
+            const orders = await TevoOrder
+                .find(searchObj)
+                .skip((page - 1) * perPage)
+                .sort({ created_at: -1 })
+                .limit(perPage);
+
+            return res.json({ success: true, orders: orders, page: page, total: total });
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Internal Server Error.' });
+        }
+    }
+);
+
 module.exports = ticketRouter;
