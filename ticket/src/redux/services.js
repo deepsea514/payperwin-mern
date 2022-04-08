@@ -49,3 +49,7 @@ export const getPerformerDetail = (performer_slug) => {
 export const checkoutSubmit = (values) => {
     return FrontendAPI.post('/tickets/checkout', values);
 }
+
+export const getOrders = (filter) => {
+    return FrontendAPI.get('/tickets/orders', { params: filter });
+}
