@@ -1,6 +1,8 @@
 - pm2 resurrect
 - Add ufw allow
     sudo ufw allow from 203.0.113.103 proto tcp to any port 22
+ufw status numbered
+ufw delete 10
 
 - Upgrade nginx
     mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.old
