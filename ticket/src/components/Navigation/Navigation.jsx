@@ -27,7 +27,6 @@ class Navigation extends React.Component {
         document.addEventListener("scroll", () => {
             if (window.scrollY > 170) {
                 elementId.classList.add("is-sticky");
-                window.history.pushState("", document.title, window.location.pathname);
             } else {
                 elementId.classList.remove("is-sticky");
             }
@@ -100,7 +99,7 @@ class Navigation extends React.Component {
                                         <Link to="/categories/theatre"
                                             onClick={() => this.toggleOpen(false)}
                                             className="nav-link">
-                                            Art & Theatre
+                                            Art&nbsp;&&nbsp;Theatre
                                         </Link>
                                     </li>
                                     <li className="nav-item">
