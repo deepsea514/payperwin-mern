@@ -1,5 +1,4 @@
 import React from 'react';
-import lax from 'lax.js';
 import GoTop from '../components/Shared/GoTop';
 import Footer from "../components/Common/Footer";
 import MainBanner from '../components/Checkout/MainBanner';
@@ -11,16 +10,6 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe("pk_test_WmbjeQFOTJM5Sb5PQvYXBM07");
 
 class Checkout extends React.Component {
-    constructor(props) {
-        super(props)
-        lax.setup()
-
-        document.addEventListener('scroll', function (x) {
-            lax.update(window.scrollY)
-        }, false)
-
-        lax.update(window.scrollY)
-    }
     render() {
         return (
             <React.Fragment>

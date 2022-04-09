@@ -1,5 +1,4 @@
 import React from 'react';
-import lax from 'lax.js';
 import MainBanner from '../components/Events/MainBanner';
 import GoTop from '../components/Shared/GoTop';
 import SearchForm from '../components//Events/SearchForm';
@@ -11,13 +10,6 @@ import { scrollToTop } from '../lib/scrollToTop';
 class Events extends React.Component {
     constructor(props) {
         super(props)
-        lax.setup()
-
-        document.addEventListener('scroll', function (x) {
-            lax.update(window.scrollY)
-        }, false)
-
-        lax.update(window.scrollY)
 
         this.state = {
             loading: false,

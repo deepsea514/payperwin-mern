@@ -1,7 +1,6 @@
 import React from 'react';
 import Footer from "../components/Common/Footer";
 import MainBanner from '../components/Performers/MainBanner';
-import lax from 'lax.js';
 import GoTop from '../components/Shared/GoTop';
 import { scrollToTop } from '../lib/scrollToTop';
 import { getPerformers } from '../redux/services';
@@ -11,14 +10,6 @@ import SearchForm from '../components/Performers/SearchForm';
 class Performers extends React.Component {
     constructor(props) {
         super(props)
-        lax.setup()
-
-        document.addEventListener('scroll', function (x) {
-            lax.update(window.scrollY)
-        }, false)
-
-        lax.update(window.scrollY)
-
         this.state = {
             loading: false,
             page: 1,

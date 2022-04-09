@@ -4880,7 +4880,7 @@ Back To Top CSS
 }
 
 .elkevent-nav .navbar-brand img {
-    max-width: 240px;
+    max-width: 300px;
 }
 
 .top-places {
@@ -4916,7 +4916,7 @@ Back To Top CSS
 .top-places .speakers-content h3 {
     font-size: 24px;
     margin-bottom: 0;
-    color: #FF2D55;
+    color: #FFFFFF;
 }
 
 .top-places:hover .speakers-content h3, .top-places:focus .speakers-content h3 {

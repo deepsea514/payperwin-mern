@@ -5,6 +5,7 @@ import MainBanner from '../components/Venue/MainBanner';
 import NotFound from '../components/Venue/NotFound';
 import VenueDetail from '../components/Venue/VenueDetail';
 import { getVenueDetail } from '../redux/services';
+import GoTop from '../components/Shared/GoTop';
 
 class Venue extends React.Component {
     constructor(props) {
@@ -47,6 +48,7 @@ class Venue extends React.Component {
                 {!loading && !venue && <NotFound />}
                 {venue && <VenueDetail venue={venue} />}
                 <Footer />
+                <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>
         );
     }
