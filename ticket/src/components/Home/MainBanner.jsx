@@ -201,22 +201,6 @@ class MainBanner extends React.Component {
                         </div>
                     </div>
                 </div>
-
-                <div className="shape1">
-                    <img src="/images/shapes/1.png" alt="shape1" />
-                </div>
-
-                <div className="shape2 rotateme">
-                    <img src="/images/shapes/2.png" alt="shape2" />
-                </div>
-
-                <div className="shape3 rotateme">
-                    <img src="/images/shapes/3.png" alt="shape3" />
-                </div>
-
-                <div className="shape4">
-                    <img src="/images/shapes/4.png" alt="shape4" />
-                </div>
             </div>
         );
     }

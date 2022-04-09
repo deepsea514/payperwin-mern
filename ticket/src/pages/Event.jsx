@@ -5,6 +5,7 @@ import EventDetail from '../components/Event/EventDetail';
 import MainBanner from '../components/Event/MainBanner';
 import NotFound from '../components/Event/NotFound';
 import { getEventDetail } from '../redux/services';
+import GoTop from '../components/Shared/GoTop';
 
 class Event extends React.Component {
     constructor(props) {
@@ -48,6 +49,7 @@ class Event extends React.Component {
                 {!loading && !event && <NotFound />}
                 {event && <EventDetail event={event} />}
                 <Footer />
+                <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>
         );
     }
