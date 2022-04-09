@@ -356,7 +356,7 @@ const sendBetLoseConfirmEmail = async (user, loseAmount) => {
         });
     }
     if (user.roles.phone_verified && (!preference || !preference.notification_settings || preference.notification_settings.lose_confirmation.sms)) {
-        sendSMS(`😥 You lose $${loseAmount.toFixed(2)}.`, user.phone);
+        // sendSMS(`😥 You lose $${loseAmount.toFixed(2)}.`, user.phone);
     }
 }
 
