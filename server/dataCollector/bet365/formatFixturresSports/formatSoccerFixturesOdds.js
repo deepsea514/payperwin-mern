@@ -25,16 +25,24 @@ const formatSoccerFixturesOdds = (event) => {
 
     if (goals) {
         const { goals_over_under, result_total_goals } = goals.sp;
-        if (goals_over_under && goals_over_under.odds && goals_over_under.odds.length) {
-            let total_count = goals_over_under.odds.length / 2;
-
-            for (let i = 0; i < total_count; i++) {
+        if (goals_over_under && goals_over_under.odds) {
+            let goals_over_under_ = goals_over_under.odds;
+            while (goals_over_under_.length > 0) {
+                const first = goals_over_under_[0];
+                const second = goals_over_under_.find(total => Number(total.name) == Number(first.name) && total.header != first.header);
+                if (!second) {
+                    goals_over_under_ = goals_over_under_.filter(total => total.id != first.id);
+                    continue;
+                }
+                const over = first.header == 'Over' ? first : second;
+                const under = first.header == 'Under' ? first : second;
                 line.totals.push({
-                    altLineId: goals_over_under.odds[i].id,
-                    points: Number(goals_over_under.odds[i].name),
-                    over: convertDecimalToAmericanOdds(goals_over_under.odds[i].odds),
-                    under: convertDecimalToAmericanOdds(goals_over_under.odds[i + total_count].odds),
-                })
+                    altLineId: over.id,
+                    points: Number(over.name),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                goals_over_under_ = goals_over_under_.filter(total => total.id != over.id && total.id != under.id);
             }
         }
 
@@ -88,15 +96,24 @@ const formatSoccerFixturesOdds = (event) => {
             }
             return false;
         }));
-        if (handicap && handicap.sp.handicap_result && handicap.sp.handicap_result.odds.length) {
-            let total_count = handicap.sp.handicap_result.odds.length / 3;
-            for (let i = 0; i < total_count; i++) {
+        if (handicap && handicap.sp.handicap_result && handicap.sp.handicap_result.odds) {
+            let handicap_result = handicap.sp.handicap_result.odds;
+            while (handicap_result.length) {
+                const first = handicap_result[0];
+                const second = handicap_result.find(spread => Number(spread.handicap) == -Number(first.handicap) && spread.header != first.header && spread.header != 'Tie');
+                if (!second) {
+                    handicap_result = handicap_result.filter(spread => spread.id != first.id);
+                    continue;
+                }
+                const home = first.header == '1' ? first : second;
+                const away = first.header == '2' ? first : second;
                 line.spreads.push({
-                    altLineId: handicap.sp.handicap_result.odds[i].id,
-                    hdp: Number(handicap.sp.handicap_result.odds[i].handicap),
-                    home: convertDecimalToAmericanOdds(handicap.sp.handicap_result.odds[i].odds),
-                    away: convertDecimalToAmericanOdds(handicap.sp.handicap_result.odds[i + 2 * total_count].odds),
-                })
+                    altLineId: home.id,
+                    hdp: Number(home.handicap),
+                    home: convertDecimalToAmericanOdds(home.odds),
+                    away: convertDecimalToAmericanOdds(away.odds),
+                });
+                handicap_result = handicap_result.filter(spread => spread.id != home.id && spread.id != away.id);
             }
         }
     }

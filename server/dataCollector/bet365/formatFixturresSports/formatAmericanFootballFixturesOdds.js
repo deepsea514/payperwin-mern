@@ -6,29 +6,55 @@ const gotLineToOdds = (game_lines) => {
         spreads: [],
         totals: [],
     }
-    const count = game_lines.length / 2;
-    for (let i = 0; i < count; i++) {
-        if (game_lines[i].name == 'Spread') {
-            line.spreads.push({
-                altLineId: game_lines[i].id,
-                hdp: Number(game_lines[i].handicap),
-                home: convertDecimalToAmericanOdds(game_lines[i].odds),
-                away: convertDecimalToAmericanOdds(game_lines[i + count].odds),
-            });
-        }
-        if (game_lines[i].name == 'Total') {
-            line.totals.push({
-                altLineId: game_lines[i].id,
-                points: Number(game_lines[i].handicap.slice(2, game_lines[i].handicap.length)),
-                over: convertDecimalToAmericanOdds(game_lines[i].odds),
-                under: convertDecimalToAmericanOdds(game_lines[i + count].odds),
-            })
-        }
-        if (game_lines[i].name == 'Money Line') {
-            line.moneyline = {
-                home: convertDecimalToAmericanOdds(game_lines[i].odds),
-                away: convertDecimalToAmericanOdds(game_lines[i + count].odds),
+    while (game_lines.length) {
+        const first = game_lines[0];
+
+        if (first.name == 'Money Line') {
+            const second = game_lines.find(game_line => game_line.header != first.header && game_line.name == first.name);
+            if (!second) {
+                game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                continue;
             }
+            const home = first.header == '1' ? first : second;
+            const away = first.header == '2' ? first : second;
+            line.moneyline = {
+                home: convertDecimalToAmericanOdds(home.odds),
+                away: convertDecimalToAmericanOdds(away.odds),
+            }
+            game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+        } else if (first.name == 'Spread') {
+            const second = game_lines.find(game_line => Number(game_line.handicap) == -Number(first.handicap) && game_line.header != first.header);
+            if (!second) {
+                game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                continue;
+            }
+            const home = first.header == '1' ? first : second;
+            const away = first.header == '2' ? first : second;
+            line.spreads.push({
+                altLineId: home.id,
+                hdp: Number(home.handicap),
+                home: convertDecimalToAmericanOdds(home.odds),
+                away: convertDecimalToAmericanOdds(away.odds),
+            });
+            game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+        } else if (first.name == 'Total') {
+            const points = first.handicap.slice(2, first.handicap.length);
+            const second = game_lines.find(game_line => game_line.name == first.name &&
+                game_line.handicap != first.handicap &&
+                game_line.handicap.slice(2, game_line.handicap.length) == points);
+            if (!second) {
+                game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                continue;
+            }
+            const over = first.header == '1' ? first : second;
+            const under = first.header == '2' ? first : second;
+            line.totals.push({
+                altLineId: over.id,
+                points: Number(points),
+                over: convertDecimalToAmericanOdds(over.odds),
+                under: convertDecimalToAmericanOdds(under.odds),
+            });
+            game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
         }
     }
 
@@ -156,7 +182,7 @@ const formatAmericanFootballFixturesOdds = (event) => {
             let alternative_point_spread_2_way = other ? other.sp["alternative_point_spread_2_way"].odds : [];
             while (alternative_point_spread_2_way.length > 0) {
                 const first = alternative_point_spread_2_way[0];
-                const second = alternative_point_spread_2_way.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
+                const second = alternative_point_spread_2_way.find(spread => Number(spread.handicap) == -Number(first.handicap) && spread.header != first.header);
                 if (!second) {
                     alternative_point_spread_2_way = alternative_point_spread_2_way.filter(spread => spread.id != first.id);
                     continue;
