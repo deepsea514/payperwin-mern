@@ -24,27 +24,45 @@ const formatTennisFixturesOdds = (event) => {
         }
 
         if (main.sp['match_handicap_(games)']) {
-            const match_handicap = main.sp['match_handicap_(games)'].odds;
-            const handicap_count = match_handicap.length / 2;
-            for (let i = 0; i < handicap_count; i++)
+            let match_handicap = main.sp['match_handicap_(games)'].odds;
+            while (match_handicap.length) {
+                const first = match_handicap[0];
+                const second = match_handicap.find(spread => Number(spread.name) == -Number(first.name) && spread.header != first.header);
+                if (!second) {
+                    match_handicap = match_handicap.filter(spread => spread.id != first.id);
+                    continue;
+                }
+                const home = first.header == '1' ? first : second;
+                const away = first.header == '2' ? first : second;
                 line.spreads.push({
-                    altLineId: match_handicap[i].id,
-                    hdp: Number(match_handicap[i].name),
-                    home: convertDecimalToAmericanOdds(match_handicap[i].odds),
-                    away: convertDecimalToAmericanOdds(match_handicap[i + handicap_count].odds),
+                    altLineId: home.id,
+                    hdp: Number(home.name),
+                    home: convertDecimalToAmericanOdds(home.odds),
+                    away: convertDecimalToAmericanOdds(away.odds),
                 });
+                match_handicap = match_handicap.filter(spread => spread.id != home.id && spread.id != away.id);
+            }
         }
 
         if (main.sp.total_games_2_way) {
-            const total_games_2_way = main.sp.total_games_2_way.odds;
-            const total_count = total_games_2_way.length / 2;
-            for (let i = 0; i < total_count; i++)
+            let total_games_2_way = main.sp.total_games_2_way.odds;
+            while (total_games_2_way.length) {
+                const first = total_games_2_way[0];
+                const second = total_games_2_way.find(total => Number(total.name) == Number(first.name) && total.header != first.header);
+                if (!second) {
+                    total_games_2_way = total_games_2_way.filter(total => total.id != first.id);
+                    continue;
+                }
+                const over = first.header == 'Over' ? first : second;
+                const under = first.header == 'Under' ? first : second;
                 line.totals.push({
-                    altLineId: total_games_2_way[i + total_count].id,
-                    points: Number(total_games_2_way[i].name),
-                    over: convertDecimalToAmericanOdds(total_games_2_way[i].odds),
-                    under: convertDecimalToAmericanOdds(total_games_2_way[i + total_count].odds),
-                })
+                    altLineId: over.id,
+                    points: Number(over.name),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                total_games_2_way = total_games_2_way.filter(total => total.id != over.id && total.id != under.id);
+            }
         }
 
         if (main.sp.match_result_and_total_games) {
