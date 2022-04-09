@@ -1,21 +1,8 @@
 import React from 'react';
-import lax from 'lax.js';
 import { Link } from 'react-router-dom';
 import LaxDiv from '../Shared/LaxDiv';
 
 class TopPlaces extends React.Component {
-
-    constructor(props) {
-        super(props)
-        lax.setup()
-
-        document.addEventListener('scroll', function (x) {
-            lax.update(window.scrollY)
-        }, false)
-
-        lax.update(window.scrollY)
-    }
-
     render() {
         return (
             <section className="top-places-area ptb-120 pb-0">

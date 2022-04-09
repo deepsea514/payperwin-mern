@@ -5,6 +5,7 @@ import MainBanner from '../components/Performer/MainBanner';
 import NotFound from '../components/Performer/NotFound';
 import PerformerDetail from '../components/Performer/PerformerDetail';
 import { getPerformerDetail } from '../redux/services';
+import GoTop from '../components/Shared/GoTop';
 
 class Performer extends React.Component {
     constructor(props) {
@@ -47,6 +48,7 @@ class Performer extends React.Component {
                 {!loading && !performer && <NotFound />}
                 {performer && <PerformerDetail performer={performer} />}
                 <Footer />
+                <GoTop scrollStepInPx="50" delayInMs="16.66" />
             </React.Fragment>
         );
     }
