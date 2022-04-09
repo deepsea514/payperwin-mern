@@ -135,6 +135,12 @@ class Menu extends Component {
                                     </a>
                                 </li>
                                 <li className="nav-item col-6">
+                                    <a className="nav-link next" href="https://tickets.payperwin.com/" target="_blank">
+                                        <i className="fas fa-ticket" />
+                                        <span>Event Tickets</span>
+                                    </a>
+                                </li>
+                                <li className="nav-item col-6">
                                     <a href="https://shop.payperwin.com" className="nav-link" target="_blank">
                                         <i className="fas fa-money-check" />
                                         <span><FormattedMessage id="COMPONENTS.BUYGIFTCARD" /></span>

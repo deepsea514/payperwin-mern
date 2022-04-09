@@ -149,6 +149,13 @@ class Header extends Component {
                                             </Link>
                                         </center>
                                     </li>
+                                    <li className={`nav-item`}>
+                                        <center style={{ whiteSpace: "nowrap" }}>
+                                            <a href="https://tickets.payperwin.com/" target="_blank" className="nav-link">
+                                                <i className="fas fa-ticket"></i>Event Tickets
+                                            </a>
+                                        </center>
+                                    </li>
                                     <li className="nav-item">
                                         <center style={{ whiteSpace: "nowrap" }}>
                                             <Link to={{ pathname: '/how-it-works' }} className="nav-link">
