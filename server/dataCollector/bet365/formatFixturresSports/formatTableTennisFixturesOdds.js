@@ -13,28 +13,56 @@ const formatTableTennisFixturesOdds = (event) => {
     }
 
     if (main && main.sp.match_lines) {
-        const { match_lines: { odds: match_lines } } = main.sp;
-        const line_count = match_lines.length / 2;
-        for (let i = 0; i < line_count; i++) {
-            if (match_lines[i].name == "To Win") {
-                line.moneyline = {
-                    home: convertDecimalToAmericanOdds(match_lines[i].odds),
-                    away: convertDecimalToAmericanOdds(match_lines[i + line_count].odds)
+        let { match_lines: { odds: game_lines } } = main.sp;
+
+        while (game_lines.length) {
+            const first = game_lines[0];
+            if (first.name == 'To Win') {
+                const second = game_lines.find(game_line => game_line.header != first.header && game_line.name == first.name);
+                if (!second) {
+                    game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                    continue;
                 }
-            } else if (match_lines[i].name == "Handicap") {
+                const home = first.header == '1' ? first : second;
+                const away = first.header == '2' ? first : second;
+                line.moneyline = {
+                    home: convertDecimalToAmericanOdds(home.odds),
+                    away: convertDecimalToAmericanOdds(away.odds),
+                }
+                game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+            } else if (first.name == 'Handicap') {
+                const second = game_lines.find(game_line => Number(game_line.handicap) == -Number(first.handicap) && game_line.header != first.header);
+                if (!second) {
+                    game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                    continue;
+                }
+                const home = first.header == '1' ? first : second;
+                const away = first.header == '2' ? first : second;
                 line.spreads.push({
-                    altLineId: match_lines[i].id,
-                    hdp: Number(match_lines[i].handicap),
-                    home: convertDecimalToAmericanOdds(match_lines[i].odds),
-                    away: convertDecimalToAmericanOdds(match_lines[i + line_count].odds),
-                })
-            } else if (match_lines[i].name == "Total") {
+                    altLineId: home.id,
+                    hdp: Number(home.handicap),
+                    home: convertDecimalToAmericanOdds(home.odds),
+                    away: convertDecimalToAmericanOdds(away.odds),
+                });
+                game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+            } else if (first.name == 'Total') {
+                const points = first.handicap.slice(2, first.handicap.length);
+                const second = game_lines.find(game_line => game_line.name == first.name &&
+                    game_line.handicap != first.handicap &&
+                    game_line.handicap.slice(2, game_line.handicap.length) == points);
+                if (!second) {
+                    game_lines = game_lines.filter(game_line => game_line.id != first.id);
+                    continue;
+                }
+                const over = first.header == '1' ? first : second;
+                const under = first.header == '2' ? first : second;
                 line.totals.push({
-                    altLineId: match_lines[i].id,
-                    points: Number(match_lines[i].handicap.slice(2, match_lines[i].handicap.length)),
-                    over: convertDecimalToAmericanOdds(match_lines[i].odds),
-                    under: convertDecimalToAmericanOdds(match_lines[i + line_count].odds),
-                })
+                    altLineId: over.id,
+                    points: Number(points),
+                    over: convertDecimalToAmericanOdds(over.odds),
+                    under: convertDecimalToAmericanOdds(under.odds),
+                });
+                game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
             }
         }
     }
