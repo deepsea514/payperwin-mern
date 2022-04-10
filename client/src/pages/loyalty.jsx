@@ -200,7 +200,7 @@ export default class Loyalty extends Component {
                     {this.isRenderLevelTitle(level, 'milestone') && <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
                         <div className="p-2 align-self-center">
                             <div className="symbol symbol-30 mr-1 align-self-start">
-                                <div className="symbol-label m-1 "
+                                <div className="symbol-label m-1 bg-dark"
                                     style={{
                                         backgroundImage: `url(${level.image})`,
                                     }}
@@ -216,8 +216,8 @@ export default class Loyalty extends Component {
                     </div>}
                     {level.milestones.map((milestone, index) =>
 
-                        !milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
-                            <div className="p-2 align-self-center">
+                        !milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2 p-3" key={`milestone_${index + 1}`}>
+                            {/* <div className="p-2 align-self-center">
                                 <div className="symbol symbol-30 mr-1 align-self-start">
                                     <div className="symbol-label m-1 bg-dark"
                                         style={{
@@ -225,24 +225,24 @@ export default class Loyalty extends Component {
                                         }}
                                     ></div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="align-self-center">
-                                <div className="font-weight-bolder font-size-md">Milestone {pros_index * level.milestones.length + index + 1}</div>
+                                <div className="font-weight-bolder font-size-md">Milestone&nbsp;{pros_index * level.milestones.length + index + 1}</div>
                             </div>
-                            <div className="pl-3 align-self-center w-50">
+                            <div className="pl-3 align-self-center w-100">
                                 <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
                                 <ProgressBar now={100 / milestone.points * loyalty} visuallyhidden="true" style={{ height: '5px' }} />
                                 {milestone.points > loyalty && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points - loyalty)} points needed</div>}
                             </div>
-                            {!milestone.isClaimed && <div className="align-self-center mr-2">
-                                {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark" style={{ borderColor: '#ED254E' }}
+                            <div className="align-self-right mr-2 d-block">
+                                {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-0" style={{ backgroundColor: '#ED254E' }}
                                     onClick={() => this.claim(milestone)}>
-                                    <div style={{ color: '#ED254E' }}>Claim</div>
+                                    <div>Claim</div>
                                 </button>}
-                                {milestone.points > loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-dark" disabled style={{ cursor: 'not-allowed' }}>
-                                    <div className="text-secondary">Claim</div>
+                                {milestone.points > loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-0 invisible">
+                                    <div>Claim</div>
                                 </button>}
-                            </div>}
+                            </div>
                         </div>
                     )}
                 </React.Fragment>
@@ -271,7 +271,7 @@ export default class Loyalty extends Component {
                     {this.isRenderLevelTitle(level, 'claimed') && <div className="d-flex flex-row  mt-2" key={`prop_milestone_${pros_index + 1}`}>
                         <div className="p-2 align-self-center">
                             <div className="symbol symbol-30 mr-1 align-self-start">
-                                <div className="symbol-label m-1 "
+                                <div className="symbol-label m-1 bg-dark"
                                     style={{
                                         backgroundImage: `url(${level.image})`,
                                     }}
@@ -368,11 +368,31 @@ export default class Loyalty extends Component {
                                 </div>
                             </div>
 
-                            {selectedLevel == LEVELS[0].level && <img src={LEVELS[0].image} className="rounded mx-auto d-block" />}
-                            {selectedLevel == LEVELS[1].level && <img src={LEVELS[1].image} className="rounded mx-auto d-block" />}
-                            {selectedLevel == LEVELS[2].level && <img src={LEVELS[2].image} className="rounded mx-auto d-block" />}
-                            {selectedLevel == LEVELS[3].level && <img src={LEVELS[3].image} className="rounded mx-auto d-block" />}
-                            {selectedLevel == LEVELS[4].level && <img src={LEVELS[4].image} className="rounded mx-auto d-block" />}
+                            {selectedLevel == LEVELS[0].level &&
+                                <div style={{ position: 'relative' }}>
+                                    <img src={LEVELS[0].image} className="rounded mx-auto d-block" style={{ opacity: loyalty > 0 ? 1.0 : 0.4 }} />
+                                    {loyalty == 0 && <img src='/images/loyalty/Lock.png' className="rounded mx-auto d-block" style={{ position: 'absolute', top: 70, opacity: 0.9 }} />}
+                                </div>}
+                            {selectedLevel == LEVELS[1].level &&
+                                <div style={{ position: 'relative' }}>
+                                    <img src={LEVELS[1].image} className="rounded mx-auto d-block" style={{ opacity: loyalty > LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points ? 1.0 : 0.4 }} />
+                                    {loyalty <= LEVELS[0].milestones[LEVELS[0].milestones.length - 1].points && <img src='/images/loyalty/Lock.png' className="rounded mx-auto d-block" style={{ position: 'absolute', top: 70, opacity: 0.9 }} />}
+                                </div>}
+                            {selectedLevel == LEVELS[2].level &&
+                                <div style={{ position: 'relative' }}>
+                                    <img src={LEVELS[2].image} className="rounded mx-auto d-block" style={{ opacity: loyalty > LEVELS[1].milestones[LEVELS[1].milestones.length - 1].points ? 1.0 : 0.4 }} />
+                                    {loyalty <= LEVELS[1].milestones[LEVELS[1].milestones.length - 1].points && <img src='/images/loyalty/Lock.png' className="rounded mx-auto d-block" style={{ position: 'absolute', top: 70, opacity: 0.9 }} />}
+                                </div>}
+                            {selectedLevel == LEVELS[3].level &&
+                                <div style={{ position: 'relative' }}>
+                                    <img src={LEVELS[3].image} className="rounded mx-auto d-block" style={{ opacity: loyalty > LEVELS[2].milestones[LEVELS[2].milestones.length - 1].points ? 1.0 : 0.4 }} />
+                                    {loyalty <= LEVELS[2].milestones[LEVELS[2].milestones.length - 1].points && <img src='/images/loyalty/Lock.png' className="rounded mx-auto d-block" style={{ position: 'absolute', top: 70, opacity: 0.9 }} />}
+                                </div>}
+                            {selectedLevel == LEVELS[4].level &&
+                                <div style={{ position: 'relative' }}>
+                                    <img src={LEVELS[4].image} className="rounded mx-auto d-block" style={{ opacity: loyalty > LEVELS[3].milestones[LEVELS[3].milestones.length - 1].points ? 1.0 : 0.4 }} />
+                                    {loyalty <= LEVELS[3].milestones[LEVELS[3].milestones.length - 1].points && <img src='/images/loyalty/Lock.png' className="rounded mx-auto d-block" style={{ position: 'absolute', top: 70, opacity: 0.9 }} />}
+                                </div>}
 
                             <div className="d-flex justify-content-center p-2">
                                 <div className="border-right border-dark pr-2 text-right">
