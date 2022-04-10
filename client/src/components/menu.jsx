@@ -343,7 +343,7 @@ class Menu extends Component {
                                     <Link to="/loyalty"
                                         className="nav-link"
                                         onClick={() => toggleField('menuOpen')}>
-                                        <i className="fas fa-money-check-alt" />
+                                        <i className="fas fa-money-bill" />
                                         <FormattedMessage id="COMPONENTS.SIDEBAR.LOYALTY" />
                                     </Link>
                                 </li>
