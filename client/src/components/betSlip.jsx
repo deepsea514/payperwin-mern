@@ -8,6 +8,7 @@ import BetTeaser from './betteaser';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { placeBets, placeParlayBets, placeTeaserBets } from '../redux/services';
 import BetBasic from './bet_basic';
+import { showSuccessToast } from '../libs/toast';
 
 class BetSlip extends Component {
     constructor(props) {
@@ -86,7 +87,10 @@ class BetSlip extends Component {
 
         this.setState({ submitting: true });
         placeBets(betSlip)
-            .then(({ data: { balance, errors } }) => {
+            .then(({ data: { balance, newClaims, errors } }) => {
+                if(newClaims)
+                    showSuccessToast(`${newClaims} loyalty milestone unlocked `);
+
                 const successCount = betSlip.length - (errors ? errors.length : 0);
                 const stateChanges = {};
                 if (successCount) {
@@ -149,7 +153,10 @@ class BetSlip extends Component {
         }
         this.setState({ submitting: true });
         placeParlayBets(betSlip, totalStake, totalWin)
-            .then(({ data: { balance, errors } }) => {
+            .then(({ data: { balance, newClaims, errors } }) => {
+                if(newClaims)
+                    showSuccessToast(`${newClaims} loyalty milestone unlocked `);
+
                 if (errors.length == 0) {
                     updateUser('balance', balance);
                     removeBet(null, null, null, null, null, true);
@@ -188,7 +195,10 @@ class BetSlip extends Component {
         }
         this.setState({ submitting: true });
         placeTeaserBets(teaserBetSlip, totalStake, totalWin)
-            .then(({ data: { balance, errors } }) => {
+            .then(({ data: { balance, newClaims, errors } }) => {
+                if(newClaims)
+                    showSuccessToast(`${newClaims} loyalty milestone unlocked `);
+                    
                 if (errors.length == 0) {
                     updateUser('balance', balance);
                     removeTeaserBet(null, null, null);
