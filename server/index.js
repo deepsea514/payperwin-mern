@@ -70,6 +70,7 @@ const helloEmailAddress = 'hello@payperwin.com';
 const supportEmailAddress = 'support@payperwin.com';
 const alertEmailAddress = 'alerts@payperwin.com';
 const isDstObserved = config.isDstObserved;
+const Milestones = config.Milestones;
 const loyaltyPerBet = 25;
 const maximumWin = 5000;
 //external libraries
@@ -917,6 +918,15 @@ expressApp.post(
     }
 )
 
+function calcAvailableClaims(loyalty) {
+    return Milestones.filter(mile => {
+        if (mile <= loyalty)
+            return true;
+        else
+            return false;
+    }).length;
+}
+
 expressApp.post(
     '/placeBets',
     isAuthenticated,
@@ -953,6 +963,9 @@ expressApp.post(
                 errors,
             });
         }
+
+        const preLoyalty = await getLoyalty(user);
+        const preAvailableClaims = calcAvailableClaims(preLoyalty);
 
         for (const bet of betSlip) {
             const {
@@ -1474,8 +1487,13 @@ expressApp.post(
                 }
             }
         }
+
+        const afterLoyalty = await getLoyalty(user);
+        const afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+
         return res.json({
             balance: user.balance,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -1536,6 +1554,9 @@ expressApp.post(
             errors.push(`Correlated bets could not be placed.`)
             return res.json({ balance: user.balance, errors });
         }
+
+        const preLoyalty = await getLoyalty(user);
+        const preAvailableClaims = calcAvailableClaims(preLoyalty);
 
         const parlayQuery = [];
         let index = 0;
@@ -1800,8 +1821,12 @@ expressApp.post(
             errors.push(`Bet can't be placed. Internal Server Error.`);
         }
 
+        const afterLoyalty = await getLoyalty(user);
+        const afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+
         res.json({
             balance: user.balance,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -1847,6 +1872,9 @@ expressApp.post(
             errors.push(`Bet can't be placed. Query Incompleted.`)
             return res.json({ balance: user.balance, errors });
         }
+
+        const preLoyalty = await getLoyalty(user);
+        const preAvailableClaims = calcAvailableClaims(preLoyalty);
 
         const teaserQuery = [];
         let index = 0;
@@ -2089,8 +2117,12 @@ expressApp.post(
             errors.push(`Bet can't be placed. Internal Server Error.`);
         }
 
+        const afterLoyalty = await getLoyalty(user);
+        const afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+
         return res.json({
             balance: user.balance,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -5190,6 +5222,7 @@ expressApp.post(
             return res.status(400).json({ success: false, error: "Prize already taken." });
         }
         try {
+            var preLoyalty, preAvailableClaims, afterLoyalty, afterAvailableClaims;
             switch (prize) {
                 case 1:     // $5 Credit
                     await PrizeLog.create({
@@ -5345,6 +5378,8 @@ expressApp.post(
                     });
                     break;
                 case 3:     // +2,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+2,000 Loyalty'
@@ -5353,8 +5388,12 @@ expressApp.post(
                         user: user._id,
                         point: 2000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 2000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
                 case 7:     // +5,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+5,000 Loyalty'
@@ -5363,8 +5402,12 @@ expressApp.post(
                         user: user._id,
                         point: 5000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 5000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
                 case 11:    // +8,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+8,000 Loyalty'
@@ -5373,12 +5416,14 @@ expressApp.post(
                         user: user._id,
                         point: 8000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 8000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
             }
             return res.json({ success: true });
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ success: false });
+            return res.status(500).json({ success: false, newClaims: 0 });
         }
     }
 )
@@ -5578,45 +5623,45 @@ expressApp.get(
 
 function calcCredit(points) {
     switch (points) {
-        case 1500:
+        case Milestones[0]:
             return 5.30;
-        case 3000:
+        case Milestones[1]:
             return 0.45;
-        case 4500:
+        case Milestones[2]:
             return 0.75;
-        case 6000:
+        case Milestones[3]:
             return 1.00;
-        case 7500:
+        case Milestones[4]:
             return 1.50;
-        case 9000:
+        case Milestones[5]:
             return 1.75;
-        case 10500:
+        case Milestones[6]:
             return 2.00;
-        case 13000:
+        case Milestones[7]:
             return 2.25;
-        case 15000:
+        case Milestones[8]:
             return 2.75;
-        case 18000:
+        case Milestones[9]:
             return 2.85;
-        case 21000:
+        case Milestones[10]:
             return 2.95;
-        case 26000:
+        case Milestones[11]:
             return 3.00;
-        case 30000:
+        case Milestones[12]:
             return 3.00;
-        case 35000:
+        case Milestones[13]:
             return 3.25;
-        case 45000:
+        case Milestones[14]:
             return 3.75;
-        case 52000:
+        case Milestones[15]:
             return 3.95;
-        case 60000:
+        case Milestones[16]:
             return 10.00;
-        case 70000:
+        case Milestones[17]:
             return 4.00;
-        case 90000:
+        case Milestones[18]:
             return 4.50;
-        case 150000:
+        case Milestones[19]:
             return 10.00;
 
         default:
