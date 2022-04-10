@@ -1490,10 +1490,10 @@ expressApp.post(
 
         const afterLoyalty = await getLoyalty(user);
         const afterAvailableClaims = calcAvailableClaims(afterLoyalty);
-        
+
         return res.json({
             balance: user.balance,
-            newClaims: afterAvailableClaims-preAvailableClaims,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -1826,7 +1826,7 @@ expressApp.post(
 
         res.json({
             balance: user.balance,
-            newClaims: afterAvailableClaims-preAvailableClaims,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -2119,10 +2119,10 @@ expressApp.post(
 
         const afterLoyalty = await getLoyalty(user);
         const afterAvailableClaims = calcAvailableClaims(afterLoyalty);
-        
+
         return res.json({
             balance: user.balance,
-            newClaims: afterAvailableClaims-preAvailableClaims,
+            newClaims: afterAvailableClaims - preAvailableClaims,
             errors,
         });
     }
@@ -5222,6 +5222,7 @@ expressApp.post(
             return res.status(400).json({ success: false, error: "Prize already taken." });
         }
         try {
+            var preLoyalty, preAvailableClaims, afterLoyalty, afterAvailableClaims;
             switch (prize) {
                 case 1:     // $5 Credit
                     await PrizeLog.create({
@@ -5377,6 +5378,8 @@ expressApp.post(
                     });
                     break;
                 case 3:     // +2,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+2,000 Loyalty'
@@ -5385,8 +5388,12 @@ expressApp.post(
                         user: user._id,
                         point: 2000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 2000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
                 case 7:     // +5,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+5,000 Loyalty'
@@ -5395,8 +5402,12 @@ expressApp.post(
                         user: user._id,
                         point: 5000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 5000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
                 case 11:    // +8,000 Loyalty
+                    preLoyalty = await getLoyalty(user);
+                    preAvailableClaims = calcAvailableClaims(preLoyalty);
                     await PrizeLog.create({
                         user: user._id,
                         type: '+8,000 Loyalty'
@@ -5405,12 +5416,14 @@ expressApp.post(
                         user: user._id,
                         point: 8000
                     });
-                    break;
+                    afterLoyalty = preLoyalty + 8000;
+                    afterAvailableClaims = calcAvailableClaims(afterLoyalty);
+                    return res.json({ success: true, newClaims: afterAvailableClaims - preAvailableClaims });
             }
             return res.json({ success: true });
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ success: false });
+            return res.status(500).json({ success: false, newClaims: 0 });
         }
     }
 )

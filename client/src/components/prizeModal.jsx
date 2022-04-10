@@ -4,7 +4,7 @@ import { Preloader, ThreeDots } from 'react-preloader-icon';
 import { getPrize, postPrize } from '../redux/services';
 import Wheel from './wheel';
 import Confetti from 'react-confetti'
-
+import { showSuccessToast } from '../libs/toast';
 
 class PrizeModal extends Component {
     constructor(props) {
@@ -86,6 +86,11 @@ class PrizeModal extends Component {
         const remainingTimer = setInterval(this.remainingTimeHandler, 1000);
         this.setState({ used: true, remainingTimer, winMessage: 'You have won ' + pool[selectedItem].text });
         postPrize(pool[selectedItem].id)
+            .then(({ data: { newClaims } }) => {
+                if (newClaims)
+                    showSuccessToast(`${newClaims} loyalty milestone unlocked `);
+            })
+            .catch(() => { });
     }
 
     render() {
