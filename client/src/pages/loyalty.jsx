@@ -232,7 +232,7 @@ export default class Loyalty extends Component {
                             <div className="pl-3 align-self-center w-100">
                                 <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
                                 <ProgressBar now={100 / milestone.points * loyalty} visuallyhidden="true" style={{ height: '5px' }} />
-                                {milestone.points > loyalty && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points - loyalty)} points needed</div>}
+                                {/* {milestone.points > loyalty && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points - loyalty)} points needed</div>} */}
                             </div>
                             <div className="align-self-right mr-2 d-block">
                                 {milestone.points <= loyalty && <button className="adminMessage_button cookieBanner_small dead-center cookieBanner_dark border-0" style={{ backgroundColor: '#ED254E' }}
