@@ -287,20 +287,11 @@ export default class Loyalty extends Component {
                     </div>}
                     {level.milestones.map((milestone, index) =>
 
-                        milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2" key={`milestone_${index + 1}`}>
-                            <div className="p-2 align-self-center">
-                                <div className="symbol symbol-30 mr-1 align-self-start">
-                                    <div className="symbol-label m-1 bg-dark"
-                                        style={{
-                                            backgroundImage: `url(/images/loyalty/milestone_flag.png)`,
-                                        }}
-                                    ></div>
-                                </div>
-                            </div>
+                        milestone.isClaimed && <div className="d-flex flex-row bg-dark mt-2 p-3" key={`milestone_${index + 1}`}>
                             <div className="align-self-center">
-                                <div className="font-weight-bolder font-size-md">Milestone {pros_index * level.milestones.length + index + 1}</div>
+                                <div className="font-weight-bolder font-size-md">Milestone&nbsp;{pros_index * level.milestones.length + index + 1}</div>
                             </div>
-                            <div className="pl-3 align-self-center w-50">
+                            <div className="pl-3 align-self-center w-100">
                                 <div className="text-gray" style={{ fontSize: '12px' }}>{this.numberWithCommas(milestone.points)} points</div>
                                 <div className="font-weight-bolder font-size-lg text-success">+${milestone.credit.toFixed(2)}</div>
                             </div>
