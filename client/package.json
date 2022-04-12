@@ -42,6 +42,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.11.3",
+    "@onramper/widget": "^2.2.12",
     "@reduxjs/toolkit": "^1.5.0",
     "@tanem/svg-injector": "^8.2.2",
     "apexcharts": "^3.24.0",

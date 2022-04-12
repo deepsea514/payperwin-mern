@@ -48,6 +48,10 @@
         "path": "/deposit-giftcard"
     },
     {
+        "title": "Deposit with Credit Card",
+        "path": "/deposit-creditcard"
+    },
+    {
         "title": "Withdraw",
         "path": "/withdraw"
     },

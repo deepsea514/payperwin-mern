@@ -37,6 +37,7 @@ import BettingRules from "../pages/bettingRules";
 import DepositETransfer from "../pages/depositEtransfer";
 import DepositTripleA from "../pages/depositTripleA";
 import DepositGiftCard from "../pages/depositGiftCard";
+import DepositCreditCard from "../pages/depositCreditCard";
 import WithdrawETransfer from "../pages/withdrawEtransfer";
 import WithdrawTripleA from "../pages/withdrawTripleA";
 import Dashboard from "../pages/dashboard";
@@ -112,6 +113,7 @@ const ShowAccountLinks = [
     '/autobet-settings',
     '/loyalty',
     '/deposit-giftcard',
+    '/deposit-creditcard',
     '/invite'
 ];
 
@@ -612,6 +614,8 @@ class App extends Component {
                                                 } />}
                                                 {user && <Route path='/deposit-giftcard' render={(props) =>
                                                     <ErrorBoundary><DepositGiftCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />}
+                                                {user && <Route path='/deposit-creditcard' render={(props) =>
+                                                    <ErrorBoundary><DepositCreditCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />}
                                                 {user && <Route path="/withdraw-etransfer" render={(props) =>
                                                     <ErrorBoundary><WithdrawETransfer {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}

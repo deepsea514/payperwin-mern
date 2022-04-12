@@ -75,6 +75,16 @@ class Deposit extends Component {
                                     </Link>
                                 </div>
                             </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-creditcard' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="images/credit-card.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Credit Card</div>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <p className="dpsit">
