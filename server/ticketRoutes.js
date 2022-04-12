@@ -10,6 +10,7 @@ const TevoPerformer = require('./models/tevo_performer');
 const TevoClient = require('./models/tevo_client');
 const Frontend = require('./models/frontend');
 const Addon = require('./models/addon');
+const TevoNotifications = require('./models/tevo_notification');
 //local helpers
 const perPage = 20;
 
@@ -414,5 +415,95 @@ ticketRouter.get(
         }
     }
 );
+
+ticketRouter.post(
+    '/notifications',
+    // isAuthenticated,
+    async (req, res) => {
+        const { recipient, event_type } = req.body;
+        try {
+            await TevoNotifications.create({
+                data: req.body
+            });
+            res.json({ success: true })
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Internal Server Error.' });
+        }
+        return
+        if (recipient == 'seller') {
+            switch (event_type) {
+                case 'order_created':
+
+                    break;
+                case 'airbill_uploaded':
+
+                    break;
+                case 'delivery_updated':
+
+                    break;
+                case 'seller_accepted':
+
+                    break;
+                case 'etickets_finalized':
+
+                    break;
+                case 'in-hand_updated':
+
+                    break;
+                case 'order_rejected':
+
+                    break;
+
+                default:
+                    console.error(`Unknown event type: ${event_type}`);
+                    return res.json({ success: false, error: `Unknown event type: ${event_type}` });
+            }
+
+        } else if (recipient == 'buyer') {
+            switch (event_type) {
+                case 'seller_accepted':
+
+                    break;
+                case 'order_rejected':
+
+                    break;
+                case 'etickets_finalized':
+
+                    break;
+                case 'in-hand_updated':
+
+                    break;
+                case 'airbill_requested':
+
+                    break;
+                // delivery
+                case 'airbill_generated':
+
+                    break;
+                case 'delivery_shipped':
+
+                    break;
+                case 'delivery_complete':
+
+                    break;
+                case 'delivery_reclassified':
+
+                    break;
+                case 'delivery_updated':
+
+                    break;
+
+                default:
+                    console.error(`Unknown event type: ${event_type}`);
+                    return res.json({ success: false, error: `Unknown event type: ${event_type}` });
+            }
+
+        } else {
+            console.error('Unknown recipient: ', recipient);
+            return res.json({ success: false, error: `Unknown recipient: ${recipient}` });
+        }
+    }
+)
 
 module.exports = ticketRouter;
