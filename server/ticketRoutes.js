@@ -420,39 +420,90 @@ ticketRouter.post(
     '/notifications',
     // isAuthenticated,
     async (req, res) => {
-        const { recipient, event_type } = req.body;
-        try {
-            await TevoNotifications.create({
-                data: req.body
-            });
-            res.json({ success: true })
-        } catch (error) {
-            console.error(error);
-            return res.json({ success: false, error: 'Internal Server Error.' });
-        }
-        return
+        const { recipient, event_type, body } = req.body;
+        // try {
+        //     await TevoNotifications.create({
+        //         data: req.body
+        //     });
+        //     res.json({ success: true })
+        // } catch (error) {
+        //     console.error(error);
+        //     return res.json({ success: false, error: 'Internal Server Error.' });
+        // }
+        // return
         if (recipient == 'seller') {
             switch (event_type) {
                 case 'order_created':
-
+                    {
+                        await TevoOrder.findOneAndUpdate({ id: body.id }, body);
+                    }
                     break;
                 case 'airbill_uploaded':
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order.id });
+                        await tevoOrder.update({
+                            shipments: tevoOrder.shipments.map(shipment => {
+                                if (shipment.id == body.id) {
+                                    return body
+                                } else {
+                                    return shipment;
+                                }
+                            })
+                        });
+                    }
 
                     break;
                 case 'delivery_updated':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order.id });
+                        await tevoOrder.update({
+                            shipments: tevoOrder.shipments.map(shipment => {
+                                if (shipment.id == body.id) {
+                                    return body
+                                } else {
+                                    return shipment;
+                                }
+                            })
+                        });
+                    }
                     break;
                 case 'seller_accepted':
-
+                    {
+                        await TevoOrder.findOneAndUpdate({ id: body.id }, body);
+                    }
                     break;
                 case 'etickets_finalized':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order_id });
+                        await tevoOrder.update({
+                            items: tevoOrder.items.map(item => {
+                                if (item.id == body.id) {
+                                    return body
+                                } else {
+                                    return item;
+                                }
+                            })
+                        });
+                    }
                     break;
                 case 'in-hand_updated':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order_id });
+                        await tevoOrder.update({
+                            items: tevoOrder.items.map(item => {
+                                if (item.id == body.id) {
+                                    return body
+                                } else {
+                                    return item;
+                                }
+                            })
+                        });
+                    }
                     break;
                 case 'order_rejected':
-
+                    {
+                        await TevoOrder.findOneAndUpdate({ id: body.id }, body);
+                    }
                     break;
 
                 default:
@@ -463,37 +514,63 @@ ticketRouter.post(
         } else if (recipient == 'buyer') {
             switch (event_type) {
                 case 'seller_accepted':
-
+                    {
+                        await TevoOrder.findOneAndUpdate({ id: body.id }, body);
+                    }
                     break;
                 case 'order_rejected':
-
+                    {
+                        await TevoOrder.findOneAndUpdate({ id: body.id }, body);
+                    }
                     break;
                 case 'etickets_finalized':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order_id });
+                        await tevoOrder.update({
+                            items: tevoOrder.items.map(item => {
+                                if (item.id == body.id) {
+                                    return body
+                                } else {
+                                    return item;
+                                }
+                            })
+                        });
+                    }
                     break;
                 case 'in-hand_updated':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order_id });
+                        await tevoOrder.update({
+                            items: tevoOrder.items.map(item => {
+                                if (item.id == body.id) {
+                                    return body
+                                } else {
+                                    return item;
+                                }
+                            })
+                        });
+                    }
                     break;
+
                 case 'airbill_requested':
-
-                    break;
-                // delivery
                 case 'airbill_generated':
-
-                    break;
                 case 'delivery_shipped':
-
-                    break;
                 case 'delivery_complete':
-
-                    break;
                 case 'delivery_reclassified':
-
-                    break;
                 case 'delivery_updated':
-
+                    {
+                        const tevoOrder = await TevoOrder.findOne({ id: body.order.id });
+                        await tevoOrder.update({
+                            shipments: tevoOrder.shipments.map(shipment => {
+                                if (shipment.id == body.id) {
+                                    return body
+                                } else {
+                                    return shipment;
+                                }
+                            })
+                        });
+                    }
                     break;
-
                 default:
                     console.error(`Unknown event type: ${event_type}`);
                     return res.json({ success: false, error: `Unknown event type: ${event_type}` });
@@ -503,6 +580,7 @@ ticketRouter.post(
             console.error('Unknown recipient: ', recipient);
             return res.json({ success: false, error: `Unknown recipient: ${recipient}` });
         }
+        return res.json({ success: true, msg: event_type });
     }
 )
 
