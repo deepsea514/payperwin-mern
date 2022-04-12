@@ -58,14 +58,14 @@ class CartDetail extends React.Component {
                                         <td style={{ minWidth: '100px' }}>
                                             <select className='form-control cart-form-control'
                                                 value={cart.count}
-                                                onChange={(evt) => updateInCartAction(cart.ticket_group.id, evt.target.value)}>
+                                                onChange={(evt) => updateInCartAction(evt.target.value)}>
                                                 {cart.ticket_group.splits.map(count => (
                                                     <option value={count} key={count}>{count}</option>
                                                 ))}
                                             </select>
                                         </td>
                                         <td className='text-right pt-3'>
-                                            CAD&nbsp;${this.changeRate(cart.ticket_group.retail_price) * parseInt(cart.count)}
+                                            CAD&nbsp;${(this.changeRate(cart.ticket_group.retail_price) * parseInt(cart.count)).toFixed(2)}
                                         </td>
                                         <td>
                                             <button className='btn btn-secondary'
