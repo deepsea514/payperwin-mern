@@ -421,16 +421,13 @@ ticketRouter.post(
     // isAuthenticated,
     async (req, res) => {
         const { recipient, event_type, body } = req.body;
-        // try {
-        //     await TevoNotifications.create({
-        //         data: req.body
-        //     });
-        //     res.json({ success: true })
-        // } catch (error) {
-        //     console.error(error);
-        //     return res.json({ success: false, error: 'Internal Server Error.' });
-        // }
-        // return
+        try {
+            await TevoNotifications.create({ data: req.body });
+            return res.json({ success: true })
+        } catch (error) {
+            console.error(error);
+            return res.json({ success: false, error: 'Internal Server Error.' });
+        }
         if (recipient == 'seller') {
             switch (event_type) {
                 case 'order_created':
