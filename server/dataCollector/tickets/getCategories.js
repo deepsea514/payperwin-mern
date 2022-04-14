@@ -53,7 +53,7 @@ const getCategories = async (API_TOKEN, API_SECRET) => {
             //     await TicketCategory.findOneAndUpdate({ id: category.id }, category, { upsert: true });
             // }
             fs.writeFileSync("categories.json", JSON.stringify(categories));
-            console.log('Got Categories.');
+            console.log(new Date(), 'Got Categories.');
         } catch (error) {
             console.error(error);
         }
@@ -65,7 +65,7 @@ const getCategories = async (API_TOKEN, API_SECRET) => {
                 console.error(error);
             }
         }
-        console.log('Got Categories.');
+        console.log(new Date(), 'Got Categories.');
     }
 }
 
