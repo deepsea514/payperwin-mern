@@ -17,7 +17,7 @@
 
     <script type="text/babel">
         const { useState, useEffect, Fragment, useRef } = React
-        const widgetURL = 'http://localhost:8080';
+        const API_URL = 'https://api.payperwin.com';
 
         const App = (props) => {
             const [currentEvent, setCurrentEvent] = useState('NBA');
@@ -28,14 +28,13 @@
             const listRef = useRef()
 
             useEffect(() => {
-                axios.get(`${widgetURL}/widget`)
+                axios.get(`${API_URL}/widget`)
                     .then(response => {
                         if (response.data.success) {
                             const { NBAEvents, NHLEvents } = response.data;
                             setNBAEvents(getLocalEvents(NBAEvents, 'basketball', '10041830'));
                             setNHLEvents(getLocalEvents(NHLEvents, 'ice-hockey', '10037477'));
                         }
-
                     });
             }, []);
 
