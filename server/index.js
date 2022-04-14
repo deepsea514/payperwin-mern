@@ -103,6 +103,7 @@ const shopRouter = require('./shopRoutes');
 const ticketRouter = require('./ticketRoutes');
 const affiliateRouter = require('./affiliateRoutes');
 const onramperRouter = require('./onramperRoutes');
+const widgetRouter = require('./widgetRoutes');
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -6092,6 +6093,7 @@ expressApp.use('/shop', shopRouter);
 expressApp.use('/tickets', ticketRouter);
 expressApp.use('/affiliate', affiliateRouter);
 expressApp.use('/onramper', onramperRouter);
+expressApp.use('/widget', widgetRouter);
 expressApp.use('/static', express.static('banners'));
 
 const server = expressApp.listen(port, () => console.info(`API Server listening on port ${port}`));
