@@ -156,8 +156,7 @@ const getAllSportsLines = async () => {
                                 results[ei + i].home.image_id = success ? eventResult[i].home.image_id : null;
                                 results[ei + i].away.image_id = success ? eventResult[i].away.image_id : null;
                             } catch (error) {
-                                console.error(error);
-                                console.log("event=> ", eventResult[i]);
+                                console.error(error, "event=> ", eventResult[i]);
                             }
                         }
                     }
@@ -202,7 +201,7 @@ const getAllSportsLines = async () => {
                 sportEvents,
                 { upsert: true }
             );
-            console.log(`${sport.name} Got Odds`)
+            console.log(new Date(), `${sport.name} Got Odds`)
         } catch (error) {
             console.error(error);
         }

@@ -22,13 +22,13 @@ const getVenues = async (API_TOKEN, API_SECRET) => {
                 } else {
                     break;
                 }
-                console.log('Got Venues, Page => ', page, response.total_entries);
+                console.log(new Date(), 'Got Venues, Page => ', page, response.total_entries);
                 page++;
                 if (response.total_entries && response.total_entries < response.current_page * response.per_page)
                     break;
             } while (true);
             fs.writeFileSync('venues.json', JSON.stringify(venues));
-            console.log('Got all Venues.');
+            console.log(new Date(), 'Got all Venues.');
         } catch (error) {
             console.error(error);
         }
@@ -41,7 +41,7 @@ const getVenues = async (API_TOKEN, API_SECRET) => {
             }
             delete venue._id;
         }
-        console.log('Got all Venues.');
+        console.log(new Date(), 'Got all Venues.');
     }
 }
 

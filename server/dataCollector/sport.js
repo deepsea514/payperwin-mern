@@ -2,9 +2,7 @@
 const Addon = require("../models/addon");
 //local helpers
 const config = require('../../config.json');
-const { checkMatchStatus } = require("./checkMatchStatus");
 const { getSportsLine } = require("./bet365");
-const { getTicketsInformation } = require("./tickets");
 //external libraries
 const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
@@ -31,10 +29,4 @@ mongoose.connect(`mongodb://${config.mongo.host}/${databaseName}`, {
 
     // Get Sports Line
     getSportsLine();
-
-    // Tickets Information
-    getTicketsInformation();
-
-    // Notify
-    checkMatchStatus();
 });

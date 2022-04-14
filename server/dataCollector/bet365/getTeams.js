@@ -69,7 +69,7 @@ const getTeams = async () => {
             console.error(error);
         }
     }
-    console.log('All done')
+    console.log(new Date(), 'All done')
 }
 
 getTeams();
