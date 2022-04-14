@@ -12,9 +12,7 @@
 </head>
 
 <body>
-
     <div id="root"></div>
-
     <script type="text/babel">
         const { useState, useEffect, Fragment, useRef } = React
         const API_URL = 'https://api.payperwin.com';
@@ -25,17 +23,21 @@
             const [NHLEvents, setNHLEvents] = useState([]);
             const [showLeft, setShowLeft] = useState(false);
             const [showRight, setShowRight] = useState(true);
+            const [loading, setLoading] = useState(false);
             const listRef = useRef()
 
             useEffect(() => {
-                axios.get(`${API_URL}/widget`)
-                    .then(response => {
-                        if (response.data.success) {
-                            const { NBAEvents, NHLEvents } = response.data;
-                            setNBAEvents(getLocalEvents(NBAEvents, 'basketball', '10041830'));
-                            setNHLEvents(getLocalEvents(NHLEvents, 'ice-hockey', '10037477'));
-                        }
-                    });
+                setLoading(true);
+                axios.get(`${API_URL}/widget`).then(response => {
+                    if (response.data.success) {
+                        const { NBAEvents, NHLEvents } = response.data;
+                        setNBAEvents(getLocalEvents(NBAEvents, 'basketball', '10041830'));
+                        setNHLEvents(getLocalEvents(NHLEvents, 'ice-hockey', '10037477'));
+                    }
+                    setLoading(false);
+                }).catch((error) => {
+                    setLoading(false);
+                });
             }, []);
 
             const getLocalEvents = (_Events, sportName, leagueId) => {
@@ -64,18 +66,9 @@
                     };
 
                     return {
-                        day,
-                        date,
-                        month,
-                        time,
-                        teamA,
-                        teamB,
-                        logo_teamA,
-                        logo_teamB,
-                        originId,
-                        moneyline,
-                        sportName,
-                        leagueId
+                        day, date, month, time,
+                        teamA, teamB, logo_teamA, logo_teamB,
+                        originId, moneyline, sportName, leagueId
                     };
                 });
             }
@@ -165,7 +158,10 @@
                     </div>
 
                     <div className="MatchupBar_ticker__1jbS0">
-                        <div className="MatchupBar_scrollableWrapper__FHWFh">
+                        {loading && <div className='loading-container'>
+                            <h3 className='loading-title'>Loading ...</h3>
+                        </div>}
+                        {!loading && <div className="MatchupBar_scrollableWrapper__FHWFh">
                             <div className="MatchupBar_dateContainer__319Ms" ref={listRef} onScroll={onScroll}>
                                 {showLeft && <div tabIndex="0" role="button" className="MatchupBar_control__25aPS MatchupBar_previousControl__3h3Yb" onClick={scrollLeft}>
                                     <div className="MatchupBar_controlFadePrevious__1ws3M"></div>
@@ -177,7 +173,7 @@
                                     <i className='fas fa-chevron-right' />
                                 </div>}
                             </div>
-                        </div>
+                        </div>}
                     </div>
                 </div >
             );
@@ -253,6 +249,25 @@
             text-align: left;
         }
 
+        .loading-title {
+            background: linear-gradient(to right, #FFF 20%, #ED254E 40%, #ED254E 60%, #FFF 80%);
+            background-size: 200% auto;
+
+            color: #FFF;
+            background-clip: text;
+            text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 1s linear infinite;
+
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
         .MatchupBarLeagueSelector_root__3xY-P select {
             height: 28px;
             line-height: 24px;
@@ -324,6 +339,11 @@
             color: #e3e7e8;
             letter-spacing: .3px;
             line-height: 1.47;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
         }
 
         .MatchupBarMatchup_container__12U4s {
