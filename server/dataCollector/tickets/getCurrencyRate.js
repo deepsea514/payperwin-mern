@@ -12,7 +12,7 @@ const getCurrencyRate = async (API_KEY) => {
             }
         });
         await Frontend.findOneAndUpdate({ name: 'currency_rate' }, { value: rates });
-        console.log('Got Currency Rate.');
+        console.log(new Date(), 'Got Currency Rate.');
 
     } catch (error) {
         console.error(error);

@@ -78,12 +78,12 @@ const getEvents = async (API_TOKEN, API_SECRET) => {
             } else {
                 break;
             }
-            console.log('Got Events, Page => ', page, response.total_entries);
+            console.log(new Date(), 'Got Events, Page => ', page, response.total_entries);
             page++;
             if (response.total_entries && response.total_entries < response.current_page * response.per_page)
                 break;
         } while (true);
-        console.log('Got Events.');
+        console.log(new Date(), 'Got Events.');
 
         await getPerformers(API_TOKEN, API_SECRET);
     } catch (error) {
