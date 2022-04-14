@@ -37,6 +37,7 @@ if (serverUrl != 'https://api.payperwin.com') {
 }
 
 const pathToIndex = path.join(__dirname, "serve/index.html");
+const pathToWidget = path.join(__dirname, "serve/widget.html");
 
 app.use(express.static("dist"));
 app.use(express.static("public"));
@@ -98,6 +99,19 @@ app.get(
         const result = convert.js2xml(sitemap);
         res.set('Content-Type', 'text/xml');
         return res.send(result);
+    }
+)
+
+app.get(
+    '/widget',
+    async (req, res) => {
+        fs.readFile(pathToWidget, "utf8", async (err, htmlData) => {
+            if (err) {
+                console.error("Error during file reading", err);
+                return res.status(404).end();
+            }
+            return res.send(htmlData);
+        });
     }
 )
 
