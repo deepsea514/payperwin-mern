@@ -29,11 +29,9 @@ const {
 } = require('./libs/functions');
 
 const signatureCheck = async (req, res, next) => {
-    console.log('Signature Check', req.headers['triplea-signature']);
     if (req.body) {
         try {
             const sig = req.headers['triplea-signature'];
-            console.log('triple a signature=>', sig);
             let timestamp, signature;
             for (let sig_part of sig.split(',')) {
                 let [key, value] = sig_part.split('=');
@@ -66,7 +64,7 @@ const signatureCheck = async (req, res, next) => {
             if (signature === check_signature && Math.abs(curr_timestamp - timestamp) <= 300) {
                 return next();
             } else {
-                console.log('Triple A signature mismatch.', sig, req.rawBody, `${timestamp}.${req.rawBody}`);
+                console.error('Triple A signature mismatch.', sig, req.rawBody, `${timestamp}.${req.rawBody}`);
                 return res.json({
                     error: "Signature mismatch"
                 });
@@ -76,7 +74,7 @@ const signatureCheck = async (req, res, next) => {
             return res.json({ success: false, error: 'Internal Server Error.' });
         }
     } else {
-        console.log('Triple A signature mismatch.', req.rawBody);
+        console.error('Triple A signature mismatch.', req.rawBody);
         return res.json({
             error: "Signature mismatch"
         });

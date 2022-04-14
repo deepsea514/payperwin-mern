@@ -34,7 +34,7 @@ const getPerformers = async (API_TOKEN, API_SECRET) => {
             arrangeCategories(performer.categories, response.category);
             await performerToUpdate.update(performer);
         }
-        console.log('Got Performers.');
+        console.log(new Date(), 'Got Performers.');
     } catch (error) {
         console.error(error);
     }

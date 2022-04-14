@@ -248,7 +248,6 @@ const checkSettledScore = async () => {
         scoreMismatch: null,
         origin: 'bet365'
     });
-    console.log('%d of just settled bets.', bets.length);
     for (const bet of bets) {
         if (bet.isParlay) {
             const parlayQuery = bet.parlayQuery;
@@ -378,7 +377,7 @@ const checkSettledScore = async () => {
             }
         }
     }
-    console.log('All done');
+    console.log(new Date(), 'All done');
 }
 
 const checkMatchStatus = () => {

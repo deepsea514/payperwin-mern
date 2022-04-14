@@ -48,7 +48,9 @@
   "scripts": {
     "start": "node index.js",
     "server": "node index.js",
-    "updatefeed": "node ./dataCollector/index.js",
+    "sport": "node ./dataCollector/sport.js",
+    "check": "node ./dataCollector/check.js",
+    "ticket": "node ./dataCollector/ticket.js",
     "getteams": "node ./dataCollector/bet365/getTeams.js"
   }
 }
