@@ -9,6 +9,7 @@
         "http://68.183.203.13",
         "http://localhost:8081",
         "http://localhost:3000",
+        "http://localhost:8000",
         "http://dev.payperwin.com:5000",
         "https://tickets.payperwin.com"
     ],
