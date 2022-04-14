@@ -85,7 +85,7 @@ class OrderList extends React.Component {
                                                     <h6>Sec {item.ticket_group.section}, Row {item.ticket_group.row}</h6>
                                                     <h6>Total Price: CAD ${this.changeRate(total)}</h6>
                                                     <h6>Purchased in: {dateformat(created_at, "ddd mmm dd yyyy HH:MM")}</h6>
-                                                    <h6>Status: {state}</h6>
+                                                    {/* <h6>Status: {state}</h6> */}
 
                                                     <ul>
                                                         <li>
@@ -100,7 +100,7 @@ class OrderList extends React.Component {
 
                                                     </ul>
                                                 </div>
-                                                <button className='btn btn-primary btn-buy'>Download</button>
+                                                {/* <button className='btn btn-primary btn-buy'>Download</button> */}
                                             </div>
                                         </li>
                                     )
