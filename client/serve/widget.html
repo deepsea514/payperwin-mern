@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, Fragment, useRef } = React
+        const widgetURL = 'http://localhost:8080';
+
+        const App = (props) => {
+            const [currentEvent, setCurrentEvent] = useState('NBA');
+            const [NBAEvents, setNBAEvents] = useState([]);
+            const [NHLEvents, setNHLEvents] = useState([]);
+            const [showLeft, setShowLeft] = useState(false);
+            const [showRight, setShowRight] = useState(true);
+            const listRef = useRef()
+
+            useEffect(() => {
+                axios.get(`${widgetURL}/widget`)
+                    .then(response => {
+                        if (response.data.success) {
+                            const { NBAEvents, NHLEvents } = response.data;
+                            setNBAEvents(getLocalEvents(NBAEvents, 'basketball', '10041830'));
+                            setNHLEvents(getLocalEvents(NHLEvents, 'ice-hockey', '10037477'));
+                        }
+
+                    });
+            }, []);
+
+            const getLocalEvents = (_Events, sportName, leagueId) => {
+                const TODAY = new Date().getDate();
+                const TOMONTH = new Date().toLocaleString('default', { month: 'short' });
+                return _Events.map(event => {
+                    const startDate = new Date(event.startDate);
+                    const date = startDate.getDate();
+                    const month = startDate.toLocaleString('default', { month: 'short' });
+                    const time = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    let day, moneyline = {
+                        home: '',
+                        away: ''
+                    };
+                    if (date == TODAY && month == TOMONTH)
+                        day = 'Today'
+                    else
+                        day = startDate.toLocaleString('en-us', { weekday: 'long' });
+                    const { teamA, teamB, logo_teamA, logo_teamB, originId, lines } = event;
+
+                    if (lines && lines.length) {
+                        moneyline = {
+                            home: lines[0].moneyline.home > 0 ? "+" + lines[0].moneyline.home : lines[0].moneyline.home,
+                            away: lines[0].moneyline.away > 0 ? "+" + lines[0].moneyline.away : lines[0].moneyline.away
+                        }
+                    };
+
+                    return {
+                        day,
+                        date,
+                        month,
+                        time,
+                        teamA,
+                        teamB,
+                        logo_teamA,
+                        logo_teamB,
+                        originId,
+                        moneyline,
+                        sportName,
+                        leagueId
+                    };
+                });
+            }
+
+            const onScroll = () => {
+                const position = listRef.current?.scrollLeft;
+                const offsetWidth = listRef.current?.offsetWidth;
+                const scrollWidth = listRef.current?.scrollWidth;
+                setShowRight(position < scrollWidth - offsetWidth);
+                setShowLeft(position != 0);
+            }
+
+            const scrollLeft = () => {
+                const position = listRef.current?.scrollLeft - 400;
+                const offsetWidth = listRef.current?.offsetWidth;
+                const scrollWidth = listRef.current?.scrollWidth;
+                const newPos = position > 0 ? position : 0;
+                listRef.current?.scrollTo({ left: newPos, behavior: 'smooth' })
+                setShowRight(offsetWidth < scrollWidth);
+                setShowLeft(newPos != 0)
+            }
+
+            const scrollRight = () => {
+                const position = listRef.current?.scrollLeft + 400;
+                const offsetWidth = listRef.current?.offsetWidth;
+                const scrollWidth = listRef.current?.scrollWidth;
+                const scrollLimit = scrollWidth - offsetWidth;
+                const newPos = position > scrollLimit ? scrollLimit : position;
+                listRef.current?.scrollTo({ left: position, behavior: 'smooth' });
+                setShowRight(newPos < scrollLimit);
+                setShowLeft(newPos != 0)
+            }
+
+            const renderEvents = (_Events) => {
+                return _Events.map((event, index) => {
+                    return <Fragment key={index}>
+                        {(index == 0 || _Events[index - 1].date != event.date || _Events[index - 1].month != event.month) &&
+                            <div className="MatchupBar_gameDate__6Mq2g">
+                                <div className="MatchupBar_weekdayLabel__ogPgP">{event.day}</div>
+                                <div className="MatchupBar_dayLabel__2nQmK">{event.date}</div>
+                                <div className="MatchupBar_monthLabel__3j8s1">{event.month}</div>
+                            </div>
+                        }
+                        <div className="MatchupBarMatchup_container__12U4s">
+                            <a href={`https://payperwin.com/sport/${event.sportName}/league/${event.leagueId}/event/${event.originId}`}
+                                target="_blank"
+                                className="MatchupBarMatchup_link__2hCUO">
+                                <div className="MatchupBarMatchup_gameTime__3c4Lr">{event.time}</div>
+                                <div className="MatchupBarMatchup_grid__nDF3s">
+                                    <div className="MatchupBarMatchup_teams__iDpHh">
+                                        <div>
+                                            <img src={`https://assets.b365api.com/images/team/m/${event.logo_teamA ? event.logo_teamA : 0}.png`} className='pro-team-logo' />
+                                            {event.teamA}</div>
+                                        <div className="MatchupBarMatchup_homeTeam__bzFfU">
+                                            <img src={`https://assets.b365api.com/images/team/m/${event.logo_teamB ? event.logo_teamB : 0}.png`} className='pro-team-logo' />
+                                            {event.teamB}</div>
+                                    </div>
+                                    <div className="MatchupBarMatchup_points__3TSOA">
+                                        <div>{event.moneyline.home}</div>
+                                        <div className="MatchupBarMatchup_homePoints__2Vqwm">{event.moneyline.away}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </Fragment>
+                })
+            }
+
+            return (
+                <div className="MatchupBar_container__2I1Aj ">
+                    <div className="MatchupBar_leagueSelectorWrapper__10Zq6">
+                        <div className="MuiFormControl-root MatchupBarLeagueSelector_formControl__3QtRC">
+                            <div
+                                className="MuiInputBase-root MuiInput-root MatchupBarLeagueSelector_root__3xY-P MuiInputBase-formControl MuiInput-formControl">
+                                <select
+                                    className="MuiNativeSelect-root MuiNativeSelect-select MuiNativeSelect-filled MuiInputBase-input MuiInput-input"
+                                    aria-invalid="false" name="leagues" aria-label="Select League" onChange={(event) => setCurrentEvent(event.target.value)}
+                                    value={currentEvent}>
+                                    <option value="NBA">NBA</option>
+                                    <option value="NHL">NHL</option>
+                                </select><svg className="MuiSvgIcon-root MuiNativeSelect-icon MuiNativeSelect-iconFilled"
+                                    focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M7 10l5 5 5-5z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="MatchupBar_ticker__1jbS0">
+                        <div className="MatchupBar_scrollableWrapper__FHWFh">
+                            <div className="MatchupBar_dateContainer__319Ms" ref={listRef} onScroll={onScroll}>
+                                {showLeft && <div tabIndex="0" role="button" className="MatchupBar_control__25aPS MatchupBar_previousControl__3h3Yb" onClick={scrollLeft}>
+                                    <div className="MatchupBar_controlFadePrevious__1ws3M"></div>
+                                    <i className='fas fa-chevron-left' />
+                                </div>}
+                                {renderEvents(currentEvent == 'NBA' ? NBAEvents : NHLEvents)}
+                                {showRight && <div tabIndex="0" role="button" className="MatchupBar_control__25aPS MatchupBar_nextControl__2_oOw" onClick={scrollRight}>
+                                    <div className="MatchupBar_controlFadeNext__2Tk5o"></div>
+                                    <i className='fas fa-chevron-right' />
+                                </div>}
+                            </div>
+                        </div>
+                    </div>
+                </div >
+            );
+        }
+
+        const rootElement = document.getElementById('root')
+        ReactDOM.render(<App />, rootElement)
+    </script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #000;
+        }
+
+        .MatchupBar_container__2I1Aj {
+            background-color: #000;
+            width: 100%;
+            height: 80px;
+            overflow-y: hidden;
+            display: flex;
+            z-index: 9;
+            position: relative;
+        }
+
+        .MatchupBar_leagueSelectorWrapper__10Zq6 {
+            z-index: -1;
+            height: 78px;
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+            /* align-items: center; */
+            margin-top: 8px;
+            background-color: #000;
+        }
+
+        .MatchupBarLeagueSelector_formControl__3QtRC {
+            height: 28px;
+            display: block;
+        }
+
+        .MuiFormControl-root {
+            border: 0;
+            margin: 0;
+            display: inline-flex;
+            padding: 0;
+            position: relative;
+            min-width: 0;
+            flex-direction: column;
+            vertical-align: top;
+        }
+
+        .MatchupBarLeagueSelector_root__3xY-P,
+        .MatchupBarLeagueSelector_root__3xY-P select {
+            /* font-family: Lato Bold; */
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            background-color: #1f2426;
+            border-radius: 2px;
+        }
+
+        .MatchupBarLeagueSelector_root__3xY-P {
+            transform-origin: center left;
+            transform: scale(.875);
+            letter-spacing: .3px;
+            margin: 0 10px 0 24px;
+            border: none;
+            outline: none;
+            text-align: left;
+        }
+
+        .MatchupBarLeagueSelector_root__3xY-P select {
+            height: 28px;
+            line-height: 24px;
+            margin: 0;
+            padding: 0 22px 0 6px;
+            width: calc(100% - 28px);
+            background: 'url(data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60"><polygon points="0,0 80,0 40,50" style="fill:white;"/></svg>)';
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-size: 0.575em auto;
+            background-position-x: calc(100% - 6px);
+            background-position-y: 12px;
+        }
+
+        .MatchupBar_ticker__1jbS0 {
+            background-color: #000;
+            white-space: nowrap;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            width: 100%;
+            color: #fff;
+            height: 100px;
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+
+        .MatchupBar_scrollableWrapper__FHWFh {
+            margin-left: 20px;
+            margin-right: 60px;
+            display: flex;
+            height: 100%;
+        }
+
+        .MatchupBar_dateContainer__319Ms {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .MatchupBar_dateContainer__319Ms::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .MatchupBar_dateContainer__319Ms {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .MatchupBar_dateContainer__319Ms:nth-child(2) {
+            margin-left: 20px;
+        }
+
+        .MatchupBar_gameDate__6Mq2g {
+            min-width: 40px;
+            margin: 0px 40px;
+            text-align: center;
+            position: relative;
+            color: #e3e7e8;
+            letter-spacing: .3px;
+            line-height: 1.47;
+        }
+
+        .MatchupBarMatchup_container__12U4s {
+            min-width: 200px;
+            height: 70px;
+            margin-left: 6px;
+            border-radius: 2px;
+            overflow: hidden;
+            font-size: 13px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .MatchupBar_weekdayLabel__ogPgP {
+            font-size: 14px;
+        }
+
+        .MatchupBar_dayLabel__2nQmK {
+            font-size: 22px;
+            font-weight: 700;
+            /* font-family: Lato Bold; */
+            color: #fff;
+            display: inline;
+            padding-right: 8px;
+        }
+
+        .MatchupBar_monthLabel__3j8s1 {
+            font-size: 17px;
+            display: inline;
+        }
+
+        .MatchupBarMatchup_link__2hCUO {
+            height: 68px;
+            outline: none;
+            text-decoration: none;
+            display: block;
+            border-radius: 2px;
+            color: #fff;
+            /* font-family: Lato Bold; */
+            border: 1px solid #000;
+        }
+
+        .MatchupBarMatchup_link__2hCUO:hover {
+            text-decoration: none;
+            color: #fff;
+            border-radius: 2px;
+            border: 1px solid #ED254E;
+        }
+
+        .MatchupBarMatchup_gameTime__3c4Lr {
+            /* font-family: Lato Bold; */
+            font-weight: 700;
+            padding-left: 8px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            letter-spacing: .2px;
+            border-radius: 2px 2px 0 0;
+            background-color: #1f2426;
+        }
+
+        .MatchupBarMatchup_grid__nDF3s {
+            display: grid;
+            height: 46px;
+            border-top: 1px solid #000;
+            grid-template-columns: 2fr 1fr
+        }
+
+        .MatchupBarMatchup_teams__iDpHh {
+            display: grid;
+            -ms-grid-column: 1;
+            -ms-grid-row: 1;
+            -ms-grid-row-span: 2;
+            background-color: #17191a;
+            border-right: 1px solid #000;
+            border-radius: 0 0 0 2px;
+        }
+
+        .MatchupBarMatchup_teams__iDpHh>div {
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            min-height: 1.75em;
+        }
+
+        .MatchupBarMatchup_points__3TSOA {
+            display: grid;
+            -ms-grid-column: 2;
+            -ms-grid-row: 1;
+            -ms-grid-row-span: 2;
+            border-right: 1px solid #000;
+            background-color: #17191a;
+        }
+
+        .MatchupBarMatchup_points__3TSOA>div {
+            color: #FF00FE;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 8px;
+            min-height: 1.75em;
+        }
+
+        .MatchupBarMatchup_teams__iDpHh>div {
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            min-height: 1.75em;
+        }
+
+        .MatchupBarMatchup_homePoints__2Vqwm {
+            -ms-grid-row: 2;
+        }
+
+        .MuiInputBase-root {
+            color: rgba(0, 0, 0, 0.87);
+            cursor: text;
+            display: inline-flex;
+            position: relative;
+            font-size: 16px;
+            box-sizing: border-box;
+            align-items: center;
+            /* font-family: Lato, sans-serif; */
+            font-weight: 400;
+            line-height: 1.1876em;
+        }
+
+        .MuiInput-root {
+            position: relative;
+        }
+
+        .MuiSvgIcon-root {
+            fill: currentColor;
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+            font-size: 1.5rem;
+            transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .MuiNativeSelect-icon {
+            top: calc(50% - 12px);
+            color: rgba(0, 0, 0, 0.54);
+            right: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .MuiNativeSelect-iconFilled {
+            right: 7px;
+            color: #fff;
+        }
+
+        .MatchupBar_disabledControl__YXDrD {
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .MatchupBar_controlFadePrevious__1ws3M {
+            height: 100%;
+            width: 120px;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            position: absolute;
+            background-image: linear-gradient(90deg, #000, transparent);
+        }
+
+        .MatchupBarMatchup_homeTeam__bzFfU {
+            -ms-grid-row: 2;
+        }
+
+        .MatchupBarMatchup_total__1yDkl {
+            -ms-grid-column: 3;
+            -ms-grid-row: 1;
+            min-height: 46px;
+        }
+
+        .MuiNativeSelect-select.MuiNativeSelect-select {
+            padding-right: 24px;
+        }
+
+        .MuiInputBase-input {
+            font: inherit;
+            color: currentColor;
+            width: 100%;
+            border: 0;
+            height: 1.1876em;
+            margin: 0;
+            display: block;
+            padding: 6px 0 7px;
+            min-width: 0;
+            background: none;
+            box-sizing: content-box;
+            animation-name: mui-auto-fill-cancel;
+            letter-spacing: inherit;
+            animation-duration: 10ms;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .MatchupBar_previousControl__3h3Yb {
+            position: absolute;
+            margin-left: -20px;
+            z-index: 1;
+        }
+
+        .MatchupBar_control__25aPS {
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 26px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            opacity: 1;
+            transition: opacity .3s ease;
+        }
+
+        .MatchupBar_control__25aPS:focus {
+            outline: none;
+        }
+
+        .MatchupBar_nextControl__2_oOw {
+            position: absolute;
+            right: 0;
+            z-index: 1;
+            padding-right: 24px;
+        }
+
+        .MatchupBar_controlFadeNext__2Tk5o {
+            height: 100%;
+            width: 120px;
+            z-index: -1;
+            top: 0;
+            right: 0;
+            position: absolute;
+            background-image: linear-gradient(270deg, #000, transparent);
+        }
+
+        .pro-team-logo {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            /* display: block; */
+        }
+    </style>
+</body>
+
+</html>
