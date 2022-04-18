@@ -57,6 +57,8 @@ const gotLineToOdds = (game_lines) => {
                 under: convertDecimalToAmericanOdds(under.odds),
             });
             game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+        } else {
+            game_lines = game_lines.filter(game_line => game_line.id != first.id);
         }
     }
     if (line.moneyline && (!line.moneyline.home || !line.moneyline.away)) {
