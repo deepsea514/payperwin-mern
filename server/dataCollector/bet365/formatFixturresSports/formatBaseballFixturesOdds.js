@@ -56,6 +56,8 @@ const gotLineToOdds = (game_lines) => {
                 under: convertDecimalToAmericanOdds(under.odds),
             });
             game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+        } else {
+            game_lines = game_lines.filter(game_line => game_line.id != first.id);
         }
     }
 
@@ -118,7 +120,10 @@ const formatBaseballFixturesOdds = (event) => {
         while (alternative_run_line.length > 0) {
             const first = alternative_run_line[0];
             const second = alternative_run_line.find(total => Number(total.handicap) == -Number(first.handicap) && total.header != first.header);
-            if (!second) continue;
+            if (!second) {
+                alternative_run_line = alternative_run_line.filter(total => total.id != first.id);
+                continue;
+            }
             const home = first.header == '1' ? first : second;
             const away = first.header == '2' ? first : second;
             line.alternative_spreads.push({
@@ -141,7 +146,10 @@ const formatBaseballFixturesOdds = (event) => {
         while (alternative_game_total.length > 0) {
             const first = alternative_game_total[0];
             const second = alternative_game_total.find(total => total.name == first.name && total.header != first.header);
-            if (!second) continue;
+            if (!second) {
+                alternative_game_total = alternative_game_total.filter(total => total.name != first.name);
+                continue;
+            }
             const over = first.header == 'Over' ? first : second;
             const under = first.header == 'Under' ? first : second;
             line.alternative_totals.push({

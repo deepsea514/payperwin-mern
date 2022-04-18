@@ -63,6 +63,8 @@ const formatTableTennisFixturesOdds = (event) => {
                     under: convertDecimalToAmericanOdds(under.odds),
                 });
                 game_lines = game_lines.filter(game_line => game_line.id != first.id && game_line.id != second.id);
+            } else {
+                game_lines = game_lines.filter(game_line => game_line.id != first.id);
             }
         }
     }

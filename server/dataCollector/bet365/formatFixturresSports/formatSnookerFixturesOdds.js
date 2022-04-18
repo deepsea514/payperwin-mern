@@ -10,8 +10,6 @@ const formatSnookerFixturesOdds = (event) => {
         totals: [],
     }
 
-
-
     if (main) {
         if (main.sp.to_win_match) {
             const moneyline = main.sp.to_win_match.odds
