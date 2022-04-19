@@ -13,10 +13,6 @@ export default class PremierPay extends React.Component {
             loading: false,
             initialValues: null,
             premierSchema: Yup.object().shape({
-                paymenturl: Yup.string()
-                    .required("Payment Url is required"),
-                payouturl: Yup.string()
-                    .required("Payout Url is required"),
                 sid: Yup.string()
                     .required("SID is required"),
                 rcode: Yup.string()
@@ -36,8 +32,6 @@ export default class PremierPay extends React.Component {
                 } else {
                     this.setState({
                         initialValues: {
-                            paymenturl: "",
-                            payouturl: "",
                             sid: "",
                             rcode: ""
                         }, loading: false
@@ -142,28 +136,6 @@ export default class PremierPay extends React.Component {
                                 </div>
                             )}
 
-                            <div className="form-group">
-                                <label>Payment Url<span className="text-danger">*</span></label>
-                                <input type="text" name="paymenturl" className={`form-control ${getInputClasses(formik, "paymenturl")}`}
-                                    {...formik.getFieldProps("paymenturl")}
-                                    placeholder="Payment Url" />
-                                {formik.touched.paymenturl && formik.errors.paymenturl ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.paymenturl}
-                                    </div>
-                                ) : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Payout Url<span className="text-danger">*</span></label>
-                                <input type="text" name="payouturl" className={`form-control ${getInputClasses(formik, "payouturl")}`}
-                                    {...formik.getFieldProps("payouturl")}
-                                    placeholder="Payout Url" />
-                                {formik.touched.payouturl && formik.errors.payouturl ? (
-                                    <div className="invalid-feedback">
-                                        {formik.errors.payouturl}
-                                    </div>
-                                ) : null}
-                            </div>
                             <div className="form-group">
                                 <label>SID<span className="text-danger">*</span></label>
                                 <input type="text" name="sid" className={`form-control ${getInputClasses(formik, "sid")}`}

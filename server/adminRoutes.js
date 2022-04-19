@@ -1513,6 +1513,8 @@ adminRouter.post(
                     case "Bitcoin":
                     case "Ethereum":
                     case "Tether":
+                    case "USDC":
+                    case "Binance":
                         fee = 25;
                         break;
                     case "CREDIT":
@@ -1677,16 +1679,9 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         return false;
     }
     const {
-        tokenurl,
-        paymenturl,
-        payouturl,
         client_id,
         client_secret,
         notify_secret,
-        btc_api_id,
-        test_btc_api_id,
-        eth_api_id,
-        usdt_api_id,
         merchant_key,
         testMode,
     } = tripleAAddon.value;
@@ -1697,7 +1692,7 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
         params.append('client_id', client_id);
         params.append('client_secret', client_secret);
         params.append('grant_type', 'client_credentials');
-        const { data } = await axios.post(tokenurl, params);
+        const { data } = await axios.post('https://api.triple-a.io/api/v2/oauth/token', params);
         access_token = data.access_token;
     } catch (error) {
         res.status(500).json({ success: 0, message: "Can't get Access Token." });
@@ -1715,6 +1710,12 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
             break;
         case "Tether":
             crypto_currency = "USDT";
+            break;
+        case "USDC":
+            crypto_currency = "USDC";
+            break;
+        case "USDC":
+            crypto_currency = "Binance";
             break;
         case "Bitcoin":
         default:
@@ -1734,7 +1735,7 @@ const tripleAWithdraw = async (req, res, data, user, withdraw) => {
     };
     let payout_reference = null;
     try {
-        const { data } = await axios.post(payouturl, body, {
+        const { data } = await axios.post('https://api.triple-a.io/api/v2/payout/withdraw/local/crypto', body, {
             headers: {
                 'Authorization': `Bearer ${access_token}`
             }
@@ -1786,7 +1787,7 @@ adminRouter.patch(
             }
 
             if (data.status == FinancialStatus.approved) {
-                if (withdraw.method == "Bitcoin" || withdraw.method == 'Ethereum' || withdraw.method == "Tether") {
+                if (["Bitcoin", 'Ethereum', "Tether", "USDC", "Binance"].includes(withdraw.method)) {
                     const result = tripleAWithdraw(req, res, data, user, withdraw)
                     if (!result)
                         return;
@@ -1797,12 +1798,12 @@ adminRouter.patch(
                         console.warn("PremierPay Api is not set");
                         return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
                     }
-                    const { payouturl, sid } = premierpayAddon.value;
+                    const { sid } = premierpayAddon.value;
                     const signature = await generatePremierRequestSignature(user.email, withdraw.amount, user._id, withdraw.uniqid);
                     const amount2 = Number(withdraw.amount).toFixed(2);
 
                     try {
-                        const { data } = await axios.post(`${payouturl}/${sid}`,
+                        const { data } = await axios.post(`https://secure.premierpay.ca/api/v2/payout/${sid}`,
                             {
                                 "payby": "etransfer",
                                 "amount": amount2,

@@ -30,7 +30,7 @@ class Withdraw extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/withdraw-etransfer' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/eTransfer.png" />
+                                            <img src="/images/payments/eTransfer.png" />
                                         </div>
                                         <div className='deposit-item-name'>Interac eTransfer</div>
                                     </Link>
@@ -40,7 +40,7 @@ class Withdraw extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/withdraw-bitcoin' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/bitcoin.png" />
+                                            <img src="/images/payments/bitcoin.png" />
                                         </div>
                                         <div className='deposit-item-name'>Bitcoin</div>
                                     </Link>
@@ -50,7 +50,7 @@ class Withdraw extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/withdraw-ethereum' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/Ethereum.png" />
+                                            <img src="/images/payments/Ethereum.png" />
                                         </div>
                                         <div className='deposit-item-name'>Ethereum</div>
                                     </Link>
@@ -60,9 +60,29 @@ class Withdraw extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/withdraw-tether' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/USDT.png" />
+                                            <img src="/images/payments/USDT.png" />
                                         </div>
                                         <div className='deposit-item-name'>Tether</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-usdc' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="/images/payments/USDC.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>USD Coin</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/withdraw-binance' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="/images/payments/Binance.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Binance</div>
                                     </Link>
                                 </div>
                             </div>

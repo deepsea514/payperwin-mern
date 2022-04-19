@@ -29,7 +29,7 @@ class Deposit extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/deposit-etransfer' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/eTransfer.png" />
+                                            <img src="/images/payments/eTransfer.png" />
                                         </div>
                                         <div className='deposit-item-name'>Interac eTransfer</div>
                                     </Link>
@@ -39,7 +39,7 @@ class Deposit extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/deposit-bitcoin' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/bitcoin.png" />
+                                            <img src="/images/payments/bitcoin.png" />
                                         </div>
                                         <div className='deposit-item-name'>Bitcoin</div>
                                     </Link>
@@ -49,7 +49,7 @@ class Deposit extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/deposit-ethereum' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/Ethereum.png" />
+                                            <img src="/images/payments/Ethereum.png" />
                                         </div>
                                         <div className='deposit-item-name'>Ethereum</div>
                                     </Link>
@@ -59,7 +59,7 @@ class Deposit extends Component {
                                 <div className='deposit-item'>
                                     <Link to={{ pathname: '/deposit-tether' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/USDT.png" />
+                                            <img src="/images/payments/USDT.png" />
                                         </div>
                                         <div className='deposit-item-name'>Tether</div>
                                     </Link>
@@ -67,24 +67,44 @@ class Deposit extends Component {
                             </div>
                             <div className='col-12 col-sm-6 col-md-3'>
                                 <div className='deposit-item'>
-                                    <Link to={{ pathname: '/deposit-giftcard' }} className='deposit-item-inner'>
+                                    <Link to={{ pathname: '/deposit-usdc' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/gift-card.png" />
+                                            <img src="/images/payments/USDC.png" />
                                         </div>
-                                        <div className='deposit-item-name'>Gift Card</div>
+                                        <div className='deposit-item-name'>USD Coin</div>
                                     </Link>
                                 </div>
                             </div>
                             <div className='col-12 col-sm-6 col-md-3'>
                                 <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-binance' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="/images/payments/Binance.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Binance</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
+                                    <Link to={{ pathname: '/deposit-giftcard' }} className='deposit-item-inner'>
+                                        <div className='deposite-item-img-wrapper'>
+                                            <img src="/images/payments/gift-card.png" />
+                                        </div>
+                                        <div className='deposit-item-name'>Gift Card</div>
+                                    </Link>
+                                </div>
+                            </div>
+                            {/* <div className='col-12 col-sm-6 col-md-3'>
+                                <div className='deposit-item'>
                                     <Link to={{ pathname: '/deposit-creditcard' }} className='deposit-item-inner'>
                                         <div className='deposite-item-img-wrapper'>
-                                            <img src="images/credit-card.png" />
+                                            <img src="/images/payments/credit-card.png" />
                                         </div>
                                         <div className='deposit-item-name'>Credit Card</div>
                                     </Link>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <p className="dpsit">

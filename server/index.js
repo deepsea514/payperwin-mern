@@ -3362,13 +3362,14 @@ expressApp.get(
 expressApp.get(
     '/custombets',
     async (req, res) => {
-        const { id } = req.query;
+        const { id, leagueId } = req.query;
         try {
             const searchObj = {
                 startDate: { $gte: new Date() },
                 status: EventStatus.pending.value,
                 approved: true,
             };
+            leagueId && (searchObj['leagueId'] = leagueId);
             if (id) {
                 searchObj.uniqueid = id;
             } else {
@@ -3563,8 +3564,6 @@ const depositTripleA = async (req, res, data) => {
         return false;
     }
     const {
-        tokenurl,
-        paymenturl,
         client_id,
         client_secret,
         notify_secret,
@@ -3572,6 +3571,8 @@ const depositTripleA = async (req, res, data) => {
         test_btc_api_id,
         eth_api_id,
         usdt_api_id,
+        usdc_api_id,
+        binance_api_id,
         merchant_key,
         testMode,
     } = tripleAAddon.value;
@@ -3582,7 +3583,7 @@ const depositTripleA = async (req, res, data) => {
         params.append('client_id', client_id);
         params.append('client_secret', client_secret);
         params.append('grant_type', 'client_credentials');
-        const { data } = await axios.post(tokenurl, params);
+        const { data } = await axios.post('https://api.triple-a.io/api/v2/oauth/token', params);
         access_token = data.access_token;
     } catch (error) {
         return res.status(500).json({ success: 0, message: "Can't get Access Token." });
@@ -3615,6 +3616,12 @@ const depositTripleA = async (req, res, data) => {
         case 'Tether':
             api_id = usdt_api_id;
             break;
+        case 'Binance':
+            api_id = binance_api_id;
+            break;
+        case 'USDC':
+            api_id = usdc_api_id;
+            break;
         case 'Bitcoin':
         default:
             break;
@@ -3623,7 +3630,7 @@ const depositTripleA = async (req, res, data) => {
 
     try {
         const { data } = await axios.post(
-            `${paymenturl}/${api_id}`,
+            `https://api.triple-a.io/api/v2/payment/account/${api_id}`,
             body,
             { headers: { 'Authorization': `Bearer ${access_token}` } }
         );
@@ -3667,7 +3674,7 @@ expressApp.post('/deposit',
                 console.warn("PremierPay Api is not set");
                 return res.status(400).json({ success: 0, message: "PremierPay Api is not set" });
             }
-            const { paymenturl, payouturl, sid, rcode } = premierpayAddon.value;
+            const { sid } = premierpayAddon.value;
             try {
                 const { user } = req;
                 try {
@@ -3675,7 +3682,7 @@ expressApp.post('/deposit',
                     const signature = await generatePremierRequestSignature(email, amount, user._id, uniqid);
                     let data = null;
                     try {
-                        const { data: result } = await axios.post(`${paymenturl}/${sid}`,
+                        const { data: result } = await axios.post(`https://secure.premierpay.ca/api/v2/payment/${sid}`,
                             {
                                 "payby": "etransfer",
                                 "first_name": user.firstname,
@@ -3772,14 +3779,12 @@ expressApp.post('/deposit',
             } catch (error) {
                 return res.status(500).json({ success: 0, message: "Can't make deposit.", error });
             }
-        }
-        else if (method == "Bitcoin" || method == "Ethereum" || method == "Tether") {
+        } else if (["Bitcoin", "Ethereum", "Tether", "USDC", "Binance"].includes(method)) {
             if (!amount || !email || !phone) {
                 return res.status(400).json({ success: 0, message: "Deposit Amount, Email and Phone are required." });
             }
             depositTripleA(req, res, data);
-        }
-        else if (method == 'giftcard') {
+        } else if (method == 'giftcard') {
             try {
                 const { user } = req;
                 if (!card_number) {
@@ -3936,7 +3941,7 @@ expressApp.post(
                 console.error("withdraw => ", error);
                 return res.status(400).json({ success: 0, message: "Failed to create withdraw." });
             }
-        } else if (method == "Bitcoin" || method == "Ethereum" || method == "Tether") {
+        } else if (["Bitcoin", "Ethereum", "Tether", "Binance", "USDC"].includes(method)) {
             if (!amount) {
                 return res.json({ success: 0, message: "Withdraw Amount is required." });
             }
@@ -4840,7 +4845,7 @@ expressApp.post(
     '/customBet',
     isAuthenticated,
     async (req, res) => {
-        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional, odds_type } = req.body;
+        const { name, startDate, endDate, visibility, maximumRisk, options, allowAdditional, odds_type, leagueId } = req.body;
         const user = req.user;
         try {
             if (user.balance < maximumRisk) {
@@ -4873,7 +4878,8 @@ expressApp.post(
                     user: user._id,
                     amount: maximumRisk
                 }],
-                odds_type: odds_type
+                odds_type: odds_type,
+                leagueId: leagueId
             });
 
             await FinancialLog.create({

@@ -44,6 +44,14 @@
         "path": "/deposit-tether"
     },
     {
+        "title": "Deposit with USDC",
+        "path": "/deposit-usdc"
+    },
+    {
+        "title": "Deposit with Binance",
+        "path": "/deposit-binance"
+    },
+    {
         "title": "Deposit with Gift Card",
         "path": "/deposit-giftcard"
     },
@@ -70,6 +78,14 @@
     {
         "title": "Withdraw with Tether",
         "path": "/withdraw-tether"
+    },
+    {
+        "title": "Withdraw with USDC",
+        "path": "/withdraw-usdc"
+    },
+    {
+        "title": "Withdraw with Binance",
+        "path": "/withdraw-binance"
     },
     {
         "title": "Open Bets",

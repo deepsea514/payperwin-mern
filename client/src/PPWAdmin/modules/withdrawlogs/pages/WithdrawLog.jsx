@@ -73,7 +73,6 @@ class WithdrawLog extends React.Component {
                 </tr>
             );
         }
-
         return withdrawlogs.map((log, index) => {
             return (
                 <tr key={index}>
@@ -129,10 +128,10 @@ class WithdrawLog extends React.Component {
 
     changeStatus = (values, formik) => {
         const { editStatusId } = this.state;
-        const { updateWithdrawStatusSuccess } = this.props;
+        const { getWithdrawLog, currentPage } = this.props;
         formik.setSubmitting(true);
         updateWithdraw(editStatusId, values).then(({ data }) => {
-            updateWithdrawStatusSuccess(editStatusId, data);
+            getWithdrawLog(currentPage);
             this.setState({ modal: true, editStatusId: null, resMessage: "Successfully changed!", modalvariant: "success" });
         }).catch(() => {
             this.setState({ modal: true, editStatusId: null, resMessage: "Modification Failed!", modalvariant: "danger" });

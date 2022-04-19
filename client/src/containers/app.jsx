@@ -101,9 +101,13 @@ const ShowAccountLinks = [
     '/deposit-bitcoin',
     '/deposit-ethereum',
     '/deposit-tether',
+    '/deposit-usdc',
+    '/deposit-binance',
     '/withdraw-bitcoin',
     '/withdraw-ethereum',
     '/withdraw-tether',
+    '/withdraw-usdc',
+    '/withdraw-binance',
     '/verification',
     '/phone-verification',
     '/cashback',
@@ -612,10 +616,16 @@ class App extends Component {
                                                 {user && <Route path="/deposit-tether" render={(props) =>
                                                     <ErrorBoundary><DepositTripleA {...props} user={user} method="Tether" /></ErrorBoundary>
                                                 } />}
+                                                {user && <Route path="/deposit-usdc" render={(props) =>
+                                                    <ErrorBoundary><DepositTripleA {...props} user={user} method="USDC" /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/deposit-binance" render={(props) =>
+                                                    <ErrorBoundary><DepositTripleA {...props} user={user} method="Binance" /></ErrorBoundary>
+                                                } />}
                                                 {user && <Route path='/deposit-giftcard' render={(props) =>
                                                     <ErrorBoundary><DepositGiftCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />}
-                                                {user && <Route path='/deposit-creditcard' render={(props) =>
-                                                    <ErrorBoundary><DepositCreditCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />}
+                                                {/* {user && <Route path='/deposit-creditcard' render={(props) =>
+                                                    <ErrorBoundary><DepositCreditCard {...props} user={user} getUser={getUser} /></ErrorBoundary>} />} */}
                                                 {user && <Route path="/withdraw-etransfer" render={(props) =>
                                                     <ErrorBoundary><WithdrawETransfer {...props} user={user} getUser={getUser} /></ErrorBoundary>
                                                 } />}
@@ -627,6 +637,12 @@ class App extends Component {
                                                 } />}
                                                 {user && <Route path="/withdraw-tether" render={(props) =>
                                                     <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="Tether" /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/withdraw-usdc" render={(props) =>
+                                                    <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="USDC" /></ErrorBoundary>
+                                                } />}
+                                                {user && <Route path="/withdraw-binance" render={(props) =>
+                                                    <ErrorBoundary><WithdrawTripleA {...props} user={user} getUser={getUser} method="Binance" /></ErrorBoundary>
                                                 } />}
                                                 {user && <Route path="/verification" render={(props) =>
                                                     <ErrorBoundary><Verification {...props} user={user} /></ErrorBoundary>
